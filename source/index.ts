@@ -3291,7 +3291,13 @@ export default async function courselore(
           RETURNING *
         `
       )!;
-      const link = `${app.locals.settings.url}/reset-password/${passwordReset.nonce}`;
+      const link = `${app.locals.settings.url}/reset-password/${
+        passwordReset.nonce
+      }?${qs.stringify({
+        redirect: req.query.redirect,
+        name: req.query.name,
+        email: req.query.email,
+      })}`;
       app.locals.helpers.sendMail({
         to: user.email,
         subject: "CourseLore · Password Reset Link",
@@ -3299,7 +3305,7 @@ export default async function courselore(
           <p><a href="${link}">${link}</a></p>
           <p>
             <small>
-              This Password Reset Link is valid for one hour.<br />
+              This Password Reset Link is valid for ten minutes.<br />
               If you didn’t request this Password Reset Link, you may ignore
               this email.
             </small>
@@ -3341,6 +3347,127 @@ export default async function courselore(
                 <button class="link">Resend</button>.
               </p>
             </form>
+          `,
+        })
+      );
+    }
+  );
+
+  app.get<
+    { passwordResetNonce: string },
+    HTML,
+    {},
+    { redirect?: string; name?: string; email?: string },
+    IsSignedOutMiddlewareLocals
+  >(
+    "/reset-password/:passwordResetNonce",
+    ...app.locals.middlewares.isSignedOut,
+    (req, res) => {
+      const passwordReset = app.locals.database.get<{
+        createdAt: string;
+        user: number;
+      }>(
+        sql`SELECT "createdAt", "user" FROM "passwordResets" WHERE "nonce" = ${req.params.passwordResetNonce}`
+      );
+      app.locals.database.run(
+        sql`DELETE FROM "passwordResets" WHERE "nonce" = ${req.params.passwordResetNonce}`
+      );
+      if (
+        passwordReset === undefined ||
+        new Date(passwordReset.createdAt).getTime() + 10 * 60 * 1000 <
+          Date.now()
+      ) {
+        app.locals.helpers.flash.set(
+          req,
+          res,
+          html`
+            <div class="flash--rose">
+              This Password Reset Link is invalid or expired.
+            </div>
+          `
+        );
+        return res.redirect(
+          `${app.locals.settings.url}/reset-password?${qs.stringify({
+            redirect: req.query.redirect,
+            name: req.query.name,
+            email: req.query.email,
+          })}`
+        );
+      }
+      res.send(
+        app.locals.layouts.box({
+          req,
+          res,
+          head: html`
+            <title>
+              Reset Password · CourseLore · Communication Platform for Education
+            </title>
+          `,
+          body: html`
+            <form
+              method="POST"
+              action="${app.locals.settings.url}/reset-password?${qs.stringify({
+                redirect: req.query.redirect,
+                name: req.query.name,
+                email: req.query.email,
+              })}"
+              novalidate
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `}"
+            >
+              <label class="label">
+                <p class="label--text">Email</p>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="you@educational-institution.edu"
+                  value="${req.query.email ?? ""}"
+                  required
+                  autofocus
+                  class="input--text"
+                  data-skip-is-modified="true"
+                />
+              </label>
+              <button class="button button--blue">
+                <i class="bi bi-lock"></i>
+                Reset Password
+              </button>
+            </form>
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+              `}"
+            >
+              <p>
+                Don’t have an account?
+                <a
+                  href="${app.locals.settings.url}/sign-up?${qs.stringify({
+                    redirect: req.query.redirect,
+                    name: req.query.name,
+                    email: req.query.email,
+                  })}"
+                  class="link"
+                  >Sign up</a
+                >.
+              </p>
+              <p>
+                Remember your password?
+                <a
+                  href="${app.locals.settings.url}/sign-in?${qs.stringify({
+                    redirect: req.query.redirect,
+                    name: req.query.name,
+                    email: req.query.email,
+                  })}"
+                  class="link"
+                  >Sign in</a
+                >.
+              </p>
+            </div>
           `,
         })
       );
