@@ -3194,6 +3194,38 @@ export default async function courselore(
               Reset Password
             </button>
           </form>
+          <div
+            style="${css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--2);
+            `}"
+          >
+            <p>
+              Don’t have an account?
+              <a
+                href="${app.locals.settings.url}/sign-up?${qs.stringify({
+                  redirect: req.query.redirect,
+                  name: req.query.name,
+                  email: req.query.email,
+                })}"
+                class="link"
+                >Sign up</a
+              >.
+            </p>
+            <p>
+              Remember your password?
+              <a
+                href="${app.locals.settings.url}/sign-in?${qs.stringify({
+                  redirect: req.query.redirect,
+                  name: req.query.name,
+                  email: req.query.email,
+                })}"
+                class="link"
+                >Sign in</a
+              >.
+            </p>
+          </div>
         `,
       })
     );
@@ -3342,18 +3374,38 @@ export default async function courselore(
               Sign up
             </button>
           </form>
-          <p>
-            Already have an account account?
-            <a
-              href="${app.locals.settings.url}/sign-in?${qs.stringify({
-                redirect: req.query.redirect,
-                name: req.query.name,
-                email: req.query.email,
-              })}"
-              class="link"
-              >Sign in</a
-            >.
-          </p>
+          <div
+            style="${css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--2);
+            `}"
+          >
+            <p>
+              Already have an account account?
+              <a
+                href="${app.locals.settings.url}/sign-in?${qs.stringify({
+                  redirect: req.query.redirect,
+                  name: req.query.name,
+                  email: req.query.email,
+                })}"
+                class="link"
+                >Sign in</a
+              >.
+            </p>
+            <p>
+              Forgot your password?
+              <a
+                href="${app.locals.settings.url}/reset-password?${qs.stringify({
+                  redirect: req.query.redirect,
+                  name: req.query.name,
+                  email: req.query.email,
+                })}"
+                class="link"
+                >Reset password</a
+              >.
+            </p>
+          </div>
         `,
       })
     );
