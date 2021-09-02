@@ -181,6 +181,20 @@ export default async function courselore(
         "emailNotifications" TEXT NOT NULL DEFAULT 'essentials' CHECK ("emailNotifications" IN ('none', 'essentials', 'everything'))
       );
 
+      CREATE TABLE "sessions" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "token" TEXT NOT NULL UNIQUE,
+        "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
+      );
+
+      CREATE TABLE "flashes" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "nonce" TEXT NOT NULL UNIQUE,
+        "content" TEXT NOT NULL
+      );
+
       CREATE TABLE "courses" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
@@ -315,20 +329,6 @@ export default async function courselore(
         "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
         "tag" INTEGER NOT NULL REFERENCES "tags" ON DELETE CASCADE,
         UNIQUE ("conversation", "tag")
-      );
-
-      CREATE TABLE "sessions" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "token" TEXT NOT NULL UNIQUE,
-        "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
-      );
-
-      CREATE TABLE "flashes" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "nonce" TEXT NOT NULL UNIQUE,
-        "content" TEXT NOT NULL
       );
     `
   );
