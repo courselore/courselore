@@ -3067,18 +3067,38 @@ export default async function courselore(
               Sign in
             </button>
           </form>
-          <p>
-            Don’t have an account?
-            <a
-              href="${app.locals.settings.url}/sign-up?${qs.stringify({
-                redirect: req.query.redirect,
-                name: req.query.name,
-                email: req.query.email,
-              })}"
-              class="link"
-              >Sign up</a
-            >.
-          </p>
+          <div
+            style="${css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--2);
+            `}"
+          >
+            <p>
+              Don’t have an account?
+              <a
+                href="${app.locals.settings.url}/sign-up?${qs.stringify({
+                  redirect: req.query.redirect,
+                  name: req.query.name,
+                  email: req.query.email,
+                })}"
+                class="link"
+                >Sign up</a
+              >.
+            </p>
+            <p>
+              Forgot your password?
+              <a
+                href="${app.locals.settings.url}/reset-password?${qs.stringify({
+                  redirect: req.query.redirect,
+                  name: req.query.name,
+                  email: req.query.email,
+                })}"
+                class="link"
+                >Reset password</a
+              >.
+            </p>
+          </div>
         `,
       })
     );
@@ -3124,6 +3144,120 @@ export default async function courselore(
       app.locals.helpers.session.open(req, res, user.id);
       res.redirect(`${app.locals.settings.url}${req.query.redirect ?? "/"}`);
     })
+  );
+
+  app.get<
+    {},
+    HTML,
+    {},
+    { redirect?: string; name?: string; email?: string },
+    IsSignedOutMiddlewareLocals
+  >("/reset-password", ...app.locals.middlewares.isSignedOut, (req, res) => {
+    res.send(
+      app.locals.layouts.box({
+        req,
+        res,
+        head: html`
+          <title>
+            Reset Password · CourseLore · Communication Platform for Education
+          </title>
+        `,
+        body: html`
+          <form
+            method="POST"
+            action="${app.locals.settings.url}/reset-password?${qs.stringify({
+              redirect: req.query.redirect,
+              name: req.query.name,
+              email: req.query.email,
+            })}"
+            novalidate
+            style="${css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--4);
+            `}"
+          >
+            <label class="label">
+              <p class="label--text">Email</p>
+              <input
+                type="email"
+                name="email"
+                placeholder="you@educational-institution.edu"
+                value="${req.query.email ?? ""}"
+                required
+                autofocus
+                class="input--text"
+                data-skip-is-modified="true"
+            /></label>
+            <button class="button button--blue">
+              <i class="bi bi-lock"></i>
+              Reset Password
+            </button>
+          </form>
+        `,
+      })
+    );
+  });
+
+  app.post<
+    {},
+    HTML,
+    { email?: string },
+    { redirect?: string; name?: string; email?: string },
+    IsSignedOutMiddlewareLocals
+  >(
+    "/reset-password",
+    ...app.locals.middlewares.isSignedOut,
+    (req, res, next) => {
+      if (
+        typeof req.body.email !== "string" ||
+        !req.body.email.match(app.locals.constants.emailRegExp)
+      )
+        return next("validation");
+      if (
+        app.locals.database.get<{ exists: number }>(
+          sql`
+            SELECT EXISTS(
+              SELECT 1 FROM "users" WHERE "email" = ${req.body.email}
+            ) AS "exists";
+          `
+        )!.exists === 1
+      ) {
+        // TODO:
+        // - Store a password reset nonce.
+        // - Send email.
+      } else {
+        app.locals.helpers.flash.set(
+          req,
+          res,
+          html`<div class="flash--rose">Email not found.</div>`
+        );
+        return res.redirect(
+          `${app.locals.settings.url}/reset-password?${qs.stringify({
+            redirect: req.query.redirect,
+            name: req.query.name,
+            email: req.query.email,
+          })}`
+        );
+      }
+      res.send(
+        app.locals.layouts.box({
+          req,
+          res,
+          head: html`
+            <title>
+              Reset Password · CourseLore · Communication Platform for Education
+            </title>
+          `,
+          body: html`
+            <p>
+              To continue resetting your password, please click on the link that
+              was sent to ${req.body.email}.
+            </p>
+          `,
+        })
+      );
+    }
   );
 
   app.get<

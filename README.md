@@ -48,6 +48,7 @@
 
 - Forgot password.
 - Email confirmation.
+- Change password.
 - SSO with Hopkins ID (SAML) (https://glacial-plateau-47269.herokuapp.com/).
 
 ### Courses
