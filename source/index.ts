@@ -39,7 +39,6 @@ import argon2 from "argon2";
 import sharp from "sharp";
 import lodash from "lodash";
 import QRCode from "qrcode";
-import nodemailer from "nodemailer";
 import faker from "faker";
 
 export default async function courselore(
@@ -79,6 +78,16 @@ export default async function courselore(
   app.locals.helpers = {} as Helpers;
   app.locals.layouts = {} as Layouts;
   app.locals.partials = {} as Partials;
+
+  // FIXME: Types.
+  interface Helpers {
+    emailTransporter: any;
+  }
+  app.locals.helpers.emailTransporter = {
+    sendMail(mail: any) {
+      console.log(JSON.stringify(mail, undefined, 2));
+    },
+  };
 
   interface Constants {
     userEmailNotifications: UserEmailNotifications[];
@@ -320,16 +329,6 @@ export default async function courselore(
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "nonce" TEXT NOT NULL UNIQUE,
         "content" TEXT NOT NULL
-      );
-
-      CREATE TABLE "emailsQueue" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "triedAt" TEXT NOT NULL DEFAULT (json_array()) CHECK (json_valid("triedAt")),
-        "reference" TEXT NOT NULL,
-        "to" TEXT NOT NULL,
-        "subject" TEXT NOT NULL,
-        "body" TEXT NOT NULL
       );
     `
   );
@@ -12353,42 +12352,6 @@ ${value}</textarea
       );
     }
   );
-
-  // FIXME: Types.
-  interface Helpers {
-    emailTransporter: any;
-  }
-  app.locals.helpers.emailTransporter = {
-    sendMail(mail: any) {
-      console.log(mail);
-    },
-  };
-
-  interface Helpers {
-    sendEmail: ({
-      to,
-      subject,
-      body,
-    }: {
-      to: string;
-      subject: string;
-      body: string;
-    }) => void;
-  }
-  app.locals.helpers.sendEmail = ({ to, subject, body }) => {
-    app.locals.database.run(
-      sql`
-        INSERT INTO "emailsQueue" ("reference", "to", "subject", "body")
-        VALUES (
-          ${cryptoRandomString({ length: 10, type: "numeric" })},
-          ${to},
-          ${subject},
-          ${body}
-        )
-      `
-    );
-    // TODO: The worker that sends emails on non-Demonstration Mode. Kick the worker to wake up from here (as well as periodically just in case…)
-  };
 
   app.post<{}, any, {}, {}, {}>(
     "/demonstration-data",
