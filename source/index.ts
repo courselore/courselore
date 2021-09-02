@@ -3318,29 +3318,24 @@ export default async function courselore(
           `,
           body: html`
             <p>
-              To continue resetting your password, please click on the Password
+              To continue resetting your password, please follow the Password
               Reset Link that was sent to ${req.body.email}.
             </p>
-            <div>
-              Didn’t receive the email? Already checked your spam folder?
-              <form
-                method="POST"
-                action="${app.locals.settings
-                  .url}/reset-password?${qs.stringify({
-                  redirect: req.query.redirect,
-                  name: req.query.name,
-                  email: req.query.email,
-                })}"
-                style="${css`
-                  display: inline;
-                `}"
-              >
-                <input type="hidden" name="email" value="${req.body.email}" />
-                <input type="hidden" name="resend" value="true" />
-                <button class="link">Resend</button>
-              </form>
-              .
-            </div>
+            <form
+              method="POST"
+              action="${app.locals.settings.url}/reset-password?${qs.stringify({
+                redirect: req.query.redirect,
+                name: req.query.name,
+                email: req.query.email,
+              })}"
+            >
+              <input type="hidden" name="email" value="${req.body.email}" />
+              <input type="hidden" name="resend" value="true" />
+              <p>
+                Didn’t receive the email? Already checked your spam folder?
+                <button class="link">Resend</button>.
+              </p>
+            </form>
           `,
         })
       );
