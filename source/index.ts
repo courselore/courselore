@@ -4977,10 +4977,10 @@ export default async function courselore(
 
     const link = `${app.locals.settings.url}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
 
-    app.locals.helpers.sendEmail({
+    app.locals.helpers.sendMail({
       to: invitation.email,
       subject: `Enroll in ${invitation.course.name}`,
-      body: html`
+      html: html`
         <p>
           Visit the following link to enroll in ${invitation.course.name}:<br />
           <a href="${link}">${link}</a>
@@ -9782,7 +9782,7 @@ ${value}</textarea
       // - Messages
       // - NOT EDITS
       // - Have a queue
-      app.locals.helpers.emailTransporter.sendMail({
+      app.locals.helpers.sendMail({
         to: app.locals.database
           .all<{ email: string }>(
             sql`
