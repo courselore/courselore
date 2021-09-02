@@ -34,6 +34,7 @@ import rehypeStringify from "rehype-stringify";
 import { JSDOM } from "jsdom";
 
 import fs from "fs-extra";
+import nodemailer from "nodemailer";
 import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
 import sharp from "sharp";
@@ -79,14 +80,13 @@ export default async function courselore(
   app.locals.layouts = {} as Layouts;
   app.locals.partials = {} as Partials;
 
-  // FIXME: Types.
   interface Helpers {
-    emailTransporter: any;
+    sendMail: (
+      mailOptions: nodemailer.SendMailOptions
+    ) => Promise<nodemailer.SentMessageInfo>;
   }
-  app.locals.helpers.emailTransporter = {
-    sendMail(mail: any) {
-      console.log(JSON.stringify(mail, undefined, 2));
-    },
+  app.locals.helpers.sendMail = async (mailOptions) => {
+    console.log(JSON.stringify(mailOptions, undefined, 2));
   };
 
   interface Constants {
