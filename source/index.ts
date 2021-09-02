@@ -2817,6 +2817,7 @@ export default async function courselore(
   }
   app.locals.helpers.flash = {
     set(req, res, content) {
+      res.locals.flash = content;
       const flash = app.locals.database.get<{ nonce: string }>(
         sql`
           INSERT INTO "flashes" ("nonce", "content")
@@ -2834,7 +2835,6 @@ export default async function courselore(
     },
 
     get(req, res) {
-      if (res.locals.flash !== undefined) return res.locals.flash;
       const flash = app.locals.database.get<{
         content: HTML;
       }>(
@@ -2844,7 +2844,7 @@ export default async function courselore(
         sql`DELETE FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
       );
       res.clearCookie("flash", app.locals.settings.cookieOptions());
-      return flash?.content;
+      return res.locals.flash ?? flash?.content;
     },
   };
 
@@ -3307,7 +3307,11 @@ export default async function courselore(
         `,
       });
       if (req.body.resend === "true")
-        res.locals.flash = html`<div class="flash--green">Email resent.</div>`;
+        app.locals.helpers.flash.set(
+          req,
+          res,
+          html`<div class="flash--green">Email resent.</div>`
+        );
       res.send(
         app.locals.layouts.box({
           req,
