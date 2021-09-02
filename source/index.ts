@@ -2847,6 +2847,10 @@ export default async function courselore(
     },
   };
 
+  interface GlobalMiddlewareLocals {
+    flash?: HTML;
+  }
+
   interface Middlewares {
     isSignedOut: express.RequestHandler<
       {},
@@ -2856,7 +2860,7 @@ export default async function courselore(
       IsSignedOutMiddlewareLocals
     >[];
   }
-  interface IsSignedOutMiddlewareLocals {}
+  interface IsSignedOutMiddlewareLocals extends GlobalMiddlewareLocals {}
   app.locals.middlewares.isSignedOut = [
     (req, res, next) => {
       if (app.locals.helpers.session.get(req, res) !== undefined)
@@ -2874,7 +2878,7 @@ export default async function courselore(
       IsSignedInMiddlewareLocals
     >[];
   }
-  interface IsSignedInMiddlewareLocals {
+  interface IsSignedInMiddlewareLocals extends GlobalMiddlewareLocals {
     user: {
       id: number;
       email: string;
@@ -3302,11 +3306,7 @@ export default async function courselore(
         `,
       });
       if (req.body.resend === "true")
-        app.locals.helpers.flash.set(
-          req,
-          res,
-          html`<div class="flash--green">Email resent.</div>`
-        );
+        res.locals.flash = html`<div class="flash--green">Email resent.</div>`;
       res.send(
         app.locals.layouts.box({
           req,
@@ -4906,7 +4906,7 @@ export default async function courselore(
       InvitationExistsMiddlewareLocals
     >[];
   }
-  interface InvitationExistsMiddlewareLocals {
+  interface InvitationExistsMiddlewareLocals extends GlobalMiddlewareLocals {
     invitation: {
       id: number;
       expiresAt: string | null;
