@@ -170,6 +170,13 @@ export default async function courselore(
   // TODO: WAL.
   app.locals.database.migrate(
     sql`
+      CREATE TABLE "flashes" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "nonce" TEXT NOT NULL UNIQUE,
+        "content" TEXT NOT NULL
+      );
+
       CREATE TABLE "users" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
@@ -193,13 +200,6 @@ export default async function courselore(
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "token" TEXT NOT NULL UNIQUE,
         "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
-      );
-
-      CREATE TABLE "flashes" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "nonce" TEXT NOT NULL UNIQUE,
-        "content" TEXT NOT NULL
       );
 
       CREATE TABLE "courses" (
