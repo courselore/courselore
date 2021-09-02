@@ -2805,13 +2805,13 @@ export default async function courselore(
   interface Helpers {
     flash: {
       set: (
-        req: express.Request<{}, any, {}, {}, {}>,
-        res: express.Response<any, {}>,
+        req: express.Request<{}, any, {}, {}, GlobalMiddlewareLocals>,
+        res: express.Response<any, GlobalMiddlewareLocals>,
         content: HTML
       ) => void;
       get: (
-        req: express.Request<{}, any, {}, {}, {}>,
-        res: express.Response<any, {}>
+        req: express.Request<{}, any, {}, {}, GlobalMiddlewareLocals>,
+        res: express.Response<any, GlobalMiddlewareLocals>
       ) => HTML | undefined;
     };
   }
@@ -2843,7 +2843,7 @@ export default async function courselore(
         sql`DELETE FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
       );
       res.clearCookie("flash", app.locals.settings.cookieOptions());
-      return flash?.content;
+      return (flash?.content ?? "") + (res.locals.flash ?? "");
     },
   };
 
