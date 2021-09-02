@@ -3261,12 +3261,8 @@ export default async function courselore(
               SELECT 1 FROM "users" WHERE "email" = ${req.body.email}
             ) AS "exists";
           `
-        )!.exists === 1
+        )!.exists === 0
       ) {
-        // TODO:
-        // - Store a password reset nonce.
-        // - Send email.
-      } else {
         app.locals.helpers.flash.set(
           req,
           res,
@@ -3280,6 +3276,36 @@ export default async function courselore(
           })}`
         );
       }
+
+      app.locals.database.run(
+        sql`DELETE FROM "passwordsResets" WHERE "email" = ${req.body.email}`
+      );
+      const passwordReset = app.locals.database.get<{ nonce: string }>(
+        sql`
+          INSERT INTO "passwordResets" ("email", "nonce")
+          VALUES (
+            ${req.body.email},
+            ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
+          )
+          RETURNING *
+        `
+      )!;
+      const link = `${app.locals.settings.url}/reset-password/${passwordReset.nonce}`;
+      app.locals.helpers.sendMail({
+        to: req.body.email,
+        subject: "CourseLore · Password Reset Link",
+        html: html`
+          <p><a href="${link}">${link}</a></p>
+          <p>
+            <small>
+              This Password Reset Link is valid for one hour.<br />
+              If you didn’t request this Password Reset Link, you may ignore
+              this email.
+            </small>
+          </p>
+        `,
+      });
+
       res.send(
         app.locals.layouts.box({
           req,
@@ -3291,8 +3317,8 @@ export default async function courselore(
           `,
           body: html`
             <p>
-              To continue resetting your password, please click on the link that
-              was sent to ${req.body.email}.
+              To continue resetting your password, please click on the Password
+              Reset Link that was sent to ${req.body.email}.
             </p>
           `,
         })
