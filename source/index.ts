@@ -3242,7 +3242,7 @@ export default async function courselore(
   app.post<
     {},
     HTML,
-    { email?: string },
+    { email?: string; resend?: "true" },
     { redirect?: string; name?: string; email?: string },
     IsSignedOutMiddlewareLocals
   >(
@@ -3301,6 +3301,12 @@ export default async function courselore(
           </p>
         `,
       });
+      if (req.body.resend === "true")
+        app.locals.helpers.flash.set(
+          req,
+          res,
+          html`<div class="flash--green">Email resent.</div>`
+        );
       res.send(
         app.locals.layouts.box({
           req,
@@ -3315,6 +3321,26 @@ export default async function courselore(
               To continue resetting your password, please click on the Password
               Reset Link that was sent to ${req.body.email}.
             </p>
+            <div>
+              Didn’t receive the email? Already checked your spam folder?
+              <form
+                method="POST"
+                action="${app.locals.settings
+                  .url}/reset-password?${qs.stringify({
+                  redirect: req.query.redirect,
+                  name: req.query.name,
+                  email: req.query.email,
+                })}"
+                style="${css`
+                  display: inline;
+                `}"
+              >
+                <input type="hidden" name="email" value="${req.body.email}" />
+                <input type="hidden" name="resend" value="true" />
+                <button class="link">Resend</button>
+              </form>
+              .
+            </div>
           `,
         })
       );
