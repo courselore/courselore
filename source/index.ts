@@ -86,7 +86,7 @@ export default async function courselore(
     ) => Promise<nodemailer.SentMessageInfo>;
   }
   app.locals.helpers.sendMail = async (mailOptions) => {
-    console.log(JSON.stringify(mailOptions, undefined, 2));
+    console.log(`Email: ${JSON.stringify(mailOptions, undefined, 2)}`);
   };
 
   interface Constants {
