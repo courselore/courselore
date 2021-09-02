@@ -3051,7 +3051,8 @@ export default async function courselore(
                 autofocus
                 class="input--text"
                 data-skip-is-modified="true"
-            /></label>
+              />
+            </label>
             <label class="label">
               <p class="label--text">Password</p>
               <input
@@ -3188,7 +3189,8 @@ export default async function courselore(
                 autofocus
                 class="input--text"
                 data-skip-is-modified="true"
-            /></label>
+              />
+            </label>
             <button class="button button--blue">
               <i class="bi bi-lock"></i>
               Reset Password
@@ -3443,11 +3445,7 @@ export default async function courselore(
         app.locals.helpers.flash.set(
           req,
           res,
-          html`
-            <div class="flash--rose">
-              This email is already registered. Sign in instead.
-            </div>
-          `
+          html`<div class="flash--rose">Email already taken.</div>`
         );
         return res.redirect(
           `${app.locals.settings.url}/sign-in?${qs.stringify({
