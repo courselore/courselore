@@ -33,8 +33,8 @@ module.exports = async (require) => {
     const { version } = require("../package.json");
     const app = await courselore({
       dataDirectory: path.join(process.cwd(), "data"),
+      url,
     });
-    app.locals.settings.url = url;
     app.locals.settings.liveReload = true;
     app.listen(4000, "127.0.0.1", () => {
       console.log(

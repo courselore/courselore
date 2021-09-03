@@ -44,8 +44,10 @@ import faker from "faker";
 
 export default async function courselore({
   dataDirectory,
+  url,
 }: {
   dataDirectory: string;
+  url: string;
 }): Promise<express.Express> {
   interface App extends express.Express {}
   const app = express() as App;
@@ -58,12 +60,10 @@ export default async function courselore({
   }
   interface Settings {
     env: string;
-    url: string;
     administrator: string;
     demonstration: boolean;
     liveReload: boolean;
   }
-  app.locals.settings.url = "https://localhost:5000";
   app.locals.settings.administrator =
     "mailto:demonstration-development@courselore.org";
   app.locals.settings.demonstration = true;
@@ -380,35 +380,31 @@ export default async function courselore({
             rel="icon"
             type="image/png"
             sizes="32x32"
-            href="${app.locals.settings.url}/favicon-32x32.png"
+            href="${url}/favicon-32x32.png"
           />
           <link
             rel="icon"
             type="image/png"
             sizes="16x16"
-            href="${app.locals.settings.url}/favicon-16x16.png"
+            href="${url}/favicon-16x16.png"
           />
           <link
             rel="shortcut icon"
             type="image/x-icon"
-            href="${app.locals.settings.url}/favicon.ico"
+            href="${url}/favicon.ico"
           />
 
           <link
             rel="stylesheet"
-            href="${app.locals.settings
-              .url}/node_modules/bootstrap-icons/font/bootstrap-icons.css"
+            href="${url}/node_modules/bootstrap-icons/font/bootstrap-icons.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.settings
-              .url}/node_modules/katex/dist/katex.min.css"
+            href="${url}/node_modules/katex/dist/katex.min.css"
           />
 
-          <script src="${app.locals.settings
-              .url}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
-          <script src="${app.locals.settings
-              .url}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
+          <script src="${url}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
+          <script src="${url}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
           <script>
             tippy.setDefaultProps({
               arrow: tippy.roundArrow + tippy.roundArrow,
@@ -420,23 +416,19 @@ export default async function courselore({
           </script>
           <link
             rel="stylesheet"
-            href="${app.locals.settings
-              .url}/node_modules/tippy.js/dist/svg-arrow.css"
+            href="${url}/node_modules/tippy.js/dist/svg-arrow.css"
           />
           <link
             rel="stylesheet"
-            href="${app.locals.settings
-              .url}/node_modules/tippy.js/dist/border.css"
+            href="${url}/node_modules/tippy.js/dist/border.css"
           />
 
           <script type="module">
-            import * as textFieldEdit from "${app.locals.settings
-              .url}/node_modules/text-field-edit/index.js";
+            import * as textFieldEdit from "${url}/node_modules/text-field-edit/index.js";
             window.textFieldEdit = textFieldEdit;
           </script>
 
-          <script src="${app.locals.settings
-              .url}/node_modules/mousetrap/mousetrap.min.js"></script>
+          <script src="${url}/node_modules/mousetrap/mousetrap.min.js"></script>
 
           <script>
             /* TODO: Extract the following global auxiliary functions into @leafac/javascript */
@@ -674,8 +666,7 @@ export default async function courselore({
           $${res?.locals.eventSource
             ? html`
                 <!-- TODO: Improve this such that the diff is done on the server. -->
-                <script src="${app.locals.settings
-                    .url}/node_modules/morphdom/dist/morphdom-umd.min.js"></script>
+                <script src="${url}/node_modules/morphdom/dist/morphdom-umd.min.js"></script>
 
                 <script>
                   const eventSource = new EventSource(window.location.href);
@@ -704,9 +695,7 @@ export default async function courselore({
                         alert(
                           "This page has been removed.\\n\\nYou’ll be redirected now."
                         );
-                        window.location.href = $${JSON.stringify(
-                          app.locals.settings.url
-                        )};
+                        window.location.href = $${JSON.stringify(url)};
                         break;
 
                       default:
@@ -720,16 +709,11 @@ export default async function courselore({
           $${app.locals.settings.liveReload
             ? html`
                 <script>
-                  const liveReload = new EventSource(
-                    "${app.locals.settings.url}/live-reload"
-                  );
+                  const liveReload = new EventSource("${url}/live-reload");
                   liveReload.addEventListener("error", (event) => {
                     liveReload.close();
                     (async function reload() {
-                      if (
-                        (await fetch("${app.locals.settings.url}/live-reload"))
-                          .ok
-                      )
+                      if ((await fetch("${url}/live-reload")).ok)
                         location.reload();
                       else window.setTimeout(reload, 200);
                     })();
@@ -1753,8 +1737,8 @@ export default async function courselore({
                       </p>
                       <a
                         class="button button--blue"
-                        href="${app.locals.settings.url}/courses/${res.locals
-                          .course!.reference}/settings/your-enrollment"
+                        href="${url}/courses/${res.locals.course!
+                          .reference}/settings/your-enrollment"
                         style="${css`
                           width: 100%;
                         `}"
@@ -1830,8 +1814,7 @@ export default async function courselore({
                           </p>
                           <form
                             method="POST"
-                            action="${app.locals.settings
-                              .url}/demonstration-data"
+                            action="${url}/demonstration-data"
                           >
                             <button
                               class="button button--blue"
@@ -1851,8 +1834,7 @@ export default async function courselore({
                       : html`
                           <form
                             method="POST"
-                            action="${app.locals.settings
-                              .url}/turn-off?_method=DELETE"
+                            action="${url}/turn-off?_method=DELETE"
                           >
                             <button class="button button--transparent">
                               <i class="bi bi-power"></i>
@@ -2005,7 +1987,7 @@ export default async function courselore({
               `}"
             >
               <a
-                href="${app.locals.settings.url}/"
+                href="${url}/"
                 class="heading--display button button--transparent"
                 style="${css`
                   align-items: center;
@@ -2077,7 +2059,7 @@ export default async function courselore({
           `}"
         >
           <a
-            href="${app.locals.settings.url}/"
+            href="${url}/"
             class="button button--tight button--tight--inline button--transparent"
           >
             $${app.locals.partials.logo}
@@ -2143,8 +2125,7 @@ export default async function courselore({
                         </h3>
                         <div class="dropdown-menu">
                           <a
-                            href="${app.locals.settings.url}/courses/${res
-                              .locals.course.reference}"
+                            href="${url}/courses/${res.locals.course.reference}"
                             class="dropdown-menu--item button ${req.path.includes(
                               "settings"
                             )
@@ -2155,8 +2136,8 @@ export default async function courselore({
                             Conversations
                           </a>
                           <a
-                            href="${app.locals.settings.url}/courses/${res
-                              .locals.course.reference}/settings"
+                            href="${url}/courses/${res.locals.course
+                              .reference}/settings"
                             class="dropdown-menu--item button ${req.path.includes(
                               "settings"
                             )
@@ -2179,8 +2160,7 @@ export default async function courselore({
                                 $${res.locals.enrollments.map(
                                   (enrollment) => html`
                                     <a
-                                      href="${app.locals.settings
-                                        .url}/courses/${enrollment.course
+                                      href="${url}/courses/${enrollment.course
                                         .reference}"
                                       class="dropdown-menu--item button ${enrollment.id ===
                                       res.locals.enrollment?.id
@@ -2285,8 +2265,7 @@ export default async function courselore({
                           $${res.locals.invitations!.map(
                             (invitation) => html`
                               <a
-                                href="${app.locals.settings
-                                  .url}/courses/${invitation.course
+                                href="${url}/courses/${invitation.course
                                   .reference}/invitations/${invitation.reference}"
                                 class="dropdown-menu--item button button--transparent"
                               >
@@ -2314,7 +2293,7 @@ export default async function courselore({
                     Enroll in an Existing Course
                   </button>
                   <a
-                    href="${app.locals.settings.url}/courses/new"
+                    href="${url}/courses/new"
                     class="dropdown-menu--item button button--transparent"
                   >
                     <i class="bi bi-journal-plus"></i>
@@ -2384,15 +2363,12 @@ export default async function courselore({
                 <div class="dropdown-menu">
                   <a
                     class="dropdown-menu--item button button--transparent"
-                    href="${app.locals.settings.url}/settings"
+                    href="${url}/settings"
                   >
                     <i class="bi bi-sliders"></i>
                     User Settings
                   </a>
-                  <form
-                    method="POST"
-                    action="${app.locals.settings.url}/sign-out?_method=DELETE"
-                  >
+                  <form method="POST" action="${url}/sign-out?_method=DELETE">
                     <button
                       class="dropdown-menu--item button button--transparent"
                     >
@@ -2674,16 +2650,13 @@ export default async function courselore({
   interface Settings {
     cookieOptions: () => express.CookieOptions;
   }
-  app.locals.settings.cookieOptions = () => {
-    const url = new URL(app.locals.settings.url);
-    return {
-      domain: url.hostname,
-      httpOnly: true,
-      path: url.pathname,
-      sameSite: true,
-      secure: true,
-    };
-  };
+  app.locals.settings.cookieOptions = () => ({
+    domain: new URL(url).hostname,
+    httpOnly: true,
+    path: new URL(url).pathname,
+    sameSite: true,
+    secure: true,
+  });
   app.use(cookieParser());
   app.use(express.urlencoded({ extended: true }));
   // TODO: Make this secure: https://github.com/richardgirges/express-fileupload
@@ -3018,7 +2991,7 @@ export default async function courselore({
     "/",
     ...app.locals.middlewares.isSignedOut,
     (req, res) => {
-      res.redirect(`${app.locals.settings.url}/sign-in`);
+      res.redirect(`${url}/sign-in`);
     }
   );
 
@@ -3041,7 +3014,7 @@ export default async function courselore({
         body: html`
           <form
             method="POST"
-            action="${app.locals.settings.url}/sign-in?${qs.stringify({
+            action="${url}/sign-in?${qs.stringify({
               redirect: req.query.redirect,
               name: req.query.name,
               email: req.query.email,
@@ -3091,7 +3064,7 @@ export default async function courselore({
             <p>
               Don’t have an account?
               <a
-                href="${app.locals.settings.url}/sign-up?${qs.stringify({
+                href="${url}/sign-up?${qs.stringify({
                   redirect: req.query.redirect,
                   name: req.query.name,
                   email: req.query.email,
@@ -3103,7 +3076,7 @@ export default async function courselore({
             <p>
               Forgot your password?
               <a
-                href="${app.locals.settings.url}/reset-password?${qs.stringify({
+                href="${url}/reset-password?${qs.stringify({
                   redirect: req.query.redirect,
                   name: req.query.name,
                   email: req.query.email,
@@ -3148,7 +3121,7 @@ export default async function courselore({
           html`<div class="flash--rose">Incorrect email & password.</div>`
         );
         return res.redirect(
-          `${app.locals.settings.url}/sign-in?${qs.stringify({
+          `${url}/sign-in?${qs.stringify({
             redirect: req.query.redirect,
             name: req.query.name,
             email: req.query.email,
@@ -3156,7 +3129,7 @@ export default async function courselore({
         );
       }
       app.locals.helpers.session.open(req, res, user.id);
-      res.redirect(`${app.locals.settings.url}${req.query.redirect ?? "/"}`);
+      res.redirect(`${url}${req.query.redirect ?? "/"}`);
     })
   );
 
@@ -3179,7 +3152,7 @@ export default async function courselore({
         body: html`
           <form
             method="POST"
-            action="${app.locals.settings.url}/reset-password?${qs.stringify({
+            action="${url}/reset-password?${qs.stringify({
               redirect: req.query.redirect,
               name: req.query.name,
               email: req.query.email,
@@ -3219,7 +3192,7 @@ export default async function courselore({
             <p>
               Don’t have an account?
               <a
-                href="${app.locals.settings.url}/sign-up?${qs.stringify({
+                href="${url}/sign-up?${qs.stringify({
                   redirect: req.query.redirect,
                   name: req.query.name,
                   email: req.query.email,
@@ -3231,7 +3204,7 @@ export default async function courselore({
             <p>
               Remember your password?
               <a
-                href="${app.locals.settings.url}/sign-in?${qs.stringify({
+                href="${url}/sign-in?${qs.stringify({
                   redirect: req.query.redirect,
                   name: req.query.name,
                   email: req.query.email,
@@ -3272,7 +3245,7 @@ export default async function courselore({
           html`<div class="flash--rose">Email not found.</div>`
         );
         return res.redirect(
-          `${app.locals.settings.url}/reset-password?${qs.stringify({
+          `${url}/reset-password?${qs.stringify({
             redirect: req.query.redirect,
             name: req.query.name,
             email: req.query.email,
@@ -3293,13 +3266,13 @@ export default async function courselore({
           RETURNING *
         `
       )!;
-      const link = `${app.locals.settings.url}/reset-password/${
-        passwordReset.nonce
-      }?${qs.stringify({
-        redirect: req.query.redirect,
-        name: req.query.name,
-        email: req.query.email,
-      })}`;
+      const link = `${url}/reset-password/${passwordReset.nonce}?${qs.stringify(
+        {
+          redirect: req.query.redirect,
+          name: req.query.name,
+          email: req.query.email,
+        }
+      )}`;
       app.locals.helpers.sendMail({
         to: user.email,
         subject: "CourseLore · Password Reset Link",
@@ -3336,7 +3309,7 @@ export default async function courselore({
             </p>
             <form
               method="POST"
-              action="${app.locals.settings.url}/reset-password?${qs.stringify({
+              action="${url}/reset-password?${qs.stringify({
                 redirect: req.query.redirect,
                 name: req.query.name,
                 email: req.query.email,
@@ -3389,7 +3362,7 @@ export default async function courselore({
           `
         );
         return res.redirect(
-          `${app.locals.settings.url}/reset-password?${qs.stringify({
+          `${url}/reset-password?${qs.stringify({
             redirect: req.query.redirect,
             name: req.query.name,
             email: req.query.email,
@@ -3408,7 +3381,7 @@ export default async function courselore({
           body: html`
             <form
               method="POST"
-              action="${app.locals.settings.url}/reset-password?${qs.stringify({
+              action="${url}/reset-password?${qs.stringify({
                 redirect: req.query.redirect,
                 name: req.query.name,
                 email: req.query.email,
@@ -3448,7 +3421,7 @@ export default async function courselore({
               <p>
                 Don’t have an account?
                 <a
-                  href="${app.locals.settings.url}/sign-up?${qs.stringify({
+                  href="${url}/sign-up?${qs.stringify({
                     redirect: req.query.redirect,
                     name: req.query.name,
                     email: req.query.email,
@@ -3460,7 +3433,7 @@ export default async function courselore({
               <p>
                 Remember your password?
                 <a
-                  href="${app.locals.settings.url}/sign-in?${qs.stringify({
+                  href="${url}/sign-in?${qs.stringify({
                     redirect: req.query.redirect,
                     name: req.query.name,
                     email: req.query.email,
@@ -3495,7 +3468,7 @@ export default async function courselore({
         body: html`
           <form
             method="POST"
-            action="${app.locals.settings.url}/sign-up?${qs.stringify({
+            action="${url}/sign-up?${qs.stringify({
               redirect: req.query.redirect,
               name: req.query.name,
               email: req.query.email,
@@ -3568,7 +3541,7 @@ export default async function courselore({
             <p>
               Already have an account account?
               <a
-                href="${app.locals.settings.url}/sign-in?${qs.stringify({
+                href="${url}/sign-in?${qs.stringify({
                   redirect: req.query.redirect,
                   name: req.query.name,
                   email: req.query.email,
@@ -3580,7 +3553,7 @@ export default async function courselore({
             <p>
               Forgot your password?
               <a
-                href="${app.locals.settings.url}/reset-password?${qs.stringify({
+                href="${url}/reset-password?${qs.stringify({
                   redirect: req.query.redirect,
                   name: req.query.name,
                   email: req.query.email,
@@ -3630,7 +3603,7 @@ export default async function courselore({
           html`<div class="flash--rose">Email already taken.</div>`
         );
         return res.redirect(
-          `${app.locals.settings.url}/sign-in?${qs.stringify({
+          `${url}/sign-in?${qs.stringify({
             redirect: req.query.redirect,
             name: req.query.name,
             email: req.query.email,
@@ -3654,7 +3627,7 @@ export default async function courselore({
         `
       )!;
       app.locals.helpers.session.open(req, res, user.id);
-      res.redirect(`${app.locals.settings.url}${req.query.redirect ?? "/"}`);
+      res.redirect(`${url}${req.query.redirect ?? "/"}`);
     })
   );
 
@@ -3663,7 +3636,7 @@ export default async function courselore({
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       app.locals.helpers.session.close(req, res);
-      res.redirect(`${app.locals.settings.url}/`);
+      res.redirect(`${url}/`);
     }
   );
 
@@ -3726,14 +3699,14 @@ export default async function courselore({
                       Enroll in an Existing Course
                     </button>
                     <a
-                      href="${app.locals.settings.url}/settings"
+                      href="${url}/settings"
                       class="button button--transparent"
                     >
                       <i class="bi bi-person-circle"></i>
                       Fill in Your Profile
                     </a>
                     <a
-                      href="${app.locals.settings.url}/courses/new"
+                      href="${url}/courses/new"
                       class="button button--transparent"
                     >
                       <i class="bi bi-journal-plus"></i>
@@ -3748,7 +3721,7 @@ export default async function courselore({
 
         case 1:
           res.redirect(
-            `${app.locals.settings.url}/courses/${res.locals.enrollments[0].course.reference}`
+            `${url}/courses/${res.locals.enrollments[0].course.reference}`
           );
           break;
 
@@ -3790,8 +3763,7 @@ export default async function courselore({
                       (enrollment) =>
                         html`
                           <a
-                            href="${app.locals.settings
-                              .url}/courses/${enrollment.course.reference}"
+                            href="${url}/courses/${enrollment.course.reference}"
                             class="button button--tight button--transparent"
                             style="${css`
                               justify-content: flex-start;
@@ -3871,7 +3843,7 @@ export default async function courselore({
       `,
       menu: html`
         <a
-          href="${app.locals.settings.url}/settings"
+          href="${url}/settings"
           class="dropdown-menu--item button ${req.path.endsWith("/settings")
             ? "button--blue"
             : "button--transparent"}"
@@ -3880,7 +3852,7 @@ export default async function courselore({
           Profile
         </a>
         <a
-          href="${app.locals.settings.url}/settings/notifications-preferences"
+          href="${url}/settings/notifications-preferences"
           class="dropdown-menu--item button ${req.path.endsWith(
             "/settings/notifications-preferences"
           )
@@ -3913,7 +3885,7 @@ export default async function courselore({
 
             <form
               method="POST"
-              action="${app.locals.settings.url}/settings?_method=PATCH"
+              action="${url}/settings?_method=PATCH"
               novalidate
               style="${css`
                 display: flex;
@@ -4076,7 +4048,7 @@ export default async function courselore({
                         const body = new FormData();
                         body.append("avatar", this.files[0]);
                         this.value = "";
-                        const avatarURL = await (await fetch("${app.locals.settings.url}/settings/avatar", {
+                        const avatarURL = await (await fetch("${url}/settings/avatar", {
                           method: "POST",
                           body,
                         })).text();
@@ -4197,7 +4169,7 @@ export default async function courselore({
       html`<div class="flash--green">Profile updated successfully.</div>`
     );
 
-    res.redirect(`${app.locals.settings.url}/settings`);
+    res.redirect(`${url}/settings`);
   });
 
   app.post<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
@@ -4224,7 +4196,7 @@ export default async function courselore({
           position: sharp.strategy.attention,
         })
         .toFile(path.join(dataDirectory, relativePathAvatar));
-      res.send(`${app.locals.settings.url}/${relativePathAvatar}`);
+      res.send(`${url}/${relativePathAvatar}`);
     })
   );
 
@@ -4249,8 +4221,7 @@ export default async function courselore({
 
             <form
               method="POST"
-              action="${app.locals.settings
-                .url}/settings/notifications-preferences?_method=PATCH"
+              action="${url}/settings/notifications-preferences?_method=PATCH"
               novalidate
               style="${css`
                 display: flex;
@@ -4373,9 +4344,7 @@ export default async function courselore({
         `
       );
 
-      res.redirect(
-        `${app.locals.settings.url}/settings/notifications-preferences`
-      );
+      res.redirect(`${url}/settings/notifications-preferences`);
     }
   );
 
@@ -4396,7 +4365,7 @@ export default async function courselore({
 
             <form
               method="POST"
-              action="${app.locals.settings.url}/courses"
+              action="${url}/courses"
               novalidate
               style="${css`
                 display: flex;
@@ -4462,7 +4431,7 @@ export default async function courselore({
           )
         `
       );
-      res.redirect(`${app.locals.settings.url}/courses/${course.reference}`);
+      res.redirect(`${url}/courses/${course.reference}`);
     }
   );
 
@@ -4994,8 +4963,8 @@ export default async function courselore({
                   $${res.locals.enrollment.role === "staff"
                     ? html`
                         <a
-                          href="${app.locals.settings.url}/courses/${res.locals
-                            .course.reference}/settings/invitations"
+                          href="${url}/courses/${res.locals.course
+                            .reference}/settings/invitations"
                           class="button button--blue"
                         >
                           <i class="bi bi-person-plus"></i>
@@ -5004,7 +4973,7 @@ export default async function courselore({
                       `
                     : html``}
                   <a
-                    href="${app.locals.settings.url}/courses/${res.locals.course
+                    href="${url}/courses/${res.locals.course
                       .reference}/conversations/new"
                     class="button ${res.locals.enrollment.role === "staff"
                       ? "button--transparent"
@@ -5158,7 +5127,7 @@ export default async function courselore({
   app.locals.helpers.sendInvitationEmail = (invitation) => {
     assert(invitation.email !== null);
 
-    const link = `${app.locals.settings.url}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
+    const link = `${url}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
 
     app.locals.helpers.sendMail({
       to: invitation.email,
@@ -5267,8 +5236,7 @@ export default async function courselore({
         res.locals.enrollment.role === "staff"
           ? html`
               <a
-                href="${app.locals.settings.url}/courses/${res.locals.course
-                  .reference}/settings"
+                href="${url}/courses/${res.locals.course.reference}/settings"
                 class="dropdown-menu--item button ${req.path.endsWith(
                   "/settings"
                 )
@@ -5279,7 +5247,7 @@ export default async function courselore({
                 Course Settings
               </a>
               <a
-                href="${app.locals.settings.url}/courses/${res.locals.course
+                href="${url}/courses/${res.locals.course
                   .reference}/settings/invitations"
                 class="dropdown-menu--item button ${req.path.endsWith(
                   "/settings/invitations"
@@ -5291,7 +5259,7 @@ export default async function courselore({
                 Invitations
               </a>
               <a
-                href="${app.locals.settings.url}/courses/${res.locals.course
+                href="${url}/courses/${res.locals.course
                   .reference}/settings/enrollments"
                 class="dropdown-menu--item button ${req.path.endsWith(
                   "/settings/enrollments"
@@ -5303,7 +5271,7 @@ export default async function courselore({
                 Enrollments
               </a>
               <a
-                href="${app.locals.settings.url}/courses/${res.locals.course
+                href="${url}/courses/${res.locals.course
                   .reference}/settings/tags"
                 class="dropdown-menu--item button ${req.path.endsWith(
                   "/settings/tags"
@@ -5315,7 +5283,7 @@ export default async function courselore({
                 Tags
               </a>
               <a
-                href="${app.locals.settings.url}/courses/${res.locals.course
+                href="${url}/courses/${res.locals.course
                   .reference}/settings/your-enrollment"
                 class="dropdown-menu--item button ${req.path.endsWith(
                   "/settings/your-enrollment"
@@ -5357,7 +5325,7 @@ export default async function courselore({
             </h2>
             <form
               method="POST"
-              action="${app.locals.settings.url}/courses/${res.locals.course
+              action="${url}/courses/${res.locals.course
                 .reference}/settings?_method=PATCH"
               novalidate
               style="${css`
@@ -5421,9 +5389,7 @@ export default async function courselore({
         `
       );
 
-      res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings`
-      );
+      res.redirect(`${url}/courses/${res.locals.course.reference}/settings`);
     }
   );
 
@@ -5438,7 +5404,7 @@ export default async function courselore({
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/your-enrollment`
+        `${url}/courses/${res.locals.course.reference}/settings/your-enrollment`
       );
     }
   );
@@ -5490,7 +5456,7 @@ export default async function courselore({
 
             <form
               method="POST"
-              action="${app.locals.settings.url}/courses/${res.locals.course
+              action="${url}/courses/${res.locals.course
                 .reference}/settings/invitations"
               novalidate
               style="${css`
@@ -5727,7 +5693,7 @@ export default async function courselore({
 
                   <div class="stripped">
                     $${invitations.map((invitation) => {
-                      const action = `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
+                      const action = `${url}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
                       const isExpired = app.locals.helpers.isExpired(
                         invitation.expiresAt
                       );
@@ -5777,7 +5743,7 @@ export default async function courselore({
                                       <i class="bi bi-chevron-down"></i>
                                     </button>
                                     $${(() => {
-                                      const link = `${app.locals.settings.url}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
+                                      const link = `${url}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
                                       return html`
                                         <div hidden>
                                           <div
@@ -6469,7 +6435,7 @@ export default async function courselore({
       }
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations`
+        `${url}/courses/${res.locals.course.reference}/settings/invitations`
       );
     }
   );
@@ -6596,7 +6562,7 @@ export default async function courselore({
       }
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/invitations`
+        `${url}/courses/${res.locals.course.reference}/settings/invitations`
       );
     }
   );
@@ -6657,7 +6623,7 @@ export default async function courselore({
 
             <div class="stripped">
               $${enrollments.map((enrollment) => {
-                const action = `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
+                const action = `${url}/courses/${res.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
                 const isSelf = enrollment.id === res.locals.enrollment.id;
                 const isOnlyStaff =
                   isSelf &&
@@ -6959,8 +6925,8 @@ export default async function courselore({
 
       res.redirect(
         res.locals.managedEnrollment.isSelf
-          ? `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings`
-          : `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments`
+          ? `${url}/courses/${res.locals.course.reference}/settings`
+          : `${url}/courses/${res.locals.course.reference}/settings/enrollments`
       );
     }
   );
@@ -6994,8 +6960,8 @@ export default async function courselore({
 
       res.redirect(
         res.locals.managedEnrollment.isSelf
-          ? `${app.locals.settings.url}/`
-          : `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/enrollments`
+          ? `${url}/`
+          : `${url}/courses/${res.locals.course.reference}/settings/enrollments`
       );
     }
   );
@@ -7049,7 +7015,7 @@ export default async function courselore({
 
             <form
               method="POST"
-              action="${app.locals.settings.url}/courses/${
+              action="${url}/courses/${
             res.locals.course.reference
           }/settings/tags?_method=PUT"
               novalidate
@@ -7433,7 +7399,7 @@ export default async function courselore({
       );
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/tags`
+        `${url}/courses/${res.locals.course.reference}/settings/tags`
       );
     }
   );
@@ -7468,7 +7434,7 @@ export default async function courselore({
 
             <form
               method="POST"
-              action="${app.locals.settings.url}/courses/${res.locals.course
+              action="${url}/courses/${res.locals.course
                 .reference}/settings/your-enrollment?_method=PATCH"
               novalidate
               style="${css`
@@ -7584,7 +7550,7 @@ export default async function courselore({
       );
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/settings/your-enrollment`
+        `${url}/courses/${res.locals.course.reference}/settings/your-enrollment`
       );
     }
   );
@@ -7622,15 +7588,14 @@ export default async function courselore({
             </p>
             $${(
               await QRCode.toString(
-                `${app.locals.settings.url}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`,
+                `${url}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`,
                 { type: "svg" }
               )
             )
               .replace("#000000", "currentColor")
               .replace("#ffffff", "transparent")}
             <a
-              href="${app.locals.settings.url}/courses/${res.locals.course
-                .reference}"
+              href="${url}/courses/${res.locals.course.reference}"
               class="button button--blue"
             >
               Go to ${res.locals.course.name}
@@ -7672,9 +7637,8 @@ export default async function courselore({
             </p>
             <form
               method="POST"
-              action="${app.locals.settings.url}/courses/${res.locals.invitation
-                .course.reference}/invitations/${res.locals.invitation
-                .reference}"
+              action="${url}/courses/${res.locals.invitation.course
+                .reference}/invitations/${res.locals.invitation.reference}"
             >
               <button
                 class="button button--blue"
@@ -7724,9 +7688,7 @@ export default async function courselore({
           `
         );
 
-      res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.invitation.course.reference}`
-      );
+      res.redirect(`${url}/courses/${res.locals.invitation.course.reference}`);
     }
   );
 
@@ -7768,7 +7730,7 @@ export default async function courselore({
               `}"
             >
               <a
-                href="${app.locals.settings.url}/sign-up?${qs.stringify({
+                href="${url}/sign-up?${qs.stringify({
                   redirect: req.originalUrl,
                   ...(res.locals.invitation.email === null
                     ? {}
@@ -7787,7 +7749,7 @@ export default async function courselore({
                 Sign up
               </a>
               <a
-                href="${app.locals.settings.url}/sign-in?${qs.stringify({
+                href="${url}/sign-in?${qs.stringify({
                   redirect: req.originalUrl,
                   ...(res.locals.invitation.email === null
                     ? {}
@@ -7942,7 +7904,7 @@ export default async function courselore({
                   `}"
                 >
                   <a
-                    href="${app.locals.settings.url}/courses/${res.locals.course
+                    href="${url}/courses/${res.locals.course
                       .reference}/conversations/new?${qs.stringify({
                       search: req.query.search,
                       tag: req.query.tag,
@@ -8146,8 +8108,7 @@ export default async function courselore({
                               `}"
                             />
                             <a
-                              href="${app.locals.settings.url}/courses/${res
-                                .locals.course
+                              href="${url}/courses/${res.locals.course
                                 .reference}/conversations/${conversation.reference}?${qs.stringify(
                                 {
                                   search: req.query.search,
@@ -8569,9 +8530,7 @@ export default async function courselore({
                 loading.hidden = false;
                 preview.hidden = true;
                 preview.innerHTML = await (
-                  await fetch("${
-                    app.locals.settings.url
-                  }/text-editor/preview", {
+                  await fetch("${url}/text-editor/preview", {
                     method: "POST",
                     body: new URLSearchParams({ content: textarea.value }),
                   })
@@ -9206,7 +9165,7 @@ export default async function courselore({
                     element.disabled = true;
                     const body = new FormData();
                     for (const file of fileList) body.append("attachments", file);
-                    const response = await (await fetch("${app.locals.settings.url}/text-editor/attachments", {
+                    const response = await (await fetch("${url}/text-editor/attachments", {
                       method: "POST",
                       body,
                     })).text();
@@ -9346,21 +9305,21 @@ ${value}</textarea
         })}/${attachment.name}`;
         await attachment.mv(path.join(dataDirectory, relativePath));
         // TODO: URI encode relative path.
-        const url = `${app.locals.settings.url}/${relativePath}`;
+        const href = `${url}/${relativePath}`;
         if (attachment.mimetype.startsWith("image/")) {
           // TODO: Handle error on sharp constructor: https://sharp.pixelplumbing.com/api-constructor / https://sharp.pixelplumbing.com/api-input
           const metadata = await sharp(attachment.data).metadata();
           if (metadata.width !== undefined && metadata.density !== undefined) {
             // TODO: Resize big images.
             attachmentsMarkdowns.push(
-              markdown`<img src="${url}" alt="${attachment.name}" width="${
+              markdown`<img src="${href}" alt="${attachment.name}" width="${
                 metadata.density < 100 ? metadata.width / 2 : metadata.width
               }" />`
             );
             continue;
           }
         }
-        attachmentsMarkdowns.push(markdown`[${attachment.name}](${url})`);
+        attachmentsMarkdowns.push(markdown`[${attachment.name}](${href})`);
       }
       // TODO: Handle spacing more intelligently.
       res.send(attachmentsMarkdowns.join(" "));
@@ -9504,7 +9463,7 @@ ${value}</textarea
                   // TODO: Check that the conversation/message exists and is accessible by user.
                   // TODO: Do a tooltip to reveal what would be under the link.
                   return html`<a
-                    href="${app.locals.settings.url}/courses/${res.locals.course
+                    href="${url}/courses/${res.locals.course
                       .reference}/conversations/${conversation}${message ===
                     undefined
                       ? ""
@@ -9577,7 +9536,7 @@ ${value}</textarea
 
             <form
               method="POST"
-              action="${app.locals.settings.url}/courses/${res.locals.course
+              action="${url}/courses/${res.locals.course
                 .reference}/conversations"
               novalidate
               style="${css`
@@ -9951,7 +9910,7 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.course.nextConversationReference}`
+        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.course.nextConversationReference}`
       );
 
       // TODO:
@@ -9985,9 +9944,7 @@ ${value}</textarea
           <hr />
 
           <p>
-            <a
-              href="${app.locals.settings
-                .url}/settings/notifications-preferences"
+            <a href="${url}/settings/notifications-preferences"
               >Change Email Preferences</a
             >
           </p>
@@ -10422,9 +10379,9 @@ ${value}</textarea
                     </span>
 
                     <a
-                      href="${app.locals.settings.url}/courses/${res.locals
-                        .course.reference}/conversations/${res.locals
-                        .conversation.reference}"
+                      href="${url}/courses/${res.locals.course
+                        .reference}/conversations/${res.locals.conversation
+                        .reference}"
                       class="button button--tight button--transparent secondary"
                       style="${css`
                         font-size: var(--font-size--xs);
@@ -10469,9 +10426,9 @@ ${value}</textarea
                           <div hidden>
                             <form
                               method="POST"
-                              action="${app.locals.settings.url}/courses/${res
-                                .locals.course.reference}/conversations/${res
-                                .locals.conversation.reference}?_method=DELETE"
+                              action="${url}/courses/${res.locals.course
+                                .reference}/conversations/${res.locals
+                                .conversation.reference}?_method=DELETE"
                               style="${css`
                                 padding: var(--space--2);
                                 display: flex;
@@ -10539,9 +10496,9 @@ ${value}</textarea
                   ? html`
                       <form
                         method="POST"
-                        action="${app.locals.settings.url}/courses/${res.locals
-                          .course.reference}/conversations/${res.locals
-                          .conversation.reference}?_method=PATCH"
+                        action="${url}/courses/${res.locals.course
+                          .reference}/conversations/${res.locals.conversation
+                          .reference}?_method=PATCH"
                         novalidate
                         hidden
                         class="title--edit"
@@ -10659,9 +10616,8 @@ ${value}</textarea
                                               (tag) => html`
                                                 <form
                                                   method="POST"
-                                                  action="${app.locals.settings
-                                                    .url}/courses/${res.locals
-                                                    .course
+                                                  action="${url}/courses/${res
+                                                    .locals.course
                                                     .reference}/conversations/${res
                                                     .locals.conversation
                                                     .reference}/taggings"
@@ -10715,8 +10671,8 @@ ${value}</textarea
                                         (tagging) => html`
                                           <form
                                             method="POST"
-                                            action="${app.locals.settings
-                                              .url}/courses/${res.locals.course
+                                            action="${url}/courses/${res.locals
+                                              .course
                                               .reference}/conversations/${res
                                               .locals.conversation
                                               .reference}/taggings?_method=DELETE"
@@ -10773,9 +10729,9 @@ ${value}</textarea
                     ? html`
                         <form
                           method="POST"
-                          action="${app.locals.settings.url}/courses/${res
-                            .locals.course.reference}/conversations/${res.locals
-                            .conversation.reference}?_method=PATCH"
+                          action="${url}/courses/${res.locals.course
+                            .reference}/conversations/${res.locals.conversation
+                            .reference}?_method=PATCH"
                         >
                           $${res.locals.conversation.pinnedAt === null
                             ? html`
@@ -10855,9 +10811,9 @@ ${value}</textarea
                           <div hidden>
                             <form
                               method="POST"
-                              action="${app.locals.settings.url}/courses/${res
-                                .locals.course.reference}/conversations/${res
-                                .locals.conversation.reference}?_method=PATCH"
+                              action="${url}/courses/${res.locals.course
+                                .reference}/conversations/${res.locals
+                                .conversation.reference}?_method=PATCH"
                               style="${css`
                                 padding: var(--space--2);
                                 display: flex;
@@ -10934,8 +10890,7 @@ ${value}</textarea
                                 (conversationType) => html`
                                   <form
                                     method="POST"
-                                    action="${app.locals.settings
-                                      .url}/courses/${res.locals.course
+                                    action="${url}/courses/${res.locals.course
                                       .reference}/conversations/${res.locals
                                       .conversation.reference}?_method=PATCH"
                                   >
@@ -11154,9 +11109,9 @@ ${value}</textarea
                                   `
                                 : html``}
                               <a
-                                href="${app.locals.settings.url}/courses/${res
-                                  .locals.course.reference}/conversations/${res
-                                  .locals.conversation
+                                href="${url}/courses/${res.locals.course
+                                  .reference}/conversations/${res.locals
+                                  .conversation
                                   .reference}#message--${message.reference}"
                                 class="button button--tight button--tight--inline button--transparent"
                                 style="${css`
@@ -11210,8 +11165,7 @@ ${value}</textarea
                                   <div hidden>
                                     <form
                                       method="POST"
-                                      action="${app.locals.settings
-                                        .url}/courses/${res.locals.course
+                                      action="${url}/courses/${res.locals.course
                                         .reference}/conversations/${res.locals
                                         .conversation
                                         .reference}/messages/${message.reference}?_method=PATCH"
@@ -11307,8 +11261,7 @@ ${value}</textarea
                                   <div hidden>
                                     <form
                                       method="POST"
-                                      action="${app.locals.settings
-                                        .url}/courses/${res.locals.course
+                                      action="${url}/courses/${res.locals.course
                                         .reference}/conversations/${res.locals
                                         .conversation
                                         .reference}/messages/${message.reference}?_method=DELETE"
@@ -11419,9 +11372,9 @@ ${value}</textarea
                             content.push(html`
                               <form
                                 method="POST"
-                                action="${app.locals.settings.url}/courses/${res
-                                  .locals.course.reference}/conversations/${res
-                                  .locals.conversation
+                                action="${url}/courses/${res.locals.course
+                                  .reference}/conversations/${res.locals
+                                  .conversation
                                   .reference}/messages/${message.reference}?_method=PATCH"
                               >
                                 $${message.answerAt === null
@@ -11497,9 +11450,9 @@ ${value}</textarea
                             content.push(html`
                               <form
                                 method="POST"
-                                action="${app.locals.settings.url}/courses/${res
-                                  .locals.course.reference}/conversations/${res
-                                  .locals.conversation
+                                action="${url}/courses/${res.locals.course
+                                  .reference}/conversations/${res.locals
+                                  .conversation
                                   .reference}/messages/${message.reference}/endorsements${isEndorsed
                                   ? "?_method=DELETE"
                                   : ""}"
@@ -11751,9 +11704,9 @@ ${value}</textarea
                             return html`
                               <form
                                 method="POST"
-                                action="${app.locals.settings.url}/courses/${res
-                                  .locals.course.reference}/conversations/${res
-                                  .locals.conversation
+                                action="${url}/courses/${res.locals.course
+                                  .reference}/conversations/${res.locals
+                                  .conversation
                                   .reference}/messages/${message.reference}/likes${isLiked
                                   ? "?_method=DELETE"
                                   : ""}"
@@ -11805,9 +11758,9 @@ ${value}</textarea
                         ? html`
                             <form
                               method="POST"
-                              action="${app.locals.settings.url}/courses/${res
-                                .locals.course.reference}/conversations/${res
-                                .locals.conversation
+                              action="${url}/courses/${res.locals.course
+                                .reference}/conversations/${res.locals
+                                .conversation
                                 .reference}/messages/${message.reference}?_method=PATCH"
                               novalidate
                               hidden
@@ -11879,7 +11832,7 @@ ${value}</textarea
 
             <form
               method="POST"
-              action="${app.locals.settings.url}/courses/${res.locals.course
+              action="${url}/courses/${res.locals.course
                 .reference}/conversations/${res.locals.conversation
                 .reference}/messages"
               novalidate
@@ -12081,7 +12034,7 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
+        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
       );
     }
   );
@@ -12103,9 +12056,7 @@ ${value}</textarea
 
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
-      res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}`
-      );
+      res.redirect(`${url}/courses/${res.locals.course.reference}`);
     }
   );
 
@@ -12162,7 +12113,7 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.conversation.nextMessageReference}`
+        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.conversation.nextMessageReference}`
       );
     }
   );
@@ -12246,7 +12197,7 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
+        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
       );
     }
   );
@@ -12275,7 +12226,7 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
+        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
       );
     }
   );
@@ -12308,7 +12259,7 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
+        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
       );
     }
   );
@@ -12337,7 +12288,7 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
+        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
       );
     }
   );
@@ -12418,7 +12369,7 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
+        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
       );
     }
   );
@@ -12449,7 +12400,7 @@ ${value}</textarea
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
+        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
       );
     }
   );
@@ -12491,7 +12442,7 @@ ${value}</textarea
       );
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
+        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
       );
     }
   );
@@ -12531,7 +12482,7 @@ ${value}</textarea
       );
 
       res.redirect(
-        `${app.locals.settings.url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
+        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
       );
     }
   );
@@ -12857,7 +12808,7 @@ ${value}</textarea
           </div>
         `
       );
-      res.redirect(app.locals.settings.url);
+      res.redirect(url);
     })
   );
 
@@ -12929,7 +12880,7 @@ ${value}</textarea
               `}"
             >
               <a
-                href="${app.locals.settings.url}/sign-up?${qs.stringify({
+                href="${url}/sign-up?${qs.stringify({
                   redirect: req.originalUrl,
                 })}"
                 class="button button--blue"
@@ -12938,7 +12889,7 @@ ${value}</textarea
                 Sign up
               </a>
               <a
-                href="${app.locals.settings.url}/sign-in?${qs.stringify({
+                href="${url}/sign-in?${qs.stringify({
                   redirect: req.originalUrl,
                 })}"
                 class="button button--transparent"
