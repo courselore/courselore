@@ -1935,36 +1935,33 @@ export default async function courselore({
     });
   }
 
-  interface Layouts {
-    application: (_: {
-      req: express.Request<
-        {},
-        any,
-        {},
-        {},
-        IsSignedInMiddlewareLocals &
-          Partial<IsEnrolledInCourseMiddlewareLocals> &
-          Partial<EventSourceMiddlewareLocals>
-      >;
-      res: express.Response<
-        any,
-        IsSignedInMiddlewareLocals &
-          Partial<IsEnrolledInCourseMiddlewareLocals> &
-          Partial<EventSourceMiddlewareLocals>
-      >;
-      head: HTML;
-      extraHeaders?: HTML;
-      body: HTML;
-    }) => HTML;
-  }
-  app.locals.layouts.application = ({
+  function applicationLayout({
     req,
     res,
     head,
     extraHeaders = html``,
     body,
-  }) =>
-    baseLayout({
+  }: {
+    req: express.Request<
+      {},
+      any,
+      {},
+      {},
+      IsSignedInMiddlewareLocals &
+        Partial<IsEnrolledInCourseMiddlewareLocals> &
+        Partial<EventSourceMiddlewareLocals>
+    >;
+    res: express.Response<
+      any,
+      IsSignedInMiddlewareLocals &
+        Partial<IsEnrolledInCourseMiddlewareLocals> &
+        Partial<EventSourceMiddlewareLocals>
+    >;
+    head: HTML;
+    extraHeaders?: HTML;
+    body: HTML;
+  }): HTML {
+    return baseLayout({
       req,
       res,
       head,
@@ -2305,6 +2302,7 @@ export default async function courselore({
       `,
       body,
     });
+  }
 
   interface Layouts {
     main: (_: {
