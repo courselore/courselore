@@ -2712,15 +2712,6 @@ export default async function courselore({
     },
   ];
 
-  interface Middlewares {
-    isSignedIn: express.RequestHandler<
-      {},
-      any,
-      {},
-      {},
-      IsSignedInMiddlewareLocals
-    >[];
-  }
   interface IsSignedInMiddlewareLocals extends GlobalMiddlewareLocals {
     user: {
       id: number;
@@ -2753,7 +2744,13 @@ export default async function courselore({
       accentColor: EnrollmentAccentColor;
     }[];
   }
-  app.locals.middlewares.isSignedIn = [
+  const isSignedInMiddleware: express.RequestHandler<
+    {},
+    any,
+    {},
+    {},
+    IsSignedInMiddlewareLocals
+  >[] = [
     (req, res, next) => {
       const userId = Session.get(req, res);
       if (userId === undefined) return next("route");
@@ -3488,7 +3485,7 @@ export default async function courselore({
 
   app.delete<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/sign-out",
-    ...app.locals.middlewares.isSignedIn,
+    ...isSignedInMiddleware,
     (req, res) => {
       Session.close(req, res);
       res.redirect(`${url}/`);
@@ -3497,7 +3494,7 @@ export default async function courselore({
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/",
-    ...app.locals.middlewares.isSignedIn,
+    ...isSignedInMiddleware,
     (req, res) => {
       switch (res.locals.enrollments.length) {
         case 0:
@@ -3725,7 +3722,7 @@ export default async function courselore({
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings",
-    ...app.locals.middlewares.isSignedIn,
+    ...isSignedInMiddleware,
     (req, res) => {
       res.send(
         userSettingsLayout({
@@ -3997,7 +3994,7 @@ export default async function courselore({
     { name?: string; avatar?: string; biography?: string },
     {},
     IsSignedInMiddlewareLocals
-  >("/settings", ...app.locals.middlewares.isSignedIn, (req, res, next) => {
+  >("/settings", ...isSignedInMiddleware, (req, res, next) => {
     if (
       typeof req.body.name !== "string" ||
       req.body.name.trim() === "" ||
@@ -4059,7 +4056,7 @@ export default async function courselore({
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings/notifications-preferences",
-    ...app.locals.middlewares.isSignedIn,
+    ...isSignedInMiddleware,
     (req, res) => {
       res.send(
         userSettingsLayout({
@@ -4173,7 +4170,7 @@ export default async function courselore({
     IsSignedInMiddlewareLocals
   >(
     "/settings/notifications-preferences",
-    ...app.locals.middlewares.isSignedIn,
+    ...isSignedInMiddleware,
     (req, res, next) => {
       if (
         typeof req.body.emailNotifications !== "string" ||
@@ -4205,7 +4202,7 @@ export default async function courselore({
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/courses/new",
-    ...app.locals.middlewares.isSignedIn,
+    ...isSignedInMiddleware,
     (req, res) => {
       res.send(
         mainLayout({
@@ -4256,7 +4253,7 @@ export default async function courselore({
 
   app.post<{}, any, { name?: string }, {}, IsSignedInMiddlewareLocals>(
     "/courses",
-    ...app.locals.middlewares.isSignedIn,
+    ...isSignedInMiddleware,
     (req, res, next) => {
       if (typeof req.body.name !== "string" || req.body.name.trim() === "")
         return next("validation");
@@ -4385,7 +4382,7 @@ export default async function courselore({
     conversationTypes: ConversationType[];
   }
   app.locals.middlewares.isEnrolledInCourse = [
-    ...app.locals.middlewares.isSignedIn,
+    ...isSignedInMiddleware,
     (req, res, next) => {
       for (const enrollment of res.locals.enrollments)
         if (enrollment.course.reference === req.params.courseReference) {
@@ -7449,7 +7446,7 @@ export default async function courselore({
     IsSignedInMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...app.locals.middlewares.isSignedIn,
+    ...isSignedInMiddleware,
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
@@ -7498,7 +7495,7 @@ export default async function courselore({
     IsSignedInMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...app.locals.middlewares.isSignedIn,
+    ...isSignedInMiddleware,
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       database.run(
@@ -9120,7 +9117,7 @@ ${value}</textarea
 
   app.post<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/text-editor/attachments",
-    ...app.locals.middlewares.isSignedIn,
+    ...isSignedInMiddleware,
     asyncHandler(async (req, res, next) => {
       if (req.files?.attachments === undefined) return next("validation");
       const attachmentsMarkdowns: string[] = [];
@@ -9158,7 +9155,7 @@ ${value}</textarea
   // TODO: Move this route to a more generic place.
   app.get<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/files/*",
-    ...app.locals.middlewares.isSignedIn,
+    ...isSignedInMiddleware,
     express.static(dataDirectory)
   );
 
@@ -9298,7 +9295,7 @@ ${value}</textarea
 
   app.post<{}, any, { content?: string }, {}, IsSignedInMiddlewareLocals>(
     "/text-editor/preview",
-    ...app.locals.middlewares.isSignedIn,
+    ...isSignedInMiddleware,
     (req, res, next) => {
       if (
         typeof req.body.content !== "string" ||
@@ -12583,7 +12580,7 @@ ${value}</textarea
 
   app.all<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "*",
-    ...app.locals.middlewares.isSignedIn,
+    ...isSignedInMiddleware,
     (req, res) => {
       res.status(404).send(
         boxLayout({
