@@ -63,12 +63,10 @@ export default async function courselore({
   interface App extends express.Express {
     locals: {
       middlewares: Middlewares;
-      helpers: Helpers;
     };
   }
   const app = express() as App;
   app.locals.middlewares = {} as Middlewares;
-  app.locals.helpers = {} as Helpers;
 
   type UserEmailNotifications = typeof userEmailNotifications[number];
   const userEmailNotifications = ["none", "essentials", "everything"] as const;
