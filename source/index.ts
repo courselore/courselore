@@ -9757,7 +9757,7 @@ ${value}</textarea
       }[];
     }[];
   }
-  const isConversationAccessible: express.RequestHandler<
+  const isConversationAccessibleMiddleware: express.RequestHandler<
     { courseReference: string; conversationReference: string },
     HTML,
     {},
@@ -10019,7 +10019,7 @@ ${value}</textarea
   interface MayEditConversationMiddlewareLocals
     extends IsConversationAccessibleMiddlewareLocals {}
   app.locals.middlewares.mayEditConversation = [
-    ...isConversationAccessible,
+    ...isConversationAccessibleMiddleware,
     (req, res, next) => {
       if (mayEditConversation(req, res)) return next();
       next("route");
@@ -10044,7 +10044,7 @@ ${value}</textarea
     message: IsConversationAccessibleMiddlewareLocals["messages"][number];
   }
   app.locals.middlewares.messageExists = [
-    ...isConversationAccessible,
+    ...isConversationAccessibleMiddleware,
     (req, res, next) => {
       const message = res.locals.messages.find(
         (message) => message.reference === req.params.messageReference
@@ -10104,7 +10104,7 @@ ${value}</textarea
     IsConversationAccessibleMiddlewareLocals & EventSourceMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
-    ...isConversationAccessible,
+    ...isConversationAccessibleMiddleware,
     ...eventSourceMiddleware,
     (req, res) => {
       for (const message of res.locals.messages)
@@ -11797,7 +11797,7 @@ ${value}</textarea
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     ...isCourseStaffMiddleware,
-    ...isConversationAccessible,
+    ...isConversationAccessibleMiddleware,
     (req, res) => {
       database.run(
         sql`DELETE FROM "conversations" WHERE "id" = ${res.locals.conversation.id}`
@@ -11817,7 +11817,7 @@ ${value}</textarea
     IsConversationAccessibleMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages",
-    ...isConversationAccessible,
+    ...isConversationAccessibleMiddleware,
     (req, res, next) => {
       if (
         typeof req.body.content !== "string" ||
