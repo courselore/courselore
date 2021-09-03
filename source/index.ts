@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import path from "path";
-import assert from "assert/strict";
 
 import express from "express";
 import methodOverride from "method-override";
@@ -4985,10 +4984,10 @@ export default async function courselore({
   ];
 
   const sendInvitationEmail = (
-    invitation: InvitationExistsMiddlewareLocals["invitation"]
+    invitation: InvitationExistsMiddlewareLocals["invitation"] & {
+      email: string;
+    }
   ): void => {
-    assert(invitation.email !== null);
-
     const link = `${url}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
 
     sendMail({
@@ -6257,7 +6256,7 @@ export default async function courselore({
               expiresAt: string | null;
               usedAt: string | null;
               reference: string;
-              email: string | null;
+              email: string;
               name: string | null;
               role: EnrollmentRole;
             }>(
@@ -6322,7 +6321,11 @@ export default async function courselore({
         )
           return next("validation");
 
-        sendInvitationEmail(res.locals.invitation);
+        sendInvitationEmail(
+          res.locals.invitation as typeof res.locals.invitation & {
+            email: string;
+          }
+        );
 
         Flash.set(
           req,
