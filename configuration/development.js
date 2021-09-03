@@ -35,12 +35,13 @@ module.exports = async (require) => {
       dataDirectory: path.join(process.cwd(), "data"),
       url,
       administrator: "mailto:development@courselore.org",
+      sendMail: async (mailOptions) => {
+        console.log(`Email: ${JSON.stringify(mailOptions, undefined, 2)}`);
+      },
       liveReload: true,
     });
     app.listen(4000, "127.0.0.1", () => {
-      console.log(
-        `CourseLore/${version} started at ${url}`
-      );
+      console.log(`CourseLore/${version} started at ${url}`);
     });
   }
 };

@@ -46,12 +46,16 @@ export default async function courselore({
   dataDirectory,
   url,
   administrator,
+  sendMail,
   demonstration = process.env.NODE_ENV !== "production",
   liveReload = false,
 }: {
   dataDirectory: string;
   url: string;
   administrator: string;
+  sendMail: (
+    mailOptions: nodemailer.SendMailOptions
+  ) => Promise<nodemailer.SentMessageInfo>;
   demonstration?: boolean;
   liveReload?: boolean;
 }): Promise<express.Express> {
@@ -74,15 +78,6 @@ export default async function courselore({
   app.locals.helpers = {} as Helpers;
   app.locals.layouts = {} as Layouts;
   app.locals.partials = {} as Partials;
-
-  interface Helpers {
-    sendMail: (
-      mailOptions: nodemailer.SendMailOptions
-    ) => Promise<nodemailer.SentMessageInfo>;
-  }
-  app.locals.helpers.sendMail = async (mailOptions) => {
-    console.log(`Email: ${JSON.stringify(mailOptions, undefined, 2)}`);
-  };
 
   interface Constants {
     userEmailNotifications: UserEmailNotifications[];
@@ -3263,7 +3258,7 @@ export default async function courselore({
           email: req.query.email,
         }
       )}`;
-      app.locals.helpers.sendMail({
+      sendMail({
         to: user.email,
         subject: "CourseLore · Password Reset Link",
         html: html`
@@ -5119,7 +5114,7 @@ export default async function courselore({
 
     const link = `${url}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
 
-    app.locals.helpers.sendMail({
+    sendMail({
       to: invitation.email,
       subject: `Enroll in ${invitation.course.name}`,
       html: html`
@@ -9914,7 +9909,7 @@ ${value}</textarea
       // - Messages
       // - NOT EDITS
       // - Have a queue
-      app.locals.helpers.sendMail({
+      sendMail({
         to: app.locals.database
           .all<{ email: string }>(
             sql`
