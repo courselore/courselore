@@ -35,6 +35,7 @@
 - Test sliding session (touch).
 - Test interface with weird data: Long text, long words, too many tags, and so forth.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
+- Come up with a better term than “Demonstration”, which may imply a paid product.
 
 ### Users
 

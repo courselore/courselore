@@ -37,13 +37,16 @@ module.exports = async (require) => {
     const path = require("path");
     const courselore = require(".").default;
     const { version } = require("../package.json");
-    const app = await courselore(path.join(__dirname, "data"));
-    app.locals.settings.url = url;
-    app.locals.settings.administrator = `mailto:${email}`;
+    const app = await courselore({
+      dataDirectory: path.join(__dirname, "data"),
+      url,
+      administrator: `mailto:${email}`,
+      sendMail: async (mailOptions) => {
+        console.log(`Email: ${JSON.stringify(mailOptions, undefined, 2)}`);
+      },
+    });
     app.listen(4000, "127.0.0.1", () => {
-      console.log(
-        `CourseLore/${version} started at ${app.locals.settings.url}`
-      );
+      console.log(`CourseLore/${version} started at ${url}`);
     });
   }
 };
