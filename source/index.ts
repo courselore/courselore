@@ -4010,7 +4010,7 @@ export default async function courselore({
 
               <div class="label">
                 <p class="label--text">Biography</p>
-                $${app.locals.partials.textEditor({
+                $${textEditor({
                   name: "biography",
                   value: res.locals.user.biography ?? "",
                   required: false,
@@ -8310,17 +8310,14 @@ export default async function courselore({
       `,
     });
 
-  interface Partials {
-    textEditor: (_?: {
-      name?: string;
-      value?: string;
-      required?: boolean;
-    }) => HTML;
-  }
-  app.locals.partials.textEditor = ({
+  const textEditor = ({
     name = "content",
     value = "",
     required = true,
+  }: {
+    name?: string;
+    value?: string;
+    required?: boolean;
   } = {}): HTML => html`
     <div class="text-editor">
       <div
@@ -9435,7 +9432,7 @@ ${value}</textarea
                   />
                 </div>
 
-                $${app.locals.partials.textEditor()}
+                $${textEditor()}
 
                 <div class="label">
                   <p class="label--text">Type</p>
@@ -11644,7 +11641,7 @@ ${value}</textarea
                                 gap: var(--space--2);
                               `}"
                             >
-                              $${app.locals.partials.textEditor({
+                              $${textEditor({
                                 value: message.content,
                               })}
 
@@ -11747,7 +11744,7 @@ ${value}</textarea
                   });
                 `}"
               >
-                $${app.locals.partials.textEditor()}
+                $${textEditor()}
               </div>
 
               <div
