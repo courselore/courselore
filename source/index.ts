@@ -3293,6 +3293,20 @@ export default async function courselore({
     }
   );
 
+  app.post<
+    { passwordResetNonce: string },
+    HTML,
+    { password?: string },
+    { redirect?: string; name?: string; email?: string },
+    IsSignedOutMiddlewareLocals
+  >(
+    "/reset-password/:passwordResetNonce",
+    ...isSignedOutMiddleware,
+    (req, res, next) => {
+      // TODO:
+    }
+  );
+
   app.get<
     {},
     HTML,
