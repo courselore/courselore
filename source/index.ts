@@ -10036,19 +10036,16 @@ ${value}</textarea
     },
   ];
 
-  interface Helpers {
-    mayEditConversation: (
-      req: express.Request<
-        { courseReference: string; conversationReference: string },
-        any,
-        {},
-        {},
-        IsConversationAccessibleMiddlewareLocals
-      >,
-      res: express.Response<any, IsConversationAccessibleMiddlewareLocals>
-    ) => boolean;
-  }
-  app.locals.helpers.mayEditConversation = (req, res) =>
+  const mayEditConversation = (
+    req: express.Request<
+      { courseReference: string; conversationReference: string },
+      any,
+      {},
+      {},
+      IsConversationAccessibleMiddlewareLocals
+    >,
+    res: express.Response<any, IsConversationAccessibleMiddlewareLocals>
+  ): boolean =>
     res.locals.enrollment.role === "staff" ||
     res.locals.conversation.authorEnrollment.id === res.locals.enrollment.id;
 
@@ -10069,7 +10066,7 @@ ${value}</textarea
   app.locals.middlewares.mayEditConversation = [
     ...app.locals.middlewares.isConversationAccessible,
     (req, res, next) => {
-      if (app.locals.helpers.mayEditConversation(req, res)) return next();
+      if (mayEditConversation(req, res)) return next();
       next("route");
     },
   ];
@@ -10280,7 +10277,7 @@ ${value}</textarea
                         </div>
                       `);
 
-                    if (app.locals.helpers.mayEditConversation(req, res))
+                    if (mayEditConversation(req, res))
                       content.push(html`
                         <button
                           class="button button--tight button--tight--inline button--transparent"
@@ -10314,7 +10311,7 @@ ${value}</textarea
                   })()}
                 </div>
 
-                $${app.locals.helpers.mayEditConversation(req, res)
+                $${mayEditConversation(req, res)
                   ? html`
                       <form
                         method="POST"
@@ -10396,7 +10393,7 @@ ${value}</textarea
                           row-gap: var(--space--1);
                         `}"
                       >
-                        $${app.locals.helpers.mayEditConversation(req, res)
+                        $${mayEditConversation(req, res)
                           ? html`
                               $${res.locals.tags.length >
                               res.locals.conversation.taggings.length
@@ -10684,7 +10681,7 @@ ${value}</textarea
                           Visible by Staff Only
                         </div>
                       `}
-                  $${app.locals.helpers.mayEditConversation(req, res)
+                  $${mayEditConversation(req, res)
                     ? html`
                         <div>
                           <button
