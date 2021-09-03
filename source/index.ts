@@ -2597,28 +2597,10 @@ export default async function courselore({
 
   // TODO: Periodic jobs to clean stale sessions & flashes.
 
-  interface Helpers {
-    session: {
-      maxAge: number;
-      open: (
-        req: express.Request<{}, any, {}, {}, {}>,
-        res: express.Response<any, {}>,
-        userId: number
-      ) => void;
-      get: (
-        req: express.Request<{}, any, {}, {}, {}>,
-        res: express.Response<any, {}>
-      ) => number | undefined;
-      close: (
-        req: express.Request<{}, any, {}, {}, {}>,
-        res: express.Response<any, {}>
-      ) => void;
-    };
-  }
-  app.locals.helpers.session = {
+  const Session = {
     maxAge: 180 * 24 * 60 * 60 * 1000,
 
-    open(req, res, userId) {
+    open(req: express.Request<{}, any, {}, {}, {}>, res: express.Response<any, {}>, userId: number): void {
       const session = database.get<{
         token: string;
       }>(
@@ -2633,11 +2615,11 @@ export default async function courselore({
       )!;
       res.cookie("session", session.token, {
         ...cookieOptions,
-        maxAge: app.locals.helpers.session.maxAge,
+        maxAge: Session.maxAge,
       });
     },
 
-    get(req, res) {
+    get(req: express.Request<{}, any, {}, {}, {}>, res: express.Response<any, {}>): number | undefined {
       if (req.cookies.session === undefined) return;
       const session = database.get<{
         createdAt: string;
@@ -2648,22 +2630,22 @@ export default async function courselore({
       if (
         session === undefined ||
         new Date(session.createdAt).getTime() +
-          app.locals.helpers.session.maxAge <
+          Session.maxAge <
           Date.now()
       )
-        app.locals.helpers.session.close(req, res);
+        Session.close(req, res);
       else if (
         new Date(session.createdAt).getTime() +
-          app.locals.helpers.session.maxAge / 2 <
+          Session.maxAge / 2 <
         Date.now()
       ) {
-        app.locals.helpers.session.close(req, res);
-        app.locals.helpers.session.open(req, res, session.user);
+        Session.close(req, res);
+        Session.open(req, res, session.user);
       }
       return session?.user;
     },
 
-    close(req, res) {
+    close(req: express.Request<{}, any, {}, {}, {}>, res: express.Response<any, {}>):void {
       database.run(
         sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies.session}`
       );
@@ -2733,7 +2715,7 @@ export default async function courselore({
   interface IsSignedOutMiddlewareLocals extends GlobalMiddlewareLocals {}
   app.locals.middlewares.isSignedOut = [
     (req, res, next) => {
-      if (app.locals.helpers.session.get(req, res) !== undefined)
+      if (Session.get(req, res) !== undefined)
         return next("route");
       next();
     },
@@ -2782,7 +2764,7 @@ export default async function courselore({
   }
   app.locals.middlewares.isSignedIn = [
     (req, res, next) => {
-      const userId = app.locals.helpers.session.get(req, res);
+      const userId = Session.get(req, res);
       if (userId === undefined) return next("route");
 
       res.locals.user = database.get<{
@@ -3022,7 +3004,7 @@ export default async function courselore({
           })}`
         );
       }
-      app.locals.helpers.session.open(req, res, user.id);
+      Session.open(req, res, user.id);
       res.redirect(`${url}${req.query.redirect ?? "/"}`);
     })
   );
@@ -3518,7 +3500,7 @@ export default async function courselore({
           RETURNING *
         `
       )!;
-      app.locals.helpers.session.open(req, res, user.id);
+      Session.open(req, res, user.id);
       res.redirect(`${url}${req.query.redirect ?? "/"}`);
     })
   );
@@ -3527,7 +3509,7 @@ export default async function courselore({
     "/sign-out",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
-      app.locals.helpers.session.close(req, res);
+      Session.close(req, res);
       res.redirect(`${url}/`);
     }
   );
@@ -12631,7 +12613,7 @@ ${value}</textarea
           }
         }
 
-        app.locals.helpers.session.open(req, res, demonstrationUser.id);
+        Session.open(req, res, demonstrationUser.id);
         app.locals.helpers.flash.set(
           req,
           res,
