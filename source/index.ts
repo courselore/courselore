@@ -2304,29 +2304,31 @@ export default async function courselore({
     });
   }
 
-  interface Layouts {
-    main: (_: {
-      req: express.Request<
-        {},
-        any,
-        {},
-        {},
-        IsSignedInMiddlewareLocals &
-          Partial<IsEnrolledInCourseMiddlewareLocals> &
-          Partial<EventSourceMiddlewareLocals>
-      >;
-      res: express.Response<
-        any,
-        IsSignedInMiddlewareLocals &
-          Partial<IsEnrolledInCourseMiddlewareLocals> &
-          Partial<EventSourceMiddlewareLocals>
-      >;
-      head: HTML;
-      body: HTML;
-    }) => HTML;
-  }
-  app.locals.layouts.main = ({ req, res, head, body }) =>
-    applicationLayout({
+  function mainLayout({
+    req,
+    res,
+    head,
+    body,
+  }: {
+    req: express.Request<
+      {},
+      any,
+      {},
+      {},
+      IsSignedInMiddlewareLocals &
+        Partial<IsEnrolledInCourseMiddlewareLocals> &
+        Partial<EventSourceMiddlewareLocals>
+    >;
+    res: express.Response<
+      any,
+      IsSignedInMiddlewareLocals &
+        Partial<IsEnrolledInCourseMiddlewareLocals> &
+        Partial<EventSourceMiddlewareLocals>
+    >;
+    head: HTML;
+    body: HTML;
+  }): HTML {
+    return applicationLayout({
       req,
       res,
       head,
@@ -2353,6 +2355,7 @@ export default async function courselore({
         </div>
       `,
     });
+  }
 
   interface Layouts {
     settings: (_: {
@@ -3556,7 +3559,7 @@ export default async function courselore({
       switch (res.locals.enrollments.length) {
         case 0:
           res.send(
-            app.locals.layouts.main({
+            mainLayout({
               req,
               res,
               head: html`<title>CourseLore</title>`,
@@ -3636,7 +3639,7 @@ export default async function courselore({
 
         default:
           res.send(
-            app.locals.layouts.main({
+            mainLayout({
               req,
               res,
               head: html`<title>CourseLore</title>`,
@@ -4260,7 +4263,7 @@ export default async function courselore({
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
-        app.locals.layouts.main({
+        mainLayout({
           req,
           res,
           head: html`<title>Create a New Course · CourseLore</title>`,
@@ -4832,7 +4835,7 @@ export default async function courselore({
     (req, res) => {
       if (res.locals.conversationsCount === 0)
         return res.send(
-          app.locals.layouts.main({
+          mainLayout({
             req,
             res,
             head: html`<title>${res.locals.course.name} · CourseLore</title>`,
@@ -9408,7 +9411,7 @@ ${value}</textarea
     (req, res) => {
       res.send(
         (res.locals.conversationsCount === 0
-          ? app.locals.layouts.main
+          ? mainLayout
           : app.locals.layouts.conversation)({
           req,
           res,
