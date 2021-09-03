@@ -4984,12 +4984,9 @@ export default async function courselore({
     },
   ];
 
-  interface Helpers {
-    sendInvitationEmail: (
-      invitation: InvitationExistsMiddlewareLocals["invitation"]
-    ) => void;
-  }
-  app.locals.helpers.sendInvitationEmail = (invitation) => {
+  const sendInvitationEmail = (
+    invitation: InvitationExistsMiddlewareLocals["invitation"]
+  ): void => {
     assert(invitation.email !== null);
 
     const link = `${url}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
@@ -6278,7 +6275,7 @@ export default async function courselore({
               `
             )!;
 
-            app.locals.helpers.sendInvitationEmail({
+            sendInvitationEmail({
               ...invitation,
               course: res.locals.course,
             });
@@ -6325,7 +6322,7 @@ export default async function courselore({
         )
           return next("validation");
 
-        app.locals.helpers.sendInvitationEmail(res.locals.invitation);
+        sendInvitationEmail(res.locals.invitation);
 
         Flash.set(
           req,
