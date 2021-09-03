@@ -288,24 +288,29 @@ export default async function courselore({
     req,
     res,
     head,
+    extraHeaders = html``,
     body,
   }: {
-    req?: express.Request<
+    req: express.Request<
       {},
       any,
       {},
       {},
       (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
+        Partial<IsEnrolledInCourseMiddlewareLocals> &
         Partial<EventSourceMiddlewareLocals>
     >;
-    res?: express.Response<
+    res: express.Response<
       any,
       (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
+        Partial<IsEnrolledInCourseMiddlewareLocals> &
         Partial<EventSourceMiddlewareLocals>
     >;
     head: HTML;
+    extraHeaders?: HTML;
     body: HTML;
   }): HTML {
+    const flash = app.locals.helpers.flash.get(req, res);
     return extractInlineStyles(html`
       <!DOCTYPE html>
       <html lang="en">
@@ -1575,309 +1580,269 @@ export default async function courselore({
             }
           `}"
         >
-          $${body}
+          <div
+            style="${css`
+              position: absolute;
+              top: 0;
+              right: 0;
+              bottom: 0;
+              left: 0;
+              display: flex;
+              flex-direction: column;
+              overflow: hidden;
+            `}"
+            onscroll="${javascript`
+              this.scroll(0, 0);
+            `}"
+          >
+            $${res.locals.enrollment === undefined
+              ? html``
+              : html`
+                  <div
+                    style="${css`
+                      height: var(--border-width--8);
+                      display: flex;
+                    `}"
+                  >
+                    <button
+                      class="button"
+                      style="${css`
+                        background-color: var(
+                          --color--${res.locals.enrollment.accentColor}--500
+                        );
+                        @media (prefers-color-scheme: dark) {
+                          background-color: var(
+                            --color--${res.locals.enrollment.accentColor}--600
+                          );
+                        }
+                        border-radius: var(--border-radius--none);
+                        flex: 1;
+                      `}"
+                      data-ondomcontentloaded="${javascript`
+                        tippy(this, {
+                          content: "What’s This?",
+                          touch: false,
+                        });
+                        tippy(this, {
+                          content: this.nextElementSibling.firstElementChild,
+                          trigger: "click",
+                          interactive: true,
+                        });
+                      `}"
+                    ></button>
+                    <div hidden>
+                      <div
+                        style="${css`
+                          padding: var(--space--2);
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--4);
+                        `}"
+                      >
+                        <p>
+                          This bar with an accent color appears at the top of
+                          pages related to this course to help you differentiate
+                          between courses.
+                        </p>
+                        <a
+                          class="button button--blue"
+                          href="${url}/courses/${res.locals.course!
+                            .reference}/settings/your-enrollment"
+                          style="${css`
+                            width: 100%;
+                          `}"
+                        >
+                          <i class="bi bi-palette"></i>
+                          Change Accent Color
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                `}
+            <div
+              style="${css`
+                font-size: var(--font-size--xs);
+                line-height: var(--line-height--xs);
+                background-color: var(--color--gray--medium--100);
+                @media (prefers-color-scheme: dark) {
+                  background-color: var(--color--gray--medium--800);
+                }
+                display: flex;
+                flex-direction: column;
+                & > * {
+                  padding: var(--space--0) var(--space--4);
+                  border-bottom: var(--border-width--1) solid
+                    var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    border-color: var(--color--gray--medium--700);
+                  }
+                  display: flex;
+                }
+              `}"
+            >
+              $${demonstration
+                ? html`
+                    <div
+                      style="${css`
+                        justify-content: center;
+                        flex-wrap: wrap;
+                      `}"
+                    >
+                      <div>
+                        <button
+                          class="button button--transparent"
+                          data-ondomcontentloaded="${javascript`
+                            tippy(this, {
+                              content: this.nextElementSibling.firstElementChild,
+                              trigger: "click",
+                              interactive: true,
+                            });
+                          `}"
+                        >
+                          <i class="bi bi-easel"></i>
+                          Demonstration Mode
+                        </button>
+                        <div hidden>
+                          <div
+                            style="${css`
+                              padding: var(--space--2);
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--4);
+                            `}"
+                          >
+                            <p>
+                              CourseLore is running in Demonstration Mode. All
+                              data may be lost, including courses,
+                              conversations, users, and so forth. Also, no
+                              emails are actually sent.
+                            </p>
+                            <p>
+                              To give you a better idea of what CourseLore looks
+                              like in use, you may create demonstration data.
+                            </p>
+                            <form
+                              method="POST"
+                              action="${url}/demonstration-data"
+                            >
+                              <button
+                                class="button button--blue"
+                                style="${css`
+                                  width: 100%;
+                                `}"
+                              >
+                                <i class="bi bi-easel"></i>
+                                Create Demonstration Data
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                      $${process.env.NODE_ENV !== "production"
+                        ? html`
+                            <form
+                              method="POST"
+                              action="${url}/turn-off?_method=DELETE"
+                            >
+                              <button class="button button--transparent">
+                                <i class="bi bi-power"></i>
+                                Turn off
+                              </button>
+                            </form>
+                          `
+                        : html``}
+                    </div>
+                  `
+                : html``}
+              $${extraHeaders}
+            </div>
+
+            $${flash === undefined
+              ? html``
+              : html`
+                  <div
+                    class="flash"
+                    style="${css`
+                      display: grid;
+                      & > * {
+                        grid-area: 1 / 1;
+                      }
+                      ${["green", "rose"].map(
+                        (color) => css`
+                          .flash--${color} {
+                            &,
+                            & + .button--transparent {
+                              color: var(--color--${color}--700);
+                            }
+                            background-color: var(--color--${color}--100);
+                            & + .button--transparent {
+                              &:hover,
+                              &:focus-within {
+                                background-color: var(--color--${color}--200);
+                              }
+                              &:active {
+                                background-color: var(--color--${color}--300);
+                              }
+                            }
+                            @media (prefers-color-scheme: dark) {
+                              &,
+                              & + .button--transparent {
+                                color: var(--color--${color}--200);
+                              }
+                              background-color: var(--color--${color}--900);
+                              & + .button--transparent {
+                                &:hover,
+                                &:focus-within {
+                                  background-color: var(--color--${color}--800);
+                                }
+                                &:active {
+                                  background-color: var(--color--${color}--700);
+                                }
+                              }
+                            }
+                            padding: var(--space--1) var(--space--10);
+                            display: flex;
+                            justify-content: center;
+                            & > * {
+                              flex: 1;
+                              max-width: var(--width--prose);
+                            }
+                          }
+                        `
+                      )}
+                    `}"
+                  >
+                    $${flash}
+                    <button
+                      class="button button--tight button--tight--inline button--transparent"
+                      style="${css`
+                        justify-self: end;
+                        align-self: start;
+                        margin-top: var(--space--0-5);
+                        margin-right: var(--space--3);
+                      `}"
+                      onclick="${javascript`
+                        this.closest(".flash").remove();
+                      `}"
+                    >
+                      <i class="bi bi-x-circle"></i>
+                    </button>
+                  </div>
+                `}
+
+            <div
+              style="${css`
+                flex: 1;
+                overflow: auto;
+              `}"
+            >
+              $${body}
+            </div>
+          </div>
         </body>
       </html>
     `);
   }
-
-  interface Layouts {
-    applicationBase: (_: {
-      req: express.Request<
-        {},
-        any,
-        {},
-        {},
-        (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
-          Partial<IsEnrolledInCourseMiddlewareLocals> &
-          Partial<EventSourceMiddlewareLocals>
-      >;
-      res: express.Response<
-        any,
-        (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
-          Partial<IsEnrolledInCourseMiddlewareLocals> &
-          Partial<EventSourceMiddlewareLocals>
-      >;
-      head: HTML;
-      extraHeaders?: HTML;
-      body: HTML;
-    }) => HTML;
-  }
-  app.locals.layouts.applicationBase = ({
-    req,
-    res,
-    head,
-    extraHeaders = html``,
-    body,
-  }) => {
-    const flash = app.locals.helpers.flash.get(req, res);
-    return baseLayout({
-      req,
-      res,
-      head,
-      body: html`
-        <div
-          style="${css`
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-          `}"
-          onscroll="${javascript`
-            this.scroll(0, 0);
-          `}"
-        >
-          $${res.locals.enrollment === undefined
-            ? html``
-            : html`
-                <div
-                  style="${css`
-                    height: var(--border-width--8);
-                    display: flex;
-                  `}"
-                >
-                  <button
-                    class="button"
-                    style="${css`
-                      background-color: var(
-                        --color--${res.locals.enrollment.accentColor}--500
-                      );
-                      @media (prefers-color-scheme: dark) {
-                        background-color: var(
-                          --color--${res.locals.enrollment.accentColor}--600
-                        );
-                      }
-                      border-radius: var(--border-radius--none);
-                      flex: 1;
-                    `}"
-                    data-ondomcontentloaded="${javascript`
-                      tippy(this, {
-                        content: "What’s This?",
-                        touch: false,
-                      });
-                      tippy(this, {
-                        content: this.nextElementSibling.firstElementChild,
-                        trigger: "click",
-                        interactive: true,
-                      });
-                    `}"
-                  ></button>
-                  <div hidden>
-                    <div
-                      style="${css`
-                        padding: var(--space--2);
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--space--4);
-                      `}"
-                    >
-                      <p>
-                        This bar with an accent color appears at the top of
-                        pages related to this course to help you differentiate
-                        between courses.
-                      </p>
-                      <a
-                        class="button button--blue"
-                        href="${url}/courses/${res.locals.course!
-                          .reference}/settings/your-enrollment"
-                        style="${css`
-                          width: 100%;
-                        `}"
-                      >
-                        <i class="bi bi-palette"></i>
-                        Change Accent Color
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              `}
-          <div
-            style="${css`
-              font-size: var(--font-size--xs);
-              line-height: var(--line-height--xs);
-              background-color: var(--color--gray--medium--100);
-              @media (prefers-color-scheme: dark) {
-                background-color: var(--color--gray--medium--800);
-              }
-              display: flex;
-              flex-direction: column;
-              & > * {
-                padding: var(--space--0) var(--space--4);
-                border-bottom: var(--border-width--1) solid
-                  var(--color--gray--medium--200);
-                @media (prefers-color-scheme: dark) {
-                  border-color: var(--color--gray--medium--700);
-                }
-                display: flex;
-              }
-            `}"
-          >
-            $${demonstration
-              ? html`
-                  <div
-                    style="${css`
-                      justify-content: center;
-                      flex-wrap: wrap;
-                    `}"
-                  >
-                    <div>
-                      <button
-                        class="button button--transparent"
-                        data-ondomcontentloaded="${javascript`
-                          tippy(this, {
-                            content: this.nextElementSibling.firstElementChild,
-                            trigger: "click",
-                            interactive: true,
-                          });
-                        `}"
-                      >
-                        <i class="bi bi-easel"></i>
-                        Demonstration Mode
-                      </button>
-                      <div hidden>
-                        <div
-                          style="${css`
-                            padding: var(--space--2);
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--4);
-                          `}"
-                        >
-                          <p>
-                            CourseLore is running in Demonstration Mode. All
-                            data may be lost, including courses, conversations,
-                            users, and so forth. Also, no emails are actually
-                            sent.
-                          </p>
-                          <p>
-                            To give you a better idea of what CourseLore looks
-                            like in use, you may create demonstration data.
-                          </p>
-                          <form
-                            method="POST"
-                            action="${url}/demonstration-data"
-                          >
-                            <button
-                              class="button button--blue"
-                              style="${css`
-                                width: 100%;
-                              `}"
-                            >
-                              <i class="bi bi-easel"></i>
-                              Create Demonstration Data
-                            </button>
-                          </form>
-                        </div>
-                      </div>
-                    </div>
-                    $${process.env.NODE_ENV !== "production"
-                      ? html`
-                          <form
-                            method="POST"
-                            action="${url}/turn-off?_method=DELETE"
-                          >
-                            <button class="button button--transparent">
-                              <i class="bi bi-power"></i>
-                              Turn off
-                            </button>
-                          </form>
-                        `
-                      : html``}
-                  </div>
-                `
-              : html``}
-            $${extraHeaders}
-          </div>
-
-          $${flash === undefined
-            ? html``
-            : html`
-                <div
-                  class="flash"
-                  style="${css`
-                    display: grid;
-                    & > * {
-                      grid-area: 1 / 1;
-                    }
-                    ${["green", "rose"].map(
-                      (color) => css`
-                        .flash--${color} {
-                          &,
-                          & + .button--transparent {
-                            color: var(--color--${color}--700);
-                          }
-                          background-color: var(--color--${color}--100);
-                          & + .button--transparent {
-                            &:hover,
-                            &:focus-within {
-                              background-color: var(--color--${color}--200);
-                            }
-                            &:active {
-                              background-color: var(--color--${color}--300);
-                            }
-                          }
-                          @media (prefers-color-scheme: dark) {
-                            &,
-                            & + .button--transparent {
-                              color: var(--color--${color}--200);
-                            }
-                            background-color: var(--color--${color}--900);
-                            & + .button--transparent {
-                              &:hover,
-                              &:focus-within {
-                                background-color: var(--color--${color}--800);
-                              }
-                              &:active {
-                                background-color: var(--color--${color}--700);
-                              }
-                            }
-                          }
-                          padding: var(--space--1) var(--space--10);
-                          display: flex;
-                          justify-content: center;
-                          & > * {
-                            flex: 1;
-                            max-width: var(--width--prose);
-                          }
-                        }
-                      `
-                    )}
-                  `}"
-                >
-                  $${flash}
-                  <button
-                    class="button button--tight button--tight--inline button--transparent"
-                    style="${css`
-                      justify-self: end;
-                      align-self: start;
-                      margin-top: var(--space--0-5);
-                      margin-right: var(--space--3);
-                    `}"
-                    onclick="${javascript`
-                      this.closest(".flash").remove();
-                    `}"
-                  >
-                    <i class="bi bi-x-circle"></i>
-                  </button>
-                </div>
-              `}
-
-          <div
-            style="${css`
-              flex: 1;
-              overflow: auto;
-            `}"
-          >
-            $${body}
-          </div>
-        </div>
-      `,
-    });
-  };
 
   interface Layouts {
     box: (_: {
@@ -1901,7 +1866,7 @@ export default async function courselore({
     }) => HTML;
   }
   app.locals.layouts.box = ({ req, res, head, body }) =>
-    app.locals.layouts.applicationBase({
+    baseLayout({
       req,
       res,
       head,
@@ -1990,7 +1955,7 @@ export default async function courselore({
     extraHeaders = html``,
     body,
   }) =>
-    app.locals.layouts.applicationBase({
+    baseLayout({
       req,
       res,
       head,
