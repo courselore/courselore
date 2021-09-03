@@ -3727,24 +3727,26 @@ export default async function courselore({
     }
   );
 
-  interface Layouts {
-    userSettings: (_: {
-      req: express.Request<
-        {},
-        any,
-        {},
-        {},
-        IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
-      >;
-      res: express.Response<
-        any,
-        IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
-      >;
-      head: HTML;
-      body: HTML;
-    }) => HTML;
-  }
-  app.locals.layouts.userSettings = ({ req, res, head, body }) =>
+  const userSettingsLayout = ({
+    req,
+    res,
+    head,
+    body,
+  }: {
+    req: express.Request<
+      {},
+      any,
+      {},
+      {},
+      IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+    >;
+    res: express.Response<
+      any,
+      IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+    >;
+    head: HTML;
+    body: HTML;
+  }) =>
     settingsLayout({
       req,
       res,
@@ -3783,7 +3785,7 @@ export default async function courselore({
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
-        app.locals.layouts.userSettings({
+        userSettingsLayout({
           req,
           res,
           head: html`<title>Profile · User Settings · CourseLore</title>`,
@@ -4117,7 +4119,7 @@ export default async function courselore({
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
-        app.locals.layouts.userSettings({
+        userSettingsLayout({
           req,
           res,
           head: html`<title>
