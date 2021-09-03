@@ -79,15 +79,8 @@ export default async function courselore({
   app.locals.layouts = {} as Layouts;
   app.locals.partials = {} as Partials;
 
-  interface Constants {
-    userEmailNotifications: UserEmailNotifications[];
-  }
-  type UserEmailNotifications = "none" | "essentials" | "everything";
-  app.locals.constants.userEmailNotifications = [
-    "none",
-    "essentials",
-    "everything",
-  ];
+  type UserEmailNotifications = typeof userEmailNotifications[number];
+  const userEmailNotifications = ["none", "essentials", "everything"] as const;
 
   interface Constants {
     enrollmentRoles: EnrollmentRole[];
@@ -4305,9 +4298,7 @@ export default async function courselore({
     (req, res, next) => {
       if (
         typeof req.body.emailNotifications !== "string" ||
-        !app.locals.constants.userEmailNotifications.includes(
-          req.body.emailNotifications
-        )
+        !userEmailNotifications.includes(req.body.emailNotifications)
       )
         return next("validation");
 
