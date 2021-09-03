@@ -59,6 +59,8 @@ export default async function courselore({
   demonstration?: boolean;
   liveReload?: boolean;
 }): Promise<express.Express> {
+  await fs.ensureDir(dataDirectory);
+
   interface App extends express.Express {}
   const app = express() as App;
 
@@ -110,13 +112,9 @@ export default async function courselore({
   type ConversationType = typeof conversationTypes[number];
   const conversationTypes = ["announcement", "question", "other"] as const;
 
-  interface AppLocals {
-    database: Database;
-  }
-  await fs.ensureDir(dataDirectory);
-  app.locals.database = new Database(path.join(dataDirectory, "courselore.db"));
+  const database = new Database(path.join(dataDirectory, "courselore.db"));
   // TODO: WAL.
-  app.locals.database.migrate(
+  database.migrate(
     sql`
       CREATE TABLE "flashes" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -2668,7 +2666,7 @@ export default async function courselore({
     maxAge: 180 * 24 * 60 * 60 * 1000,
 
     open(req, res, userId) {
-      const session = app.locals.database.get<{
+      const session = database.get<{
         token: string;
       }>(
         sql`
@@ -2688,7 +2686,7 @@ export default async function courselore({
 
     get(req, res) {
       if (req.cookies.session === undefined) return;
-      const session = app.locals.database.get<{
+      const session = database.get<{
         createdAt: string;
         user: number;
       }>(
@@ -2713,7 +2711,7 @@ export default async function courselore({
     },
 
     close(req, res) {
-      app.locals.database.run(
+      database.run(
         sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies.session}`
       );
       res.clearCookie("session", cookieOptions);
@@ -2736,7 +2734,7 @@ export default async function courselore({
   app.locals.helpers.flash = {
     set(req, res, content) {
       res.locals.flash = content;
-      const flash = app.locals.database.get<{ nonce: string }>(
+      const flash = database.get<{ nonce: string }>(
         sql`
           INSERT INTO "flashes" ("nonce", "content")
           VALUES (
@@ -2753,12 +2751,12 @@ export default async function courselore({
     },
 
     get(req, res) {
-      const flash = app.locals.database.get<{
+      const flash = database.get<{
         content: HTML;
       }>(
         sql`SELECT "content" FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
       );
-      app.locals.database.run(
+      database.run(
         sql`DELETE FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
       );
       res.clearCookie("flash", cookieOptions);
@@ -2834,7 +2832,7 @@ export default async function courselore({
       const userId = app.locals.helpers.session.get(req, res);
       if (userId === undefined) return next("route");
 
-      res.locals.user = app.locals.database.get<{
+      res.locals.user = database.get<{
         id: number;
         email: string;
         name: string;
@@ -2849,7 +2847,7 @@ export default async function courselore({
         `
       )!;
 
-      res.locals.invitations = app.locals.database
+      res.locals.invitations = database
         .all<{
           id: number;
           courseId: number;
@@ -2886,7 +2884,7 @@ export default async function courselore({
           role: invitation.role,
         }));
 
-      res.locals.enrollments = app.locals.database
+      res.locals.enrollments = database
         .all<{
           id: number;
           courseId: number;
@@ -3051,7 +3049,7 @@ export default async function courselore({
         req.body.password.trim() === ""
       )
         return next("validation");
-      const user = app.locals.database.get<{ id: number; password: string }>(
+      const user = database.get<{ id: number; password: string }>(
         sql`SELECT "id", "password" FROM "users" WHERE "email" = ${req.body.email}`
       );
       if (
@@ -3178,7 +3176,7 @@ export default async function courselore({
       )
         return next("validation");
 
-      const user = app.locals.database.get<{ id: number; email: string }>(
+      const user = database.get<{ id: number; email: string }>(
         sql`SELECT "id", "email" FROM "users" WHERE "email" = ${req.body.email}`
       );
       if (user === undefined) {
@@ -3196,10 +3194,8 @@ export default async function courselore({
         );
       }
 
-      app.locals.database.run(
-        sql`DELETE FROM "passwordResets" WHERE "user" = ${user.id}`
-      );
-      const passwordReset = app.locals.database.get<{ nonce: string }>(
+      database.run(sql`DELETE FROM "passwordResets" WHERE "user" = ${user.id}`);
+      const passwordReset = database.get<{ nonce: string }>(
         sql`
           INSERT INTO "passwordResets" ("user", "nonce")
           VALUES (
@@ -3281,13 +3277,13 @@ export default async function courselore({
     "/reset-password/:passwordResetNonce",
     ...app.locals.middlewares.isSignedOut,
     (req, res) => {
-      const passwordReset = app.locals.database.get<{
+      const passwordReset = database.get<{
         createdAt: string;
         user: number;
       }>(
         sql`SELECT "createdAt", "user" FROM "passwordResets" WHERE "nonce" = ${req.params.passwordResetNonce}`
       );
-      app.locals.database.run(
+      database.run(
         sql`DELETE FROM "passwordResets" WHERE "nonce" = ${req.params.passwordResetNonce}`
       );
       if (
@@ -3532,7 +3528,7 @@ export default async function courselore({
       )
         return next("validation");
       if (
-        app.locals.database.get<{ exists: number }>(
+        database.get<{ exists: number }>(
           sql`
             SELECT EXISTS(
               SELECT 1 FROM "users" WHERE "email" = ${req.body.email}
@@ -3553,7 +3549,7 @@ export default async function courselore({
           })}`
         );
       }
-      const user = app.locals.database.get<{ id: number }>(
+      const user = database.get<{ id: number }>(
         sql`
           INSERT INTO "users" ("name", "email", "password")
           VALUES (
@@ -4092,7 +4088,7 @@ export default async function courselore({
     )
       return next("validation");
 
-    app.locals.database.run(
+    database.run(
       sql`
           UPDATE "users"
           SET "name" = ${req.body.name},
@@ -4267,7 +4263,7 @@ export default async function courselore({
       )
         return next("validation");
 
-      app.locals.database.run(
+      database.run(
         sql`
           UPDATE "users"
           SET "emailNotifications" = ${req.body.emailNotifications}\
@@ -4347,7 +4343,7 @@ export default async function courselore({
       if (typeof req.body.name !== "string" || req.body.name.trim() === "")
         return next("validation");
 
-      const course = app.locals.database.get<{
+      const course = database.get<{
         id: number;
         reference: string;
       }>(
@@ -4360,7 +4356,7 @@ export default async function courselore({
           RETURNING *
         `
       )!;
-      app.locals.database.run(
+      database.run(
         sql`
           INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
           VALUES (
@@ -4483,7 +4479,7 @@ export default async function courselore({
         }
       if (res.locals.enrollment === undefined) return next("route");
 
-      res.locals.tags = app.locals.database.all<{
+      res.locals.tags = database.all<{
         id: number;
         reference: string;
         name: string;
@@ -4515,7 +4511,7 @@ export default async function courselore({
               .map((phrase) => `"${phrase.replaceAll('"', '""')}"`)
               .join(" ");
 
-      res.locals.conversations = app.locals.database
+      res.locals.conversations = database
         .all<{
           id: number;
           reference: string;
@@ -4594,7 +4590,7 @@ export default async function courselore({
           app.locals.helpers.getConversationMetadata(req, res, conversation)
         );
 
-      res.locals.conversationsCount = app.locals.database.get<{
+      res.locals.conversationsCount = database.get<{
         count: number;
       }>(
         sql`
@@ -4639,7 +4635,7 @@ export default async function courselore({
     ) => IsEnrolledInCourseMiddlewareLocals["conversations"][number];
   }
   app.locals.helpers.getConversationMetadata = (req, res, conversation) => {
-    const originalMessage = app.locals.database.get<{
+    const originalMessage = database.get<{
       createdAt: string;
       anonymousAt: string | null;
       authorEnrollmentId: number | null;
@@ -4673,7 +4669,7 @@ export default async function courselore({
         GROUP BY "messages"."id"
       `
     )!;
-    const mostRecentlyUpdatedMessage = app.locals.database.get<{
+    const mostRecentlyUpdatedMessage = database.get<{
       updatedAt: string;
     }>(
       sql`
@@ -4684,12 +4680,12 @@ export default async function courselore({
         LIMIT 1
       `
     )!;
-    const messagesCount = app.locals.database.get<{
+    const messagesCount = database.get<{
       messagesCount: number;
     }>(
       sql`SELECT COUNT(*) AS "messagesCount" FROM "messages" WHERE "messages"."conversation" = ${conversation.id}`
     )!.messagesCount;
-    const readingsCount = app.locals.database.get<{ readingsCount: number }>(
+    const readingsCount = database.get<{ readingsCount: number }>(
       sql`
         SELECT COUNT(*) AS "readingsCount"
         FROM "readings"
@@ -4701,7 +4697,7 @@ export default async function courselore({
     const endorsements =
       conversation.type !== "question"
         ? []
-        : app.locals.database
+        : database
             .all<{
               id: number;
               enrollmentId: number | null;
@@ -4754,7 +4750,7 @@ export default async function courselore({
                     }
                   : ghostEnrollment,
             }));
-    const taggings = app.locals.database
+    const taggings = database
       .all<{
         id: number;
         tagId: number;
@@ -4967,7 +4963,7 @@ export default async function courselore({
   }
   app.locals.middlewares.invitationExists = [
     (req, res, next) => {
-      const invitation = app.locals.database.get<{
+      const invitation = database.get<{
         id: number;
         expiresAt: string | null;
         usedAt: string | null;
@@ -5111,7 +5107,7 @@ export default async function courselore({
   app.locals.middlewares.mayManageEnrollment = [
     ...app.locals.middlewares.isCourseStaff,
     (req, res, next) => {
-      const managedEnrollment = app.locals.database.get<{
+      const managedEnrollment = database.get<{
         id: number;
         reference: string;
         role: EnrollmentRole;
@@ -5130,7 +5126,7 @@ export default async function courselore({
       };
       if (
         managedEnrollment.id === res.locals.enrollment.id &&
-        app.locals.database.get<{ count: number }>(
+        database.get<{ count: number }>(
           sql`
             SELECT COUNT(*) AS "count"
             FROM "enrollments"
@@ -5313,7 +5309,7 @@ export default async function courselore({
       if (typeof req.body.name !== "string" || req.body.name.trim() === "")
         return next("validation");
 
-      app.locals.database.run(
+      database.run(
         sql`
           UPDATE "courses"
           SET "name" = ${req.body.name}
@@ -5359,7 +5355,7 @@ export default async function courselore({
     "/courses/:courseReference/settings/invitations",
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
-      const invitations = app.locals.database.all<{
+      const invitations = database.all<{
         id: number;
         expiresAt: string | null;
         usedAt: string | null;
@@ -6220,7 +6216,7 @@ export default async function courselore({
 
       switch (req.body.type) {
         case "link":
-          const invitation = app.locals.database.get<{ reference: string }>(
+          const invitation = database.get<{ reference: string }>(
             sql`
               INSERT INTO "invitations" ("expiresAt", "course", "reference", "role")
               VALUES (
@@ -6291,7 +6287,7 @@ export default async function courselore({
 
           for (const { email, name } of emails) {
             if (
-              app.locals.database.get<{ exists: number }>(
+              database.get<{ exists: number }>(
                 sql`
                   SELECT EXISTS(
                     SELECT 1
@@ -6305,7 +6301,7 @@ export default async function courselore({
             )
               continue;
 
-            const existingUnusedInvitation = app.locals.database.get<{
+            const existingUnusedInvitation = database.get<{
               id: number;
               name: string | null;
             }>(
@@ -6318,7 +6314,7 @@ export default async function courselore({
               `
             );
             if (existingUnusedInvitation !== undefined) {
-              app.locals.database.run(
+              database.run(
                 sql`
                   UPDATE "invitations"
                   SET "expiresAt" = ${req.body.expiresAt},
@@ -6330,7 +6326,7 @@ export default async function courselore({
               continue;
             }
 
-            const invitation = app.locals.database.get<{
+            const invitation = database.get<{
               id: number;
               expiresAt: string | null;
               usedAt: string | null;
@@ -6420,7 +6416,7 @@ export default async function courselore({
         )
           return next("validation");
 
-        app.locals.database.run(
+        database.run(
           sql`UPDATE "invitations" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.invitation.id}`
         );
 
@@ -6443,7 +6439,7 @@ export default async function courselore({
         )
           return next("validation");
 
-        app.locals.database.run(
+        database.run(
           sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitation.id}`
         );
 
@@ -6459,7 +6455,7 @@ export default async function courselore({
       }
 
       if (req.body.removeExpiration === "true") {
-        app.locals.database.run(
+        database.run(
           sql`
             UPDATE "invitations"
             SET "expiresAt" = ${null}
@@ -6479,7 +6475,7 @@ export default async function courselore({
       }
 
       if (req.body.expire === "true") {
-        app.locals.database.run(
+        database.run(
           sql`
             UPDATE "invitations"
             SET "expiresAt" = ${new Date().toISOString()}
@@ -6512,7 +6508,7 @@ export default async function courselore({
     "/courses/:courseReference/settings/enrollments",
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
-      const enrollments = app.locals.database.all<{
+      const enrollments = database.all<{
         id: number;
         userId: number;
         userEmail: string;
@@ -6839,7 +6835,7 @@ export default async function courselore({
     (req, res, next) => {
       if (typeof req.body.role === "string") {
         if (!enrollmentRoles.includes(req.body.role)) return next("validation");
-        app.locals.database.run(
+        database.run(
           sql`UPDATE "enrollments" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.managedEnrollment.id}`
         );
 
@@ -6870,7 +6866,7 @@ export default async function courselore({
     "/courses/:courseReference/settings/enrollments/:enrollmentReference",
     ...app.locals.middlewares.mayManageEnrollment,
     (req, res) => {
-      app.locals.database.run(
+      database.run(
         sql`DELETE FROM "enrollments" WHERE "id" = ${res.locals.managedEnrollment.id}`
       );
 
@@ -7291,7 +7287,7 @@ export default async function courselore({
 
       for (const tag of req.body.tags)
         if (tag.reference === undefined)
-          app.locals.database.run(
+          database.run(
             sql`
               INSERT INTO "tags" ("course", "reference", "name", "staffOnlyAt")
               VALUES (
@@ -7303,14 +7299,14 @@ export default async function courselore({
             `
           );
         else if (tag.delete === "true")
-          app.locals.database.run(
+          database.run(
             sql`
               DELETE FROM "tags" WHERE "reference" = ${tag.reference}
             `
           );
         // FIXME: Don’t update ‘staffOnlyAt’ unless necessary.
         else
-          app.locals.database.run(
+          database.run(
             sql`
               UPDATE "tags"
               SET "name" = ${tag.name},
@@ -7466,7 +7462,7 @@ export default async function courselore({
       )
         return next("validation");
 
-      app.locals.database.run(
+      database.run(
         sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollment.id}`
       );
 
@@ -7594,7 +7590,7 @@ export default async function courselore({
     ...app.locals.middlewares.isSignedIn,
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
-      app.locals.database.run(
+      database.run(
         sql`
           INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
           VALUES (
@@ -7607,7 +7603,7 @@ export default async function courselore({
         `
       );
       if (res.locals.invitation.email !== null)
-        app.locals.database.run(
+        database.run(
           sql`
             UPDATE "invitations"
             SET "usedAt" = ${new Date().toISOString()}
@@ -9767,7 +9763,7 @@ ${value}</textarea
       )
         return next("validation");
 
-      app.locals.database.run(
+      database.run(
         sql`
           UPDATE "courses"
           SET "nextConversationReference" = ${
@@ -9778,7 +9774,7 @@ ${value}</textarea
       );
       // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
       const conversationId = Number(
-        app.locals.database.run(
+        database.run(
           sql`
             INSERT INTO "conversations" (
               "course",
@@ -9801,7 +9797,7 @@ ${value}</textarea
           `
         ).lastInsertRowid
       );
-      app.locals.database.run(
+      database.run(
         sql`
           INSERT INTO "messages" (
             "conversation",
@@ -9820,7 +9816,7 @@ ${value}</textarea
         `
       );
       for (const tagReference of req.body.tagsReferences)
-        app.locals.database.run(
+        database.run(
           sql`
             INSERT INTO "taggings" ("conversation", "tag")
             VALUES (
@@ -9852,7 +9848,7 @@ ${value}</textarea
       // - NOT EDITS
       // - Have a queue
       sendMail({
-        to: app.locals.database
+        to: database
           .all<{ email: string }>(
             sql`
               SELECT "users"."email" AS "email"
@@ -9912,7 +9908,7 @@ ${value}</textarea
   app.locals.middlewares.isConversationAccessible = [
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
-      const conversation = app.locals.database.get<{
+      const conversation = database.get<{
         id: number;
         reference: string;
         title: string;
@@ -9950,7 +9946,7 @@ ${value}</textarea
         conversation
       );
 
-      res.locals.messages = app.locals.database
+      res.locals.messages = database
         .all<{
           id: number;
           createdAt: string;
@@ -9997,7 +9993,7 @@ ${value}</textarea
         )
         .map((message) => {
           // FIXME: Try to get rid of these n+1 queries.
-          const endorsements = app.locals.database
+          const endorsements = database
             .all<{
               id: number;
               enrollmentId: number | null;
@@ -10049,7 +10045,7 @@ ${value}</textarea
                     }
                   : ghostEnrollment,
             }));
-          const likes = app.locals.database
+          const likes = database
             .all<{
               id: number;
               enrollmentId: number | null;
@@ -10265,7 +10261,7 @@ ${value}</textarea
     ...app.locals.middlewares.eventSource,
     (req, res) => {
       for (const message of res.locals.messages)
-        app.locals.database.run(
+        database.run(
           sql`
             INSERT INTO "readings" ("message", "enrollment")
             VALUES (${message.id}, ${res.locals.enrollment.id})
@@ -11905,7 +11901,7 @@ ${value}</textarea
       if (typeof req.body.title === "string")
         if (req.body.title.trim() === "") return next("validation");
         else
-          app.locals.database.run(
+          database.run(
             sql`UPDATE "conversations" SET "title" = ${req.body.title} WHERE "id" = ${res.locals.conversation.id}`
           );
 
@@ -11913,7 +11909,7 @@ ${value}</textarea
         if (!res.locals.conversationTypes.includes(req.body.type))
           return next("validation");
         else
-          app.locals.database.run(
+          database.run(
             sql`
               UPDATE "conversations"
               SET "type" = ${req.body.type}
@@ -11932,7 +11928,7 @@ ${value}</textarea
         )
           return next("validation");
         else
-          app.locals.database.run(
+          database.run(
             sql`
               UPDATE "conversations"
               SET "pinnedAt" = ${
@@ -11950,7 +11946,7 @@ ${value}</textarea
         )
           return next("validation");
         else
-          app.locals.database.run(
+          database.run(
             sql`
               UPDATE "conversations"
               SET "staffOnlyAt" = ${new Date().toISOString()}
@@ -11977,7 +11973,7 @@ ${value}</textarea
     ...app.locals.middlewares.isCourseStaff,
     ...app.locals.middlewares.isConversationAccessible,
     (req, res) => {
-      app.locals.database.run(
+      database.run(
         sql`DELETE FROM "conversations" WHERE "id" = ${res.locals.conversation.id}`
       );
 
@@ -12007,7 +12003,7 @@ ${value}</textarea
       )
         return next("validation");
 
-      app.locals.database.run(
+      database.run(
         sql`
           UPDATE "conversations"
           SET "nextMessageReference" = ${
@@ -12016,7 +12012,7 @@ ${value}</textarea
           WHERE "id" = ${res.locals.conversation.id}
         `
       );
-      app.locals.database.run(
+      database.run(
         sql`
           INSERT INTO "messages" (
             "conversation",
@@ -12066,7 +12062,7 @@ ${value}</textarea
       if (typeof req.body.content === "string")
         if (req.body.content.trim() === "") return next("validation");
         else
-          app.locals.database.run(
+          database.run(
             sql`
               UPDATE "messages"
               SET "content" = ${req.body.content},
@@ -12087,7 +12083,7 @@ ${value}</textarea
         )
           return next("validation");
         else
-          app.locals.database.run(
+          database.run(
             sql`
               UPDATE "messages"
               SET "answerAt" = ${
@@ -12109,7 +12105,7 @@ ${value}</textarea
         )
           return next("validation");
         else
-          app.locals.database.run(
+          database.run(
             sql`
               UPDATE "messages"
               SET "anonymousAt" = ${
@@ -12146,7 +12142,7 @@ ${value}</textarea
     (req, res, next) => {
       if (res.locals.message.reference === "1") return next("validation");
 
-      app.locals.database.run(
+      database.run(
         sql`DELETE FROM "messages" WHERE "id" = ${res.locals.message.id}`
       );
 
@@ -12179,7 +12175,7 @@ ${value}</textarea
       )
         return next("validation");
 
-      app.locals.database.run(
+      database.run(
         sql`INSERT INTO "likes" ("message", "enrollment") VALUES (${res.locals.message.id}, ${res.locals.enrollment.id})`
       );
 
@@ -12210,7 +12206,7 @@ ${value}</textarea
       );
       if (like === undefined) return next("validation");
 
-      app.locals.database.run(sql`DELETE FROM "likes" WHERE "id" = ${like.id}`);
+      database.run(sql`DELETE FROM "likes" WHERE "id" = ${like.id}`);
 
       app.locals.helpers.emitCourseRefresh(res.locals.course.id);
 
@@ -12289,7 +12285,7 @@ ${value}</textarea
       )
         return next("validation");
 
-      app.locals.database.run(
+      database.run(
         sql`INSERT INTO "endorsements" ("message", "enrollment") VALUES (${res.locals.message.id}, ${res.locals.enrollment.id})`
       );
 
@@ -12320,7 +12316,7 @@ ${value}</textarea
       );
       if (endorsement === undefined) return next("validation");
 
-      app.locals.database.run(
+      database.run(
         sql`DELETE FROM "endorsements" WHERE "id" = ${endorsement.id}`
       );
 
@@ -12354,7 +12350,7 @@ ${value}</textarea
       )
         return next("validation");
 
-      app.locals.database.run(
+      database.run(
         sql`
             INSERT INTO "taggings" ("conversation", "tag")
             VALUES (
@@ -12396,7 +12392,7 @@ ${value}</textarea
       )
         return next("validation");
 
-      app.locals.database.run(
+      database.run(
         sql`
           DELETE FROM "taggings"
           WHERE "conversation" = ${res.locals.conversation.id} AND
@@ -12425,7 +12421,7 @@ ${value}</textarea
           parallelism: 1,
         });
         const card = faker.helpers.contextualCard();
-        const demonstrationUser = app.locals.database.get<{ id: number }>(
+        const demonstrationUser = database.get<{ id: number }>(
           sql`
             INSERT INTO "users" ("email", "password", "name", "avatar", "biography")
             VALUES (
@@ -12444,7 +12440,7 @@ ${value}</textarea
 
         const users = [...new Array(400)].map((_) => {
           const card = faker.helpers.contextualCard();
-          return app.locals.database.get<{
+          return database.get<{
             id: number;
             email: string;
             name: string;
@@ -12492,7 +12488,7 @@ ${value}</textarea
             enrollmentsUsers: users.slice(300, 400),
           },
         ]) {
-          const course = app.locals.database.get<{
+          const course = database.get<{
             id: number;
             nextConversationReference: number;
           }>(
@@ -12511,7 +12507,7 @@ ${value}</textarea
             `
           )!;
 
-          const enrollment = app.locals.database.get<{
+          const enrollment = database.get<{
             id: number;
             role: EnrollmentRole;
           }>(
@@ -12541,7 +12537,7 @@ ${value}</textarea
               Math.random() < 0.2
                 ? users[Math.floor(Math.random() * users.length)]
                 : null;
-            app.locals.database.run(
+            database.run(
               sql`
                 INSERT INTO "invitations" (
                   "expiresAt",
@@ -12578,7 +12574,7 @@ ${value}</textarea
             enrollment,
             ...enrollmentsUsers.map(
               (enrollmentUser) =>
-                app.locals.database.get<{
+                database.get<{
                   id: number;
                   role: EnrollmentRole;
                 }>(
@@ -12621,7 +12617,7 @@ ${value}</textarea
             ).toISOString();
             // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
             const conversationId = Number(
-              app.locals.database.run(
+              database.run(
                 sql`
                   INSERT INTO "conversations" (
                     "course",
@@ -12650,7 +12646,7 @@ ${value}</textarea
                 `
               ).lastInsertRowid
             );
-            const conversation = app.locals.database.get<{
+            const conversation = database.get<{
               id: number;
               nextMessageReference: number;
             }>(
@@ -12666,7 +12662,7 @@ ${value}</textarea
                 new Date(messageCreatedAt).getTime() +
                   Math.floor(Math.random() * 12 * 60 * 60 * 1000)
               ).toISOString();
-              app.locals.database.run(
+              database.run(
                 sql`
                   INSERT INTO "messages" (
                     "createdAt",
