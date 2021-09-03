@@ -6141,7 +6141,7 @@ export default async function courselore({
         !enrollmentRoles.includes(req.body.role) ||
         (req.body.expiresAt !== undefined &&
           (typeof req.body.expiresAt !== "string" ||
-            !app.locals.helpers.isDate(req.body.expiresAt) ||
+            !isDate(req.body.expiresAt) ||
             app.locals.helpers.isExpired(req.body.expiresAt))) ||
         typeof req.body.type !== "string" ||
         !["link", "email"].includes(req.body.type)
@@ -6368,7 +6368,7 @@ export default async function courselore({
       if (req.body.expiresAt !== undefined) {
         if (
           typeof req.body.expiresAt !== "string" ||
-          !app.locals.helpers.isDate(req.body.expiresAt) ||
+          !isDate(req.body.expiresAt) ||
           app.locals.helpers.isExpired(req.body.expiresAt)
         )
           return next("validation");
@@ -12739,10 +12739,7 @@ ${value}</textarea
 
   const emailRegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
-  interface Helpers {
-    isDate: (dateString: string) => boolean;
-  }
-  app.locals.helpers.isDate = (string) =>
+  const isDate = (string: string): boolean =>
     string.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/) !== null &&
     !isNaN(new Date(string).getTime());
 
