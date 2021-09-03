@@ -46,10 +46,12 @@ export default async function courselore({
   dataDirectory,
   url,
   administrator,
+  demonstration = process.env.NODE_ENV !== "production",
 }: {
   dataDirectory: string;
   url: string;
   administrator: string;
+  demonstration?: boolean;
 }): Promise<express.Express> {
   interface App extends express.Express {}
   const app = express() as App;
@@ -62,10 +64,8 @@ export default async function courselore({
   }
   interface Settings {
     env: string;
-    demonstration: boolean;
     liveReload: boolean;
   }
-  app.locals.settings.demonstration = true;
   app.locals.settings.liveReload = false;
 
   interface AppLocals {
@@ -1770,7 +1770,7 @@ export default async function courselore({
               }
             `}"
           >
-            $${app.locals.settings.demonstration
+            $${demonstration
               ? html`
                   <div
                     style="${css`
@@ -12486,343 +12486,338 @@ ${value}</textarea
     }
   );
 
-  app.post<{}, any, {}, {}, {}>(
-    "/demonstration-data",
-    asyncHandler(async (req, res, next) => {
-      if (!app.locals.settings.demonstration) return next();
-
-      const password = await argon2.hash("courselore", {
-        type: argon2.argon2id,
-        memoryCost: 15 * 2 ** 10,
-        timeCost: 2,
-        parallelism: 1,
-      });
-      const card = faker.helpers.contextualCard();
-      const demonstrationUser = app.locals.database.get<{ id: number }>(
-        sql`
-          INSERT INTO "users" ("email", "password", "name", "avatar", "biography")
-          VALUES (
-            ${`${card.username.toLowerCase()}--${cryptoRandomString({
-              length: 10,
-              type: "numeric",
-            })}@courselore.org`},
-            ${password},
-            ${card.name},
-            ${card.avatar},
-            ${faker.lorem.paragraph()}
-          )
-          RETURNING *
-        `
-      )!;
-
-      const users = [...new Array(400)].map((_) => {
+  if (demonstration)
+    app.post<{}, any, {}, {}, {}>(
+      "/demonstration-data",
+      asyncHandler(async (req, res, next) => {
+        const password = await argon2.hash("courselore", {
+          type: argon2.argon2id,
+          memoryCost: 15 * 2 ** 10,
+          timeCost: 2,
+          parallelism: 1,
+        });
         const card = faker.helpers.contextualCard();
-        return app.locals.database.get<{
-          id: number;
-          email: string;
-          name: string;
-        }>(
+        const demonstrationUser = app.locals.database.get<{ id: number }>(
           sql`
             INSERT INTO "users" ("email", "password", "name", "avatar", "biography")
             VALUES (
-              ${`${card.username}--${cryptoRandomString({
+              ${`${card.username.toLowerCase()}--${cryptoRandomString({
                 length: 10,
                 type: "numeric",
               })}@courselore.org`},
               ${password},
               ${card.name},
-              ${Math.random() < 0.6 ? card.avatar : null},
-              ${Math.random() < 0.3 ? faker.lorem.paragraph() : null}
-            )
-            RETURNING *
-          `
-        )!;
-      });
-
-      for (const { name, role, accentColor, enrollmentsUsers } of [
-        {
-          name: "Pharmacology",
-          role: app.locals.constants.enrollmentRoles[0],
-          accentColor: app.locals.constants.enrollmentAccentColors[3],
-          enrollmentsUsers: users.slice(0, 100),
-        },
-        {
-          name: "Advanced Harmony",
-          role: app.locals.constants.enrollmentRoles[1],
-          accentColor: app.locals.constants.enrollmentAccentColors[2],
-          enrollmentsUsers: users.slice(100, 200),
-        },
-        {
-          name: "Introduction to Statistics",
-          role: app.locals.constants.enrollmentRoles[1],
-          accentColor: app.locals.constants.enrollmentAccentColors[1],
-          enrollmentsUsers: users.slice(200, 300),
-        },
-        {
-          name: "Principles of Programming Languages",
-          role: app.locals.constants.enrollmentRoles[1],
-          accentColor: app.locals.constants.enrollmentAccentColors[0],
-          enrollmentsUsers: users.slice(300, 400),
-        },
-      ]) {
-        const course = app.locals.database.get<{
-          id: number;
-          nextConversationReference: number;
-        }>(
-          sql`
-            INSERT INTO "courses" (
-              "reference",
-              "name",
-              "nextConversationReference"
-            )
-            VALUES (
-              ${cryptoRandomString({ length: 10, type: "numeric" })},
-              ${name},
-              ${30 + Math.floor(Math.random() * 20)}
+              ${card.avatar},
+              ${faker.lorem.paragraph()}
             )
             RETURNING *
           `
         )!;
 
-        const enrollment = app.locals.database.get<{
-          id: number;
-          role: EnrollmentRole;
-        }>(
-          sql`
-            INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
-            VALUES (
-              ${demonstrationUser.id},
-              ${course.id},
-              ${cryptoRandomString({ length: 10, type: "numeric" })},
-              ${role},
-              ${accentColor}
-            )
-            RETURNING *
-          `
-        )!;
-
-        for (const _ of new Array(20)) {
-          const expiresAt =
-            Math.random() < 0.3
-              ? new Date(
-                  Date.now() -
-                    30 * 24 * 60 * 60 * 1000 +
-                    Math.floor(Math.random() * 60 * 24 * 60 * 60 * 1000)
-                ).toISOString()
-              : null;
-          const user =
-            Math.random() < 0.2
-              ? users[Math.floor(Math.random() * users.length)]
-              : null;
-          app.locals.database.run(
+        const users = [...new Array(400)].map((_) => {
+          const card = faker.helpers.contextualCard();
+          return app.locals.database.get<{
+            id: number;
+            email: string;
+            name: string;
+          }>(
             sql`
-              INSERT INTO "invitations" (
-                "expiresAt",
-                "usedAt",
-                "course",
+              INSERT INTO "users" ("email", "password", "name", "avatar", "biography")
+              VALUES (
+                ${`${card.username}--${cryptoRandomString({
+                  length: 10,
+                  type: "numeric",
+                })}@courselore.org`},
+                ${password},
+                ${card.name},
+                ${Math.random() < 0.6 ? card.avatar : null},
+                ${Math.random() < 0.3 ? faker.lorem.paragraph() : null}
+              )
+              RETURNING *
+            `
+          )!;
+        });
+
+        for (const { name, role, accentColor, enrollmentsUsers } of [
+          {
+            name: "Pharmacology",
+            role: app.locals.constants.enrollmentRoles[0],
+            accentColor: app.locals.constants.enrollmentAccentColors[3],
+            enrollmentsUsers: users.slice(0, 100),
+          },
+          {
+            name: "Advanced Harmony",
+            role: app.locals.constants.enrollmentRoles[1],
+            accentColor: app.locals.constants.enrollmentAccentColors[2],
+            enrollmentsUsers: users.slice(100, 200),
+          },
+          {
+            name: "Introduction to Statistics",
+            role: app.locals.constants.enrollmentRoles[1],
+            accentColor: app.locals.constants.enrollmentAccentColors[1],
+            enrollmentsUsers: users.slice(200, 300),
+          },
+          {
+            name: "Principles of Programming Languages",
+            role: app.locals.constants.enrollmentRoles[1],
+            accentColor: app.locals.constants.enrollmentAccentColors[0],
+            enrollmentsUsers: users.slice(300, 400),
+          },
+        ]) {
+          const course = app.locals.database.get<{
+            id: number;
+            nextConversationReference: number;
+          }>(
+            sql`
+              INSERT INTO "courses" (
                 "reference",
-                "email",
                 "name",
-                "role"
+                "nextConversationReference"
               )
               VALUES (
-                ${expiresAt},
-                ${
-                  user === null || Math.random() < 0.4
-                    ? null
-                    : new Date(
-                        (expiresAt === null
-                          ? Date.now()
-                          : new Date(expiresAt).getTime()) -
-                          Math.floor(Math.random() * 20 * 24 * 60 * 60 * 1000)
-                      ).toISOString()
-                },
+                ${cryptoRandomString({ length: 10, type: "numeric" })},
+                ${name},
+                ${30 + Math.floor(Math.random() * 20)}
+              )
+              RETURNING *
+            `
+          )!;
+
+          const enrollment = app.locals.database.get<{
+            id: number;
+            role: EnrollmentRole;
+          }>(
+            sql`
+              INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
+              VALUES (
+                ${demonstrationUser.id},
                 ${course.id},
                 ${cryptoRandomString({ length: 10, type: "numeric" })},
-                ${user?.email},
-                ${Math.random() < 0.5 ? user?.name : null},
-                ${
-                  app.locals.constants.enrollmentRoles[
-                    Math.random() < 0.1 ? 1 : 0
-                  ]
-                }
+                ${role},
+                ${accentColor}
               )
+              RETURNING *
             `
-          );
-        }
+          )!;
 
-        const enrollments: { id: number; role: EnrollmentRole }[] = [
-          enrollment,
-          ...enrollmentsUsers.map(
-            (enrollmentUser) =>
-              app.locals.database.get<{
-                id: number;
-                role: EnrollmentRole;
-              }>(
-                sql`
-                  INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
-                  VALUES (
-                    ${enrollmentUser.id},
-                    ${course.id},
-                    ${cryptoRandomString({ length: 10, type: "numeric" })},
-                    ${
-                      app.locals.constants.enrollmentRoles[
-                        Math.random() < 0.1 ? 1 : 0
-                      ]
-                    },
-                    ${
-                      app.locals.constants.enrollmentAccentColors[
-                        Math.floor(
-                          Math.random() *
-                            app.locals.constants.enrollmentAccentColors.length
-                        )
-                      ]
-                    }
-                  )
-                  RETURNING *
-                `
-              )!
-          ),
-        ];
-
-        // FIXME: If staffOnly, then create a random reference.
-        let conversationCreatedAt = new Date(
-          Date.now() -
-            Math.floor(30 * 24 * 60 * 60 * 1000) -
-            Math.floor(Math.random() * 20 * 24 * 60 * 60 * 1000)
-        ).toISOString();
-        for (
-          let conversationReference = 1;
-          conversationReference < course.nextConversationReference;
-          conversationReference++
-        ) {
-          conversationCreatedAt = new Date(
-            new Date(conversationCreatedAt).getTime() +
-              6 * 60 * 60 * 1000 +
-              Math.floor(Math.random() * 12 * 60 * 60 * 1000)
-          ).toISOString();
-          // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
-          const conversationId = Number(
+          for (const _ of new Array(20)) {
+            const expiresAt =
+              Math.random() < 0.3
+                ? new Date(
+                    Date.now() -
+                      30 * 24 * 60 * 60 * 1000 +
+                      Math.floor(Math.random() * 60 * 24 * 60 * 60 * 1000)
+                  ).toISOString()
+                : null;
+            const user =
+              Math.random() < 0.2
+                ? users[Math.floor(Math.random() * users.length)]
+                : null;
             app.locals.database.run(
               sql`
-                INSERT INTO "conversations" (
+                INSERT INTO "invitations" (
+                  "expiresAt",
+                  "usedAt",
                   "course",
                   "reference",
-                  "title",
-                  "nextMessageReference",
-                  "type",
-                  "pinnedAt",
-                  "staffOnlyAt"
+                  "email",
+                  "name",
+                  "role"
                 )
                 VALUES (
-                  ${course.id},
-                  ${String(conversationReference)},
-                  ${lodash.capitalize(
-                    faker.lorem.words(1 + Math.floor(Math.random() * 10))
-                  )},
-                  ${Math.floor(Math.random() * 10) + 2},
+                  ${expiresAt},
                   ${
-                    app.locals.constants.conversationTypes[
-                      Math.random() < 0.7 ? 1 : Math.random() < 0.7 ? 0 : 2
-                    ]
-                  },
-                  ${Math.random() < 0.05 ? new Date().toISOString() : null},
-                  ${Math.random() < 0.25 ? new Date().toISOString() : null}
-                )
-              `
-            ).lastInsertRowid
-          );
-          const conversation = app.locals.database.get<{
-            id: number;
-            nextMessageReference: number;
-          }>(
-            sql`SELECT * FROM "conversations" WHERE "id" = ${conversationId}`
-          )!;
-          let messageCreatedAt = conversationCreatedAt;
-          for (
-            let messageReference = 1;
-            messageReference < conversation.nextMessageReference;
-            messageReference++
-          ) {
-            messageCreatedAt = new Date(
-              new Date(messageCreatedAt).getTime() +
-                Math.floor(Math.random() * 12 * 60 * 60 * 1000)
-            ).toISOString();
-            app.locals.database.run(
-              sql`
-                INSERT INTO "messages" (
-                  "createdAt",
-                  "updatedAt",
-                  "conversation",
-                  "reference",
-                  "authorEnrollment",
-                  "content",
-                  "answerAt",
-                  "anonymousAt"
-                )
-                VALUES (
-                  ${messageCreatedAt},
-                  ${
-                    Math.random() < 0.8
+                    user === null || Math.random() < 0.4
                       ? null
                       : new Date(
-                          new Date(messageCreatedAt).getTime() +
-                            5 * 60 * 60 * 1000 +
-                            Math.floor(Math.random() * 12 * 60 * 60 * 1000)
+                          (expiresAt === null
+                            ? Date.now()
+                            : new Date(expiresAt).getTime()) -
+                            Math.floor(Math.random() * 20 * 24 * 60 * 60 * 1000)
                         ).toISOString()
                   },
-                  ${conversation.id},
-                  ${String(messageReference)},
+                  ${course.id},
+                  ${cryptoRandomString({ length: 10, type: "numeric" })},
+                  ${user?.email},
+                  ${Math.random() < 0.5 ? user?.name : null},
                   ${
-                    enrollments[Math.floor(Math.random() * enrollments.length)]
-                      .id
-                  },
-                  ${faker.lorem.paragraphs(
-                    1 + Math.floor(Math.random() * 5),
-                    "\n\n"
-                  )},
-                  ${Math.random() < 0.5 ? new Date().toISOString() : null},
-                  ${Math.random() < 0.25 ? new Date().toISOString() : null}
+                    app.locals.constants.enrollmentRoles[
+                      Math.random() < 0.1 ? 1 : 0
+                    ]
+                  }
                 )
               `
             );
-            // TODO: endorsements, likes, tags, taggings
+          }
+
+          const enrollments: { id: number; role: EnrollmentRole }[] = [
+            enrollment,
+            ...enrollmentsUsers.map(
+              (enrollmentUser) =>
+                app.locals.database.get<{
+                  id: number;
+                  role: EnrollmentRole;
+                }>(
+                  sql`
+                    INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
+                    VALUES (
+                      ${enrollmentUser.id},
+                      ${course.id},
+                      ${cryptoRandomString({ length: 10, type: "numeric" })},
+                      ${
+                        app.locals.constants.enrollmentRoles[
+                          Math.random() < 0.1 ? 1 : 0
+                        ]
+                      },
+                      ${
+                        app.locals.constants.enrollmentAccentColors[
+                          Math.floor(
+                            Math.random() *
+                              app.locals.constants.enrollmentAccentColors.length
+                          )
+                        ]
+                      }
+                    )
+                    RETURNING *
+                  `
+                )!
+            ),
+          ];
+
+          // FIXME: If staffOnly, then create a random reference.
+          let conversationCreatedAt = new Date(
+            Date.now() -
+              Math.floor(30 * 24 * 60 * 60 * 1000) -
+              Math.floor(Math.random() * 20 * 24 * 60 * 60 * 1000)
+          ).toISOString();
+          for (
+            let conversationReference = 1;
+            conversationReference < course.nextConversationReference;
+            conversationReference++
+          ) {
+            conversationCreatedAt = new Date(
+              new Date(conversationCreatedAt).getTime() +
+                6 * 60 * 60 * 1000 +
+                Math.floor(Math.random() * 12 * 60 * 60 * 1000)
+            ).toISOString();
+            // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
+            const conversationId = Number(
+              app.locals.database.run(
+                sql`
+                  INSERT INTO "conversations" (
+                    "course",
+                    "reference",
+                    "title",
+                    "nextMessageReference",
+                    "type",
+                    "pinnedAt",
+                    "staffOnlyAt"
+                  )
+                  VALUES (
+                    ${course.id},
+                    ${String(conversationReference)},
+                    ${lodash.capitalize(
+                      faker.lorem.words(1 + Math.floor(Math.random() * 10))
+                    )},
+                    ${Math.floor(Math.random() * 10) + 2},
+                    ${
+                      app.locals.constants.conversationTypes[
+                        Math.random() < 0.7 ? 1 : Math.random() < 0.7 ? 0 : 2
+                      ]
+                    },
+                    ${Math.random() < 0.05 ? new Date().toISOString() : null},
+                    ${Math.random() < 0.25 ? new Date().toISOString() : null}
+                  )
+                `
+              ).lastInsertRowid
+            );
+            const conversation = app.locals.database.get<{
+              id: number;
+              nextMessageReference: number;
+            }>(
+              sql`SELECT * FROM "conversations" WHERE "id" = ${conversationId}`
+            )!;
+            let messageCreatedAt = conversationCreatedAt;
+            for (
+              let messageReference = 1;
+              messageReference < conversation.nextMessageReference;
+              messageReference++
+            ) {
+              messageCreatedAt = new Date(
+                new Date(messageCreatedAt).getTime() +
+                  Math.floor(Math.random() * 12 * 60 * 60 * 1000)
+              ).toISOString();
+              app.locals.database.run(
+                sql`
+                  INSERT INTO "messages" (
+                    "createdAt",
+                    "updatedAt",
+                    "conversation",
+                    "reference",
+                    "authorEnrollment",
+                    "content",
+                    "answerAt",
+                    "anonymousAt"
+                  )
+                  VALUES (
+                    ${messageCreatedAt},
+                    ${
+                      Math.random() < 0.8
+                        ? null
+                        : new Date(
+                            new Date(messageCreatedAt).getTime() +
+                              5 * 60 * 60 * 1000 +
+                              Math.floor(Math.random() * 12 * 60 * 60 * 1000)
+                          ).toISOString()
+                    },
+                    ${conversation.id},
+                    ${String(messageReference)},
+                    ${
+                      enrollments[
+                        Math.floor(Math.random() * enrollments.length)
+                      ].id
+                    },
+                    ${faker.lorem.paragraphs(
+                      1 + Math.floor(Math.random() * 5),
+                      "\n\n"
+                    )},
+                    ${Math.random() < 0.5 ? new Date().toISOString() : null},
+                    ${Math.random() < 0.25 ? new Date().toISOString() : null}
+                  )
+                `
+              );
+              // TODO: endorsements, likes, tags, taggings
+            }
           }
         }
-      }
 
-      app.locals.helpers.session.open(req, res, demonstrationUser.id);
-      app.locals.helpers.flash.set(
-        req,
-        res,
-        html`
-          <div class="flash--green">
-            <p>
-              Demonstration data including users, courses, conversations, and so
-              forth, have been created and you’ve been signed in as a
-              demonstration user to give you a better idea of what CourseLore
-              looks like in use. If you wish to sign in as another one of the
-              demonstration users, their password is “courselore”.
-            </p>
-          </div>
-        `
-      );
-      res.redirect(url);
-    })
-  );
-
-  app.delete<{}, any, {}, {}, {}>("/turn-off", (req, res, next) => {
-    if (
-      !app.locals.settings.demonstration ||
-      app.locals.settings.env === "production"
-    )
-      return next();
-
-    res.send(
-      `The demonstration server was turned off. Thanks for trying out CourseLore.`
+        app.locals.helpers.session.open(req, res, demonstrationUser.id);
+        app.locals.helpers.flash.set(
+          req,
+          res,
+          html`
+            <div class="flash--green">
+              <p>
+                Demonstration data including users, courses, conversations, and
+                so forth, have been created and you’ve been signed in as a
+                demonstration user to give you a better idea of what CourseLore
+                looks like in use. If you wish to sign in as another one of the
+                demonstration users, their password is “courselore”.
+              </p>
+            </div>
+          `
+        );
+        res.redirect(url);
+      })
     );
-    process.exit(0);
-  });
+
+  if (demonstration && process.env.NODE_ENV !== "production")
+    app.delete<{}, any, {}, {}, {}>("/turn-off", (req, res, next) => {
+      res.send(
+        `The demonstration server was turned off. Thanks for trying out CourseLore.`
+      );
+      process.exit(0);
+    });
 
   app.all<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "*",
