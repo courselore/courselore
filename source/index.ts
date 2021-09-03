@@ -2610,10 +2610,7 @@ export default async function courselore({
     });
 
   // FIXME: This only works for a single process. To support multiple processes poll the database for changes or use a message broker mechanism (ZeroMQ seems like a good candidate).
-  interface AppLocals {
-    eventSources: Set<express.Response<any, Record<string, any>>>;
-  }
-  app.locals.eventSources = new Set();
+  const eventSources = new Set<express.Response<any, Record<string, any>>>();
 
   interface Middlewares {
     eventSource: express.RequestHandler<
@@ -2633,9 +2630,9 @@ export default async function courselore({
         res.locals.eventSource = true;
         return next();
       }
-      app.locals.eventSources.add(res);
+      eventSources.add(res);
       res.on("close", () => {
-        app.locals.eventSources.delete(res);
+        eventSources.delete(res);
       });
       // FIXME: https://github.com/caddyserver/caddy/issues/4247
       res.type("text/event-stream").write(":\n\n");
@@ -9713,7 +9710,7 @@ ${value}</textarea
     emitCourseRefresh: (courseId: number) => void;
   }
   app.locals.helpers.emitCourseRefresh = (courseId) => {
-    for (const eventSource of [...app.locals.eventSources].filter(
+    for (const eventSource of [...eventSources].filter(
       (eventSource) => eventSource.locals.course?.id === courseId
     ))
       eventSource.write(`event: refresh\ndata:\n\n`);
