@@ -10100,20 +10100,17 @@ ${value}</textarea
     },
   ];
 
-  interface Helpers {
-    mayEditMessage: (
-      req: express.Request<
-        { courseReference: string; conversationReference: string },
-        any,
-        {},
-        {},
-        IsConversationAccessibleMiddlewareLocals
-      >,
-      res: express.Response<any, IsConversationAccessibleMiddlewareLocals>,
-      message: MessageExistsMiddlewareLocals["message"]
-    ) => boolean;
-  }
-  app.locals.helpers.mayEditMessage = (req, res, message) =>
+  const mayEditMessage = (
+    req: express.Request<
+      { courseReference: string; conversationReference: string },
+      any,
+      {},
+      {},
+      IsConversationAccessibleMiddlewareLocals
+    >,
+    res: express.Response<any, IsConversationAccessibleMiddlewareLocals>,
+    message: MessageExistsMiddlewareLocals["message"]
+  ) =>
     res.locals.enrollment.role === "staff" ||
     message.authorEnrollment.id === res.locals.enrollment.id;
 
@@ -10135,8 +10132,7 @@ ${value}</textarea
   app.locals.middlewares.mayEditMessage = [
     ...app.locals.middlewares.messageExists,
     (req, res, next) => {
-      if (app.locals.helpers.mayEditMessage(req, res, res.locals.message))
-        return next();
+      if (mayEditMessage(req, res, res.locals.message)) return next();
       next("route");
     },
   ];
@@ -11111,11 +11107,7 @@ ${value}</textarea
                                 </div>
                               `
                             : html``}
-                          $${app.locals.helpers.mayEditMessage(
-                            req,
-                            res,
-                            message
-                          )
+                          $${mayEditMessage(req, res, message)
                             ? html`
                                 <button
                                   class="button button--tight button--tight--inline button--transparent"
@@ -11176,11 +11168,7 @@ ${value}</textarea
                           const content: HTML[] = [];
 
                           if (
-                            app.locals.helpers.mayEditMessage(
-                              req,
-                              res,
-                              message
-                            ) &&
+                            mayEditMessage(req, res, message) &&
                             message.reference !== "1" &&
                             res.locals.conversation.type === "question"
                           )
@@ -11566,7 +11554,7 @@ ${value}</textarea
                         </div>
                       </div>
 
-                      $${app.locals.helpers.mayEditMessage(req, res, message)
+                      $${mayEditMessage(req, res, message)
                         ? html`
                             <form
                               method="POST"
