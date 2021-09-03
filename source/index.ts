@@ -310,7 +310,6 @@ export default async function courselore({
     extraHeaders?: HTML;
     body: HTML;
   }): HTML {
-    const flash = app.locals.helpers.flash.get(req, res);
     return extractInlineStyles(html`
       <!DOCTYPE html>
       <html lang="en">
@@ -1757,78 +1756,85 @@ export default async function courselore({
               $${extraHeaders}
             </div>
 
-            $${flash === undefined
-              ? html``
-              : html`
-                  <div
-                    class="flash"
-                    style="${css`
-                      display: grid;
-                      & > * {
-                        grid-area: 1 / 1;
-                      }
-                      ${["green", "rose"].map(
-                        (color) => css`
-                          .flash--${color} {
-                            &,
-                            & + .button--transparent {
-                              color: var(--color--${color}--700);
-                            }
-                            background-color: var(--color--${color}--100);
-                            & + .button--transparent {
-                              &:hover,
-                              &:focus-within {
-                                background-color: var(--color--${color}--200);
-                              }
-                              &:active {
-                                background-color: var(--color--${color}--300);
-                              }
-                            }
-                            @media (prefers-color-scheme: dark) {
+            $${(() => {
+              const flash = app.locals.helpers.flash.get(req, res);
+              return flash === undefined
+                ? html``
+                : html`
+                    <div
+                      class="flash"
+                      style="${css`
+                        display: grid;
+                        & > * {
+                          grid-area: 1 / 1;
+                        }
+                        ${["green", "rose"].map(
+                          (color) => css`
+                            .flash--${color} {
                               &,
                               & + .button--transparent {
-                                color: var(--color--${color}--200);
+                                color: var(--color--${color}--700);
                               }
-                              background-color: var(--color--${color}--900);
+                              background-color: var(--color--${color}--100);
                               & + .button--transparent {
                                 &:hover,
                                 &:focus-within {
-                                  background-color: var(--color--${color}--800);
+                                  background-color: var(--color--${color}--200);
                                 }
                                 &:active {
-                                  background-color: var(--color--${color}--700);
+                                  background-color: var(--color--${color}--300);
                                 }
                               }
+                              @media (prefers-color-scheme: dark) {
+                                &,
+                                & + .button--transparent {
+                                  color: var(--color--${color}--200);
+                                }
+                                background-color: var(--color--${color}--900);
+                                & + .button--transparent {
+                                  &:hover,
+                                  &:focus-within {
+                                    background-color: var(
+                                      --color--${color}--800
+                                    );
+                                  }
+                                  &:active {
+                                    background-color: var(
+                                      --color--${color}--700
+                                    );
+                                  }
+                                }
+                              }
+                              padding: var(--space--1) var(--space--10);
+                              display: flex;
+                              justify-content: center;
+                              & > * {
+                                flex: 1;
+                                max-width: var(--width--prose);
+                              }
                             }
-                            padding: var(--space--1) var(--space--10);
-                            display: flex;
-                            justify-content: center;
-                            & > * {
-                              flex: 1;
-                              max-width: var(--width--prose);
-                            }
-                          }
-                        `
-                      )}
-                    `}"
-                  >
-                    $${flash}
-                    <button
-                      class="button button--tight button--tight--inline button--transparent"
-                      style="${css`
-                        justify-self: end;
-                        align-self: start;
-                        margin-top: var(--space--0-5);
-                        margin-right: var(--space--3);
-                      `}"
-                      onclick="${javascript`
-                        this.closest(".flash").remove();
+                          `
+                        )}
                       `}"
                     >
-                      <i class="bi bi-x-circle"></i>
-                    </button>
-                  </div>
-                `}
+                      $${flash}
+                      <button
+                        class="button button--tight button--tight--inline button--transparent"
+                        style="${css`
+                          justify-self: end;
+                          align-self: start;
+                          margin-top: var(--space--0-5);
+                          margin-right: var(--space--3);
+                        `}"
+                        onclick="${javascript`
+                          this.closest(".flash").remove();
+                        `}"
+                      >
+                        <i class="bi bi-x-circle"></i>
+                      </button>
+                    </div>
+                  `;
+            })()}
 
             <div
               style="${css`
