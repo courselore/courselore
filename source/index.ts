@@ -42,9 +42,11 @@ import lodash from "lodash";
 import QRCode from "qrcode";
 import faker from "faker";
 
-export default async function courselore(
-  rootDirectory: string
-): Promise<express.Express> {
+export default async function courselore({
+  dataDirectory,
+}: {
+  dataDirectory: string;
+}): Promise<express.Express> {
   interface App extends express.Express {}
   const app = express() as App;
 
@@ -165,8 +167,8 @@ export default async function courselore(
   interface AppLocals {
     database: Database;
   }
-  await fs.ensureDir(rootDirectory);
-  app.locals.database = new Database(path.join(rootDirectory, "courselore.db"));
+  await fs.ensureDir(dataDirectory);
+  app.locals.database = new Database(path.join(dataDirectory, "courselore.db"));
   // TODO: WAL.
   app.locals.database.migrate(
     sql`
@@ -4211,7 +4213,7 @@ export default async function courselore(
         length: 20,
         type: "numeric",
       })}/${req.files.avatar.name}`;
-      await req.files.avatar.mv(path.join(rootDirectory, relativePathOriginal));
+      await req.files.avatar.mv(path.join(dataDirectory, relativePathOriginal));
       const ext = path.extname(relativePathOriginal);
       const relativePathAvatar = `${relativePathOriginal.slice(
         0,
@@ -4221,7 +4223,7 @@ export default async function courselore(
         .resize(/* var(--space--64) */ 256, 256, {
           position: sharp.strategy.attention,
         })
-        .toFile(path.join(rootDirectory, relativePathAvatar));
+        .toFile(path.join(dataDirectory, relativePathAvatar));
       res.send(`${app.locals.settings.url}/${relativePathAvatar}`);
     })
   );
@@ -9342,7 +9344,7 @@ ${value}</textarea
           length: 20,
           type: "numeric",
         })}/${attachment.name}`;
-        await attachment.mv(path.join(rootDirectory, relativePath));
+        await attachment.mv(path.join(dataDirectory, relativePath));
         // TODO: URI encode relative path.
         const url = `${app.locals.settings.url}/${relativePath}`;
         if (attachment.mimetype.startsWith("image/")) {
@@ -9370,7 +9372,7 @@ ${value}</textarea
   app.get<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/files/*",
     ...app.locals.middlewares.isSignedIn,
-    express.static(rootDirectory)
+    express.static(dataDirectory)
   );
 
   // TODO: Would making this async speed things up in any way?

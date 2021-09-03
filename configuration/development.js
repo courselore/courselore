@@ -31,7 +31,9 @@ module.exports = async (require) => {
     const path = require("path");
     const courselore = require(".").default;
     const { version } = require("../package.json");
-    const app = await courselore(path.join(process.cwd(), "data"));
+    const app = await courselore({
+      dataDirectory: path.join(process.cwd(), "data"),
+    });
     app.locals.settings.url = url;
     app.locals.settings.liveReload = true;
     app.listen(4000, "127.0.0.1", () => {
