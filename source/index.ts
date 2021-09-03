@@ -64,9 +64,6 @@ export default async function courselore({
   interface AppLocals {
     settings: Settings;
   }
-  interface Settings {
-    env: string;
-  }
 
   interface AppLocals {
     constants: Constants;
@@ -1828,7 +1825,7 @@ export default async function courselore({
                         </div>
                       </div>
                     </div>
-                    $${app.locals.settings.env === "production"
+                    $${process.env.NODE_ENV !== "production"
                       ? html``
                       : html`
                           <form
