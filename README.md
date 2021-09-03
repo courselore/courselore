@@ -137,6 +137,7 @@
 
 ### Infrastructure
 
+- An internal queue to guarantee email delivery.
 - `try.courselore.org` (reference https://moodle.org/demo)
 - Investigate why `kill -9` isn’t triggering the `await` in `development.js` (this could be a major issue in production when a process dies and the other isn’t killed to let them both be respawned).
 - Live updates: Try to come up with a solution that doesn’t require you requesting the page again, instead, just send the data in the first place.

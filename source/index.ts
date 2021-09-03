@@ -2991,6 +2991,45 @@ export default async function courselore({
     })
   );
 
+  const PasswordReset = {
+    create(userId: number): { nonce: string } {
+      database.run(
+        sql`
+          DELETE FROM "passwordResets" WHERE "user" = ${userId}
+        `
+      );
+      return database.get<{ nonce: string }>(
+        sql`
+          INSERT INTO "passwordResets" ("user", "nonce")
+          VALUES (
+            ${userId},
+            ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
+          )
+          RETURNING *
+        `
+      )!;
+    },
+
+    get(nonce: string): number | undefined {
+      const passwordReset = database.get<{
+        createdAt: string;
+        user: number;
+      }>(
+        sql`SELECT "createdAt", "user" FROM "passwordResets" WHERE "nonce" = ${nonce}`
+      );
+      database.run(
+        sql`
+          DELETE FROM "passwordResets" WHERE "nonce" = ${nonce}
+        `
+      );
+      return passwordReset === undefined ||
+        new Date(passwordReset.createdAt).getTime() + 10 * 60 * 1000 <
+          Date.now()
+        ? undefined
+        : passwordReset.user;
+    },
+  };
+
   app.get<
     {},
     HTML,
@@ -3108,17 +3147,7 @@ export default async function courselore({
       );
     }
 
-    database.run(sql`DELETE FROM "passwordResets" WHERE "user" = ${user.id}`);
-    const passwordReset = database.get<{ nonce: string }>(
-      sql`
-          INSERT INTO "passwordResets" ("user", "nonce")
-          VALUES (
-            ${user.id},
-            ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
-          )
-          RETURNING *
-        `
-    )!;
+    const passwordReset = PasswordReset.create(user.id);
     const link = `${url}/reset-password/${passwordReset.nonce}?${qs.stringify({
       redirect: req.query.redirect,
       name: req.query.name,
@@ -12018,7 +12047,11 @@ ${value}</textarea
       );
       if (like === undefined) return next("validation");
 
-      database.run(sql`DELETE FROM "likes" WHERE "id" = ${like.id}`);
+      database.run(
+        sql`
+          DELETE FROM "likes" WHERE "id" = ${like.id}
+        `
+      );
 
       emitCourseRefresh(res.locals.course.id);
 
