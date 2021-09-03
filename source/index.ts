@@ -3302,9 +3302,52 @@ export default async function courselore({
   >(
     "/reset-password/:passwordResetNonce",
     ...isSignedOutMiddleware,
-    (req, res, next) => {
-      // TODO:
-    }
+    asyncHandler(async (req, res, next) => {
+      if (
+        typeof req.body.password !== "string" ||
+        req.body.password.trim() === "" ||
+        req.body.password.length < 8
+      )
+        return next("validation");
+
+      const userId = PasswordReset.get(req.params.passwordResetNonce);
+      if (userId === undefined) {
+        Flash.set(
+          req,
+          res,
+          html`
+            <div class="flash--rose">
+              Something went wrong in your password reset. Please start over.
+            </div>
+          `
+        );
+        return res.redirect(
+          `${url}/reset-password?${qs.stringify({
+            redirect: req.query.redirect,
+            name: req.query.name,
+            email: req.query.email,
+          })}`
+        );
+      }
+
+      database.run(
+        sql`
+          UPDATE "users"
+          SET = "password" = ${await argon2.hash(
+            req.body.password,
+            argon2Options
+          )}
+          WHERE "id" = ${userId}
+        `
+      )!;
+      Session.open(req, res, userId);
+      Flash.set(
+        req,
+        res,
+        html`<div class="flash--green">Password reset successfully.</div>`
+      );
+      res.redirect(`${url}${req.query.redirect ?? "/"}`);
+    })
   );
 
   app.get<
