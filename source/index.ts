@@ -9617,10 +9617,7 @@ ${value}</textarea
     }
   );
 
-  interface Helpers {
-    emitCourseRefresh: (courseId: number) => void;
-  }
-  app.locals.helpers.emitCourseRefresh = (courseId) => {
+  const emitCourseRefresh = (courseId: number): void => {
     for (const eventDestination of eventDestinations)
       eventDestination.write(`event: refresh\ndata:\n\n`);
   };
@@ -9736,7 +9733,7 @@ ${value}</textarea
           `
         );
 
-      app.locals.helpers.emitCourseRefresh(res.locals.course.id);
+      emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
         `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.course.nextConversationReference}`
@@ -11849,7 +11846,7 @@ ${value}</textarea
             `
           );
 
-      app.locals.helpers.emitCourseRefresh(res.locals.course.id);
+      emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
         `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
@@ -11872,7 +11869,7 @@ ${value}</textarea
         sql`DELETE FROM "conversations" WHERE "id" = ${res.locals.conversation.id}`
       );
 
-      app.locals.helpers.emitCourseRefresh(res.locals.course.id);
+      emitCourseRefresh(res.locals.course.id);
 
       res.redirect(`${url}/courses/${res.locals.course.reference}`);
     }
@@ -11928,7 +11925,7 @@ ${value}</textarea
         `
       );
 
-      app.locals.helpers.emitCourseRefresh(res.locals.course.id);
+      emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
         `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.conversation.nextMessageReference}`
@@ -12012,7 +12009,7 @@ ${value}</textarea
             `
           );
 
-      app.locals.helpers.emitCourseRefresh(res.locals.course.id);
+      emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
         `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
@@ -12041,7 +12038,7 @@ ${value}</textarea
         sql`DELETE FROM "messages" WHERE "id" = ${res.locals.message.id}`
       );
 
-      app.locals.helpers.emitCourseRefresh(res.locals.course.id);
+      emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
         `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
@@ -12074,7 +12071,7 @@ ${value}</textarea
         sql`INSERT INTO "likes" ("message", "enrollment") VALUES (${res.locals.message.id}, ${res.locals.enrollment.id})`
       );
 
-      app.locals.helpers.emitCourseRefresh(res.locals.course.id);
+      emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
         `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
@@ -12103,7 +12100,7 @@ ${value}</textarea
 
       database.run(sql`DELETE FROM "likes" WHERE "id" = ${like.id}`);
 
-      app.locals.helpers.emitCourseRefresh(res.locals.course.id);
+      emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
         `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
@@ -12184,7 +12181,7 @@ ${value}</textarea
         sql`INSERT INTO "endorsements" ("message", "enrollment") VALUES (${res.locals.message.id}, ${res.locals.enrollment.id})`
       );
 
-      app.locals.helpers.emitCourseRefresh(res.locals.course.id);
+      emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
         `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
@@ -12215,7 +12212,7 @@ ${value}</textarea
         sql`DELETE FROM "endorsements" WHERE "id" = ${endorsement.id}`
       );
 
-      app.locals.helpers.emitCourseRefresh(res.locals.course.id);
+      emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
         `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
