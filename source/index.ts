@@ -11237,13 +11237,7 @@ ${value}</textarea
                               </div>
                             `);
 
-                          if (
-                            app.locals.helpers.mayEndorseMessage(
-                              req,
-                              res,
-                              message
-                            )
-                          ) {
+                          if (mayEndorseMessage(req, res, message)) {
                             const isEndorsed = message.endorsements.some(
                               (endorsement) =>
                                 endorsement.enrollment.id ===
@@ -12093,23 +12087,20 @@ ${value}</textarea
     }
   );
 
-  interface Helpers {
-    mayEndorseMessage: (
-      req: express.Request<
-        {
-          courseReference: string;
-          conversationReference: string;
-        },
-        any,
-        {},
-        {},
-        IsConversationAccessibleMiddlewareLocals
-      >,
-      res: express.Response<any, IsConversationAccessibleMiddlewareLocals>,
-      message: MessageExistsMiddlewareLocals["message"]
-    ) => boolean;
-  }
-  app.locals.helpers.mayEndorseMessage = (req, res, message) =>
+  const mayEndorseMessage = (
+    req: express.Request<
+      {
+        courseReference: string;
+        conversationReference: string;
+      },
+      any,
+      {},
+      {},
+      IsConversationAccessibleMiddlewareLocals
+    >,
+    res: express.Response<any, IsConversationAccessibleMiddlewareLocals>,
+    message: MessageExistsMiddlewareLocals["message"]
+  ): boolean =>
     res.locals.enrollment.role === "staff" &&
     res.locals.conversation.type === "question" &&
     message.reference !== "1" &&
@@ -12134,8 +12125,7 @@ ${value}</textarea
   app.locals.middlewares.mayEndorseMessage = [
     ...app.locals.middlewares.messageExists,
     (req, res, next) => {
-      if (app.locals.helpers.mayEndorseMessage(req, res, res.locals.message))
-        return next();
+      if (mayEndorseMessage(req, res, res.locals.message)) return next();
       next("route");
     },
   ];
