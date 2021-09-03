@@ -2992,7 +2992,7 @@ export default async function courselore({
   );
 
   const PasswordReset = {
-    create(userId: number): { nonce: string } {
+    create(userId: number): string {
       database.run(
         sql`
           DELETE FROM "passwordResets" WHERE "user" = ${userId}
@@ -3007,7 +3007,7 @@ export default async function courselore({
           )
           RETURNING *
         `
-      )!;
+      )!.nonce;
     },
 
     get(nonce: string): number | undefined {
@@ -3147,8 +3147,9 @@ export default async function courselore({
       );
     }
 
-    const passwordReset = PasswordReset.create(user.id);
-    const link = `${url}/reset-password/${passwordReset.nonce}?${qs.stringify({
+    const link = `${url}/reset-password/${PasswordReset.create(
+      user.id
+    )}?${qs.stringify({
       redirect: req.query.redirect,
       name: req.query.name,
       email: req.query.email,
