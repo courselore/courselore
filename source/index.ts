@@ -109,15 +109,8 @@ export default async function courselore({
     role: null,
   } as const;
 
-  interface Constants {
-    conversationTypes: ConversationType[];
-  }
-  type ConversationType = "announcement" | "question" | "other";
-  app.locals.constants.conversationTypes = [
-    "announcement",
-    "question",
-    "other",
-  ];
+  type ConversationType = typeof conversationTypes[number];
+  const conversationTypes = ["announcement", "question", "other"] as const;
 
   interface AppLocals {
     database: Database;
@@ -4620,14 +4613,13 @@ export default async function courselore({
         `
       )!.count;
 
-      res.locals.conversationTypes =
-        app.locals.constants.conversationTypes.filter(
-          (conversationType) =>
-            !(
-              conversationType === "announcement" &&
-              res.locals.enrollment.role !== "staff"
-            )
-        );
+      res.locals.conversationTypes = conversationTypes.filter(
+        (conversationType) =>
+          !(
+            conversationType === "announcement" &&
+            res.locals.enrollment.role !== "staff"
+          )
+      );
 
       next();
     },
@@ -12654,7 +12646,7 @@ ${value}</textarea
                     )},
                     ${Math.floor(Math.random() * 10) + 2},
                     ${
-                      app.locals.constants.conversationTypes[
+                      conversationTypes[
                         Math.random() < 0.7 ? 1 : Math.random() < 0.7 ? 0 : 2
                       ]
                     },
