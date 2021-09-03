@@ -65,14 +65,12 @@ export default async function courselore({
   const app = express() as App;
 
   interface App {
-    locals: AppLocals;
-  }
-
-  interface AppLocals {
-    middlewares: Middlewares;
-    helpers: Helpers;
-    layouts: Layouts;
-    partials: Partials;
+    locals: {
+      middlewares: Middlewares;
+      helpers: Helpers;
+      layouts: Layouts;
+      partials: Partials;
+    };
   }
   app.locals.middlewares = {} as Middlewares;
   app.locals.helpers = {} as Helpers;
