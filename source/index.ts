@@ -82,11 +82,8 @@ export default async function courselore({
   type UserEmailNotifications = typeof userEmailNotifications[number];
   const userEmailNotifications = ["none", "essentials", "everything"] as const;
 
-  interface Constants {
-    enrollmentRoles: EnrollmentRole[];
-  }
-  type EnrollmentRole = "student" | "staff";
-  app.locals.constants.enrollmentRoles = ["student", "staff"];
+  type EnrollmentRole = typeof enrollmentRoles[number];
+  const enrollmentRoles = ["student", "staff"] as const;
 
   interface Constants {
     enrollmentAccentColors: EnrollmentAccentColor[];
@@ -5572,7 +5569,7 @@ export default async function courselore({
                     gap: var(--space--4);
                   `}"
                 >
-                  $${app.locals.constants.enrollmentRoles.map(
+                  $${enrollmentRoles.map(
                     (role) =>
                       html`
                         <label
@@ -5907,50 +5904,49 @@ export default async function courselore({
                                 </button>
                                 <div hidden>
                                   <div class="dropdown-menu">
-                                    $${app.locals.constants.enrollmentRoles.map(
-                                      (role) =>
-                                        role === invitation.role
-                                          ? html``
-                                          : html`
-                                              <form
-                                                method="POST"
-                                                action="${action}?_method=PATCH"
-                                              >
-                                                <input
-                                                  type="hidden"
-                                                  name="role"
-                                                  value="${role}"
-                                                />
-                                                <button
-                                                  class="dropdown-menu--item button button--transparent"
-                                                  $${isUsed
-                                                    ? html`
-                                                        type="button"
-                                                        data-ondomcontentloaded="${javascript`
+                                    $${enrollmentRoles.map((role) =>
+                                      role === invitation.role
+                                        ? html``
+                                        : html`
+                                            <form
+                                              method="POST"
+                                              action="${action}?_method=PATCH"
+                                            >
+                                              <input
+                                                type="hidden"
+                                                name="role"
+                                                value="${role}"
+                                              />
+                                              <button
+                                                class="dropdown-menu--item button button--transparent"
+                                                $${isUsed
+                                                  ? html`
+                                                      type="button"
+                                                      data-ondomcontentloaded="${javascript`
                                                         tippy(this, {
                                                           content: "You may not change the role of this invitation because it’s used.",
                                                           theme: "rose",
                                                           trigger: "click",
                                                         });
                                                       `}"
-                                                      `
-                                                    : isExpired
-                                                    ? html`
-                                                        type="button"
-                                                        data-ondomcontentloaded="${javascript`
+                                                    `
+                                                  : isExpired
+                                                  ? html`
+                                                      type="button"
+                                                      data-ondomcontentloaded="${javascript`
                                                         tippy(this, {
                                                           content: "You may not change the role of this invitation because it’s expired.",
                                                           theme: "rose",
                                                           trigger: "click",
                                                         });
                                                       `}"
-                                                      `
-                                                    : html``}
-                                                >
-                                                  ${lodash.capitalize(role)}
-                                                </button>
-                                              </form>
-                                            `
+                                                    `
+                                                  : html``}
+                                              >
+                                                ${lodash.capitalize(role)}
+                                              </button>
+                                            </form>
+                                          `
                                     )}
                                   </div>
                                 </div>
@@ -6247,7 +6243,7 @@ export default async function courselore({
     (req, res, next) => {
       if (
         typeof req.body.role !== "string" ||
-        !app.locals.constants.enrollmentRoles.includes(req.body.role) ||
+        !enrollmentRoles.includes(req.body.role) ||
         (req.body.expiresAt !== undefined &&
           (typeof req.body.expiresAt !== "string" ||
             !app.locals.helpers.isDate(req.body.expiresAt) ||
@@ -6457,7 +6453,7 @@ export default async function courselore({
       if (req.body.role !== undefined) {
         if (
           app.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
-          !app.locals.constants.enrollmentRoles.includes(req.body.role)
+          !enrollmentRoles.includes(req.body.role)
         )
           return next("validation");
 
@@ -6687,38 +6683,37 @@ export default async function courselore({
                           </button>
                           <div hidden>
                             <div class="dropdown-menu">
-                              $${app.locals.constants.enrollmentRoles.map(
-                                (role) =>
-                                  role === enrollment.role
-                                    ? html``
-                                    : html`
-                                        <form
-                                          method="POST"
-                                          action="${action}?_method=PATCH"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="role"
-                                            value="${role}"
-                                          />
-                                          <div>
-                                            <button
-                                              class="dropdown-menu--item button button--transparent"
-                                              $${isOnlyStaff
-                                                ? html`
-                                                    type="button"
-                                                    data-ondomcontentloaded="${javascript`
+                              $${enrollmentRoles.map((role) =>
+                                role === enrollment.role
+                                  ? html``
+                                  : html`
+                                      <form
+                                        method="POST"
+                                        action="${action}?_method=PATCH"
+                                      >
+                                        <input
+                                          type="hidden"
+                                          name="role"
+                                          value="${role}"
+                                        />
+                                        <div>
+                                          <button
+                                            class="dropdown-menu--item button button--transparent"
+                                            $${isOnlyStaff
+                                              ? html`
+                                                  type="button"
+                                                  data-ondomcontentloaded="${javascript`
                                                     tippy(this, {
                                                       content: "You may not change your own role because you’re the only staff member.",
                                                       theme: "rose",
                                                       trigger: "click",
                                                     });
                                                   `}"
-                                                  `
-                                                : isSelf
-                                                ? html`
-                                                    type="button"
-                                                    data-ondomcontentloaded="${javascript`
+                                                `
+                                              : isSelf
+                                              ? html`
+                                                  type="button"
+                                                  data-ondomcontentloaded="${javascript`
                                                     const element = this.nextElementSibling.firstElementChild;
                                                     element.form = this.closest("form");
                                                     tippy(this, {
@@ -6729,60 +6724,56 @@ export default async function courselore({
                                                       appendTo: document.body,
                                                     });
                                                   `}"
-                                                  `
-                                                : html``}
-                                            >
-                                              ${lodash.capitalize(role)}
-                                            </button>
-                                            $${isSelf
-                                              ? html`
-                                                  <div hidden>
-                                                    <div
-                                                      class="confirmation"
-                                                      style="${css`
-                                                        padding: var(
-                                                          --space--2
-                                                        );
-                                                        display: flex;
-                                                        flex-direction: column;
-                                                        gap: var(--space--4);
-                                                      `}"
-                                                    >
-                                                      <p>
-                                                        Are you sure you want to
-                                                        change your own role to
-                                                        ${role}?
-                                                      </p>
-                                                      <p>
-                                                        <strong
-                                                          style="${css`
-                                                            font-weight: var(
-                                                              --font-weight--bold
-                                                            );
-                                                          `}"
-                                                        >
-                                                          You may not undo this
-                                                          action!
-                                                        </strong>
-                                                      </p>
-                                                      <button
-                                                        class="button button--rose"
-                                                        onclick="${javascript`
-                                                          this.closest(".confirmation").form.submit();
-                                                        `}"
-                                                      >
-                                                        Change My Own Role to
-                                                        ${lodash.capitalize(
-                                                          role
-                                                        )}
-                                                      </button>
-                                                    </div>
-                                                  </div>
                                                 `
                                               : html``}
-                                          </div>
-                                        </form>
-                                      `
+                                          >
+                                            ${lodash.capitalize(role)}
+                                          </button>
+                                          $${isSelf
+                                            ? html`
+                                                <div hidden>
+                                                  <div
+                                                    class="confirmation"
+                                                    style="${css`
+                                                      padding: var(--space--2);
+                                                      display: flex;
+                                                      flex-direction: column;
+                                                      gap: var(--space--4);
+                                                    `}"
+                                                  >
+                                                    <p>
+                                                      Are you sure you want to
+                                                      change your own role to
+                                                      ${role}?
+                                                    </p>
+                                                    <p>
+                                                      <strong
+                                                        style="${css`
+                                                          font-weight: var(
+                                                            --font-weight--bold
+                                                          );
+                                                        `}"
+                                                      >
+                                                        You may not undo this
+                                                        action!
+                                                      </strong>
+                                                    </p>
+                                                    <button
+                                                      class="button button--rose"
+                                                      onclick="${javascript`
+                                                          this.closest(".confirmation").form.submit();
+                                                        `}"
+                                                    >
+                                                      Change My Own Role to
+                                                      ${lodash.capitalize(role)}
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                              `
+                                            : html``}
+                                        </div>
+                                      </form>
+                                    `
                               )}
                             </div>
                           </div>
@@ -6884,8 +6875,7 @@ export default async function courselore({
     ...app.locals.middlewares.mayManageEnrollment,
     (req, res, next) => {
       if (typeof req.body.role === "string") {
-        if (!app.locals.constants.enrollmentRoles.includes(req.body.role))
-          return next("validation");
+        if (!enrollmentRoles.includes(req.body.role)) return next("validation");
         app.locals.database.run(
           sql`UPDATE "enrollments" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.managedEnrollment.id}`
         );
@@ -12518,25 +12508,25 @@ ${value}</textarea
         for (const { name, role, accentColor, enrollmentsUsers } of [
           {
             name: "Pharmacology",
-            role: app.locals.constants.enrollmentRoles[0],
+            role: enrollmentRoles[0],
             accentColor: app.locals.constants.enrollmentAccentColors[3],
             enrollmentsUsers: users.slice(0, 100),
           },
           {
             name: "Advanced Harmony",
-            role: app.locals.constants.enrollmentRoles[1],
+            role: enrollmentRoles[1],
             accentColor: app.locals.constants.enrollmentAccentColors[2],
             enrollmentsUsers: users.slice(100, 200),
           },
           {
             name: "Introduction to Statistics",
-            role: app.locals.constants.enrollmentRoles[1],
+            role: enrollmentRoles[1],
             accentColor: app.locals.constants.enrollmentAccentColors[1],
             enrollmentsUsers: users.slice(200, 300),
           },
           {
             name: "Principles of Programming Languages",
-            role: app.locals.constants.enrollmentRoles[1],
+            role: enrollmentRoles[1],
             accentColor: app.locals.constants.enrollmentAccentColors[0],
             enrollmentsUsers: users.slice(300, 400),
           },
@@ -12617,11 +12607,7 @@ ${value}</textarea
                   ${cryptoRandomString({ length: 10, type: "numeric" })},
                   ${user?.email},
                   ${Math.random() < 0.5 ? user?.name : null},
-                  ${
-                    app.locals.constants.enrollmentRoles[
-                      Math.random() < 0.1 ? 1 : 0
-                    ]
-                  }
+                  ${enrollmentRoles[Math.random() < 0.1 ? 1 : 0]}
                 )
               `
             );
@@ -12641,11 +12627,7 @@ ${value}</textarea
                       ${enrollmentUser.id},
                       ${course.id},
                       ${cryptoRandomString({ length: 10, type: "numeric" })},
-                      ${
-                        app.locals.constants.enrollmentRoles[
-                          Math.random() < 0.1 ? 1 : 0
-                        ]
-                      },
+                      ${enrollmentRoles[Math.random() < 0.1 ? 1 : 0]},
                       ${
                         app.locals.constants.enrollmentAccentColors[
                           Math.floor(
