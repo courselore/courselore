@@ -5115,26 +5115,26 @@ export default async function courselore({
     },
   ];
 
-  interface Layouts {
-    courseSettings: (_: {
-      req: express.Request<
-        {},
-        any,
-        {},
-        {},
-        IsEnrolledInCourseMiddlewareLocals &
-          Partial<EventSourceMiddlewareLocals>
-      >;
-      res: express.Response<
-        any,
-        IsEnrolledInCourseMiddlewareLocals &
-          Partial<EventSourceMiddlewareLocals>
-      >;
-      head: HTML;
-      body: HTML;
-    }) => HTML;
-  }
-  app.locals.layouts.courseSettings = ({ req, res, head, body }) =>
+  const courseSettingsLayout = ({
+    req,
+    res,
+    head,
+    body,
+  }: {
+    req: express.Request<
+      {},
+      any,
+      {},
+      {},
+      IsEnrolledInCourseMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+    >;
+    res: express.Response<
+      any,
+      IsEnrolledInCourseMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+    >;
+    head: HTML;
+    body: HTML;
+  }): HTML =>
     settingsLayout({
       req,
       res,
@@ -5221,7 +5221,7 @@ export default async function courselore({
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
       res.send(
-        app.locals.layouts.courseSettings({
+        courseSettingsLayout({
           req,
           res,
           head: html`
@@ -5348,7 +5348,7 @@ export default async function courselore({
       );
 
       res.send(
-        app.locals.layouts.courseSettings({
+        courseSettingsLayout({
           req,
           res,
           head: html`
@@ -6510,7 +6510,7 @@ export default async function courselore({
       );
 
       res.send(
-        app.locals.layouts.courseSettings({
+        courseSettingsLayout({
           req,
           res,
           head: html`
@@ -6877,7 +6877,7 @@ export default async function courselore({
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
       res.send(
-        app.locals.layouts.courseSettings({
+        courseSettingsLayout({
           req,
           res,
           head: html`
@@ -7315,7 +7315,7 @@ export default async function courselore({
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
       res.send(
-        app.locals.layouts.courseSettings({
+        courseSettingsLayout({
           req,
           res,
           head: html`
