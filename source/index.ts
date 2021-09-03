@@ -9210,23 +9210,7 @@ ${value}</textarea
     express.static(dataDirectory)
   );
 
-  // TODO: Would making this async speed things up in any way?
-  interface Partials {
-    textProcessor: (
-      text: string,
-      _?: {
-        req?: express.Request<
-          {},
-          any,
-          {},
-          {},
-          IsEnrolledInCourseMiddlewareLocals
-        >;
-        res?: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
-      }
-    ) => HTML;
-  }
-  app.locals.partials.textProcessor = await (async () => {
+  const textProcessor = await (async () => {
     const markdownProcessor = unified()
       .use(remarkParse)
       .use(remarkGfm)
@@ -9266,6 +9250,7 @@ ${value}</textarea
       })
       .use(rehypeStringify);
 
+    // TODO: Would making this async speed things up in any way?
     return (
       text: string,
       {
@@ -9281,7 +9266,7 @@ ${value}</textarea
         >;
         res?: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
       } = {}
-    ) => {
+    ): HTML => {
       const document = JSDOM.fragment(html`
         <div class="markdown">
           $${markdownProcessor.processSync(text).toString()}
@@ -9370,7 +9355,7 @@ ${value}</textarea
         return next("validation");
 
       // TODO: Pass {req, res} here to enable rendering of mentions and references.
-      res.send(app.locals.partials.textProcessor(req.body.content));
+      res.send(textProcessor(req.body.content));
     }
   );
 
@@ -9813,7 +9798,7 @@ ${value}</textarea
           .join(", "),
         subject: `${res.locals.course.name} · ${req.body.title}`,
         html: html`
-          ${app.locals.partials.textProcessor(req.body.content)}
+          ${textProcessor(req.body.content)}
 
           <hr />
 
@@ -11511,13 +11496,10 @@ ${value}</textarea
                               this.dropdownMenu.show();
                             `}"
                           >
-                            $${app.locals.partials.textProcessor(
-                              message.content,
-                              {
-                                req,
-                                res,
-                              }
-                            )}
+                            $${textProcessor(message.content, {
+                              req,
+                              res,
+                            })}
                           </div>
                           <div hidden>
                             <div class="dropdown-menu">
