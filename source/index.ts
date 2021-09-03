@@ -85,24 +85,15 @@ export default async function courselore({
   type EnrollmentRole = typeof enrollmentRoles[number];
   const enrollmentRoles = ["student", "staff"] as const;
 
-  interface Constants {
-    enrollmentAccentColors: EnrollmentAccentColor[];
-  }
-  type EnrollmentAccentColor =
-    | "red"
-    | "yellow"
-    | "emerald"
-    | "sky"
-    | "violet"
-    | "pink";
-  app.locals.constants.enrollmentAccentColors = [
+  type EnrollmentAccentColor = typeof enrollmentAccentColors[number];
+  const enrollmentAccentColors = [
     "red",
     "yellow",
     "emerald",
     "sky",
     "violet",
     "pink",
-  ];
+  ] as const;
 
   interface Constants {
     ghostEnrollment: GhostEnrollment;
@@ -4418,7 +4409,7 @@ export default async function courselore({
       enrollments.map((enrollment) => enrollment.accentColor)
     );
     const accentColorsAvailable = new Set<EnrollmentAccentColor>(
-      app.locals.constants.enrollmentAccentColors
+      enrollmentAccentColors
     );
     for (const accentColorInUse of accentColorsInUse) {
       accentColorsAvailable.delete(accentColorInUse);
@@ -7431,7 +7422,7 @@ export default async function courselore({
                     gap: var(--space--2);
                   `}"
                 >
-                  $${app.locals.constants.enrollmentAccentColors.map(
+                  $${enrollmentAccentColors.map(
                     (accentColor) => html`
                       <input
                         type="radio"
@@ -7499,9 +7490,7 @@ export default async function courselore({
     (req, res, next) => {
       if (
         typeof req.body.accentColor !== "string" ||
-        !app.locals.constants.enrollmentAccentColors.includes(
-          req.body.accentColor
-        )
+        !enrollmentAccentColors.includes(req.body.accentColor)
       )
         return next("validation");
 
@@ -12509,25 +12498,25 @@ ${value}</textarea
           {
             name: "Pharmacology",
             role: enrollmentRoles[0],
-            accentColor: app.locals.constants.enrollmentAccentColors[3],
+            accentColor: enrollmentAccentColors[3],
             enrollmentsUsers: users.slice(0, 100),
           },
           {
             name: "Advanced Harmony",
             role: enrollmentRoles[1],
-            accentColor: app.locals.constants.enrollmentAccentColors[2],
+            accentColor: enrollmentAccentColors[2],
             enrollmentsUsers: users.slice(100, 200),
           },
           {
             name: "Introduction to Statistics",
             role: enrollmentRoles[1],
-            accentColor: app.locals.constants.enrollmentAccentColors[1],
+            accentColor: enrollmentAccentColors[1],
             enrollmentsUsers: users.slice(200, 300),
           },
           {
             name: "Principles of Programming Languages",
             role: enrollmentRoles[1],
-            accentColor: app.locals.constants.enrollmentAccentColors[0],
+            accentColor: enrollmentAccentColors[0],
             enrollmentsUsers: users.slice(300, 400),
           },
         ]) {
@@ -12629,10 +12618,9 @@ ${value}</textarea
                       ${cryptoRandomString({ length: 10, type: "numeric" })},
                       ${enrollmentRoles[Math.random() < 0.1 ? 1 : 0]},
                       ${
-                        app.locals.constants.enrollmentAccentColors[
+                        enrollmentAccentColors[
                           Math.floor(
-                            Math.random() *
-                              app.locals.constants.enrollmentAccentColors.length
+                            Math.random() * enrollmentAccentColors.length
                           )
                         ]
                       }
