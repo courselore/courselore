@@ -1908,7 +1908,7 @@ export default async function courselore({
                   align-items: center;
                 `}"
               >
-                $${app.locals.partials.logo} CourseLore
+                $${logo} CourseLore
               </a>
             </div>
             <div
@@ -1974,7 +1974,7 @@ export default async function courselore({
             href="${url}/"
             class="button button--tight button--tight--inline button--transparent"
           >
-            $${app.locals.partials.logo}
+            $${logo}
           </a>
 
           <div
@@ -2462,10 +2462,7 @@ export default async function courselore({
       `,
     });
 
-  interface Partials {
-    logo: HTML;
-  }
-  app.locals.partials.logo = (() => {
+  const logo = (() => {
     // https://www.youtube.com/watch?v=dSK-MW-zuAc
     const order = 2;
     const size = 20;
@@ -3580,7 +3577,7 @@ export default async function courselore({
                       }
                     `}"
                   >
-                    $${app.locals.partials.logo}
+                    $${logo}
                   </div>
 
                   <div
