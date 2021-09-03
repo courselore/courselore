@@ -2565,19 +2565,16 @@ export default async function courselore({
   // FIXME: This only works for a single process. To support multiple processes poll the database for changes or use a message broker mechanism (ZeroMQ seems like a good candidate).
   const eventDestinations = new Set<express.Response>();
 
-  interface Middlewares {
-    eventSource: express.RequestHandler<
-      {},
-      any,
-      {},
-      {},
-      EventSourceMiddlewareLocals
-    >[];
-  }
   interface EventSourceMiddlewareLocals {
     eventSource: boolean;
   }
-  app.locals.middlewares.eventSource = [
+  const eventSourceMiddleware: express.RequestHandler<
+    {},
+    any,
+    {},
+    {},
+    EventSourceMiddlewareLocals
+  >[] = [
     (req, res, next) => {
       if (!req.header("accept")?.includes("text/event-stream")) {
         res.locals.eventSource = true;
@@ -9340,7 +9337,7 @@ ${value}</textarea
   >(
     "/courses/:courseReference/conversations/new",
     ...app.locals.middlewares.isEnrolledInCourse,
-    ...app.locals.middlewares.eventSource,
+    ...eventSourceMiddleware,
     (req, res) => {
       res.send(
         (res.locals.conversationsCount === 0 ? mainLayout : conversationLayout)(
@@ -10148,7 +10145,7 @@ ${value}</textarea
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     ...app.locals.middlewares.isConversationAccessible,
-    ...app.locals.middlewares.eventSource,
+    ...eventSourceMiddleware,
     (req, res) => {
       for (const message of res.locals.messages)
         database.run(
