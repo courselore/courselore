@@ -44,6 +44,7 @@ module.exports = async (require) => {
       sendMail: async (mailOptions) => {
         console.log(`Email: ${JSON.stringify(mailOptions, undefined, 2)}`);
       },
+      demonstration: true,
     });
     app.listen(4000, "127.0.0.1", () => {
       console.log(`CourseLore/${version} started at ${url}`);
