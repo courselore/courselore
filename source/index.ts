@@ -2698,17 +2698,14 @@ export default async function courselore({
     flash?: HTML;
   }
 
-  interface Middlewares {
-    isSignedOut: express.RequestHandler<
-      {},
-      any,
-      {},
-      {},
-      IsSignedOutMiddlewareLocals
-    >[];
-  }
   interface IsSignedOutMiddlewareLocals extends GlobalMiddlewareLocals {}
-  app.locals.middlewares.isSignedOut = [
+  const isSignedOutMiddleware: express.RequestHandler<
+    {},
+    any,
+    {},
+    {},
+    IsSignedOutMiddlewareLocals
+  >[] = [
     (req, res, next) => {
       if (Session.get(req, res) !== undefined) return next("route");
       next();
@@ -2859,7 +2856,7 @@ export default async function courselore({
 
   app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "/",
-    ...app.locals.middlewares.isSignedOut,
+    ...isSignedOutMiddleware,
     (req, res) => {
       res.redirect(`${url}/sign-in`);
     }
@@ -2871,7 +2868,7 @@ export default async function courselore({
     {},
     { redirect?: string; name?: string; email?: string },
     IsSignedOutMiddlewareLocals
-  >("/sign-in", ...app.locals.middlewares.isSignedOut, (req, res) => {
+  >("/sign-in", ...isSignedOutMiddleware, (req, res) => {
     res.send(
       boxLayout({
         req,
@@ -2969,7 +2966,7 @@ export default async function courselore({
     IsSignedOutMiddlewareLocals
   >(
     "/sign-in",
-    ...app.locals.middlewares.isSignedOut,
+    ...isSignedOutMiddleware,
     asyncHandler(async (req, res, next) => {
       if (
         typeof req.body.email !== "string" ||
@@ -3009,7 +3006,7 @@ export default async function courselore({
     {},
     { redirect?: string; name?: string; email?: string },
     IsSignedOutMiddlewareLocals
-  >("/reset-password", ...app.locals.middlewares.isSignedOut, (req, res) => {
+  >("/reset-password", ...isSignedOutMiddleware, (req, res) => {
     res.send(
       boxLayout({
         req,
@@ -3095,37 +3092,34 @@ export default async function courselore({
     { email?: string; resend?: "true" },
     { redirect?: string; name?: string; email?: string },
     IsSignedOutMiddlewareLocals
-  >(
-    "/reset-password",
-    ...app.locals.middlewares.isSignedOut,
-    (req, res, next) => {
-      if (
-        typeof req.body.email !== "string" ||
-        !req.body.email.match(emailRegExp)
-      )
-        return next("validation");
+  >("/reset-password", ...isSignedOutMiddleware, (req, res, next) => {
+    if (
+      typeof req.body.email !== "string" ||
+      !req.body.email.match(emailRegExp)
+    )
+      return next("validation");
 
-      const user = database.get<{ id: number; email: string }>(
-        sql`SELECT "id", "email" FROM "users" WHERE "email" = ${req.body.email}`
+    const user = database.get<{ id: number; email: string }>(
+      sql`SELECT "id", "email" FROM "users" WHERE "email" = ${req.body.email}`
+    );
+    if (user === undefined) {
+      Flash.set(
+        req,
+        res,
+        html`<div class="flash--rose">Email not found.</div>`
       );
-      if (user === undefined) {
-        Flash.set(
-          req,
-          res,
-          html`<div class="flash--rose">Email not found.</div>`
-        );
-        return res.redirect(
-          `${url}/reset-password?${qs.stringify({
-            redirect: req.query.redirect,
-            name: req.query.name,
-            email: req.query.email,
-          })}`
-        );
-      }
+      return res.redirect(
+        `${url}/reset-password?${qs.stringify({
+          redirect: req.query.redirect,
+          name: req.query.name,
+          email: req.query.email,
+        })}`
+      );
+    }
 
-      database.run(sql`DELETE FROM "passwordResets" WHERE "user" = ${user.id}`);
-      const passwordReset = database.get<{ nonce: string }>(
-        sql`
+    database.run(sql`DELETE FROM "passwordResets" WHERE "user" = ${user.id}`);
+    const passwordReset = database.get<{ nonce: string }>(
+      sql`
           INSERT INTO "passwordResets" ("user", "nonce")
           VALUES (
             ${user.id},
@@ -3133,68 +3127,61 @@ export default async function courselore({
           )
           RETURNING *
         `
-      )!;
-      const link = `${url}/reset-password/${passwordReset.nonce}?${qs.stringify(
-        {
-          redirect: req.query.redirect,
-          name: req.query.name,
-          email: req.query.email,
-        }
-      )}`;
-      sendMail({
-        to: user.email,
-        subject: "CourseLore · Password Reset Link",
-        html: html`
-          <p><a href="${link}">${link}</a></p>
-          <p>
-            <small>
-              This Password Reset Link is valid for ten minutes.<br />
-              If you didn’t request this Password Reset Link, you may ignore
-              this email.
-            </small>
-          </p>
+    )!;
+    const link = `${url}/reset-password/${passwordReset.nonce}?${qs.stringify({
+      redirect: req.query.redirect,
+      name: req.query.name,
+      email: req.query.email,
+    })}`;
+    sendMail({
+      to: user.email,
+      subject: "CourseLore · Password Reset Link",
+      html: html`
+        <p><a href="${link}">${link}</a></p>
+        <p>
+          <small>
+            This Password Reset Link is valid for ten minutes.<br />
+            If you didn’t request this Password Reset Link, you may ignore this
+            email.
+          </small>
+        </p>
+      `,
+    });
+    if (req.body.resend === "true")
+      Flash.set(req, res, html`<div class="flash--green">Email resent.</div>`);
+    res.send(
+      boxLayout({
+        req,
+        res,
+        head: html`
+          <title>
+            Reset Password · CourseLore · Communication Platform for Education
+          </title>
         `,
-      });
-      if (req.body.resend === "true")
-        Flash.set(
-          req,
-          res,
-          html`<div class="flash--green">Email resent.</div>`
-        );
-      res.send(
-        boxLayout({
-          req,
-          res,
-          head: html`
-            <title>
-              Reset Password · CourseLore · Communication Platform for Education
-            </title>
-          `,
-          body: html`
+        body: html`
+          <p>
+            To continue resetting your password, please follow the Password
+            Reset Link that was sent to ${req.body.email}.
+          </p>
+          <form
+            method="POST"
+            action="${url}/reset-password?${qs.stringify({
+              redirect: req.query.redirect,
+              name: req.query.name,
+              email: req.query.email,
+            })}"
+          >
+            <input type="hidden" name="email" value="${req.body.email}" />
+            <input type="hidden" name="resend" value="true" />
             <p>
-              To continue resetting your password, please follow the Password
-              Reset Link that was sent to ${req.body.email}.
+              Didn’t receive the email? Already checked your spam folder?
+              <button class="link">Resend</button>.
             </p>
-            <form
-              method="POST"
-              action="${url}/reset-password?${qs.stringify({
-                redirect: req.query.redirect,
-                name: req.query.name,
-                email: req.query.email,
-              })}"
-            >
-              <input type="hidden" name="email" value="${req.body.email}" />
-              <input type="hidden" name="resend" value="true" />
-              <p>
-                Didn’t receive the email? Already checked your spam folder?
-                <button class="link">Resend</button>.
-              </p>
-            </form>
-          `,
-        })
-      );
-    }
-  );
+          </form>
+        `,
+      })
+    );
+  });
 
   app.get<
     { passwordResetNonce: string },
@@ -3204,7 +3191,7 @@ export default async function courselore({
     IsSignedOutMiddlewareLocals
   >(
     "/reset-password/:passwordResetNonce",
-    ...app.locals.middlewares.isSignedOut,
+    ...isSignedOutMiddleware,
     (req, res) => {
       const passwordReset = database.get<{
         createdAt: string;
@@ -3323,7 +3310,7 @@ export default async function courselore({
     {},
     { redirect?: string; name?: string; email?: string },
     IsSignedOutMiddlewareLocals
-  >("/sign-up", ...app.locals.middlewares.isSignedOut, (req, res) => {
+  >("/sign-up", ...isSignedOutMiddleware, (req, res) => {
     res.send(
       boxLayout({
         req,
@@ -3444,7 +3431,7 @@ export default async function courselore({
     IsSignedOutMiddlewareLocals
   >(
     "/sign-up",
-    ...app.locals.middlewares.isSignedOut,
+    ...isSignedOutMiddleware,
     asyncHandler(async (req, res, next) => {
       if (
         typeof req.body.name !== "string" ||
@@ -7547,7 +7534,7 @@ export default async function courselore({
     IsSignedOutMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...app.locals.middlewares.isSignedOut,
+    ...isSignedOutMiddleware,
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
@@ -12621,7 +12608,7 @@ ${value}</textarea
 
   app.all<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "*",
-    ...app.locals.middlewares.isSignedOut,
+    ...isSignedOutMiddleware,
     (req, res) => {
       res.status(404).send(
         boxLayout({
