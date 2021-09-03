@@ -2643,17 +2643,14 @@ export default async function courselore({
 
   app.use(express.static(path.join(__dirname, "../static")));
   app.use(methodOverride("_method"));
-  interface Settings {
-    cookieOptions: () => express.CookieOptions;
-  }
-  app.locals.settings.cookieOptions = () => ({
+  app.use(cookieParser());
+  const cookieOptions = {
     domain: new URL(url).hostname,
     httpOnly: true,
     path: new URL(url).pathname,
     sameSite: true,
     secure: true,
-  });
-  app.use(cookieParser());
+  };
   app.use(express.urlencoded({ extended: true }));
   // TODO: Make this secure: https://github.com/richardgirges/express-fileupload
   app.use(expressFileUpload({ createParentPath: true }));
@@ -2734,7 +2731,7 @@ export default async function courselore({
         `
       )!;
       res.cookie("session", session.token, {
-        ...app.locals.settings.cookieOptions(),
+        ...cookieOptions,
         maxAge: app.locals.helpers.session.maxAge,
       });
     },
@@ -2769,7 +2766,7 @@ export default async function courselore({
       app.locals.database.run(
         sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies.session}`
       );
-      res.clearCookie("session", app.locals.settings.cookieOptions());
+      res.clearCookie("session", cookieOptions);
     },
   };
 
@@ -2800,7 +2797,7 @@ export default async function courselore({
         `
       )!;
       res.cookie("flash", flash.nonce, {
-        ...app.locals.settings.cookieOptions(),
+        ...cookieOptions,
         maxAge: 5 * 60 * 1000,
       });
     },
@@ -2814,7 +2811,7 @@ export default async function courselore({
       app.locals.database.run(
         sql`DELETE FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
       );
-      res.clearCookie("flash", app.locals.settings.cookieOptions());
+      res.clearCookie("flash", cookieOptions);
       return res.locals.flash ?? flash?.content;
     },
   };
