@@ -2916,7 +2916,7 @@ export default async function courselore({
     IsSignedOutMiddlewareLocals
   >("/sign-in", ...app.locals.middlewares.isSignedOut, (req, res) => {
     res.send(
-      app.locals.layouts.box({
+      boxLayout({
         req,
         res,
         head: html`
@@ -3054,7 +3054,7 @@ export default async function courselore({
     IsSignedOutMiddlewareLocals
   >("/reset-password", ...app.locals.middlewares.isSignedOut, (req, res) => {
     res.send(
-      app.locals.layouts.box({
+      boxLayout({
         req,
         res,
         head: html`
@@ -3205,7 +3205,7 @@ export default async function courselore({
           html`<div class="flash--green">Email resent.</div>`
         );
       res.send(
-        app.locals.layouts.box({
+        boxLayout({
           req,
           res,
           head: html`
@@ -3281,7 +3281,7 @@ export default async function courselore({
         );
       }
       res.send(
-        app.locals.layouts.box({
+        boxLayout({
           req,
           res,
           head: html`
@@ -3368,7 +3368,7 @@ export default async function courselore({
     IsSignedOutMiddlewareLocals
   >("/sign-up", ...app.locals.middlewares.isSignedOut, (req, res) => {
     res.send(
-      app.locals.layouts.box({
+      boxLayout({
         req,
         res,
         head: html`
@@ -7462,7 +7462,7 @@ export default async function courselore({
     ...app.locals.middlewares.isInvitationUsable,
     asyncHandler(async (req, res) => {
       res.send(
-        app.locals.layouts.box({
+        boxLayout({
           req,
           res,
           head: html`
@@ -7514,7 +7514,7 @@ export default async function courselore({
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
-        app.locals.layouts.box({
+        boxLayout({
           req,
           res,
           head: html`
@@ -7599,7 +7599,7 @@ export default async function courselore({
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
-        app.locals.layouts.box({
+        boxLayout({
           req,
           res,
           head: html`
@@ -12707,7 +12707,7 @@ ${value}</textarea
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       res.status(404).send(
-        app.locals.layouts.box({
+        boxLayout({
           req,
           res,
           head: html`<title>404 Not Found · CourseLore</title>`,
@@ -12732,7 +12732,7 @@ ${value}</textarea
     ...app.locals.middlewares.isSignedOut,
     (req, res) => {
       res.status(404).send(
-        app.locals.layouts.box({
+        boxLayout({
           req,
           res,
           head: html`<title>404 Not Found · CourseLore</title>`,
@@ -12784,7 +12784,7 @@ ${value}</textarea
     const isValidation = err === "validation";
     const message = isValidation ? "Validation" : "Server";
     res.status(isValidation ? 422 : 500).send(
-      app.locals.layouts.box({
+      boxLayout({
         req,
         res,
         head: html`<title>${message} Error · CourseLore</title>`,
