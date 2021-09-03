@@ -4731,18 +4731,15 @@ export default async function courselore({
     };
   };
 
-  interface Middlewares {
-    isCourseStaff: express.RequestHandler<
-      { courseReference: string },
-      any,
-      {},
-      {},
-      IsCourseStaffMiddlewareLocals
-    >[];
-  }
   interface IsCourseStaffMiddlewareLocals
     extends IsEnrolledInCourseMiddlewareLocals {}
-  app.locals.middlewares.isCourseStaff = [
+  const isCourseStaffMiddleware: express.RequestHandler<
+    { courseReference: string },
+    any,
+    {},
+    {},
+    IsCourseStaffMiddlewareLocals
+  >[] = [
     ...isEnrolledInCourseMiddleware,
     (req, res, next) => {
       if (res.locals.enrollment.role === "staff") return next();
@@ -4928,7 +4925,7 @@ export default async function courselore({
     extends IsCourseStaffMiddlewareLocals,
       InvitationExistsMiddlewareLocals {}
   app.locals.middlewares.mayManageInvitation = [
-    ...app.locals.middlewares.isCourseStaff,
+    ...isCourseStaffMiddleware,
     ...app.locals.middlewares.invitationExists,
   ];
 
@@ -5006,7 +5003,7 @@ export default async function courselore({
     };
   }
   app.locals.middlewares.mayManageEnrollment = [
-    ...app.locals.middlewares.isCourseStaff,
+    ...isCourseStaffMiddleware,
     (req, res, next) => {
       const managedEnrollment = database.get<{
         id: number;
@@ -5144,7 +5141,7 @@ export default async function courselore({
     IsCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings",
-    ...app.locals.middlewares.isCourseStaff,
+    ...isCourseStaffMiddleware,
     (req, res) => {
       res.send(
         courseSettingsLayout({
@@ -5205,7 +5202,7 @@ export default async function courselore({
     IsCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings",
-    ...app.locals.middlewares.isCourseStaff,
+    ...isCourseStaffMiddleware,
     (req, res, next) => {
       if (typeof req.body.name !== "string" || req.body.name.trim() === "")
         return next("validation");
@@ -5254,7 +5251,7 @@ export default async function courselore({
     IsCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/invitations",
-    ...app.locals.middlewares.isCourseStaff,
+    ...isCourseStaffMiddleware,
     (req, res) => {
       const invitations = database.all<{
         id: number;
@@ -6101,7 +6098,7 @@ export default async function courselore({
     IsCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/invitations",
-    ...app.locals.middlewares.isCourseStaff,
+    ...isCourseStaffMiddleware,
     (req, res, next) => {
       if (
         typeof req.body.role !== "string" ||
@@ -6411,7 +6408,7 @@ export default async function courselore({
     IsCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/enrollments",
-    ...app.locals.middlewares.isCourseStaff,
+    ...isCourseStaffMiddleware,
     (req, res) => {
       const enrollments = database.all<{
         id: number;
@@ -6804,7 +6801,7 @@ export default async function courselore({
     IsCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/tags",
-    ...app.locals.middlewares.isCourseStaff,
+    ...isCourseStaffMiddleware,
     (req, res) => {
       res.send(
         courseSettingsLayout({
@@ -7171,7 +7168,7 @@ export default async function courselore({
     IsCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/tags",
-    ...app.locals.middlewares.isCourseStaff,
+    ...isCourseStaffMiddleware,
     (req, res, next) => {
       if (
         !Array.isArray(req.body.tags) ||
@@ -11817,7 +11814,7 @@ ${value}</textarea
     IsCourseStaffMiddlewareLocals & IsConversationAccessibleMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
-    ...app.locals.middlewares.isCourseStaff,
+    ...isCourseStaffMiddleware,
     ...app.locals.middlewares.isConversationAccessible,
     (req, res) => {
       database.run(
@@ -11984,7 +11981,7 @@ ${value}</textarea
     IsCourseStaffMiddlewareLocals & MessageExistsMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
-    ...app.locals.middlewares.isCourseStaff,
+    ...isCourseStaffMiddleware,
     ...app.locals.middlewares.messageExists,
     (req, res, next) => {
       if (res.locals.message.reference === "1") return next("validation");
