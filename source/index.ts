@@ -4301,7 +4301,7 @@ export default async function courselore({
             ${course.id},
             ${cryptoRandomString({ length: 10, type: "numeric" })},
             ${"staff"},
-            ${app.locals.helpers.defaultAccentColor(res.locals.enrollments)}
+            ${defaultAccentColor(res.locals.enrollments)}
           )
         `
       );
@@ -4309,12 +4309,9 @@ export default async function courselore({
     }
   );
 
-  interface Helpers {
-    defaultAccentColor: (
-      enrollments: IsSignedInMiddlewareLocals["enrollments"]
-    ) => EnrollmentAccentColor;
-  }
-  app.locals.helpers.defaultAccentColor = (enrollments) => {
+  const defaultAccentColor = (
+    enrollments: IsSignedInMiddlewareLocals["enrollments"]
+  ): EnrollmentAccentColor => {
     const accentColorsInUse = new Set<EnrollmentAccentColor>(
       enrollments.map((enrollment) => enrollment.accentColor)
     );
@@ -7535,7 +7532,7 @@ export default async function courselore({
             ${res.locals.invitation.course.id},
             ${cryptoRandomString({ length: 10, type: "numeric" })},
             ${res.locals.invitation.role},
-            ${app.locals.helpers.defaultAccentColor(res.locals.enrollments)}
+            ${defaultAccentColor(res.locals.enrollments)}
           )
         `
       );
