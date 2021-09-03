@@ -3213,8 +3213,8 @@ export default async function courselore({
     "/reset-password/:passwordResetNonce",
     ...isSignedOutMiddleware,
     (req, res) => {
-      const passwordReset = PasswordReset.get(req.params.passwordResetNonce);
-      if (passwordReset === undefined) {
+      const userId = PasswordReset.get(req.params.passwordResetNonce);
+      if (userId === undefined) {
         Flash.set(
           req,
           res,
@@ -3244,7 +3244,9 @@ export default async function courselore({
           body: html`
             <form
               method="POST"
-              action="${url}/reset-password?${qs.stringify({
+              action="${url}/reset-password/${PasswordReset.create(
+                userId
+              )}?${qs.stringify({
                 redirect: req.query.redirect,
                 name: req.query.name,
                 email: req.query.email,
@@ -3257,16 +3259,27 @@ export default async function courselore({
               `}"
             >
               <label class="label">
-                <p class="label--text">Email</p>
+                <p class="label--text">Password</p>
                 <input
-                  type="email"
-                  name="email"
-                  placeholder="you@educational-institution.edu"
-                  value="${req.query.email ?? ""}"
+                  type="password"
+                  name="password"
                   required
-                  autofocus
+                  minlength="8"
                   class="input--text"
-                  data-skip-is-modified="true"
+                />
+              </label>
+              <label class="label">
+                <p class="label--text">Password Confirmation</p>
+                <input
+                  type="password"
+                  required
+                  class="input--text"
+                  data-ondomcontentloaded="${javascript`
+                    (this.validators ??= []).push(() => {
+                      if (this.value !== this.closest("form").querySelector('[name="password"]').value)
+                        return "Password & Password Confirmation don’t match.";
+                    });
+                  `}"
                 />
               </label>
               <button class="button button--blue">
@@ -3274,38 +3287,6 @@ export default async function courselore({
                 Reset Password
               </button>
             </form>
-            <div
-              style="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--2);
-              `}"
-            >
-              <p>
-                Don’t have an account?
-                <a
-                  href="${url}/sign-up?${qs.stringify({
-                    redirect: req.query.redirect,
-                    name: req.query.name,
-                    email: req.query.email,
-                  })}"
-                  class="link"
-                  >Sign up</a
-                >.
-              </p>
-              <p>
-                Remember your password?
-                <a
-                  href="${url}/sign-in?${qs.stringify({
-                    redirect: req.query.redirect,
-                    name: req.query.name,
-                    email: req.query.email,
-                  })}"
-                  class="link"
-                  >Sign in</a
-                >.
-              </p>
-            </div>
           `,
         })
       );
