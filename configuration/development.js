@@ -35,8 +35,8 @@ module.exports = async (require) => {
       dataDirectory: path.join(process.cwd(), "data"),
       url,
       administrator: "mailto:development@courselore.org",
+      liveReload: true,
     });
-    app.locals.settings.liveReload = true;
     app.listen(4000, "127.0.0.1", () => {
       console.log(
         `CourseLore/${version} started at ${app.locals.settings.url}`

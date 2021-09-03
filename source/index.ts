@@ -47,11 +47,13 @@ export default async function courselore({
   url,
   administrator,
   demonstration = process.env.NODE_ENV !== "production",
+  liveReload = false,
 }: {
   dataDirectory: string;
   url: string;
   administrator: string;
   demonstration?: boolean;
+  liveReload?: boolean;
 }): Promise<express.Express> {
   interface App extends express.Express {}
   const app = express() as App;
@@ -64,9 +66,7 @@ export default async function courselore({
   }
   interface Settings {
     env: string;
-    liveReload: boolean;
   }
-  app.locals.settings.liveReload = false;
 
   interface AppLocals {
     constants: Constants;
@@ -705,7 +705,7 @@ export default async function courselore({
                 </script>
               `
             : html``}
-          $${app.locals.settings.liveReload
+          $${liveReload
             ? html`
                 <script>
                   const liveReload = new EventSource("${url}/live-reload");
@@ -2661,11 +2661,11 @@ export default async function courselore({
   // TODO: Make this secure: https://github.com/richardgirges/express-fileupload
   app.use(expressFileUpload({ createParentPath: true }));
 
-  app.get<{}, any, {}, {}, {}>("/live-reload", (req, res, next) => {
-    if (!app.locals.settings.liveReload) return next();
-    // FIXME: https://github.com/caddyserver/caddy/issues/4247
-    res.type("text/event-stream").write(":\n\n");
-  });
+  if (liveReload)
+    app.get<{}, any, {}, {}, {}>("/live-reload", (req, res, next) => {
+      // FIXME: https://github.com/caddyserver/caddy/issues/4247
+      res.type("text/event-stream").write(":\n\n");
+    });
 
   // FIXME: This only works for a single process. To support multiple processes poll the database for changes or use a message broker mechanism (ZeroMQ seems like a good candidate).
   interface AppLocals {
