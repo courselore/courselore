@@ -4979,7 +4979,7 @@ export default async function courselore({
     (req, res, next) => {
       if (
         res.locals.invitation.usedAt !== null ||
-        app.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
+        isExpired(res.locals.invitation.expiresAt) ||
         (res.locals.invitation.email !== null &&
           res.locals.user !== undefined &&
           res.locals.invitation.email !== res.locals.user.email)
@@ -5562,7 +5562,7 @@ export default async function courselore({
                   <div class="stripped">
                     $${invitations.map((invitation) => {
                       const action = `${url}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
-                      const isExpired = app.locals.helpers.isExpired(
+                      const isInvitationExpired = isExpired(
                         invitation.expiresAt
                       );
                       const isUsed = invitation.usedAt !== null;
@@ -5621,7 +5621,7 @@ export default async function courselore({
                                               gap: var(--space--2);
                                             `}"
                                           >
-                                            $${isExpired
+                                            $${isInvitationExpired
                                               ? html`
                                                   <p
                                                     class="text--rose"
@@ -5744,7 +5744,7 @@ export default async function courselore({
                                                     });
                                                   `}"
                                                 `
-                                              : isExpired
+                                              : isInvitationExpired
                                               ? html`
                                                   type="button"
                                                   data-ondomcontentloaded="${javascript`
@@ -5825,7 +5825,7 @@ export default async function courselore({
                                                         });
                                                       `}"
                                                     `
-                                                  : isExpired
+                                                  : isInvitationExpired
                                                   ? html`
                                                       type="button"
                                                       data-ondomcontentloaded="${javascript`
@@ -5964,7 +5964,7 @@ export default async function courselore({
                                           </div>
                                         </div>
                                       `
-                                    : isExpired
+                                    : isInvitationExpired
                                     ? html`
                                         <div>
                                           <button
@@ -6142,7 +6142,7 @@ export default async function courselore({
         (req.body.expiresAt !== undefined &&
           (typeof req.body.expiresAt !== "string" ||
             !isDate(req.body.expiresAt) ||
-            app.locals.helpers.isExpired(req.body.expiresAt))) ||
+            isExpired(req.body.expiresAt))) ||
         typeof req.body.type !== "string" ||
         !["link", "email"].includes(req.body.type)
       )
@@ -6325,7 +6325,7 @@ export default async function courselore({
 
       if (req.body.resend === "true") {
         if (
-          app.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
+          isExpired(res.locals.invitation.expiresAt) ||
           res.locals.invitation.email === null
         )
           return next("validation");
@@ -6345,7 +6345,7 @@ export default async function courselore({
 
       if (req.body.role !== undefined) {
         if (
-          app.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
+          isExpired(res.locals.invitation.expiresAt) ||
           !enrollmentRoles.includes(req.body.role)
         )
           return next("validation");
@@ -6369,7 +6369,7 @@ export default async function courselore({
         if (
           typeof req.body.expiresAt !== "string" ||
           !isDate(req.body.expiresAt) ||
-          app.locals.helpers.isExpired(req.body.expiresAt)
+          isExpired(req.body.expiresAt)
         )
           return next("validation");
 
@@ -12743,10 +12743,7 @@ ${value}</textarea
     string.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/) !== null &&
     !isNaN(new Date(string).getTime());
 
-  interface Helpers {
-    isExpired: (expiresAt: string | null) => boolean;
-  }
-  app.locals.helpers.isExpired = (expiresAt) =>
+  const isExpired = (expiresAt: string | null): boolean =>
     expiresAt !== null && new Date(expiresAt).getTime() <= Date.now();
 
   return app;
