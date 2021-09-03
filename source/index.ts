@@ -45,9 +45,11 @@ import faker from "faker";
 export default async function courselore({
   dataDirectory,
   url,
+  administrator,
 }: {
   dataDirectory: string;
   url: string;
+  administrator: string;
 }): Promise<express.Express> {
   interface App extends express.Express {}
   const app = express() as App;
@@ -60,12 +62,9 @@ export default async function courselore({
   }
   interface Settings {
     env: string;
-    administrator: string;
     demonstration: boolean;
     liveReload: boolean;
   }
-  app.locals.settings.administrator =
-    "mailto:demonstration-development@courselore.org";
   app.locals.settings.demonstration = true;
   app.locals.settings.liveReload = false;
 
@@ -12842,9 +12841,7 @@ ${value}</textarea
             <p>
               If you think there should be something here, please contact your
               course staff or the
-              <a href="${app.locals.settings.administrator}" class="link"
-                >system administrator</a
-              >.
+              <a href="${administrator}" class="link">system administrator</a>.
             </p>
           `,
         })

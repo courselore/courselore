@@ -34,6 +34,7 @@ module.exports = async (require) => {
     const app = await courselore({
       dataDirectory: path.join(process.cwd(), "data"),
       url,
+      administrator: "mailto:development@courselore.org",
     });
     app.locals.settings.liveReload = true;
     app.listen(4000, "127.0.0.1", () => {
