@@ -1850,29 +1850,31 @@ export default async function courselore({
     `);
   }
 
-  interface Layouts {
-    box: (_: {
-      req: express.Request<
-        {},
-        any,
-        {},
-        {},
-        (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
-          Partial<IsEnrolledInCourseMiddlewareLocals> &
-          Partial<EventSourceMiddlewareLocals>
-      >;
-      res: express.Response<
-        any,
-        (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
-          Partial<IsEnrolledInCourseMiddlewareLocals> &
-          Partial<EventSourceMiddlewareLocals>
-      >;
-      head: HTML;
-      body: HTML;
-    }) => HTML;
-  }
-  app.locals.layouts.box = ({ req, res, head, body }) =>
-    baseLayout({
+  function boxLayout({
+    req,
+    res,
+    head,
+    body,
+  }: {
+    req: express.Request<
+      {},
+      any,
+      {},
+      {},
+      (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
+        Partial<IsEnrolledInCourseMiddlewareLocals> &
+        Partial<EventSourceMiddlewareLocals>
+    >;
+    res: express.Response<
+      any,
+      (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
+        Partial<IsEnrolledInCourseMiddlewareLocals> &
+        Partial<EventSourceMiddlewareLocals>
+    >;
+    head: HTML;
+    body: HTML;
+  }): HTML {
+    return baseLayout({
       req,
       res,
       head,
@@ -1931,6 +1933,7 @@ export default async function courselore({
         </div>
       `,
     });
+  }
 
   interface Layouts {
     application: (_: {
