@@ -2353,26 +2353,30 @@ export default async function courselore({
       `,
     });
 
-  interface Layouts {
-    settings: (_: {
-      req: express.Request<
-        {},
-        any,
-        {},
-        {},
-        IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
-      >;
-      res: express.Response<
-        any,
-        IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
-      >;
-      head: HTML;
-      menuButton: HTML;
-      menu: HTML;
-      body: HTML;
-    }) => HTML;
-  }
-  app.locals.layouts.settings = ({ req, res, head, menuButton, menu, body }) =>
+  const settingsLayout = ({
+    req,
+    res,
+    head,
+    menuButton,
+    menu,
+    body,
+  }: {
+    req: express.Request<
+      {},
+      any,
+      {},
+      {},
+      IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+    >;
+    res: express.Response<
+      any,
+      IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+    >;
+    head: HTML;
+    menuButton: HTML;
+    menu: HTML;
+    body: HTML;
+  }): HTML =>
     applicationLayout({
       req,
       res,
@@ -3741,7 +3745,7 @@ export default async function courselore({
     }) => HTML;
   }
   app.locals.layouts.userSettings = ({ req, res, head, body }) =>
-    app.locals.layouts.settings({
+    settingsLayout({
       req,
       res,
       head,
@@ -5129,7 +5133,7 @@ export default async function courselore({
     }) => HTML;
   }
   app.locals.layouts.courseSettings = ({ req, res, head, body }) =>
-    app.locals.layouts.settings({
+    settingsLayout({
       req,
       res,
       head,
