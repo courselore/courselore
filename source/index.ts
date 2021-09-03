@@ -552,7 +552,7 @@ export default async function courselore({
                 if (
                   element.matches('[type="email"]') &&
                   element.value.trim() !== "" &&
-                  !element.value.match(${app.locals.constants.emailRegExp})
+                  !element.value.match(${emailRegExp})
                 )
                   return "Please enter an email address.";
 
@@ -3048,7 +3048,7 @@ export default async function courselore({
     asyncHandler(async (req, res, next) => {
       if (
         typeof req.body.email !== "string" ||
-        !req.body.email.match(app.locals.constants.emailRegExp) ||
+        !req.body.email.match(emailRegExp) ||
         typeof req.body.password !== "string" ||
         req.body.password.trim() === ""
       )
@@ -3176,7 +3176,7 @@ export default async function courselore({
     (req, res, next) => {
       if (
         typeof req.body.email !== "string" ||
-        !req.body.email.match(app.locals.constants.emailRegExp)
+        !req.body.email.match(emailRegExp)
       )
         return next("validation");
 
@@ -3527,7 +3527,7 @@ export default async function courselore({
         typeof req.body.name !== "string" ||
         req.body.name.trim() === "" ||
         typeof req.body.email !== "string" ||
-        !req.body.email.match(app.locals.constants.emailRegExp) ||
+        !req.body.email.match(emailRegExp) ||
         typeof req.body.password !== "string" ||
         req.body.password.trim() === "" ||
         req.body.password.length < 8
@@ -5519,9 +5519,7 @@ export default async function courselore({
                       if (
                         emails.length === 0 ||
                         emails.some(
-                          ({ email }) => !email.match(${
-                            app.locals.constants.emailRegExp
-                          })
+                          ({ email }) => !email.match(${emailRegExp})
                         )
                       )
                         return "Match the requested format.";
@@ -6289,9 +6287,7 @@ export default async function courselore({
           }
           if (
             emails.length === 0 ||
-            emails.some(
-              ({ email }) => !email.match(app.locals.constants.emailRegExp)
-            )
+            emails.some(({ email }) => !email.match(emailRegExp))
           )
             return next("validation");
 
@@ -12843,10 +12839,7 @@ ${value}</textarea
     );
   }) as express.ErrorRequestHandler<{}, any, {}, {}, {}>);
 
-  interface Constants {
-    emailRegExp: RegExp;
-  }
-  app.locals.constants.emailRegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+  const emailRegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
   interface Helpers {
     isDate: (dateString: string) => boolean;
