@@ -2543,15 +2543,11 @@ export default async function courselore({
     other: html`<i class="bi bi-chat-left-text"></i>`,
   };
 
-  interface Partials {
-    conversationTypeTextColor: (conversationType: ConversationType) => HTML;
-  }
-  app.locals.partials.conversationTypeTextColor = (conversationType) =>
-    ({
-      announcement: "text--fuchsia",
-      question: "text--rose",
-      other: "",
-    }[conversationType]);
+  const conversationTypeTextColor = {
+    announcement: "text--fuchsia",
+    question: "text--rose",
+    other: "",
+  };
 
   app.use(express.static(path.join(__dirname, "../static")));
   app.use(methodOverride("_method"));
@@ -8172,9 +8168,9 @@ export default async function courselore({
                                           `
                                         : html``}
                                       <div
-                                        class="${app.locals.partials.conversationTypeTextColor(
+                                        class="${conversationTypeTextColor[
                                           conversation.type
-                                        )}"
+                                        ]}"
                                       >
                                         $${conversationTypeIcon[
                                           conversation.type
