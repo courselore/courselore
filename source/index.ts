@@ -2326,7 +2326,7 @@ export default async function courselore({
     }) => HTML;
   }
   app.locals.layouts.main = ({ req, res, head, body }) =>
-    app.locals.layouts.application({
+    applicationLayout({
       req,
       res,
       head,
@@ -2374,7 +2374,7 @@ export default async function courselore({
     }) => HTML;
   }
   app.locals.layouts.settings = ({ req, res, head, menuButton, menu, body }) =>
-    app.locals.layouts.application({
+    applicationLayout({
       req,
       res,
       head,
@@ -7700,7 +7700,7 @@ export default async function courselore({
     body,
     onlyConversationLayoutSidebarOnSmallScreen = false,
   }) =>
-    app.locals.layouts.application({
+    applicationLayout({
       req,
       res,
       head,
