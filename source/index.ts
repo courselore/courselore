@@ -61,9 +61,6 @@ export default async function courselore({
   interface App {
     locals: AppLocals;
   }
-  interface AppLocals {
-    settings: Settings;
-  }
 
   interface AppLocals {
     constants: Constants;
