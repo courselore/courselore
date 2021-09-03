@@ -4837,15 +4837,6 @@ export default async function courselore({
     }
   );
 
-  interface Middlewares {
-    invitationExists: express.RequestHandler<
-      { courseReference: string; invitationReference: string },
-      any,
-      {},
-      {},
-      InvitationExistsMiddlewareLocals
-    >[];
-  }
   interface InvitationExistsMiddlewareLocals extends GlobalMiddlewareLocals {
     invitation: {
       id: number;
@@ -4862,7 +4853,13 @@ export default async function courselore({
       role: EnrollmentRole;
     };
   }
-  app.locals.middlewares.invitationExists = [
+  const invitationExistsMiddleware: express.RequestHandler<
+    { courseReference: string; invitationReference: string },
+    any,
+    {},
+    {},
+    InvitationExistsMiddlewareLocals
+  >[] = [
     (req, res, next) => {
       const invitation = database.get<{
         id: number;
@@ -4912,37 +4909,28 @@ export default async function courselore({
     },
   ];
 
-  interface Middlewares {
-    mayManageInvitation: express.RequestHandler<
-      { courseReference: string; invitationReference: string },
-      any,
-      {},
-      {},
-      MayManageInvitationMiddlewareLocals
-    >[];
-  }
   interface MayManageInvitationMiddlewareLocals
     extends IsCourseStaffMiddlewareLocals,
       InvitationExistsMiddlewareLocals {}
-  app.locals.middlewares.mayManageInvitation = [
-    ...isCourseStaffMiddleware,
-    ...app.locals.middlewares.invitationExists,
-  ];
+  const mayManageInvitationMiddleware: express.RequestHandler<
+    { courseReference: string; invitationReference: string },
+    any,
+    {},
+    {},
+    MayManageInvitationMiddlewareLocals
+  >[] = [...isCourseStaffMiddleware, ...invitationExistsMiddleware];
 
-  interface Middlewares {
-    isInvitationUsable: express.RequestHandler<
-      { courseReference: string; invitationReference: string },
-      any,
-      {},
-      {},
-      IsInvitationUsableMiddlewareLocals
-    >[];
-  }
   interface IsInvitationUsableMiddlewareLocals
     extends InvitationExistsMiddlewareLocals,
       Partial<IsSignedInMiddlewareLocals> {}
-  app.locals.middlewares.isInvitationUsable = [
-    ...app.locals.middlewares.invitationExists,
+  const isInvitationUsableMiddleware: express.RequestHandler<
+    { courseReference: string; invitationReference: string },
+    any,
+    {},
+    {},
+    IsInvitationUsableMiddlewareLocals
+  >[] = [
+    ...invitationExistsMiddleware,
     (req, res, next) => {
       if (
         res.locals.invitation.usedAt !== null ||
@@ -4984,15 +4972,6 @@ export default async function courselore({
     });
   };
 
-  interface Middlewares {
-    mayManageEnrollment: express.RequestHandler<
-      { courseReference: string; enrollmentReference: string },
-      any,
-      {},
-      {},
-      MayManageEnrollmentMiddlewareLocals
-    >[];
-  }
   interface MayManageEnrollmentMiddlewareLocals
     extends IsCourseStaffMiddlewareLocals {
     managedEnrollment: {
@@ -5002,7 +4981,13 @@ export default async function courselore({
       isSelf: boolean;
     };
   }
-  app.locals.middlewares.mayManageEnrollment = [
+  const mayManageEnrollmentMiddleware: express.RequestHandler<
+    { courseReference: string; enrollmentReference: string },
+    any,
+    {},
+    {},
+    MayManageEnrollmentMiddlewareLocals
+  >[] = [
     ...isCourseStaffMiddleware,
     (req, res, next) => {
       const managedEnrollment = database.get<{
@@ -6283,7 +6268,7 @@ export default async function courselore({
     MayManageInvitationMiddlewareLocals
   >(
     "/courses/:courseReference/settings/invitations/:invitationReference",
-    ...app.locals.middlewares.mayManageInvitation,
+    ...mayManageInvitationMiddleware,
     (req, res, next) => {
       if (res.locals.invitation.usedAt !== null) return next("validation");
 
@@ -6733,7 +6718,7 @@ export default async function courselore({
     MayManageEnrollmentMiddlewareLocals
   >(
     "/courses/:courseReference/settings/enrollments/:enrollmentReference",
-    ...app.locals.middlewares.mayManageEnrollment,
+    ...mayManageEnrollmentMiddleware,
     (req, res, next) => {
       if (typeof req.body.role === "string") {
         if (!enrollmentRoles.includes(req.body.role)) return next("validation");
@@ -6766,7 +6751,7 @@ export default async function courselore({
     MayManageEnrollmentMiddlewareLocals
   >(
     "/courses/:courseReference/settings/enrollments/:enrollmentReference",
-    ...app.locals.middlewares.mayManageEnrollment,
+    ...mayManageEnrollmentMiddleware,
     (req, res) => {
       database.run(
         sql`DELETE FROM "enrollments" WHERE "id" = ${res.locals.managedEnrollment.id}`
@@ -7389,7 +7374,7 @@ export default async function courselore({
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...isEnrolledInCourseMiddleware,
-    ...app.locals.middlewares.isInvitationUsable,
+    ...isInvitationUsableMiddleware,
     asyncHandler(async (req, res) => {
       res.send(
         boxLayout({
@@ -7441,7 +7426,7 @@ export default async function courselore({
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...isSignedInMiddleware,
-    ...app.locals.middlewares.isInvitationUsable,
+    ...isInvitationUsableMiddleware,
     (req, res) => {
       res.send(
         boxLayout({
@@ -7490,7 +7475,7 @@ export default async function courselore({
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...isSignedInMiddleware,
-    ...app.locals.middlewares.isInvitationUsable,
+    ...isInvitationUsableMiddleware,
     (req, res) => {
       database.run(
         sql`
@@ -7526,7 +7511,7 @@ export default async function courselore({
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...isSignedOutMiddleware,
-    ...app.locals.middlewares.isInvitationUsable,
+    ...isInvitationUsableMiddleware,
     (req, res) => {
       res.send(
         boxLayout({
@@ -9752,15 +9737,6 @@ ${value}</textarea
     }
   );
 
-  interface Middlewares {
-    isConversationAccessible: express.RequestHandler<
-      { courseReference: string; conversationReference: string },
-      HTML,
-      {},
-      {},
-      IsConversationAccessibleMiddlewareLocals
-    >[];
-  }
   interface IsConversationAccessibleMiddlewareLocals
     extends IsEnrolledInCourseMiddlewareLocals {
     conversation: IsEnrolledInCourseMiddlewareLocals["conversations"][number];
@@ -9781,7 +9757,13 @@ ${value}</textarea
       }[];
     }[];
   }
-  app.locals.middlewares.isConversationAccessible = [
+  const isConversationAccessible: express.RequestHandler<
+    { courseReference: string; conversationReference: string },
+    HTML,
+    {},
+    {},
+    IsConversationAccessibleMiddlewareLocals
+  >[] = [
     ...isEnrolledInCourseMiddleware,
     (req, res, next) => {
       const conversation = database.get<{
@@ -10037,7 +10019,7 @@ ${value}</textarea
   interface MayEditConversationMiddlewareLocals
     extends IsConversationAccessibleMiddlewareLocals {}
   app.locals.middlewares.mayEditConversation = [
-    ...app.locals.middlewares.isConversationAccessible,
+    ...isConversationAccessible,
     (req, res, next) => {
       if (mayEditConversation(req, res)) return next();
       next("route");
@@ -10062,7 +10044,7 @@ ${value}</textarea
     message: IsConversationAccessibleMiddlewareLocals["messages"][number];
   }
   app.locals.middlewares.messageExists = [
-    ...app.locals.middlewares.isConversationAccessible,
+    ...isConversationAccessible,
     (req, res, next) => {
       const message = res.locals.messages.find(
         (message) => message.reference === req.params.messageReference
@@ -10122,7 +10104,7 @@ ${value}</textarea
     IsConversationAccessibleMiddlewareLocals & EventSourceMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
-    ...app.locals.middlewares.isConversationAccessible,
+    ...isConversationAccessible,
     ...eventSourceMiddleware,
     (req, res) => {
       for (const message of res.locals.messages)
@@ -11815,7 +11797,7 @@ ${value}</textarea
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     ...isCourseStaffMiddleware,
-    ...app.locals.middlewares.isConversationAccessible,
+    ...isConversationAccessible,
     (req, res) => {
       database.run(
         sql`DELETE FROM "conversations" WHERE "id" = ${res.locals.conversation.id}`
@@ -11835,7 +11817,7 @@ ${value}</textarea
     IsConversationAccessibleMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages",
-    ...app.locals.middlewares.isConversationAccessible,
+    ...isConversationAccessible,
     (req, res, next) => {
       if (
         typeof req.body.content !== "string" ||
