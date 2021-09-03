@@ -3213,20 +3213,8 @@ export default async function courselore({
     "/reset-password/:passwordResetNonce",
     ...isSignedOutMiddleware,
     (req, res) => {
-      const passwordReset = database.get<{
-        createdAt: string;
-        user: number;
-      }>(
-        sql`SELECT "createdAt", "user" FROM "passwordResets" WHERE "nonce" = ${req.params.passwordResetNonce}`
-      );
-      database.run(
-        sql`DELETE FROM "passwordResets" WHERE "nonce" = ${req.params.passwordResetNonce}`
-      );
-      if (
-        passwordReset === undefined ||
-        new Date(passwordReset.createdAt).getTime() + 10 * 60 * 1000 <
-          Date.now()
-      ) {
+      const passwordReset = PasswordReset.get(req.params.passwordResetNonce);
+      if (passwordReset === undefined) {
         Flash.set(
           req,
           res,
