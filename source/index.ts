@@ -61,15 +61,13 @@ export default async function courselore({
 }): Promise<express.Express> {
   await fs.ensureDir(dataDirectory);
 
-  interface App extends express.Express {}
-  const app = express() as App;
-
-  interface App {
+  interface App extends express.Express {
     locals: {
       middlewares: Middlewares;
       helpers: Helpers;
     };
   }
+  const app = express() as App;
   app.locals.middlewares = {} as Middlewares;
   app.locals.helpers = {} as Helpers;
 
