@@ -3334,7 +3334,7 @@ export default async function courselore({
       database.run(
         sql`
           UPDATE "users"
-          SET = "password" = ${await argon2.hash(
+          SET "password" = ${await argon2.hash(
             req.body.password,
             argon2Options
           )}
