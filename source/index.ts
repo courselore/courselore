@@ -60,13 +60,7 @@ export default async function courselore({
 }): Promise<express.Express> {
   await fs.ensureDir(dataDirectory);
 
-  interface App extends express.Express {
-    locals: {
-      middlewares: Middlewares;
-    };
-  }
-  const app = express() as App;
-  app.locals.middlewares = {} as Middlewares;
+  const app = express();
 
   type UserEmailNotifications = typeof userEmailNotifications[number];
   const userEmailNotifications = ["none", "essentials", "everything"] as const;
@@ -10004,21 +9998,18 @@ ${value}</textarea
     res.locals.enrollment.role === "staff" ||
     res.locals.conversation.authorEnrollment.id === res.locals.enrollment.id;
 
-  interface Middlewares {
-    mayEditConversation: express.RequestHandler<
-      {
-        courseReference: string;
-        conversationReference: string;
-      },
-      any,
-      {},
-      {},
-      MayEditConversationMiddlewareLocals
-    >[];
-  }
   interface MayEditConversationMiddlewareLocals
     extends IsConversationAccessibleMiddlewareLocals {}
-  app.locals.middlewares.mayEditConversation = [
+  const mayEditConversationMiddleware: express.RequestHandler<
+    {
+      courseReference: string;
+      conversationReference: string;
+    },
+    any,
+    {},
+    {},
+    MayEditConversationMiddlewareLocals
+  >[] = [
     ...isConversationAccessibleMiddleware,
     (req, res, next) => {
       if (mayEditConversation(req, res)) return next();
@@ -10026,24 +10017,21 @@ ${value}</textarea
     },
   ];
 
-  interface Middlewares {
-    messageExists: express.RequestHandler<
-      {
-        courseReference: string;
-        conversationReference: string;
-        messageReference: string;
-      },
-      any,
-      {},
-      {},
-      MessageExistsMiddlewareLocals
-    >[];
-  }
   interface MessageExistsMiddlewareLocals
     extends IsConversationAccessibleMiddlewareLocals {
     message: IsConversationAccessibleMiddlewareLocals["messages"][number];
   }
-  app.locals.middlewares.messageExists = [
+  const messageExistsMiddleware: express.RequestHandler<
+    {
+      courseReference: string;
+      conversationReference: string;
+      messageReference: string;
+    },
+    any,
+    {},
+    {},
+    MessageExistsMiddlewareLocals
+  >[] = [
     ...isConversationAccessibleMiddleware,
     (req, res, next) => {
       const message = res.locals.messages.find(
@@ -10069,23 +10057,20 @@ ${value}</textarea
     res.locals.enrollment.role === "staff" ||
     message.authorEnrollment.id === res.locals.enrollment.id;
 
-  interface Middlewares {
-    mayEditMessage: express.RequestHandler<
-      {
-        courseReference: string;
-        conversationReference: string;
-        messageReference: string;
-      },
-      any,
-      {},
-      {},
-      MayEditMessageMiddlewareLocals
-    >[];
-  }
   interface MayEditMessageMiddlewareLocals
     extends MessageExistsMiddlewareLocals {}
-  app.locals.middlewares.mayEditMessage = [
-    ...app.locals.middlewares.messageExists,
+  const mayEditMessageMiddleware: express.RequestHandler<
+    {
+      courseReference: string;
+      conversationReference: string;
+      messageReference: string;
+    },
+    any,
+    {},
+    {},
+    MayEditMessageMiddlewareLocals
+  >[] = [
+    ...messageExistsMiddleware,
     (req, res, next) => {
       if (mayEditMessage(req, res, res.locals.message)) return next();
       next("route");
@@ -11722,7 +11707,7 @@ ${value}</textarea
     MayEditConversationMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
-    ...app.locals.middlewares.mayEditConversation,
+    ...mayEditConversationMiddleware,
     (req, res, next) => {
       if (typeof req.body.title === "string")
         if (req.body.title.trim() === "") return next("validation");
@@ -11883,7 +11868,7 @@ ${value}</textarea
     MayEditMessageMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
-    ...app.locals.middlewares.mayEditMessage,
+    ...mayEditMessageMiddleware,
     (req, res, next) => {
       if (typeof req.body.content === "string")
         if (req.body.content.trim() === "") return next("validation");
@@ -11964,7 +11949,7 @@ ${value}</textarea
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
     ...isCourseStaffMiddleware,
-    ...app.locals.middlewares.messageExists,
+    ...messageExistsMiddleware,
     (req, res, next) => {
       if (res.locals.message.reference === "1") return next("validation");
 
@@ -11992,7 +11977,7 @@ ${value}</textarea
     MessageExistsMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
-    ...app.locals.middlewares.messageExists,
+    ...messageExistsMiddleware,
     (req, res, next) => {
       if (
         res.locals.message.likes.some(
@@ -12025,7 +12010,7 @@ ${value}</textarea
     MessageExistsMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
-    ...app.locals.middlewares.messageExists,
+    ...messageExistsMiddleware,
     (req, res, next) => {
       const like = res.locals.message.likes.find(
         (like) => like.enrollment.id === res.locals.enrollment.id
@@ -12062,23 +12047,20 @@ ${value}</textarea
     message.answerAt !== null &&
     message.authorEnrollment.role !== "staff";
 
-  interface Middlewares {
-    mayEndorseMessage: express.RequestHandler<
-      {
-        courseReference: string;
-        conversationReference: string;
-        messageReference: string;
-      },
-      any,
-      {},
-      {},
-      MayEndorseMessageMiddlewareLocals
-    >[];
-  }
   interface MayEndorseMessageMiddlewareLocals
     extends MessageExistsMiddlewareLocals {}
-  app.locals.middlewares.mayEndorseMessage = [
-    ...app.locals.middlewares.messageExists,
+  const mayEndorseMessageMiddleware: express.RequestHandler<
+    {
+      courseReference: string;
+      conversationReference: string;
+      messageReference: string;
+    },
+    any,
+    {},
+    {},
+    MayEndorseMessageMiddlewareLocals
+  >[] = [
+    ...messageExistsMiddleware,
     (req, res, next) => {
       if (mayEndorseMessage(req, res, res.locals.message)) return next();
       next("route");
@@ -12097,7 +12079,7 @@ ${value}</textarea
     MayEndorseMessageMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/endorsements",
-    ...app.locals.middlewares.mayEndorseMessage,
+    ...mayEndorseMessageMiddleware,
     (req, res, next) => {
       if (
         res.locals.message.endorsements.some(
@@ -12131,7 +12113,7 @@ ${value}</textarea
     MayEndorseMessageMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/endorsements",
-    ...app.locals.middlewares.mayEndorseMessage,
+    ...mayEndorseMessageMiddleware,
     (req, res, next) => {
       const endorsement = res.locals.message.endorsements.find(
         (endorsement) => endorsement.enrollment.id === res.locals.enrollment.id
@@ -12161,7 +12143,7 @@ ${value}</textarea
     MayEditConversationMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/taggings",
-    ...app.locals.middlewares.mayEditConversation,
+    ...mayEditConversationMiddleware,
     (req, res, next) => {
       if (
         typeof req.body.reference !== "string" ||
@@ -12203,7 +12185,7 @@ ${value}</textarea
     MayEditConversationMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/taggings",
-    ...app.locals.middlewares.mayEditConversation,
+    ...mayEditConversationMiddleware,
     (req, res, next) => {
       if (
         res.locals.conversation.taggings.length === 1 ||
