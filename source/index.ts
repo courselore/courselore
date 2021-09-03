@@ -284,27 +284,29 @@ export default async function courselore({
     `
   );
 
-  interface Layouts {
-    base: (_: {
-      req?: express.Request<
-        {},
-        any,
-        {},
-        {},
-        (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
-          Partial<EventSourceMiddlewareLocals>
-      >;
-      res?: express.Response<
-        any,
-        (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
-          Partial<EventSourceMiddlewareLocals>
-      >;
-      head: HTML;
-      body: HTML;
-    }) => HTML;
-  }
-  app.locals.layouts.base = ({ req, res, head, body }) =>
-    extractInlineStyles(html`
+  function baseLayout({
+    req,
+    res,
+    head,
+    body,
+  }: {
+    req?: express.Request<
+      {},
+      any,
+      {},
+      {},
+      (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
+        Partial<EventSourceMiddlewareLocals>
+    >;
+    res?: express.Response<
+      any,
+      (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
+        Partial<EventSourceMiddlewareLocals>
+    >;
+    head: HTML;
+    body: HTML;
+  }): HTML {
+    return extractInlineStyles(html`
       <!DOCTYPE html>
       <html lang="en">
         <head>
@@ -1577,6 +1579,7 @@ export default async function courselore({
         </body>
       </html>
     `);
+  }
 
   interface Layouts {
     applicationBase: (_: {
@@ -1608,7 +1611,7 @@ export default async function courselore({
     body,
   }) => {
     const flash = app.locals.helpers.flash.get(req, res);
-    return app.locals.layouts.base({
+    return baseLayout({
       req,
       res,
       head,
