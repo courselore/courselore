@@ -4520,9 +4520,7 @@ export default async function courselore({
           `
         )
         // FIXME: Try to get rid of these n+1 queries.
-        .map((conversation) =>
-          app.locals.helpers.getConversationMetadata(req, res, conversation)
-        );
+        .map((conversation) => getConversationMetadata(req, res, conversation));
 
       res.locals.conversationsCount = database.get<{
         count: number;
@@ -4553,22 +4551,19 @@ export default async function courselore({
     },
   ];
 
-  interface Helpers {
-    getConversationMetadata: (
-      req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>,
-      res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
-      conversation: {
-        id: number;
-        reference: string;
-        title: string;
-        nextMessageReference: number;
-        type: ConversationType;
-        pinnedAt: string | null;
-        staffOnlyAt: string | null;
-      }
-    ) => IsEnrolledInCourseMiddlewareLocals["conversations"][number];
-  }
-  app.locals.helpers.getConversationMetadata = (req, res, conversation) => {
+  const getConversationMetadata = (
+    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>,
+    res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
+    conversation: {
+      id: number;
+      reference: string;
+      title: string;
+      nextMessageReference: number;
+      type: ConversationType;
+      pinnedAt: string | null;
+      staffOnlyAt: string | null;
+    }
+  ): IsEnrolledInCourseMiddlewareLocals["conversations"][number] => {
     const originalMessage = database.get<{
       createdAt: string;
       anonymousAt: string | null;
@@ -9851,11 +9846,7 @@ ${value}</textarea
         `
       );
       if (conversation === undefined) return next("route");
-      res.locals.conversation = app.locals.helpers.getConversationMetadata(
-        req,
-        res,
-        conversation
-      );
+      res.locals.conversation = getConversationMetadata(req, res, conversation);
 
       res.locals.messages = database
         .all<{
