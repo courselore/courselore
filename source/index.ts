@@ -2511,10 +2511,7 @@ export default async function courselore({
     `;
   })();
 
-  interface Partials {
-    loading: HTML;
-  }
-  app.locals.partials.loading = html`
+  const spinner = html`
     <svg
       width="20"
       height="20"
@@ -9166,7 +9163,7 @@ ${value}</textarea
             gap: var(--space--2);
           `}"
         >
-          $${app.locals.partials.loading} Loading…
+          $${spinner} Loading…
         </div>
 
         <div
