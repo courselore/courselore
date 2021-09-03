@@ -95,22 +95,8 @@ export default async function courselore({
     "pink",
   ] as const;
 
-  interface Constants {
-    ghostEnrollment: GhostEnrollment;
-  }
-  interface GhostEnrollment {
-    id: null;
-    user: {
-      id: null;
-      email: null;
-      name: "Ghost";
-      avatar: null;
-      biography: string;
-    };
-    reference: null;
-    role: null;
-  }
-  app.locals.constants.ghostEnrollment = {
+  type GhostEnrollment = typeof ghostEnrollment;
+  const ghostEnrollment = {
     id: null,
     user: {
       id: null,
@@ -121,7 +107,7 @@ export default async function courselore({
     },
     reference: null,
     role: null,
-  };
+  } as const;
 
   interface Constants {
     conversationTypes: ConversationType[];
@@ -4776,7 +4762,7 @@ export default async function courselore({
                       reference: endorsement.enrollmentReference,
                       role: endorsement.enrollmentRole,
                     }
-                  : app.locals.constants.ghostEnrollment,
+                  : ghostEnrollment,
             }));
     const taggings = app.locals.database
       .all<{
@@ -4846,7 +4832,7 @@ export default async function courselore({
               reference: originalMessage.authorEnrollmentReference,
               role: originalMessage.authorEnrollmentRole,
             }
-          : app.locals.constants.ghostEnrollment,
+          : ghostEnrollment,
       messagesCount,
       readingsCount,
       endorsements,
@@ -10075,7 +10061,7 @@ ${value}</textarea
                       reference: endorsement.enrollmentReference,
                       role: endorsement.enrollmentRole,
                     }
-                  : app.locals.constants.ghostEnrollment,
+                  : ghostEnrollment,
             }));
           const likes = app.locals.database
             .all<{
@@ -10127,7 +10113,7 @@ ${value}</textarea
                       reference: like.enrollmentReference,
                       role: like.enrollmentRole,
                     }
-                  : app.locals.constants.ghostEnrollment,
+                  : ghostEnrollment,
             }));
 
           return {
@@ -10154,7 +10140,7 @@ ${value}</textarea
                     reference: message.authorEnrollmentReference,
                     role: message.authorEnrollmentRole,
                   }
-                : app.locals.constants.ghostEnrollment,
+                : ghostEnrollment,
             content: message.content,
             answerAt: message.answerAt,
             anonymousAt: message.anonymousAt,
