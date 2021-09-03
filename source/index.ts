@@ -4303,15 +4303,6 @@ export default async function courselore({
     return [...accentColorsAvailable][0];
   };
 
-  interface Middlewares {
-    isEnrolledInCourse: express.RequestHandler<
-      { courseReference: string },
-      any,
-      {},
-      { search?: string; tag?: string },
-      IsEnrolledInCourseMiddlewareLocals
-    >[];
-  }
   interface IsEnrolledInCourseMiddlewareLocals
     extends IsSignedInMiddlewareLocals {
     course: IsSignedInMiddlewareLocals["enrollments"][number]["course"];
@@ -4381,7 +4372,13 @@ export default async function courselore({
     conversationsCount: number;
     conversationTypes: ConversationType[];
   }
-  app.locals.middlewares.isEnrolledInCourse = [
+  const isEnrolledInCourseMiddleware: express.RequestHandler<
+    { courseReference: string },
+    any,
+    {},
+    { search?: string; tag?: string },
+    IsEnrolledInCourseMiddlewareLocals
+  >[] = [
     ...isSignedInMiddleware,
     (req, res, next) => {
       for (const enrollment of res.locals.enrollments)
@@ -4746,7 +4743,7 @@ export default async function courselore({
   interface IsCourseStaffMiddlewareLocals
     extends IsEnrolledInCourseMiddlewareLocals {}
   app.locals.middlewares.isCourseStaff = [
-    ...app.locals.middlewares.isEnrolledInCourse,
+    ...isEnrolledInCourseMiddleware,
     (req, res, next) => {
       if (res.locals.enrollment.role === "staff") return next();
       next("route");
@@ -4765,7 +4762,7 @@ export default async function courselore({
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference",
-    ...app.locals.middlewares.isEnrolledInCourse,
+    ...isEnrolledInCourseMiddleware,
     (req, res) => {
       if (res.locals.conversationsCount === 0)
         return res.send(
@@ -5241,7 +5238,7 @@ export default async function courselore({
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/settings",
-    ...app.locals.middlewares.isEnrolledInCourse,
+    ...isEnrolledInCourseMiddleware,
     (req, res) => {
       res.redirect(
         `${url}/courses/${res.locals.course.reference}/settings/your-enrollment`
@@ -7245,7 +7242,7 @@ export default async function courselore({
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/settings/your-enrollment",
-    ...app.locals.middlewares.isEnrolledInCourse,
+    ...isEnrolledInCourseMiddleware,
     (req, res) => {
       res.send(
         courseSettingsLayout({
@@ -7362,7 +7359,7 @@ export default async function courselore({
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/settings/your-enrollment",
-    ...app.locals.middlewares.isEnrolledInCourse,
+    ...isEnrolledInCourseMiddleware,
     (req, res, next) => {
       if (
         typeof req.body.accentColor !== "string" ||
@@ -7394,7 +7391,7 @@ export default async function courselore({
     IsEnrolledInCourseMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...app.locals.middlewares.isEnrolledInCourse,
+    ...isEnrolledInCourseMiddleware,
     ...app.locals.middlewares.isInvitationUsable,
     asyncHandler(async (req, res) => {
       res.send(
@@ -9320,7 +9317,7 @@ ${value}</textarea
     IsEnrolledInCourseMiddlewareLocals & EventSourceMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/new",
-    ...app.locals.middlewares.isEnrolledInCourse,
+    ...isEnrolledInCourseMiddleware,
     ...eventSourceMiddleware,
     (req, res) => {
       res.send(
@@ -9617,7 +9614,7 @@ ${value}</textarea
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/conversations",
-    ...app.locals.middlewares.isEnrolledInCourse,
+    ...isEnrolledInCourseMiddleware,
     (req, res, next) => {
       req.body.tagsReferences ??= [];
       if (
@@ -9788,7 +9785,7 @@ ${value}</textarea
     }[];
   }
   app.locals.middlewares.isConversationAccessible = [
-    ...app.locals.middlewares.isEnrolledInCourse,
+    ...isEnrolledInCourseMiddleware,
     (req, res, next) => {
       const conversation = database.get<{
         id: number;
