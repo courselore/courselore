@@ -2650,8 +2650,8 @@ export default async function courselore({
 
   const Flash = {
     set(
-      req: express.Request<{}, any, {}, {}, GlobalMiddlewareLocals>,
-      res: express.Response<any, GlobalMiddlewareLocals>,
+      req: express.Request<{}, any, {}, {}, ApplicationMiddlewareLocals>,
+      res: express.Response<any, ApplicationMiddlewareLocals>,
       content: HTML
     ): void {
       res.locals.flash = content;
@@ -2672,8 +2672,8 @@ export default async function courselore({
     },
 
     get(
-      req: express.Request<{}, any, {}, {}, GlobalMiddlewareLocals>,
-      res: express.Response<any, GlobalMiddlewareLocals>
+      req: express.Request<{}, any, {}, {}, ApplicationMiddlewareLocals>,
+      res: express.Response<any, ApplicationMiddlewareLocals>
     ): HTML | undefined {
       const flash = database.get<{
         content: HTML;
@@ -2688,11 +2688,11 @@ export default async function courselore({
     },
   };
 
-  interface GlobalMiddlewareLocals {
+  interface ApplicationMiddlewareLocals {
     flash?: HTML;
   }
 
-  interface IsSignedOutMiddlewareLocals extends GlobalMiddlewareLocals {}
+  interface IsSignedOutMiddlewareLocals extends ApplicationMiddlewareLocals {}
   const isSignedOutMiddleware: express.RequestHandler<
     {},
     any,
@@ -2706,7 +2706,7 @@ export default async function courselore({
     },
   ];
 
-  interface IsSignedInMiddlewareLocals extends GlobalMiddlewareLocals {
+  interface IsSignedInMiddlewareLocals extends ApplicationMiddlewareLocals {
     user: {
       id: number;
       email: string;
@@ -4831,7 +4831,8 @@ export default async function courselore({
     }
   );
 
-  interface InvitationExistsMiddlewareLocals extends GlobalMiddlewareLocals {
+  interface InvitationExistsMiddlewareLocals
+    extends ApplicationMiddlewareLocals {
     invitation: {
       id: number;
       expiresAt: string | null;
