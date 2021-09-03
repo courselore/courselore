@@ -1751,7 +1751,7 @@ export default async function courselore({
             </div>
 
             $${(() => {
-              const flash = app.locals.helpers.flash.get(req, res);
+              const flash = Flash.get(req, res);
               return flash === undefined
                 ? html``
                 : html`
@@ -2600,7 +2600,11 @@ export default async function courselore({
   const Session = {
     maxAge: 180 * 24 * 60 * 60 * 1000,
 
-    open(req: express.Request<{}, any, {}, {}, {}>, res: express.Response<any, {}>, userId: number): void {
+    open(
+      req: express.Request<{}, any, {}, {}, {}>,
+      res: express.Response<any, {}>,
+      userId: number
+    ): void {
       const session = database.get<{
         token: string;
       }>(
@@ -2619,7 +2623,10 @@ export default async function courselore({
       });
     },
 
-    get(req: express.Request<{}, any, {}, {}, {}>, res: express.Response<any, {}>): number | undefined {
+    get(
+      req: express.Request<{}, any, {}, {}, {}>,
+      res: express.Response<any, {}>
+    ): number | undefined {
       if (req.cookies.session === undefined) return;
       const session = database.get<{
         createdAt: string;
@@ -2629,14 +2636,11 @@ export default async function courselore({
       );
       if (
         session === undefined ||
-        new Date(session.createdAt).getTime() +
-          Session.maxAge <
-          Date.now()
+        new Date(session.createdAt).getTime() + Session.maxAge < Date.now()
       )
         Session.close(req, res);
       else if (
-        new Date(session.createdAt).getTime() +
-          Session.maxAge / 2 <
+        new Date(session.createdAt).getTime() + Session.maxAge / 2 <
         Date.now()
       ) {
         Session.close(req, res);
@@ -2645,7 +2649,10 @@ export default async function courselore({
       return session?.user;
     },
 
-    close(req: express.Request<{}, any, {}, {}, {}>, res: express.Response<any, {}>):void {
+    close(
+      req: express.Request<{}, any, {}, {}, {}>,
+      res: express.Response<any, {}>
+    ): void {
       database.run(
         sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies.session}`
       );
@@ -2653,21 +2660,12 @@ export default async function courselore({
     },
   };
 
-  interface Helpers {
-    flash: {
-      set: (
-        req: express.Request<{}, any, {}, {}, GlobalMiddlewareLocals>,
-        res: express.Response<any, GlobalMiddlewareLocals>,
-        content: HTML
-      ) => void;
-      get: (
-        req: express.Request<{}, any, {}, {}, GlobalMiddlewareLocals>,
-        res: express.Response<any, GlobalMiddlewareLocals>
-      ) => HTML | undefined;
-    };
-  }
-  app.locals.helpers.flash = {
-    set(req, res, content) {
+  const Flash = {
+    set(
+      req: express.Request<{}, any, {}, {}, GlobalMiddlewareLocals>,
+      res: express.Response<any, GlobalMiddlewareLocals>,
+      content: HTML
+    ): void {
       res.locals.flash = content;
       const flash = database.get<{ nonce: string }>(
         sql`
@@ -2685,7 +2683,10 @@ export default async function courselore({
       });
     },
 
-    get(req, res) {
+    get(
+      req: express.Request<{}, any, {}, {}, GlobalMiddlewareLocals>,
+      res: express.Response<any, GlobalMiddlewareLocals>
+    ): HTML | undefined {
       const flash = database.get<{
         content: HTML;
       }>(
@@ -2715,8 +2716,7 @@ export default async function courselore({
   interface IsSignedOutMiddlewareLocals extends GlobalMiddlewareLocals {}
   app.locals.middlewares.isSignedOut = [
     (req, res, next) => {
-      if (Session.get(req, res) !== undefined)
-        return next("route");
+      if (Session.get(req, res) !== undefined) return next("route");
       next();
     },
   ];
@@ -2991,7 +2991,7 @@ export default async function courselore({
         user === undefined ||
         !(await argon2.verify(user.password, req.body.password))
       ) {
-        app.locals.helpers.flash.set(
+        Flash.set(
           req,
           res,
           html`<div class="flash--rose">Incorrect email & password.</div>`
@@ -3115,7 +3115,7 @@ export default async function courselore({
         sql`SELECT "id", "email" FROM "users" WHERE "email" = ${req.body.email}`
       );
       if (user === undefined) {
-        app.locals.helpers.flash.set(
+        Flash.set(
           req,
           res,
           html`<div class="flash--rose">Email not found.</div>`
@@ -3162,7 +3162,7 @@ export default async function courselore({
         `,
       });
       if (req.body.resend === "true")
-        app.locals.helpers.flash.set(
+        Flash.set(
           req,
           res,
           html`<div class="flash--green">Email resent.</div>`
@@ -3226,7 +3226,7 @@ export default async function courselore({
         new Date(passwordReset.createdAt).getTime() + 10 * 60 * 1000 <
           Date.now()
       ) {
-        app.locals.helpers.flash.set(
+        Flash.set(
           req,
           res,
           html`
@@ -3471,7 +3471,7 @@ export default async function courselore({
           `
         )!.exists === 1
       ) {
-        app.locals.helpers.flash.set(
+        Flash.set(
           req,
           res,
           html`<div class="flash--rose">Email already taken.</div>`
@@ -4039,7 +4039,7 @@ export default async function courselore({
         `
     );
 
-    app.locals.helpers.flash.set(
+    Flash.set(
       req,
       res,
       html`<div class="flash--green">Profile updated successfully.</div>`
@@ -4208,7 +4208,7 @@ export default async function courselore({
         `
       );
 
-      app.locals.helpers.flash.set(
+      Flash.set(
         req,
         res,
         html`
@@ -5254,7 +5254,7 @@ export default async function courselore({
         `
       );
 
-      app.locals.helpers.flash.set(
+      Flash.set(
         req,
         res,
         html`
@@ -6166,7 +6166,7 @@ export default async function courselore({
           `
           )!;
 
-          app.locals.helpers.flash.set(
+          Flash.set(
             req,
             res,
             html`
@@ -6292,7 +6292,7 @@ export default async function courselore({
             });
           }
 
-          app.locals.helpers.flash.set(
+          Flash.set(
             req,
             res,
             html`
@@ -6335,7 +6335,7 @@ export default async function courselore({
 
         app.locals.helpers.sendInvitationEmail(res.locals.invitation);
 
-        app.locals.helpers.flash.set(
+        Flash.set(
           req,
           res,
           html`
@@ -6357,7 +6357,7 @@ export default async function courselore({
           sql`UPDATE "invitations" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.invitation.id}`
         );
 
-        app.locals.helpers.flash.set(
+        Flash.set(
           req,
           res,
           html`
@@ -6380,7 +6380,7 @@ export default async function courselore({
           sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitation.id}`
         );
 
-        app.locals.helpers.flash.set(
+        Flash.set(
           req,
           res,
           html`
@@ -6400,7 +6400,7 @@ export default async function courselore({
           `
         );
 
-        app.locals.helpers.flash.set(
+        Flash.set(
           req,
           res,
           html`
@@ -6420,7 +6420,7 @@ export default async function courselore({
           `
         );
 
-        app.locals.helpers.flash.set(
+        Flash.set(
           req,
           res,
           html`
@@ -6776,7 +6776,7 @@ export default async function courselore({
           sql`UPDATE "enrollments" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.managedEnrollment.id}`
         );
 
-        app.locals.helpers.flash.set(
+        Flash.set(
           req,
           res,
           html`
@@ -6807,7 +6807,7 @@ export default async function courselore({
         sql`DELETE FROM "enrollments" WHERE "id" = ${res.locals.managedEnrollment.id}`
       );
 
-      app.locals.helpers.flash.set(
+      Flash.set(
         req,
         res,
         html`
@@ -7254,7 +7254,7 @@ export default async function courselore({
             `
           );
 
-      app.locals.helpers.flash.set(
+      Flash.set(
         req,
         res,
         html`<div class="flash--green">Tags updated successfully.</div>`
@@ -7403,7 +7403,7 @@ export default async function courselore({
         sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollment.id}`
       );
 
-      app.locals.helpers.flash.set(
+      Flash.set(
         req,
         res,
         html` <div class="flash--green">Enrollment updated successfully.</div> `
@@ -12614,7 +12614,7 @@ ${value}</textarea
         }
 
         Session.open(req, res, demonstrationUser.id);
-        app.locals.helpers.flash.set(
+        Flash.set(
           req,
           res,
           html`
