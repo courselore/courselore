@@ -68,12 +68,10 @@ export default async function courselore({
     locals: {
       middlewares: Middlewares;
       helpers: Helpers;
-      partials: Partials;
     };
   }
   app.locals.middlewares = {} as Middlewares;
   app.locals.helpers = {} as Helpers;
-  app.locals.partials = {} as Partials;
 
   type UserEmailNotifications = typeof userEmailNotifications[number];
   const userEmailNotifications = ["none", "essentials", "everything"] as const;
