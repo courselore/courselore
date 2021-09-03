@@ -1826,8 +1826,7 @@ export default async function courselore({
                       </div>
                     </div>
                     $${process.env.NODE_ENV !== "production"
-                      ? html``
-                      : html`
+                      ? html`
                           <form
                             method="POST"
                             action="${url}/turn-off?_method=DELETE"
@@ -1837,7 +1836,8 @@ export default async function courselore({
                               Turn off
                             </button>
                           </form>
-                        `}
+                        `
+                      : html``}
                   </div>
                 `
               : html``}
@@ -12810,9 +12810,7 @@ ${value}</textarea
 
   if (demonstration && process.env.NODE_ENV !== "production")
     app.delete<{}, any, {}, {}, {}>("/turn-off", (req, res, next) => {
-      res.send(
-        `The demonstration server was turned off. Thanks for trying out CourseLore.`
-      );
+      res.send(`Thanks for trying CourseLore.`);
       process.exit(0);
     });
 

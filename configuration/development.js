@@ -39,7 +39,7 @@ module.exports = async (require) => {
     });
     app.listen(4000, "127.0.0.1", () => {
       console.log(
-        `CourseLore/${version} started at ${app.locals.settings.url}`
+        `CourseLore/${version} started at ${url}`
       );
     });
   }
