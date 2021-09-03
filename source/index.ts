@@ -284,7 +284,7 @@ export default async function courselore({
     `
   );
 
-  function baseLayout({
+  const baseLayout = ({
     req,
     res,
     head,
@@ -309,8 +309,8 @@ export default async function courselore({
     head: HTML;
     extraHeaders?: HTML;
     body: HTML;
-  }): HTML {
-    return extractInlineStyles(html`
+  }): HTML =>
+    extractInlineStyles(html`
       <!DOCTYPE html>
       <html lang="en">
         <head>
@@ -1848,9 +1848,8 @@ export default async function courselore({
         </body>
       </html>
     `);
-  }
 
-  function boxLayout({
+  const boxLayout = ({
     req,
     res,
     head,
@@ -1873,8 +1872,8 @@ export default async function courselore({
     >;
     head: HTML;
     body: HTML;
-  }): HTML {
-    return baseLayout({
+  }): HTML =>
+    baseLayout({
       req,
       res,
       head,
@@ -1933,9 +1932,8 @@ export default async function courselore({
         </div>
       `,
     });
-  }
 
-  function applicationLayout({
+  const applicationLayout = ({
     req,
     res,
     head,
@@ -1960,8 +1958,8 @@ export default async function courselore({
     head: HTML;
     extraHeaders?: HTML;
     body: HTML;
-  }): HTML {
-    return baseLayout({
+  }): HTML =>
+    baseLayout({
       req,
       res,
       head,
@@ -2302,9 +2300,8 @@ export default async function courselore({
       `,
       body,
     });
-  }
 
-  function mainLayout({
+  const mainLayout = ({
     req,
     res,
     head,
@@ -2327,8 +2324,8 @@ export default async function courselore({
     >;
     head: HTML;
     body: HTML;
-  }): HTML {
-    return applicationLayout({
+  }): HTML =>
+    applicationLayout({
       req,
       res,
       head,
@@ -2355,7 +2352,6 @@ export default async function courselore({
         </div>
       `,
     });
-  }
 
   interface Layouts {
     settings: (_: {
