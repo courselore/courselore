@@ -2537,10 +2537,7 @@ export default async function courselore({
     </svg>
   `;
 
-  interface Partials {
-    conversationTypeIcon: (conversationType: ConversationType) => HTML;
-  }
-  app.locals.partials.conversationTypeIcon = (conversationType) =>
+  const conversationTypeIcon = (conversationType: ConversationType): HTML =>
     ({
       announcement: html`<i class="bi bi-megaphone"></i>`,
       question: html`<i class="bi bi-patch-question"></i>`,
@@ -8180,7 +8177,7 @@ export default async function courselore({
                                           conversation.type
                                         )}"
                                       >
-                                        $${app.locals.partials.conversationTypeIcon(
+                                        $${conversationTypeIcon(
                                           conversation.type
                                         )}
                                         ${lodash.capitalize(conversation.type)}
@@ -9467,9 +9464,7 @@ ${value}</textarea
                             required
                             class="input--radio"
                           />
-                          $${app.locals.partials.conversationTypeIcon(
-                            conversationType
-                          )}
+                          $${conversationTypeIcon(conversationType)}
                           $${lodash.capitalize(conversationType)}
                         </label>
                       `
@@ -10766,7 +10761,7 @@ ${value}</textarea
                               });
                             `}"
                           >
-                            $${app.locals.partials.conversationTypeIcon(
+                            $${conversationTypeIcon(
                               res.locals.conversation.type
                             )}
                             $${lodash.capitalize(res.locals.conversation.type)}
@@ -10792,9 +10787,7 @@ ${value}</textarea
                                         ? "button--blue"
                                         : "button--transparent"}"
                                     >
-                                      $${app.locals.partials.conversationTypeIcon(
-                                        conversationType
-                                      )}
+                                      $${conversationTypeIcon(conversationType)}
                                       $${lodash.capitalize(conversationType)}
                                     </button>
                                   </form>
@@ -10811,9 +10804,7 @@ ${value}</textarea
                             gap: var(--space--1);
                           `}"
                         >
-                          $${app.locals.partials.conversationTypeIcon(
-                            res.locals.conversation.type
-                          )}
+                          $${conversationTypeIcon(res.locals.conversation.type)}
                           $${lodash.capitalize(res.locals.conversation.type)}
                         </div>
                       `}
