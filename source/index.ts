@@ -3426,6 +3426,13 @@ export default async function courselore({
     );
   });
 
+  const argon2Options = {
+    type: argon2.argon2id,
+    memoryCost: 15 * 2 ** 10,
+    timeCost: 2,
+    parallelism: 1,
+  };
+
   app.post<
     {},
     HTML,
@@ -3474,12 +3481,7 @@ export default async function courselore({
           VALUES (
             ${req.body.name},
             ${req.body.email},
-            ${await argon2.hash(req.body.password, {
-              type: argon2.argon2id,
-              memoryCost: 15 * 2 ** 10,
-              timeCost: 2,
-              parallelism: 1,
-            })}
+            ${await argon2.hash(req.body.password, argon2Options)}
           )
           RETURNING *
         `
