@@ -6,10 +6,15 @@
 <a href="https://github.com/courselore/courselore/actions"><img src="https://github.com/courselore/courselore/workflows/.github/workflows/main.yml/badge.svg" alt="Continuous Integration"></a>
 </p>
 
-<details>
-<summary><strong>Backlog</strong></summary>
+### Roadmap
 
-### Spring 2022 Milestones
+#### First Release
+
+**Soft Deadline:** 2022-01-15
+
+**Hard Deadline:** 2022-02-01
+
+#### Milestones
 
 - More granular control of who’s in a conversation (1-on-1, just a group of people, and so forth).
 - Chat.
@@ -18,6 +23,22 @@
   - User groups.
   - Marketing page.
   - Maybe hire a designer.
+
+#### September
+
+- Finish the features that still need some polish and address comments from the first round of reviews.
+
+#### October
+
+- Chat.
+- Performance.
+
+#### November
+
+More granular control of who’s in a conversation (1-on-1, just a group of people, and so forth).
+
+<details>
+<summary><strong>Backlog</strong></summary>
 
 ### Minor Things We Should Do Right Away
 
@@ -39,11 +60,11 @@
 
 ### Users
 
-- Gravatar as a fallback to avatar.
 - Change email.
+- Make a little popup that displays basic user information, for example, the biography, when you hover over a name/mention.
+- Gravatar as a fallback to avatar.
 - Multiple emails.
 - Allow people to remove their accounts.
-- Make a little popup that displays basic user information, for example, the biography, when you hover over a name/mention.
 
 ### Authentication
 
@@ -67,6 +88,7 @@
 
 ### Conversations
 
+- Pin messages.
 - More sophisticated tag system: dependencies between tags, actions triggered by tags, and so forth.
 - Different modes: Forum vs Chat.
 - Different states: Open vs archived.
@@ -91,6 +113,9 @@
 
 ### Search
 
+- Advanced filters:
+  - Type.
+  - Chat or not.
 - Search in all courses you’re taking (for example, search for `deadline extension`) (see how GitHub does it).
 - Dropdown helpers to pick mentions & references (consider using https://github.com/zurb/tribute).
 - Include snippets of search results. This is challenging because the contents of messages are Markdown, and the snippet must be aware of the parsing structure. Maybe the solution is to store the parsed Markdown `.textContent` instead of the Markdown itself on the search tables.
@@ -266,6 +291,21 @@
 
 <details>
 <summary><strong>Meetings</strong></summary>
+
+<details>
+<summary>2021-09-04</summary>
+
+- Cleaning.
+  - Backlog grooming.
+  - Cleaned up the code.
+  - Updated dependencies.
+- Minor tweaks.
+  - Staff-only conversations use the same counter as regular conversations.
+  - The trashcan not being red anymore.
+  - `:hover` states on radios & checkboxes.
+- Password reset.
+
+</details>
 
 <details>
 <summary>2021-08-21</summary>
