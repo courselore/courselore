@@ -1754,33 +1754,33 @@ export default async function courselore({
               ? html`
                   <div
                     style="${css`
-                      color: var(--color--rose--700);
-                      background-color: var(--color--rose--100);
+                      color: var(--color--amber--700);
+                      background-color: var(--color--amber--100);
                       @media (prefers-color-scheme: dark) {
-                        color: var(--color--rose--200);
-                        background-color: var(--color--rose--900);
+                        color: var(--color--amber--200);
+                        background-color: var(--color--amber--900);
                       }
                       padding: var(--space--1) var(--space--10);
                       display: flex;
                       justify-content: center;
 
                       .link {
-                        color: var(--color--rose--600);
+                        color: var(--color--amber--600);
                         &:hover,
                         &:focus-within {
-                          color: var(--color--rose--500);
+                          color: var(--color--amber--500);
                         }
                         &:active {
-                          color: var(--color--rose--700);
+                          color: var(--color--amber--700);
                         }
                         @media (prefers-color-scheme: dark) {
-                          color: var(--color--rose--100);
+                          color: var(--color--amber--100);
                           &:hover,
                           &:focus-within {
-                            color: var(--color--rose--50);
+                            color: var(--color--amber--50);
                           }
                           &:active {
-                            color: var(--color--rose--200);
+                            color: var(--color--amber--200);
                           }
                         }
                       }
@@ -3709,7 +3709,7 @@ export default async function courselore({
         sql`
           UPDATE "users"
           SET "emailConfirmedAt" = ${new Date().toISOString()}
-          WHERE ${res.locals.user}
+          WHERE "id" = ${res.locals.user.id}
         `
       );
       Flash.set(
