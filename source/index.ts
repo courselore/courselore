@@ -3580,7 +3580,7 @@ export default async function courselore({
       subject: "Welcome to CourseLore!",
       html: html`
         <p>
-          Please confirm your email:
+          Please confirm your email:<br />
           <a href="${link}">${link}</a>
         </p>
       `,
@@ -5376,19 +5376,18 @@ export default async function courselore({
     },
   ];
 
-  const sendInvitationEmail = (
+  const sendInvitationEmail = async (
     invitation: InvitationExistsMiddlewareLocals["invitation"] & {
       email: string;
     }
-  ): void => {
+  ): Promise<nodemailer.SentMessageInfo> => {
     const link = `${url}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
-
-    sendMail({
+    await sendMail({
       to: invitation.email,
       subject: `Enroll in ${invitation.course.name}`,
       html: html`
         <p>
-          Visit the following link to enroll in ${invitation.course.name}:<br />
+          Enroll in ${invitation.course.name}:<br />
           <a href="${link}">${link}</a>
         </p>
         $${invitation.expiresAt === null
@@ -10140,6 +10139,7 @@ ${value}</textarea
       // - Messages
       // - NOT EDITS
       // - Have a queue
+      // - Confirmed emails only
       sendMail({
         to: database
           .all<{ email: string }>(
