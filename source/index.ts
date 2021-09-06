@@ -3930,15 +3930,15 @@ export default async function courselore({
           Profile
         </a>
         <a
-          href="${url}/settings/update-password"
+          href="${url}/settings/update-email-and-password"
           class="dropdown-menu--item button ${req.path.endsWith(
-            "/settings/update-password"
+            "/settings/update-email-and-password"
           )
             ? "button--blue"
             : "button--transparent"}"
         >
           <i class="bi bi-key"></i>
-          Update Password
+          Update Email & Password
         </a>
         <a
           href="${url}/settings/notifications-preferences"
@@ -4271,7 +4271,7 @@ export default async function courselore({
   );
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
-    "/settings/update-password",
+    "/settings/update-email-and-password",
     ...isSignedInMiddleware,
     (req, res) => {
       res.send(
@@ -4279,19 +4279,53 @@ export default async function courselore({
           req,
           res,
           head: html`<title>
-            Update Password · User Settings · CourseLore
+            Update Email & Password · User Settings · CourseLore
           </title>`,
           body: html`
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
               User Settings ·
               <i class="bi bi-key"></i>
-              Update Password
+              Update Email & Password
             </h2>
 
             <form
               method="POST"
-              action="${url}/settings/update-password?_method=PATCH"
+              action="${url}/settings/update-email-and-password?_method=PATCH"
+              novalidate
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `}"
+            >
+              <label class="label">
+                <p class="label--text">Email</p>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="you@educational-institution.edu"
+                  value="${res.locals.user.email}"
+                  required
+                  class="input--text"
+                />
+              </label>
+
+              <div>
+                <button
+                  class="button button--full-width-on-small-screen button--blue"
+                >
+                  <i class="bi bi-key"></i>
+                  Update Email
+                </button>
+              </div>
+            </form>
+
+            <hr class="separator" />
+
+            <form
+              method="POST"
+              action="${url}/settings/update-email-and-password?_method=PATCH"
               novalidate
               style="${css`
                 display: flex;
@@ -4355,7 +4389,7 @@ export default async function courselore({
     {},
     IsSignedInMiddlewareLocals
   >(
-    "/settings/update-password",
+    "/settings/update-email-and-password",
     ...isSignedInMiddleware,
     asyncHandler(async (req, res, next) => {
       if (
@@ -4378,7 +4412,7 @@ export default async function courselore({
           res,
           html`<div class="flash--rose">Incorrect current password.</div>`
         );
-        return res.redirect(`${url}/settings/update-password`);
+        return res.redirect(`${url}/settings/update-email-and-password`);
       }
 
       database.run(
@@ -4396,7 +4430,7 @@ export default async function courselore({
         res,
         html`<div class="flash--green">Password updated successfully.</div>`
       );
-      res.redirect(`${url}/settings/update-password`);
+      res.redirect(`${url}/settings/update-email-and-password`);
     })
   );
 
