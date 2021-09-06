@@ -96,7 +96,7 @@ export default async function courselore({
   const conversationTypes = ["announcement", "question", "other"] as const;
 
   const database = new Database(path.join(dataDirectory, "courselore.db"));
-  // TODO: WAL.
+  database.pragma("journal_mode = WAL");
   database.migrate(
     sql`
       CREATE TABLE "flashes" (
