@@ -2712,6 +2712,7 @@ export default async function courselore({
       id: number;
       email: string;
       password: string;
+      emailConfirmedAt: string | null;
       name: string;
       avatar: string | null;
       biography: string | null;
@@ -2755,13 +2756,21 @@ export default async function courselore({
         id: number;
         email: string;
         password: string;
+        emailConfirmedAt: string | null;
         name: string;
         avatar: string | null;
         biography: string | null;
         emailNotifications: UserEmailNotifications;
       }>(
         sql`
-          SELECT "id", "email", "password", "name", "avatar", "biography", "emailNotifications"
+          SELECT "id",
+                 "email",
+                 "password",
+                 "emailConfirmedAt",
+                 "name",
+                 "avatar",
+                 "biography",
+                 "emailNotifications"
           FROM "users"
           WHERE "id" = ${userId}
         `
