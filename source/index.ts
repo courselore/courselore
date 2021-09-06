@@ -3538,7 +3538,7 @@ export default async function courselore({
           })}`
         );
       }
-      const user = database.get<{ id: number }>(
+      const user = database.get<{ id: number; email: string }>(
         sql`
           INSERT INTO "users" ("email", "password", "emailConfirmedAt", "name")
           VALUES (
@@ -3550,6 +3550,29 @@ export default async function courselore({
           RETURNING *
         `
       )!;
+      const emailConfirmation = database.get<{
+        nonce: string;
+      }>(
+        sql`
+          INSERT INTO "emailConfirmations" ("user", "nonce")
+          VALUES (
+            ${user.id},
+            ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
+          )
+          RETURNING *
+        `
+      )!;
+      const link = `${url}/email-confirmation/${emailConfirmation.nonce}`;
+      sendMail({
+        to: user.email,
+        subject: "Welcome to CourseLore!",
+        html: html`
+          <p>
+            Please confirm your email by following this link:
+            <a href="${link}">${link}</a>
+          </p>
+        `,
+      });
       Session.open(req, res, user.id);
       res.redirect(`${url}${req.query.redirect ?? "/"}`);
     })
