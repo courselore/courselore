@@ -42,11 +42,11 @@
 
 ### Minor Things We Should Do Right Away
 
+- Favicon (SVG & notification indicator).
 - Consistent colors on things like pins.
 - Improve the presentation of anonymity for people who get to see the true identity of the person (the person themselves, and staff).
 - Let staff change the conversation from staff-only to regular.
 - Make search include author name.
-- Favicon (SVG & notification indicator).
 - Instead of calling `await courselore()` and then updating the settings, use function arguments.
 - Fix private questions from students to staff. (Don’t `WHERE` away conversations if you’ve been part of it.)
 - Mathematics, code, and possibly other things are overflowing in small screens.
