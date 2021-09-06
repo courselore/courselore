@@ -3568,7 +3568,7 @@ export default async function courselore({
         subject: "Welcome to CourseLore!",
         html: html`
           <p>
-            Please confirm your email by following this link:
+            Please confirm your email:
             <a href="${link}">${link}</a>
           </p>
         `,
