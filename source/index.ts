@@ -3557,9 +3557,11 @@ export default async function courselore({
     id: number;
     email: string;
   }): Promise<nodemailer.SentMessageInfo> => {
-    database.run(sql`
-      DELETE FROM "emailConfirmations" WHERE "user" = ${user.id}
-    `);
+    database.run(
+      sql`
+        DELETE FROM "emailConfirmations" WHERE "user" = ${user.id}
+      `
+    );
     const emailConfirmation = database.get<{
       nonce: string;
     }>(
@@ -3610,7 +3612,7 @@ export default async function courselore({
           sql`
             SELECT EXISTS(
               SELECT 1 FROM "users" WHERE "email" = ${req.body.email}
-            ) AS "exists";
+            ) AS "exists"
           `
         )!.exists === 1
       ) {
@@ -4385,51 +4387,88 @@ export default async function courselore({
   app.patch<
     {},
     any,
-    { currentPassword?: string; newPassword?: string },
+    { email?: string; currentPassword?: string; newPassword?: string },
     {},
     IsSignedInMiddlewareLocals
   >(
     "/settings/update-email-and-password",
     ...isSignedInMiddleware,
     asyncHandler(async (req, res, next) => {
-      if (
-        typeof req.body.currentPassword !== "string" ||
-        req.body.currentPassword.trim() === "" ||
-        typeof req.body.newPassword !== "string" ||
-        req.body.newPassword.trim() === "" ||
-        req.body.newPassword.length < 8
-      )
-        return next("validation");
+      if (typeof req.body.email === "string") {
+        if (!req.body.email.match(emailRegExp)) return next("validation");
+        if (
+          database.get<{ exists: number }>(
+            sql`
+              SELECT (
+                SELECT 1 FROM "users" WHERE "email" = ${req.body.email}
+              ) AS "exists"
+            `
+          )!.exists === 1
+        ) {
+          Flash.set(
+            req,
+            res,
+            html`<div class="flash--rose">Email already taken.</div>`
+          );
+          return res.redirect(`${url}/settings/update-email-and-password`);
+        }
 
-      if (
-        !(await argon2.verify(
-          res.locals.user.password,
-          req.body.currentPassword
-        ))
-      ) {
+        database.run(
+          sql`
+            UPDATE "users"
+            SET "email" = ${req.body.email},
+                "emailConfirmedAt" = ${null}
+            WHERE "id" = ${res.locals.user.id}
+          `
+        );
+        sendConfirmationEmail(res.locals.user);
         Flash.set(
           req,
           res,
-          html`<div class="flash--rose">Incorrect current password.</div>`
+          html`<div class="flash--green">Email updated successfully.</div>`
         );
-        return res.redirect(`${url}/settings/update-email-and-password`);
       }
 
-      database.run(
-        sql`
-          UPDATE "users"
-          SET "password" =  ${await argon2.hash(
-            req.body.newPassword,
-            argon2Options
-          )}
-          WHERE "id" = ${res.locals.user.id}
-        `
-      );
-      Flash.set(
-        req,
-        res,
-        html`<div class="flash--green">Password updated successfully.</div>`
-      );
+      if (
+        typeof req.body.currentPassword === "string" &&
+        typeof req.body.newPassword === "string"
+      ) {
+        if (
+          req.body.currentPassword.trim() === "" ||
+          req.body.newPassword.trim() === "" ||
+          req.body.newPassword.length < 8
+        )
+          return next("validation");
+        if (
+          !(await argon2.verify(
+            res.locals.user.password,
+            req.body.currentPassword
+          ))
+        ) {
+          Flash.set(
+            req,
+            res,
+            html`<div class="flash--rose">Incorrect current password.</div>`
+          );
+          return res.redirect(`${url}/settings/update-email-and-password`);
+        }
+
+        database.run(
+          sql`
+            UPDATE "users"
+            SET "password" =  ${await argon2.hash(
+              req.body.newPassword,
+              argon2Options
+            )}
+            WHERE "id" = ${res.locals.user.id}
+          `
+        );
+        Flash.set(
+          req,
+          res,
+          html`<div class="flash--green">Password updated successfully.</div>`
+        );
+      }
       res.redirect(`${url}/settings/update-email-and-password`);
     })
   );
