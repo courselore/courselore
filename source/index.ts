@@ -1637,7 +1637,7 @@ export default async function courselore({
                           `}"
                         >
                           <i class="bi bi-palette"></i>
-                          Change Accent Color
+                          Update Accent Color
                         </a>
                       </div>
                     </div>
@@ -2556,7 +2556,7 @@ export default async function courselore({
       res.type("text/event-stream").write(":\n\n");
     });
 
-  // FIXME: This only works for a single process. To support multiple processes poll the database for changes or use a message broker mechanism (ZeroMQ seems like a good candidate).
+  // FIXME: This only works for a single process. To support multiple processes poll the database for updates or use a message broker mechanism (ZeroMQ seems like a good candidate).
   const eventDestinations = new Set<express.Response>();
 
   interface EventSourceMiddlewareLocals {
@@ -3760,15 +3760,15 @@ export default async function courselore({
           Profile
         </a>
         <a
-          href="${url}/settings/change-password"
+          href="${url}/settings/update-password"
           class="dropdown-menu--item button ${req.path.endsWith(
-            "/settings/change-password"
+            "/settings/update-password"
           )
             ? "button--blue"
             : "button--transparent"}"
         >
           <i class="bi bi-key"></i>
-          Change Password
+          Update Password
         </a>
         <a
           href="${url}/settings/notifications-preferences"
@@ -3906,7 +3906,7 @@ export default async function courselore({
                       `}"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
-                          content: "Change Avatar",
+                          content: "Update Avatar",
                           touch: false,
                         });
                       `}"
@@ -4014,7 +4014,7 @@ export default async function courselore({
                       tabindex="0"
                       data-ondomcontentloaded="${javascript`
                         tippy(this, {
-                          content: "Your email is your identity in CourseLore and may not be changed.",
+                          content: "Your email is your identity in CourseLore and may not be updated.",
                         });
                       `}"
                     >
@@ -4120,7 +4120,7 @@ export default async function courselore({
   );
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
-    "/settings/change-password",
+    "/settings/update-password",
     ...isSignedInMiddleware,
     (req, res) => {
       res.send(
@@ -4128,19 +4128,19 @@ export default async function courselore({
           req,
           res,
           head: html`<title>
-            Change Password · User Settings · CourseLore
+            Update Password · User Settings · CourseLore
           </title>`,
           body: html`
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
               User Settings ·
               <i class="bi bi-key"></i>
-              Change Password
+              Update Password
             </h2>
 
             <form
               method="POST"
-              action="${url}/settings/change-password?_method=PATCH"
+              action="${url}/settings/update-password?_method=PATCH"
               novalidate
               style="${css`
                 display: flex;
@@ -4187,7 +4187,7 @@ export default async function courselore({
                   class="button button--full-width-on-small-screen button--blue"
                 >
                   <i class="bi bi-key"></i>
-                  Change Password
+                  Update Password
                 </button>
               </div>
             </form>
@@ -4204,7 +4204,7 @@ export default async function courselore({
     {},
     IsSignedInMiddlewareLocals
   >(
-    "/settings/change-password",
+    "/settings/update-password",
     ...isSignedInMiddleware,
     asyncHandler(async (req, res, next) => {
       if (
@@ -4241,11 +4241,11 @@ export default async function courselore({
         Flash.set(
           req,
           res,
-          html`<div class="flash--green">Password changed successfully.</div>`
+          html`<div class="flash--green">Password updated successfully.</div>`
         );
       }
 
-      res.redirect(`${url}/settings/change-password`);
+      res.redirect(`${url}/settings/update-password`);
     })
   );
 
@@ -5929,7 +5929,7 @@ export default async function courselore({
                                   class="button button--tight button--tight--inline button--transparent"
                                   data-ondomcontentloaded="${javascript`
                                     tippy(this, {
-                                      content: "Change Role",
+                                      content: "Update Role",
                                       touch: false,
                                     });
                                     tippy(this, {
@@ -5964,7 +5964,7 @@ export default async function courselore({
                                                       type="button"
                                                       data-ondomcontentloaded="${javascript`
                                                         tippy(this, {
-                                                          content: "You may not change the role of this invitation because it’s used.",
+                                                          content: "You may not update the role of this invitation because it’s used.",
                                                           theme: "rose",
                                                           trigger: "click",
                                                         });
@@ -5975,7 +5975,7 @@ export default async function courselore({
                                                       type="button"
                                                       data-ondomcontentloaded="${javascript`
                                                         tippy(this, {
-                                                          content: "You may not change the role of this invitation because it’s expired.",
+                                                          content: "You may not update the role of this invitation because it’s expired.",
                                                           theme: "rose",
                                                           trigger: "click",
                                                         });
@@ -6000,7 +6000,7 @@ export default async function courselore({
                                 `}"
                               >
                                 $${(() => {
-                                  const changeExpirationForm = html`
+                                  const updateExpirationForm = html`
                                     <form
                                       method="POST"
                                       action="${action}?_method=PATCH"
@@ -6116,7 +6116,7 @@ export default async function courselore({
                                             class="button button--tight button--tight--inline button--transparent text--rose"
                                             data-ondomcontentloaded="${javascript`
                                               tippy(this, {
-                                                content: "Change Expiration",
+                                                content: "Update Expiration",
                                                 touch: false,
                                               });
                                               tippy(this, {
@@ -6153,7 +6153,7 @@ export default async function courselore({
                                                   </time>
                                                 </span>
                                               </h3>
-                                              $${changeExpirationForm}
+                                              $${updateExpirationForm}
                                               <hr class="separator" />
                                               $${removeExpirationForm}
                                             </div>
@@ -6167,7 +6167,7 @@ export default async function courselore({
                                             class="button button--tight button--tight--inline button--transparent text--blue"
                                             data-ondomcontentloaded="${javascript`
                                               tippy(this, {
-                                                content: "Change Expiration",
+                                                content: "Update Expiration",
                                                 touch: false,
                                               });
                                               tippy(this, {
@@ -6190,7 +6190,7 @@ export default async function courselore({
                                                 gap: var(--space--2);
                                               `}"
                                             >
-                                              $${changeExpirationForm}
+                                              $${updateExpirationForm}
                                               <hr class="separator" />
                                               $${expireForm}
                                             </div>
@@ -6203,7 +6203,7 @@ export default async function courselore({
                                             class="button button--tight button--tight--inline button--transparent text--amber"
                                             data-ondomcontentloaded="${javascript`
                                               tippy(this, {
-                                                content: "Change Expiration",
+                                                content: "Update Expiration",
                                                 touch: false,
                                               });
                                               tippy(this, {
@@ -6243,7 +6243,7 @@ export default async function courselore({
                                                 </span>
                                               </h3>
                                               <hr class="separator" />
-                                              $${changeExpirationForm}
+                                              $${updateExpirationForm}
                                               <hr class="separator" />
                                               $${removeExpirationForm}
                                               $${expireForm}
@@ -6710,7 +6710,7 @@ export default async function courselore({
                             class="button button--tight button--tight--inline button--transparent"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
-                                content: "Change Role",
+                                content: "Update Role",
                                 touch: false,
                               });
                               tippy(this, {
@@ -6746,7 +6746,7 @@ export default async function courselore({
                                                   type="button"
                                                   data-ondomcontentloaded="${javascript`
                                                     tippy(this, {
-                                                      content: "You may not change your own role because you’re the only staff member.",
+                                                      content: "You may not update your own role because you’re the only staff member.",
                                                       theme: "rose",
                                                       trigger: "click",
                                                     });
@@ -6785,7 +6785,7 @@ export default async function courselore({
                                                   >
                                                     <p>
                                                       Are you sure you want to
-                                                      change your own role to
+                                                      update your own role to
                                                       ${role}?
                                                     </p>
                                                     <p>
@@ -6806,7 +6806,7 @@ export default async function courselore({
                                                           this.closest(".confirmation").form.submit();
                                                         `}"
                                                     >
-                                                      Change My Own Role to
+                                                      Update My Own Role to
                                                       ${lodash.capitalize(role)}
                                                     </button>
                                                   </div>
@@ -9925,7 +9925,7 @@ ${value}</textarea
 
           <p>
             <a href="${url}/settings/notifications-preferences"
-              >Change Email Preferences</a
+              >Update Email Preferences</a
             >
           </p>
         `,
@@ -10826,7 +10826,7 @@ ${value}</textarea
                             class="button button--tight button--tight--inline button--tight-gap button--transparent"
                             data-ondomcontentloaded="${javascript`
                               tippy(this, {
-                                content: "Change Conversation Type",
+                                content: "Update Conversation Type",
                                 touch: false,
                               });
                               tippy(this, {
@@ -11102,7 +11102,7 @@ ${value}</textarea
                                     class="button button--tight button--tight--inline button--transparent"
                                     data-ondomcontentloaded="${javascript`
                                       tippy(this, {
-                                        content: "Change Identity",
+                                        content: "Update Identity",
                                         touch: false,
                                       });
                                       tippy(this, {
