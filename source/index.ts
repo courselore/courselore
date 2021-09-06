@@ -3635,6 +3635,48 @@ export default async function courselore({
     })
   );
 
+  app.post<
+    {},
+    HTML,
+    { name?: string; email?: string; password?: string },
+    { redirect?: string; name?: string; email?: string },
+    IsSignedInMiddlewareLocals
+  >("/resend-confirmation-email", ...isSignedInMiddleware, (req, res, next) => {
+    if (res.locals.user.emailConfirmedAt !== null) {
+      Flash.set(
+        req,
+        res,
+        html`<div class="flash--rose">Email already confirmed.</div>`
+      );
+      return res.redirect(`${url}/`);
+    }
+
+    const emailConfirmation = database.get<{
+      nonce: string;
+    }>(
+      sql`
+          INSERT INTO "emailConfirmations" ("user", "nonce")
+          VALUES (
+            ${res.locals.user.id},
+            ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
+          )
+          RETURNING *
+        `
+    )!;
+    const link = `${url}/email-confirmation/${emailConfirmation.nonce}`;
+    sendMail({
+      to: res.locals.user.email,
+      subject: "Welcome to CourseLore!",
+      html: html`
+        <p>
+          Please confirm your email:
+          <a href="${link}">${link}</a>
+        </p>
+      `,
+    });
+    res.redirect(`${url}/`);
+  });
+
   app.delete<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/sign-out",
     ...isSignedInMiddleware,
@@ -4319,15 +4361,17 @@ export default async function courselore({
           res.locals.user.password,
           req.body.currentPassword
         ))
-      )
+      ) {
         Flash.set(
           req,
           res,
           html`<div class="flash--rose">Incorrect current password.</div>`
         );
-      else {
-        database.run(
-          sql`
+        return res.redirect(`${url}/settings/update-password`);
+      }
+
+      database.run(
+        sql`
           UPDATE "users"
           SET "password" =  ${await argon2.hash(
             req.body.newPassword,
@@ -4335,14 +4379,12 @@ export default async function courselore({
           )}
           WHERE "id" = ${res.locals.user.id}
         `
-        );
-        Flash.set(
-          req,
-          res,
-          html`<div class="flash--green">Password updated successfully.</div>`
-        );
-      }
-
+      );
+      Flash.set(
+        req,
+        res,
+        html`<div class="flash--green">Password updated successfully.</div>`
+      );
       res.redirect(`${url}/settings/update-password`);
     })
   );
