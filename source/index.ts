@@ -3075,7 +3075,7 @@ export default async function courselore({
               />
             </label>
             <button class="button button--blue">
-              <i class="bi bi-lock"></i>
+              <i class="bi bi-key"></i>
               Reset Password
             </button>
           </form>
@@ -3284,7 +3284,7 @@ export default async function courselore({
                 />
               </label>
               <button class="button button--blue">
-                <i class="bi bi-lock"></i>
+                <i class="bi bi-key"></i>
                 Reset Password
               </button>
             </form>
@@ -3758,6 +3758,17 @@ export default async function courselore({
           Profile
         </a>
         <a
+          href="${url}/settings/change-password"
+          class="dropdown-menu--item button ${req.path.endsWith(
+            "/settings/change-password"
+          )
+            ? "button--blue"
+            : "button--transparent"}"
+        >
+          <i class="bi bi-key"></i>
+          Change Password
+        </a>
+        <a
           href="${url}/settings/notifications-preferences"
           class="dropdown-menu--item button ${req.path.endsWith(
             "/settings/notifications-preferences"
@@ -4107,6 +4118,116 @@ export default async function courselore({
   );
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+    "/settings/change-password",
+    ...isSignedInMiddleware,
+    (req, res) => {
+      res.send(
+        userSettingsLayout({
+          req,
+          res,
+          head: html`<title>
+            Change Password · User Settings · CourseLore
+          </title>`,
+          body: html`
+            <h2 class="heading">
+              <i class="bi bi-sliders"></i>
+              User Settings ·
+              <i class="bi bi-key"></i>
+              Change Password
+            </h2>
+
+            <form
+              method="POST"
+              action="${url}/settings/change-password?_method=PATCH"
+              novalidate
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `}"
+            >
+              <label class="label">
+                <p class="label--text">Current Password</p>
+                <input
+                  type="password"
+                  name="currentPassword"
+                  required
+                  class="input--text"
+                />
+              </label>
+              <label class="label">
+                <p class="label--text">New Password</p>
+                <input
+                  type="password"
+                  name="newPassword"
+                  required
+                  minlength="8"
+                  class="input--text"
+                />
+              </label>
+              <label class="label">
+                <p class="label--text">New Password Confirmation</p>
+                <input
+                  type="password"
+                  required
+                  class="input--text"
+                  data-ondomcontentloaded="${javascript`
+                    (this.validators ??= []).push(() => {
+                      if (this.value !== this.closest("form").querySelector('[name="newPassword"]').value)
+                        return "New Password & New Password Confirmation don’t match.";
+                    });
+                  `}"
+                />
+              </label>
+
+              <div>
+                <button
+                  class="button button--full-width-on-small-screen button--blue"
+                >
+                  <i class="bi bi-key"></i>
+                  Change Password
+                </button>
+              </div>
+            </form>
+          `,
+        })
+      );
+    }
+  );
+
+  app.patch<
+    {},
+    any,
+    { currentPassword?: string; newPassword?: string },
+    {},
+    IsSignedInMiddlewareLocals
+  >("/settings/change-password", ...isSignedInMiddleware, (req, res, next) => {
+    if (
+      typeof req.body.currentPassword !== "string" ||
+      req.body.currentPassword.trim() === "" ||
+      typeof req.body.newPassword !== "string" ||
+      req.body.newPassword.trim() === ""
+    )
+      return next("validation");
+
+    // database.run(
+    //   sql`
+    //     UPDATE "users"
+    //     SET "emailNotifications" = ${req.body.emailNotifications}
+    //     WHERE "id" = ${res.locals.user.id}
+    //   `
+    // );
+
+    Flash.set(
+      req,
+      res,
+      html`<div class="flash--green">Password updated successfully.</div>`
+    );
+
+    res.redirect(`${url}/settings/change-password`);
+  });
+
+  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings/notifications-preferences",
     ...isSignedInMiddleware,
     (req, res) => {
@@ -4233,7 +4354,7 @@ export default async function courselore({
       database.run(
         sql`
           UPDATE "users"
-          SET "emailNotifications" = ${req.body.emailNotifications}\
+          SET "emailNotifications" = ${req.body.emailNotifications}
           WHERE "id" = ${res.locals.user.id}
         `
       );
