@@ -3670,15 +3670,30 @@ export default async function courselore({
     }
   );
 
-  app.get<{ emailConfirmationNonce: string }, HTML, {}, {}, {}>(
+  app.get<
+    { emailConfirmationNonce: string },
+    HTML,
+    {},
+    {},
+    IsSignedInMiddlewareLocals
+  >(
     "/email-confirmation/:emailConfirmationNonce",
+    ...isSignedInMiddleware,
     (req, res) => {
       const emailConfirmation = database.get<{ user: number }>(
         sql`
           SELECT "user" FROM "emailConfirmations" WHERE "nonce" = ${req.params.emailConfirmationNonce}
         `
       );
-      if (emailConfirmation === undefined) {
+      database.run(
+        sql`
+          DELETE FROM "emailConfirmations" WHERE "nonce" = ${req.params.emailConfirmationNonce}
+        `
+      );
+      if (
+        emailConfirmation === undefined ||
+        emailConfirmation.user !== res.locals.user.id
+      ) {
         Flash.set(
           req,
           res,
@@ -3692,12 +3707,9 @@ export default async function courselore({
       }
       database.run(
         sql`
-          DELETE FROM "emailConfirmations" WHERE "nonce" = ${req.params.emailConfirmationNonce}
-        `
-      );
-      database.run(
-        sql`
-          UPDATE "users" SET "emailConfirmedAt" = ${new Date().toISOString()}
+          UPDATE "users"
+          SET "emailConfirmedAt" = ${new Date().toISOString()}
+          WHERE ${res.locals.user}
         `
       );
       Flash.set(
