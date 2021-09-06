@@ -1795,7 +1795,7 @@ export default async function courselore({
                     >
                       <form
                         method="POST"
-                        action="${url}/resend-confirmation-email}"
+                        action="${url}/resend-confirmation-email"
                       >
                         Please confirm your email by following the link sent to
                         ${res.locals.user.email}.<br />
@@ -3645,25 +3645,28 @@ export default async function courselore({
     })
   );
 
-  app.post<
-    {},
-    HTML,
-    { name?: string; email?: string; password?: string },
-    { redirect?: string; name?: string; email?: string },
-    IsSignedInMiddlewareLocals
-  >("/resend-confirmation-email", ...isSignedInMiddleware, (req, res, next) => {
-    if (res.locals.user.emailConfirmedAt !== null) {
+  app.post<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+    "/resend-confirmation-email",
+    ...isSignedInMiddleware,
+    (req, res, next) => {
+      if (res.locals.user.emailConfirmedAt !== null) {
+        Flash.set(
+          req,
+          res,
+          html`<div class="flash--rose">Email already confirmed.</div>`
+        );
+        return res.redirect(`${url}/`);
+      }
+
+      sendConfirmationEmail(res.locals.user);
       Flash.set(
         req,
         res,
-        html`<div class="flash--rose">Email already confirmed.</div>`
+        html`<div class="flash--green">Confirmation email resent.</div>`
       );
-      return res.redirect(`${url}/`);
+      res.redirect(`${url}/`);
     }
-
-    sendConfirmationEmail(res.locals.user);
-    res.redirect(`${url}/`);
-  });
+  );
 
   app.delete<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/sign-out",
