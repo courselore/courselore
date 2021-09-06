@@ -61,7 +61,6 @@ More granular control of who’s in a conversation (1-on-1, just a group of peop
 
 ### Users
 
-- Change email.
 - Make a little popup that displays basic user information, for example, the biography, when you hover over a name/mention.
 - Gravatar as a fallback to avatar.
 - Multiple emails.
