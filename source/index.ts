@@ -2710,6 +2710,7 @@ export default async function courselore({
     user: {
       id: number;
       email: string;
+      password: string;
       name: string;
       avatar: string | null;
       biography: string | null;
@@ -2752,13 +2753,14 @@ export default async function courselore({
       res.locals.user = database.get<{
         id: number;
         email: string;
+        password: string;
         name: string;
         avatar: string | null;
         biography: string | null;
         emailNotifications: UserEmailNotifications;
       }>(
         sql`
-          SELECT "id", "email", "name", "avatar", "biography", "emailNotifications"
+          SELECT "id", "email", "password", "name", "avatar", "biography", "emailNotifications"
           FROM "users"
           WHERE "id" = ${userId}
         `
@@ -4201,31 +4203,51 @@ export default async function courselore({
     { currentPassword?: string; newPassword?: string },
     {},
     IsSignedInMiddlewareLocals
-  >("/settings/change-password", ...isSignedInMiddleware, (req, res, next) => {
-    if (
-      typeof req.body.currentPassword !== "string" ||
-      req.body.currentPassword.trim() === "" ||
-      typeof req.body.newPassword !== "string" ||
-      req.body.newPassword.trim() === ""
-    )
-      return next("validation");
+  >(
+    "/settings/change-password",
+    ...isSignedInMiddleware,
+    asyncHandler(async (req, res, next) => {
+      if (
+        typeof req.body.currentPassword !== "string" ||
+        req.body.currentPassword.trim() === "" ||
+        typeof req.body.newPassword !== "string" ||
+        req.body.newPassword.trim() === "" ||
+        req.body.newPassword.length < 8
+      )
+        return next("validation");
 
-    // database.run(
-    //   sql`
-    //     UPDATE "users"
-    //     SET "emailNotifications" = ${req.body.emailNotifications}
-    //     WHERE "id" = ${res.locals.user.id}
-    //   `
-    // );
+      if (
+        !(await argon2.verify(
+          res.locals.user.password,
+          req.body.currentPassword
+        ))
+      )
+        Flash.set(
+          req,
+          res,
+          html`<div class="flash--rose">Incorrect current password.</div>`
+        );
+      else {
+        database.run(
+          sql`
+          UPDATE "users"
+          SET "password" =  ${await argon2.hash(
+            req.body.newPassword,
+            argon2Options
+          )}
+          WHERE "id" = ${res.locals.user.id}
+        `
+        );
+        Flash.set(
+          req,
+          res,
+          html`<div class="flash--green">Password changed successfully.</div>`
+        );
+      }
 
-    Flash.set(
-      req,
-      res,
-      html`<div class="flash--green">Password updated successfully.</div>`
-    );
-
-    res.redirect(`${url}/settings/change-password`);
-  });
+      res.redirect(`${url}/settings/change-password`);
+    })
+  );
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings/notifications-preferences",
