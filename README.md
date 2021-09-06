@@ -42,7 +42,6 @@ More granular control of who’s in a conversation (1-on-1, just a group of peop
 
 ### Minor Things We Should Do Right Away
 
-- update -> change
 - Consistent colors on things like pins.
 - Improve the presentation of anonymity for people who get to see the true identity of the person (the person themselves, and staff).
 - Let staff change the conversation from staff-only to regular.
@@ -69,7 +68,6 @@ More granular control of who’s in a conversation (1-on-1, just a group of peop
 
 ### Authentication
 
-- Change password.
 - Email confirmation.
 - SSO with Hopkins ID (SAML) (https://glacial-plateau-47269.herokuapp.com/).
 
