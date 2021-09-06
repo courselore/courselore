@@ -3668,6 +3668,45 @@ export default async function courselore({
     }
   );
 
+  app.get<{ emailConfirmationNonce: string }, HTML, {}, {}, {}>(
+    "/email-confirmation/:emailConfirmationNonce",
+    (req, res) => {
+      const emailConfirmation = database.get<{ user: number }>(
+        sql`
+          SELECT "user" FROM "emailConfirmations" WHERE "nonce" = ${req.params.emailConfirmationNonce}
+        `
+      );
+      if (emailConfirmation === undefined) {
+        Flash.set(
+          req,
+          res,
+          html`
+            <div class="flash--rose">
+              This Email Confirmation Link is invalid.
+            </div>
+          `
+        );
+        return res.redirect(`${url}/`);
+      }
+      database.run(
+        sql`
+          DELETE FROM "emailConfirmations" WHERE "nonce" = ${req.params.emailConfirmationNonce}
+        `
+      );
+      database.run(
+        sql`
+          UPDATE "users" SET "emailConfirmedAt" = ${new Date().toISOString()}
+        `
+      );
+      Flash.set(
+        req,
+        res,
+        html`<div class="flash--green">Email confirmed successfully.</div>`
+      );
+      return res.redirect(`${url}/`);
+    }
+  );
+
   app.delete<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/sign-out",
     ...isSignedInMiddleware,
