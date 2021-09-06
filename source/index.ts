@@ -3553,6 +3553,38 @@ export default async function courselore({
     parallelism: 1,
   };
 
+  const sendConfirmationEmail = async (user: {
+    id: number;
+    email: string;
+  }): Promise<nodemailer.SentMessageInfo> => {
+    database.run(sql`
+      DELETE FROM "emailConfirmations" WHERE "user" = ${user.id}
+    `);
+    const emailConfirmation = database.get<{
+      nonce: string;
+    }>(
+      sql`
+        INSERT INTO "emailConfirmations" ("user", "nonce")
+        VALUES (
+          ${user.id},
+          ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
+        )
+        RETURNING *
+      `
+    )!;
+    const link = `${url}/email-confirmation/${emailConfirmation.nonce}`;
+    await sendMail({
+      to: user.email,
+      subject: "Welcome to CourseLore!",
+      html: html`
+        <p>
+          Please confirm your email:
+          <a href="${link}">${link}</a>
+        </p>
+      `,
+    });
+  };
+
   app.post<
     {},
     HTML,
