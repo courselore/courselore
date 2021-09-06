@@ -1763,6 +1763,27 @@ export default async function courselore({
                       padding: var(--space--1) var(--space--10);
                       display: flex;
                       justify-content: center;
+
+                      .link {
+                        color: var(--color--rose--600);
+                        &:hover,
+                        &:focus-within {
+                          color: var(--color--rose--500);
+                        }
+                        &:active {
+                          color: var(--color--rose--700);
+                        }
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--rose--100);
+                          &:hover,
+                          &:focus-within {
+                            color: var(--color--rose--50);
+                          }
+                          &:active {
+                            color: var(--color--rose--200);
+                          }
+                        }
+                      }
                     `}"
                   >
                     <div
