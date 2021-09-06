@@ -118,6 +118,13 @@ export default async function courselore({
         "emailNotifications" TEXT NOT NULL DEFAULT 'essentials' CHECK ("emailNotifications" IN ('none', 'essentials', 'everything'))
       );
 
+      CREATE TABLE "emailConfirmations" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "user" INTEGER NOT NULL UNIQUE REFERENCES "users" ON DELETE CASCADE,
+        "nonce" TEXT NOT NULL UNIQUE
+      );
+
       CREATE TABLE "passwordResets" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
