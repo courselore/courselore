@@ -3639,29 +3639,7 @@ export default async function courselore({
           RETURNING *
         `
       )!;
-      const emailConfirmation = database.get<{
-        nonce: string;
-      }>(
-        sql`
-          INSERT INTO "emailConfirmations" ("user", "nonce")
-          VALUES (
-            ${user.id},
-            ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
-          )
-          RETURNING *
-        `
-      )!;
-      const link = `${url}/email-confirmation/${emailConfirmation.nonce}`;
-      sendMail({
-        to: user.email,
-        subject: "Welcome to CourseLore!",
-        html: html`
-          <p>
-            Please confirm your email:
-            <a href="${link}">${link}</a>
-          </p>
-        `,
-      });
+      sendConfirmationEmail(user);
       Session.open(req, res, user.id);
       res.redirect(`${url}${req.query.redirect ?? "/"}`);
     })
@@ -3683,29 +3661,7 @@ export default async function courselore({
       return res.redirect(`${url}/`);
     }
 
-    const emailConfirmation = database.get<{
-      nonce: string;
-    }>(
-      sql`
-          INSERT INTO "emailConfirmations" ("user", "nonce")
-          VALUES (
-            ${res.locals.user.id},
-            ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
-          )
-          RETURNING *
-        `
-    )!;
-    const link = `${url}/email-confirmation/${emailConfirmation.nonce}`;
-    sendMail({
-      to: res.locals.user.email,
-      subject: "Welcome to CourseLore!",
-      html: html`
-        <p>
-          Please confirm your email:
-          <a href="${link}">${link}</a>
-        </p>
-      `,
-    });
+    sendConfirmationEmail(res.locals.user);
     res.redirect(`${url}/`);
   });
 
