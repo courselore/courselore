@@ -111,6 +111,7 @@ export default async function courselore({
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
         "password" TEXT NOT NULL,
+        "emailConfirmedAt" TEXT NULL,
         "name" TEXT NOT NULL,
         "avatar" TEXT NULL,
         "biography" TEXT NULL,
@@ -3523,11 +3524,12 @@ export default async function courselore({
       }
       const user = database.get<{ id: number }>(
         sql`
-          INSERT INTO "users" ("name", "email", "password")
+          INSERT INTO "users" ("email", "password", "emailConfirmedAt", "name")
           VALUES (
-            ${req.body.name},
             ${req.body.email},
-            ${await argon2.hash(req.body.password, argon2Options)}
+            ${await argon2.hash(req.body.password, argon2Options)},
+            ${null},
+            ${req.body.name}
           )
           RETURNING *
         `
@@ -12433,13 +12435,14 @@ ${value}</textarea
         const card = faker.helpers.contextualCard();
         const demonstrationUser = database.get<{ id: number }>(
           sql`
-            INSERT INTO "users" ("email", "password", "name", "avatar", "biography")
+            INSERT INTO "users" ("email", "password", "emailConfirmedAt", "name", "avatar", "biography")
             VALUES (
               ${`${card.username.toLowerCase()}--${cryptoRandomString({
                 length: 10,
                 type: "numeric",
               })}@courselore.org`},
               ${password},
+              ${new Date().toISOString()},
               ${card.name},
               ${card.avatar},
               ${faker.lorem.paragraph()}
@@ -12456,13 +12459,14 @@ ${value}</textarea
             name: string;
           }>(
             sql`
-              INSERT INTO "users" ("email", "password", "name", "avatar", "biography")
+              INSERT INTO "users" ("email", "password", "emailConfirmedAt", "name", "avatar", "biography")
               VALUES (
                 ${`${card.username}--${cryptoRandomString({
                   length: 10,
                   type: "numeric",
                 })}@courselore.org`},
                 ${password},
+                ${new Date().toISOString()},
                 ${card.name},
                 ${Math.random() < 0.6 ? card.avatar : null},
                 ${Math.random() < 0.3 ? faker.lorem.paragraph() : null}
