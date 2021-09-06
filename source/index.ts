@@ -1749,6 +1749,42 @@ export default async function courselore({
               $${extraHeaders}
             </div>
 
+            $${res.locals.user !== undefined &&
+            res.locals.user.emailConfirmedAt === null
+              ? html`
+                  <div
+                    style="${css`
+                      color: var(--color--rose--700);
+                      background-color: var(--color--rose--100);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--rose--200);
+                        background-color: var(--color--rose--900);
+                      }
+                      padding: var(--space--1) var(--space--10);
+                      display: flex;
+                      justify-content: center;
+                    `}"
+                  >
+                    <div
+                      style="${css`
+                        flex: 1;
+                        max-width: var(--width--prose);
+                        text-align: center;
+                      `}"
+                    >
+                      <form
+                        method="POST"
+                        action="${url}/resend-confirmation-email}"
+                      >
+                        Please confirm your email by following the link sent to
+                        ${res.locals.user.email}.<br />
+                        Didn’t receive the email? Already checked your spam
+                        folder? <button class="link">Resend</button>.
+                      </form>
+                    </div>
+                  </div>
+                `
+              : html``}
             $${(() => {
               const flash = Flash.get(req, res);
               return flash === undefined
