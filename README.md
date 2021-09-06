@@ -66,10 +66,6 @@ More granular control of who’s in a conversation (1-on-1, just a group of peop
 - Gravatar as a fallback to avatar.
 - Multiple emails.
 - Allow people to remove their accounts.
-
-### Authentication
-
-- Email confirmation.
 - SSO with Hopkins ID (SAML) (https://glacial-plateau-47269.herokuapp.com/).
 
 ### Courses

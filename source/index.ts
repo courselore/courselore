@@ -4177,25 +4177,6 @@ export default async function courselore({
                       class="input--text"
                     />
                   </label>
-
-                  <label class="label">
-                    <p class="label--text">Email</p>
-                    <span
-                      tabindex="0"
-                      data-ondomcontentloaded="${javascript`
-                        tippy(this, {
-                          content: "Your email is your identity in CourseLore and may not be updated.",
-                        });
-                      `}"
-                    >
-                      <input
-                        type="email"
-                        value="${res.locals.user.email}"
-                        class="input--text"
-                        disabled
-                      />
-                    </span>
-                  </label>
                 </div>
               </div>
 
