@@ -8514,7 +8514,7 @@ export default async function courselore({
                                       $${conversation.pinnedAt !== null
                                         ? html`
                                             <div class="text--amber">
-                                              <i class="bi bi-pin"></i>
+                                              <i class="bi bi-pin-fill"></i>
                                               Pinned
                                             </div>
                                           `
