@@ -1050,7 +1050,7 @@ export default async function courselore({
                 }
               }
 
-              ${["blue", "green", "rose", "amber", "fuchsia"].map(
+              ${["blue", "green", "rose", "amber", "teal", "fuchsia"].map(
                 (color) => css`
                   .text--${color} {
                     color: var(--color--${color}--600);
@@ -7288,7 +7288,9 @@ export default async function courselore({
                           disabled
                           data-force-is-modified="true"
                         />
-                        <div class="tag--icon"><i class="bi bi-tag"></i></div>
+                        <div class="tag--icon text--teal">
+                          <i class="bi bi-tag-fill"></i>
+                        </div>
                         <div
                           style="${css`
                             flex: 1;
@@ -7382,7 +7384,9 @@ export default async function courselore({
                                     onclick="${javascript`
                                       const tag = this.closest(".tag");
                                       tag.classList.add("deleted");
-                                      tag.querySelector(".tag--icon").classList.add("text--rose");
+                                      const tagIconClassList = tag.querySelector(".tag--icon").classList;
+                                      tagIconClassList.remove("text--teal");
+                                      tagIconClassList.add("text--rose");
                                       tag.querySelector('[name$="[delete]"]').disabled = false;
                                       for (const element of tag.querySelectorAll(".disable-on-delete")) {
                                         element.disabled = true;
@@ -7419,7 +7423,9 @@ export default async function courselore({
                                 onclick="${javascript`
                                   const tag = this.closest(".tag");
                                   tag.classList.remove("deleted");
-                                  tag.querySelector(".tag--icon").classList.remove("text--rose");
+                                  const tagIconClassList = tag.querySelector(".tag--icon").classList;
+                                  tagIconClassList.remove("text--rose");
+                                  tagIconClassList.add("text--teal");
                                   tag.querySelector('[name$="[delete]"]').disabled = true;
                                   for (const element of tag.querySelectorAll(".disable-on-delete")) {
                                     element.disabled = false;
