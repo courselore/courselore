@@ -10044,31 +10044,29 @@ ${value}</textarea
           WHERE "id" = ${res.locals.course.id}
         `
       );
-      // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
-      const conversationId = Number(
-        database.run(
-          sql`
-            INSERT INTO "conversations" (
-              "course",
-              "reference",
-              "title",
-              "nextMessageReference",
-              "type",
-              "pinnedAt",
-              "staffOnlyAt"
-            )
-            VALUES (
-              ${res.locals.course.id},
-              ${String(res.locals.course.nextConversationReference)},
-              ${req.body.title},
-              ${2},
-              ${req.body.type},
-              ${req.body.isPinned ? new Date().toISOString() : null},
-              ${req.body.isStaffOnly ? new Date().toISOString() : null}
-            )
-          `
-        ).lastInsertRowid
-      );
+      const conversation = database.get<{ id: number }>(
+        sql`
+          INSERT INTO "conversations" (
+            "course",
+            "reference",
+            "title",
+            "nextMessageReference",
+            "type",
+            "pinnedAt",
+            "staffOnlyAt"
+          )
+          VALUES (
+            ${res.locals.course.id},
+            ${String(res.locals.course.nextConversationReference)},
+            ${req.body.title},
+            ${2},
+            ${req.body.type},
+            ${req.body.isPinned ? new Date().toISOString() : null},
+            ${req.body.isStaffOnly ? new Date().toISOString() : null}
+          )
+          RETURNING *
+        `
+      )!;
       database.run(
         sql`
           INSERT INTO "messages" (
@@ -10079,7 +10077,7 @@ ${value}</textarea
             "anonymousAt"
           )
           VALUES (
-            ${conversationId},
+            ${conversation.id},
             ${"1"},
             ${res.locals.enrollment.id},
             ${req.body.content},
@@ -10092,7 +10090,7 @@ ${value}</textarea
           sql`
             INSERT INTO "taggings" ("conversation", "tag")
             VALUES (
-              ${conversationId},
+              ${conversation.id},
               ${
                 res.locals.tags.find(
                   (existingTag) => existingTag.reference === tagReference
