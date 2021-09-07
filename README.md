@@ -43,7 +43,6 @@
 ### Minor Things We Should Do Right Away
 
 - Include snippets in search results:
-  - `textProcessor`.
   - `"conversations"`.
   - `"messages"`.
 - Consistent colors on things like pins.
