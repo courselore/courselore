@@ -971,6 +971,13 @@ export default async function courselore({
                           background-color: var(--color--${color}--500);
                         }
                       }
+                      .secondary,
+                      [class^="text--"] {
+                        color: var(--color--blue--50);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--blue--100);
+                        }
+                      }
                     }
                   `
                 )}
@@ -8361,12 +8368,6 @@ export default async function courselore({
                                 align-items: center;
                                 ${isSelected
                                   ? css`
-                                      [class^="text--"] {
-                                        color: var(--color--blue--50);
-                                        @media (prefers-color-scheme: dark) {
-                                          color: var(--color--blue--100);
-                                        }
-                                      }
                                       & + * {
                                         margin-bottom: var(--space--0);
                                       }
