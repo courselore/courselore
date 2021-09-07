@@ -63,7 +63,11 @@ export default async function courselore({
   const app = express();
 
   type UserEmailNotifications = typeof userEmailNotificationses[number];
-  const userEmailNotificationses = ["none", "essentials", "everything"] as const;
+  const userEmailNotificationses = [
+    "none",
+    "staff-announcements-and-mentions",
+    "all-messages",
+  ] as const;
 
   type EnrollmentRole = typeof enrollmentRoles[number];
   const enrollmentRoles = ["student", "staff"] as const;
@@ -115,7 +119,7 @@ export default async function courselore({
         "name" TEXT NOT NULL,
         "avatar" TEXT NULL,
         "biography" TEXT NULL,
-        "emailNotifications" TEXT NOT NULL CHECK ("emailNotifications" IN ('none', 'essentials', 'everything'))
+        "emailNotifications" TEXT NOT NULL CHECK ("emailNotifications" IN ('none', 'staff-announcements-and-mentions', 'all-messages'))
       );
 
       CREATE TABLE "emailConfirmations" (
@@ -3619,7 +3623,7 @@ export default async function courselore({
             ${await argon2.hash(req.body.password, argon2Options)},
             ${null},
             ${req.body.name},
-            ${"essentials"}
+            ${"staff-announcements-and-mentions"}
           )
           RETURNING *
         `
@@ -4528,10 +4532,11 @@ export default async function courselore({
                     <input
                       type="radio"
                       name="emailNotifications"
-                      value="essentials"
+                      value="staff-announcements-and-mentions"
                       required
                       autocomplete="off"
-                      $${res.locals.user.emailNotifications === "essentials"
+                      $${res.locals.user.emailNotifications ===
+                      "staff-announcements-and-mentions"
                         ? html`checked`
                         : html``}
                       class="input--radio"
@@ -4548,10 +4553,10 @@ export default async function courselore({
                     <input
                       type="radio"
                       name="emailNotifications"
-                      value="everything"
+                      value="all-messages"
                       required
                       autocomplete="off"
-                      $${res.locals.user.emailNotifications === "everything"
+                      $${res.locals.user.emailNotifications === "all-messages"
                         ? html`checked`
                         : html``}
                       class="input--radio"
@@ -10113,8 +10118,8 @@ ${value}</textarea
       );
 
       // TODO:
-      // - ‘everything’
-      // - ‘essentials’
+      // - ‘all-messages’
+      // - ‘staff-announcements-and-mentions’
       //   - Announcements
       //   - ‘@mentions’
       // - Check that user is allowed to see this message (with respect to staffOnly)
@@ -10131,7 +10136,7 @@ ${value}</textarea
               SELECT "users"."email" AS "email"
               FROM "users"
               JOIN "enrollments" ON "users"."id" = "enrollments"."user"
-              WHERE "users"."emailNotifications" = 'everything' AND
+              WHERE "users"."emailNotifications" = 'all-messages' AND
                     "enrollments"."course" = ${res.locals.course.id}
             `
           )
@@ -12664,7 +12669,7 @@ ${value}</textarea
               ${card.name},
               ${card.avatar},
               ${faker.lorem.paragraph()},
-              ${"essentials"}
+              ${"staff-announcements-and-mentions"}
             )
             RETURNING *
           `
@@ -12689,7 +12694,11 @@ ${value}</textarea
                 ${card.name},
                 ${Math.random() < 0.6 ? card.avatar : null},
                 ${Math.random() < 0.3 ? faker.lorem.paragraph() : null},
-                ${"essentials"}
+                ${
+                  userEmailNotificationses[
+                    Math.floor(Math.random() * userEmailNotificationses.length)
+                  ]
+                }
               )
               RETURNING *
             `
