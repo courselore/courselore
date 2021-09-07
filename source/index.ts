@@ -4886,7 +4886,7 @@ export default async function courselore({
             GROUP BY "conversations"."id"
             ORDER BY "conversations"."pinnedAt" IS NOT NULL DESC,
                      $${
-                       req.query.search === undefined
+                       search === undefined
                          ? sql``
                          : sql`
                             min(coalesce("conversationsSearch"."rank", 0), coalesce(min("messagesSearch"."rank"), 0)) ASC,
