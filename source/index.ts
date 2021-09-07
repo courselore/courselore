@@ -9599,7 +9599,7 @@ ${value}</textarea
         >;
         res?: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
       } = {}
-    ): HTML => {
+    ): { html: HTML; text: string; mentions: string[] } => {
       const document = JSDOM.fragment(html`
         <div class="markdown">
           $${unifiedProcessor.processSync(text).toString()}
@@ -9638,6 +9638,8 @@ ${value}</textarea
         (wrapper as any).replaceChildren(...rest);
         (element as any).replaceChildren(summaries[0], wrapper);
       }
+      // TODO: Actually compute mentions
+      const mentions: string[] = [];
       if (res !== undefined)
         (function processReferencesAndMentions(node: Node): void {
           switch (node.nodeType) {
@@ -9673,7 +9675,11 @@ ${value}</textarea
             for (const childNode of node.childNodes)
               processReferencesAndMentions(childNode);
         })(document);
-      return document.firstElementChild!.outerHTML;
+      return {
+        html: document.firstElementChild!.outerHTML,
+        text: document.textContent!,
+        mentions,
+      };
     };
   })();
 
@@ -9688,7 +9694,7 @@ ${value}</textarea
         return next("validation");
 
       // TODO: Pass {req, res} here to enable rendering of mentions and references.
-      res.send(markdownProcessor(req.body.content));
+      res.send(markdownProcessor(req.body.content).html);
     }
   );
 
@@ -10129,7 +10135,7 @@ ${value}</textarea
           .join(", "),
         subject: `${res.locals.course.name} · ${req.body.title}`,
         html: html`
-          ${markdownProcessor(req.body.content)}
+          ${markdownProcessor(req.body.content).html}
 
           <hr />
 
@@ -11778,7 +11784,7 @@ ${value}</textarea
                             $${markdownProcessor(message.content, {
                               req,
                               res,
-                            })}
+                            }).html}
                           </div>
                           <div hidden>
                             <div class="dropdown-menu">
