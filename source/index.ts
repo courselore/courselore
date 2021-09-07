@@ -187,6 +187,7 @@ export default async function courselore({
         "staffOnlyAt" TEXT NULL,
         UNIQUE ("course", "reference")
       );
+
       CREATE VIRTUAL TABLE "conversationsSearch" USING fts5(
         "title",
         tokenize = 'porter'
@@ -204,6 +205,7 @@ export default async function courselore({
         "anonymousAt" TEXT NULL,
         UNIQUE ("conversation", "reference")
       );
+
       CREATE VIRTUAL TABLE "messagesSearch" USING fts5(
         "content",
         tokenize = 'porter'
@@ -10044,7 +10046,7 @@ ${value}</textarea
           WHERE "id" = ${res.locals.course.id}
         `
       );
-      const conversation = database.get<{ id: number }>(
+      const conversation = database.get<{ id: number; title: string }>(
         sql`
           INSERT INTO "conversations" (
             "course",
@@ -10067,6 +10069,12 @@ ${value}</textarea
           RETURNING *
         `
       )!;
+      database.run(
+        sql`
+          INSERT INTO "conversationsSearch" ("rowid", "title")
+          VALUES (${conversation.id}, ${conversation.title})
+        `
+      );
       database.run(
         sql`
           INSERT INTO "messages" (
@@ -12112,10 +12120,14 @@ ${value}</textarea
     (req, res, next) => {
       if (typeof req.body.title === "string")
         if (req.body.title.trim() === "") return next("validation");
-        else
+        else {
           database.run(
             sql`UPDATE "conversations" SET "title" = ${req.body.title} WHERE "id" = ${res.locals.conversation.id}`
           );
+          database.run(
+            sql`UPDATE "conversationsSearch" SET "title" = ${req.body.title} WHERE "rowid" = ${res.locals.conversation.id}`
+          );
+        }
 
       if (typeof req.body.type === "string")
         if (!res.locals.conversationTypes.includes(req.body.type))
@@ -12187,6 +12199,9 @@ ${value}</textarea
     (req, res) => {
       database.run(
         sql`DELETE FROM "conversations" WHERE "id" = ${res.locals.conversation.id}`
+      );
+      database.run(
+        sql`DELETE FROM "conversationsSearch" WHERE "rowid" = ${res.locals.conversation.id}`
       );
 
       emitCourseRefresh(res.locals.course.id);
@@ -12834,6 +12849,7 @@ ${value}</textarea
             ).toISOString();
             const conversation = database.get<{
               id: number;
+              title: string;
               nextMessageReference: number;
             }>(
               sql`
@@ -12864,6 +12880,12 @@ ${value}</textarea
                 RETURNING *
               `
             )!;
+            database.run(
+              sql`
+                INSERT INTO "conversationsSearch" ("rowid", "title")
+                VALUES (${conversation.id}, ${conversation.title})
+              `
+            );
             let messageCreatedAt = conversationCreatedAt;
             for (
               let messageReference = 1;
