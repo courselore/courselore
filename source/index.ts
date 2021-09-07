@@ -115,7 +115,7 @@ export default async function courselore({
         "name" TEXT NOT NULL,
         "avatar" TEXT NULL,
         "biography" TEXT NULL,
-        "emailNotifications" TEXT NOT NULL DEFAULT 'essentials' CHECK ("emailNotifications" IN ('none', 'essentials', 'everything'))
+        "emailNotifications" TEXT NOT NULL CHECK ("emailNotifications" IN ('none', 'essentials', 'everything'))
       );
 
       CREATE TABLE "emailConfirmations" (
@@ -144,7 +144,7 @@ export default async function courselore({
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "reference" TEXT NOT NULL UNIQUE,
         "name" TEXT NOT NULL,
-        "nextConversationReference" INTEGER NOT NULL DEFAULT 1
+        "nextConversationReference" INTEGER NOT NULL
       );
 
       CREATE TABLE "invitations" (
@@ -177,7 +177,7 @@ export default async function courselore({
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
         "title" TEXT NOT NULL,
-        "nextMessageReference" INTEGER NOT NULL DEFAULT 1,
+        "nextMessageReference" INTEGER NOT NULL,
         "type" TEXT NOT NULL CHECK ("type" IN ('announcement', 'question', 'other')),
         "pinnedAt" TEXT NULL,
         "staffOnlyAt" TEXT NULL,
@@ -3613,12 +3613,13 @@ export default async function courselore({
       }
       const user = database.get<{ id: number; email: string }>(
         sql`
-          INSERT INTO "users" ("email", "password", "emailConfirmedAt", "name")
+          INSERT INTO "users" ("email", "password", "emailConfirmedAt", "name", "emailNotifications")
           VALUES (
             ${req.body.email},
             ${await argon2.hash(req.body.password, argon2Options)},
             ${null},
-            ${req.body.name}
+            ${req.body.name},
+            ${"essentials"}
           )
           RETURNING *
         `
@@ -12651,7 +12652,7 @@ ${value}</textarea
         const card = faker.helpers.contextualCard();
         const demonstrationUser = database.get<{ id: number }>(
           sql`
-            INSERT INTO "users" ("email", "password", "emailConfirmedAt", "name", "avatar", "biography")
+            INSERT INTO "users" ("email", "password", "emailConfirmedAt", "name", "avatar", "biography", "emailNotifications")
             VALUES (
               ${`${card.username.toLowerCase()}--${cryptoRandomString({
                 length: 10,
@@ -12661,7 +12662,8 @@ ${value}</textarea
               ${new Date().toISOString()},
               ${card.name},
               ${card.avatar},
-              ${faker.lorem.paragraph()}
+              ${faker.lorem.paragraph()},
+              ${"essentials"}
             )
             RETURNING *
           `
@@ -12675,7 +12677,7 @@ ${value}</textarea
             name: string;
           }>(
             sql`
-              INSERT INTO "users" ("email", "password", "emailConfirmedAt", "name", "avatar", "biography")
+              INSERT INTO "users" ("email", "password", "emailConfirmedAt", "name", "avatar", "biography", "emailNotifications")
               VALUES (
                 ${`${card.username}--${cryptoRandomString({
                   length: 10,
@@ -12685,7 +12687,8 @@ ${value}</textarea
                 ${new Date().toISOString()},
                 ${card.name},
                 ${Math.random() < 0.6 ? card.avatar : null},
-                ${Math.random() < 0.3 ? faker.lorem.paragraph() : null}
+                ${Math.random() < 0.3 ? faker.lorem.paragraph() : null},
+                ${"essentials"}
               )
               RETURNING *
             `
