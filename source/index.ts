@@ -4839,6 +4839,15 @@ export default async function courselore({
                    "conversations"."type",
                    "conversations"."pinnedAt",
                    "conversations"."staffOnlyAt"
+                   $${
+                     search === undefined
+                       ? sql``
+                       : sql`
+                          ,
+                          snippet("conversationsSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "conversationsSearchResult",
+                          snippet("messagesSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "messagesSearchResult"
+                      `
+                   }
             FROM "conversations"
             $${
               search === undefined
