@@ -10769,7 +10769,7 @@ ${value}</textarea
                                 ? html`
                                     <div>
                                       <button
-                                        class="button button--tight button--tight--inline button--transparent"
+                                        class="button button--tight button--tight--inline button--transparent text--teal"
                                         data-ondomcontentloaded="${javascript`
                                           tippy(this, {
                                             content: "Add Tag",
@@ -10782,7 +10782,7 @@ ${value}</textarea
                                           });
                                         `}"
                                       >
-                                        <i class="bi bi-tags"></i>
+                                        <i class="bi bi-tags-fill"></i>
                                       </button>
                                       <div hidden>
                                         <div
@@ -10816,9 +10816,11 @@ ${value}</textarea
                                                     value="${tag.reference}"
                                                   />
                                                   <button
-                                                    class="dropdown-menu--item button button--transparent"
+                                                    class="dropdown-menu--item button button--transparent text--teal"
                                                   >
-                                                    <i class="bi bi-tag"></i>
+                                                    <i
+                                                      class="bi bi-tag-fill"
+                                                    ></i>
                                                     ${tag.name}
                                                   </button>
                                                 </form>
@@ -10832,7 +10834,7 @@ ${value}</textarea
                               $${res.locals.conversation.taggings.length === 1
                                 ? html`
                                     <button
-                                      class="button button--tight button--tight--inline button--tight-gap disabled"
+                                      class="button button--tight button--tight--inline button--tight-gap text--teal disabled"
                                       data-ondomcontentloaded="${javascript`
                                         tippy(this, {
                                           content: "You may not remove this tag because a conversation must have at least one tag.",
@@ -10841,7 +10843,7 @@ ${value}</textarea
                                         });
                                       `}"
                                     >
-                                      <i class="bi bi-tag"></i>
+                                      <i class="bi bi-tag-fill"></i>
                                       ${res.locals.conversation.taggings[0].tag
                                         .name}
                                     </button>
@@ -10871,7 +10873,7 @@ ${value}</textarea
                                               value="${tagging.tag.reference}"
                                             />
                                             <button
-                                              class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                                              class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal"
                                               data-ondomcontentloaded="${javascript`
                                                 tippy(this, {
                                                   content: "Remove Tag",
@@ -10880,7 +10882,7 @@ ${value}</textarea
                                                 });
                                               `}"
                                             >
-                                              <i class="bi bi-tag"></i>
+                                              <i class="bi bi-tag-fill"></i>
                                               ${tagging.tag.name}
                                             </button>
                                           </form>
@@ -10892,12 +10894,13 @@ ${value}</textarea
                           : res.locals.conversation.taggings.map(
                               (tagging) => html`
                                 <div
+                                  class="text--teal"
                                   style="${css`
                                     display: flex;
                                     gap: var(--space--1);
                                   `}"
                                 >
-                                  <i class="bi bi-tag"></i>
+                                  <i class="bi bi-tag-fill"></i>
                                   ${tagging.tag.name}
                                 </div>
                               `

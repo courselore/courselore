@@ -84,6 +84,7 @@
 
 - Pin messages.
 - More sophisticated tag system: dependencies between tags, actions triggered by tags, and so forth.
+- Modify the order of tags.
 - Different modes: Forum vs Chat.
 - Different states: Open vs archived.
 - Flag messages to answer later.
