@@ -43,6 +43,11 @@
 ### Minor Things We Should Do Right Away
 
 - Consistent colors on things like pins.
+  - `bi-pin`.
+  - `bi-award`.
+  - `bi-eye-slash`.
+  - `conversationTypeIcon`.
+  - `bi-hand-thumbs-up`.
 - Filters (for example, by conversation type).
 - Improve the presentation of anonymity for people who get to see the true identity of the person (the person themselves, and staff).
 - Let staff change the conversation from staff-only to regular.
