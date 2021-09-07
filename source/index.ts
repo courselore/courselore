@@ -12832,42 +12832,37 @@ ${value}</textarea
                 6 * 60 * 60 * 1000 +
                 Math.floor(Math.random() * 12 * 60 * 60 * 1000)
             ).toISOString();
-            // FIXME: Use ‘RETURNING *’. See https://github.com/JoshuaWise/better-sqlite3/issues/654.
-            const conversationId = Number(
-              database.run(
-                sql`
-                  INSERT INTO "conversations" (
-                    "course",
-                    "reference",
-                    "title",
-                    "nextMessageReference",
-                    "type",
-                    "pinnedAt",
-                    "staffOnlyAt"
-                  )
-                  VALUES (
-                    ${course.id},
-                    ${String(conversationReference)},
-                    ${lodash.capitalize(
-                      faker.lorem.words(1 + Math.floor(Math.random() * 10))
-                    )},
-                    ${Math.floor(Math.random() * 10) + 2},
-                    ${
-                      conversationTypes[
-                        Math.random() < 0.7 ? 1 : Math.random() < 0.7 ? 0 : 2
-                      ]
-                    },
-                    ${Math.random() < 0.05 ? new Date().toISOString() : null},
-                    ${Math.random() < 0.25 ? new Date().toISOString() : null}
-                  )
-                `
-              ).lastInsertRowid
-            );
             const conversation = database.get<{
               id: number;
               nextMessageReference: number;
             }>(
-              sql`SELECT * FROM "conversations" WHERE "id" = ${conversationId}`
+              sql`
+                INSERT INTO "conversations" (
+                  "course",
+                  "reference",
+                  "title",
+                  "nextMessageReference",
+                  "type",
+                  "pinnedAt",
+                  "staffOnlyAt"
+                )
+                VALUES (
+                  ${course.id},
+                  ${String(conversationReference)},
+                  ${lodash.capitalize(
+                    faker.lorem.words(1 + Math.floor(Math.random() * 10))
+                  )},
+                  ${Math.floor(Math.random() * 10) + 2},
+                  ${
+                    conversationTypes[
+                      Math.random() < 0.7 ? 1 : Math.random() < 0.7 ? 0 : 2
+                    ]
+                  },
+                  ${Math.random() < 0.05 ? new Date().toISOString() : null},
+                  ${Math.random() < 0.25 ? new Date().toISOString() : null}
+                )
+                RETURNING *
+              `
             )!;
             let messageCreatedAt = conversationCreatedAt;
             for (
