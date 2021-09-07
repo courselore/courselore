@@ -12207,6 +12207,13 @@ ${value}</textarea
     ...isConversationAccessibleMiddleware,
     (req, res) => {
       database.run(
+        sql`
+          DELETE FROM "messagesSearch" WHERE "rowid" IN (
+            SELECT "id" FROM "messages" WHERE "conversation" = ${res.locals.conversation.id}
+          )
+        `
+      );
+      database.run(
         sql`DELETE FROM "conversations" WHERE "id" = ${res.locals.conversation.id}`
       );
       database.run(
