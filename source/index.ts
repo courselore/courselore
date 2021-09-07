@@ -207,7 +207,7 @@ export default async function courselore({
       );
 
       CREATE VIRTUAL TABLE "messagesSearch" USING fts5(
-        "content",
+        "contentText",
         tokenize = 'porter'
       );
 
@@ -10037,6 +10037,8 @@ ${value}</textarea
       )
         return next("validation");
 
+      const processedContent = markdownProcessor(req.body.content);
+
       database.run(
         sql`
           UPDATE "courses"
@@ -10075,7 +10077,7 @@ ${value}</textarea
           VALUES (${conversation.id}, ${conversation.title})
         `
       );
-      database.run(
+      const message = database.get<{ id: number }>(
         sql`
           INSERT INTO "messages" (
             "conversation",
@@ -10091,6 +10093,13 @@ ${value}</textarea
             ${req.body.content},
             ${req.body.isAnonymous ? new Date().toISOString() : null}
           )
+          RETURNING *
+        `
+      )!;
+      database.run(
+        sql`
+          INSERT INTO "messagesSearch" ("rowid", "contentText")
+          VALUES (${message.id}, ${processedContent.text})
         `
       );
       for (const tagReference of req.body.tagsReferences)
