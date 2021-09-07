@@ -4162,7 +4162,7 @@ export default async function courselore({
 
               <div class="label">
                 <p class="label--text">Biography</p>
-                $${textEditor({
+                $${markdownEditor({
                   name: "biography",
                   value: res.locals.user.biography ?? "",
                   required: false,
@@ -8643,7 +8643,7 @@ export default async function courselore({
       `,
     });
 
-  const textEditor = ({
+  const markdownEditor = ({
     name = "content",
     value = "",
     required = true,
@@ -9750,7 +9750,7 @@ ${value}</textarea
                   />
                 </div>
 
-                $${textEditor()}
+                $${markdownEditor()}
 
                 <div class="label">
                   <p class="label--text">Type</p>
@@ -11902,7 +11902,7 @@ ${value}</textarea
                                 gap: var(--space--2);
                               `}"
                             >
-                              $${textEditor({
+                              $${markdownEditor({
                                 value: message.content,
                               })}
 
@@ -12005,7 +12005,7 @@ ${value}</textarea
                   });
                 `}"
               >
-                $${textEditor()}
+                $${markdownEditor()}
               </div>
 
               <div
