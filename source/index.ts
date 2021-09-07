@@ -4677,10 +4677,11 @@ export default async function courselore({
         reference: string;
       }>(
         sql`
-          INSERT INTO "courses" ("reference", "name")
+          INSERT INTO "courses" ("reference", "name", "nextConversationReference")
           VALUES (
             ${cryptoRandomString({ length: 10, type: "numeric" })},
-            ${req.body.name}
+            ${req.body.name},
+            ${1}
           )
           RETURNING *
         `
