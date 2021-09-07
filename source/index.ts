@@ -12239,6 +12239,8 @@ ${value}</textarea
       )
         return next("validation");
 
+      const processedContent = markdownProcessor(req.body.content);
+
       database.run(
         sql`
           UPDATE "conversations"
@@ -12248,7 +12250,7 @@ ${value}</textarea
           WHERE "id" = ${res.locals.conversation.id}
         `
       );
-      database.run(
+      const message = database.get<{ id: number }>(
         sql`
           INSERT INTO "messages" (
             "conversation",
@@ -12266,8 +12268,16 @@ ${value}</textarea
             ${req.body.isAnswer ? new Date().toISOString() : null},
             ${req.body.isAnonymous ? new Date().toISOString() : null}
           )
+          RETURNING *
+        `
+      )!;
+      database.run(
+        sql`
+          INSERT INTO "messagesSearch" ("rowid", "contentText")
+          VALUES (${message.id}, ${processedContent.text})
         `
       );
+      // TODO: Send email notifications.
 
       emitCourseRefresh(res.locals.course.id);
 
@@ -12297,7 +12307,8 @@ ${value}</textarea
     (req, res, next) => {
       if (typeof req.body.content === "string")
         if (req.body.content.trim() === "") return next("validation");
-        else
+        else {
+          const processedContent = markdownProcessor(req.body.content);
           database.run(
             sql`
               UPDATE "messages"
@@ -12306,6 +12317,15 @@ ${value}</textarea
               WHERE "id" = ${res.locals.message.id}
             `
           );
+          database.run(
+            sql`
+              UPDATE "messagesSearch"
+              SET "contentText" = ${processedContent.text}
+              WHERE "rowid" = ${res.locals.message.id}
+            `
+          );
+          // TODO: Notify people who have been mentioned in this edit.
+        }
 
       if (typeof req.body.isAnswer === "string")
         if (
@@ -12380,6 +12400,9 @@ ${value}</textarea
 
       database.run(
         sql`DELETE FROM "messages" WHERE "id" = ${res.locals.message.id}`
+      );
+      database.run(
+        sql`DELETE FROM "messagesSearch" WHERE "rowid" = ${res.locals.message.id}`
       );
 
       emitCourseRefresh(res.locals.course.id);
@@ -12905,7 +12928,7 @@ ${value}</textarea
                 new Date(messageCreatedAt).getTime() +
                   Math.floor(Math.random() * 12 * 60 * 60 * 1000)
               ).toISOString();
-              database.run(
+              const message = database.get<{ id: number; content: string }>(
                 sql`
                   INSERT INTO "messages" (
                     "createdAt",
@@ -12942,6 +12965,15 @@ ${value}</textarea
                     ${Math.random() < 0.5 ? new Date().toISOString() : null},
                     ${Math.random() < 0.25 ? new Date().toISOString() : null}
                   )
+                  RETURNING *
+                `
+              )!;
+              database.run(
+                sql`
+                  INSERT INTO "messagesSearch" ("rowid", "contentText")
+                  VALUES (${message.id}, ${
+                  markdownProcessor(message.content).text
+                })
                 `
               );
               // TODO: endorsements, likes, tags, taggings
