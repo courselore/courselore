@@ -43,6 +43,7 @@
 ### Minor Things We Should Do Right Away
 
 - Include snippets in search results.
+  - `snippet("messagesSearch", -1, '<span class="search-result">', '</span>', '…', 10)`
 - Consistent colors on things like pins.
   - `bi-pin`.
   - `bi-award`.
