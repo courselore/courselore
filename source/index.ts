@@ -10961,7 +10961,7 @@ ${value}</textarea
                             gap: var(--space--1);
                           `}"
                         >
-                          <i class="bi bi-pin"></i>
+                          <i class="bi bi-pin-fill"></i>
                           Pinned
                         </div>
                       `
