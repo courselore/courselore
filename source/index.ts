@@ -8496,8 +8496,8 @@ export default async function courselore({
                                           <div>
                                             $${conversation.taggings.map(
                                               (tagging) => html`
-                                                <div>
-                                                  <i class="bi bi-tag"></i>
+                                                <div class="text--teal">
+                                                  <i class="bi bi-tag-fill"></i>
                                                   ${tagging.tag.name}
                                                 </div>
                                               `
@@ -9839,7 +9839,7 @@ ${value}</textarea
                                 `}"
                               >
                                 <label
-                                  class="button button--tight button--tight--inline"
+                                  class="button button--tight button--tight--inline text--teal"
                                 >
                                   <input
                                     type="checkbox"
@@ -9848,7 +9848,7 @@ ${value}</textarea
                                     required
                                     class="input--checkbox"
                                   />
-                                  <i class="bi bi-tag"></i>
+                                  <i class="bi bi-tag-fill"></i>
                                   ${tag.name}
                                 </label>
                                 $${tag.staffOnlyAt !== null
