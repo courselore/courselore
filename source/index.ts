@@ -7480,7 +7480,7 @@ export default async function courselore({
                         align-items: baseline;
                       `}"
                     >
-                      <i class="bi bi-tag"></i>
+                      <div class="text--teal"><i class="bi bi-tag-fill"></i></div>
                       <div
                         style="${css`
                           flex: 1;
