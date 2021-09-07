@@ -188,23 +188,9 @@ export default async function courselore({
         UNIQUE ("course", "reference")
       );
       CREATE VIRTUAL TABLE "conversationsSearch" USING fts5(
-        content = "conversations",
-        content_rowid = "id",
         "title",
         tokenize = 'porter'
       );
-      CREATE TRIGGER "conversationsSearchInsert" AFTER INSERT ON "conversations" BEGIN
-        INSERT INTO "conversationsSearch" ("rowid", "title") VALUES ("new"."id", "new"."title");
-      END;
-      CREATE TRIGGER "conversationsSearchUpdate" AFTER UPDATE ON "conversations" BEGIN
-        INSERT INTO "conversationsSearch" ("conversationsSearch", "rowid", "title")
-        VALUES ('delete', "old"."id", "old"."title");
-        INSERT INTO "conversationsSearch" ("rowid", "title") VALUES ("new"."id", "new"."title");
-      END;
-      CREATE TRIGGER "conversationsSearchDelete" AFTER DELETE ON "conversations" BEGIN
-        INSERT INTO "conversationsSearch" ("conversationsSearch", "rowid", "title")
-        VALUES ('delete', "old"."id", "old"."title");
-      END;
 
       CREATE TABLE "messages" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -219,23 +205,9 @@ export default async function courselore({
         UNIQUE ("conversation", "reference")
       );
       CREATE VIRTUAL TABLE "messagesSearch" USING fts5(
-        content = "messages",
-        content_rowid = "id",
         "content",
         tokenize = 'porter'
       );
-      CREATE TRIGGER "messagesSearchInsert" AFTER INSERT ON "messages" BEGIN
-        INSERT INTO "messagesSearch" ("rowid", "content") VALUES ("new"."id", "new"."content");
-      END;
-      CREATE TRIGGER "messagesSearchUpdate" AFTER UPDATE ON "messages" BEGIN
-        INSERT INTO "messagesSearch" ("messagesSearch", "rowid", "content")
-        VALUES ('delete', "old"."id", "old"."content");
-        INSERT INTO "messagesSearch" ("rowid", "content") VALUES ("new"."id", "new"."content");
-      END;
-      CREATE TRIGGER "messagesSearchDelete" AFTER DELETE ON "messages" BEGIN
-        INSERT INTO "messagesSearch" ("messagesSearch", "rowid", "content")
-        VALUES ('delete', "old"."id", "old"."content");
-      END;
 
       CREATE TABLE "readings" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
