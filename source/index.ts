@@ -62,8 +62,8 @@ export default async function courselore({
 
   const app = express();
 
-  type UserEmailNotifications = typeof userEmailNotifications[number];
-  const userEmailNotifications = ["none", "essentials", "everything"] as const;
+  type UserEmailNotifications = typeof userEmailNotificationses[number];
+  const userEmailNotificationses = ["none", "essentials", "everything"] as const;
 
   type EnrollmentRole = typeof enrollmentRoles[number];
   const enrollmentRoles = ["student", "staff"] as const;
@@ -4588,7 +4588,7 @@ export default async function courselore({
     (req, res, next) => {
       if (
         typeof req.body.emailNotifications !== "string" ||
-        !userEmailNotifications.includes(req.body.emailNotifications)
+        !userEmailNotificationses.includes(req.body.emailNotifications)
       )
         return next("validation");
 
