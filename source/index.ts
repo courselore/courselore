@@ -9911,7 +9911,7 @@ ${value}</textarea
                             `}"
                           >
                             <label
-                              class="button button--tight button--tight--inline"
+                              class="button button--tight button--tight--inline text--amber"
                             >
                               <input
                                 type="checkbox"
@@ -9919,7 +9919,7 @@ ${value}</textarea
                                 autocomplete="off"
                                 class="input--checkbox"
                               />
-                              <i class="bi bi-pin"></i>
+                              <i class="bi bi-pin-fill"></i>
                               Pinned
                             </label>
                           </div>
@@ -10930,50 +10930,32 @@ ${value}</textarea
                             .reference}/conversations/${res.locals.conversation
                             .reference}?_method=PATCH"
                         >
-                          $${res.locals.conversation.pinnedAt === null
-                            ? html`
-                                <input
-                                  type="hidden"
-                                  name="isPinned"
-                                  value="true"
-                                />
-                                <button
-                                  class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                  data-ondomcontentloaded="${javascript`
-                                    tippy(this, {
-                                      content: "Pin",
-                                      touch: false,
-                                    });
-                                  `}"
-                                >
-                                  <i class="bi bi-pin-angle"></i>
-                                  Unpinned
-                                </button>
-                              `
-                            : html`
-                                <input
-                                  type="hidden"
-                                  name="isPinned"
-                                  value="false"
-                                />
-                                <button
-                                  class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                  data-ondomcontentloaded="${javascript`
-                                    tippy(this, {
-                                      content: "Unpin",
-                                      touch: false,
-                                    });
-                                  `}"
-                                >
-                                  <i class="bi bi-pin"></i>
-                                  Pinned
-                                </button>
-                              `}
+                          <input
+                            type="hidden"
+                            name="isPinned"
+                            value="${res.locals.conversation.pinnedAt === null
+                              ? "true"
+                              : "false"}"
+                          />
+                          <button
+                            class="button button--tight button--tight--inline button--tight-gap text--amber"
+                          >
+                            <input
+                              type="checkbox"
+                              $${res.locals.conversation.pinnedAt === null
+                                ? html``
+                                : html`checked`}
+                              class="input--checkbox"
+                            />
+                            <i class="bi bi-pin-fill"></i>
+                            Pinned
+                          </button>
                         </form>
                       `
                     : res.locals.conversation.pinnedAt !== null
                     ? html`
                         <div
+                          class="text--amber"
                           style="${css`
                             display: flex;
                             gap: var(--space--1);
