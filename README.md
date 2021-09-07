@@ -42,8 +42,7 @@
 
 ### Minor Things We Should Do Right Away
 
-- Include snippets in search results:
-  - `"messages"`.
+- Include snippets in search results.
 - Consistent colors on things like pins.
   - `bi-pin`.
   - `bi-award`.
