@@ -9543,8 +9543,8 @@ ${value}</textarea
     express.static(dataDirectory)
   );
 
-  const textProcessor = await (async () => {
-    const markdownProcessor = unified()
+  const markdownProcessor = await (async () => {
+    const unifiedProcessor = unified()
       .use(remarkParse)
       .use(remarkGfm)
       .use(remarkMath)
@@ -9602,7 +9602,7 @@ ${value}</textarea
     ): HTML => {
       const document = JSDOM.fragment(html`
         <div class="markdown">
-          $${markdownProcessor.processSync(text).toString()}
+          $${unifiedProcessor.processSync(text).toString()}
         </div>
       `);
       for (const element of document.querySelectorAll("li, td, th, dt, dd"))
@@ -9688,7 +9688,7 @@ ${value}</textarea
         return next("validation");
 
       // TODO: Pass {req, res} here to enable rendering of mentions and references.
-      res.send(textProcessor(req.body.content));
+      res.send(markdownProcessor(req.body.content));
     }
   );
 
@@ -10129,7 +10129,7 @@ ${value}</textarea
           .join(", "),
         subject: `${res.locals.course.name} · ${req.body.title}`,
         html: html`
-          ${textProcessor(req.body.content)}
+          ${markdownProcessor(req.body.content)}
 
           <hr />
 
@@ -11775,7 +11775,7 @@ ${value}</textarea
                               this.dropdownMenu.show();
                             `}"
                           >
-                            $${textProcessor(message.content, {
+                            $${markdownProcessor(message.content, {
                               req,
                               res,
                             })}
