@@ -4859,8 +4859,8 @@ export default async function courselore({
                        ? sql``
                        : sql`
                           ,
-                          snippet("conversationsSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "conversationsSearchResult",
-                          snippet("messagesSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "messagesSearchResult"
+                          snippet("conversationsSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "conversationsSearchSnippet",
+                          snippet("messagesSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "messagesSearchSnippet"
                       `
                    }
             FROM "conversations"
