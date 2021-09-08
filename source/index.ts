@@ -3601,7 +3601,7 @@ export default async function courselore({
           })}`
         );
       }
-      const user = database.get<{ id: number; email: string }>(
+      const user = database.get<{ id: number; email: string; name: string }>(
         sql`
           INSERT INTO "users" ("email", "password", "emailConfirmedAt", "name", "emailNotifications")
           VALUES (
@@ -3614,6 +3614,9 @@ export default async function courselore({
           RETURNING *
         `
       )!;
+      database.run(
+        sql`INSERT INTO "usersSearch" ("rowid", "name") VALUES (${user.id}, ${user.name})`
+      );
       sendConfirmationEmail(user);
       Session.open(req, res, user.id);
       res.redirect(`${url}${req.query.redirect ?? "/"}`);
@@ -4208,16 +4211,23 @@ export default async function courselore({
 
     database.run(
       sql`
-          UPDATE "users"
-          SET "name" = ${req.body.name},
-              "avatar" = ${
-                req.body.avatar.trim() === "" ? null : req.body.avatar
-              },
-              "biography" = ${
-                req.body.biography.trim() === "" ? null : req.body.biography
-              }
-          WHERE "id" = ${res.locals.user.id}
-        `
+        UPDATE "users"
+        SET "name" = ${req.body.name},
+            "avatar" = ${
+              req.body.avatar.trim() === "" ? null : req.body.avatar
+            },
+            "biography" = ${
+              req.body.biography.trim() === "" ? null : req.body.biography
+            }
+        WHERE "id" = ${res.locals.user.id}
+      `
+    );
+    database.run(
+      sql`
+        UPDATE "usersSearch"
+        SET "name" = ${req.body.name}
+        WHERE "rowid" = ${res.locals.user.id}
+      `
     );
 
     Flash.set(
@@ -12699,7 +12709,7 @@ ${value}</textarea
           parallelism: 1,
         });
         const card = faker.helpers.contextualCard();
-        const demonstrationUser = database.get<{ id: number }>(
+        const demonstrationUser = database.get<{ id: number; name: string }>(
           sql`
             INSERT INTO "users" ("email", "password", "emailConfirmedAt", "name", "avatar", "biography", "emailNotifications")
             VALUES (
@@ -12717,10 +12727,13 @@ ${value}</textarea
             RETURNING *
           `
         )!;
+        database.run(
+          sql`INSERT INTO "usersSearch" ("rowid", "name") VALUES (${demonstrationUser.id}, ${demonstrationUser.name})`
+        );
 
         const users = [...new Array(400)].map((_) => {
           const card = faker.helpers.contextualCard();
-          return database.get<{
+          const user = database.get<{
             id: number;
             email: string;
             name: string;
@@ -12746,6 +12759,10 @@ ${value}</textarea
               RETURNING *
             `
           )!;
+          database.run(
+            sql`INSERT INTO "usersSearch" ("rowid", "name") VALUES (${user.id}, ${user.name})`
+          );
+          return user;
         });
 
         for (const { name, role, accentColor, enrollmentsUsers } of [
