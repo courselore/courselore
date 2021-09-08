@@ -43,7 +43,41 @@
 ### Minor Things We Should Do Right Away
 
 - Include snippets in search results.
-  - `snippet("messagesSearch", -1, '<span class="search-result">', '</span>', '…', 10)`
+  ```sql
+  SELECT "conversations"."id",
+        "conversations"."reference",
+        "conversations"."title",
+        "conversations"."nextMessageReference",
+        "conversations"."type",
+        "conversations"."pinnedAt",
+        "conversations"."staffOnlyAt",
+        coalesce("conversationsSearchResult"."snippet", "messagesSearchResult"."snippet") AS "snippet"
+  FROM "conversations"
+
+  LEFT JOIN (
+    SELECT "rowid",
+          "rank",
+          snippet("conversationsSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "snippet"
+    FROM "conversationsSearch"
+    WHERE "conversationsSearch" MATCH 'hello'
+  ) AS "conversationsSearchResult" ON "conversations"."id" = "conversationsSearchResult"."rowid"
+
+  LEFT JOIN (
+    SELECT "messages"."conversation" AS "conversationId",
+          "rank",
+          snippet("messagesSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "snippet"
+    FROM "messagesSearch"
+    JOIN "messages" ON "messagesSearch"."rowid" = "messages"."id"
+    WHERE "messagesSearch" MATCH 'folks'
+  ) AS "messagesSearchResult" ON "conversations"."id" = "messagesSearchResult"."conversationId"
+
+  WHERE (
+          "conversationsSearchResult"."rank" IS NOT NULL OR
+          "messagesSearchResult"."rank" IS NOT NULL
+        )
+  GROUP BY "conversations"."id"
+  ORDER BY min(coalesce("conversationsSearchResult"."rank", 0), coalesce(min("messagesSearchResult"."rank"), 0)) ASC;
+  ```
 - Consistent colors on things like pins.
   - `bi-pin`.
   - `bi-award`.
