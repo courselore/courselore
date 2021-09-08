@@ -119,7 +119,12 @@ export default async function courselore({
         "name" TEXT NOT NULL,
         "avatar" TEXT NULL,
         "biography" TEXT NULL,
-        "emailNotifications" TEXT NOT NULL CHECK ("emailNotifications" IN ('none', 'staff-announcements-and-mentions', 'all-messages'))
+        "emailNotifications" TEXT NOT NULL
+      );
+
+      CREATE VIRTUAL TABLE "usersSearch" USING fts5 (
+        "name",
+        tokenize = 'porter'
       );
 
       CREATE TABLE "emailConfirmations" (
@@ -160,7 +165,7 @@ export default async function courselore({
         "reference" TEXT NOT NULL,
         "email" TEXT NULL,
         "name" TEXT NULL,
-        "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
+        "role" TEXT NOT NULL,
         UNIQUE ("course", "reference")
       );
 
@@ -170,8 +175,8 @@ export default async function courselore({
         "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
-        "role" TEXT NOT NULL CHECK ("role" IN ('student', 'staff')),
-        "accentColor" TEXT NOT NULL CHECK ("accentColor" IN ('red', 'yellow', 'emerald', 'sky', 'violet', 'pink')),
+        "role" TEXT NOT NULL,
+        "accentColor" TEXT NOT NULL,
         UNIQUE ("user", "course"),
         UNIQUE ("course", "reference")
       );
@@ -182,7 +187,7 @@ export default async function courselore({
         "reference" TEXT NOT NULL,
         "title" TEXT NOT NULL,
         "nextMessageReference" INTEGER NOT NULL,
-        "type" TEXT NOT NULL CHECK ("type" IN ('announcement', 'question', 'other')),
+        "type" TEXT NOT NULL,
         "pinnedAt" TEXT NULL,
         "staffOnlyAt" TEXT NULL,
         UNIQUE ("course", "reference")
@@ -5348,7 +5353,8 @@ export default async function courselore({
         isExpired(res.locals.invitation.expiresAt) ||
         (res.locals.invitation.email !== null &&
           res.locals.user !== undefined &&
-          res.locals.invitation.email !== res.locals.user.email)
+          res.locals.invitation.email.toLocaleLowerCase() !==
+            res.locals.user.email.toLocaleLowerCase())
       )
         return next("route");
       next();

@@ -42,6 +42,7 @@
 
 ### Minor Things We Should Do Right Away
 
+- `usersSearch`.
 - Include snippets in search results.
   - `snippet("messagesSearch", -1, '<span class="search-result">', '</span>', '…', 10)`
 - Consistent colors on things like pins.
