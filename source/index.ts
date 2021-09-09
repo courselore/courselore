@@ -179,6 +179,7 @@ export default async function courselore({
         "role" TEXT NOT NULL,
         UNIQUE ("course", "reference")
       );
+      CREATE INDEX "invitationsCourseIndex" ON "invitations" ("course");
 
       CREATE TABLE "enrollments" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -191,6 +192,8 @@ export default async function courselore({
         UNIQUE ("user", "course"),
         UNIQUE ("course", "reference")
       );
+      CREATE INDEX "enrollmentsUserIndex" ON "enrollments" ("user");
+      CREATE INDEX "enrollmentsCourseIndex" ON "enrollments" ("course");
 
       CREATE TABLE "conversations" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -203,11 +206,26 @@ export default async function courselore({
         "staffOnlyAt" TEXT NULL,
         UNIQUE ("course", "reference")
       );
-
+      CREATE INDEX "conversationsCourseIndex" ON "conversations" ("course");
+      CREATE INDEX "conversationsTypeIndex" ON "conversations" ("type");
+      CREATE INDEX "conversationsPinnedAtIndex" ON "conversations" ("pinnedAt");
+      CREATE INDEX "conversationsStaffOnlyAtIndex" ON "conversations" ("staffOnlyAt");
       CREATE VIRTUAL TABLE "conversationsSearch" USING fts5(
+        content = "conversations",
+        content_rowid = "id",
         "title",
         tokenize = 'porter'
       );
+      CREATE TRIGGER "conversationsSearchInsert" AFTER INSERT ON "conversations" BEGIN
+        INSERT INTO "conversationsSearch" ("rowid", "title") VALUES ("new"."id", "new"."title");
+      END;
+      CREATE TRIGGER "conversationsSearchUpdate" AFTER UPDATE ON "conversations" BEGIN
+        INSERT INTO "conversationsSearch" ("conversationsSearch", "rowid", "title") VALUES ('delete', "old"."id", "old"."title");
+        INSERT INTO "conversationsSearch" ("rowid", "title") VALUES ("new"."id", "new"."title");
+      END;
+      CREATE TRIGGER "conversationsSearchDelete" AFTER DELETE ON "conversations" BEGIN
+        INSERT INTO "conversationsSearch" ("conversationsSearch", "rowid", "title") VALUES ('delete', "old"."id", "old"."title");
+      END;
 
       CREATE TABLE "messages" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -217,15 +235,29 @@ export default async function courselore({
         "reference" TEXT NOT NULL,
         "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
         "content" TEXT NOT NULL,
+        "contentText" TEXT NOT NULL,
         "answerAt" TEXT NULL,
         "anonymousAt" TEXT NULL,
         UNIQUE ("conversation", "reference")
       );
-
+      CREATE INDEX "messagesConversationIndex" ON "messages" ("conversation");
+      CREATE INDEX "messagesAnswerAtIndex" ON "messages" ("answerAt");
       CREATE VIRTUAL TABLE "messagesSearch" USING fts5(
+        content = "messages",
+        content_rowid = "id",
         "contentText",
         tokenize = 'porter'
       );
+      CREATE TRIGGER "messagesSearchInsert" AFTER INSERT ON "messages" BEGIN
+        INSERT INTO "messagesSearch" ("rowid", "contentText") VALUES ("new"."id", "new"."contentText");
+      END;
+      CREATE TRIGGER "messagesSearchUpdate" AFTER UPDATE ON "messages" BEGIN
+        INSERT INTO "messagesSearch" ("messagesSearch", "rowid", "contentText") VALUES ('delete', "old"."id", "old"."contentText");
+        INSERT INTO "messagesSearch" ("rowid", "contentText") VALUES ("new"."id", "new"."contentText");
+      END;
+      CREATE TRIGGER "messagesSearchDelete" AFTER DELETE ON "messages" BEGIN
+        INSERT INTO "messagesSearch" ("messagesSearch", "rowid", "contentText") VALUES ('delete', "old"."id", "old"."contentText");
+      END;
 
       CREATE TABLE "readings" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -242,6 +274,7 @@ export default async function courselore({
         "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
         UNIQUE ("message", "enrollment")
       );
+      CREATE INDEX "endorsementsMessageIndex" ON "endorsements" ("message");
 
       CREATE TABLE "likes" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -250,6 +283,7 @@ export default async function courselore({
         "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
         UNIQUE ("message", "enrollment")
       );
+      CREATE INDEX "likesMessageIndex" ON "likes" ("message");
 
       CREATE TABLE "tags" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -260,6 +294,7 @@ export default async function courselore({
         "staffOnlyAt" TEXT NULL,
         UNIQUE ("course", "reference")
       );
+      CREATE INDEX "tagsCourseIndex" ON "tags" ("course");
 
       CREATE TABLE "taggings" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -268,6 +303,7 @@ export default async function courselore({
         "tag" INTEGER NOT NULL REFERENCES "tags" ON DELETE CASCADE,
         UNIQUE ("conversation", "tag")
       );
+      CREATE INDEX "taggingsConversationIndex" ON "taggings" ("conversation");
     `
   );
 
