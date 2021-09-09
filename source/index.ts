@@ -4900,9 +4900,7 @@ export default async function courselore({
                      search === undefined
                        ? sql``
                        : sql`
-                          ,
-                          snippet("conversationsSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "conversationsSearchSnippet",
-                          snippet("messagesSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "messagesSearchSnippet"
+                          , coalesce("conversationsSearchResult"."snippet", "messagesSearchResult"."snippet") AS "snippet"
                       `
                    }
             FROM "conversations"
@@ -4910,11 +4908,22 @@ export default async function courselore({
               search === undefined
                 ? sql``
                 : sql`
-                  LEFT JOIN "conversationsSearch" ON "conversations"."id" = "conversationsSearch"."rowid" AND
-                                                     "conversationsSearch" MATCH ${search}
-                  LEFT JOIN "messages" ON "conversations"."id" = "messages"."conversation"
-                  LEFT JOIN "messagesSearch" ON "messages"."id" = "messagesSearch"."rowid" AND
-                                                "messagesSearch" MATCH ${search}
+                  LEFT JOIN (
+                    SELECT "rowid",
+                           "rank",
+                           snippet("conversationsSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "snippet"
+                    FROM "conversationsSearch"
+                    WHERE "conversationsSearch" MATCH ${search}
+                  ) AS "conversationsSearchResult" ON "conversations"."id" = "conversationsSearchResult"."rowid"
+
+                  LEFT JOIN (
+                    SELECT "messages"."conversation" AS "conversationId",
+                           "rank",
+                           snippet("messagesSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "snippet"
+                    FROM "messagesSearch"
+                    JOIN "messages" ON "messagesSearch"."rowid" = "messages"."id"
+                    WHERE "messagesSearch" MATCH ${search}
+                  ) AS "messagesSearchResult" ON "conversations"."id" = "messagesSearchResult"."conversationId"
                 `
             }
             $${
@@ -4931,8 +4940,8 @@ export default async function courselore({
                 ? sql``
                 : sql`
                   AND (
-                    "conversationsSearch"."rank" IS NOT NULL OR
-                    "messagesSearch"."rank" IS NOT NULL
+                    "conversationsSearchResult"."rank" IS NOT NULL OR
+                    "messagesSearchResult"."rank" IS NOT NULL
                   )
                 `
             }
@@ -4949,7 +4958,7 @@ export default async function courselore({
                        search === undefined
                          ? sql``
                          : sql`
-                            min(coalesce("conversationsSearch"."rank", 0), coalesce(min("messagesSearch"."rank"), 0)) ASC,
+                            min(coalesce("conversationsSearchResult"."rank", 0), coalesce(min("messagesSearchResult"."rank"), 0)) ASC,
                           `
                      }
                      "conversations"."id" DESC
