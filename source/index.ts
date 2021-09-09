@@ -10144,31 +10144,31 @@ ${value}</textarea
           )}
         `
       )!;
+      // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
       const message = database.get<{ id: number }>(
         sql`
-          INSERT INTO "messages" (
-            "conversation",
-            "reference",
-            "authorEnrollment",
-            "content",
-            "anonymousAt"
-          )
-          VALUES (
-            ${conversation.id},
-            ${"1"},
-            ${res.locals.enrollment.id},
-            ${req.body.content},
-            ${req.body.isAnonymous ? new Date().toISOString() : null}
-          )
-          RETURNING *
+          SELECT * FROM "messages" WHERE "id" = ${Number(
+            database.run(
+              sql`
+                INSERT INTO "messages" (
+                  "conversation",
+                  "reference",
+                  "authorEnrollment",
+                  "content",
+                  "anonymousAt"
+                )
+                VALUES (
+                  ${conversation.id},
+                  ${"1"},
+                  ${res.locals.enrollment.id},
+                  ${req.body.content},
+                  ${req.body.isAnonymous ? new Date().toISOString() : null}
+                )
+              `
+            ).lastInsertRowid
+          )}
         `
       )!;
-      database.run(
-        sql`
-          INSERT INTO "messagesSearch" ("rowid", "contentText")
-          VALUES (${message.id}, ${processedContent.text})
-        `
-      );
       for (const tagReference of req.body.tagsReferences)
         database.run(
           sql`
@@ -12270,13 +12270,6 @@ ${value}</textarea
     ...isConversationAccessibleMiddleware,
     (req, res) => {
       database.run(
-        sql`
-          DELETE FROM "messagesSearch" WHERE "rowid" IN (
-            SELECT "id" FROM "messages" WHERE "conversation" = ${res.locals.conversation.id}
-          )
-        `
-      );
-      database.run(
         sql`DELETE FROM "conversations" WHERE "id" = ${res.locals.conversation.id}`
       );
       emitCourseRefresh(res.locals.course.id);
@@ -12315,33 +12308,33 @@ ${value}</textarea
           WHERE "id" = ${res.locals.conversation.id}
         `
       );
+      // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
       const message = database.get<{ id: number }>(
         sql`
-          INSERT INTO "messages" (
-            "conversation",
-            "reference",
-            "authorEnrollment",
-            "content",
-            "answerAt",
-            "anonymousAt"
-          )
-          VALUES (
-            ${res.locals.conversation.id},
-            ${String(res.locals.conversation.nextMessageReference)},
-            ${res.locals.enrollment.id},
-            ${req.body.content},
-            ${req.body.isAnswer ? new Date().toISOString() : null},
-            ${req.body.isAnonymous ? new Date().toISOString() : null}
-          )
-          RETURNING *
+          SELECT * FROM "messages" WHERE "id" = ${Number(
+            database.run(
+              sql`
+                INSERT INTO "messages" (
+                  "conversation",
+                  "reference",
+                  "authorEnrollment",
+                  "content",
+                  "answerAt",
+                  "anonymousAt"
+                )
+                VALUES (
+                  ${res.locals.conversation.id},
+                  ${String(res.locals.conversation.nextMessageReference)},
+                  ${res.locals.enrollment.id},
+                  ${req.body.content},
+                  ${req.body.isAnswer ? new Date().toISOString() : null},
+                  ${req.body.isAnonymous ? new Date().toISOString() : null}
+                )
+              `
+            ).lastInsertRowid
+          )}
         `
       )!;
-      database.run(
-        sql`
-          INSERT INTO "messagesSearch" ("rowid", "contentText")
-          VALUES (${message.id}, ${processedContent.text})
-        `
-      );
       // TODO: Send email notifications.
 
       emitCourseRefresh(res.locals.course.id);
@@ -12380,13 +12373,6 @@ ${value}</textarea
               SET "content" = ${req.body.content},
                   "updatedAt" = ${new Date().toISOString()}
               WHERE "id" = ${res.locals.message.id}
-            `
-          );
-          database.run(
-            sql`
-              UPDATE "messagesSearch"
-              SET "contentText" = ${processedContent.text}
-              WHERE "rowid" = ${res.locals.message.id}
             `
           );
           // TODO: Notify people who have been mentioned in this edit.
@@ -12462,16 +12448,10 @@ ${value}</textarea
     ...messageExistsMiddleware,
     (req, res, next) => {
       if (res.locals.message.reference === "1") return next("validation");
-
       database.run(
         sql`DELETE FROM "messages" WHERE "id" = ${res.locals.message.id}`
       );
-      database.run(
-        sql`DELETE FROM "messagesSearch" WHERE "rowid" = ${res.locals.message.id}`
-      );
-
       emitCourseRefresh(res.locals.course.id);
-
       res.redirect(
         `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
       );
@@ -12959,6 +12939,7 @@ ${value}</textarea
                 6 * 60 * 60 * 1000 +
                 Math.floor(Math.random() * 12 * 60 * 60 * 1000)
             ).toISOString();
+            // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
             const conversation = database.get<{
               id: number;
               title: string;
@@ -13015,7 +12996,7 @@ ${value}</textarea
                 new Date(messageCreatedAt).getTime() +
                   Math.floor(Math.random() * 12 * 60 * 60 * 1000)
               ).toISOString();
-              const message = database.get<{ id: number; content: string }>(
+              database.run(
                 sql`
                   INSERT INTO "messages" (
                     "createdAt",
@@ -13052,17 +13033,8 @@ ${value}</textarea
                     ${Math.random() < 0.5 ? new Date().toISOString() : null},
                     ${Math.random() < 0.25 ? new Date().toISOString() : null}
                   )
-                  RETURNING *
                 `
               )!;
-              database.run(
-                sql`
-                  INSERT INTO "messagesSearch" ("rowid", "contentText")
-                  VALUES (${message.id}, ${
-                  markdownProcessor(message.content).text
-                })
-                `
-              );
               // TODO: endorsements, likes, tags, taggings
             }
           }
