@@ -10155,6 +10155,7 @@ ${value}</textarea
                   "reference",
                   "authorEnrollment",
                   "content",
+                  "contentText",
                   "anonymousAt"
                 )
                 VALUES (
@@ -10162,6 +10163,7 @@ ${value}</textarea
                   ${"1"},
                   ${res.locals.enrollment.id},
                   ${req.body.content},
+                  ${processedContent.text},
                   ${req.body.isAnonymous ? new Date().toISOString() : null}
                 )
               `
@@ -12319,6 +12321,7 @@ ${value}</textarea
                   "reference",
                   "authorEnrollment",
                   "content",
+                  "contentText",
                   "answerAt",
                   "anonymousAt"
                 )
@@ -12327,6 +12330,7 @@ ${value}</textarea
                   ${String(res.locals.conversation.nextMessageReference)},
                   ${res.locals.enrollment.id},
                   ${req.body.content},
+                  ${processedContent.text},
                   ${req.body.isAnswer ? new Date().toISOString() : null},
                   ${req.body.isAnonymous ? new Date().toISOString() : null}
                 )
@@ -12371,6 +12375,7 @@ ${value}</textarea
             sql`
               UPDATE "messages"
               SET "content" = ${req.body.content},
+                  "contentText" = ${processedContent.text},
                   "updatedAt" = ${new Date().toISOString()}
               WHERE "id" = ${res.locals.message.id}
             `
@@ -12996,6 +13001,11 @@ ${value}</textarea
                 new Date(messageCreatedAt).getTime() +
                   Math.floor(Math.random() * 12 * 60 * 60 * 1000)
               ).toISOString();
+              const content = faker.lorem.paragraphs(
+                1 + Math.floor(Math.random() * 5),
+                "\n\n"
+              );
+              const processedContent = markdownProcessor(content);
               database.run(
                 sql`
                   INSERT INTO "messages" (
@@ -13005,6 +13015,7 @@ ${value}</textarea
                     "reference",
                     "authorEnrollment",
                     "content",
+                    "contentText",
                     "answerAt",
                     "anonymousAt"
                   )
@@ -13026,10 +13037,8 @@ ${value}</textarea
                         Math.floor(Math.random() * enrollments.length)
                       ].id
                     },
-                    ${faker.lorem.paragraphs(
-                      1 + Math.floor(Math.random() * 5),
-                      "\n\n"
-                    )},
+                    ${content},
+                    ${processedContent.text},
                     ${Math.random() < 0.5 ? new Date().toISOString() : null},
                     ${Math.random() < 0.25 ? new Date().toISOString() : null}
                   )
