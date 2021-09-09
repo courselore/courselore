@@ -43,8 +43,6 @@
 ### Minor Things We Should Do Right Away
 
 - Remove manual maintenance of FTS indices:
-  - `"messagesSearch"`.
-  - `"messages"`.
   - `"contentText"`.
   - https://github.com/JoshuaWise/better-sqlite3/issues/654
   - When a conversation is deleted, its messages are deleted via cascade. Does this fire the trigger which will delete the `messageSearch` rows? (:12272)
