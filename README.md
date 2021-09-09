@@ -43,9 +43,6 @@
 ### Minor Things We Should Do Right Away
 
 - Remove manual maintenance of FTS indices:
-  - `"usersSearch"`.
-  - `"users"`.
-  - `"conversationsSearch"`.
   - `"conversations"`.
   - `"messagesSearch"`.
   - `"messages"`.

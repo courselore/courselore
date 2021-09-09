@@ -10115,35 +10115,35 @@ ${value}</textarea
           WHERE "id" = ${res.locals.course.id}
         `
       );
+      // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
       const conversation = database.get<{ id: number; title: string }>(
         sql`
-          INSERT INTO "conversations" (
-            "course",
-            "reference",
-            "title",
-            "nextMessageReference",
-            "type",
-            "pinnedAt",
-            "staffOnlyAt"
-          )
-          VALUES (
-            ${res.locals.course.id},
-            ${String(res.locals.course.nextConversationReference)},
-            ${req.body.title},
-            ${2},
-            ${req.body.type},
-            ${req.body.isPinned ? new Date().toISOString() : null},
-            ${req.body.isStaffOnly ? new Date().toISOString() : null}
-          )
-          RETURNING *
+          SELECT * FROM "conversations" WHERE "id" = ${Number(
+            database.run(
+              sql`
+                INSERT INTO "conversations" (
+                  "course",
+                  "reference",
+                  "title",
+                  "nextMessageReference",
+                  "type",
+                  "pinnedAt",
+                  "staffOnlyAt"
+                )
+                VALUES (
+                  ${res.locals.course.id},
+                  ${String(res.locals.course.nextConversationReference)},
+                  ${req.body.title},
+                  ${2},
+                  ${req.body.type},
+                  ${req.body.isPinned ? new Date().toISOString() : null},
+                  ${req.body.isStaffOnly ? new Date().toISOString() : null}
+                )
+              `
+            ).lastInsertRowid
+          )}
         `
       )!;
-      database.run(
-        sql`
-          INSERT INTO "conversationsSearch" ("rowid", "title")
-          VALUES (${conversation.id}, ${conversation.title})
-        `
-      );
       const message = database.get<{ id: number }>(
         sql`
           INSERT INTO "messages" (
@@ -12196,14 +12196,10 @@ ${value}</textarea
     (req, res, next) => {
       if (typeof req.body.title === "string")
         if (req.body.title.trim() === "") return next("validation");
-        else {
+        else
           database.run(
             sql`UPDATE "conversations" SET "title" = ${req.body.title} WHERE "id" = ${res.locals.conversation.id}`
           );
-          database.run(
-            sql`UPDATE "conversationsSearch" SET "title" = ${req.body.title} WHERE "rowid" = ${res.locals.conversation.id}`
-          );
-        }
 
       if (typeof req.body.type === "string")
         if (!res.locals.conversationTypes.includes(req.body.type))
@@ -12283,12 +12279,7 @@ ${value}</textarea
       database.run(
         sql`DELETE FROM "conversations" WHERE "id" = ${res.locals.conversation.id}`
       );
-      database.run(
-        sql`DELETE FROM "conversationsSearch" WHERE "rowid" = ${res.locals.conversation.id}`
-      );
-
       emitCourseRefresh(res.locals.course.id);
-
       res.redirect(`${url}/courses/${res.locals.course.reference}`);
     }
   );
@@ -12974,39 +12965,46 @@ ${value}</textarea
               nextMessageReference: number;
             }>(
               sql`
-                INSERT INTO "conversations" (
-                  "course",
-                  "reference",
-                  "title",
-                  "nextMessageReference",
-                  "type",
-                  "pinnedAt",
-                  "staffOnlyAt"
-                )
-                VALUES (
-                  ${course.id},
-                  ${String(conversationReference)},
-                  ${lodash.capitalize(
-                    faker.lorem.words(1 + Math.floor(Math.random() * 10))
-                  )},
-                  ${Math.floor(Math.random() * 10) + 2},
-                  ${
-                    conversationTypes[
-                      Math.random() < 0.7 ? 1 : Math.random() < 0.7 ? 0 : 2
-                    ]
-                  },
-                  ${Math.random() < 0.05 ? new Date().toISOString() : null},
-                  ${Math.random() < 0.25 ? new Date().toISOString() : null}
-                )
-                RETURNING *
+                SELECT * FROM "conversations" WHERE "id" = ${Number(
+                  database.run(
+                    sql`
+                      INSERT INTO "conversations" (
+                        "course",
+                        "reference",
+                        "title",
+                        "nextMessageReference",
+                        "type",
+                        "pinnedAt",
+                        "staffOnlyAt"
+                      )
+                      VALUES (
+                        ${course.id},
+                        ${String(conversationReference)},
+                        ${lodash.capitalize(
+                          faker.lorem.words(1 + Math.floor(Math.random() * 10))
+                        )},
+                        ${Math.floor(Math.random() * 10) + 2},
+                        ${
+                          conversationTypes[
+                            Math.random() < 0.7
+                              ? 1
+                              : Math.random() < 0.7
+                              ? 0
+                              : 2
+                          ]
+                        },
+                        ${
+                          Math.random() < 0.05 ? new Date().toISOString() : null
+                        },
+                        ${
+                          Math.random() < 0.25 ? new Date().toISOString() : null
+                        }
+                      )
+                    `
+                  ).lastInsertRowid
+                )}
               `
             )!;
-            database.run(
-              sql`
-                INSERT INTO "conversationsSearch" ("rowid", "title")
-                VALUES (${conversation.id}, ${conversation.title})
-              `
-            );
             let messageCreatedAt = conversationCreatedAt;
             for (
               let messageReference = 1;
