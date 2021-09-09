@@ -43,8 +43,11 @@
 ### Minor Things We Should Do Right Away
 
 - Remove manual maintenance of FTS indices:
+  - `"usersSearch"`.
   - `"users"`.
+  - `"conversationsSearch"`.
   - `"conversations"`.
+  - `"messagesSearch"`.
   - `"messages"`.
   - https://github.com/JoshuaWise/better-sqlite3/issues/654
 - Include snippets in search results.

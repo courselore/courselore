@@ -3650,22 +3650,25 @@ export default async function courselore({
           })}`
         );
       }
+      // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
       const user = database.get<{ id: number; email: string; name: string }>(
         sql`
-          INSERT INTO "users" ("email", "password", "emailConfirmedAt", "name", "emailNotifications")
-          VALUES (
-            ${req.body.email},
-            ${await argon2.hash(req.body.password, argon2Options)},
-            ${null},
-            ${req.body.name},
-            ${"staff-announcements-and-mentions"}
-          )
-          RETURNING *
+          SELECT * FROM "users" WHERE "id" = ${Number(
+            database.run(
+              sql`
+                INSERT INTO "users" ("email", "password", "emailConfirmedAt", "name", "emailNotifications")
+                VALUES (
+                  ${req.body.email},
+                  ${await argon2.hash(req.body.password, argon2Options)},
+                  ${null},
+                  ${req.body.name},
+                  ${"staff-announcements-and-mentions"}
+                )
+              `
+            ).lastInsertRowid
+          )}
         `
       )!;
-      database.run(
-        sql`INSERT INTO "usersSearch" ("rowid", "name") VALUES (${user.id}, ${user.name})`
-      );
       sendConfirmationEmail(user);
       Session.open(req, res, user.id);
       res.redirect(`${url}${req.query.redirect ?? "/"}`);
@@ -4257,7 +4260,6 @@ export default async function courselore({
       typeof req.body.biography !== "string"
     )
       return next("validation");
-
     database.run(
       sql`
         UPDATE "users"
@@ -4271,20 +4273,11 @@ export default async function courselore({
         WHERE "id" = ${res.locals.user.id}
       `
     );
-    database.run(
-      sql`
-        UPDATE "usersSearch"
-        SET "name" = ${req.body.name}
-        WHERE "rowid" = ${res.locals.user.id}
-      `
-    );
-
     Flash.set(
       req,
       res,
       html`<div class="flash--green">Profile updated successfully.</div>`
     );
-
     res.redirect(`${url}/settings`);
   });
 
@@ -12758,59 +12751,67 @@ ${value}</textarea
           parallelism: 1,
         });
         const card = faker.helpers.contextualCard();
+        // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
         const demonstrationUser = database.get<{ id: number; name: string }>(
           sql`
-            INSERT INTO "users" ("email", "password", "emailConfirmedAt", "name", "avatar", "biography", "emailNotifications")
-            VALUES (
-              ${`${card.username.toLowerCase()}--${cryptoRandomString({
-                length: 10,
-                type: "numeric",
-              })}@courselore.org`},
-              ${password},
-              ${new Date().toISOString()},
-              ${card.name},
-              ${card.avatar},
-              ${faker.lorem.paragraph()},
-              ${"staff-announcements-and-mentions"}
-            )
-            RETURNING *
+            SELECT * FROM "users" WHERE "id" = ${Number(
+              database.run(
+                sql`
+                  INSERT INTO "users" ("email", "password", "emailConfirmedAt", "name", "avatar", "biography", "emailNotifications")
+                  VALUES (
+                    ${`${card.username.toLowerCase()}--${cryptoRandomString({
+                      length: 10,
+                      type: "numeric",
+                    })}@courselore.org`},
+                    ${password},
+                    ${new Date().toISOString()},
+                    ${card.name},
+                    ${card.avatar},
+                    ${faker.lorem.paragraph()},
+                    ${"staff-announcements-and-mentions"}
+                  )
+                `
+              ).lastInsertRowid
+            )}
           `
         )!;
-        database.run(
-          sql`INSERT INTO "usersSearch" ("rowid", "name") VALUES (${demonstrationUser.id}, ${demonstrationUser.name})`
-        );
 
         const users = [...new Array(400)].map((_) => {
           const card = faker.helpers.contextualCard();
+          // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
           const user = database.get<{
             id: number;
             email: string;
             name: string;
           }>(
             sql`
-              INSERT INTO "users" ("email", "password", "emailConfirmedAt", "name", "avatar", "biography", "emailNotifications")
-              VALUES (
-                ${`${card.username}--${cryptoRandomString({
-                  length: 10,
-                  type: "numeric",
-                })}@courselore.org`},
-                ${password},
-                ${new Date().toISOString()},
-                ${card.name},
-                ${Math.random() < 0.6 ? card.avatar : null},
-                ${Math.random() < 0.3 ? faker.lorem.paragraph() : null},
-                ${
-                  userEmailNotificationses[
-                    Math.floor(Math.random() * userEmailNotificationses.length)
-                  ]
-                }
-              )
-              RETURNING *
+              SELECT * FROM "users" WHERE "id" = ${Number(
+                database.run(
+                  sql`
+                    INSERT INTO "users" ("email", "password", "emailConfirmedAt", "name", "avatar", "biography", "emailNotifications")
+                    VALUES (
+                      ${`${card.username}--${cryptoRandomString({
+                        length: 10,
+                        type: "numeric",
+                      })}@courselore.org`},
+                      ${password},
+                      ${new Date().toISOString()},
+                      ${card.name},
+                      ${Math.random() < 0.6 ? card.avatar : null},
+                      ${Math.random() < 0.3 ? faker.lorem.paragraph() : null},
+                      ${
+                        userEmailNotificationses[
+                          Math.floor(
+                            Math.random() * userEmailNotificationses.length
+                          )
+                        ]
+                      }
+                    )
+                  `
+                ).lastInsertRowid
+              )}
             `
           )!;
-          database.run(
-            sql`INSERT INTO "usersSearch" ("rowid", "name") VALUES (${user.id}, ${user.name})`
-          );
           return user;
         });
 
