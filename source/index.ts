@@ -90,7 +90,7 @@ export default async function courselore({
       email: null,
       name: "Ghost",
       avatar: null,
-      biography: "I’m no longer enrolled in the course.",
+      biography: "This person is no longer enrolled in the course.",
     },
     reference: null,
     role: null,
