@@ -46,6 +46,7 @@
   - `"users"`.
   - `"conversations"`.
   - `"messages"`.
+  - https://github.com/JoshuaWise/better-sqlite3/issues/654
 - Include snippets in search results.
   ```sql
   SELECT "conversations"."id",
