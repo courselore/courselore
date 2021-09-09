@@ -43,6 +43,7 @@
 ### Minor Things We Should Do Right Away
 
 - Include snippets in search results.
+
   ```sql
   SELECT "conversations"."id",
         "conversations"."reference",
@@ -78,6 +79,9 @@
   GROUP BY "conversations"."id"
   ORDER BY min(coalesce("conversationsSearchResult"."rank", 0), coalesce(min("messagesSearchResult"."rank"), 0)) ASC;
   ```
+
+- Include users in search.
+- More search and filters (conversation type, pinned or not, and so forth).
 - Consistent colors on things like pins.
   - `bi-pin`.
   - `bi-award`.
