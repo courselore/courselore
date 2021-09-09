@@ -4921,7 +4921,8 @@ export default async function courselore({
               res.locals.tagFilter === undefined
                 ? sql``
                 : sql`
-                    JOIN "taggings" ON "conversations"."id" = "taggings"."conversation"
+                    JOIN "taggings" ON "conversations"."id" = "taggings"."conversation" AND
+                                       "taggings"."tag" = ${res.locals.tagFilter.id}
                   `
             }
             WHERE "conversations"."course" = ${res.locals.course.id}
@@ -4934,13 +4935,6 @@ export default async function courselore({
                     "messagesSearch"."rank" IS NOT NULL
                   )
                 `
-            }
-            $${
-              res.locals.tagFilter === undefined
-                ? sql``
-                : sql`
-                    AND "taggings"."tag" = ${res.locals.tagFilter.id}
-                  `
             }
             $${
               res.locals.enrollment.role !== "staff"
