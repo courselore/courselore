@@ -42,7 +42,6 @@
 
 ### Minor Things We Should Do Right Away
 
-- When a conversation is deleted, its messages are deleted via cascade. Does this fire the trigger which will delete the `messageSearch` rows? (:12272)
 - Include snippets in search results.
   ```sql
   SELECT "conversations"."id",
