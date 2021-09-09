@@ -141,15 +141,15 @@ export default async function courselore({
       CREATE TABLE "emailConfirmations" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "user" INTEGER NOT NULL UNIQUE REFERENCES "users" ON DELETE CASCADE,
-        "nonce" TEXT NOT NULL UNIQUE
+        "nonce" TEXT NOT NULL UNIQUE,
+        "user" INTEGER NOT NULL UNIQUE REFERENCES "users" ON DELETE CASCADE
       );
 
       CREATE TABLE "passwordResets" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "user" INTEGER NOT NULL UNIQUE REFERENCES "users" ON DELETE CASCADE,
-        "nonce" TEXT NOT NULL UNIQUE
+        "nonce" TEXT NOT NULL UNIQUE,
+        "user" INTEGER NOT NULL UNIQUE REFERENCES "users" ON DELETE CASCADE
       );
 
       CREATE TABLE "sessions" (
@@ -266,6 +266,7 @@ export default async function courselore({
         "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
         UNIQUE ("message", "enrollment") ON CONFLICT IGNORE
       );
+      CREATE INDEX "readingsMessageIndex" ON "readings" ("message");
 
       CREATE TABLE "endorsements" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -304,6 +305,7 @@ export default async function courselore({
         UNIQUE ("conversation", "tag")
       );
       CREATE INDEX "taggingsConversationIndex" ON "taggings" ("conversation");
+      CREATE INDEX "taggingsTagIndex" ON "taggings" ("tag");
     `
   );
 

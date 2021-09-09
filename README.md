@@ -228,7 +228,7 @@
   - https://github.com/TypeStrong/ts-node/issues/1007
   - https://jestjs.io/docs/en/ecmascript-modules
 - Use `Cache-control: no-store`.
-- Database indices.
+- Database indices: Check every `SELECT` to make sure they aren’t causing full table scans.
 - Graceful HTTP shutdown
   ```js
   process.on("SIGTERM", () => {
