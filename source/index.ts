@@ -121,11 +121,22 @@ export default async function courselore({
         "biography" TEXT NULL,
         "emailNotifications" TEXT NOT NULL
       );
-
       CREATE VIRTUAL TABLE "usersSearch" USING fts5 (
+        content = "users",
+        content_rowid = "id",
         "name",
         tokenize = 'porter'
       );
+      CREATE TRIGGER "usersSearchInsert" AFTER INSERT ON "users" BEGIN
+        INSERT INTO "usersSearch" ("rowid", "name") VALUES ("new"."id", "new"."name");
+      END;
+      CREATE TRIGGER "usersSearchUpdate" AFTER UPDATE ON "users" BEGIN
+        INSERT INTO "usersSearch" ("usersSearch", "rowid", "name") VALUES ('delete', "old"."id", "old"."name");
+        INSERT INTO "usersSearch" ("rowid", "name") VALUES ("new"."id", "new"."name");
+      END;
+      CREATE TRIGGER "usersSearchDelete" AFTER DELETE ON "users" BEGIN
+        INSERT INTO "usersSearch" ("usersSearch", "rowid", "name") VALUES ('delete', "old"."id", "old"."name");
+      END;
 
       CREATE TABLE "emailConfirmations" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,

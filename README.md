@@ -42,6 +42,10 @@
 
 ### Minor Things We Should Do Right Away
 
+- Remove manual maintenance of FTS indices:
+  - `"users"`.
+  - `"conversations"`.
+  - `"messages"`.
 - Include snippets in search results.
   ```sql
   SELECT "conversations"."id",
