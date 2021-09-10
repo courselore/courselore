@@ -118,15 +118,14 @@
   - Chat or not.
 - Search in all courses you’re taking (for example, search for `deadline extension`) (see how GitHub does it).
 - Dropdown helpers to pick mentions & references (consider using https://github.com/zurb/tribute).
-- Include snippets of search results. This is challenging because the contents of messages are Markdown, and the snippet must be aware of the parsing structure. Maybe the solution is to store the parsed Markdown `.textContent` instead of the Markdown itself on the search tables.
 
-### Text Editor
+### Markdown Editor
 
 - Templates for questions (like GitHub Issues).
 - Reuse answers.
 - Paste tables from Excel and have them formatted as Markdown tables.
 
-### Text Processor
+### Markdown Processor
 
 - Emoji with the `:smile:` form.
 - Proxy insecure content: https://github.com/atmos/camo
