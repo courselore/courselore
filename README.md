@@ -42,24 +42,24 @@
 
 ### Minor Things We Should Do Right Away
 
+- Test sliding session (touch).
 - Include snippets in search results.
 - Include users in search.
+- Filters (for example, by conversation type).
 - Consistent colors on things like pins.
   - `bi-pin`.
   - `bi-award`.
   - `bi-eye-slash`.
   - `conversationTypeIcon`.
   - `bi-hand-thumbs-up`.
-- Filters (for example, by conversation type).
 - Improve the presentation of anonymity for people who get to see the true identity of the person (the person themselves, and staff).
 - Let staff change the conversation from staff-only to regular.
-- Instead of calling `await courselore()` and then updating the settings, use function arguments.
 - Fix private questions from students to staff. (Don’t `WHERE` away conversations if you’ve been part of it.)
+- Remove reference to anonymous student in the reply button.
 - Mathematics, code, and possibly other things are overflowing in small screens.
 - Improve display of endorsements.
 - Manage answer badges more intelligently (answered at all, answered by staff).
 - Let original question asker approve an answer.
-- Test sliding session (touch).
 - Test interface with weird data: Long text, long words, too many tags, and so forth.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
 - Come up with a better term than “Demonstration”, which may imply a paid product.
