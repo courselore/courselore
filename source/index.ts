@@ -9832,6 +9832,27 @@ ${value}</textarea
     }
   );
 
+  app.post<
+    { courseReference: string },
+    any,
+    { content?: string },
+    {},
+    IsEnrolledInCourseMiddlewareLocals
+  >(
+    "/courses/:courseReference/markdown-editor/preview",
+    ...isEnrolledInCourseMiddleware,
+    (req, res, next) => {
+      if (
+        typeof req.body.content !== "string" ||
+        req.body.content.trim() === ""
+      )
+        return next("validation");
+      res.send(
+        markdownProcessor({ req, res, markdown: req.body.content }).html
+      );
+    }
+  );
+
   app.get<
     { courseReference: string },
     HTML,
