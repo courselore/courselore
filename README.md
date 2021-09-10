@@ -42,7 +42,6 @@
 
 ### Minor Things We Should Do Right Away
 
-- Move `res.locals.conversations` out of the middleware and closer to the template where it’s necessary?
 - Include snippets in search results.
 
   ```sql
