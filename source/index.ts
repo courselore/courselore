@@ -13,6 +13,7 @@ import { Database, sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
 import { css, extractInlineStyles } from "@leafac/css";
 import javascript from "tagged-template-noop";
+type Markdown = string;
 import markdown from "tagged-template-noop";
 import dedent from "dedent";
 
@@ -9705,25 +9706,24 @@ ${value}</textarea
       .use(rehypeStringify);
 
     // TODO: Would making this async speed things up in any way?
-    return (
-      text: string,
-      {
-        req,
-        res,
-      }: {
-        req?: express.Request<
-          {},
-          any,
-          {},
-          {},
-          IsEnrolledInCourseMiddlewareLocals
-        >;
-        res?: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
-      } = {}
-    ): { html: HTML; text: string; mentions: string[] } => {
+    return ({
+      req,
+      res,
+      markdown,
+    }: {
+      req: express.Request<
+        {},
+        any,
+        {},
+        {},
+        Partial<IsEnrolledInCourseMiddlewareLocals>
+      >;
+      res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>;
+      markdown: Markdown;
+    }): { html: HTML; text: string; mentions: string[] } => {
       const document = JSDOM.fragment(html`
         <div class="markdown">
-          $${unifiedProcessor.processSync(text).toString()}
+          $${unifiedProcessor.processSync(markdown).toString()}
         </div>
       `);
       for (const element of document.querySelectorAll("li, td, th, dt, dd"))
@@ -9761,7 +9761,7 @@ ${value}</textarea
       }
       // TODO: Actually compute mentions
       const mentions: string[] = [];
-      if (res !== undefined)
+      if (res.locals.course !== undefined)
         (function processReferencesAndMentions(node: Node): void {
           switch (node.nodeType) {
             case node.TEXT_NODE:
@@ -9780,7 +9780,7 @@ ${value}</textarea
                   // TODO: Check that the conversation/message exists and is accessible by user.
                   // TODO: Do a tooltip to reveal what would be under the link.
                   return html`<a
-                    href="${url}/courses/${res.locals.course
+                    href="${url}/courses/${res.locals.course!
                       .reference}/conversations/${conversation}${message ===
                     undefined
                       ? ""
@@ -9815,7 +9815,9 @@ ${value}</textarea
         return next("validation");
 
       // TODO: Pass {req, res} here to enable rendering of mentions and references.
-      res.send(markdownProcessor(req.body.content).html);
+      res.send(
+        markdownProcessor({ req, res, markdown: req.body.content }).html
+      );
     }
   );
 
@@ -10156,7 +10158,11 @@ ${value}</textarea
       )
         return next("validation");
 
-      const processedContent = markdownProcessor(req.body.content);
+      const processedContent = markdownProcessor({
+        req,
+        res,
+        markdown: req.body.content,
+      });
 
       database.run(
         sql`
@@ -10273,7 +10279,7 @@ ${value}</textarea
           .join(", "),
         subject: `${res.locals.course.name} · ${req.body.title}`,
         html: html`
-          ${markdownProcessor(req.body.content).html}
+          ${markdownProcessor({ req, res, markdown: req.body.content }).html}
 
           <hr />
 
@@ -11919,9 +11925,10 @@ ${value}</textarea
                               this.dropdownMenu.show();
                             `}"
                           >
-                            $${markdownProcessor(message.content, {
+                            $${markdownProcessor({
                               req,
                               res,
+                              markdown: message.content,
                             }).html}
                           </div>
                           <div hidden>
@@ -12358,7 +12365,11 @@ ${value}</textarea
       )
         return next("validation");
 
-      const processedContent = markdownProcessor(req.body.content);
+      const processedContent = markdownProcessor({
+        req,
+        res,
+        markdown: req.body.content,
+      });
 
       database.run(
         sql`
@@ -12429,7 +12440,11 @@ ${value}</textarea
       if (typeof req.body.content === "string")
         if (req.body.content.trim() === "") return next("validation");
         else {
-          const processedContent = markdownProcessor(req.body.content);
+          const processedContent = markdownProcessor({
+            req,
+            res,
+            markdown: req.body.content,
+          });
           database.run(
             sql`
               UPDATE "messages"
@@ -13087,7 +13102,11 @@ ${value}</textarea
                 1 + Math.floor(Math.random() * 5),
                 "\n\n"
               );
-              const processedContent = markdownProcessor(content);
+              const processedContent = markdownProcessor({
+                req,
+                res,
+                markdown: content,
+              });
               database.run(
                 sql`
                   INSERT INTO "messages" (
