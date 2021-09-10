@@ -8866,7 +8866,11 @@ export default async function courselore({
                 loading.hidden = false;
                 preview.hidden = true;
                 preview.innerHTML = await (
-                  await fetch("${url}/markdown-editor/preview", {
+                  await fetch("${url}${
+              res.locals.course === undefined
+                ? ""
+                : `/courses/${res.locals.course.reference}`
+            }/markdown-editor/preview", {
                     method: "POST",
                     body: new URLSearchParams({ content: textarea.value }),
                   })
