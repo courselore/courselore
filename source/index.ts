@@ -479,7 +479,7 @@ export default async function courselore({
                   Math.round(value),
                   unit
                 );
-                window.setTimeout(update, 10000);
+                window.setTimeout(update, 10 * 1000);
               })();
             }
 
@@ -2702,7 +2702,48 @@ export default async function courselore({
     },
   ];
 
-  // TODO: Periodic jobs to clean stale sessions & flashes.
+  const Flash = {
+    maxAge: 5 * 60 * 1000,
+
+    set(
+      req: express.Request<{}, any, {}, {}, {}>,
+      res: express.Response<any, {}>,
+      content: HTML
+    ): void {
+      const flash = database.get<{ nonce: string }>(
+        sql`
+          INSERT INTO "flashes" ("nonce", "content")
+          VALUES (
+            ${cryptoRandomString({ length: 10, type: "alphanumeric" })},
+            ${content}
+          )
+          RETURNING *
+        `
+      )!;
+      req.cookies.flash = flash.nonce;
+      res.cookie("flash", flash.nonce, {
+        ...cookieOptions,
+        maxAge: Flash.maxAge,
+      });
+    },
+
+    get(
+      req: express.Request<{}, any, {}, {}, {}>,
+      res: express.Response<any, {}>
+    ): HTML | undefined {
+      const flash = database.get<{
+        content: HTML;
+      }>(
+        sql`SELECT "content" FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
+      );
+      database.run(
+        sql`DELETE FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
+      );
+      delete req.cookies.flash;
+      res.clearCookie("flash", cookieOptions);
+      return flash?.content;
+    },
+  };
 
   const Session = {
     maxAge: 180 * 24 * 60 * 60 * 1000,
@@ -2766,49 +2807,6 @@ export default async function courselore({
       );
       delete req.cookies.session;
       res.clearCookie("session", cookieOptions);
-    },
-  };
-
-  const Flash = {
-    maxAge: 5 * 60 * 1000,
-
-    set(
-      req: express.Request<{}, any, {}, {}, {}>,
-      res: express.Response<any, {}>,
-      content: HTML
-    ): void {
-      const flash = database.get<{ nonce: string }>(
-        sql`
-          INSERT INTO "flashes" ("nonce", "content")
-          VALUES (
-            ${cryptoRandomString({ length: 10, type: "alphanumeric" })},
-            ${content}
-          )
-          RETURNING *
-        `
-      )!;
-      req.cookies.flash = flash.nonce;
-      res.cookie("flash", flash.nonce, {
-        ...cookieOptions,
-        maxAge: Flash.maxAge,
-      });
-    },
-
-    get(
-      req: express.Request<{}, any, {}, {}, {}>,
-      res: express.Response<any, {}>
-    ): HTML | undefined {
-      const flash = database.get<{
-        content: HTML;
-      }>(
-        sql`SELECT "content" FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
-      );
-      database.run(
-        sql`DELETE FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
-      );
-      delete req.cookies.flash;
-      res.clearCookie("flash", cookieOptions);
-      return flash?.content;
     },
   };
 
