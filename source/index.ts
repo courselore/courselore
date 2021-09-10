@@ -9826,8 +9826,6 @@ ${value}</textarea
         req.body.content.trim() === ""
       )
         return next("validation");
-
-      // TODO: Pass {req, res} here to enable rendering of mentions and references.
       res.send(
         markdownProcessor({ req, res, markdown: req.body.content }).html
       );
