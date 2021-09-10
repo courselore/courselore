@@ -2739,6 +2739,8 @@ export default async function courselore({
   };
 
   const Flash = {
+    maxAge: 5 * 60 * 1000,
+
     set(
       req: express.Request<{}, any, {}, {}, {}>,
       res: express.Response<any, {}>,
@@ -2757,7 +2759,7 @@ export default async function courselore({
       req.cookies.flash = flash.nonce;
       res.cookie("flash", flash.nonce, {
         ...cookieOptions,
-        maxAge: 5 * 60 * 1000,
+        maxAge: Flash.maxAge,
       });
     },
 
