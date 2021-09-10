@@ -310,6 +310,16 @@ export default async function courselore({
       CREATE INDEX "taggingsTagIndex" ON "taggings" ("tag");
     `
   );
+  setTimeout(function deleteExpiredData() {
+    database.run(
+      sql`
+        DELETE FROM "sessions" WHERE datetime("createdAt") < datetime(${new Date(
+          Date.now() - Session.maxAge
+        ).toISOString()})
+      `
+    );
+    setTimeout(deleteExpiredData, 24 * 60 * 60 * 1000);
+  }, 0);
 
   const baseLayout = ({
     req,
