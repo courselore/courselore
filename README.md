@@ -42,7 +42,6 @@
 
 ### Minor Things We Should Do Right Away
 
-- Test sliding session (touch).
 - Include snippets in search results.
 - Include users in search.
 - Filters (for example, by conversation type).
