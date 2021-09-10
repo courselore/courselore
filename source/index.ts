@@ -4270,6 +4270,7 @@ export default async function courselore({
                   name: "biography",
                   value: res.locals.user.biography ?? "",
                   required: false,
+                  courseButtons: false,
                 })}
               </div>
 
@@ -8761,10 +8762,12 @@ export default async function courselore({
     name = "content",
     value = "",
     required = true,
+    courseButtons = true,
   }: {
     name?: string;
     value?: string;
     required?: boolean;
+    courseButtons?: boolean;
   } = {}): HTML => html`
     <div class="text-editor">
       <div
@@ -9366,60 +9369,64 @@ export default async function courselore({
                 <i class="bi bi-calculator-fill"></i>
               </button>
             </div>
-            <div>
-              <button
-                type="button"
-                class="button button--tight button--transparent"
-                data-ondomcontentloaded="${javascript`
-                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+u", () => { this.click(); return false; });
-                  tippy(this, {
-                    content: ${JSON.stringify(html`
-                      Mention User
-                      <span class="keyboard-shortcut">
-                        (Ctrl+Shift+U or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-shift"></i
-                          ><i class="bi bi-command"></i>U</span
-                        >)
-                      </span>
-                    `)},
-                    touch: false,
-                    allowHTML: true,
-                  });
-                `}"
-                onclick="${javascript`
-                  alert("TODO: Mention User");
-                `}"
-              >
-                <i class="bi bi-at"></i>
-              </button>
-              <button
-                type="button"
-                class="button button--tight button--transparent"
-                data-ondomcontentloaded="${javascript`
-                  Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+j", () => { this.click(); return false; });
-                  tippy(this, {
-                    content: ${JSON.stringify(html`
-                      Refer to Conversation or Message
-                      <span class="keyboard-shortcut">
-                        (Ctrl+Shift+J or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-shift"></i
-                          ><i class="bi bi-command"></i>J</span
-                        >)
-                      </span>
-                    `)},
-                    touch: false,
-                    allowHTML: true,
-                  });
-                `}"
-                onclick="${javascript`
-                  alert("TODO: Refer to Conversation or Message");
-                `}"
-              >
-                <i class="bi bi-hash"></i>
-              </button>
-            </div>
+            $${courseButtons
+              ? html`
+                  <div>
+                    <button
+                      type="button"
+                      class="button button--tight button--transparent"
+                      data-ondomcontentloaded="${javascript`
+                        Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+u", () => { this.click(); return false; });
+                        tippy(this, {
+                          content: ${JSON.stringify(html`
+                            Mention User
+                            <span class="keyboard-shortcut">
+                              (Ctrl+Shift+U or
+                              <span class="keyboard-shortcut--cluster"
+                                ><i class="bi bi-shift"></i
+                                ><i class="bi bi-command"></i>U</span
+                              >)
+                            </span>
+                          `)},
+                          touch: false,
+                          allowHTML: true,
+                        });
+                      `}"
+                      onclick="${javascript`
+                        alert("TODO: Mention User");
+                      `}"
+                    >
+                      <i class="bi bi-at"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="button button--tight button--transparent"
+                      data-ondomcontentloaded="${javascript`
+                        Mousetrap(this.closest(".text-editor").querySelector('[name="content"]')).bind("mod+shift+j", () => { this.click(); return false; });
+                        tippy(this, {
+                          content: ${JSON.stringify(html`
+                            Refer to Conversation or Message
+                            <span class="keyboard-shortcut">
+                              (Ctrl+Shift+J or
+                              <span class="keyboard-shortcut--cluster"
+                                ><i class="bi bi-shift"></i
+                                ><i class="bi bi-command"></i>J</span
+                              >)
+                            </span>
+                          `)},
+                          touch: false,
+                          allowHTML: true,
+                        });
+                      `}"
+                      onclick="${javascript`
+                        alert("TODO: Refer to Conversation or Message");
+                      `}"
+                    >
+                      <i class="bi bi-hash"></i>
+                    </button>
+                  </div>
+                `
+              : html``}
             <div>
               <button
                 type="button"
