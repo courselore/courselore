@@ -9406,13 +9406,13 @@ export default async function courselore({
                             touch: false,
                             allowHTML: true,
                           });
-                          const mentionUserSearch = this.nextElementSibling.firstElementChild
+                          const mentionUserSearch = this.nextElementSibling.firstElementChild;
                           tippy(this, {
                             content: mentionUserSearch,
                             trigger: "click",
                             interactive: true,
                             onShown: () => {
-                              mentionUserSearch.querySelector('[name="name"]').focus();
+                              mentionUserSearch.querySelector(".mention-user-search--name").focus();
                             },
                           });        
                         `}"
@@ -9420,13 +9420,14 @@ export default async function courselore({
                         <i class="bi bi-at"></i>
                       </button>
                       <div hidden>
-                        <div class="mentionUserSearch">
+                        <div class="mention-user-search">
                           <input
                             type="text"
                             placeholder="Name…"
                             autocomplete="off"
-                            class="input--text"
+                            class="mention-user-search--name input--text"
                           />
+                          <div class="mention-user-search--results"></div>
                         </div>
                       </div>
                     </div>
