@@ -2738,11 +2738,10 @@ export default async function courselore({
 
   const Flash = {
     set(
-      req: express.Request<{}, any, {}, {}, ApplicationMiddlewareLocals>,
-      res: express.Response<any, ApplicationMiddlewareLocals>,
+      req: express.Request<{}, any, {}, {}, {}>,
+      res: express.Response<any, {}>,
       content: HTML
     ): void {
-      res.locals.flash = content;
       const flash = database.get<{ nonce: string }>(
         sql`
           INSERT INTO "flashes" ("nonce", "content")
@@ -2753,6 +2752,7 @@ export default async function courselore({
           RETURNING *
         `
       )!;
+      req.cookies.flash = flash.nonce;
       res.cookie("flash", flash.nonce, {
         ...cookieOptions,
         maxAge: 5 * 60 * 1000,
@@ -2760,8 +2760,8 @@ export default async function courselore({
     },
 
     get(
-      req: express.Request<{}, any, {}, {}, ApplicationMiddlewareLocals>,
-      res: express.Response<any, ApplicationMiddlewareLocals>
+      req: express.Request<{}, any, {}, {}, {}>,
+      res: express.Response<any, {}>
     ): HTML | undefined {
       const flash = database.get<{
         content: HTML;
@@ -2772,15 +2772,11 @@ export default async function courselore({
         sql`DELETE FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
       );
       res.clearCookie("flash", cookieOptions);
-      return res.locals.flash ?? flash?.content;
+      return flash?.content;
     },
   };
 
-  interface ApplicationMiddlewareLocals {
-    flash?: HTML;
-  }
-
-  interface IsSignedOutMiddlewareLocals extends ApplicationMiddlewareLocals {}
+  interface IsSignedOutMiddlewareLocals {}
   const isSignedOutMiddleware: express.RequestHandler<
     {},
     any,
@@ -2794,7 +2790,7 @@ export default async function courselore({
     },
   ];
 
-  interface IsSignedInMiddlewareLocals extends ApplicationMiddlewareLocals {
+  interface IsSignedInMiddlewareLocals {
     user: {
       id: number;
       email: string;
@@ -5318,8 +5314,7 @@ export default async function courselore({
     }
   );
 
-  interface InvitationExistsMiddlewareLocals
-    extends ApplicationMiddlewareLocals {
+  interface InvitationExistsMiddlewareLocals {
     invitation: {
       id: number;
       expiresAt: string | null;
