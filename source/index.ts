@@ -9426,6 +9426,34 @@ export default async function courselore({
                             placeholder="Name…"
                             autocomplete="off"
                             class="mention-user-search--name input--text"
+                            data-ondomcontentloaded="${javascript`
+                              let isUpdatingSearchResults = false;
+                              let shouldUpdateSearchResultsAgain = false;
+                              this.updateSearchResults = async () => {
+                                if (isUpdatingSearchResults) {
+                                  shouldUpdateSearchResultsAgain = true;
+                                  return;
+                                }
+                                shouldUpdateSearchResultsAgain = false;
+                                isUpdatingSearchResults = true;
+                                this.closest(".mention-user-search").querySelector(
+                                  ".mention-user-search--results"
+                                ).innerHTML = await (
+                                  await fetch(
+                                    "${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search",
+                                    {
+                                      method: "POST",
+                                      body: new URLSearchParams({ name: this.value }),
+                                    }
+                                  )
+                                ).text();
+                                isUpdatingSearchResults = false;
+                                if (shouldUpdateSearchResultsAgain) this.updateSearchResults();
+                              };
+                            `}"
+                            oninput="${javascript`
+                              this.updateSearchResults();
+                            `}"
                           />
                           <div class="mention-user-search--results"></div>
                         </div>
