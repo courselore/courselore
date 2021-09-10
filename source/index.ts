@@ -9386,32 +9386,54 @@ export default async function courselore({
             $${res.locals.course !== undefined
               ? html`
                   <div>
-                    <button
-                      type="button"
-                      class="button button--tight button--transparent"
-                      data-ondomcontentloaded="${javascript`
-                        Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+shift+u", () => { this.click(); return false; });
-                        tippy(this, {
-                          content: ${JSON.stringify(html`
-                            Mention User
-                            <span class="keyboard-shortcut">
-                              (Ctrl+Shift+U or
-                              <span class="keyboard-shortcut--cluster"
-                                ><i class="bi bi-shift"></i
-                                ><i class="bi bi-command"></i>U</span
-                              >)
-                            </span>
-                          `)},
-                          touch: false,
-                          allowHTML: true,
-                        });
-                      `}"
-                      onclick="${javascript`
-                        alert("TODO: Mention User");
-                      `}"
-                    >
-                      <i class="bi bi-at"></i>
-                    </button>
+                    <div>
+                      <button
+                        type="button"
+                        class="button button--tight button--transparent"
+                        data-ondomcontentloaded="${javascript`
+                          Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+shift+u", () => { this.click(); return false; });
+                          tippy(this, {
+                            content: ${JSON.stringify(html`
+                              Mention User
+                              <span class="keyboard-shortcut">
+                                (Ctrl+Shift+U or
+                                <span class="keyboard-shortcut--cluster"
+                                  ><i class="bi bi-shift"></i
+                                  ><i class="bi bi-command"></i>U</span
+                                >)
+                              </span>
+                            `)},
+                            touch: false,
+                            allowHTML: true,
+                          });
+                          tippy(this, {
+                            content: this.nextElementSibling.firstElementChild,
+                            trigger: "click",
+                            interactive: true,
+                          });        
+                        `}"
+                      >
+                        <i class="bi bi-at"></i>
+                      </button>
+                      <div hidden>
+                        <div class="mentionUserSearch">
+                          <form
+                            method="POST"
+                            action="${url}/courses/${res.locals.course
+                              .reference}/markdown-editor/mention-user-search"
+                          >
+                            <input
+                              type="text"
+                              name="name"
+                              placeholder="User…"
+                              required
+                              autocomplete="off"
+                              class="input--text"
+                            />
+                          </form>
+                        </div>
+                      </div>
+                    </div>
                     <button
                       type="button"
                       class="button button--tight button--transparent"
