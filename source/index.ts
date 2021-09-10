@@ -117,6 +117,7 @@ export default async function courselore({
         "password" TEXT NOT NULL,
         "emailConfirmedAt" TEXT NULL,
         "name" TEXT NOT NULL,
+        "nameSearch" TEXT NOT NULL,
         "avatar" TEXT NULL,
         "biography" TEXT NULL,
         "emailNotifications" TEXT NOT NULL
@@ -124,18 +125,18 @@ export default async function courselore({
       CREATE VIRTUAL TABLE "usersSearch" USING fts5 (
         content = "users",
         content_rowid = "id",
-        "name",
+        "nameSearch",
         tokenize = 'porter'
       );
       CREATE TRIGGER "usersSearchInsert" AFTER INSERT ON "users" BEGIN
-        INSERT INTO "usersSearch" ("rowid", "name") VALUES ("new"."id", "new"."name");
+        INSERT INTO "usersSearch" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
       END;
       CREATE TRIGGER "usersSearchUpdate" AFTER UPDATE ON "users" BEGIN
-        INSERT INTO "usersSearch" ("usersSearch", "rowid", "name") VALUES ('delete', "old"."id", "old"."name");
-        INSERT INTO "usersSearch" ("rowid", "name") VALUES ("new"."id", "new"."name");
+        INSERT INTO "usersSearch" ("usersSearch", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
+        INSERT INTO "usersSearch" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
       END;
       CREATE TRIGGER "usersSearchDelete" AFTER DELETE ON "users" BEGIN
-        INSERT INTO "usersSearch" ("usersSearch", "rowid", "name") VALUES ('delete', "old"."id", "old"."name");
+        INSERT INTO "usersSearch" ("usersSearch", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
       END;
 
       CREATE TABLE "emailConfirmations" (
@@ -3657,12 +3658,20 @@ export default async function courselore({
           SELECT * FROM "users" WHERE "id" = ${Number(
             database.run(
               sql`
-                INSERT INTO "users" ("email", "password", "emailConfirmedAt", "name", "emailNotifications")
+                INSERT INTO "users" (
+                  "email",
+                  "password",
+                  "emailConfirmedAt",
+                  "name",
+                  "nameSearch",
+                  "emailNotifications"
+                )
                 VALUES (
                   ${req.body.email},
                   ${await argon2.hash(req.body.password, argon2Options)},
                   ${null},
                   ${req.body.name},
+                  ${html`${req.body.name}`},
                   ${"staff-announcements-and-mentions"}
                 )
               `
@@ -4265,6 +4274,7 @@ export default async function courselore({
       sql`
         UPDATE "users"
         SET "name" = ${req.body.name},
+            "nameSearch" = ${html`${req.body.name}`},
             "avatar" = ${
               req.body.avatar.trim() === "" ? null : req.body.avatar
             },
@@ -12744,7 +12754,16 @@ ${value}</textarea
             SELECT * FROM "users" WHERE "id" = ${Number(
               database.run(
                 sql`
-                  INSERT INTO "users" ("email", "password", "emailConfirmedAt", "name", "avatar", "biography", "emailNotifications")
+                  INSERT INTO "users" (
+                    "email",
+                    "password",
+                    "emailConfirmedAt",
+                    "name",
+                    "nameSearch",
+                    "avatar",
+                    "biography",
+                    "emailNotifications"
+                  )
                   VALUES (
                     ${`${card.username.toLowerCase()}--${cryptoRandomString({
                       length: 10,
@@ -12753,6 +12772,7 @@ ${value}</textarea
                     ${password},
                     ${new Date().toISOString()},
                     ${card.name},
+                    ${html`${card.name}`},
                     ${card.avatar},
                     ${faker.lorem.paragraph()},
                     ${"staff-announcements-and-mentions"}
@@ -12775,7 +12795,16 @@ ${value}</textarea
               SELECT * FROM "users" WHERE "id" = ${Number(
                 database.run(
                   sql`
-                    INSERT INTO "users" ("email", "password", "emailConfirmedAt", "name", "avatar", "biography", "emailNotifications")
+                    INSERT INTO "users" (
+                      "email",
+                      "password",
+                      "emailConfirmedAt",
+                      "name",
+                      "nameSearch",
+                      "avatar",
+                      "biography",
+                      "emailNotifications"
+                    )
                     VALUES (
                       ${`${card.username}--${cryptoRandomString({
                         length: 10,
@@ -12784,6 +12813,7 @@ ${value}</textarea
                       ${password},
                       ${new Date().toISOString()},
                       ${card.name},
+                      ${html`${card.name}`},
                       ${Math.random() < 0.6 ? card.avatar : null},
                       ${Math.random() < 0.3 ? faker.lorem.paragraph() : null},
                       ${
