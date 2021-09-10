@@ -42,8 +42,8 @@
 
 ### Minor Things We Should Do Right Away
 
-- Include snippets in search results.
 - Include users in search.
+- Include snippets in search results.
 - Filters (for example, by conversation type).
 - Consistent colors on things like pins.
   - `bi-pin`.
