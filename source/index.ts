@@ -4268,10 +4268,11 @@ export default async function courselore({
               <div class="label">
                 <p class="label--text">Biography</p>
                 $${markdownEditor({
+                  req,
+                  res,
                   name: "biography",
                   value: res.locals.user.biography ?? "",
                   required: false,
-                  courseButtons: false,
                 })}
               </div>
 
@@ -8760,16 +8761,24 @@ export default async function courselore({
     });
 
   const markdownEditor = ({
+    req,
+    res,
     name = "content",
     value = "",
     required = true,
-    courseButtons = true,
   }: {
+    req: express.Request<
+      {},
+      any,
+      {},
+      {},
+      Partial<IsEnrolledInCourseMiddlewareLocals>
+    >;
+    res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>;
     name?: string;
     value?: string;
     required?: boolean;
-    courseButtons?: boolean;
-  } = {}): HTML => html`
+  }): HTML => html`
     <div class="text-editor">
       <div
         style="${css`
@@ -9370,7 +9379,7 @@ export default async function courselore({
                 <i class="bi bi-calculator-fill"></i>
               </button>
             </div>
-            $${courseButtons
+            $${res.locals.course !== undefined
               ? html`
                   <div>
                     <button
@@ -9879,7 +9888,7 @@ ${value}</textarea
                   />
                 </div>
 
-                $${markdownEditor()}
+                $${markdownEditor({ req, res })}
 
                 <div class="label">
                   <p class="label--text">Type</p>
@@ -12054,6 +12063,8 @@ ${value}</textarea
                               `}"
                             >
                               $${markdownEditor({
+                                req,
+                                res,
                                 value: message.content,
                               })}
 
@@ -12156,7 +12167,7 @@ ${value}</textarea
                   });
                 `}"
               >
-                $${markdownEditor()}
+                $${markdownEditor({ req, res })}
               </div>
 
               <div
