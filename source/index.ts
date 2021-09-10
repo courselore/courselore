@@ -2693,6 +2693,7 @@ export default async function courselore({
           RETURNING *
         `
       )!;
+      req.cookies.session = session.token;
       res.cookie("session", session.token, {
         ...cookieOptions,
         maxAge: Session.maxAge,
@@ -2732,6 +2733,7 @@ export default async function courselore({
       database.run(
         sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies.session}`
       );
+      delete req.cookies.session;
       res.clearCookie("session", cookieOptions);
     },
   };
@@ -2771,6 +2773,7 @@ export default async function courselore({
       database.run(
         sql`DELETE FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
       );
+      delete req.cookies.flash;
       res.clearCookie("flash", cookieOptions);
       return flash?.content;
     },
