@@ -9406,10 +9406,14 @@ export default async function courselore({
                             touch: false,
                             allowHTML: true,
                           });
+                          const mentionUserSearch = this.nextElementSibling.firstElementChild
                           tippy(this, {
-                            content: this.nextElementSibling.firstElementChild,
+                            content: mentionUserSearch,
                             trigger: "click",
                             interactive: true,
+                            onShown: () => {
+                              mentionUserSearch.querySelector('[name="name"]').focus();
+                            },
                           });        
                         `}"
                       >
