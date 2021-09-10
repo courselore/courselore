@@ -9421,20 +9421,12 @@ export default async function courselore({
                       </button>
                       <div hidden>
                         <div class="mentionUserSearch">
-                          <form
-                            method="POST"
-                            action="${url}/courses/${res.locals.course
-                              .reference}/markdown-editor/mention-user-search"
-                          >
-                            <input
-                              type="text"
-                              name="name"
-                              placeholder="User…"
-                              required
-                              autocomplete="off"
-                              class="input--text"
-                            />
-                          </form>
+                          <input
+                            type="text"
+                            placeholder="Name…"
+                            autocomplete="off"
+                            class="input--text"
+                          />
                         </div>
                       </div>
                     </div>
@@ -10139,21 +10131,21 @@ ${value}</textarea
                   <button
                     class="button button--full-width-on-small-screen button--blue"
                     data-ondomcontentloaded="${javascript`
-                    Mousetrap(this.closest("form").querySelector('[name="content"]')).bind("mod+enter", () => { this.click(); return false; });
-                    tippy(this, {
-                      content: ${JSON.stringify(html`
-                        <span class="keyboard-shortcut">
-                          Ctrl+Enter or
-                          <span class="keyboard-shortcut--cluster"
-                            ><i class="bi bi-command"></i
-                            ><i class="bi bi-arrow-return-left"></i
-                          ></span>
-                        </span>
-                      `)},
-                      touch: false,
-                      allowHTML: true,
-                    });
-                  `}"
+                      Mousetrap(this.closest("form").querySelector('[name="content"]')).bind("mod+enter", () => { this.click(); return false; });
+                      tippy(this, {
+                        content: ${JSON.stringify(html`
+                          <span class="keyboard-shortcut">
+                            Ctrl+Enter or
+                            <span class="keyboard-shortcut--cluster"
+                              ><i class="bi bi-command"></i
+                              ><i class="bi bi-arrow-return-left"></i
+                            ></span>
+                          </span>
+                        `)},
+                        touch: false,
+                        allowHTML: true,
+                      });
+                    `}"
                   >
                     <i class="bi bi-chat-left-text"></i>
                     Start Conversation
