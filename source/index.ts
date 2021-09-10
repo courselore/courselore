@@ -235,7 +235,7 @@ export default async function courselore({
         "reference" TEXT NOT NULL,
         "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
         "content" TEXT NOT NULL,
-        "contentText" TEXT NOT NULL,
+        "contentSearch" TEXT NOT NULL,
         "answerAt" TEXT NULL,
         "anonymousAt" TEXT NULL,
         UNIQUE ("conversation", "reference")
@@ -245,18 +245,18 @@ export default async function courselore({
       CREATE VIRTUAL TABLE "messagesSearch" USING fts5(
         content = "messages",
         content_rowid = "id",
-        "contentText",
+        "contentSearch",
         tokenize = 'porter'
       );
       CREATE TRIGGER "messagesSearchInsert" AFTER INSERT ON "messages" BEGIN
-        INSERT INTO "messagesSearch" ("rowid", "contentText") VALUES ("new"."id", "new"."contentText");
+        INSERT INTO "messagesSearch" ("rowid", "contentSearch") VALUES ("new"."id", "new"."contentSearch");
       END;
       CREATE TRIGGER "messagesSearchUpdate" AFTER UPDATE ON "messages" BEGIN
-        INSERT INTO "messagesSearch" ("messagesSearch", "rowid", "contentText") VALUES ('delete', "old"."id", "old"."contentText");
-        INSERT INTO "messagesSearch" ("rowid", "contentText") VALUES ("new"."id", "new"."contentText");
+        INSERT INTO "messagesSearch" ("messagesSearch", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
+        INSERT INTO "messagesSearch" ("rowid", "contentSearch") VALUES ("new"."id", "new"."contentSearch");
       END;
       CREATE TRIGGER "messagesSearchDelete" AFTER DELETE ON "messages" BEGIN
-        INSERT INTO "messagesSearch" ("messagesSearch", "rowid", "contentText") VALUES ('delete', "old"."id", "old"."contentText");
+        INSERT INTO "messagesSearch" ("messagesSearch", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
       END;
 
       CREATE TABLE "readings" (
@@ -10158,7 +10158,7 @@ ${value}</textarea
                   "reference",
                   "authorEnrollment",
                   "content",
-                  "contentText",
+                  "contentSearch",
                   "anonymousAt"
                 )
                 VALUES (
@@ -12324,7 +12324,7 @@ ${value}</textarea
                   "reference",
                   "authorEnrollment",
                   "content",
-                  "contentText",
+                  "contentSearch",
                   "answerAt",
                   "anonymousAt"
                 )
@@ -12378,7 +12378,7 @@ ${value}</textarea
             sql`
               UPDATE "messages"
               SET "content" = ${req.body.content},
-                  "contentText" = ${processedContent.text},
+                  "contentSearch" = ${processedContent.text},
                   "updatedAt" = ${new Date().toISOString()}
               WHERE "id" = ${res.locals.message.id}
             `
@@ -13018,7 +13018,7 @@ ${value}</textarea
                     "reference",
                     "authorEnrollment",
                     "content",
-                    "contentText",
+                    "contentSearch",
                     "answerAt",
                     "anonymousAt"
                   )
