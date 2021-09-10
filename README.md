@@ -43,13 +43,12 @@
 ### Minor Things We Should Do Right Away
 
 - Clean old database data.
+  - `Date.now()`
+  - `1000`
   - `flashes`.
   - `emailConfirmations`.
   - `passwordResets`.
   - `sessions`.
-  - `maxAge`.
-  - `Date.now()`
-  - `1000`
 - Include users in search.
 - Include snippets in search results.
 - Filters (for example, by conversation type).

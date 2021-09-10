@@ -2744,12 +2744,12 @@ export default async function courselore({
       );
       if (
         session === undefined ||
-        new Date(session.createdAt).getTime() + Session.maxAge < Date.now()
+        new Date(session.createdAt).getTime() < Date.now() - Session.maxAge
       )
         Session.close(req, res);
       else if (
-        new Date(session.createdAt).getTime() + Session.maxAge / 2 <
-        Date.now()
+        new Date(session.createdAt).getTime() <
+        Date.now() - Session.maxAge / 2
       ) {
         Session.close(req, res);
         Session.open(req, res, session.user);
@@ -3156,8 +3156,8 @@ export default async function courselore({
         `
       );
       return passwordReset === undefined ||
-        new Date(passwordReset.createdAt).getTime() + PasswordReset.maxAge <
-          Date.now()
+        new Date(passwordReset.createdAt).getTime() <
+          Date.now() - PasswordReset.maxAge
         ? undefined
         : passwordReset.user;
     },
