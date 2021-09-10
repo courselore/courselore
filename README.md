@@ -42,6 +42,19 @@
 
 ### Minor Things We Should Do Right Away
 
+- Clean old flashes, emailConfirmations, passwordResets, and sessions.
+  ```js
+  (function cleanOldSessions() {
+    database.run(
+      sql`
+        DELETE FROM "sessions" WHERE datetime("createdAt") < datetime(${new Date(
+          Date.now() - Session.maxAge
+        )})
+      `
+    );
+    setTimeout(cleanOldSessions, 24 * 60 * 60 * 1000);
+  })();
+  ```
 - Include users in search.
 - Include snippets in search results.
 - Filters (for example, by conversation type).
