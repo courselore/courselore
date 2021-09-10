@@ -200,6 +200,7 @@ export default async function courselore({
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
         "title" TEXT NOT NULL,
+        "titleSearch" TEXT NOT NULL,
         "nextMessageReference" INTEGER NOT NULL,
         "type" TEXT NOT NULL,
         "pinnedAt" TEXT NULL,
@@ -213,18 +214,18 @@ export default async function courselore({
       CREATE VIRTUAL TABLE "conversationsSearch" USING fts5(
         content = "conversations",
         content_rowid = "id",
-        "title",
+        "titleSearch",
         tokenize = 'porter'
       );
       CREATE TRIGGER "conversationsSearchInsert" AFTER INSERT ON "conversations" BEGIN
-        INSERT INTO "conversationsSearch" ("rowid", "title") VALUES ("new"."id", "new"."title");
+        INSERT INTO "conversationsSearch" ("rowid", "titleSearch") VALUES ("new"."id", "new"."titleSearch");
       END;
       CREATE TRIGGER "conversationsSearchUpdate" AFTER UPDATE ON "conversations" BEGIN
-        INSERT INTO "conversationsSearch" ("conversationsSearch", "rowid", "title") VALUES ('delete', "old"."id", "old"."title");
-        INSERT INTO "conversationsSearch" ("rowid", "title") VALUES ("new"."id", "new"."title");
+        INSERT INTO "conversationsSearch" ("conversationsSearch", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
+        INSERT INTO "conversationsSearch" ("rowid", "titleSearch") VALUES ("new"."id", "new"."titleSearch");
       END;
       CREATE TRIGGER "conversationsSearchDelete" AFTER DELETE ON "conversations" BEGIN
-        INSERT INTO "conversationsSearch" ("conversationsSearch", "rowid", "title") VALUES ('delete', "old"."id", "old"."title");
+        INSERT INTO "conversationsSearch" ("conversationsSearch", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
       END;
 
       CREATE TABLE "messages" (
@@ -10128,6 +10129,7 @@ ${value}</textarea
                   "course",
                   "reference",
                   "title",
+                  "titleSearch",
                   "nextMessageReference",
                   "type",
                   "pinnedAt",
@@ -10137,6 +10139,7 @@ ${value}</textarea
                   ${res.locals.course.id},
                   ${String(res.locals.course.nextConversationReference)},
                   ${req.body.title},
+                  ${html`${req.body.title}`},
                   ${2},
                   ${req.body.type},
                   ${req.body.isPinned ? new Date().toISOString() : null},
@@ -12203,7 +12206,12 @@ ${value}</textarea
         if (req.body.title.trim() === "") return next("validation");
         else
           database.run(
-            sql`UPDATE "conversations" SET "title" = ${req.body.title} WHERE "id" = ${res.locals.conversation.id}`
+            sql`
+              UPDATE "conversations"
+              SET "title" = ${req.body.title},
+                  "titleSearch" = ${html`${req.body.title}`}
+              WHERE "id" = ${res.locals.conversation.id}
+            `
           );
 
       if (typeof req.body.type === "string")
@@ -12948,6 +12956,9 @@ ${value}</textarea
                 Math.floor(Math.random() * 12 * 60 * 60 * 1000)
             ).toISOString();
             // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
+            const title = lodash.capitalize(
+              faker.lorem.words(1 + Math.floor(Math.random() * 10))
+            );
             const conversation = database.get<{
               id: number;
               title: string;
@@ -12961,6 +12972,7 @@ ${value}</textarea
                         "course",
                         "reference",
                         "title",
+                        "titleSearch",
                         "nextMessageReference",
                         "type",
                         "pinnedAt",
@@ -12969,9 +12981,8 @@ ${value}</textarea
                       VALUES (
                         ${course.id},
                         ${String(conversationReference)},
-                        ${lodash.capitalize(
-                          faker.lorem.words(1 + Math.floor(Math.random() * 10))
-                        )},
+                        ${title},
+                        ${html`${title}`},
                         ${Math.floor(Math.random() * 10) + 2},
                         ${
                           conversationTypes[
