@@ -59,6 +59,7 @@
     setTimeout(cleanOldSessions, 24 * 60 * 60 * 1000);
   })();
   ```
+  - `maxAge`.
   - `Date.now()`
   - `1000`
 - Include users in search.

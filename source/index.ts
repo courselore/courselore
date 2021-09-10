@@ -3092,6 +3092,8 @@ export default async function courselore({
   );
 
   const PasswordReset = {
+    maxAge: 10 * 60 * 1000,
+
     create(userId: number): string {
       database.run(
         sql`
@@ -3123,7 +3125,7 @@ export default async function courselore({
         `
       );
       return passwordReset === undefined ||
-        new Date(passwordReset.createdAt).getTime() + 10 * 60 * 1000 <
+        new Date(passwordReset.createdAt).getTime() + PasswordReset.maxAge <
           Date.now()
         ? undefined
         : passwordReset.user;
