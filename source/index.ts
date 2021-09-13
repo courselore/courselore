@@ -110,6 +110,7 @@ export default async function courselore({
         "nonce" TEXT NOT NULL UNIQUE,
         "content" TEXT NOT NULL
       );
+      CREATE INDEX "flashesCreatedAtIndex" ON "flashes" (datetime("createdAt"));
 
       CREATE TABLE "users" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -146,6 +147,7 @@ export default async function courselore({
         "nonce" TEXT NOT NULL UNIQUE,
         "user" INTEGER NOT NULL UNIQUE REFERENCES "users" ON DELETE CASCADE
       );
+      CREATE INDEX "emailConfirmationsCreatedAtIndex" ON "emailConfirmations" (datetime("createdAt"));
 
       CREATE TABLE "passwordResets" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -153,6 +155,7 @@ export default async function courselore({
         "nonce" TEXT NOT NULL UNIQUE,
         "user" INTEGER NOT NULL UNIQUE REFERENCES "users" ON DELETE CASCADE
       );
+      CREATE INDEX "passwordResetsCreatedAtIndex" ON "passwordResets" (datetime("createdAt"));
 
       CREATE TABLE "sessions" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -160,6 +163,7 @@ export default async function courselore({
         "token" TEXT NOT NULL UNIQUE,
         "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
       );
+      CREATE INDEX "sessionsCreatedAtIndex" ON "sessions" (datetime("createdAt"));
 
       CREATE TABLE "courses" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
