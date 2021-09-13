@@ -16,9 +16,9 @@
 
 #### Milestones
 
-- More granular control of who’s in a conversation (1-on-1, just a group of people, and so forth).
 - Chat.
 - Performance.
+- More granular control of who’s in a conversation (1-on-1, just a group of people, and so forth).
 - More strategic marketing
   - User groups.
   - Marketing page.
