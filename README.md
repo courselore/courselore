@@ -219,10 +219,22 @@
   - Learning Tools Interoperability (LTI).
 - To build extensions, for example, ask a question from within the text editor.
 
-### Native Applications
+### Mobile & Desktop Applications
 
-- Can we get away with not having native applications? How much does it hinder our ability to do things like notifications?
-- Desktop with Electron & mobile with web views? Maybe React Native?
+- Can we get away with not having mobile & desktop applications? How much does it hinder our ability to do things like notifications?
+- Desktop: Electron.
+- Mobile:
+  - https://capacitorjs.com/
+    - Agnostic to front-end framework.
+    - Excellent onboarding experience.
+    - Isn’t super popular, but the smaller community is enthusiastic.
+  - https://reactnative.dev/
+    - https://expo.dev/
+    - Ties you to React.
+    - Much more popular than anything else.
+  - https://cordova.apache.org/
+    - The spiritual predecessor of Capacitor.
+    - Still more popular, but dreaded.
 - Have registry of CourseLore instances. For example, in a phone application we could show a list of existing instances. (You could always not list yourself in the registry and enter the URL for your instance manually on the phone application.)
 
 ### Design & Accessibility
