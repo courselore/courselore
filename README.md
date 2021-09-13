@@ -42,6 +42,8 @@
 
 ### Minor Things We Should Do Right Away
 
+- Enable emails courselore.org.
+- Highlight search terms on the entire page.
 - Include users in search.
 - Include snippets in search results.
 - Filters (for example, by conversation type).
@@ -93,6 +95,7 @@
 - Different modes: Forum vs Chat.
 - Different states: Open vs archived.
 - Flag messages to answer later.
+- Assign questions to CAs.
 
 ### Anonymity
 
@@ -147,6 +150,10 @@
 - Use date pickers:
   - https://github.com/jcgertig/date-input-polyfill
   - https://github.com/Pikaday/Pikaday
+
+### Administrative Interface
+
+- For department-wide deployments, have some sort of administrative interface with a hierarchy, for example, administrators may be able to see all courses, and so forth.
 
 ### Statistics
 
@@ -290,6 +297,34 @@
 
 <details>
 <summary><strong>Meetings</strong></summary>
+
+<details>
+<summary>2021-09-11</summary>
+
+- Progress:
+  - Authentication:
+    - Update email & password.
+    - Email confirmation confirmation.
+    - Fixed sliding sessions.
+  - Database improvements:
+    - Handled Markdown and user-generated HTML on search indices.
+    - Database indices (for performance).
+    - Job to periodically clean expired data, for example, sessions.
+  - Favicon.
+- Work in progress:
+  - The @mention widget.
+  - Include users in search.
+  - Include snippets in search results.
+  - Better filters (for example, for conversation types).
+- Features we talked about:
+  - Enable emails courselore.org.
+  - Department wide infrastructure. Hierarchy: Administrators may be able to see all courses in installation, and so forth.
+  - Highlight search terms on the entire page.
+  - Assign CA to questions.
+  - Mobile application.
+  - Communicate with LMS.
+
+</details>
 
 <details>
 <summary>2021-09-04</summary>
