@@ -42,7 +42,7 @@
 
 ### Minor Things We Should Do Right Away
 
-- Enable emails courselore.org.
+- Enable emails on courselore.org.
 - Highlight search terms on the entire page.
 - Include users in search.
 - Include snippets in search results.
