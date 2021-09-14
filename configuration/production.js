@@ -52,7 +52,7 @@ module.exports = async (require) => {
               pass: secrets.smtp.password,
             },
           },
-          { from: `"CourseLore" <administrator@courselore.org>` }
+          { from: `"CourseLore" <${email}>` }
         );
         return async (mailOptions) => await transporter.sendMail(mailOptions);
       })(),
