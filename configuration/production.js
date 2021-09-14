@@ -35,15 +35,27 @@ module.exports = async (require) => {
     for (const subprocess of subprocesses) subprocess.cancel();
   } else {
     const path = require("path");
+    const nodemailer = require("nodemailer");
     const courselore = require(".").default;
     const { version } = require("../package.json");
+    const secrets = require(path.join(__dirname, "secrets.json"));
     const app = await courselore({
       dataDirectory: path.join(__dirname, "data"),
       url,
       administrator: `mailto:${email}`,
-      sendMail: async (mailOptions) => {
-        console.log(`Email: ${JSON.stringify(mailOptions, undefined, 2)}`);
-      },
+      sendMail: (() => {
+        const transporter = nodemailer.createTransport(
+          {
+            host: secrets.smtp.host,
+            auth: {
+              user: secrets.smtp.username,
+              pass: secrets.smtp.password,
+            },
+          },
+          { from: `"CourseLore" <administrator@courselore.org>` }
+        );
+        return async (mailOptions) => await transporter.sendMail(mailOptions);
+      })(),
       demonstration: true,
     });
     app.listen(4000, "127.0.0.1", () => {
