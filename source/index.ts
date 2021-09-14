@@ -12913,7 +12913,7 @@ ${value}</textarea
                     ${html`${card.name}`},
                     ${card.avatar},
                     ${faker.lorem.paragraph()},
-                    ${"staff-announcements-and-mentions"}
+                    ${"none"}
                   )
                 `
               ).lastInsertRowid
@@ -12954,13 +12954,7 @@ ${value}</textarea
                       ${html`${card.name}`},
                       ${Math.random() < 0.6 ? card.avatar : null},
                       ${Math.random() < 0.3 ? faker.lorem.paragraph() : null},
-                      ${
-                        userEmailNotificationses[
-                          Math.floor(
-                            Math.random() * userEmailNotificationses.length
-                          )
-                        ]
-                      }
+                      ${"none"}
                     )
                   `
                 ).lastInsertRowid
