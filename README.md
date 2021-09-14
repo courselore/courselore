@@ -71,7 +71,9 @@
 - Gravatar as a fallback to avatar.
 - Multiple emails.
 - Allow people to remove their accounts.
-- SSO with Hopkins ID (SAML) (https://glacial-plateau-47269.herokuapp.com/).
+- Authentication:
+  - SSO with Hopkins ID (SAML) (https://glacial-plateau-47269.herokuapp.com/).
+  - 2-Factor Authentication.
 
 ### Courses
 
