@@ -7875,7 +7875,7 @@ export default async function courselore({
           `
       )
       // FIXME: Try to get rid of these n+1 queries.
-      .map((conversation) => getConversationMetadata(req, res, conversation));
+      .map((conversation) => getConversation(req, res, conversation));
 
     return applicationLayout({
       req,
@@ -8501,7 +8501,7 @@ export default async function courselore({
     });
   };
 
-  const getConversationMetadata = (
+  const getConversation = (
     req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>,
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
     conversation: {
@@ -10379,7 +10379,7 @@ ${value}</textarea
         `
       );
       if (conversation === undefined) return next("route");
-      res.locals.conversation = getConversationMetadata(req, res, conversation);
+      res.locals.conversation = getConversation(req, res, conversation);
 
       res.locals.messages = database
         .all<{

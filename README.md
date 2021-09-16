@@ -47,7 +47,6 @@
     - `res.locals.tagFilter`.
     - `res.locals.conversations`.
 ```ts
-tagFilter?: IsEnrolledInCourseMiddlewareLocals["tags"][number];
     conversations: {
       id: number;
       reference: string;
