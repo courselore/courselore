@@ -4820,62 +4820,6 @@ export default async function courselore({
       name: string;
       staffOnlyAt: string | null;
     }[];
-    tagFilter?: IsEnrolledInCourseMiddlewareLocals["tags"][number];
-    conversations: {
-      id: number;
-      reference: string;
-      title: string;
-      nextMessageReference: number;
-      type: ConversationType;
-      pinnedAt: string | null;
-      staffOnlyAt: string | null;
-      createdAt: string;
-      anonymousAt: string | null;
-      updatedAt: string | null;
-      authorEnrollment:
-        | {
-            id: number;
-            user: {
-              id: number;
-              email: string;
-              name: string;
-              avatar: string | null;
-              biography: string | null;
-            };
-            reference: string;
-            role: EnrollmentRole;
-          }
-        | GhostEnrollment;
-      messagesCount: number;
-      readingsCount: number;
-      endorsements: {
-        id: number;
-        enrollment:
-          | {
-              id: number;
-              user: {
-                id: number;
-                email: string;
-                name: string;
-                avatar: string | null;
-                biography: string | null;
-              };
-              reference: string;
-              role: EnrollmentRole;
-            }
-          | GhostEnrollment;
-      }[];
-      likesCount: number;
-      taggings: {
-        id: number;
-        tag: {
-          id: number;
-          reference: string;
-          name: string;
-          staffOnlyAt: string | null;
-        };
-      }[];
-    }[];
   }
   const isEnrolledInCourseMiddleware: express.RequestHandler<
     { courseReference: string },
@@ -4938,316 +4882,9 @@ export default async function courselore({
         `
       );
 
-      if (typeof req.query.tag === "string")
-        res.locals.tagFilter = res.locals.tags.find(
-          (tag) => tag.reference === req.query.tag
-        );
-
-      const search =
-        req.query.search === undefined
-          ? undefined
-          : req.query.search
-              .split(/\s+/)
-              .map((phrase) => `"${phrase.replaceAll('"', '""')}"`)
-              .join(" ");
-
-      res.locals.conversations = database
-        .all<{
-          id: number;
-          reference: string;
-          title: string;
-          nextMessageReference: number;
-          type: ConversationType;
-          pinnedAt: string | null;
-          staffOnlyAt: string | null;
-        }>(
-          sql`
-            SELECT "conversations"."id",
-                   "conversations"."reference",
-                   "conversations"."title",
-                   "conversations"."nextMessageReference",
-                   "conversations"."type",
-                   "conversations"."pinnedAt",
-                   "conversations"."staffOnlyAt"
-                   $${
-                     search === undefined
-                       ? sql``
-                       : sql`
-                          , coalesce("conversationsSearchResult"."snippet", "messagesSearchResult"."snippet") AS "snippet"
-                      `
-                   }
-            FROM "conversations"
-            $${
-              search === undefined
-                ? sql``
-                : sql`
-                  LEFT JOIN (
-                    SELECT "rowid",
-                           "rank",
-                           snippet("conversationsSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "snippet"
-                    FROM "conversationsSearch"
-                    WHERE "conversationsSearch" MATCH ${search}
-                  ) AS "conversationsSearchResult" ON "conversations"."id" = "conversationsSearchResult"."rowid"
-
-                  LEFT JOIN (
-                    SELECT "messages"."conversation" AS "conversationId",
-                           "rank",
-                           snippet("messagesSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "snippet"
-                    FROM "messagesSearch"
-                    JOIN "messages" ON "messagesSearch"."rowid" = "messages"."id"
-                    WHERE "messagesSearch" MATCH ${search}
-                  ) AS "messagesSearchResult" ON "conversations"."id" = "messagesSearchResult"."conversationId"
-                `
-            }
-            $${
-              res.locals.tagFilter === undefined
-                ? sql``
-                : sql`
-                    JOIN "taggings" ON "conversations"."id" = "taggings"."conversation" AND
-                                       "taggings"."tag" = ${res.locals.tagFilter.id}
-                  `
-            }
-            WHERE "conversations"."course" = ${res.locals.course.id}
-            $${
-              search === undefined
-                ? sql``
-                : sql`
-                  AND (
-                    "conversationsSearchResult"."rank" IS NOT NULL OR
-                    "messagesSearchResult"."rank" IS NOT NULL
-                  )
-                `
-            }
-            $${
-              res.locals.enrollment.role !== "staff"
-                ? sql`
-                    AND "conversations"."staffOnlyAt" IS NULL
-                  `
-                : sql``
-            }
-            GROUP BY "conversations"."id"
-            ORDER BY "conversations"."pinnedAt" IS NOT NULL DESC,
-                     $${
-                       search === undefined
-                         ? sql``
-                         : sql`
-                            min(coalesce("conversationsSearchResult"."rank", 0), coalesce(min("messagesSearchResult"."rank"), 0)) ASC,
-                          `
-                     }
-                     "conversations"."id" DESC
-          `
-        )
-        // FIXME: Try to get rid of these n+1 queries.
-        .map((conversation) => getConversationMetadata(req, res, conversation));
-
       next();
     },
   ];
-
-  const getConversationMetadata = (
-    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>,
-    res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
-    conversation: {
-      id: number;
-      reference: string;
-      title: string;
-      nextMessageReference: number;
-      type: ConversationType;
-      pinnedAt: string | null;
-      staffOnlyAt: string | null;
-    }
-  ): IsEnrolledInCourseMiddlewareLocals["conversations"][number] => {
-    const originalMessage = database.get<{
-      createdAt: string;
-      anonymousAt: string | null;
-      authorEnrollmentId: number | null;
-      authorUserId: number | null;
-      authorUserEmail: string | null;
-      authorUserName: string | null;
-      authorUserAvatar: string | null;
-      authorUserBiography: string | null;
-      authorEnrollmentReference: string | null;
-      authorEnrollmentRole: EnrollmentRole | null;
-      likesCount: number;
-    }>(
-      sql`
-        SELECT "messages"."createdAt",
-               "messages"."anonymousAt",
-               "authorEnrollment"."id" AS "authorEnrollmentId",
-               "authorUser"."id" AS "authorUserId",
-               "authorUser"."email" AS "authorUserEmail",
-               "authorUser"."name" AS "authorUserName",
-               "authorUser"."avatar" AS "authorUserAvatar",
-               "authorUser"."biography" AS "authorUserBiography",
-               "authorEnrollment"."reference" AS "authorEnrollmentReference",
-               "authorEnrollment"."role" AS "authorEnrollmentRole",
-               COUNT("likes"."id") AS "likesCount"
-        FROM "messages"
-        LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
-        LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
-        LEFT JOIN "likes" ON "messages"."id" = "likes"."message"
-        WHERE "messages"."conversation" = ${conversation.id} AND
-              "messages"."reference" = ${"1"}
-        GROUP BY "messages"."id"
-      `
-    )!;
-    const mostRecentlyUpdatedMessage = database.get<{
-      updatedAt: string;
-    }>(
-      sql`
-        SELECT coalesce("messages"."updatedAt", "messages"."createdAt") AS "updatedAt"
-        FROM "messages"
-        WHERE "messages"."conversation" = ${conversation.id}
-        ORDER BY datetime(coalesce("messages"."updatedAt", "messages"."createdAt")) DESC
-        LIMIT 1
-      `
-    )!;
-    const messagesCount = database.get<{
-      messagesCount: number;
-    }>(
-      sql`SELECT COUNT(*) AS "messagesCount" FROM "messages" WHERE "messages"."conversation" = ${conversation.id}`
-    )!.messagesCount;
-    const readingsCount = database.get<{ readingsCount: number }>(
-      sql`
-        SELECT COUNT(*) AS "readingsCount"
-        FROM "readings"
-        JOIN "messages" ON "readings"."message" = "messages"."id"
-        WHERE "messages"."conversation" = ${conversation.id} AND
-              "readings"."enrollment" = ${res.locals.enrollment.id}
-      `
-    )!.readingsCount;
-    const endorsements =
-      conversation.type !== "question"
-        ? []
-        : database
-            .all<{
-              id: number;
-              enrollmentId: number | null;
-              userId: number | null;
-              userEmail: string | null;
-              userName: string | null;
-              userAvatar: string | null;
-              userBiography: string | null;
-              enrollmentReference: string | null;
-              enrollmentRole: EnrollmentRole | null;
-            }>(
-              sql`
-                SELECT "endorsements"."id",
-                       "enrollments"."id" AS "enrollmentId",
-                       "users"."id" AS "userId",
-                       "users"."email" AS "userEmail",
-                       "users"."name" AS "userName",
-                       "users"."avatar" AS "userAvatar",
-                       "users"."biography" AS "userBiography",      
-                       "enrollments"."reference" AS "enrollmentReference",
-                       "enrollments"."role" AS "enrollmentRole"
-                FROM "endorsements"
-                JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
-                JOIN "users" ON "enrollments"."user" = "users"."id"
-                JOIN "messages" ON "endorsements"."message" = "messages"."id"
-                WHERE "messages"."conversation" = ${conversation.id}
-                ORDER BY "endorsements"."id" ASC
-              `
-            )
-            .map((endorsement) => ({
-              id: endorsement.id,
-              enrollment:
-                endorsement.enrollmentId !== null &&
-                endorsement.userId !== null &&
-                endorsement.userEmail !== null &&
-                endorsement.userName !== null &&
-                endorsement.enrollmentReference !== null &&
-                endorsement.enrollmentRole !== null
-                  ? {
-                      id: endorsement.enrollmentId,
-                      user: {
-                        id: endorsement.userId,
-                        email: endorsement.userEmail,
-                        name: endorsement.userName,
-                        avatar: endorsement.userAvatar,
-                        biography: endorsement.userBiography,
-                      },
-                      reference: endorsement.enrollmentReference,
-                      role: endorsement.enrollmentRole,
-                    }
-                  : ghostEnrollment,
-            }));
-    const taggings = database
-      .all<{
-        id: number;
-        tagId: number;
-        tagReference: string;
-        tagName: string;
-        tagStaffOnlyAt: string | null;
-      }>(
-        sql`
-          SELECT "taggings"."id",
-                 "tags"."id" AS "tagId",
-                 "tags"."reference" AS "tagReference",
-                 "tags"."name" AS "tagName",
-                 "tags"."staffOnlyAt" AS "tagStaffOnlyAt"
-          FROM "taggings"
-          JOIN "tags" ON "taggings"."tag" = "tags"."id"
-          WHERE "taggings"."conversation" = ${conversation.id}
-          $${
-            res.locals.enrollment.role === "student"
-              ? sql`AND "tags"."staffOnlyAt" IS NULL`
-              : sql``
-          }
-          ORDER BY "tags"."id" ASC
-        `
-      )
-      .map((tagging) => ({
-        id: tagging.id,
-        tag: {
-          id: tagging.tagId,
-          reference: tagging.tagReference,
-          name: tagging.tagName,
-          staffOnlyAt: tagging.tagStaffOnlyAt,
-        },
-      }));
-
-    return {
-      id: conversation.id,
-      reference: conversation.reference,
-      title: conversation.title,
-      nextMessageReference: conversation.nextMessageReference,
-      type: conversation.type,
-      pinnedAt: conversation.pinnedAt,
-      staffOnlyAt: conversation.staffOnlyAt,
-      createdAt: originalMessage.createdAt,
-      anonymousAt: originalMessage.anonymousAt,
-      updatedAt:
-        mostRecentlyUpdatedMessage.updatedAt === originalMessage.createdAt
-          ? null
-          : mostRecentlyUpdatedMessage.updatedAt,
-      authorEnrollment:
-        originalMessage.authorEnrollmentId !== null &&
-        originalMessage.authorUserId !== null &&
-        originalMessage.authorUserEmail !== null &&
-        originalMessage.authorUserName !== null &&
-        originalMessage.authorEnrollmentReference !== null &&
-        originalMessage.authorEnrollmentRole !== null
-          ? {
-              id: originalMessage.authorEnrollmentId,
-              user: {
-                id: originalMessage.authorUserId,
-                email: originalMessage.authorUserEmail,
-                name: originalMessage.authorUserName,
-                avatar: originalMessage.authorUserAvatar,
-                biography: originalMessage.authorUserBiography,
-              },
-              reference: originalMessage.authorEnrollmentReference,
-              role: originalMessage.authorEnrollmentRole,
-            }
-          : ghostEnrollment,
-      messagesCount,
-      readingsCount,
-      endorsements,
-      likesCount: originalMessage.likesCount,
-      taggings,
-    };
-  };
 
   interface IsCourseStaffMiddlewareLocals
     extends IsEnrolledInCourseMiddlewareLocals {}
@@ -8137,8 +7774,110 @@ export default async function courselore({
     head: HTML;
     body: HTML;
     onlyConversationLayoutSidebarOnSmallScreen?: boolean;
-  }): HTML =>
-    applicationLayout({
+  }): HTML => {
+    if (typeof req.query.tag === "string")
+      res.locals.tagFilter = res.locals.tags.find(
+        (tag) => tag.reference === req.query.tag
+      );
+
+    const search =
+      req.query.search === undefined
+        ? undefined
+        : req.query.search
+            .split(/\s+/)
+            .map((phrase) => `"${phrase.replaceAll('"', '""')}"`)
+            .join(" ");
+
+    res.locals.conversations = database
+      .all<{
+        id: number;
+        reference: string;
+        title: string;
+        nextMessageReference: number;
+        type: ConversationType;
+        pinnedAt: string | null;
+        staffOnlyAt: string | null;
+      }>(
+        sql`
+            SELECT "conversations"."id",
+                   "conversations"."reference",
+                   "conversations"."title",
+                   "conversations"."nextMessageReference",
+                   "conversations"."type",
+                   "conversations"."pinnedAt",
+                   "conversations"."staffOnlyAt"
+                   $${
+                     search === undefined
+                       ? sql``
+                       : sql`
+                          , coalesce("conversationsSearchResult"."snippet", "messagesSearchResult"."snippet") AS "snippet"
+                      `
+                   }
+            FROM "conversations"
+            $${
+              search === undefined
+                ? sql``
+                : sql`
+                  LEFT JOIN (
+                    SELECT "rowid",
+                           "rank",
+                           snippet("conversationsSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "snippet"
+                    FROM "conversationsSearch"
+                    WHERE "conversationsSearch" MATCH ${search}
+                  ) AS "conversationsSearchResult" ON "conversations"."id" = "conversationsSearchResult"."rowid"
+
+                  LEFT JOIN (
+                    SELECT "messages"."conversation" AS "conversationId",
+                           "rank",
+                           snippet("messagesSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "snippet"
+                    FROM "messagesSearch"
+                    JOIN "messages" ON "messagesSearch"."rowid" = "messages"."id"
+                    WHERE "messagesSearch" MATCH ${search}
+                  ) AS "messagesSearchResult" ON "conversations"."id" = "messagesSearchResult"."conversationId"
+                `
+            }
+            $${
+              res.locals.tagFilter === undefined
+                ? sql``
+                : sql`
+                    JOIN "taggings" ON "conversations"."id" = "taggings"."conversation" AND
+                                       "taggings"."tag" = ${res.locals.tagFilter.id}
+                  `
+            }
+            WHERE "conversations"."course" = ${res.locals.course.id}
+            $${
+              search === undefined
+                ? sql``
+                : sql`
+                  AND (
+                    "conversationsSearchResult"."rank" IS NOT NULL OR
+                    "messagesSearchResult"."rank" IS NOT NULL
+                  )
+                `
+            }
+            $${
+              res.locals.enrollment.role !== "staff"
+                ? sql`
+                    AND "conversations"."staffOnlyAt" IS NULL
+                  `
+                : sql``
+            }
+            GROUP BY "conversations"."id"
+            ORDER BY "conversations"."pinnedAt" IS NOT NULL DESC,
+                     $${
+                       search === undefined
+                         ? sql``
+                         : sql`
+                            min(coalesce("conversationsSearchResult"."rank", 0), coalesce(min("messagesSearchResult"."rank"), 0)) ASC,
+                          `
+                     }
+                     "conversations"."id" DESC
+          `
+      )
+      // FIXME: Try to get rid of these n+1 queries.
+      .map((conversation) => getConversationMetadata(req, res, conversation));
+
+    return applicationLayout({
       req,
       res,
       head,
@@ -8761,6 +8500,212 @@ export default async function courselore({
         </div>
       `,
     });
+  };
+
+  const getConversationMetadata = (
+    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>,
+    res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
+    conversation: {
+      id: number;
+      reference: string;
+      title: string;
+      nextMessageReference: number;
+      type: ConversationType;
+      pinnedAt: string | null;
+      staffOnlyAt: string | null;
+    }
+  ): IsEnrolledInCourseMiddlewareLocals["conversations"][number] => {
+    const originalMessage = database.get<{
+      createdAt: string;
+      anonymousAt: string | null;
+      authorEnrollmentId: number | null;
+      authorUserId: number | null;
+      authorUserEmail: string | null;
+      authorUserName: string | null;
+      authorUserAvatar: string | null;
+      authorUserBiography: string | null;
+      authorEnrollmentReference: string | null;
+      authorEnrollmentRole: EnrollmentRole | null;
+      likesCount: number;
+    }>(
+      sql`
+        SELECT "messages"."createdAt",
+               "messages"."anonymousAt",
+               "authorEnrollment"."id" AS "authorEnrollmentId",
+               "authorUser"."id" AS "authorUserId",
+               "authorUser"."email" AS "authorUserEmail",
+               "authorUser"."name" AS "authorUserName",
+               "authorUser"."avatar" AS "authorUserAvatar",
+               "authorUser"."biography" AS "authorUserBiography",
+               "authorEnrollment"."reference" AS "authorEnrollmentReference",
+               "authorEnrollment"."role" AS "authorEnrollmentRole",
+               COUNT("likes"."id") AS "likesCount"
+        FROM "messages"
+        LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
+        LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
+        LEFT JOIN "likes" ON "messages"."id" = "likes"."message"
+        WHERE "messages"."conversation" = ${conversation.id} AND
+              "messages"."reference" = ${"1"}
+        GROUP BY "messages"."id"
+      `
+    )!;
+    const mostRecentlyUpdatedMessage = database.get<{
+      updatedAt: string;
+    }>(
+      sql`
+        SELECT coalesce("messages"."updatedAt", "messages"."createdAt") AS "updatedAt"
+        FROM "messages"
+        WHERE "messages"."conversation" = ${conversation.id}
+        ORDER BY datetime(coalesce("messages"."updatedAt", "messages"."createdAt")) DESC
+        LIMIT 1
+      `
+    )!;
+    const messagesCount = database.get<{
+      messagesCount: number;
+    }>(
+      sql`SELECT COUNT(*) AS "messagesCount" FROM "messages" WHERE "messages"."conversation" = ${conversation.id}`
+    )!.messagesCount;
+    const readingsCount = database.get<{ readingsCount: number }>(
+      sql`
+        SELECT COUNT(*) AS "readingsCount"
+        FROM "readings"
+        JOIN "messages" ON "readings"."message" = "messages"."id"
+        WHERE "messages"."conversation" = ${conversation.id} AND
+              "readings"."enrollment" = ${res.locals.enrollment.id}
+      `
+    )!.readingsCount;
+    const endorsements =
+      conversation.type !== "question"
+        ? []
+        : database
+            .all<{
+              id: number;
+              enrollmentId: number | null;
+              userId: number | null;
+              userEmail: string | null;
+              userName: string | null;
+              userAvatar: string | null;
+              userBiography: string | null;
+              enrollmentReference: string | null;
+              enrollmentRole: EnrollmentRole | null;
+            }>(
+              sql`
+                SELECT "endorsements"."id",
+                       "enrollments"."id" AS "enrollmentId",
+                       "users"."id" AS "userId",
+                       "users"."email" AS "userEmail",
+                       "users"."name" AS "userName",
+                       "users"."avatar" AS "userAvatar",
+                       "users"."biography" AS "userBiography",      
+                       "enrollments"."reference" AS "enrollmentReference",
+                       "enrollments"."role" AS "enrollmentRole"
+                FROM "endorsements"
+                JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
+                JOIN "users" ON "enrollments"."user" = "users"."id"
+                JOIN "messages" ON "endorsements"."message" = "messages"."id"
+                WHERE "messages"."conversation" = ${conversation.id}
+                ORDER BY "endorsements"."id" ASC
+              `
+            )
+            .map((endorsement) => ({
+              id: endorsement.id,
+              enrollment:
+                endorsement.enrollmentId !== null &&
+                endorsement.userId !== null &&
+                endorsement.userEmail !== null &&
+                endorsement.userName !== null &&
+                endorsement.enrollmentReference !== null &&
+                endorsement.enrollmentRole !== null
+                  ? {
+                      id: endorsement.enrollmentId,
+                      user: {
+                        id: endorsement.userId,
+                        email: endorsement.userEmail,
+                        name: endorsement.userName,
+                        avatar: endorsement.userAvatar,
+                        biography: endorsement.userBiography,
+                      },
+                      reference: endorsement.enrollmentReference,
+                      role: endorsement.enrollmentRole,
+                    }
+                  : ghostEnrollment,
+            }));
+    const taggings = database
+      .all<{
+        id: number;
+        tagId: number;
+        tagReference: string;
+        tagName: string;
+        tagStaffOnlyAt: string | null;
+      }>(
+        sql`
+          SELECT "taggings"."id",
+                 "tags"."id" AS "tagId",
+                 "tags"."reference" AS "tagReference",
+                 "tags"."name" AS "tagName",
+                 "tags"."staffOnlyAt" AS "tagStaffOnlyAt"
+          FROM "taggings"
+          JOIN "tags" ON "taggings"."tag" = "tags"."id"
+          WHERE "taggings"."conversation" = ${conversation.id}
+          $${
+            res.locals.enrollment.role === "student"
+              ? sql`AND "tags"."staffOnlyAt" IS NULL`
+              : sql``
+          }
+          ORDER BY "tags"."id" ASC
+        `
+      )
+      .map((tagging) => ({
+        id: tagging.id,
+        tag: {
+          id: tagging.tagId,
+          reference: tagging.tagReference,
+          name: tagging.tagName,
+          staffOnlyAt: tagging.tagStaffOnlyAt,
+        },
+      }));
+
+    return {
+      id: conversation.id,
+      reference: conversation.reference,
+      title: conversation.title,
+      nextMessageReference: conversation.nextMessageReference,
+      type: conversation.type,
+      pinnedAt: conversation.pinnedAt,
+      staffOnlyAt: conversation.staffOnlyAt,
+      createdAt: originalMessage.createdAt,
+      anonymousAt: originalMessage.anonymousAt,
+      updatedAt:
+        mostRecentlyUpdatedMessage.updatedAt === originalMessage.createdAt
+          ? null
+          : mostRecentlyUpdatedMessage.updatedAt,
+      authorEnrollment:
+        originalMessage.authorEnrollmentId !== null &&
+        originalMessage.authorUserId !== null &&
+        originalMessage.authorUserEmail !== null &&
+        originalMessage.authorUserName !== null &&
+        originalMessage.authorEnrollmentReference !== null &&
+        originalMessage.authorEnrollmentRole !== null
+          ? {
+              id: originalMessage.authorEnrollmentId,
+              user: {
+                id: originalMessage.authorUserId,
+                email: originalMessage.authorUserEmail,
+                name: originalMessage.authorUserName,
+                avatar: originalMessage.authorUserAvatar,
+                biography: originalMessage.authorUserBiography,
+              },
+              reference: originalMessage.authorEnrollmentReference,
+              role: originalMessage.authorEnrollmentRole,
+            }
+          : ghostEnrollment,
+      messagesCount,
+      readingsCount,
+      endorsements,
+      likesCount: originalMessage.likesCount,
+      taggings,
+    };
+  };
 
   const markdownEditor = ({
     req,
