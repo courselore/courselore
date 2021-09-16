@@ -8585,15 +8585,6 @@ export default async function courselore({
                   }
           `
     );
-    /* conversation: {
-        id: number;
-        reference: string;
-        title: string;
-        nextMessageReference: number;
-        type: ConversationType;
-        pinnedAt: string | null;
-        staffOnlyAt: string | null;
-      } */
 
     database.all<{
       id: number;
