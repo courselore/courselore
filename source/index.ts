@@ -8621,6 +8621,7 @@ export default async function courselore({
         GROUP BY "messages"."id"
       `
     )!;
+
     const mostRecentlyUpdatedMessage = database.get<{
       updatedAt: string;
     }>(
@@ -8632,11 +8633,13 @@ export default async function courselore({
         LIMIT 1
       `
     )!;
+
     const messagesCount = database.get<{
       messagesCount: number;
     }>(
       sql`SELECT COUNT(*) AS "messagesCount" FROM "messages" WHERE "messages"."conversation" = ${conversation.id}`
     )!.messagesCount;
+
     const readingsCount = database.get<{ readingsCount: number }>(
       sql`
         SELECT COUNT(*) AS "readingsCount"
@@ -8646,6 +8649,7 @@ export default async function courselore({
               "readings"."enrollment" = ${res.locals.enrollment.id}
       `
     )!.readingsCount;
+
     const endorsements =
       conversation.type !== "question"
         ? []
@@ -8702,6 +8706,7 @@ export default async function courselore({
                     }
                   : ghostEnrollment,
             }));
+
     const taggings = database
       .all<{
         id: number;
