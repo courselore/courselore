@@ -8556,16 +8556,7 @@ export default async function courselore({
         }[];
       }
     | undefined => {
-    /* conversation: {
-        id: number;
-        reference: string;
-        title: string;
-        nextMessageReference: number;
-        type: ConversationType;
-        pinnedAt: string | null;
-        staffOnlyAt: string | null;
-      } */
-    database.get<{
+    const conversation = database.get<{
       id: number;
       reference: string;
       title: string;
@@ -8575,27 +8566,35 @@ export default async function courselore({
       staffOnlyAt: string | null;
     }>(
       sql`
-          SELECT "conversations"."id",
-                 "conversations"."reference",
-                 "conversations"."title",
-                 "conversations"."nextMessageReference",
-                 "conversations"."type",
-                 "conversations"."pinnedAt",
-                 "conversations"."staffOnlyAt"
-          FROM "conversations"
-          WHERE "conversations"."course" = ${res.locals.course.id} AND
-                "conversations"."reference" = ${
-                  req.params.conversationReference
-                }
-                $${
-                  res.locals.enrollment.role !== "staff"
-                    ? sql`
-                        AND "conversations"."staffOnlyAt" IS NULL
-                      `
-                    : sql``
-                }
-        `
+            SELECT "conversations"."id",
+                   "conversations"."reference",
+                   "conversations"."title",
+                   "conversations"."nextMessageReference",
+                   "conversations"."type",
+                   "conversations"."pinnedAt",
+                   "conversations"."staffOnlyAt"
+            FROM "conversations"
+            WHERE "conversations"."course" = ${res.locals.course.id} AND
+                  "conversations"."reference" = ${conversationReference}
+                  $${
+                    res.locals.enrollment.role !== "staff"
+                      ? sql`
+                          AND "conversations"."staffOnlyAt" IS NULL
+                        `
+                      : sql``
+                  }
+          `
     );
+    /* conversation: {
+        id: number;
+        reference: string;
+        title: string;
+        nextMessageReference: number;
+        type: ConversationType;
+        pinnedAt: string | null;
+        staffOnlyAt: string | null;
+      } */
+
     database.all<{
       id: number;
       reference: string;
