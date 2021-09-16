@@ -46,7 +46,6 @@
   - Move query closer to template (save query on administrative pages where it isn’t necessary, and improve locality of code).
     - `res.locals.tagFilter`.
     - `res.locals.conversations`.
-    - `res.locals.conversationsCount`.
   - Include users in search.
   - Include snippets in search results.
   - Highlight search terms on the entire page.
