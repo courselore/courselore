@@ -49,61 +49,15 @@
     - `res.locals.tagFilter`.
     - `res.locals.conversations`.
     - ```ts
-          conversations: {
-            id: number;
-            reference: string;
-            title: string;
-            nextMessageReference: number;
-            type: ConversationType;
-            pinnedAt: string | null;
-            staffOnlyAt: string | null;
-            createdAt: string;
-            anonymousAt: string | null;
-            updatedAt: string | null;
-            authorEnrollment:
-              | {
-                  id: number;
-                  user: {
-                    id: number;
-                    email: string;
-                    name: string;
-                    avatar: string | null;
-                    biography: string | null;
-                  };
-                  reference: string;
-                  role: EnrollmentRole;
-                }
-              | GhostEnrollment;
-            messagesCount: number;
-            readingsCount: number;
-            endorsements: {
-              id: number;
-              enrollment:
-                | {
-                    id: number;
-                    user: {
-                      id: number;
-                      email: string;
-                      name: string;
-                      avatar: string | null;
-                      biography: string | null;
-                    };
-                    reference: string;
-                    role: EnrollmentRole;
-                  }
-                | GhostEnrollment;
-            }[];
-            likesCount: number;
-            taggings: {
-              id: number;
-              tag: {
-                id: number;
-                reference: string;
-                name: string;
-                staffOnlyAt: string | null;
-              };
-            }[];
-          }[];
+      conversation: {
+        id: number;
+        reference: string;
+        title: string;
+        nextMessageReference: number;
+        type: ConversationType;
+        pinnedAt: string | null;
+        staffOnlyAt: string | null;
+      }
       ```
 
   - Include users in search.
