@@ -7837,11 +7837,11 @@ export default async function courselore({
                 `
             }
             $${
-              res.locals.tagFilter === undefined
+              tagFilter === undefined
                 ? sql``
                 : sql`
                     JOIN "taggings" ON "conversations"."id" = "taggings"."conversation" AND
-                                       "taggings"."tag" = ${res.locals.tagFilter.id}
+                                       "taggings"."tag" = ${tagFilter.id}
                   `
             }
             WHERE "conversations"."course" = ${res.locals.course.id}
@@ -8079,7 +8079,7 @@ export default async function courselore({
                                 });
                               `}"
                             >
-                              $${res.locals.tagFilter === undefined
+                              $${tagFilter === undefined
                                 ? html`
                                     <i class="bi bi-tag"></i>
                                     Filter by Tag
@@ -8088,7 +8088,7 @@ export default async function courselore({
                                     <i class="bi bi-tag-fill"></i>
                                     Filtering by
                                     <i class="bi bi-tag"></i>
-                                    ${res.locals.tagFilter.name}
+                                    ${tagFilter.name}
                                   `}
                             </button>
                             <div hidden>
@@ -8100,8 +8100,7 @@ export default async function courselore({
                                 `}"
                               >
                                 $${res.locals.tags.map((tag) => {
-                                  const isTagFilter =
-                                    tag.id === res.locals.tagFilter?.id;
+                                  const isTagFilter = tag.id === tagFilter?.id;
                                   return html`
                                     <a
                                       href="?${qs.stringify({
@@ -8124,7 +8123,7 @@ export default async function courselore({
                               </div>
                             </div>
                           </div>
-                          $${res.locals.tagFilter === undefined
+                          $${tagFilter === undefined
                             ? html``
                             : html`
                                 <a
