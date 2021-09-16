@@ -43,70 +43,74 @@
 ### Polish Existing Features
 
 - Search:
+
   - Move query closer to template (save query on administrative pages where it isn’t necessary, and improve locality of code).
+
     - `res.locals.tagFilter`.
     - `res.locals.conversations`.
-```ts
-    conversations: {
-      id: number;
-      reference: string;
-      title: string;
-      nextMessageReference: number;
-      type: ConversationType;
-      pinnedAt: string | null;
-      staffOnlyAt: string | null;
-      createdAt: string;
-      anonymousAt: string | null;
-      updatedAt: string | null;
-      authorEnrollment:
-        | {
+    - ```ts
+          conversations: {
             id: number;
-            user: {
-              id: number;
-              email: string;
-              name: string;
-              avatar: string | null;
-              biography: string | null;
-            };
             reference: string;
-            role: EnrollmentRole;
-          }
-        | GhostEnrollment;
-      messagesCount: number;
-      readingsCount: number;
-      endorsements: {
-        id: number;
-        enrollment:
-          | {
+            title: string;
+            nextMessageReference: number;
+            type: ConversationType;
+            pinnedAt: string | null;
+            staffOnlyAt: string | null;
+            createdAt: string;
+            anonymousAt: string | null;
+            updatedAt: string | null;
+            authorEnrollment:
+              | {
+                  id: number;
+                  user: {
+                    id: number;
+                    email: string;
+                    name: string;
+                    avatar: string | null;
+                    biography: string | null;
+                  };
+                  reference: string;
+                  role: EnrollmentRole;
+                }
+              | GhostEnrollment;
+            messagesCount: number;
+            readingsCount: number;
+            endorsements: {
               id: number;
-              user: {
+              enrollment:
+                | {
+                    id: number;
+                    user: {
+                      id: number;
+                      email: string;
+                      name: string;
+                      avatar: string | null;
+                      biography: string | null;
+                    };
+                    reference: string;
+                    role: EnrollmentRole;
+                  }
+                | GhostEnrollment;
+            }[];
+            likesCount: number;
+            taggings: {
+              id: number;
+              tag: {
                 id: number;
-                email: string;
+                reference: string;
                 name: string;
-                avatar: string | null;
-                biography: string | null;
+                staffOnlyAt: string | null;
               };
-              reference: string;
-              role: EnrollmentRole;
-            }
-          | GhostEnrollment;
-      }[];
-      likesCount: number;
-      taggings: {
-        id: number;
-        tag: {
-          id: number;
-          reference: string;
-          name: string;
-          staffOnlyAt: string | null;
-        };
-      }[];
-    }[];
-```
+            }[];
+          }[];
+      ```
+
   - Include users in search.
   - Include snippets in search results.
   - Highlight search terms on the entire page.
   - Filters (for example, by conversation type).
+
 - Consistent colors on things like pins.
   - `bi-pin`.
   - `bi-award`.
@@ -231,6 +235,11 @@
 
 ### Infrastructure
 
+- Performance:
+  - n+1 queries:
+    - Single follow-up query with `IN` operator (but then you end up with a bunch of prepared statements in the cache).
+    - Use a temporary table instead of `IN`.
+    - Nest first query as a subquery and bundle all the information together, then deduplicate the 1–N relationships in the code.
 - An internal queue to guarantee email delivery.
 - `try.courselore.org` (reference https://moodle.org/demo)
 - Investigate why `kill -9` isn’t triggering the `await` in `development.js` (this could be a major issue in production when a process dies and the other isn’t killed to let them both be respawned).
