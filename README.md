@@ -40,23 +40,24 @@
 <details>
 <summary><strong>Backlog</strong></summary>
 
-### Minor Things We Should Do Right Away
+### Polish Existing Features
 
-- Enable emails on courselore.org.
-- Highlight search terms on the entire page.
-- Include users in search.
-- Include snippets in search results.
-- Filters (for example, by conversation type).
+- Search:
+  - Include users in search.
+  - Include snippets in search results.
+  - Highlight search terms on the entire page.
+  - Filters (for example, by conversation type).
 - Consistent colors on things like pins.
   - `bi-pin`.
   - `bi-award`.
   - `bi-eye-slash`.
   - `conversationTypeIcon`.
   - `bi-hand-thumbs-up`.
-- Improve the presentation of anonymity for people who get to see the true identity of the person (the person themselves, and staff).
+- Anonymity:
+  - Improve the presentation of anonymity for people who get to see the true identity of the person (the person themselves, and staff).
+  - Remove reference to anonymous student in the reply button.
 - Let staff change the conversation from staff-only to regular.
 - Fix private questions from students to staff. (Don’t `WHERE` away conversations if you’ve been part of it.)
-- Remove reference to anonymous student in the reply button.
 - Mathematics, code, and possibly other things are overflowing in small screens.
 - Improve display of endorsements.
 - Manage answer badges more intelligently (answered at all, answered by staff).
