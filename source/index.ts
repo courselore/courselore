@@ -7775,20 +7775,20 @@ export default async function courselore({
     body: HTML;
     onlyConversationLayoutSidebarOnSmallScreen?: boolean;
   }): HTML => {
-    if (typeof req.query.tag === "string")
-      res.locals.tagFilter = res.locals.tags.find(
-        (tag) => tag.reference === req.query.tag
-      );
-
     const search =
-      req.query.search === undefined
-        ? undefined
-        : req.query.search
+      req.query.search === "string"
+        ? req.query.search
             .split(/\s+/)
             .map((phrase) => `"${phrase.replaceAll('"', '""')}"`)
-            .join(" ");
+            .join(" ")
+        : undefined;
 
-    res.locals.conversations = database
+    const tagFilter =
+      typeof req.query.tag === "string"
+        ? res.locals.tags.find((tag) => tag.reference === req.query.tag)
+        : undefined;
+
+    const conversations = database
       .all<{
         id: number;
         reference: string;
