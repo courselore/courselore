@@ -10488,7 +10488,7 @@ ${value}</textarea
 
   interface IsConversationAccessibleMiddlewareLocals
     extends IsEnrolledInCourseMiddlewareLocals {
-    conversation: IsEnrolledInCourseMiddlewareLocals["conversations"][number];
+    conversation: NonNullable<ReturnType<typeof getConversation>>;
     messages: {
       id: number;
       createdAt: string;
