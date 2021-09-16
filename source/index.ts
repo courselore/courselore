@@ -4812,6 +4812,8 @@ export default async function courselore({
     extends IsSignedInMiddlewareLocals {
     enrollment: IsSignedInMiddlewareLocals["enrollments"][number];
     course: IsSignedInMiddlewareLocals["enrollments"][number]["course"];
+    conversationsCount: number;
+    conversationTypes: ConversationType[];
     tags: {
       id: number;
       reference: string;
@@ -4874,8 +4876,6 @@ export default async function courselore({
         };
       }[];
     }[];
-    conversationsCount: number;
-    conversationTypes: ConversationType[];
   }
   const isEnrolledInCourseMiddleware: express.RequestHandler<
     { courseReference: string },
@@ -4893,6 +4893,31 @@ export default async function courselore({
       if (enrollment === undefined) return next("route");
       res.locals.enrollment = enrollment;
       res.locals.course = enrollment.course;
+
+      res.locals.conversationsCount = database.get<{
+        count: number;
+      }>(
+        sql`
+          SELECT COUNT(*) AS "count"
+          FROM "conversations"
+          WHERE "course" = ${res.locals.course.id}
+          $${
+            res.locals.enrollment.role !== "staff"
+              ? sql`
+                  AND "conversations"."staffOnlyAt" IS NULL
+                `
+              : sql``
+          }
+        `
+      )!.count;
+
+      res.locals.conversationTypes = conversationTypes.filter(
+        (conversationType) =>
+          !(
+            conversationType === "announcement" &&
+            res.locals.enrollment.role !== "staff"
+          )
+      );
 
       res.locals.tags = database.all<{
         id: number;
@@ -5014,31 +5039,6 @@ export default async function courselore({
         )
         // FIXME: Try to get rid of these n+1 queries.
         .map((conversation) => getConversationMetadata(req, res, conversation));
-
-      res.locals.conversationsCount = database.get<{
-        count: number;
-      }>(
-        sql`
-          SELECT COUNT(*) AS "count"
-          FROM "conversations"
-          WHERE "course" = ${res.locals.course.id}
-          $${
-            res.locals.enrollment.role !== "staff"
-              ? sql`
-                  AND "conversations"."staffOnlyAt" IS NULL
-                `
-              : sql``
-          }
-        `
-      )!.count;
-
-      res.locals.conversationTypes = conversationTypes.filter(
-        (conversationType) =>
-          !(
-            conversationType === "announcement" &&
-            res.locals.enrollment.role !== "staff"
-          )
-      );
 
       next();
     },
