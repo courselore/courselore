@@ -2676,8 +2676,7 @@ export default async function courselore({
 
   if (liveReload)
     app.get<{}, any, {}, {}, {}>("/live-reload", (req, res, next) => {
-      // FIXME: https://github.com/caddyserver/caddy/issues/4247
-      res.type("text/event-stream").write(":\n\n");
+      res.type("text/event-stream").flushHeaders();
     });
 
   // FIXME: This only works for a single process. To support multiple processes poll the database for updates or use a message broker mechanism (ZeroMQ seems like a good candidate).
@@ -2702,8 +2701,7 @@ export default async function courselore({
       res.on("close", () => {
         eventDestinations.delete(res);
       });
-      // FIXME: https://github.com/caddyserver/caddy/issues/4247
-      res.type("text/event-stream").write(":\n\n");
+      res.type("text/event-stream").flushHeaders();
     },
   ];
 
