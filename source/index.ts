@@ -706,8 +706,7 @@ export default async function courselore({
                   liveReload.addEventListener("error", (event) => {
                     liveReload.close();
                     (async function reload() {
-                      if ((await fetch("${url}/live-reload")).ok)
-                        location.reload();
+                      if ((await fetch("${url}")).ok) location.reload();
                       else window.setTimeout(reload, 200);
                     })();
                   });
