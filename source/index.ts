@@ -273,7 +273,6 @@ export default async function courselore({
         "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
         UNIQUE ("message", "enrollment") ON CONFLICT IGNORE
       );
-      CREATE INDEX "readingsMessageIndex" ON "readings" ("message");
 
       CREATE TABLE "endorsements" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
