@@ -8149,7 +8149,7 @@ export default async function courselore({
                     : html``}
                 </div>
 
-                $${res.locals.conversations.length === 0
+                $${conversations.length === 0
                   ? html`
                       <div
                         style="${css`
@@ -8166,7 +8166,7 @@ export default async function courselore({
                     `
                   : html`
                       <div>
-                        $${res.locals.conversations.map((conversation) => {
+                        $${conversations.map((conversation) => {
                           const isSelected =
                             conversation.id === res.locals.conversation?.id;
                           return html`
