@@ -43,6 +43,10 @@
 ### Polish Existing Features
 
 - Search:
+  - Move query closer to template (save query on administrative pages where it isn’t necessary, and improve locality of code).
+    - `res.locals.conversations`.
+    - `res.locals.conversationsCount`.
+    - `res.locals.tagFilter`.
   - Include users in search.
   - Include snippets in search results.
   - Highlight search terms on the entire page.

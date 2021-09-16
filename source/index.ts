@@ -4810,8 +4810,8 @@ export default async function courselore({
 
   interface IsEnrolledInCourseMiddlewareLocals
     extends IsSignedInMiddlewareLocals {
-    course: IsSignedInMiddlewareLocals["enrollments"][number]["course"];
     enrollment: IsSignedInMiddlewareLocals["enrollments"][number];
+    course: IsSignedInMiddlewareLocals["enrollments"][number]["course"];
     tags: {
       id: number;
       reference: string;
@@ -4886,12 +4886,13 @@ export default async function courselore({
   >[] = [
     ...isSignedInMiddleware,
     (req, res, next) => {
-      for (const enrollment of res.locals.enrollments)
-        if (enrollment.course.reference === req.params.courseReference) {
-          res.locals.enrollment = enrollment;
-          res.locals.course = enrollment.course;
-        }
-      if (res.locals.enrollment === undefined) return next("route");
+      const enrollment = res.locals.enrollments.find(
+        (enrollment) =>
+          enrollment.course.reference === req.params.courseReference
+      );
+      if (enrollment === undefined) return next("route");
+      res.locals.enrollment = enrollment;
+      res.locals.course = enrollment.course;
 
       res.locals.tags = database.all<{
         id: number;
