@@ -43,6 +43,7 @@
 ### Polish Existing Features
 
 - Search:
+  - Finish reviewing `getConversation`.
   - Include users in search.
   - Include snippets in search results.
   - Highlight search terms on the entire page.
