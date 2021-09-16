@@ -7790,92 +7790,86 @@ export default async function courselore({
 
     const conversations = database
       .all<{
-        id: number;
         reference: string;
-        title: string;
-        nextMessageReference: number;
-        type: ConversationType;
-        pinnedAt: string | null;
-        staffOnlyAt: string | null;
       }>(
         sql`
-            SELECT "conversations"."id",
-                   "conversations"."reference",
-                   "conversations"."title",
-                   "conversations"."nextMessageReference",
-                   "conversations"."type",
-                   "conversations"."pinnedAt",
-                   "conversations"."staffOnlyAt"
-                   $${
-                     search === undefined
-                       ? sql``
-                       : sql`
-                          , coalesce("conversationsSearchResult"."snippet", "messagesSearchResult"."snippet") AS "snippet"
-                      `
-                   }
-            FROM "conversations"
-            $${
-              search === undefined
-                ? sql``
-                : sql`
-                  LEFT JOIN (
-                    SELECT "rowid",
-                           "rank",
-                           snippet("conversationsSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "snippet"
-                    FROM "conversationsSearch"
-                    WHERE "conversationsSearch" MATCH ${search}
-                  ) AS "conversationsSearchResult" ON "conversations"."id" = "conversationsSearchResult"."rowid"
+          SELECT "conversations"."reference"
+                  $${
+                    search === undefined
+                      ? sql``
+                      : sql`
+                        , coalesce("conversationsSearchResult"."snippet", "messagesSearchResult"."snippet") AS "snippet"
+                    `
+                  }
+          FROM "conversations"
+          $${
+            search === undefined
+              ? sql``
+              : sql`
+                LEFT JOIN (
+                  SELECT "rowid",
+                          "rank",
+                          snippet("conversationsSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "snippet"
+                  FROM "conversationsSearch"
+                  WHERE "conversationsSearch" MATCH ${search}
+                ) AS "conversationsSearchResult" ON "conversations"."id" = "conversationsSearchResult"."rowid"
 
-                  LEFT JOIN (
-                    SELECT "messages"."conversation" AS "conversationId",
-                           "rank",
-                           snippet("messagesSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "snippet"
-                    FROM "messagesSearch"
-                    JOIN "messages" ON "messagesSearch"."rowid" = "messages"."id"
-                    WHERE "messagesSearch" MATCH ${search}
-                  ) AS "messagesSearchResult" ON "conversations"."id" = "messagesSearchResult"."conversationId"
+                LEFT JOIN (
+                  SELECT "messages"."conversation" AS "conversationId",
+                          "rank",
+                          snippet("messagesSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "snippet"
+                  FROM "messagesSearch"
+                  JOIN "messages" ON "messagesSearch"."rowid" = "messages"."id"
+                  WHERE "messagesSearch" MATCH ${search}
+                ) AS "messagesSearchResult" ON "conversations"."id" = "messagesSearchResult"."conversationId"
+              `
+          }
+          $${
+            tagFilter === undefined
+              ? sql``
+              : sql`
+                  JOIN "taggings" ON "conversations"."id" = "taggings"."conversation" AND
+                                      "taggings"."tag" = ${tagFilter.id}
                 `
-            }
-            $${
-              tagFilter === undefined
-                ? sql``
-                : sql`
-                    JOIN "taggings" ON "conversations"."id" = "taggings"."conversation" AND
-                                       "taggings"."tag" = ${tagFilter.id}
-                  `
-            }
-            WHERE "conversations"."course" = ${res.locals.course.id}
-            $${
-              search === undefined
-                ? sql``
-                : sql`
-                  AND (
-                    "conversationsSearchResult"."rank" IS NOT NULL OR
-                    "messagesSearchResult"."rank" IS NOT NULL
-                  )
-                `
-            }
-            $${
-              res.locals.enrollment.role !== "staff"
-                ? sql`
-                    AND "conversations"."staffOnlyAt" IS NULL
-                  `
-                : sql``
-            }
-            GROUP BY "conversations"."id"
-            ORDER BY "conversations"."pinnedAt" IS NOT NULL DESC,
-                     $${
-                       search === undefined
-                         ? sql``
-                         : sql`
-                            min(coalesce("conversationsSearchResult"."rank", 0), coalesce(min("messagesSearchResult"."rank"), 0)) ASC,
-                          `
-                     }
-                     "conversations"."id" DESC
-          `
+          }
+          WHERE "conversations"."course" = ${res.locals.course.id}
+          $${
+            search === undefined
+              ? sql``
+              : sql`
+                AND (
+                  "conversationsSearchResult"."rank" IS NOT NULL OR
+                  "messagesSearchResult"."rank" IS NOT NULL
+                )
+              `
+          }
+          GROUP BY "conversations"."id"
+          ORDER BY "conversations"."pinnedAt" IS NOT NULL DESC,
+                    $${
+                      search === undefined
+                        ? sql``
+                        : sql`
+                          min(coalesce("conversationsSearchResult"."rank", 0), coalesce(min("messagesSearchResult"."rank"), 0)) ASC,
+                        `
+                    }
+                    "conversations"."id" DESC
+        `
       )
       // FIXME: Try to get rid of these n+1 queries.
-      .map((conversation) => getConversation(req, res, conversation));
+      .flatMap((conversationRow) => {
+        const conversation = getConversation(
+          req,
+          res,
+          conversationRow.reference
+        );
+        if (conversation === undefined) return [];
+        return [
+          {
+            ...conversationRow,
+            ...conversation,
+          },
+        ];
+      });
 
     return applicationLayout({
       req,
@@ -8562,6 +8556,132 @@ export default async function courselore({
         }[];
       }
     | undefined => {
+      /* conversation: {
+        id: number;
+        reference: string;
+        title: string;
+        nextMessageReference: number;
+        type: ConversationType;
+        pinnedAt: string | null;
+        staffOnlyAt: string | null;
+      } */
+    database.get<{
+      id: number;
+      reference: string;
+      title: string;
+      nextMessageReference: number;
+      type: ConversationType;
+      pinnedAt: string | null;
+      staffOnlyAt: string | null;
+    }>(
+      sql`
+          SELECT "conversations"."id",
+                 "conversations"."reference",
+                 "conversations"."title",
+                 "conversations"."nextMessageReference",
+                 "conversations"."type",
+                 "conversations"."pinnedAt",
+                 "conversations"."staffOnlyAt"
+          FROM "conversations"
+          WHERE "conversations"."course" = ${res.locals.course.id} AND
+                "conversations"."reference" = ${
+                  req.params.conversationReference
+                }
+                $${
+                  res.locals.enrollment.role !== "staff"
+                    ? sql`
+                        AND "conversations"."staffOnlyAt" IS NULL
+                      `
+                    : sql``
+                }
+        `
+    );
+    database.all<{
+      id: number;
+      reference: string;
+      title: string;
+      nextMessageReference: number;
+      type: ConversationType;
+      pinnedAt: string | null;
+      staffOnlyAt: string | null;
+    }>(
+      sql`
+            SELECT "conversations"."id",
+                   "conversations"."reference",
+                   "conversations"."title",
+                   "conversations"."nextMessageReference",
+                   "conversations"."type",
+                   "conversations"."pinnedAt",
+                   "conversations"."staffOnlyAt"
+                   $${
+                     search === undefined
+                       ? sql``
+                       : sql`
+                          , coalesce("conversationsSearchResult"."snippet", "messagesSearchResult"."snippet") AS "snippet"
+                      `
+                   }
+            FROM "conversations"
+            $${
+              search === undefined
+                ? sql``
+                : sql`
+                  LEFT JOIN (
+                    SELECT "rowid",
+                           "rank",
+                           snippet("conversationsSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "snippet"
+                    FROM "conversationsSearch"
+                    WHERE "conversationsSearch" MATCH ${search}
+                  ) AS "conversationsSearchResult" ON "conversations"."id" = "conversationsSearchResult"."rowid"
+
+                  LEFT JOIN (
+                    SELECT "messages"."conversation" AS "conversationId",
+                           "rank",
+                           snippet("messagesSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "snippet"
+                    FROM "messagesSearch"
+                    JOIN "messages" ON "messagesSearch"."rowid" = "messages"."id"
+                    WHERE "messagesSearch" MATCH ${search}
+                  ) AS "messagesSearchResult" ON "conversations"."id" = "messagesSearchResult"."conversationId"
+                `
+            }
+            $${
+              tagFilter === undefined
+                ? sql``
+                : sql`
+                    JOIN "taggings" ON "conversations"."id" = "taggings"."conversation" AND
+                                       "taggings"."tag" = ${tagFilter.id}
+                  `
+            }
+            WHERE "conversations"."course" = ${res.locals.course.id}
+            $${
+              search === undefined
+                ? sql``
+                : sql`
+                  AND (
+                    "conversationsSearchResult"."rank" IS NOT NULL OR
+                    "messagesSearchResult"."rank" IS NOT NULL
+                  )
+                `
+            }
+            $${
+              res.locals.enrollment.role !== "staff"
+                ? sql`
+                    AND "conversations"."staffOnlyAt" IS NULL
+                  `
+                : sql``
+            }
+            GROUP BY "conversations"."id"
+            ORDER BY "conversations"."pinnedAt" IS NOT NULL DESC,
+                     $${
+                       search === undefined
+                         ? sql``
+                         : sql`
+                            min(coalesce("conversationsSearchResult"."rank", 0), coalesce(min("messagesSearchResult"."rank"), 0)) ASC,
+                          `
+                     }
+                     "conversations"."id" DESC
+          `
+    );
+
     const originalMessage = database.get<{
       createdAt: string;
       anonymousAt: string | null;
@@ -10395,39 +10515,13 @@ ${value}</textarea
   >[] = [
     ...isEnrolledInCourseMiddleware,
     (req, res, next) => {
-      const conversation = database.get<{
-        id: number;
-        reference: string;
-        title: string;
-        nextMessageReference: number;
-        type: ConversationType;
-        pinnedAt: string | null;
-        staffOnlyAt: string | null;
-      }>(
-        sql`
-          SELECT "conversations"."id",
-                 "conversations"."reference",
-                 "conversations"."title",
-                 "conversations"."nextMessageReference",
-                 "conversations"."type",
-                 "conversations"."pinnedAt",
-                 "conversations"."staffOnlyAt"
-          FROM "conversations"
-          WHERE "conversations"."course" = ${res.locals.course.id} AND
-                "conversations"."reference" = ${
-                  req.params.conversationReference
-                }
-                $${
-                  res.locals.enrollment.role !== "staff"
-                    ? sql`
-                        AND "conversations"."staffOnlyAt" IS NULL
-                      `
-                    : sql``
-                }
-        `
+      const conversation = getConversation(
+        req,
+        res,
+        req.params.conversationReference
       );
       if (conversation === undefined) return next("route");
-      res.locals.conversation = getConversation(req, res, conversation);
+      res.locals.conversation = conversation;
 
       res.locals.messages = database
         .all<{

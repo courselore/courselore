@@ -43,28 +43,13 @@
 ### Polish Existing Features
 
 - Search:
-
   - Move query closer to template (save query on administrative pages where it isn’t necessary, and improve locality of code).
-
     - `res.locals.tagFilter`.
     - `res.locals.conversations`.
-    - ```ts
-      conversation: {
-        id: number;
-        reference: string;
-        title: string;
-        nextMessageReference: number;
-        type: ConversationType;
-        pinnedAt: string | null;
-        staffOnlyAt: string | null;
-      }
-      ```
-
   - Include users in search.
   - Include snippets in search results.
   - Highlight search terms on the entire page.
   - Filters (for example, by conversation type).
-
 - Consistent colors on things like pins.
   - `bi-pin`.
   - `bi-award`.
