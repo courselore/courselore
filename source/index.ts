@@ -7797,8 +7797,11 @@ export default async function courselore({
                     search === undefined
                       ? sql``
                       : sql`
-                        , coalesce("conversationsSearchResult"."snippet", "messagesSearchResult"."snippet") AS "snippet"
-                    `
+                          ,
+                          "usersSearchResult"."highlight" AS "usersSearchResultHighlight",
+                          "conversationsSearchResult"."highlight" AS "conversationsSearchResultHighlight",
+                          "messagesSearchResult"."snippet" AS "messagesSearchResultSnippet"
+                        `
                   }
           FROM "conversations"
           $${
@@ -7806,17 +7809,28 @@ export default async function courselore({
               ? sql``
               : sql`
                 LEFT JOIN (
+                  SELECT "messages"."conversation" AS "conversationId",
+                         "usersSearch"."rank" AS "rank",
+                         highlight("usersSearch", -1, '<span class="search-result-highlight">', '</span>') AS "highlight"
+                  FROM "usersSearch"
+                  JOIN "users" ON "usersSearch"."rowid" = "users"."id"
+                  JOIN "enrollments" ON "users"."id" = "enrollments"."user"
+                  JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment"
+                  WHERE "usersSearch" MATCH ${search}
+                ) AS "usersSearchResult" ON "conversations"."id" = "usersSearchResult"."conversationId"
+
+                LEFT JOIN (
                   SELECT "rowid",
-                          "rank",
-                          snippet("conversationsSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "snippet"
+                         "rank",
+                         highlight("conversationsSearch", -1, '<span class="search-result-highlight">', '</span>') AS "highlight"
                   FROM "conversationsSearch"
                   WHERE "conversationsSearch" MATCH ${search}
                 ) AS "conversationsSearchResult" ON "conversations"."id" = "conversationsSearchResult"."rowid"
 
                 LEFT JOIN (
                   SELECT "messages"."conversation" AS "conversationId",
-                          "rank",
-                          snippet("messagesSearch", -1, '<span class="search-result">', '</span>', '…', 10) AS "snippet"
+                         "messagesSearch"."rank" AS "rank",
+                         snippet("messagesSearch", -1, '<span class="search-result-highlight">', '</span>', '…', 10) AS "snippet"
                   FROM "messagesSearch"
                   JOIN "messages" ON "messagesSearch"."rowid" = "messages"."id"
                   WHERE "messagesSearch" MATCH ${search}
