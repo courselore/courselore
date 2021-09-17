@@ -9504,9 +9504,9 @@ export default async function courselore({
                             `}"
                             />
                           </div>
-                          <div
-                            class="mention-user-search--results dropdown-menu"
-                          ></div>
+                          <div class="dropdown-menu">
+                            <div class="mention-user-search--results"></div>
+                          </div>
                         </div>
                       </div>
                     </div>
