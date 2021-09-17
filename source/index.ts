@@ -8646,96 +8646,62 @@ export default async function courselore({
     )!.readingsCount;
 
     const endorsements =
-      conversation.type !== "question"
-        ? []
-        : database
-            .all<{
-              id: number;
-              enrollmentId: number | null;
-              userId: number | null;
-              userEmail: string | null;
-              userName: string | null;
-              userAvatar: string | null;
-              userBiography: string | null;
-              enrollmentReference: string | null;
-              enrollmentRole: EnrollmentRole | null;
-            }>(
-              sql`
-                SELECT "endorsements"."id",
-                       "enrollments"."id" AS "enrollmentId",
-                       "users"."id" AS "userId",
-                       "users"."email" AS "userEmail",
-                       "users"."name" AS "userName",
-                       "users"."avatar" AS "userAvatar",
-                       "users"."biography" AS "userBiography",      
-                       "enrollments"."reference" AS "enrollmentReference",
-                       "enrollments"."role" AS "enrollmentRole"
-                FROM "endorsements"
-                JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
-                JOIN "users" ON "enrollments"."user" = "users"."id"
-                JOIN "messages" ON "endorsements"."message" = "messages"."id"
-                WHERE "messages"."conversation" = ${conversation.id}
-                ORDER BY "endorsements"."id" ASC
-              `
-            )
-            .map((endorsement) => ({
-              id: endorsement.id,
-              enrollment:
-                endorsement.enrollmentId !== null &&
-                endorsement.userId !== null &&
-                endorsement.userEmail !== null &&
-                endorsement.userName !== null &&
-                endorsement.enrollmentReference !== null &&
-                endorsement.enrollmentRole !== null
-                  ? {
-                      id: endorsement.enrollmentId,
-                      user: {
-                        id: endorsement.userId,
-                        email: endorsement.userEmail,
-                        name: endorsement.userName,
-                        avatar: endorsement.userAvatar,
-                        biography: endorsement.userBiography,
-                      },
-                      reference: endorsement.enrollmentReference,
-                      role: endorsement.enrollmentRole,
-                    }
-                  : ghostEnrollment,
-            }));
+      conversation.type === "question"
+        ? database.all<{
+            id: number;
+            enrollmentId: number | null;
+            userId: number | null;
+            userEmail: string | null;
+            userName: string | null;
+            userAvatar: string | null;
+            userBiography: string | null;
+            enrollmentReference: string | null;
+            enrollmentRole: EnrollmentRole | null;
+          }>(
+            sql`
+              SELECT "endorsements"."id",
+                     "enrollments"."id" AS "enrollmentId",
+                     "users"."id" AS "userId",
+                     "users"."email" AS "userEmail",
+                     "users"."name" AS "userName",
+                     "users"."avatar" AS "userAvatar",
+                     "users"."biography" AS "userBiography",      
+                     "enrollments"."reference" AS "enrollmentReference",
+                     "enrollments"."role" AS "enrollmentRole"
+              FROM "endorsements"
+              JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
+              JOIN "users" ON "enrollments"."user" = "users"."id"
+              JOIN "messages" ON "endorsements"."message" = "messages"."id"
+              WHERE "messages"."conversation" = ${conversation.id}
+              ORDER BY "endorsements"."id" ASC
+            `
+          )
+        : [];
 
-    const taggings = database
-      .all<{
-        id: number;
-        tagId: number;
-        tagReference: string;
-        tagName: string;
-        tagStaffOnlyAt: string | null;
-      }>(
-        sql`
-          SELECT "taggings"."id",
-                 "tags"."id" AS "tagId",
-                 "tags"."reference" AS "tagReference",
-                 "tags"."name" AS "tagName",
-                 "tags"."staffOnlyAt" AS "tagStaffOnlyAt"
-          FROM "taggings"
-          JOIN "tags" ON "taggings"."tag" = "tags"."id"
-          WHERE "taggings"."conversation" = ${conversation.id}
-          $${
-            res.locals.enrollment.role === "student"
-              ? sql`AND "tags"."staffOnlyAt" IS NULL`
-              : sql``
-          }
-          ORDER BY "tags"."id" ASC
-        `
-      )
-      .map((tagging) => ({
-        id: tagging.id,
-        tag: {
-          id: tagging.tagId,
-          reference: tagging.tagReference,
-          name: tagging.tagName,
-          staffOnlyAt: tagging.tagStaffOnlyAt,
-        },
-      }));
+    const taggings = database.all<{
+      id: number;
+      tagId: number;
+      tagReference: string;
+      tagName: string;
+      tagStaffOnlyAt: string | null;
+    }>(
+      sql`
+        SELECT "taggings"."id",
+                "tags"."id" AS "tagId",
+                "tags"."reference" AS "tagReference",
+                "tags"."name" AS "tagName",
+                "tags"."staffOnlyAt" AS "tagStaffOnlyAt"
+        FROM "taggings"
+        JOIN "tags" ON "taggings"."tag" = "tags"."id"
+        WHERE "taggings"."conversation" = ${conversation.id}
+        $${
+          res.locals.enrollment.role === "student"
+            ? sql`AND "tags"."staffOnlyAt" IS NULL`
+            : sql``
+        }
+        ORDER BY "tags"."id" ASC
+      `
+    );
 
     return {
       id: conversation.id,
@@ -8747,10 +8713,6 @@ export default async function courselore({
       staffOnlyAt: conversation.staffOnlyAt,
       createdAt: originalMessage.createdAt,
       anonymousAt: originalMessage.anonymousAt,
-      updatedAt:
-        mostRecentlyUpdatedMessage.updatedAt === originalMessage.createdAt
-          ? null
-          : mostRecentlyUpdatedMessage.updatedAt,
       authorEnrollment:
         originalMessage.authorEnrollmentId !== null &&
         originalMessage.authorUserId !== null &&
@@ -8771,11 +8733,45 @@ export default async function courselore({
               role: originalMessage.authorEnrollmentRole,
             }
           : ghostEnrollment,
+      updatedAt:
+        mostRecentlyUpdatedMessage.updatedAt === originalMessage.createdAt
+          ? null
+          : mostRecentlyUpdatedMessage.updatedAt,
       messagesCount,
       readingsCount,
-      endorsements,
+      endorsements: endorsements.map((endorsement) => ({
+        id: endorsement.id,
+        enrollment:
+          endorsement.enrollmentId !== null &&
+          endorsement.userId !== null &&
+          endorsement.userEmail !== null &&
+          endorsement.userName !== null &&
+          endorsement.enrollmentReference !== null &&
+          endorsement.enrollmentRole !== null
+            ? {
+                id: endorsement.enrollmentId,
+                user: {
+                  id: endorsement.userId,
+                  email: endorsement.userEmail,
+                  name: endorsement.userName,
+                  avatar: endorsement.userAvatar,
+                  biography: endorsement.userBiography,
+                },
+                reference: endorsement.enrollmentReference,
+                role: endorsement.enrollmentRole,
+              }
+            : ghostEnrollment,
+      })),
       likesCount: originalMessage.likesCount,
-      taggings,
+      taggings: taggings.map((tagging) => ({
+        id: tagging.id,
+        tag: {
+          id: tagging.tagId,
+          reference: tagging.tagReference,
+          name: tagging.tagName,
+          staffOnlyAt: tagging.tagStaffOnlyAt,
+        },
+      })),
     };
   };
 
