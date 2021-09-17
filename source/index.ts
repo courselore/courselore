@@ -9485,7 +9485,7 @@ export default async function courselore({
                                   }
                                   this.shouldUpdateSearchResultsAgain = false;
                                   this.isUpdatingSearchResults = true;
-                                  this.closest(".mention-user").querySelector(".mention-user--results").innerHTML =
+                                  this.closest(".mention-user").querySelector(".mention-user--options--search").innerHTML =
                                     this.value.trim() === ""
                                     ? ""
                                     : await (
@@ -9504,8 +9504,46 @@ export default async function courselore({
                               `}"
                             />
                           </div>
-                          <div class="dropdown-menu">
-                            <div class="mention-user--results"></div>
+                          <div
+                            class="mention-user--options dropdown-menu"
+                            data-ondomcontentloaded="${javascript`
+                              const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                              this.selectOption = (mention) => {
+                                textFieldEdit.wrapSelection(element, "@" + mention, "");
+                                element.focus();
+                                tippy.hideAll();
+                                textFieldEdit.set(this.closest(".mention-user").querySelector(".mention-user--name"), "");
+                              };
+                            `}"
+                          >
+                            <button
+                              type="button"
+                              class="dropdown-menu--item button button--transparent"
+                              onclick="${javascript`
+                                this.closest(".mention-user--options").selectOption("all");
+                              `}"
+                            >
+                              Everyone on the Conversation
+                            </button>
+                            <button
+                              type="button"
+                              class="dropdown-menu--item button button--transparent"
+                              onclick="${javascript`
+                                this.closest(".mention-user--options").selectOption("staff");
+                              `}"
+                            >
+                              Staff
+                            </button>
+                            <button
+                              type="button"
+                              class="dropdown-menu--item button button--transparent"
+                              onclick="${javascript`
+                                this.closest(".mention-user--options").selectOption("students");
+                              `}"
+                            >
+                              Students
+                            </button>
+                            <div class="mention-user--options--search"></div>
                           </div>
                         </div>
                       </div>
@@ -9763,11 +9801,7 @@ ${value}</textarea
             type="button"
             class="dropdown-menu--item button button--transparent"
             onclick="${javascript`
-              const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
-              textFieldEdit.wrapSelection(element, "@3453278", "");
-              element.focus();
-              tippy.hideAll();
-              textFieldEdit.set(this.closest(".mention-user").querySelector(".mention-user--name"), "");
+              this.closest(".mention-user--options").selectOption("12348");
             `}"
           >
             Hello ${req.body.name}
