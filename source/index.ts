@@ -5040,9 +5040,9 @@ export default async function courselore({
                  "invitations"."name",
                  "invitations"."role"
           FROM "invitations"
-          JOIN "courses" ON "invitations"."course" = "courses"."id"
-          WHERE "courses"."reference" = ${req.params.courseReference} AND
-                "invitations"."reference" = ${req.params.invitationReference}
+          JOIN "courses" ON "invitations"."course" = "courses"."id" AND
+                            "courses"."reference" = ${req.params.courseReference}
+          WHERE "invitations"."reference" = ${req.params.invitationReference}
         `
       );
       if (invitation === undefined) return next("route");
@@ -6330,9 +6330,9 @@ export default async function courselore({
                   SELECT EXISTS(
                     SELECT 1
                     FROM "enrollments"
-                    JOIN "users" ON "enrollments"."user" = "users"."id"
-                    WHERE "enrollments"."course" = ${res.locals.course.id} AND
-                          "users"."email" = ${email}
+                    JOIN "users" ON "enrollments"."user" = "users"."id" AND
+                                    "users"."email" = ${email}
+                    WHERE "enrollments"."course" = ${res.locals.course.id}
                   ) AS "exists"
                 `
               )!.exists === 1
@@ -8656,9 +8656,9 @@ export default async function courselore({
       sql`
         SELECT COUNT(*) AS "readingsCount"
         FROM "readings"
-        JOIN "messages" ON "readings"."message" = "messages"."id"
-        WHERE "messages"."conversation" = ${conversation.id} AND
-              "readings"."enrollment" = ${res.locals.enrollment.id}
+        JOIN "messages" ON "readings"."message" = "messages"."id" AND
+                           "messages"."conversation" = ${conversation.id}
+        WHERE "readings"."enrollment" = ${res.locals.enrollment.id}
       `
     )!.readingsCount;
 
@@ -8688,8 +8688,8 @@ export default async function courselore({
               FROM "endorsements"
               JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
               JOIN "users" ON "enrollments"."user" = "users"."id"
-              JOIN "messages" ON "endorsements"."message" = "messages"."id"
-              WHERE "messages"."conversation" = ${conversation.id}
+              JOIN "messages" ON "endorsements"."message" = "messages"."id" AND
+                                 "messages"."conversation" = ${conversation.id}
               ORDER BY "endorsements"."id" ASC
             `
           )
@@ -8718,12 +8718,12 @@ export default async function courselore({
                 "tags"."staffOnlyAt" AS "tagStaffOnlyAt"
         FROM "taggings"
         JOIN "tags" ON "taggings"."tag" = "tags"."id"
-        WHERE "taggings"."conversation" = ${conversation.id}
         $${
           res.locals.enrollment.role === "student"
             ? sql`AND "tags"."staffOnlyAt" IS NULL`
             : sql``
         }
+        WHERE "taggings"."conversation" = ${conversation.id}
         ORDER BY "tags"."id" ASC
       `
     );
@@ -10389,9 +10389,9 @@ ${value}</textarea
             sql`
               SELECT "users"."email" AS "email"
               FROM "users"
-              JOIN "enrollments" ON "users"."id" = "enrollments"."user"
-              WHERE "users"."emailNotifications" = 'all-messages' AND
-                    "enrollments"."course" = ${res.locals.course.id}
+              JOIN "enrollments" ON "users"."id" = "enrollments"."user" AND
+                                    "enrollments"."course" = ${res.locals.course.id}
+              WHERE "users"."emailNotifications" = 'all-messages'
             `
           )
           .map((user) => user.email)
