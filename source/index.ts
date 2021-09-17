@@ -9478,15 +9478,18 @@ export default async function courselore({
                                 }
                                 this.shouldUpdateSearchResultsAgain = false;
                                 this.isUpdatingSearchResults = true;
-                                this.closest(".mention-user-search").querySelector(".mention-user-search--results").innerHTML = await (
-                                  await fetch(
-                                    "${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user",
-                                    {
-                                      method: "POST",
-                                      body: new URLSearchParams({ name: this.value }),
-                                    }
-                                  )
-                                ).text();
+                                this.closest(".mention-user-search").querySelector(".mention-user-search--results").innerHTML =
+                                  this.value.trim() === ""
+                                  ? ""
+                                  : await (
+                                    await fetch(
+                                      "${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user",
+                                      {
+                                        method: "POST",
+                                        body: new URLSearchParams({ name: this.value }),
+                                      }
+                                    )
+                                  ).text();
                                 this.isUpdatingSearchResults = false;
                                 if (this.shouldUpdateSearchResultsAgain) updateSearchResults();
                               };
