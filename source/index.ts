@@ -9467,32 +9467,29 @@ export default async function courselore({
                             autocomplete="off"
                             class="mention-user-search--name input--text"
                             data-ondomcontentloaded="${javascript`
-                              let isUpdatingSearchResults = false;
-                              let shouldUpdateSearchResultsAgain = false;
-                              this.updateSearchResults = async () => {
-                                if (isUpdatingSearchResults) {
-                                  shouldUpdateSearchResultsAgain = true;
+                              this.isUpdatingSearchResults = false;
+                              this.shouldUpdateSearchResultsAgain = false;
+                            `}"
+                            oninput="${javascript`
+                              (async function updateSearchResults() => {
+                                if (this.isUpdatingSearchResults) {
+                                  this.shouldUpdateSearchResultsAgain = true;
                                   return;
                                 }
-                                shouldUpdateSearchResultsAgain = false;
-                                isUpdatingSearchResults = true;
-                                this.closest(".mention-user-search").querySelector(
-                                  ".mention-user-search--results"
-                                ).innerHTML = await (
+                                this.shouldUpdateSearchResultsAgain = false;
+                                this.isUpdatingSearchResults = true;
+                                this.closest(".mention-user-search").querySelector(".mention-user-search--results").innerHTML = await (
                                   await fetch(
-                                    "${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search",
+                                    "${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user",
                                     {
                                       method: "POST",
                                       body: new URLSearchParams({ name: this.value }),
                                     }
                                   )
                                 ).text();
-                                isUpdatingSearchResults = false;
-                                if (shouldUpdateSearchResultsAgain) this.updateSearchResults();
-                              };
-                            `}"
-                            oninput="${javascript`
-                              this.updateSearchResults();
+                                this.isUpdatingSearchResults = false;
+                                if (this.shouldUpdateSearchResultsAgain) updateSearchResults();
+                              })();
                             `}"
                           />
                           <div class="mention-user-search--results"></div>
