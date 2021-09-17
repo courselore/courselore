@@ -9753,6 +9753,7 @@ ${value}</textarea
                                 "usersSearch" MATCH ${sanitizeSearch(
                                   req.body.name
                                 )}
+          WHERE "users"."id" != ${res.locals.user.id}
         `
       );
 
