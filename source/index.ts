@@ -9471,7 +9471,7 @@ export default async function courselore({
                               this.shouldUpdateSearchResultsAgain = false;
                             `}"
                             oninput="${javascript`
-                              (async function updateSearchResults() => {
+                              const updateSearchResults = async () => {
                                 if (this.isUpdatingSearchResults) {
                                   this.shouldUpdateSearchResultsAgain = true;
                                   return;
@@ -9489,7 +9489,8 @@ export default async function courselore({
                                 ).text();
                                 this.isUpdatingSearchResults = false;
                                 if (this.shouldUpdateSearchResultsAgain) updateSearchResults();
-                              })();
+                              };
+                              updateSearchResults();
                             `}"
                           />
                           <div class="mention-user-search--results"></div>
@@ -9717,6 +9718,23 @@ ${value}</textarea
       </div>
     </div>
   `;
+
+  app.post<
+    { courseReference: string },
+    any,
+    { name?: string },
+    {},
+    IsEnrolledInCourseMiddlewareLocals
+  >(
+    "/courses/:courseReference/markdown-editor/mention-user",
+    ...isEnrolledInCourseMiddleware,
+    (req, res, next) => {
+      if (typeof req.body.name !== "string" || req.body.name.trim() === "")
+        return next("validation");
+
+      res.send(html` <p>Hello ${req.body.name}</p> `);
+    }
+  );
 
   app.post<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/markdown-editor/attachments",
