@@ -8924,7 +8924,7 @@ export default async function courselore({
           <span
             class="button button--transparent"
             data-ondomcontentloaded="${javascript`
-              Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+shift+p", () => { this.click(); return false; });
+              Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+p", () => { this.click(); return false; });
               tippy(this, {
                 content: ${JSON.stringify(html`
                   <span class="keyboard-shortcut">
@@ -8972,7 +8972,7 @@ export default async function courselore({
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+alt+1", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+1", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
                       Heading 1
@@ -8989,7 +8989,7 @@ export default async function courselore({
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector('[name="content"]');
+                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
                   element.focus();
                 `}"
@@ -9000,7 +9000,7 @@ export default async function courselore({
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+alt+2", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+2", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
                       Heading 2
@@ -9017,7 +9017,7 @@ export default async function courselore({
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector('[name="content"]');
+                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
                   element.focus();
                 `}"
@@ -9028,7 +9028,7 @@ export default async function courselore({
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+alt+3", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+3", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
                       Heading 3
@@ -9045,7 +9045,7 @@ export default async function courselore({
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector('[name="content"]');
+                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
                   element.focus();
                 `}"
@@ -9058,7 +9058,7 @@ export default async function courselore({
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+b", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+b", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
                       Bold
@@ -9074,7 +9074,7 @@ export default async function courselore({
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector('[name="content"]');
+                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, "**");
                   element.focus();
                 `}"
@@ -9085,7 +9085,7 @@ export default async function courselore({
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+i", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+i", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
                       Italic
@@ -9101,7 +9101,7 @@ export default async function courselore({
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector('[name="content"]');
+                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, "_");
                   element.focus();
                 `}"
@@ -9112,7 +9112,7 @@ export default async function courselore({
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+k", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+k", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
                       Link
@@ -9128,7 +9128,7 @@ export default async function courselore({
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector('[name="content"]');
+                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, "[", "](https://example.com)");
                   element.focus();
                 `}"
@@ -9141,7 +9141,7 @@ export default async function courselore({
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+shift+8", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+8", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
                       Bulleted List
@@ -9158,7 +9158,7 @@ export default async function courselore({
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector('[name="content"]');
+                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- ", "\\n\\n");
                   element.focus();
                 `}"
@@ -9169,7 +9169,7 @@ export default async function courselore({
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+shift+7", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+7", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
                       Numbered List
@@ -9186,7 +9186,7 @@ export default async function courselore({
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector('[name="content"]');
+                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "1. ", "\\n\\n");
                   element.focus();
                 `}"
@@ -9197,7 +9197,7 @@ export default async function courselore({
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+shift+9", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+9", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
                       Checklist
@@ -9214,7 +9214,7 @@ export default async function courselore({
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector('[name="content"]');
+                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ", "\\n\\n");
                   element.focus();
                 `}"
@@ -9227,7 +9227,7 @@ export default async function courselore({
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+'", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+'", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
                       Quote
@@ -9243,7 +9243,7 @@ export default async function courselore({
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector('[name="content"]');
+                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> ", "\\n\\n");
                   element.focus();
                 `}"
@@ -9254,7 +9254,7 @@ export default async function courselore({
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+alt+t", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+t", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
                       Table
@@ -9271,7 +9271,7 @@ export default async function courselore({
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector('[name="content"]');
+                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                   const gapLength = element.selectionEnd - element.selectionStart + 2;
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "| ", " |  |\\n|" + "-".repeat(gapLength) + "|--|\\n|" + " ".repeat(gapLength) + "|  |\\n\\n");
                   element.focus();
@@ -9283,7 +9283,7 @@ export default async function courselore({
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+shift+d", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+d", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
                       Disclosure
@@ -9300,7 +9300,7 @@ export default async function courselore({
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector('[name="content"]');
+                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>", "</summary>\\n\\nContent\\n\\n</details>\\n\\n");
                   element.focus();
                 `}"
@@ -9313,7 +9313,7 @@ export default async function courselore({
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+e", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+e", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
                       Inline Code
@@ -9329,7 +9329,7 @@ export default async function courselore({
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector('[name="content"]');
+                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, "\`");
                   element.focus();
                 `}"
@@ -9340,7 +9340,7 @@ export default async function courselore({
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+shift+e", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+e", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
                       Code Block
@@ -9357,7 +9357,7 @@ export default async function courselore({
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector('[name="content"]');
+                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`language\\n", "\\n\`\`\`\\n\\n");
                   element.focus();
                 `}"
@@ -9370,7 +9370,7 @@ export default async function courselore({
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+alt+e", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+e", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
                       Inline Equation
@@ -9387,7 +9387,7 @@ export default async function courselore({
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector('[name="content"]');
+                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, "$");
                   element.focus();
                 `}"
@@ -9398,7 +9398,7 @@ export default async function courselore({
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+alt+shift+e", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+shift+e", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
                       Equation Block
@@ -9415,7 +9415,7 @@ export default async function courselore({
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector('[name="content"]');
+                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
                   element.focus();
                 `}"
@@ -9431,7 +9431,7 @@ export default async function courselore({
                         type="button"
                         class="button button--tight button--transparent"
                         data-ondomcontentloaded="${javascript`
-                          Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+shift+u", () => { this.click(); return false; });
+                          Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+u", () => { this.click(); return false; });
                           tippy(this, {
                             content: ${JSON.stringify(html`
                               Mention User
@@ -9517,7 +9517,7 @@ export default async function courselore({
                       type="button"
                       class="button button--tight button--transparent"
                       data-ondomcontentloaded="${javascript`
-                        Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+shift+j", () => { this.click(); return false; });
+                        Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+j", () => { this.click(); return false; });
                         tippy(this, {
                           content: ${JSON.stringify(html`
                             Refer to Conversation or Message
@@ -9547,7 +9547,7 @@ export default async function courselore({
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+shift+i", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+i", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
                       Image
@@ -9574,7 +9574,7 @@ export default async function courselore({
                 type="button"
                 class="button button--tight button--transparent"
                 data-ondomcontentloaded="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector('[name="content"]')).bind("mod+shift+k", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+k", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
                       Attachment
@@ -9605,7 +9605,7 @@ export default async function courselore({
                 data-skip-is-modified="true"
                 data-ondomcontentloaded="${javascript`
                   this.upload = async (fileList) => {
-                    const element = this.closest(".markdown-editor").querySelector('[name="content"]');
+                    const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                     // TODO: Give some visual indication of progress.
                     element.disabled = true;
                     const body = new FormData();
@@ -9670,7 +9670,7 @@ export default async function courselore({
           <textarea
             name="${name}"
             $${required ? html`required` : html``}
-            class="input--text input--text--textarea"
+            class="markdown-editor--write--textarea input--text input--text--textarea"
             style="${css`
               height: var(--space--20);
               transition-property: var(--transition-property--all);
@@ -9754,7 +9754,7 @@ ${value}</textarea
             type="button"
             class="dropdown-menu--item button button--transparent"
             onclick="${javascript`
-              this.closest(".markdown-editor").querySelector('[name="content"]')
+              this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")
             `}"
           >
             Hello ${req.body.name}
@@ -10243,7 +10243,7 @@ ${value}</textarea
                   <button
                     class="button button--full-width-on-small-screen button--blue"
                     data-ondomcontentloaded="${javascript`
-                      Mousetrap(this.closest("form").querySelector('[name="content"]')).bind("mod+enter", () => { this.click(); return false; });
+                      Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                       tippy(this, {
                         content: ${JSON.stringify(html`
                           <span class="keyboard-shortcut">
@@ -11762,7 +11762,7 @@ ${value}</textarea
                               const content = JSON.parse(this.closest("[data-content]").dataset.content);
                               const newMessage = document.querySelector(".new-message");
                               newMessage.querySelector(".markdown-editor--button--write").click();
-                              const element = newMessage.querySelector('[name="content"]');
+                              const element = newMessage.querySelector(".markdown-editor--write--textarea");
                               // TODO: Use something like ‘@Leandro-Facchinetti-2342’
                               textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
                                 message.authorEnrollment.reference
@@ -12084,7 +12084,7 @@ ${value}</textarea
                                   const content = JSON.parse(anchorElement.closest("[data-content]").dataset.content);
                                   const newMessage = document.querySelector(".new-message");
                                   newMessage.querySelector(".markdown-editor--button--write").click();
-                                  const element = newMessage.querySelector('[name="content"]');
+                                  const element = newMessage.querySelector(".markdown-editor--write--textarea");
                                   // TODO: Use something like ‘@Leandro-Facchinetti-2342’
                                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
                                     message.authorEnrollment.reference
@@ -12207,7 +12207,7 @@ ${value}</textarea
                                 <button
                                   class="button button--blue"
                                   data-ondomcontentloaded="${javascript`
-                                    Mousetrap(this.closest("form").querySelector('[name="content"]')).bind("mod+enter", () => { this.click(); return false; });
+                                    Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                                     tippy(this, {
                                       content: ${JSON.stringify(html`
                                         <span class="keyboard-shortcut">
@@ -12265,7 +12265,7 @@ ${value}</textarea
               <div
                 class="new-message"
                 data-ondomcontentloaded="${javascript`
-                  const content = this.querySelector('[name="content"]');
+                  const content = this.querySelector(".markdown-editor--write--textarea");
                   content.defaultValue =
                     JSON.parse(
                       localStorage.getItem("conversationsContentsInProgress") ?? "{}"
@@ -12353,7 +12353,7 @@ ${value}</textarea
                 <button
                   class="button button--full-width-on-small-screen button--blue"
                   data-ondomcontentloaded="${javascript`
-                      Mousetrap(this.closest("form").querySelector('[name="content"]')).bind("mod+enter", () => { this.click(); return false; });
+                      Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                       tippy(this, {
                         content: ${JSON.stringify(html`
                           <span class="keyboard-shortcut">
