@@ -9474,34 +9474,34 @@ export default async function courselore({
                               autocomplete="off"
                               class="mention-user--name input--text"
                               data-ondomcontentloaded="${javascript`
-                              this.isUpdatingSearchResults = false;
-                              this.shouldUpdateSearchResultsAgain = false;
-                            `}"
-                              oninput="${javascript`
-                              const updateSearchResults = async () => {
-                                if (this.isUpdatingSearchResults) {
-                                  this.shouldUpdateSearchResultsAgain = true;
-                                  return;
-                                }
-                                this.shouldUpdateSearchResultsAgain = false;
-                                this.isUpdatingSearchResults = true;
-                                this.closest(".mention-user").querySelector(".mention-user--results").innerHTML =
-                                  this.value.trim() === ""
-                                  ? ""
-                                  : await (
-                                    await fetch(
-                                      "${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search",
-                                      {
-                                        method: "POST",
-                                        body: new URLSearchParams({ name: this.value }),
-                                      }
-                                    )
-                                  ).text();
                                 this.isUpdatingSearchResults = false;
-                                if (this.shouldUpdateSearchResultsAgain) updateSearchResults();
-                              };
-                              updateSearchResults();
-                            `}"
+                                this.shouldUpdateSearchResultsAgain = false;
+                              `}"
+                              oninput="${javascript`
+                                const updateSearchResults = async () => {
+                                  if (this.isUpdatingSearchResults) {
+                                    this.shouldUpdateSearchResultsAgain = true;
+                                    return;
+                                  }
+                                  this.shouldUpdateSearchResultsAgain = false;
+                                  this.isUpdatingSearchResults = true;
+                                  this.closest(".mention-user").querySelector(".mention-user--results").innerHTML =
+                                    this.value.trim() === ""
+                                    ? ""
+                                    : await (
+                                      await fetch(
+                                        "${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search",
+                                        {
+                                          method: "POST",
+                                          body: new URLSearchParams({ name: this.value }),
+                                        }
+                                      )
+                                    ).text();
+                                  this.isUpdatingSearchResults = false;
+                                  if (this.shouldUpdateSearchResultsAgain) updateSearchResults();
+                                };
+                                updateSearchResults();
+                              `}"
                             />
                           </div>
                           <div class="dropdown-menu">
