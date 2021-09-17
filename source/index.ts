@@ -9449,7 +9449,7 @@ export default async function courselore({
                             trigger: "click",
                             interactive: true,
                             onShown: () => {
-                              mentionUserSearch.querySelector(".mention-user-search--name").focus();
+                              mentionUserSearch.querySelector(".mention-user--name").focus();
                             },
                           });        
                         `}"
@@ -9457,7 +9457,7 @@ export default async function courselore({
                         <i class="bi bi-at"></i>
                       </button>
                       <div hidden>
-                        <div class="mention-user-search">
+                        <div class="mention-user">
                           <p class="heading">
                             <i class="bi bi-at"></i>
                             Mention User
@@ -9472,7 +9472,7 @@ export default async function courselore({
                               type="text"
                               placeholder="Name…"
                               autocomplete="off"
-                              class="mention-user-search--name input--text"
+                              class="mention-user--name input--text"
                               data-ondomcontentloaded="${javascript`
                               this.isUpdatingSearchResults = false;
                               this.shouldUpdateSearchResultsAgain = false;
@@ -9485,12 +9485,12 @@ export default async function courselore({
                                 }
                                 this.shouldUpdateSearchResultsAgain = false;
                                 this.isUpdatingSearchResults = true;
-                                this.closest(".mention-user-search").querySelector(".mention-user-search--results").innerHTML =
+                                this.closest(".mention-user").querySelector(".mention-user--results").innerHTML =
                                   this.value.trim() === ""
                                   ? ""
                                   : await (
                                     await fetch(
-                                      "${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user",
+                                      "${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search",
                                       {
                                         method: "POST",
                                         body: new URLSearchParams({ name: this.value }),
@@ -9505,7 +9505,7 @@ export default async function courselore({
                             />
                           </div>
                           <div class="dropdown-menu">
-                            <div class="mention-user-search--results"></div>
+                            <div class="mention-user--results"></div>
                           </div>
                         </div>
                       </div>
@@ -9739,7 +9739,7 @@ ${value}</textarea
     {},
     IsEnrolledInCourseMiddlewareLocals
   >(
-    "/courses/:courseReference/markdown-editor/mention-user",
+    "/courses/:courseReference/markdown-editor/mention-user-search",
     ...isEnrolledInCourseMiddleware,
     (req, res, next) => {
       if (typeof req.body.name !== "string" || req.body.name.trim() === "")
@@ -9767,7 +9767,7 @@ ${value}</textarea
               textFieldEdit.wrapSelection(element, "@3453278", "");
               element.focus();
               tippy.hideAll();
-              textFieldEdit.set(this.closest(".mention-user-search").querySelector(".mention-user-search--name"), "");
+              textFieldEdit.set(this.closest(".mention-user").querySelector(".mention-user--name"), "");
             `}"
           >
             Hello ${req.body.name}
