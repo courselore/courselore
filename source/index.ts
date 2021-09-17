@@ -186,6 +186,7 @@ export default async function courselore({
         UNIQUE ("course", "reference")
       );
       CREATE INDEX "invitationsCourseIndex" ON "invitations" ("course");
+      CREATE INDEX "invitationsEmailIndex" ON "invitations" ("email");
 
       CREATE TABLE "enrollments" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
