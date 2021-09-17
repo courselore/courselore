@@ -9467,7 +9467,8 @@ export default async function courselore({
                           </p>
                           <div
                             style="${css`
-                              padding: var(--space--0) var(--space--2) var(--space--1);
+                              padding: var(--space--0) var(--space--2)
+                                var(--space--1);
                             `}"
                           >
                             <input
@@ -9506,7 +9507,9 @@ export default async function courselore({
                             `}"
                             />
                           </div>
-                          <div class="mention-user-search--results"></div>
+                          <div
+                            class="mention-user-search--results dropdown-menu"
+                          ></div>
                         </div>
                       </div>
                     </div>
@@ -9745,7 +9748,19 @@ ${value}</textarea
       if (typeof req.body.name !== "string" || req.body.name.trim() === "")
         return next("validation");
 
-      res.send(html` <p>Hello ${req.body.name}</p> `);
+      res.send(
+        html`
+          <button
+            type="button"
+            class="dropdown-menu--item button button--transparent"
+            onclick="${javascript`
+              this.closest(".markdown-editor").querySelector('[name="content"]')
+            `}"
+          >
+            Hello ${req.body.name}
+          </button>
+        `
+      );
     }
   );
 
