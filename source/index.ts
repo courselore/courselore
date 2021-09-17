@@ -9754,7 +9754,10 @@ ${value}</textarea
             type="button"
             class="dropdown-menu--item button button--transparent"
             onclick="${javascript`
-              this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")
+              tippy.hideAll();
+              const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+              textFieldEdit.wrapSelection(element, "@3453278", "");
+              element.focus();
             `}"
           >
             Hello ${req.body.name}
