@@ -8509,7 +8509,6 @@ export default async function courselore({
         staffOnlyAt: string | null;
         createdAt: string;
         anonymousAt: string | null;
-        updatedAt: string | null;
         authorEnrollment:
           | {
               id: number;
@@ -8524,6 +8523,7 @@ export default async function courselore({
               role: EnrollmentRole;
             }
           | GhostEnrollment;
+        updatedAt: string | null;
         messagesCount: number;
         readingsCount: number;
         endorsements: {
@@ -8597,7 +8597,6 @@ export default async function courselore({
       authorUserBiography: string | null;
       authorEnrollmentReference: string | null;
       authorEnrollmentRole: EnrollmentRole | null;
-      likesCount: number;
     }>(
       sql`
         SELECT "messages"."createdAt",
@@ -8609,15 +8608,12 @@ export default async function courselore({
                "authorUser"."avatar" AS "authorUserAvatar",
                "authorUser"."biography" AS "authorUserBiography",
                "authorEnrollment"."reference" AS "authorEnrollmentReference",
-               "authorEnrollment"."role" AS "authorEnrollmentRole",
-               COUNT("likes"."id") AS "likesCount"
+               "authorEnrollment"."role" AS "authorEnrollmentRole"
         FROM "messages"
         LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
         LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
-        LEFT JOIN "likes" ON "messages"."id" = "likes"."message"
         WHERE "messages"."conversation" = ${conversation.id} AND
               "messages"."reference" = ${"1"}
-        GROUP BY "messages"."id"
       `
     )!;
 

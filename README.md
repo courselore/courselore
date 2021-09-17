@@ -44,6 +44,10 @@
 
 - Search:
   - Finish reviewing `getConversation`.
+
+      likesCount: number;
+      COUNT("likes"."id") AS "likesCount"
+      LEFT JOIN "likes" ON "messages"."id" = "likes"."message"
   - Include users in search.
   - Include snippets in search results.
   - Highlight search terms on the entire page.
