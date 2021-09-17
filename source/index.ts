@@ -9461,16 +9461,25 @@ export default async function courselore({
                       </button>
                       <div hidden>
                         <div class="mention-user-search">
-                          <input
-                            type="text"
-                            placeholder="Name…"
-                            autocomplete="off"
-                            class="mention-user-search--name input--text"
-                            data-ondomcontentloaded="${javascript`
+                          <p class="heading">
+                            <i class="bi bi-at"></i>
+                            Mention User
+                          </p>
+                          <div
+                            style="${css`
+                              padding: var(--space--0) var(--space--2) var(--space--1);
+                            `}"
+                          >
+                            <input
+                              type="text"
+                              placeholder="Name…"
+                              autocomplete="off"
+                              class="mention-user-search--name input--text"
+                              data-ondomcontentloaded="${javascript`
                               this.isUpdatingSearchResults = false;
                               this.shouldUpdateSearchResultsAgain = false;
                             `}"
-                            oninput="${javascript`
+                              oninput="${javascript`
                               const updateSearchResults = async () => {
                                 if (this.isUpdatingSearchResults) {
                                   this.shouldUpdateSearchResultsAgain = true;
@@ -9495,7 +9504,8 @@ export default async function courselore({
                               };
                               updateSearchResults();
                             `}"
-                          />
+                            />
+                          </div>
                           <div class="mention-user-search--results"></div>
                         </div>
                       </div>
