@@ -7777,10 +7777,7 @@ export default async function courselore({
   }): HTML => {
     const search =
       req.query.search === "string"
-        ? req.query.search
-            .split(/\s+/)
-            .map((phrase) => `"${phrase.replaceAll('"', '""')}"`)
-            .join(" ")
+        ? sanitizeSearch(req.query.search)
         : undefined;
 
     const tagFilter =
@@ -9747,6 +9744,17 @@ ${value}</textarea
     (req, res, next) => {
       if (typeof req.body.name !== "string" || req.body.name.trim() === "")
         return next("validation");
+
+      const users = database.all(
+        sql`
+          SELECT ___
+          FROM "users"
+          JOIN "usersSearch" ON "users"."id" = "usersSearch"."rowid" AND
+                                "usersSearch" MATCH ${sanitizeSearch(
+                                  req.body.name
+                                )}
+        `
+      );
 
       res.send(
         html`
@@ -13421,6 +13429,12 @@ ${value}</textarea
 
   const isExpired = (expiresAt: string | null): boolean =>
     expiresAt !== null && new Date(expiresAt).getTime() <= Date.now();
+
+  const sanitizeSearch = (search: string): string =>
+    search
+      .split(/\s+/)
+      .map((phrase) => `"${phrase.replaceAll('"', '""')}"`)
+      .join(" ");
 
   return app;
 }
