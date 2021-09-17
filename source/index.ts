@@ -7842,7 +7842,7 @@ export default async function courselore({
               ? sql``
               : sql`
                   JOIN "taggings" ON "conversations"."id" = "taggings"."conversation" AND
-                                      "taggings"."tag" = ${tagFilter.id}
+                                     "taggings"."tag" = ${tagFilter.id}
                 `
           }
           WHERE "conversations"."course" = ${res.locals.course.id}
