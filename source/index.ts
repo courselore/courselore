@@ -9507,8 +9507,8 @@ export default async function courselore({
                           <div
                             class="mention-user--options dropdown-menu"
                             data-ondomcontentloaded="${javascript`
-                              const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                               this.selectOption = (mention) => {
+                                const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                                 textFieldEdit.wrapSelection(element, "@" + mention, "");
                                 element.focus();
                                 tippy.hideAll();
