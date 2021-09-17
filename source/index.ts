@@ -8587,6 +8587,7 @@ export default async function courselore({
     if (conversation === undefined) return undefined;
 
     const originalMessage = database.get<{
+      id: number;
       createdAt: string;
       anonymousAt: string | null;
       authorEnrollmentId: number | null;
@@ -8599,7 +8600,8 @@ export default async function courselore({
       authorEnrollmentRole: EnrollmentRole | null;
     }>(
       sql`
-        SELECT "messages"."createdAt",
+        SELECT "messages"."id",
+               "messages"."createdAt",
                "messages"."anonymousAt",
                "authorEnrollment"."id" AS "authorEnrollmentId",
                "authorUser"."id" AS "authorUserId",
@@ -8677,6 +8679,14 @@ export default async function courselore({
             `
           )
         : [];
+
+    const likesCount = database.get<{ likesCount: number }>(
+      sql`
+        SELECT COUNT(*) AS "likesCount"
+        FROM "likes"
+        WHERE "message" = ${originalMessage.id}
+      `
+    )!.likesCount;
 
     const taggings = database.all<{
       id: number;
@@ -8762,7 +8772,7 @@ export default async function courselore({
               }
             : ghostEnrollment,
       })),
-      likesCount: originalMessage.likesCount,
+      likesCount,
       taggings: taggings.map((tagging) => ({
         id: tagging.id,
         tag: {
