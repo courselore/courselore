@@ -9810,7 +9810,8 @@ ${value}</textarea
           FROM "users"
           JOIN "usersSearch" ON "users"."id" = "usersSearch"."rowid" AND
                                 "usersSearch" MATCH ${sanitizeSearch(
-                                  req.body.name
+                                  req.body.name,
+                                  { prefix: true }
                                 )}
           WHERE "users"."id" != ${res.locals.user.id}
         `
@@ -13494,11 +13495,15 @@ ${value}</textarea
   const isExpired = (expiresAt: string | null): boolean =>
     expiresAt !== null && new Date(expiresAt).getTime() <= Date.now();
 
-  const sanitizeSearch = (search: string): string =>
-    search
-      .split(/\s+/)
-      .map((phrase) => `"${phrase.replaceAll('"', '""')}"`)
+  const sanitizeSearch = (
+    search: string,
+    { prefix = false }: { prefix?: boolean } = {}
+  ): string =>
+    searchPhrases(search)
+      .map((phrase) => `"${phrase.replaceAll('"', '""')}"${prefix ? "*" : ""}`)
       .join(" ");
+
+  const searchPhrases = (search: string): string[] => search.split(/\s+/);
 
   return app;
 }
