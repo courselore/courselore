@@ -9523,7 +9523,7 @@ export default async function courselore({
                                 this.closest(".mention-user--options").selectOption("all");
                               `}"
                             >
-                              Everyone on the Conversation
+                              Everyone in the Conversation
                             </button>
                             <button
                               type="button"
