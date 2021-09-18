@@ -9472,6 +9472,7 @@ export default async function courselore({
                             display: flex;
                             flex-direction: column;
                             gap: var(--space--2);
+                            width: var(--space--56);
                           `}"
                           data-ondomcontentloaded="${javascript`
                             this.mention = (user) => {
@@ -9519,7 +9520,14 @@ export default async function courselore({
                             </div>
                           </div>
                           <hr class="dropdown--separator" />
-                          <div class="dropdown--menu">
+                          <div
+                            class="dropdown--menu"
+                            style="${css`
+                              .button {
+                                text-align: left;
+                              }
+                            `}"
+                          >
                             <div
                               class="dropdown--menu--item"
                               style="${css`
@@ -9836,7 +9844,6 @@ ${value}</textarea
 
       // TODO: Add slug to enrollmentReference.
       // TODO: Highlight search results.
-      // TODO: Prevent width changing.
       res.send(
         html`
           $${users.length === 0
@@ -9861,9 +9868,11 @@ ${value}</textarea
                             class="avatar avatar--sm avatar--vertical-align"
                           />
                         `}
-                    ${user.name}
-                    <span class="secondary">
-                      · ${lodash.capitalize(user.enrollmentRole)}
+                    <span>
+                      ${user.name}
+                      <span class="secondary">
+                        · ${lodash.capitalize(user.enrollmentRole)}
+                      </span>
                     </span>
                   </button>
                 `
