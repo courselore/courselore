@@ -9813,11 +9813,13 @@ ${value}</textarea
         name: string;
         avatar: string | null;
         enrollmentReference: string;
+        enrollmentRole: string;
       }>(
         sql`
           SELECT "users"."name" AS "name",
                  "users"."avatar" AS "avatar",
-                 "enrollments"."reference" AS "enrollmentReference"
+                 "enrollments"."reference" AS "enrollmentReference",
+                 "enrollments"."role" AS "enrollmentRole"
           FROM "users"
           JOIN "usersSearch" ON "users"."id" = "usersSearch"."rowid" AND
                                 "usersSearch" MATCH ${sanitizeSearch(
@@ -9832,6 +9834,7 @@ ${value}</textarea
         `
       );
 
+      // TODO: Add slug to enrollmentReference.
       res.send(
         html`
           $${users.length === 0
@@ -9857,6 +9860,9 @@ ${value}</textarea
                           />
                         `}
                     ${user.name}
+                    <span class="secondary">
+                      · ${lodash.capitalize(user.enrollmentRole)}
+                    </span>
                   </button>
                 `
               )}
