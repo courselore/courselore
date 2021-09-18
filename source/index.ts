@@ -1257,16 +1257,25 @@ export default async function courselore({
                   }
                 }
 
-                .dropdown-menu {
+                .dropdown--menu {
                   display: flex;
                   flex-direction: column;
 
-                  .dropdown-menu--item {
+                  .dropdown--menu--item {
                     width: 100%;
                     padding-left: var(--space--2);
                     padding-right: var(--space--2);
                     justify-content: flex-start;
                   }
+                }
+
+                .dropdown--separator {
+                  border-top: var(--border-width--1) solid
+                    var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    border-color: var(--color--gray--medium--700);
+                  }
+                  margin: var(--space--0) var(--space--2);
                 }
 
                 ${["green", "rose"].map(
@@ -2145,10 +2154,10 @@ export default async function courselore({
                           <i class="bi bi-journal-text"></i>
                           ${res.locals.course.name}
                         </h3>
-                        <div class="dropdown-menu">
+                        <div class="dropdown--menu">
                           <a
                             href="${url}/courses/${res.locals.course.reference}"
-                            class="dropdown-menu--item button ${req.path.includes(
+                            class="dropdown--menu--item button ${req.path.includes(
                               "settings"
                             )
                               ? "button--transparent"
@@ -2160,7 +2169,7 @@ export default async function courselore({
                           <a
                             href="${url}/courses/${res.locals.course
                               .reference}/settings"
-                            class="dropdown-menu--item button ${req.path.includes(
+                            class="dropdown--menu--item button ${req.path.includes(
                               "settings"
                             )
                               ? "button--blue"
@@ -2178,13 +2187,13 @@ export default async function courselore({
                                 <i class="bi bi-arrow-left-right"></i>
                                 Switch to Another Course
                               </h3>
-                              <div class="dropdown-menu">
+                              <div class="dropdown--menu">
                                 $${res.locals.enrollments.map(
                                   (enrollment) => html`
                                     <a
                                       href="${url}/courses/${enrollment.course
                                         .reference}"
-                                      class="dropdown-menu--item button ${enrollment.id ===
+                                      class="dropdown--menu--item button ${enrollment.id ===
                                       res.locals.enrollment?.id
                                         ? "button--blue"
                                         : "button--transparent"}"
@@ -2283,13 +2292,13 @@ export default async function courselore({
                           <i class="bi bi-journal-arrow-down"></i>
                           Invitations
                         </h3>
-                        <div class="dropdown-menu">
+                        <div class="dropdown--menu">
                           $${res.locals.invitations!.map(
                             (invitation) => html`
                               <a
                                 href="${url}/courses/${invitation.course
                                   .reference}/invitations/${invitation.reference}"
-                                class="dropdown-menu--item button button--transparent"
+                                class="dropdown--menu--item button button--transparent"
                               >
                                 <i class="bi bi-journal-arrow-down"></i>
                                 Enroll in ${invitation.course.name} as
@@ -2299,11 +2308,11 @@ export default async function courselore({
                           )}
                         </div>
                       </div>
-                      <hr class="separator" />
+                      <hr class="dropdown--separator" />
                     `}
-                <div class="dropdown-menu">
+                <div class="dropdown--menu">
                   <button
-                    class="dropdown-menu--item button button--transparent"
+                    class="dropdown--menu--item button button--transparent"
                     data-ondomcontentloaded="${javascript`
                       tippy(this, {
                         content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
@@ -2316,7 +2325,7 @@ export default async function courselore({
                   </button>
                   <a
                     href="${url}/courses/new"
-                    class="dropdown-menu--item button button--transparent"
+                    class="dropdown--menu--item button button--transparent"
                   >
                     <i class="bi bi-journal-plus"></i>
                     Create a New Course
@@ -2380,11 +2389,11 @@ export default async function courselore({
                   <p class="secondary">${res.locals.user.email}</p>
                 </div>
 
-                <hr class="separator" />
+                <hr class="dropdown--separator" />
 
-                <div class="dropdown-menu">
+                <div class="dropdown--menu">
                   <a
-                    class="dropdown-menu--item button button--transparent"
+                    class="dropdown--menu--item button button--transparent"
                     href="${url}/settings"
                   >
                     <i class="bi bi-sliders"></i>
@@ -2392,7 +2401,7 @@ export default async function courselore({
                   </a>
                   <form method="POST" action="${url}/sign-out?_method=DELETE">
                     <button
-                      class="dropdown-menu--item button button--transparent"
+                      class="dropdown--menu--item button button--transparent"
                     >
                       <i class="bi bi-box-arrow-right"></i>
                       Sign Out
@@ -2514,7 +2523,9 @@ export default async function courselore({
                   $${menuButton}
                   <i class="bi bi-chevron-down"></i>
                 </button>
-                <div hidden><div class="dropdown-menu">$${menu}</div></div>
+                <div hidden>
+                  <div class="dropdown--menu">$${menu}</div>
+                </div>
               </div>
             `,
       body: html`
@@ -2547,7 +2558,7 @@ export default async function courselore({
                       display: flex;
                       flex-direction: column;
                       gap: var(--space--2);
-                      .dropdown-menu--item {
+                      .dropdown--menu--item {
                         justify-content: flex-start;
                       }
                     `}"
@@ -4008,7 +4019,7 @@ export default async function courselore({
       menu: html`
         <a
           href="${url}/settings"
-          class="dropdown-menu--item button ${req.path.endsWith("/settings")
+          class="dropdown--menu--item button ${req.path.endsWith("/settings")
             ? "button--blue"
             : "button--transparent"}"
         >
@@ -4017,7 +4028,7 @@ export default async function courselore({
         </a>
         <a
           href="${url}/settings/update-email-and-password"
-          class="dropdown-menu--item button ${req.path.endsWith(
+          class="dropdown--menu--item button ${req.path.endsWith(
             "/settings/update-email-and-password"
           )
             ? "button--blue"
@@ -4028,7 +4039,7 @@ export default async function courselore({
         </a>
         <a
           href="${url}/settings/notifications-preferences"
-          class="dropdown-menu--item button ${req.path.endsWith(
+          class="dropdown--menu--item button ${req.path.endsWith(
             "/settings/notifications-preferences"
           )
             ? "button--blue"
@@ -5211,7 +5222,7 @@ export default async function courselore({
           ? html`
               <a
                 href="${url}/courses/${res.locals.course.reference}/settings"
-                class="dropdown-menu--item button ${req.path.endsWith(
+                class="dropdown--menu--item button ${req.path.endsWith(
                   "/settings"
                 )
                   ? "button--blue"
@@ -5223,7 +5234,7 @@ export default async function courselore({
               <a
                 href="${url}/courses/${res.locals.course
                   .reference}/settings/invitations"
-                class="dropdown-menu--item button ${req.path.endsWith(
+                class="dropdown--menu--item button ${req.path.endsWith(
                   "/settings/invitations"
                 )
                   ? "button--blue"
@@ -5235,7 +5246,7 @@ export default async function courselore({
               <a
                 href="${url}/courses/${res.locals.course
                   .reference}/settings/enrollments"
-                class="dropdown-menu--item button ${req.path.endsWith(
+                class="dropdown--menu--item button ${req.path.endsWith(
                   "/settings/enrollments"
                 )
                   ? "button--blue"
@@ -5247,7 +5258,7 @@ export default async function courselore({
               <a
                 href="${url}/courses/${res.locals.course
                   .reference}/settings/tags"
-                class="dropdown-menu--item button ${req.path.endsWith(
+                class="dropdown--menu--item button ${req.path.endsWith(
                   "/settings/tags"
                 )
                   ? "button--blue"
@@ -5259,7 +5270,7 @@ export default async function courselore({
               <a
                 href="${url}/courses/${res.locals.course
                   .reference}/settings/your-enrollment"
-                class="dropdown-menu--item button ${req.path.endsWith(
+                class="dropdown--menu--item button ${req.path.endsWith(
                   "/settings/your-enrollment"
                 )
                   ? "button--blue"
@@ -5825,7 +5836,7 @@ export default async function courselore({
                                         : html``}
                                     </button>
                                     <div hidden>
-                                      <div class="dropdown-menu">
+                                      <div class="dropdown--menu">
                                         <form
                                           method="POST"
                                           action="${action}?_method=PATCH"
@@ -5836,7 +5847,7 @@ export default async function courselore({
                                             value="true"
                                           />
                                           <button
-                                            class="dropdown-menu--item button button--transparent"
+                                            class="dropdown--menu--item button button--transparent"
                                             $${isUsed
                                               ? html`
                                                   type="button"
@@ -5902,7 +5913,7 @@ export default async function courselore({
                                   <i class="bi bi-chevron-down"></i>
                                 </button>
                                 <div hidden>
-                                  <div class="dropdown-menu">
+                                  <div class="dropdown--menu">
                                     $${enrollmentRoles.map((role) =>
                                       role === invitation.role
                                         ? html``
@@ -5917,7 +5928,7 @@ export default async function courselore({
                                                 value="${role}"
                                               />
                                               <button
-                                                class="dropdown-menu--item button button--transparent"
+                                                class="dropdown--menu--item button button--transparent"
                                                 $${isUsed
                                                   ? html`
                                                       type="button"
@@ -5964,12 +5975,12 @@ export default async function courselore({
                                       method="POST"
                                       action="${action}?_method=PATCH"
                                       novalidate
-                                      class="dropdown-menu"
+                                      class="dropdown--menu"
                                       style="${css`
                                         gap: var(--space--2);
                                       `}"
                                     >
-                                      <div class="dropdown-menu--item">
+                                      <div class="dropdown--menu--item">
                                         <input
                                           type="text"
                                           name="expiresAt"
@@ -5989,7 +6000,7 @@ export default async function courselore({
                                         />
                                       </div>
                                       <button
-                                        class="dropdown-menu--item button button--transparent"
+                                        class="dropdown--menu--item button button--transparent"
                                       >
                                         <i class="bi bi-pencil"></i>
                                         Update Expiration Date
@@ -6000,7 +6011,7 @@ export default async function courselore({
                                     <form
                                       method="POST"
                                       action="${action}?_method=PATCH"
-                                      class="dropdown-menu"
+                                      class="dropdown--menu"
                                     >
                                       <input
                                         type="hidden"
@@ -6008,7 +6019,7 @@ export default async function courselore({
                                         value="true"
                                       />
                                       <button
-                                        class="dropdown-menu--item button button--transparent"
+                                        class="dropdown--menu--item button button--transparent"
                                       >
                                         <i class="bi bi-calendar-minus"></i>
                                         Remove Expiration
@@ -6019,7 +6030,7 @@ export default async function courselore({
                                     <form
                                       method="POST"
                                       action="${action}?_method=PATCH"
-                                      class="dropdown-menu"
+                                      class="dropdown--menu"
                                     >
                                       <input
                                         type="hidden"
@@ -6027,7 +6038,7 @@ export default async function courselore({
                                         value="true"
                                       />
                                       <button
-                                        class="dropdown-menu--item button button--transparent"
+                                        class="dropdown--menu--item button button--transparent"
                                       >
                                         <i class="bi bi-calendar-x"></i>
                                         Expire Invitation
@@ -6113,7 +6124,9 @@ export default async function courselore({
                                                 </span>
                                               </h3>
                                               $${updateExpirationForm}
-                                              <hr class="separator" />
+                                              <hr
+                                                class="dropdown--separator"
+                                              />
                                               $${removeExpirationForm}
                                             </div>
                                           </div>
@@ -6150,7 +6163,9 @@ export default async function courselore({
                                               `}"
                                             >
                                               $${updateExpirationForm}
-                                              <hr class="separator" />
+                                              <hr
+                                                class="dropdown--separator"
+                                              />
                                               $${expireForm}
                                             </div>
                                           </div>
@@ -6201,9 +6216,13 @@ export default async function courselore({
                                                   </time>
                                                 </span>
                                               </h3>
-                                              <hr class="separator" />
+                                              <hr
+                                                class="dropdown--separator"
+                                              />
                                               $${updateExpirationForm}
-                                              <hr class="separator" />
+                                              <hr
+                                                class="dropdown--separator"
+                                              />
                                               $${removeExpirationForm}
                                               $${expireForm}
                                             </div>
@@ -6683,7 +6702,7 @@ export default async function courselore({
                             <i class="bi bi-chevron-down"></i>
                           </button>
                           <div hidden>
-                            <div class="dropdown-menu">
+                            <div class="dropdown--menu">
                               $${enrollmentRoles.map((role) =>
                                 role === enrollment.role
                                   ? html``
@@ -6699,7 +6718,7 @@ export default async function courselore({
                                         />
                                         <div>
                                           <button
-                                            class="dropdown-menu--item button button--transparent"
+                                            class="dropdown--menu--item button button--transparent"
                                             $${isOnlyStaff
                                               ? html`
                                                   type="button"
@@ -8098,7 +8117,7 @@ export default async function courselore({
                             </button>
                             <div hidden>
                               <div
-                                class="dropdown-menu"
+                                class="dropdown--menu"
                                 style="${css`
                                   max-height: var(--space--40);
                                   overflow: auto;
@@ -8116,7 +8135,7 @@ export default async function courselore({
                                           ? undefined
                                           : tag.reference,
                                       })}"
-                                      class="dropdown-menu--item button ${isTagFilter
+                                      class="dropdown--menu--item button ${isTagFilter
                                         ? "button--blue"
                                         : "button--transparent"}"
                                     >
@@ -9479,10 +9498,10 @@ export default async function courselore({
                               <i class="bi bi-at"></i>
                               Mention User
                             </p>
-                            <div class="dropdown-menu">
+                            <div class="dropdown--menu">
                               <button
                                 type="button"
-                                class="dropdown-menu--item button button--transparent"
+                                class="dropdown--menu--item button button--transparent"
                                 onclick="${javascript`
                                 this.closest(".mention-user").mention("all");
                               `}"
@@ -9491,7 +9510,7 @@ export default async function courselore({
                               </button>
                               <button
                                 type="button"
-                                class="dropdown-menu--item button button--transparent"
+                                class="dropdown--menu--item button button--transparent"
                                 onclick="${javascript`
                                 this.closest(".mention-user").mention("staff");
                               `}"
@@ -9500,7 +9519,7 @@ export default async function courselore({
                               </button>
                               <button
                                 type="button"
-                                class="dropdown-menu--item button button--transparent"
+                                class="dropdown--menu--item button button--transparent"
                                 onclick="${javascript`
                                 this.closest(".mention-user").mention("students");
                               `}"
@@ -9509,7 +9528,7 @@ export default async function courselore({
                               </button>
                             </div>
                           </div>
-                          <hr class="separator" />
+                          <hr class="dropdown--separator" />
                           <div
                             style="${css`
                               padding: var(--space--0) var(--space--2)
@@ -9552,10 +9571,10 @@ export default async function courselore({
                               `}"
                             />
                           </div>
-                          <div class="mention-user--options dropdown-menu">
+                          <div class="mention-user--options dropdown--menu">
                             <button
                               type="button"
-                              class="dropdown-menu--item button button--transparent"
+                              class="dropdown--menu--item button button--transparent"
                               onclick="${javascript`
                                 this.closest(".mention-user").mention("all");
                               `}"
@@ -9564,7 +9583,7 @@ export default async function courselore({
                             </button>
                             <button
                               type="button"
-                              class="dropdown-menu--item button button--transparent"
+                              class="dropdown--menu--item button button--transparent"
                               onclick="${javascript`
                                 this.closest(".mention-user").mention("staff");
                               `}"
@@ -9573,7 +9592,7 @@ export default async function courselore({
                             </button>
                             <button
                               type="button"
-                              class="dropdown-menu--item button button--transparent"
+                              class="dropdown--menu--item button button--transparent"
                               onclick="${javascript`
                                 this.closest(".mention-user").mention("students");
                               `}"
@@ -9836,7 +9855,7 @@ ${value}</textarea
         html`
           <button
             type="button"
-            class="dropdown-menu--item button button--transparent"
+            class="dropdown--menu--item button button--transparent"
             onclick="${javascript`
               this.closest(".mention-user").mention("12348");
             `}"
@@ -11135,7 +11154,7 @@ ${value}</textarea
                                       </button>
                                       <div hidden>
                                         <div
-                                          class="dropdown-menu"
+                                          class="dropdown--menu"
                                           style="${css`
                                             max-height: var(--space--40);
                                             overflow: auto;
@@ -11165,7 +11184,7 @@ ${value}</textarea
                                                     value="${tag.reference}"
                                                   />
                                                   <button
-                                                    class="dropdown-menu--item button button--transparent text--teal"
+                                                    class="dropdown--menu--item button button--transparent text--teal"
                                                   >
                                                     <i
                                                       class="bi bi-tag-fill"
@@ -11407,7 +11426,7 @@ ${value}</textarea
                             $${lodash.capitalize(res.locals.conversation.type)}
                           </button>
                           <div hidden>
-                            <div class="dropdown-menu">
+                            <div class="dropdown--menu">
                               $${res.locals.conversationTypes.map(
                                 (conversationType) => html`
                                   <form
@@ -11422,7 +11441,7 @@ ${value}</textarea
                                       value="${conversationType}"
                                     />
                                     <button
-                                      class="dropdown-menu--item button ${conversationType ===
+                                      class="dropdown--menu--item button ${conversationType ===
                                       res.locals.conversation.type
                                         ? "button--blue"
                                         : "button--transparent"}"
@@ -12152,9 +12171,9 @@ ${value}</textarea
                             }).html}
                           </div>
                           <div hidden>
-                            <div class="dropdown-menu">
+                            <div class="dropdown--menu">
                               <button
-                                class="dropdown-menu--item button button--transparent"
+                                class="dropdown--menu--item button button--transparent"
                                 onclick="${javascript`
                                   tippy.hideAll();
                                   const selection = window.getSelection();
