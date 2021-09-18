@@ -10562,32 +10562,32 @@ ${value}</textarea
       // - NOT EDITS
       // - Have a queue
       // - Confirmed emails only
-      sendMail({
-        to: database
-          .all<{ email: string }>(
-            sql`
-              SELECT "users"."email" AS "email"
-              FROM "users"
-              JOIN "enrollments" ON "users"."id" = "enrollments"."user" AND
-                                    "enrollments"."course" = ${res.locals.course.id}
-              WHERE "users"."emailNotifications" = 'all-messages'
-            `
-          )
-          .map((user) => user.email)
-          .join(", "),
-        subject: `${res.locals.course.name} · ${req.body.title}`,
-        html: html`
-          ${markdownProcessor({ req, res, markdown: req.body.content }).html}
+      // sendMail({
+      //   to: database
+      //     .all<{ email: string }>(
+      //       sql`
+      //         SELECT "users"."email" AS "email"
+      //         FROM "users"
+      //         JOIN "enrollments" ON "users"."id" = "enrollments"."user" AND
+      //                               "enrollments"."course" = ${res.locals.course.id}
+      //         WHERE "users"."emailNotifications" = 'all-messages'
+      //       `
+      //     )
+      //     .map((user) => user.email)
+      //     .join(", "),
+      //   subject: `${res.locals.course.name} · ${req.body.title}`,
+      //   html: html`
+      //     ${markdownProcessor({ req, res, markdown: req.body.content }).html}
 
-          <hr />
+      //     <hr />
 
-          <p>
-            <a href="${url}/settings/notifications-preferences"
-              >Update Email Preferences</a
-            >
-          </p>
-        `,
-      });
+      //     <p>
+      //       <a href="${url}/settings/notifications-preferences"
+      //         >Update Email Preferences</a
+      //       >
+      //     </p>
+      //   `,
+      // });
     }
   );
 

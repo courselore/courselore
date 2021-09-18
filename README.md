@@ -42,6 +42,8 @@
 
 ### Polish Existing Features
 
+- In development & demonstration pass messages through nodemailer (with streaming transport), to try and catch and errors like missing destination.
+- App isn’t restarting when crashed. Caddy is keeping the process awake.
 - @mentions widget:
   - Don’t include option for “students” on staff-only conversations.
   - Escape should close it.
