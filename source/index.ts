@@ -9821,12 +9821,14 @@ ${value}</textarea
 
       const users = database.all<{
         name: string;
+        nameSearch: string;
         avatar: string | null;
         enrollmentReference: string;
         enrollmentRole: string;
       }>(
         sql`
           SELECT "users"."name" AS "name",
+                 "users"."nameSearch" AS "nameSearch",
                  "users"."avatar" AS "avatar",
                  "enrollments"."reference" AS "enrollmentReference",
                  "enrollments"."role" AS "enrollmentRole"
@@ -9872,7 +9874,7 @@ ${value}</textarea
                           />
                         `}
                     <span>
-                      ${user.name}
+                      $${user.nameSearch}
                       <span class="secondary">
                         · ${lodash.capitalize(user.enrollmentRole)}
                       </span>
