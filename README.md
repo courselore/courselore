@@ -42,6 +42,7 @@
 
 ### Polish Existing Features
 
+- On @mentions widget, don’t include option for “students” on staff-only conversations.
 - Search:
   - Include users in search.
   - Include snippets in search results.
@@ -285,6 +286,7 @@
   - <https://moodle.org>
   - <https://canvaslms.com>
   - <https://www.acadly.com/>
+  - <https://www.d2l.com/products/>
 - General-purpose communication platforms
   - <https://github.com>
   - <https://slack.com>
@@ -317,6 +319,20 @@
 
 <details>
 <summary><strong>Meetings</strong></summary>
+
+<details>
+<summary>2021-09-18</summary>
+
+- Progress:
+  - Investigated the space of tools to build mobile applications based on web technologies.
+  - `courselore.org` is sending emails.
+  - Database improvements:
+    - Investigated n+1 queries.
+    - Reviewed queries to fetch conversations.
+    - Started introducing users in search results (but haven’t completed; search is broken now!).
+  - Widget to show help you pick users for @mentions.
+
+</details>
 
 <details>
 <summary>2021-09-11</summary>
