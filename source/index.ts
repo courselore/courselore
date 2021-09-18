@@ -9564,7 +9564,13 @@ export default async function courselore({
                                 `}"
                               />
                             </div>
-                            <div class="mention-user--search-results"></div>
+                            <div
+                              class="mention-user--search-results"
+                              style="${css`
+                                max-height: var(--space--36);
+                                overflow: auto;
+                              `}"
+                            ></div>
                           </div>
                         </div>
                       </div>
