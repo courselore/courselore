@@ -13545,10 +13545,12 @@ ${value}</textarea
     searchResult: string,
     searchPhrases: string | string[]
   ): HTML => {
-    if (typeof searchPhrases === "string")
-      searchPhrases = splitSearchPhrases(searchPhrases);
+    const searchPhrasesArray =
+      typeof searchPhrases === "string"
+        ? splitSearchPhrases(searchPhrases)
+        : searchPhrases;
     let highlightedSearchResult = searchResult;
-    for (const searchPhrase of searchPhrases)
+    for (const searchPhrase of searchPhrasesArray)
       highlightedSearchResult = highlightedSearchResult.replaceAll(
         searchPhrase,
         html`<mark class="search-result-highlight">$${searchPhrase}</mark>`
