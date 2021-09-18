@@ -9819,7 +9819,11 @@ ${value}</textarea
                                   req.body.name,
                                   { prefix: true }
                                 )}
+          JOIN "enrollments" ON "users"."id" = "enrollments"."user" AND
+                                "enrollments"."course" = ${res.locals.course.id}
           WHERE "users"."id" != ${res.locals.user.id}
+          ORDER BY "usersSearch"."rank" ASC,
+                   "users"."name" ASC
         `
       );
 
@@ -13022,6 +13026,7 @@ ${value}</textarea
           parallelism: 1,
         });
         const card = faker.helpers.contextualCard();
+        const name = `${card.name} ${faker.name.lastName()}`;
         // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
         const demonstrationUser = database.get<{ id: number; name: string }>(
           sql`
@@ -13045,8 +13050,8 @@ ${value}</textarea
                     })}@courselore.org`},
                     ${password},
                     ${new Date().toISOString()},
-                    ${card.name},
-                    ${html`${card.name}`},
+                    ${name},
+                    ${html`${name}`},
                     ${card.avatar},
                     ${faker.lorem.paragraph()},
                     ${"none"}
@@ -13059,6 +13064,7 @@ ${value}</textarea
 
         const users = [...new Array(400)].map((_) => {
           const card = faker.helpers.contextualCard();
+          const name = `${card.name} ${faker.name.lastName()}`;
           // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
           const user = database.get<{
             id: number;
@@ -13086,8 +13092,8 @@ ${value}</textarea
                       })}@courselore.org`},
                       ${password},
                       ${new Date().toISOString()},
-                      ${card.name},
-                      ${html`${card.name}`},
+                      ${name},
+                      ${html`${name}`},
                       ${Math.random() < 0.6 ? card.avatar : null},
                       ${Math.random() < 0.3 ? faker.lorem.paragraph() : null},
                       ${"none"}
