@@ -1134,6 +1134,16 @@ export default async function courselore({
                 `
               )}
 
+              .search-result-highlight {
+                color: var(--color--amber--700);
+                background-color: var(--color--amber--200);
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--amber--200);
+                  background-color: var(--color--amber--700);
+                }
+                border-radius: var(--border-radius--base);
+              }
+
               .pre {
                 code {
                   font-family: var(--font-family--monospace);
