@@ -11869,10 +11869,11 @@ ${value}</textarea
                               const newMessage = document.querySelector(".new-message");
                               newMessage.querySelector(".markdown-editor--button--write").click();
                               const element = newMessage.querySelector(".markdown-editor--write--textarea");
-                              // TODO: Use something like ‘@Leandro-Facchinetti-2342’
-                              textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
+                              textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
                                 message.authorEnrollment.reference
-                              )} + " · #" + ${JSON.stringify(
+                              }--${slugify(
+                              message.authorEnrollment.user.name
+                            )}" + " · #" + ${JSON.stringify(
                               res.locals.conversation.reference
                             )} + "/" + ${JSON.stringify(
                               message.reference
@@ -12191,10 +12192,11 @@ ${value}</textarea
                                   const newMessage = document.querySelector(".new-message");
                                   newMessage.querySelector(".markdown-editor--button--write").click();
                                   const element = newMessage.querySelector(".markdown-editor--write--textarea");
-                                  // TODO: Use something like ‘@Leandro-Facchinetti-2342’
-                                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @" + ${JSON.stringify(
+                                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
                                     message.authorEnrollment.reference
-                                  )} + " · #" + ${JSON.stringify(
+                                  }--${slugify(
+                                  message.authorEnrollment.user.name
+                                )}" + " · #" + ${JSON.stringify(
                                   res.locals.conversation.reference
                                 )} + "/" + ${JSON.stringify(
                                   message.reference
