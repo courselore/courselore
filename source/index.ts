@@ -40,6 +40,7 @@ import argon2 from "argon2";
 import sharp from "sharp";
 import lodash from "lodash";
 import slugify from "@sindresorhus/slugify";
+import escapeStringRegexp from "escape-string-regexp";
 import QRCode from "qrcode";
 import faker from "faker";
 
@@ -13549,24 +13550,23 @@ ${value}</textarea
       .map((phrase) => `"${phrase.replaceAll('"', '""')}"${prefix ? "*" : ""}`)
       .join(" ");
 
-  // FIXME: searchPhrases may include HTML and must be sanitized.
-  // FIXME: Case sensitivity.
   const highlightSearchResult = (
     searchResult: string,
     searchPhrases: string | string[]
-  ): HTML => {
-    const searchPhrasesArray =
-      typeof searchPhrases === "string"
-        ? splitSearchPhrases(searchPhrases)
-        : searchPhrases;
-    let highlightedSearchResult = searchResult;
-    for (const searchPhrase of searchPhrasesArray)
-      highlightedSearchResult = highlightedSearchResult.replaceAll(
-        searchPhrase,
+  ): HTML =>
+    searchResult.replace(
+      new RegExp(
+        `(?:${(typeof searchPhrases === "string"
+          ? splitSearchPhrases(searchPhrases)
+          : searchPhrases
+        )
+          .map((searchPhrase) => escapeStringRegexp(searchPhrase))
+          .join("|")})`,
+        "gi"
+      ),
+      (searchPhrase) =>
         html`<mark class="search-result-highlight">$${searchPhrase}</mark>`
-      );
-    return highlightedSearchResult;
-  };
+    );
 
   const splitSearchPhrases = (search: string): string[] => search.split(/\s+/);
 
