@@ -6124,9 +6124,7 @@ export default async function courselore({
                                                 </span>
                                               </h3>
                                               $${updateExpirationForm}
-                                              <hr
-                                                class="dropdown--separator"
-                                              />
+                                              <hr class="dropdown--separator" />
                                               $${removeExpirationForm}
                                             </div>
                                           </div>
@@ -6163,9 +6161,7 @@ export default async function courselore({
                                               `}"
                                             >
                                               $${updateExpirationForm}
-                                              <hr
-                                                class="dropdown--separator"
-                                              />
+                                              <hr class="dropdown--separator" />
                                               $${expireForm}
                                             </div>
                                           </div>
@@ -6216,13 +6212,9 @@ export default async function courselore({
                                                   </time>
                                                 </span>
                                               </h3>
-                                              <hr
-                                                class="dropdown--separator"
-                                              />
+                                              <hr class="dropdown--separator" />
                                               $${updateExpirationForm}
-                                              <hr
-                                                class="dropdown--separator"
-                                              />
+                                              <hr class="dropdown--separator" />
                                               $${removeExpirationForm}
                                               $${expireForm}
                                             </div>
@@ -9468,7 +9460,7 @@ export default async function courselore({
                             trigger: "click",
                             interactive: true,
                             onShown: () => {
-                              mentionUserSearch.querySelector(".mention-user--name").focus();
+                              mentionUserSearch.querySelector(".mention-user--user-name").focus();
                             },
                           });        
                         `}"
@@ -9489,7 +9481,7 @@ export default async function courselore({
                               textFieldEdit.wrapSelection(element, "@" + user, "");
                               element.focus();
                               tippy.hideAll();
-                              textFieldEdit.set(this.querySelector(".mention-user--name"), "");
+                              textFieldEdit.set(this.querySelector(".mention-user--user-name"), "");
                             };
                           `}"
                         >
@@ -9529,77 +9521,45 @@ export default async function courselore({
                             </div>
                           </div>
                           <hr class="dropdown--separator" />
-                          <div
-                            style="${css`
-                              padding: var(--space--0) var(--space--2)
-                                var(--space--1);
-                            `}"
-                          >
-                            <input
-                              type="text"
-                              placeholder="Name…"
-                              autocomplete="off"
-                              class="mention-user--name input--text"
-                              data-ondomcontentloaded="${javascript`
-                                this.isUpdatingSearchResults = false;
-                                this.shouldUpdateSearchResultsAgain = false;
-                              `}"
-                              oninput="${javascript`
-                                const updateSearchResults = async () => {
-                                  if (this.isUpdatingSearchResults) {
-                                    this.shouldUpdateSearchResultsAgain = true;
-                                    return;
-                                  }
-                                  this.shouldUpdateSearchResultsAgain = false;
-                                  this.isUpdatingSearchResults = true;
-                                  this.closest(".mention-user").querySelector(".mention-user--options--search").innerHTML =
-                                    this.value.trim() === ""
-                                    ? ""
-                                    : await (
-                                      await fetch(
-                                        "${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search",
-                                        {
-                                          method: "POST",
-                                          body: new URLSearchParams({ name: this.value }),
-                                        }
-                                      )
-                                    ).text();
+                          <div class="dropdown--menu">
+                            <div class="dropdown--menu--item">
+                              <input
+                                type="text"
+                                placeholder="User Name…"
+                                autocomplete="off"
+                                class="mention-user--user-name input--text"
+                                data-ondomcontentloaded="${javascript`
                                   this.isUpdatingSearchResults = false;
-                                  if (this.shouldUpdateSearchResultsAgain) updateSearchResults();
-                                };
-                                updateSearchResults();
-                              `}"
-                            />
-                          </div>
-                          <div class="mention-user--options dropdown--menu">
-                            <button
-                              type="button"
-                              class="dropdown--menu--item button button--transparent"
-                              onclick="${javascript`
-                                this.closest(".mention-user").mention("all");
-                              `}"
-                            >
-                              Everyone in the Conversation
-                            </button>
-                            <button
-                              type="button"
-                              class="dropdown--menu--item button button--transparent"
-                              onclick="${javascript`
-                                this.closest(".mention-user").mention("staff");
-                              `}"
-                            >
-                              Staff
-                            </button>
-                            <button
-                              type="button"
-                              class="dropdown--menu--item button button--transparent"
-                              onclick="${javascript`
-                                this.closest(".mention-user").mention("students");
-                              `}"
-                            >
-                              Students
-                            </button>
-                            <div class="mention-user--options--search"></div>
+                                  this.shouldUpdateSearchResultsAgain = false;
+                                `}"
+                                oninput="${javascript`
+                                  const updateSearchResults = async () => {
+                                    if (this.isUpdatingSearchResults) {
+                                      this.shouldUpdateSearchResultsAgain = true;
+                                      return;
+                                    }
+                                    this.shouldUpdateSearchResultsAgain = false;
+                                    this.isUpdatingSearchResults = true;
+                                    this.closest(".mention-user").querySelector(".mention-user--search-results").innerHTML =
+                                      this.value.trim() === ""
+                                      ? ""
+                                      : await (
+                                        await fetch(
+                                          "${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search",
+                                          {
+                                            method: "POST",
+                                            body: new URLSearchParams({ name: this.value }),
+                                          }
+                                        )
+                                      ).text();
+                                    this.isUpdatingSearchResults = false;
+                                    if (this.shouldUpdateSearchResultsAgain) updateSearchResults();
+                                  };
+                                  updateSearchResults();
+                                `}"
+                              />
+                            </div>
+                            <div class="mention-user--search-results"></div>
                           </div>
                         </div>
                       </div>
