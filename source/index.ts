@@ -9541,6 +9541,7 @@ export default async function courselore({
                                 type="text"
                                 placeholder="User Name…"
                                 autocomplete="off"
+                                data-skip-is-modified="true"
                                 class="mention-user--user-name input--text"
                                 data-ondomcontentloaded="${javascript`
                                   let isSearching = false;
@@ -9874,7 +9875,7 @@ ${value}</textarea
                           />
                         `}
                     <span>
-                      $${user.nameSearch}
+                      $${highlightSearchResult(user.nameSearch, req.body.name!)}
                       <span class="secondary">
                         · ${lodash.capitalize(user.enrollmentRole)}
                       </span>
@@ -13534,11 +13535,28 @@ ${value}</textarea
     search: string,
     { prefix = false }: { prefix?: boolean } = {}
   ): string =>
-    searchPhrases(search)
+    splitSearchPhrases(search)
       .map((phrase) => `"${phrase.replaceAll('"', '""')}"${prefix ? "*" : ""}`)
       .join(" ");
 
-  const searchPhrases = (search: string): string[] => search.split(/\s+/);
+  // FIXME: searchPhrases may include HTML and must be sanitized.
+  // FIXME: Case sensitivity.
+  const highlightSearchResult = (
+    searchResult: string,
+    searchPhrases: string | string[]
+  ): HTML => {
+    if (typeof searchPhrases === "string")
+      searchPhrases = splitSearchPhrases(searchPhrases);
+    let highlightedSearchResult = searchResult;
+    for (const searchPhrase of searchPhrases)
+      highlightedSearchResult = highlightedSearchResult.replaceAll(
+        searchPhrase,
+        html`<mark class="search-result-highlight">$${searchPhrase}</mark>`
+      );
+    return highlightedSearchResult;
+  };
+
+  const splitSearchPhrases = (search: string): string[] => search.split(/\s+/);
 
   return app;
 }
