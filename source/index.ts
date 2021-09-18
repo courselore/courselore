@@ -9799,7 +9799,7 @@ ${value}</textarea
       if (typeof req.body.name !== "string" || req.body.name.trim() === "")
         return next("validation");
 
-      const users = database.all<{name: string}>(
+      const users = database.all<{ name: string }>(
         sql`
           SELECT "users"."name"
           FROM "users"
@@ -9813,19 +9813,21 @@ ${value}</textarea
 
       res.send(
         html`
-          $${users.map(
-            (user) => html`
-              <button
-                type="button"
-                class="dropdown--menu--item button button--transparent"
-                onclick="${javascript`
-                  this.closest(".mention-user").mention("12348");
-                `}"
-              >
-                ${user.name}
-              </button>
-            `
-          )}
+          $${users.length === 0
+            ? html``
+            : users.map(
+                (user) => html`
+                  <button
+                    type="button"
+                    class="dropdown--menu--item button button--transparent"
+                    onclick="${javascript`
+                      this.closest(".mention-user").mention("12348");
+                    `}"
+                  >
+                    ${user.name}
+                  </button>
+                `
+              )}
         `
       );
     }
