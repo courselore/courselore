@@ -9810,9 +9810,15 @@ ${value}</textarea
       if (typeof req.body.name !== "string" || req.body.name.trim() === "")
         return next("validation");
 
-      const users = database.all<{ name: string }>(
+      const users = database.all<{
+        name: string;
+        avatar: string | null;
+        enrollmentReference: string;
+      }>(
         sql`
-          SELECT "users"."name"
+          SELECT "users"."name" AS "name",
+                 "users"."avatar" AS "avatar",
+                 "enrollments"."reference" AS "enrollmentReference"
           FROM "users"
           JOIN "usersSearch" ON "users"."id" = "usersSearch"."rowid" AND
                                 "usersSearch" MATCH ${sanitizeSearch(
@@ -9839,7 +9845,7 @@ ${value}</textarea
                     type="button"
                     class="dropdown--menu--item button button--transparent"
                     onclick="${javascript`
-                      this.closest(".mention-user").mention("12348");
+                      this.closest(".mention-user").mention("${user.enrollmentReference}");
                     `}"
                   >
                     ${user.name}
