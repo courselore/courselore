@@ -42,7 +42,9 @@
 
 ### Polish Existing Features
 
-- On @mentions widget, don’t include option for “students” on staff-only conversations.
+- @mentions widget:
+  - Don’t include option for “students” on staff-only conversations.
+  - Escape should close it.
 - Search:
   - Include users in search.
   - Include snippets in search results.
