@@ -9529,17 +9529,15 @@ export default async function courselore({
                                 autocomplete="off"
                                 class="mention-user--user-name input--text"
                                 data-ondomcontentloaded="${javascript`
-                                  this.isUpdatingSearchResults = false;
-                                  this.shouldUpdateSearchResultsAgain = false;
-                                `}"
-                                oninput="${javascript`
-                                  const updateSearchResults = async () => {
-                                    if (this.isUpdatingSearchResults) {
-                                      this.shouldUpdateSearchResultsAgain = true;
+                                  let isSearching = false;
+                                  let shouldSearchAgain = false;
+                                  this.search = async () => {
+                                    if (isSearching) {
+                                      shouldSearchAgain = true;
                                       return;
                                     }
-                                    this.shouldUpdateSearchResultsAgain = false;
-                                    this.isUpdatingSearchResults = true;
+                                    shouldSearchAgain = false;
+                                    isSearching = true;
                                     this.closest(".mention-user").querySelector(".mention-user--search-results").innerHTML =
                                       this.value.trim() === ""
                                       ? ""
@@ -9552,10 +9550,12 @@ export default async function courselore({
                                           }
                                         )
                                       ).text();
-                                    this.isUpdatingSearchResults = false;
-                                    if (this.shouldUpdateSearchResultsAgain) updateSearchResults();
+                                    isSearching = false;
+                                    if (shouldSearchAgain) this.search();
                                   };
-                                  updateSearchResults();
+                                `}"
+                                oninput="${javascript`
+                                  this.search();
                                 `}"
                               />
                             </div>
