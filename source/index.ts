@@ -9457,11 +9457,59 @@ export default async function courselore({
                         <i class="bi bi-at"></i>
                       </button>
                       <div hidden>
-                        <div class="mention-user">
-                          <p class="heading">
-                            <i class="bi bi-at"></i>
-                            Mention User
-                          </p>
+                        <div
+                          class="mention-user"
+                          style="${css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--2);
+                          `}"
+                          data-ondomcontentloaded="${javascript`
+                            this.mention = (user) => {
+                              const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                              textFieldEdit.wrapSelection(element, "@" + user, "");
+                              element.focus();
+                              tippy.hideAll();
+                              textFieldEdit.set(this.querySelector(".mention-user--name"), "");
+                            };
+                          `}"
+                        >
+                          <div>
+                            <p class="heading">
+                              <i class="bi bi-at"></i>
+                              Mention User
+                            </p>
+                            <div class="dropdown-menu">
+                              <button
+                                type="button"
+                                class="dropdown-menu--item button button--transparent"
+                                onclick="${javascript`
+                                this.closest(".mention-user").mention("all");
+                              `}"
+                              >
+                                Everyone in the Conversation
+                              </button>
+                              <button
+                                type="button"
+                                class="dropdown-menu--item button button--transparent"
+                                onclick="${javascript`
+                                this.closest(".mention-user").mention("staff");
+                              `}"
+                              >
+                                Staff
+                              </button>
+                              <button
+                                type="button"
+                                class="dropdown-menu--item button button--transparent"
+                                onclick="${javascript`
+                                this.closest(".mention-user").mention("students");
+                              `}"
+                              >
+                                Students
+                              </button>
+                            </div>
+                          </div>
+                          <hr class="separator" />
                           <div
                             style="${css`
                               padding: var(--space--0) var(--space--2)
@@ -9504,23 +9552,12 @@ export default async function courselore({
                               `}"
                             />
                           </div>
-                          <div
-                            class="mention-user--options dropdown-menu"
-                            data-ondomcontentloaded="${javascript`
-                              this.selectOption = (mention) => {
-                                const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
-                                textFieldEdit.wrapSelection(element, "@" + mention, "");
-                                element.focus();
-                                tippy.hideAll();
-                                textFieldEdit.set(this.closest(".mention-user").querySelector(".mention-user--name"), "");
-                              };
-                            `}"
-                          >
+                          <div class="mention-user--options dropdown-menu">
                             <button
                               type="button"
                               class="dropdown-menu--item button button--transparent"
                               onclick="${javascript`
-                                this.closest(".mention-user--options").selectOption("all");
+                                this.closest(".mention-user").mention("all");
                               `}"
                             >
                               Everyone in the Conversation
@@ -9529,7 +9566,7 @@ export default async function courselore({
                               type="button"
                               class="dropdown-menu--item button button--transparent"
                               onclick="${javascript`
-                                this.closest(".mention-user--options").selectOption("staff");
+                                this.closest(".mention-user").mention("staff");
                               `}"
                             >
                               Staff
@@ -9538,7 +9575,7 @@ export default async function courselore({
                               type="button"
                               class="dropdown-menu--item button button--transparent"
                               onclick="${javascript`
-                                this.closest(".mention-user--options").selectOption("students");
+                                this.closest(".mention-user").mention("students");
                               `}"
                             >
                               Students
@@ -9801,7 +9838,7 @@ ${value}</textarea
             type="button"
             class="dropdown-menu--item button button--transparent"
             onclick="${javascript`
-              this.closest(".mention-user--options").selectOption("12348");
+              this.closest(".mention-user").mention("12348");
             `}"
           >
             Hello ${req.body.name}
