@@ -9814,7 +9814,17 @@ ${value}</textarea
       res.send(
         html`
           $${users.length === 0
-            ? html``
+            ? html`
+                <div
+                  class="dropdown--menu--item secondary"
+                  style="${css`
+                    padding-top: var(--space--1);
+                    padding-bottom: var(--space--1);
+                  `}"
+                >
+                  No user found.
+                </div>
+              `
             : users.map(
                 (user) => html`
                   <button
