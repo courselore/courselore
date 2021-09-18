@@ -9528,6 +9528,7 @@ export default async function courselore({
                                 padding: var(--space--2);
                               `}"
                             >
+                              <!-- TODO: When focus is on this window, up/down arrows should move between options in list of names below. Also, Enter should select the highlighted option. -->
                               <input
                                 type="text"
                                 placeholder="User Name…"
@@ -9848,6 +9849,21 @@ ${value}</textarea
                       this.closest(".mention-user").mention("${user.enrollmentReference}");
                     `}"
                   >
+                    $${user.avatar === null
+                      ? html`<i class="bi bi-person-circle"></i>`
+                      : html`
+                          <img
+                            src="${user.avatar}"
+                            alt="${user.name}"
+                            class="avatar"
+                            style="${css`
+                              width: var(--font-size--sm);
+                              height: var(--font-size--sm);
+                              position: relative;
+                              top: var(--space--0-5);
+                            `}"
+                          />
+                        `}
                     ${user.name}
                   </button>
                 `
