@@ -1146,6 +1146,20 @@ export default async function courselore({
                 @media (prefers-color-scheme: dark) {
                   filter: brightness(var(--brightness--90));
                 }
+
+                ${["xs", "sm", "xl", "2xl"].map(
+                  (size) => css`
+                    &.avatar--${size} {
+                      width: var(--font-size--${size});
+                      height: var(--font-size--${size});
+                    }
+                  `
+                )}
+
+                &.avatar--vertical-align {
+                  position: relative;
+                  top: var(--space--0-5);
+                }
               }
 
               .decorative-icon {
@@ -2364,11 +2378,7 @@ export default async function courselore({
                     <img
                       src="${res.locals.user.avatar}"
                       alt="${res.locals.user.name}"
-                      class="avatar"
-                      style="${css`
-                        width: var(--font-size--xl);
-                        height: var(--font-size--xl);
-                      `}"
+                      class="avatar avatar--xl"
                     />
                   `}
             </button>
@@ -6636,11 +6646,7 @@ export default async function courselore({
                           <img
                             src="${enrollment.userAvatar}"
                             alt="${enrollment.userName}"
-                            class="avatar"
-                            style="${css`
-                              width: var(--font-size--xl);
-                              height: var(--font-size--xl);
-                            `}"
+                            class="avatar avatar--xl"
                           />
                         `}
                     <div
@@ -8275,15 +8281,7 @@ export default async function courselore({
                                                   alt="${conversation
                                                     .authorEnrollment.user
                                                     .name}"
-                                                  class="avatar"
-                                                  style="${css`
-                                                    width: var(--font-size--xs);
-                                                    height: var(
-                                                      --font-size--xs
-                                                    );
-                                                    position: relative;
-                                                    top: var(--space--0-5);
-                                                  `}"
+                                                  class="avatar avatar--xs avatar--vertical-align"
                                                 />
                                               `}
                                           ${conversation.authorEnrollment.user
@@ -9855,13 +9853,7 @@ ${value}</textarea
                           <img
                             src="${user.avatar}"
                             alt="${user.name}"
-                            class="avatar"
-                            style="${css`
-                              width: var(--font-size--sm);
-                              height: var(--font-size--sm);
-                              position: relative;
-                              top: var(--space--0-5);
-                            `}"
+                            class="avatar avatar--sm avatar--vertical-align"
                           />
                         `}
                     ${user.name}
@@ -11597,11 +11589,7 @@ ${value}</textarea
                                     src="${message.authorEnrollment.user
                                       .avatar}"
                                     alt="${message.authorEnrollment.user.name}"
-                                    class="avatar"
-                                    style="${css`
-                                      width: var(--font-size--2xl);
-                                      height: var(--font-size--2xl);
-                                    `}"
+                                    class="avatar avatar--2xl"
                                   />
                                 `}
                           </div>
@@ -11756,19 +11744,7 @@ ${value}</textarea
                                                         .avatar}"
                                                       alt="${res.locals.user
                                                         .name}"
-                                                      class="avatar"
-                                                      style="${css`
-                                                        width: var(
-                                                          --font-size--sm
-                                                        );
-                                                        height: var(
-                                                          --font-size--sm
-                                                        );
-                                                        position: relative;
-                                                        bottom: var(
-                                                          --space---0-5
-                                                        );
-                                                      `}"
+                                                      class="avatar avatar--sm avatar--vertical-align"
                                                     />
                                                   `}
                                               Go Public to Other Students
