@@ -39,6 +39,7 @@ import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
 import sharp from "sharp";
 import lodash from "lodash";
+import slugify from "@sindresorhus/slugify";
 import QRCode from "qrcode";
 import faker from "faker";
 
@@ -9857,7 +9858,9 @@ ${value}</textarea
                     type="button"
                     class="dropdown--menu--item button button--transparent"
                     onclick="${javascript`
-                      this.closest(".mention-user").mention("${user.enrollmentReference}");
+                      this.closest(".mention-user").mention("${
+                        user.enrollmentReference
+                      }--${slugify(user.name)}");
                     `}"
                   >
                     $${user.avatar === null
