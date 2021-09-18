@@ -9799,9 +9799,9 @@ ${value}</textarea
       if (typeof req.body.name !== "string" || req.body.name.trim() === "")
         return next("validation");
 
-      const users = database.all(
+      const users = database.all<{name: string}>(
         sql`
-          SELECT ___
+          SELECT "users"."name"
           FROM "users"
           JOIN "usersSearch" ON "users"."id" = "usersSearch"."rowid" AND
                                 "usersSearch" MATCH ${sanitizeSearch(
@@ -9813,15 +9813,19 @@ ${value}</textarea
 
       res.send(
         html`
-          <button
-            type="button"
-            class="dropdown--menu--item button button--transparent"
-            onclick="${javascript`
-              this.closest(".mention-user").mention("12348");
-            `}"
-          >
-            Hello ${req.body.name}
-          </button>
+          $${users.map(
+            (user) => html`
+              <button
+                type="button"
+                class="dropdown--menu--item button button--transparent"
+                onclick="${javascript`
+                  this.closest(".mention-user").mention("12348");
+                `}"
+              >
+                ${user.name}
+              </button>
+            `
+          )}
         `
       );
     }
