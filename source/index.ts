@@ -4349,6 +4349,7 @@ export default async function courselore({
     res.redirect(`${url}/settings`);
   });
 
+  // TODO: https://github.com/sindresorhus/filenamify
   app.post<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings/avatar",
     asyncHandler(async (req, res, next) => {
@@ -9882,6 +9883,7 @@ ${value}</textarea
     }
   );
 
+  // TODO: https://github.com/sindresorhus/filenamify
   app.post<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/markdown-editor/attachments",
     ...isSignedInMiddleware,
