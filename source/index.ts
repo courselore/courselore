@@ -9844,7 +9844,6 @@ ${value}</textarea
         `
       );
 
-      // TODO: Add slug to enrollmentReference.
       // TODO: Highlight search results.
       res.send(
         html`
