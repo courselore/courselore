@@ -9495,8 +9495,8 @@ export default async function courselore({
                                 type="button"
                                 class="dropdown--menu--item button button--transparent"
                                 onclick="${javascript`
-                                this.closest(".mention-user").mention("all");
-                              `}"
+                                  this.closest(".mention-user").mention("all");
+                                `}"
                               >
                                 Everyone in the Conversation
                               </button>
@@ -9504,8 +9504,8 @@ export default async function courselore({
                                 type="button"
                                 class="dropdown--menu--item button button--transparent"
                                 onclick="${javascript`
-                                this.closest(".mention-user").mention("staff");
-                              `}"
+                                  this.closest(".mention-user").mention("staff");
+                                `}"
                               >
                                 Staff
                               </button>
@@ -9513,8 +9513,8 @@ export default async function courselore({
                                 type="button"
                                 class="dropdown--menu--item button button--transparent"
                                 onclick="${javascript`
-                                this.closest(".mention-user").mention("students");
-                              `}"
+                                  this.closest(".mention-user").mention("students");
+                                `}"
                               >
                                 Students
                               </button>
