@@ -9522,7 +9522,12 @@ export default async function courselore({
                           </div>
                           <hr class="dropdown--separator" />
                           <div class="dropdown--menu">
-                            <div class="dropdown--menu--item">
+                            <div
+                              class="dropdown--menu--item"
+                              style="${css`
+                                padding: var(--space--2);
+                              `}"
+                            >
                               <input
                                 type="text"
                                 placeholder="User Name…"
@@ -9815,15 +9820,7 @@ ${value}</textarea
         html`
           $${users.length === 0
             ? html`
-                <div
-                  class="dropdown--menu--item secondary"
-                  style="${css`
-                    padding-top: var(--space--1);
-                    padding-bottom: var(--space--1);
-                  `}"
-                >
-                  No user found.
-                </div>
+                <div class="dropdown--menu--item secondary">No user found.</div>
               `
             : users.map(
                 (user) => html`
