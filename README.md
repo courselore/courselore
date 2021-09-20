@@ -42,6 +42,7 @@
 
 ### Polish Existing Features
 
+- Flex gap polyfill.
 - App isn’t restarting when crashed. Caddy is keeping the process awake.
 - @mentions widget:
   - Don’t include option for “students” on staff-only conversations.
