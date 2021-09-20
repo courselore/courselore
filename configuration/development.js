@@ -26,8 +26,11 @@ module.exports = async (require) => {
         `,
       }),
     ];
-    await Promise.any(subprocesses);
-    for (const subprocess of subprocesses) subprocess.cancel();
+    for (const subprocess of subprocesses)
+      subprocess.on("close", () => {
+        for (const otherSubprocess of subprocesses)
+          if (subprocess !== otherSubprocess) otherSubprocess.cancel();
+      });
   } else {
     const path = require("path");
     const nodemailer = require("nodemailer");
