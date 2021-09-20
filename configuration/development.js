@@ -30,6 +30,7 @@ module.exports = async (require) => {
     for (const subprocess of subprocesses) subprocess.cancel();
   } else {
     const path = require("path");
+    const nodemailer = require("nodemailer");
     const courselore = require(".").default;
     const { version } = require("../package.json");
     const app = await courselore({
@@ -43,7 +44,9 @@ module.exports = async (require) => {
           },
           { from: `"CourseLore" <${email}>` }
         );
-        return async (mailOptions) => await transporter.sendMail(mailOptions);
+        return async (mailOptions) => {
+          console.log(await transporter.sendMail(mailOptions));
+        };
       })(),
       liveReload: true,
     });
