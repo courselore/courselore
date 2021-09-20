@@ -3009,6 +3009,13 @@ export default async function courselore({
     },
   ];
 
+  app.get("/crash", (req, res) => {
+    // throw new Error();
+    setTimeout(() => {
+      throw new Error();
+    }, 0);
+  });
+
   app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "/",
     ...isSignedOutMiddleware,
