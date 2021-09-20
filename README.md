@@ -271,6 +271,8 @@
 
 ### Marketing
 
+- Landing page:
+  - https://capacitorjs.com
 - Newsletter.
 - Create CourseLore Gravatar.
   - Use in npm.
