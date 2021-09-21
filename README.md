@@ -43,7 +43,6 @@
 ### Polish Existing Features
 
 - @mentions widget:
-  - Don’t include option for “students” on staff-only conversations.
   - Escape should close it.
 - Search:
   - Include users in search.
