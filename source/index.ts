@@ -9445,183 +9445,44 @@ export default async function courselore({
             $${res.locals.course !== undefined
               ? html`
                   <div>
-                    <div>
-                      <button
-                        type="button"
-                        class="button button--tight button--transparent"
-                        data-ondomcontentloaded="${javascript`
-                          Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+u", () => { this.click(); return false; });
-                          tippy(this, {
-                            content: ${JSON.stringify(html`
-                              Mention User
-                              <span class="keyboard-shortcut">
-                                (Ctrl+Shift+U or
-                                <span class="keyboard-shortcut--cluster"
-                                  ><i class="bi bi-shift"></i
-                                  ><i class="bi bi-command"></i>U</span
-                                >)
-                              </span>
-                            `)},
-                            touch: false,
-                            allowHTML: true,
-                          });
-                          const mentionUserSearch = this.nextElementSibling.firstElementChild;
-                          tippy(this, {
-                            content: mentionUserSearch,
-                            trigger: "click",
-                            interactive: true,
-                            onShown: () => {
-                              mentionUserSearch.querySelector(".mention-user--user-name").focus();
-                            },
-                          });        
-                        `}"
-                      >
-                        <i class="bi bi-at"></i>
-                      </button>
-                      <div hidden>
-                        <div
-                          class="mention-user"
-                          style="${css`
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--2);
-                            width: var(--space--56);
-                          `}"
-                          data-ondomcontentloaded="${javascript`
-                            this.mention = (user) => {
-                              const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
-                              textFieldEdit.wrapSelection(element, "@" + user, "");
-                              element.focus();
-                              tippy.hideAll();
-                              textFieldEdit.set(this.querySelector(".mention-user--user-name"), "");
-                            };
-                          `}"
-                        >
-                          <div>
-                            <p class="heading">
-                              <i class="bi bi-at"></i>
-                              Mention User
-                            </p>
-                            <div class="dropdown--menu">
-                              <button
-                                type="button"
-                                class="dropdown--menu--item button button--transparent"
-                                onclick="${javascript`
-                                  this.closest(".mention-user").mention("all");
-                                `}"
-                              >
-                                Everyone in the Conversation
-                              </button>
-                              <button
-                                type="button"
-                                class="dropdown--menu--item button button--transparent"
-                                onclick="${javascript`
-                                  this.closest(".mention-user").mention("staff");
-                                `}"
-                              >
-                                Staff in the Conversation
-                              </button>
-                              <button
-                                type="button"
-                                class="dropdown--menu--item button button--transparent"
-                                onclick="${javascript`
-                                  this.closest(".mention-user").mention("students");
-                                `}"
-                              >
-                                Students in the Conversation
-                              </button>
-                            </div>
-                          </div>
-                          <hr class="dropdown--separator" />
-                          <div
-                            class="dropdown--menu"
-                            style="${css`
-                              .button {
-                                text-align: left;
-                              }
-                            `}"
-                          >
-                            <div
-                              class="dropdown--menu--item"
-                              style="${css`
-                                padding: var(--space--2);
-                              `}"
-                            >
-                              <!-- TODO: When focus is on this window, up/down arrows should move between options in list of names below. Also, Enter should select the highlighted option. -->
-                              <input
-                                type="text"
-                                placeholder="User Name…"
-                                autocomplete="off"
-                                data-skip-is-modified="true"
-                                class="mention-user--user-name input--text"
-                                data-ondomcontentloaded="${javascript`
-                                  let isSearching = false;
-                                  let shouldSearchAgain = false;
-                                  this.search = async () => {
-                                    if (isSearching) {
-                                      shouldSearchAgain = true;
-                                      return;
-                                    }
-                                    shouldSearchAgain = false;
-                                    isSearching = true;
-                                    this.closest(".mention-user").querySelector(".mention-user--search-results").innerHTML =
-                                      this.value.trim() === ""
-                                      ? ""
-                                      : await (
-                                        await fetch(
-                                          "${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search",
-                                          {
-                                            method: "POST",
-                                            body: new URLSearchParams({ name: this.value }),
-                                          }
-                                        )
-                                      ).text();
-                                    isSearching = false;
-                                    if (shouldSearchAgain) this.search();
-                                  };
-                                  Mousetrap(this).bind("escape", () => {
-                                    this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").focus();
-                                    tippy.hideAll();
-                                  });
-                                `}"
-                                oninput="${javascript`
-                                  this.search();
-                                `}"
-                              />
-                            </div>
-                            <div
-                              class="mention-user--search-results"
-                              style="${css`
-                                max-height: var(--space--36);
-                                overflow: auto;
-                              `}"
-                            ></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                     <button
                       type="button"
                       class="button button--tight button--transparent"
                       data-ondomcontentloaded="${javascript`
-                        Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+j", () => { this.click(); return false; });
+                        tippy(this, {
+                          content: ${JSON.stringify(html`
+                            Mention User
+                            <span class="keyboard-shortcut">(@)</span>
+                          `)},
+                          touch: false,
+                          allowHTML: true,
+                        }); 
+                      `}"
+                      onclick="${javascript`
+                        const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                        textFieldEdit.wrapSelection(element, "@", "");
+                        element.focus();
+                      `}"
+                    >
+                      <i class="bi bi-at"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="button button--tight button--transparent"
+                      data-ondomcontentloaded="${javascript`
                         tippy(this, {
                           content: ${JSON.stringify(html`
                             Refer to Conversation or Message
-                            <span class="keyboard-shortcut">
-                              (Ctrl+Shift+J or
-                              <span class="keyboard-shortcut--cluster"
-                                ><i class="bi bi-shift"></i
-                                ><i class="bi bi-command"></i>J</span
-                              >)
-                            </span>
+                            <span class="keyboard-shortcut">(#)</span>
                           `)},
                           touch: false,
                           allowHTML: true,
                         });
                       `}"
                       onclick="${javascript`
-                        alert("TODO: Refer to Conversation or Message");
+                        const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                        textFieldEdit.wrapSelection(element, "#", "");
+                        element.focus();
                       `}"
                     >
                       <i class="bi bi-hash"></i>
@@ -9769,6 +9630,41 @@ export default async function courselore({
                 background-color: var(--color--blue--200);
               }
             `}"
+            $${res.locals.course !== undefined
+              ? html`
+                  data-ondomcontentloaded="${javascript`
+                    const mentionUser = tippy(this, {
+                      content: this.closest(".markdown-editor").querySelector(".mention-user"),
+                      placement: "right-start",
+                      trigger: "manual",
+                    });
+                    let anchorIndex;
+                    const activateMentionUser = () => {
+                      if (mentionUser.state.isShown) return;
+                      anchorIndex = this.selectionStart - 1;
+                      if (this.value[anchorIndex] === "@") mentionUser.show();
+                    };
+                    const deactivateMentionUser = () => {
+                      if (!mentionUser.state.isShown) return;
+                      mentionUser.hide();
+                    };
+                    this.addEventListener("click", activateMentionUser);
+                    this.addEventListener("focus", activateMentionUser);
+                    this.addEventListener("input", activateMentionUser);
+                    this.addEventListener("input", () => {
+                      if (!mentionUser.state.isShown) return;
+                      if (this.value[anchorIndex] !== "@") {
+                        deactivateMentionUser();
+                        return;
+                      }
+                      console.log("update mention user");
+                    });
+                    this.addEventListener("click", deactivateMentionUser);
+                    this.addEventListener("blur", deactivateMentionUser);
+                    Mousetrap(this).bind("escape", deactivateMentionUser);
+                  `}"
+                `
+              : html``}
             onfocus="${javascript`
               this.style.height = "var(--space--52)";
             `}"
@@ -9795,6 +9691,131 @@ export default async function courselore({
           >
 ${value}</textarea
           >
+          $${res.locals.course !== undefined
+            ? html`
+                <div hidden>
+                  <div
+                    class="mention-user"
+                    style="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--2);
+                      width: var(--space--56);
+                    `}"
+                    data-ondomcontentloaded="${javascript`
+                      this.mention = (user) => {
+                        const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                        textFieldEdit.wrapSelection(element, "@" + user, "");
+                        element.focus();
+                        tippy.hideAll();
+                        textFieldEdit.set(this.querySelector(".mention-user--user-name"), "");
+                      };
+                    `}"
+                  >
+                    <div>
+                      <p class="heading">
+                        <i class="bi bi-at"></i>
+                        Mention User
+                      </p>
+                      <div class="dropdown--menu">
+                        <button
+                          type="button"
+                          class="dropdown--menu--item button button--transparent"
+                          onclick="${javascript`
+                            this.closest(".mention-user").mention("all");
+                          `}"
+                        >
+                          Everyone in the Conversation
+                        </button>
+                        <button
+                          type="button"
+                          class="dropdown--menu--item button button--transparent"
+                          onclick="${javascript`
+                            this.closest(".mention-user").mention("staff");
+                          `}"
+                        >
+                          Staff in the Conversation
+                        </button>
+                        <button
+                          type="button"
+                          class="dropdown--menu--item button button--transparent"
+                          onclick="${javascript`
+                            this.closest(".mention-user").mention("students");
+                          `}"
+                        >
+                          Students in the Conversation
+                        </button>
+                      </div>
+                    </div>
+                    <hr class="dropdown--separator" />
+                    <div
+                      class="dropdown--menu"
+                      style="${css`
+                        .button {
+                          text-align: left;
+                        }
+                      `}"
+                    >
+                      <div
+                        class="dropdown--menu--item"
+                        style="${css`
+                          padding: var(--space--2);
+                        `}"
+                      >
+                        <!-- TODO: When focus is on this window, up/down arrows should move between options in list of names below. Also, Enter should select the highlighted option. -->
+                        <input
+                          type="text"
+                          placeholder="User Name…"
+                          autocomplete="off"
+                          data-skip-is-modified="true"
+                          class="mention-user--user-name input--text"
+                          data-ondomcontentloaded="${javascript`
+                            let isSearching = false;
+                            let shouldSearchAgain = false;
+                            this.search = async () => {
+                              if (isSearching) {
+                                shouldSearchAgain = true;
+                                return;
+                              }
+                              shouldSearchAgain = false;
+                              isSearching = true;
+                              this.closest(".mention-user").querySelector(".mention-user--search-results").innerHTML =
+                                this.value.trim() === ""
+                                ? ""
+                                : await (
+                                  await fetch(
+                                    "${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search",
+                                    {
+                                      method: "POST",
+                                      body: new URLSearchParams({ name: this.value }),
+                                    }
+                                  )
+                                ).text();
+                              isSearching = false;
+                              if (shouldSearchAgain) this.search();
+                            };
+                            Mousetrap(this).bind("escape", () => {
+                              this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").focus();
+                              tippy.hideAll();
+                            });
+                          `}"
+                          oninput="${javascript`
+                            this.search();
+                          `}"
+                        />
+                      </div>
+                      <div
+                        class="mention-user--search-results"
+                        style="${css`
+                          max-height: var(--space--36);
+                          overflow: auto;
+                        `}"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              `
+            : html``}
         </div>
 
         <div
