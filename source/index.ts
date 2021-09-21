@@ -9640,7 +9640,7 @@ export default async function courselore({
                       placement: "bottom",
                       trigger: "manual",
                       interactive: true,
-                      offset: [0, 30],
+                      offset: [0, 16],
                     });
                     let anchorIndex;
                     const activateMentionUser = () => {
@@ -9649,7 +9649,7 @@ export default async function courselore({
                       if (this.value[anchorIndex] === "@") {
                         const boundingClientRect = this.getBoundingClientRect();
                         const caretCoordinates = getCaretCoordinates(this);
-                        const top = boundingClientRect.top + caretCoordinates.top;
+                        const top = boundingClientRect.top + caretCoordinates.top + caretCoordinates.height / 2;
                         const left = boundingClientRect.left + caretCoordinates.left;
                         mentionUser.setProps({
                           getReferenceClientRect: () => ({
