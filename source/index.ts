@@ -9642,7 +9642,19 @@ export default async function courselore({
                     const activateMentionUser = () => {
                       if (mentionUser.state.isShown) return;
                       anchorIndex = this.selectionStart - 1;
-                      if (this.value[anchorIndex] === "@") mentionUser.show();
+                      if (this.value[anchorIndex] === "@") {
+                        mentionUser.setProps({
+                          getReferenceClientRect: () => ({
+                            width: 0,
+                            height: 0,
+                            top: 0,
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                          }),
+                        });
+                        mentionUser.show();
+                      }
                     };
                     const deactivateMentionUser = () => {
                       if (!mentionUser.state.isShown) return;
