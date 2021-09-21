@@ -9579,6 +9579,10 @@ export default async function courselore({
                                     isSearching = false;
                                     if (shouldSearchAgain) this.search();
                                   };
+                                  Mousetrap(this).bind("escape", () => {
+                                    this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").focus();
+                                    tippy.hideAll();
+                                  });
                                 `}"
                                 oninput="${javascript`
                                   this.search();

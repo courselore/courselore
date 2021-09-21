@@ -42,8 +42,6 @@
 
 ### Polish Existing Features
 
-- @mentions widget:
-  - Escape should close it.
 - Search:
   - Include users in search.
   - Include snippets in search results.
