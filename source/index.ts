@@ -425,6 +425,8 @@ export default async function courselore({
 
           <script src="${url}/node_modules/mousetrap/mousetrap.min.js"></script>
 
+          <script src="${url}/node_modules/textarea-caret/index.js"></script>
+
           <script>
             /* TODO: Extract the following global auxiliary functions into @leafac/javascript */
             window.addEventListener("DOMContentLoaded", () => {
@@ -9635,22 +9637,28 @@ export default async function courselore({
                   data-ondomcontentloaded="${javascript`
                     const mentionUser = tippy(this, {
                       content: this.closest(".markdown-editor").querySelector(".mention-user"),
-                      placement: "right-start",
+                      placement: "bottom",
                       trigger: "manual",
+                      interactive: true,
+                      offset: [0, 30],
                     });
                     let anchorIndex;
                     const activateMentionUser = () => {
                       if (mentionUser.state.isShown) return;
                       anchorIndex = this.selectionStart - 1;
                       if (this.value[anchorIndex] === "@") {
+                        const boundingClientRect = this.getBoundingClientRect();
+                        const caretCoordinates = getCaretCoordinates(this);
+                        const top = boundingClientRect.top + caretCoordinates.top;
+                        const left = boundingClientRect.left + caretCoordinates.left;
                         mentionUser.setProps({
                           getReferenceClientRect: () => ({
                             width: 0,
                             height: 0,
-                            top: 0,
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
+                            top: top,
+                            right: left,
+                            bottom: top,
+                            left: left,
                           }),
                         });
                         mentionUser.show();
