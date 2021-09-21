@@ -42,7 +42,6 @@
 
 ### Polish Existing Features
 
-- Flex gap polyfill.
 - @mentions widget:
   - Don’t include option for “students” on staff-only conversations.
   - Escape should close it.
