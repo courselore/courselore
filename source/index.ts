@@ -9519,7 +9519,7 @@ export default async function courselore({
                                   this.closest(".mention-user").mention("staff");
                                 `}"
                               >
-                                Staff
+                                Staff in the Conversation
                               </button>
                               <button
                                 type="button"
@@ -9528,7 +9528,7 @@ export default async function courselore({
                                   this.closest(".mention-user").mention("students");
                                 `}"
                               >
-                                Students
+                                Students in the Conversation
                               </button>
                             </div>
                           </div>
