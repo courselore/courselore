@@ -42,6 +42,19 @@
 
 ### Polish Existing Features
 
+- Finish widgets for @mentions and #references:
+  - https://github.com/leafac/caxa/commit/20f57a96960b417bb17a5bcdabbd8fe2baed012d
+  - https://www.npmjs.com/package/textarea-caret
+  - https://www.npmjs.com/package/caret-pos
+  - https://www.npmjs.com/package/textarea-caret-position
+  - https://www.npmjs.com/package/textarea-caret-ts
+  - https://github.com/ichord/Caret.js
+  - https://jh3y.medium.com/how-to-where-s-the-caret-getting-the-xy-position-of-the-caret-a24ba372990a
+  - https://stackoverflow.com/questions/442404/retrieve-the-position-x-y-of-an-html-element-relative-to-the-browser-window
+  - https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
+  - https://www.codeproject.com/Articles/35737/Absolute-Position-of-a-DOM-Element
+  - https://plainjs.com/javascript/styles/get-the-position-of-an-element-relative-to-the-document-24/
+  - https://www.codegrepper.com/code-examples/javascript/get+absolute+position+of+element+javascript
 - Search:
   - Include users in search.
   - Include snippets in search results.
