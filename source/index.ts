@@ -9638,59 +9638,62 @@ export default async function courselore({
             $${res.locals.course !== undefined
               ? html`
                   data-ondomcontentloaded="${javascript`
-                    const mentionUser = tippy(this, {
-                      content: this.closest(".markdown-editor").querySelector(".mention-user"),
-                      placement: "bottom",
-                      trigger: "manual",
-                      interactive: true,
-                      offset: [0, 16],
-                    });
-                    let anchorIndex;
-                    const showMentionUser = () => {
-                      if (mentionUser.state.isShown) return;
-                      tippy.hideAll();
-                      anchorIndex = this.selectionStart - 1;
-                      if (this.value[anchorIndex] !== "@") return;
-                      const boundingClientRect = this.getBoundingClientRect();
-                      const caretCoordinates = getCaretCoordinates(this, this.selectionStart);
-                      const top = boundingClientRect.top + caretCoordinates.top + caretCoordinates.height / 2;
-                      const left = boundingClientRect.left + caretCoordinates.left;
-                      mentionUser.setProps({
-                        getReferenceClientRect: () => ({
-                          width: 0,
-                          height: 0,
-                          top: top,
-                          right: left,
-                          bottom: top,
-                          left: left,
-                        }),
-                      });
-                      mentionUser.show();
+                    this.mentionUser = {
+                      tippy: tippy(this, {
+                        content: this.closest(".markdown-editor").querySelector(".mention-user"),
+                        placement: "bottom",
+                        trigger: "manual",
+                        interactive: true,
+                        offset: [0, 16],
+                      }),
+                      anchorIndex: null,
+                      show: () => {
+                        if (this.mentionUser.tippy.state.isShown) return;
+                        tippy.hideAll();
+                        anchorIndex = this.selectionStart - 1;
+                        if (this.value[anchorIndex] !== "@") return;
+                        const boundingClientRect = this.getBoundingClientRect();
+                        const caretCoordinates = getCaretCoordinates(this, this.selectionStart);
+                        const top = boundingClientRect.top + caretCoordinates.top + caretCoordinates.height / 2;
+                        const left = boundingClientRect.left + caretCoordinates.left;
+                        this.mentionUser.tippy.setProps({
+                          getReferenceClientRect: () => ({
+                            width: 0,
+                            height: 0,
+                            top: top,
+                            right: left,
+                            bottom: top,
+                            left: left,
+                          }),
+                        });
+                        this.mentionUser.tippy.show();
+                      },
+                      onInput: () => {
+                        if (!this.mentionUser.tippy.state.isShown) return;
+                        if (this.selectionStart < anchorIndex || this.selectionEnd < anchorIndex || this.value[anchorIndex] !== "@") {
+                          this.mentionUser.hide();
+                          return;
+                        }
+                        console.log("update mention user");
+                      },
+                      select: () => {
+                        this.setSelectionRange(anchorIndex + 1, this.selectionStart);
+                        textFieldEdit.insert(this, user);
+                        this.mentionUser.hide();
+                        // this.focus();
+                      },
+                      hide: () => {
+                        if (!this.mentionUser.tippy.state.isShown) return;
+                        this.mentionUser.tippy.hide();
+                      },
                     };
-                    this.addEventListener("click", showMentionUser);
-                    this.addEventListener("focus", showMentionUser);
-                    this.addEventListener("input", showMentionUser);
-                    this.addEventListener("input", () => {
-                      if (!mentionUser.state.isShown) return;
-                      if (this.selectionStart < anchorIndex || this.selectionEnd < anchorIndex || this.value[anchorIndex] !== "@") {
-                        hideMentionUser();
-                        return;
-                      }
-                      console.log("update mention user");
-                    });
-                    this.mentionUserSelect = (user) => {
-                      this.setSelectionRange(anchorIndex + 1, this.selectionStart);
-                      textFieldEdit.insert(this, user);
-                      hideMentionUser();
-                      // this.focus();
-                    };
-                    const hideMentionUser = () => {
-                      if (!mentionUser.state.isShown) return;
-                      mentionUser.hide();
-                    };
-                    this.addEventListener("click", hideMentionUser);
-                    this.addEventListener("blur", hideMentionUser);
-                    Mousetrap(this).bind("escape", hideMentionUser);
+                    this.addEventListener("click", this.mentionUser.show);
+                    this.addEventListener("focus", this.mentionUser.show);
+                    this.addEventListener("input", this.mentionUser.show);
+                    this.addEventListener("input", this.mentionUser.onInput);
+                    this.addEventListener("click", this.mentionUser.hide);
+                    this.addEventListener("blur", this.mentionUser.hide);
+                    Mousetrap(this).bind("escape", this.mentionUser.hide);
                   `}"
                 `
               : html``}
@@ -9742,7 +9745,7 @@ ${value}</textarea
                           type="button"
                           class="dropdown--menu--item button button--transparent"
                           onclick="${javascript`
-                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUserSelect("all");
+                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser.select("all");
                           `}"
                         >
                           Everyone in the Conversation
@@ -9751,7 +9754,7 @@ ${value}</textarea
                           type="button"
                           class="dropdown--menu--item button button--transparent"
                           onclick="${javascript`
-                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUserSelect("staff");
+                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser.select("staff");
                           `}"
                         >
                           Staff in the Conversation
@@ -9760,7 +9763,7 @@ ${value}</textarea
                           type="button"
                           class="dropdown--menu--item button button--transparent"
                           onclick="${javascript`
-                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUserSelect("students");
+                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser.select("students");
                           `}"
                         >
                           Students in the Conversation
