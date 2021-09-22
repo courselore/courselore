@@ -9690,8 +9690,6 @@ export default async function courselore({
                         this.mentionUser.tippy.hide();
                       },
                     };
-                    this.addEventListener("click", this.mentionUser.show);
-                    this.addEventListener("focus", this.mentionUser.show);
                     this.addEventListener("input", this.mentionUser.show);
                     this.addEventListener("input", this.mentionUser.updateSearch);
                     this.addEventListener("click", this.mentionUser.hide);
