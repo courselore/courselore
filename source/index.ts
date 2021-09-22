@@ -9646,7 +9646,7 @@ export default async function courselore({
                       offset: [0, 16],
                     });
                     let anchorIndex;
-                    const activateMentionUser = () => {
+                    const showMentionUser = () => {
                       if (mentionUser.state.isShown) return;
                       tippy.hideAll();
                       anchorIndex = this.selectionStart - 1;
@@ -9667,13 +9667,13 @@ export default async function courselore({
                       });
                       mentionUser.show();
                     };
-                    this.addEventListener("click", activateMentionUser);
-                    this.addEventListener("focus", activateMentionUser);
-                    this.addEventListener("input", activateMentionUser);
+                    this.addEventListener("click", showMentionUser);
+                    this.addEventListener("focus", showMentionUser);
+                    this.addEventListener("input", showMentionUser);
                     this.addEventListener("input", () => {
                       if (!mentionUser.state.isShown) return;
                       if (this.selectionStart < anchorIndex || this.selectionEnd < anchorIndex || this.value[anchorIndex] !== "@") {
-                        deactivateMentionUser();
+                        hideMentionUser();
                         return;
                       }
                       console.log("update mention user");
@@ -9681,16 +9681,16 @@ export default async function courselore({
                     this.mentionUserSelect = (user) => {
                       this.setSelectionRange(anchorIndex + 1, this.selectionStart);
                       textFieldEdit.insert(this, user);
-                      deactivateMentionUser();
+                      hideMentionUser();
                       // this.focus();
                     };
-                    const deactivateMentionUser = () => {
+                    const hideMentionUser = () => {
                       if (!mentionUser.state.isShown) return;
                       mentionUser.hide();
                     };
-                    this.addEventListener("click", deactivateMentionUser);
-                    this.addEventListener("blur", deactivateMentionUser);
-                    Mousetrap(this).bind("escape", deactivateMentionUser);
+                    this.addEventListener("click", hideMentionUser);
+                    this.addEventListener("blur", hideMentionUser);
+                    Mousetrap(this).bind("escape", hideMentionUser);
                   `}"
                 `
               : html``}
