@@ -9693,7 +9693,6 @@ export default async function courselore({
                       },
                     };
                     this.addEventListener("input", this.mentionUser.show);
-                    this.addEventListener("click", this.mentionUser.hide);
                     Mousetrap(this).bind("escape", this.mentionUser.hide);
                     // TODO: Arrow keys & Tab (& Shift-Tab).
                   `}"
