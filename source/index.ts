@@ -9672,7 +9672,7 @@ export default async function courselore({
                     this.addEventListener("input", activateMentionUser);
                     this.addEventListener("input", () => {
                       if (!mentionUser.state.isShown) return;
-                      if (this.value[anchorIndex] !== "@") {
+                      if (this.selectionStart < anchorIndex || this.selectionEnd < anchorIndex || this.value[anchorIndex] !== "@") {
                         deactivateMentionUser();
                         return;
                       }
