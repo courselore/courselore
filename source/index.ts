@@ -9696,6 +9696,7 @@ export default async function courselore({
                     this.addEventListener("click", this.mentionUser.hide);
                     this.addEventListener("blur", this.mentionUser.hide);
                     Mousetrap(this).bind("escape", this.mentionUser.hide);
+                    // TODO: Arrow keys & Tab.
                   `}"
                 `
               : html``}
