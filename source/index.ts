@@ -9641,7 +9641,7 @@ export default async function courselore({
                     this.mentionUser = {
                       tippy: tippy(this, {
                         content: this.closest(".markdown-editor").querySelector(".mention-user"),
-                        placement: "bottom",
+                        placement: "bottom-start",
                         trigger: "manual",
                         interactive: true,
                         offset: [0, 16],
