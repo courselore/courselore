@@ -9649,10 +9649,10 @@ export default async function courselore({
                       anchorIndex: null,
                       show: () => {
                         if (this.mentionUser.tippy.state.isShown) return;
-                        this.mentionUser.anchorIndex = this.selectionStart - 1;
+                        this.mentionUser.anchorIndex = Math.min(this.selectionStart, this.selectionEnd) - 1;
                         if (this.value[this.mentionUser.anchorIndex] !== "@") return;
                         const boundingClientRect = this.getBoundingClientRect();
-                        const caretCoordinates = getCaretCoordinates(this, this.selectionStart);
+                        const caretCoordinates = getCaretCoordinates(this, this.mentionUser.anchorIndex);
                         const top = boundingClientRect.top + caretCoordinates.top + caretCoordinates.height / 2;
                         const left = boundingClientRect.left + caretCoordinates.left;
                         this.mentionUser.tippy.setProps({
@@ -9671,8 +9671,7 @@ export default async function courselore({
                       onInput: () => {
                         if (!this.mentionUser.tippy.state.isShown) return;
                         if (
-                          this.selectionStart < this.mentionUser.anchorIndex ||
-                          this.selectionEnd < this.mentionUser.anchorIndex ||
+                          Math.min(this.selectionStart, this.selectionEnd) < this.mentionUser.anchorIndex ||
                           this.value[this.mentionUser.anchorIndex] !== "@"
                         ) {
                           this.mentionUser.hide();
@@ -9681,7 +9680,7 @@ export default async function courselore({
                         console.log("TODO: Update mentionUser widget with search results.");
                       },
                       select: () => {
-                        this.setSelectionRange(this.mentionUser.anchorIndex + 1, this.selectionStart);
+                        this.setSelectionRange(this.mentionUser.anchorIndex + 1, Math.max(this.selectionStart, this.selectionEnd));
                         textFieldEdit.insert(this, user);
                         this.mentionUser.hide();
                         // this.focus();
