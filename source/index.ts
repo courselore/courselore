@@ -9686,6 +9686,7 @@ export default async function courselore({
                       this.setSelectionRange(anchorIndex + 1, this.selectionStart);
                       textFieldEdit.insert(this, user);
                       deactivateMentionUser();
+                      // this.focus();
                     };
                     this.addEventListener("click", deactivateMentionUser);
                     this.addEventListener("blur", deactivateMentionUser);
@@ -9730,15 +9731,6 @@ ${value}</textarea
                       gap: var(--space--2);
                       width: var(--space--56);
                     `}"
-                    data-ondomcontentloaded="${javascript`
-                      this.mention = (user) => {
-                        const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
-                        textFieldEdit.wrapSelection(element, "@" + user, "");
-                        element.focus();
-                        tippy.hideAll();
-                        textFieldEdit.set(this.querySelector(".mention-user--user-name"), "");
-                      };
-                    `}"
                   >
                     <div>
                       <p class="heading">
@@ -9750,7 +9742,7 @@ ${value}</textarea
                           type="button"
                           class="dropdown--menu--item button button--transparent"
                           onclick="${javascript`
-                            this.closest(".mention-user").mention("all");
+                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUserSelect("all");
                           `}"
                         >
                           Everyone in the Conversation
@@ -9759,7 +9751,7 @@ ${value}</textarea
                           type="button"
                           class="dropdown--menu--item button button--transparent"
                           onclick="${javascript`
-                            this.closest(".mention-user").mention("staff");
+                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUserSelect("staff");
                           `}"
                         >
                           Staff in the Conversation
@@ -9768,7 +9760,7 @@ ${value}</textarea
                           type="button"
                           class="dropdown--menu--item button button--transparent"
                           onclick="${javascript`
-                            this.closest(".mention-user").mention("students");
+                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUserSelect("students");
                           `}"
                         >
                           Students in the Conversation
@@ -9792,6 +9784,7 @@ ${value}</textarea
                       >
                         <!-- TODO: When focus is on this window, up/down arrows should move between options in list of names below. Also, Enter should select the highlighted option. -->
                         <input
+                          hidden
                           type="text"
                           placeholder="User Name…"
                           autocomplete="off"
