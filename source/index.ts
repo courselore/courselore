@@ -9874,7 +9874,7 @@ ${value}</textarea
                     type="button"
                     class="dropdown--menu--item button button--transparent"
                     onclick="${javascript`
-                      this.closest(".markdown-editor--mention-user").mention("${
+                      this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser.select("${
                         user.enrollmentReference
                       }--${slugify(user.name)}");
                     `}"
