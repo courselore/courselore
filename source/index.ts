@@ -9668,7 +9668,7 @@ export default async function courselore({
                         tippy.hideAll();
                         this.mentionUser.tippy.show();
                       },
-                      onInput: () => {
+                      updateSearch: () => {
                         if (!this.mentionUser.tippy.state.isShown) return;
                         if (
                           Math.min(this.selectionStart, this.selectionEnd) < this.mentionUser.anchorIndex ||
@@ -9693,7 +9693,7 @@ export default async function courselore({
                     this.addEventListener("click", this.mentionUser.show);
                     this.addEventListener("focus", this.mentionUser.show);
                     this.addEventListener("input", this.mentionUser.show);
-                    this.addEventListener("input", this.mentionUser.onInput);
+                    this.addEventListener("input", this.mentionUser.updateSearch);
                     this.addEventListener("click", this.mentionUser.hide);
                     this.addEventListener("blur", this.mentionUser.hide);
                     Mousetrap(this).bind("escape", this.mentionUser.hide);
