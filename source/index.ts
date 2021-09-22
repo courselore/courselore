@@ -9648,28 +9648,26 @@ export default async function courselore({
                       }),
                       anchorIndex: null,
                       show: () => {
-                        if (this.mentionUser.tippy.state.isShown) return;
-                        this.mentionUser.anchorIndex = Math.min(this.selectionStart, this.selectionEnd) - 1;
-                        if (this.value[this.mentionUser.anchorIndex] !== "@") return;
-                        const boundingClientRect = this.getBoundingClientRect();
-                        const caretCoordinates = getCaretCoordinates(this, this.mentionUser.anchorIndex);
-                        const top = boundingClientRect.top + caretCoordinates.top + caretCoordinates.height / 2;
-                        const left = boundingClientRect.left + caretCoordinates.left;
-                        this.mentionUser.tippy.setProps({
-                          getReferenceClientRect: () => ({
-                            width: 0,
-                            height: 0,
-                            top: top,
-                            right: left,
-                            bottom: top,
-                            left: left,
-                          }),
-                        });
-                        tippy.hideAll();
-                        this.mentionUser.tippy.show();
-                      },
-                      updateSearch: () => {
-                        if (!this.mentionUser.tippy.state.isShown) return;
+                        if (!this.mentionUser.tippy.state.isShown) {
+                          this.mentionUser.anchorIndex = Math.min(this.selectionStart, this.selectionEnd) - 1;
+                          if (this.value[this.mentionUser.anchorIndex] !== "@") return;
+                          const boundingClientRect = this.getBoundingClientRect();
+                          const caretCoordinates = getCaretCoordinates(this, this.mentionUser.anchorIndex);
+                          const top = boundingClientRect.top + caretCoordinates.top + caretCoordinates.height / 2;
+                          const left = boundingClientRect.left + caretCoordinates.left;
+                          this.mentionUser.tippy.setProps({
+                            getReferenceClientRect: () => ({
+                              width: 0,
+                              height: 0,
+                              top: top,
+                              right: left,
+                              bottom: top,
+                              left: left,
+                            }),
+                          });
+                          tippy.hideAll();
+                          this.mentionUser.tippy.show();
+                        }
                         if (
                           Math.min(this.selectionStart, this.selectionEnd) < this.mentionUser.anchorIndex ||
                           this.value[this.mentionUser.anchorIndex] !== "@"
@@ -9691,7 +9689,6 @@ export default async function courselore({
                       },
                     };
                     this.addEventListener("input", this.mentionUser.show);
-                    this.addEventListener("input", this.mentionUser.updateSearch);
                     this.addEventListener("click", this.mentionUser.hide);
                     this.addEventListener("blur", this.mentionUser.hide);
                     Mousetrap(this).bind("escape", this.mentionUser.hide);
