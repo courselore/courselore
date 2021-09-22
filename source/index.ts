@@ -9662,6 +9662,7 @@ export default async function courselore({
                         else if (this.value[caretPosition - 2] === "@")
                           this.mentionUser.anchorIndex = caretPosition - 2;
                         else return;
+                        if (this.mentionUser.anchorIndex > 0 && this.value[this.mentionUser.anchorIndex - 1].match(/\\w/)) return;
                         const boundingClientRect = this.getBoundingClientRect();
                         const caretCoordinates = getCaretCoordinates(this, this.mentionUser.anchorIndex);
                         const top = boundingClientRect.top + caretCoordinates.top + caretCoordinates.height / 2;
