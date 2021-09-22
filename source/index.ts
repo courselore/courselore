@@ -9682,6 +9682,11 @@ export default async function courselore({
                       }
                       console.log("update mention user");
                     });
+                    this.mentionUserSelect = (user) => {
+                      this.setSelectionRange(anchorIndex + 1, this.selectionStart);
+                      textFieldEdit.insert(this, user);
+                      deactivateMentionUser();
+                    };
                     this.addEventListener("click", deactivateMentionUser);
                     this.addEventListener("blur", deactivateMentionUser);
                     Mousetrap(this).bind("escape", deactivateMentionUser);
