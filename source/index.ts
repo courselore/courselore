@@ -9861,7 +9861,6 @@ ${value}</textarea
         `
       );
 
-      // TODO: Highlight search results.
       res.send(
         html`
           $${users.length === 0
