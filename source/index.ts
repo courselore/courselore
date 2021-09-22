@@ -9647,39 +9647,6 @@ export default async function courselore({
                         offset: [0, 16],
                       }),
                       anchorIndex: null,
-                      show: () => {
-                        const caretPosition = Math.min(this.selectionStart, this.selectionEnd);
-                        if (!this.mentionUser.tippy.state.isShown) {
-                          if (this.value[caretPosition - 1] === "@")
-                            this.mentionUser.anchorIndex = caretPosition - 1;
-                          else if (this.value[caretPosition - 2] === "@")
-                            this.mentionUser.anchorIndex = caretPosition - 2;
-                          else return;
-                          const boundingClientRect = this.getBoundingClientRect();
-                          const caretCoordinates = getCaretCoordinates(this, this.mentionUser.anchorIndex);
-                          const top = boundingClientRect.top + caretCoordinates.top + caretCoordinates.height / 2;
-                          const left = boundingClientRect.left + caretCoordinates.left;
-                          this.mentionUser.tippy.setProps({
-                            getReferenceClientRect: () => ({
-                              width: 0,
-                              height: 0,
-                              top: top,
-                              right: left,
-                              bottom: top,
-                              left: left,
-                            }),
-                          });
-                          this.mentionUser.tippy.show();
-                        }
-                        if (
-                          caretPosition <= this.mentionUser.anchorIndex ||
-                          this.value[this.mentionUser.anchorIndex] !== "@"
-                        ) {
-                          this.mentionUser.tippy.hide();
-                          return;
-                        }
-                        console.log("TODO: Update mentionUser widget with search results.");
-                      },
                       select: (user) => {
                         this.setSelectionRange(this.mentionUser.anchorIndex + 1, Math.max(this.selectionStart, this.selectionEnd));
                         textFieldEdit.insert(this, user);
@@ -9687,7 +9654,39 @@ export default async function courselore({
                         this.focus();
                       },
                     };
-                    this.addEventListener("input", this.mentionUser.show);
+                    this.addEventListener("input", () => {
+                      const caretPosition = Math.min(this.selectionStart, this.selectionEnd);
+                      if (!this.mentionUser.tippy.state.isShown) {
+                        if (this.value[caretPosition - 1] === "@")
+                          this.mentionUser.anchorIndex = caretPosition - 1;
+                        else if (this.value[caretPosition - 2] === "@")
+                          this.mentionUser.anchorIndex = caretPosition - 2;
+                        else return;
+                        const boundingClientRect = this.getBoundingClientRect();
+                        const caretCoordinates = getCaretCoordinates(this, this.mentionUser.anchorIndex);
+                        const top = boundingClientRect.top + caretCoordinates.top + caretCoordinates.height / 2;
+                        const left = boundingClientRect.left + caretCoordinates.left;
+                        this.mentionUser.tippy.setProps({
+                          getReferenceClientRect: () => ({
+                            width: 0,
+                            height: 0,
+                            top: top,
+                            right: left,
+                            bottom: top,
+                            left: left,
+                          }),
+                        });
+                        this.mentionUser.tippy.show();
+                      }
+                      if (
+                        caretPosition <= this.mentionUser.anchorIndex ||
+                        this.value[this.mentionUser.anchorIndex] !== "@"
+                      ) {
+                        this.mentionUser.tippy.hide();
+                        return;
+                      }
+                      console.log("TODO: Update mentionUser widget with search results.");
+                    });
                     Mousetrap(this).bind("escape", () => { this.mentionUser.tippy.hide(); });
                     // TODO: Arrow keys & Tab (& Shift-Tab).
                   `}"
