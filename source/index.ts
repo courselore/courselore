@@ -9676,7 +9676,7 @@ export default async function courselore({
                           caretPosition <= this.mentionUser.anchorIndex ||
                           this.value[this.mentionUser.anchorIndex] !== "@"
                         ) {
-                          this.mentionUser.hide();
+                          tippy.hideAll();
                           return;
                         }
                         console.log("TODO: Update mentionUser widget with search results.");
@@ -9687,13 +9687,9 @@ export default async function courselore({
                         this.mentionUser.hide();
                         this.focus();
                       },
-                      hide: () => {
-                        if (!this.mentionUser.tippy.state.isShown) return;
-                        this.mentionUser.tippy.hide();
-                      },
                     };
                     this.addEventListener("input", this.mentionUser.show);
-                    Mousetrap(this).bind("escape", this.mentionUser.hide);
+                    Mousetrap(this).bind("escape", () => { tippy.hideAll(); });
                     // TODO: Arrow keys & Tab (& Shift-Tab).
                   `}"
                 `
