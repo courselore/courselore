@@ -9650,8 +9650,8 @@ export default async function courselore({
                       show: () => {
                         if (this.mentionUser.tippy.state.isShown) return;
                         tippy.hideAll();
-                        anchorIndex = this.selectionStart - 1;
-                        if (this.value[anchorIndex] !== "@") return;
+                        this.mentionUser.anchorIndex = this.selectionStart - 1;
+                        if (this.value[this.mentionUser.anchorIndex] !== "@") return;
                         const boundingClientRect = this.getBoundingClientRect();
                         const caretCoordinates = getCaretCoordinates(this, this.selectionStart);
                         const top = boundingClientRect.top + caretCoordinates.top + caretCoordinates.height / 2;
@@ -9670,14 +9670,14 @@ export default async function courselore({
                       },
                       onInput: () => {
                         if (!this.mentionUser.tippy.state.isShown) return;
-                        if (this.selectionStart < anchorIndex || this.selectionEnd < anchorIndex || this.value[anchorIndex] !== "@") {
+                        if (this.selectionStart < this.mentionUser.anchorIndex || this.selectionEnd < this.mentionUser.anchorIndex || this.value[this.mentionUser.anchorIndex] !== "@") {
                           this.mentionUser.hide();
                           return;
                         }
                         console.log("update mention user");
                       },
                       select: () => {
-                        this.setSelectionRange(anchorIndex + 1, this.selectionStart);
+                        this.setSelectionRange(this.mentionUser.anchorIndex + 1, this.selectionStart);
                         textFieldEdit.insert(this, user);
                         this.mentionUser.hide();
                         // this.focus();
