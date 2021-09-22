@@ -51,7 +51,6 @@
   - https://github.com/ichord/Caret.js
   - https://jh3y.medium.com/how-to-where-s-the-caret-getting-the-xy-position-of-the-caret-a24ba372990a
   - https://stackoverflow.com/questions/442404/retrieve-the-position-x-y-of-an-html-element-relative-to-the-browser-window
-  - https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
   - https://www.codeproject.com/Articles/35737/Absolute-Position-of-a-DOM-Element
   - https://plainjs.com/javascript/styles/get-the-position-of-an-element-relative-to-the-document-24/
   - https://www.codegrepper.com/code-examples/javascript/get+absolute+position+of+element+javascript

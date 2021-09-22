@@ -9648,24 +9648,24 @@ export default async function courselore({
                     let anchorIndex;
                     const activateMentionUser = () => {
                       if (mentionUser.state.isShown) return;
+                      tippy.hideAll();
                       anchorIndex = this.selectionStart - 1;
-                      if (this.value[anchorIndex] === "@") {
-                        const boundingClientRect = this.getBoundingClientRect();
-                        const caretCoordinates = getCaretCoordinates(this);
-                        const top = boundingClientRect.top + caretCoordinates.top + caretCoordinates.height / 2;
-                        const left = boundingClientRect.left + caretCoordinates.left;
-                        mentionUser.setProps({
-                          getReferenceClientRect: () => ({
-                            width: 0,
-                            height: 0,
-                            top: top,
-                            right: left,
-                            bottom: top,
-                            left: left,
-                          }),
-                        });
-                        mentionUser.show();
-                      }
+                      if (this.value[anchorIndex] !== "@") return;
+                      const boundingClientRect = this.getBoundingClientRect();
+                      const caretCoordinates = getCaretCoordinates(this, this.selectionStart);
+                      const top = boundingClientRect.top + caretCoordinates.top + caretCoordinates.height / 2;
+                      const left = boundingClientRect.left + caretCoordinates.left;
+                      mentionUser.setProps({
+                        getReferenceClientRect: () => ({
+                          width: 0,
+                          height: 0,
+                          top: top,
+                          right: left,
+                          bottom: top,
+                          left: left,
+                        }),
+                      });
+                      mentionUser.show();
                     };
                     const deactivateMentionUser = () => {
                       if (!mentionUser.state.isShown) return;
