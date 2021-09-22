@@ -9669,14 +9669,13 @@ export default async function courselore({
                               left: left,
                             }),
                           });
-                          tippy.hideAll();
                           this.mentionUser.tippy.show();
                         }
                         if (
                           caretPosition <= this.mentionUser.anchorIndex ||
                           this.value[this.mentionUser.anchorIndex] !== "@"
                         ) {
-                          tippy.hideAll();
+                          this.mentionUser.tippy.hide();
                           return;
                         }
                         console.log("TODO: Update mentionUser widget with search results.");
@@ -9689,7 +9688,7 @@ export default async function courselore({
                       },
                     };
                     this.addEventListener("input", this.mentionUser.show);
-                    Mousetrap(this).bind("escape", () => { tippy.hideAll(); });
+                    Mousetrap(this).bind("escape", () => { this.mentionUser.tippy.hide(); });
                     // TODO: Arrow keys & Tab (& Shift-Tab).
                   `}"
                 `
