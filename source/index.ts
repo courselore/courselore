@@ -9750,7 +9750,7 @@ ${value}</textarea
                     class="markdown-editor--mention-user"
                     style="${css`
                       width: var(--space--56);
-                      max-height: var(--space--36);
+                      max-height: var(--space--44);
                       overflow: auto;
                     `}"
                   >
