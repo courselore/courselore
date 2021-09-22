@@ -9681,7 +9681,7 @@ export default async function courselore({
                         }
                         console.log("TODO: Update mentionUser widget with search results.");
                       },
-                      select: () => {
+                      select: (user) => {
                         this.setSelectionRange(this.mentionUser.anchorIndex + 1, Math.max(this.selectionStart, this.selectionEnd));
                         textFieldEdit.insert(this, user);
                         this.mentionUser.hide();
