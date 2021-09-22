@@ -9657,11 +9657,11 @@ export default async function courselore({
                     this.addEventListener("input", () => {
                       const caretPosition = Math.min(this.selectionStart, this.selectionEnd);
                       if (!this.mentionUser.tippy.state.isShown) {
-                        if (this.value[caretPosition - 1] === "@")
-                          this.mentionUser.anchorIndex = caretPosition - 1;
-                        else if (this.value[caretPosition - 2] === "@")
-                          this.mentionUser.anchorIndex = caretPosition - 2;
-                        else return;
+                        this.mentionUser.anchorIndex = caretPosition - 1;
+                        if (this.value[this.mentionUser.anchorIndex] !== "@") {
+                          this.mentionUser.anchorIndex--;
+                          if (this.value[this.mentionUser.anchorIndex] !== "@") return;
+                        }
                         if (this.mentionUser.anchorIndex > 0 && this.value[this.mentionUser.anchorIndex - 1].match(/\\w/)) return;
                         const boundingClientRect = this.getBoundingClientRect();
                         const caretCoordinates = getCaretCoordinates(this, this.mentionUser.anchorIndex);
