@@ -9630,6 +9630,9 @@ export default async function courselore({
               );
               &.drag {
                 background-color: var(--color--blue--200);
+                @media (prefers-color-scheme: dark) {
+                  background-color: var(--color--blue--900);
+                }
               }
             `}"
             $${res.locals.course !== undefined
