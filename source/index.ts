@@ -9667,10 +9667,6 @@ export default async function courselore({
                       });
                       mentionUser.show();
                     };
-                    const deactivateMentionUser = () => {
-                      if (!mentionUser.state.isShown) return;
-                      mentionUser.hide();
-                    };
                     this.addEventListener("click", activateMentionUser);
                     this.addEventListener("focus", activateMentionUser);
                     this.addEventListener("input", activateMentionUser);
@@ -9687,6 +9683,10 @@ export default async function courselore({
                       textFieldEdit.insert(this, user);
                       deactivateMentionUser();
                       // this.focus();
+                    };
+                    const deactivateMentionUser = () => {
+                      if (!mentionUser.state.isShown) return;
+                      mentionUser.hide();
                     };
                     this.addEventListener("click", deactivateMentionUser);
                     this.addEventListener("blur", deactivateMentionUser);
