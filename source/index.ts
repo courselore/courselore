@@ -9758,7 +9758,14 @@ ${value}</textarea
                       <i class="bi bi-at"></i>
                       Mention User
                     </p>
-                    <div class="dropdown--menu">
+                    <div
+                      class="dropdown--menu"
+                      style="${css`
+                        .dropdown--menu--item {
+                          text-align: left;
+                        }
+                      `}"
+                    >
                       <button
                         type="button"
                         class="dropdown--menu--item button button--transparent"
