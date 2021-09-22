@@ -9688,16 +9688,16 @@ export default async function courselore({
                         }
                         this.mentionUser.shouldSearchAgain = false;
                         this.mentionUser.isSearching = true;
-                        const search = this.value.slice(this.mentionUser.anchorIndex + 1, selectionMax);
+                        const name = this.value.slice(this.mentionUser.anchorIndex + 1, selectionMax);
                         this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user--search-results").innerHTML =
-                          search.trim() === ""
+                          name.trim() === ""
                           ? ""
                           : await (
                             await fetch(
                               "${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search",
                               {
                                 method: "POST",
-                                body: new URLSearchParams({ name: search }),
+                                body: new URLSearchParams({ name }),
                               }
                             )
                           ).text();
