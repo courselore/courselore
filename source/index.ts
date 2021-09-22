@@ -9687,8 +9687,8 @@ export default async function courselore({
                       }
                       console.log("TODO: Update mentionUser widget with search results.");
                     });
+                    // TODO: Arrow keys, Tab (& Shift-Tab), and Enter.
                     Mousetrap(this).bind("escape", () => { this.mentionUser.tippy.hide(); });
-                    // TODO: Arrow keys & Tab (& Shift-Tab).
                   `}"
                 `
               : html``}
@@ -9780,7 +9780,6 @@ ${value}</textarea
                           padding: var(--space--2);
                         `}"
                       >
-                        <!-- TODO: When focus is on this window, up/down arrows should move between options in list of names below. Also, Enter should select the highlighted option. -->
                         <input
                           hidden
                           type="text"
