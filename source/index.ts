@@ -9685,7 +9685,7 @@ export default async function courselore({
                         this.setSelectionRange(this.mentionUser.anchorIndex + 1, Math.max(this.selectionStart, this.selectionEnd));
                         textFieldEdit.insert(this, user);
                         this.mentionUser.hide();
-                        // this.focus();
+                        this.focus();
                       },
                       hide: () => {
                         if (!this.mentionUser.tippy.state.isShown) return;
@@ -9694,7 +9694,7 @@ export default async function courselore({
                     };
                     this.addEventListener("input", this.mentionUser.show);
                     this.addEventListener("click", this.mentionUser.hide);
-                    this.addEventListener("blur", this.mentionUser.hide);
+                    // this.addEventListener("blur", this.mentionUser.hide);
                     Mousetrap(this).bind("escape", this.mentionUser.hide);
                     // TODO: Arrow keys & Tab.
                   `}"
