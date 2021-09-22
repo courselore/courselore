@@ -9640,13 +9640,70 @@ export default async function courselore({
                   data-ondomcontentloaded="${javascript`
                     this.mentionUser = {
                       tippy: tippy(this, {
-                        content: this.closest(".markdown-editor").querySelector(".mention-user"),
+                        content: this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user"),
                         placement: "bottom-start",
                         trigger: "manual",
                         interactive: true,
                         offset: [0, 16],
                       }),
                       anchorIndex: null,
+                      isSearching: false,
+                      shouldSearchAgain: false,
+                      search: async () => {
+                        const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
+                        const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
+                        if (!this.mentionUser.tippy.state.isShown) {
+                          this.mentionUser.anchorIndex = selectionMin - 1;
+                          if (this.value[this.mentionUser.anchorIndex] !== "@") {
+                            this.mentionUser.anchorIndex--;
+                            if (this.value[this.mentionUser.anchorIndex] !== "@") return;
+                          }
+                          if (this.mentionUser.anchorIndex > 0 && this.value[this.mentionUser.anchorIndex - 1].match(/\\w/)) return;
+                          const boundingClientRect = this.getBoundingClientRect();
+                          const caretCoordinates = getCaretCoordinates(this, this.mentionUser.anchorIndex);
+                          const top = boundingClientRect.top + caretCoordinates.top + caretCoordinates.height / 2;
+                          const left = boundingClientRect.left + caretCoordinates.left;
+                          this.mentionUser.tippy.setProps({
+                            getReferenceClientRect: () => ({
+                              width: 0,
+                              height: 0,
+                              top: top,
+                              right: left,
+                              bottom: top,
+                              left: left,
+                            }),
+                          });
+                          this.mentionUser.tippy.show();
+                        }
+                        if (
+                          selectionMin <= this.mentionUser.anchorIndex ||
+                          this.value[this.mentionUser.anchorIndex] !== "@"
+                        ) {
+                          this.mentionUser.tippy.hide();
+                          return;
+                        }
+                        if (this.mentionUser.isSearching) {
+                          this.mentionUser.shouldSearchAgain = true;
+                          return;
+                        }
+                        this.mentionUser.shouldSearchAgain = false;
+                        this.mentionUser.isSearching = true;
+                        const search = this.value.slice(this.mentionUser.anchorIndex + 1, selectionMax);
+                        this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user--search-results").innerHTML =
+                          search.trim() === ""
+                          ? ""
+                          : await (
+                            await fetch(
+                              "${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search",
+                              {
+                                method: "POST",
+                                body: new URLSearchParams({ name: search }),
+                              }
+                            )
+                          ).text();
+                        this.mentionUser.isSearching = false;
+                        if (this.mentionUser.shouldSearchAgain) this.mentionUser.search();
+                      },
                       select: (user) => {
                         this.setSelectionRange(this.mentionUser.anchorIndex + 1, Math.max(this.selectionStart, this.selectionEnd));
                         textFieldEdit.insert(this, user);
@@ -9654,63 +9711,7 @@ export default async function courselore({
                         this.focus();
                       },
                     };
-                    this.addEventListener("input", () => {
-                      const caretPosition = Math.min(this.selectionStart, this.selectionEnd);
-                      if (!this.mentionUser.tippy.state.isShown) {
-                        this.mentionUser.anchorIndex = caretPosition - 1;
-                        if (this.value[this.mentionUser.anchorIndex] !== "@") {
-                          this.mentionUser.anchorIndex--;
-                          if (this.value[this.mentionUser.anchorIndex] !== "@") return;
-                        }
-                        if (this.mentionUser.anchorIndex > 0 && this.value[this.mentionUser.anchorIndex - 1].match(/\\w/)) return;
-                        const boundingClientRect = this.getBoundingClientRect();
-                        const caretCoordinates = getCaretCoordinates(this, this.mentionUser.anchorIndex);
-                        const top = boundingClientRect.top + caretCoordinates.top + caretCoordinates.height / 2;
-                        const left = boundingClientRect.left + caretCoordinates.left;
-                        this.mentionUser.tippy.setProps({
-                          getReferenceClientRect: () => ({
-                            width: 0,
-                            height: 0,
-                            top: top,
-                            right: left,
-                            bottom: top,
-                            left: left,
-                          }),
-                        });
-                        this.mentionUser.tippy.show();
-                      }
-                      if (
-                        caretPosition <= this.mentionUser.anchorIndex ||
-                        this.value[this.mentionUser.anchorIndex] !== "@"
-                      ) {
-                        this.mentionUser.tippy.hide();
-                        return;
-                      }
-                      // let isSearching = false;
-                      // let shouldSearchAgain = false;
-                      // this.search = async () => {
-                      //   if (isSearching) {
-                      //     shouldSearchAgain = true;
-                      //     return;
-                      //   }
-                      //   shouldSearchAgain = false;
-                      //   isSearching = true;
-                      //   this.closest(".mention-user").querySelector(".mention-user--search-results").innerHTML =
-                      //     this.value.trim() === ""
-                      //     ? ""
-                      //     : await (
-                      //       await fetch(
-                      //         "${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search",
-                      //         {
-                      //           method: "POST",
-                      //           body: new URLSearchParams({ name: this.value }),
-                      //         }
-                      //       )
-                      //     ).text();
-                      //   isSearching = false;
-                      //   if (shouldSearchAgain) this.search();
-                      // };
-                    });
+                    this.addEventListener("input", this.mentionUser.search);
                     // TODO: Arrow keys, Tab (& Shift-Tab), and Enter.
                     Mousetrap(this).bind("escape", () => { this.mentionUser.tippy.hide(); });
                   `}"
@@ -9746,7 +9747,7 @@ ${value}</textarea
             ? html`
                 <div hidden>
                   <div
-                    class="mention-user"
+                    class="markdown-editor--mention-user"
                     style="${css`
                       width: var(--space--56);
                       max-height: var(--space--36);
@@ -9785,7 +9786,9 @@ ${value}</textarea
                       >
                         Students in the Conversation
                       </button>
-                      <div class="mention-user--search-results"></div>
+                      <div
+                        class="markdown-editor--mention-user--search-results"
+                      ></div>
                     </div>
                   </div>
                 </div>
@@ -9871,7 +9874,7 @@ ${value}</textarea
                     type="button"
                     class="dropdown--menu--item button button--transparent"
                     onclick="${javascript`
-                      this.closest(".mention-user").mention("${
+                      this.closest(".markdown-editor--mention-user").mention("${
                         user.enrollmentReference
                       }--${slugify(user.name)}");
                     `}"
