@@ -9649,7 +9649,6 @@ export default async function courselore({
                       anchorIndex: null,
                       show: () => {
                         if (this.mentionUser.tippy.state.isShown) return;
-                        tippy.hideAll();
                         this.mentionUser.anchorIndex = this.selectionStart - 1;
                         if (this.value[this.mentionUser.anchorIndex] !== "@") return;
                         const boundingClientRect = this.getBoundingClientRect();
@@ -9666,15 +9665,20 @@ export default async function courselore({
                             left: left,
                           }),
                         });
+                        tippy.hideAll();
                         this.mentionUser.tippy.show();
                       },
                       onInput: () => {
                         if (!this.mentionUser.tippy.state.isShown) return;
-                        if (this.selectionStart < this.mentionUser.anchorIndex || this.selectionEnd < this.mentionUser.anchorIndex || this.value[this.mentionUser.anchorIndex] !== "@") {
+                        if (
+                          this.selectionStart < this.mentionUser.anchorIndex ||
+                          this.selectionEnd < this.mentionUser.anchorIndex ||
+                          this.value[this.mentionUser.anchorIndex] !== "@"
+                        ) {
                           this.mentionUser.hide();
                           return;
                         }
-                        console.log("update mention user");
+                        console.log("TODO: Update mentionUser widget with search results.");
                       },
                       select: () => {
                         this.setSelectionRange(this.mentionUser.anchorIndex + 1, this.selectionStart);
