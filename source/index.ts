@@ -9643,40 +9643,33 @@ export default async function courselore({
             $${res.locals.course !== undefined
               ? html`
                   data-ondomcontentloaded="${javascript`
-                    this.mentionUser = {
-                      tippy: tippy(this, {
-                        content: this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user"),
-                        placement: "bottom-start",
-                        trigger: "manual",
-                        interactive: true,
-                        offset: [0, 16],
-                      }),
-                      anchorIndex: null,
-                      select: (user) => {
-                        this.setSelectionRange(this.mentionUser.anchorIndex + 1, Math.max(this.selectionStart, this.selectionEnd));
-                        textFieldEdit.insert(this, user);
-                        this.mentionUser.tippy.hide();
-                        this.focus();
-                      },
-                    };
+                    const dropdownMenu = tippy(this, {
+                      content: this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user"),
+                      placement: "bottom-start",
+                      trigger: "manual",
+                      interactive: true,
+                      offset: [0, 16],
+                    });
+                    let anchorIndex = null;
+
                     this.addEventListener("input", (() => {
                       let isSearching = false;
                       let shouldSearchAgain = false;
                       return async function search() {
                         const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
                         const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
-                        if (!this.mentionUser.tippy.state.isShown) {
-                          this.mentionUser.anchorIndex = selectionMin - 1;
-                          if (this.value[this.mentionUser.anchorIndex] !== "@") {
-                            this.mentionUser.anchorIndex--;
-                            if (this.value[this.mentionUser.anchorIndex] !== "@") return;
+                        if (!dropdownMenu.state.isShown) {
+                          anchorIndex = selectionMin - 1;
+                          if (this.value[anchorIndex] !== "@") {
+                            anchorIndex--;
+                            if (this.value[anchorIndex] !== "@") return;
                           }
-                          if (this.mentionUser.anchorIndex > 0 && this.value[this.mentionUser.anchorIndex - 1].match(/[\\w@]/)) return;
+                          if (anchorIndex > 0 && this.value[anchorIndex - 1].match(/[\\w@]/)) return;
                           const boundingClientRect = this.getBoundingClientRect();
-                          const caretCoordinates = getCaretCoordinates(this, this.mentionUser.anchorIndex);
+                          const caretCoordinates = getCaretCoordinates(this, anchorIndex);
                           const top = boundingClientRect.top + caretCoordinates.top + caretCoordinates.height / 2;
                           const left = boundingClientRect.left + caretCoordinates.left;
-                          this.mentionUser.tippy.setProps({
+                          dropdownMenu.setProps({
                             getReferenceClientRect: () => ({
                               width: 0,
                               height: 0,
@@ -9686,13 +9679,13 @@ export default async function courselore({
                               left: left,
                             }),
                           });
-                          this.mentionUser.tippy.show();
+                          dropdownMenu.show();
                         }
                         if (
-                          selectionMin <= this.mentionUser.anchorIndex ||
-                          this.value[this.mentionUser.anchorIndex] !== "@"
+                          selectionMin <= anchorIndex ||
+                          this.value[anchorIndex] !== "@"
                         ) {
-                          this.mentionUser.tippy.hide();
+                          dropdownMenu.hide();
                           return;
                         }
                         if (isSearching) {
@@ -9701,7 +9694,7 @@ export default async function courselore({
                         }
                         shouldSearchAgain = false;
                         isSearching = true;
-                        const name = this.value.slice(this.mentionUser.anchorIndex + 1, selectionMax);
+                        const name = this.value.slice(anchorIndex + 1, selectionMax);
                         this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user--search-results").innerHTML =
                           name.trim() === ""
                           ? ""
@@ -9713,15 +9706,16 @@ export default async function courselore({
                         if (shouldSearchAgain) search();
                       }
                     })());
+
                     this.addEventListener("keydown", (event) => {
-                      if (!this.mentionUser.tippy.state.isShown) return;
+                      if (!dropdownMenu.state.isShown) return;
                       switch (event.code) {
                         case "ArrowUp":
                         case "ArrowDown":
                           // ??? event.preventDefault();
-                          const mentionUser = this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user");
-                          const buttons = [...mentionUser.querySelectorAll(".button")];
-                          const currentHoverIndex = buttons.indexOf(mentionUser.querySelector(".button.hover"));
+                          const buttonsContainer = this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user");
+                          const buttons = [...buttonsContainer.querySelectorAll(".button")];
+                          const currentHoverIndex = buttons.indexOf(buttonsContainer.querySelector(".button.hover"));
                           if (
                             currentHoverIndex === -1 ||
                             (event.code === "ArrowUp" && currentHoverIndex === 0) ||
@@ -9740,10 +9734,17 @@ export default async function courselore({
                         case "ArrowRight":
                         case "Home":
                         case "End":
-                          this.mentionUser.tippy.hide();
+                          dropdownMenu.hide();
                           break;
                       }
                     });
+
+                    this.mentionUser = (user) => {
+                      this.setSelectionRange(anchorIndex + 1, Math.max(this.selectionStart, this.selectionEnd));
+                      textFieldEdit.insert(this, user);
+                      dropdownMenu.hide();
+                      this.focus();
+                    };
                   `}"
                 `
               : html``}
@@ -9796,7 +9797,7 @@ ${value}</textarea
                         type="button"
                         class="dropdown--menu--item button button--transparent"
                         onclick="${javascript`
-                          this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser.select("all");
+                          this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser("all");
                         `}"
                       >
                         Everyone in the Conversation
@@ -9805,7 +9806,7 @@ ${value}</textarea
                         type="button"
                         class="dropdown--menu--item button button--transparent"
                         onclick="${javascript`
-                          this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser.select("staff");
+                          this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser("staff");
                         `}"
                       >
                         Staff in the Conversation
@@ -9814,7 +9815,7 @@ ${value}</textarea
                         type="button"
                         class="dropdown--menu--item button button--transparent"
                         onclick="${javascript`
-                          this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser.select("students");
+                          this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser("students");
                         `}"
                       >
                         Students in the Conversation
@@ -9903,7 +9904,7 @@ ${value}</textarea
                     type="button"
                     class="dropdown--menu--item button button--transparent"
                     onclick="${javascript`
-                      this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser.select("${
+                      this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser("${
                         user.enrollmentReference
                       }--${slugify(user.name)}");
                     `}"
