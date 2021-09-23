@@ -9652,8 +9652,6 @@ export default async function courselore({
                         offset: [0, 16],
                       }),
                       anchorIndex: null,
-                      isSearching: false,
-                      shouldSearchAgain: false,
                       select: (user) => {
                         this.setSelectionRange(this.mentionUser.anchorIndex + 1, Math.max(this.selectionStart, this.selectionEnd));
                         textFieldEdit.insert(this, user);
@@ -9661,56 +9659,60 @@ export default async function courselore({
                         this.focus();
                       },
                     };
-                    this.addEventListener("input", async function search() {
-                      const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
-                      const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
-                      if (!this.mentionUser.tippy.state.isShown) {
-                        this.mentionUser.anchorIndex = selectionMin - 1;
-                        if (this.value[this.mentionUser.anchorIndex] !== "@") {
-                          this.mentionUser.anchorIndex--;
-                          if (this.value[this.mentionUser.anchorIndex] !== "@") return;
+                    this.addEventListener("input", (() => {
+                      let isSearching = false;
+                      let shouldSearchAgain = false;
+                      return async function search() {
+                        const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
+                        const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
+                        if (!this.mentionUser.tippy.state.isShown) {
+                          this.mentionUser.anchorIndex = selectionMin - 1;
+                          if (this.value[this.mentionUser.anchorIndex] !== "@") {
+                            this.mentionUser.anchorIndex--;
+                            if (this.value[this.mentionUser.anchorIndex] !== "@") return;
+                          }
+                          if (this.mentionUser.anchorIndex > 0 && this.value[this.mentionUser.anchorIndex - 1].match(/[\\w@]/)) return;
+                          const boundingClientRect = this.getBoundingClientRect();
+                          const caretCoordinates = getCaretCoordinates(this, this.mentionUser.anchorIndex);
+                          const top = boundingClientRect.top + caretCoordinates.top + caretCoordinates.height / 2;
+                          const left = boundingClientRect.left + caretCoordinates.left;
+                          this.mentionUser.tippy.setProps({
+                            getReferenceClientRect: () => ({
+                              width: 0,
+                              height: 0,
+                              top: top,
+                              right: left,
+                              bottom: top,
+                              left: left,
+                            }),
+                          });
+                          this.mentionUser.tippy.show();
                         }
-                        if (this.mentionUser.anchorIndex > 0 && this.value[this.mentionUser.anchorIndex - 1].match(/[\\w@]/)) return;
-                        const boundingClientRect = this.getBoundingClientRect();
-                        const caretCoordinates = getCaretCoordinates(this, this.mentionUser.anchorIndex);
-                        const top = boundingClientRect.top + caretCoordinates.top + caretCoordinates.height / 2;
-                        const left = boundingClientRect.left + caretCoordinates.left;
-                        this.mentionUser.tippy.setProps({
-                          getReferenceClientRect: () => ({
-                            width: 0,
-                            height: 0,
-                            top: top,
-                            right: left,
-                            bottom: top,
-                            left: left,
-                          }),
-                        });
-                        this.mentionUser.tippy.show();
+                        if (
+                          selectionMin <= this.mentionUser.anchorIndex ||
+                          this.value[this.mentionUser.anchorIndex] !== "@"
+                        ) {
+                          this.mentionUser.tippy.hide();
+                          return;
+                        }
+                        if (isSearching) {
+                          shouldSearchAgain = true;
+                          return;
+                        }
+                        shouldSearchAgain = false;
+                        isSearching = true;
+                        const name = this.value.slice(this.mentionUser.anchorIndex + 1, selectionMax);
+                        this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user--search-results").innerHTML =
+                          name.trim() === ""
+                          ? ""
+                          : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name }))).text();
+                        const buttons = this.closest(".markdown-editor").querySelectorAll(".markdown-editor--mention-user .button");
+                        for (const button of buttons) button.classList.remove("hover");
+                        buttons[0].classList.add("hover");
+                        isSearching = false;
+                        if (shouldSearchAgain) search();
                       }
-                      if (
-                        selectionMin <= this.mentionUser.anchorIndex ||
-                        this.value[this.mentionUser.anchorIndex] !== "@"
-                      ) {
-                        this.mentionUser.tippy.hide();
-                        return;
-                      }
-                      if (this.mentionUser.isSearching) {
-                        this.mentionUser.shouldSearchAgain = true;
-                        return;
-                      }
-                      this.mentionUser.shouldSearchAgain = false;
-                      this.mentionUser.isSearching = true;
-                      const name = this.value.slice(this.mentionUser.anchorIndex + 1, selectionMax);
-                      this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user--search-results").innerHTML =
-                        name.trim() === ""
-                        ? ""
-                        : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name }))).text();
-                      const buttons = this.closest(".markdown-editor").querySelectorAll(".markdown-editor--mention-user .button");
-                      for (const button of buttons) button.classList.remove("hover");
-                      buttons[0].classList.add("hover");
-                      this.mentionUser.isSearching = false;
-                      if (this.mentionUser.shouldSearchAgain) search();
-                    });
+                    })());
                     this.addEventListener("keydown", (event) => {
                       if (!this.mentionUser.tippy.state.isShown) return;
                       switch (event.code) {
