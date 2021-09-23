@@ -1290,6 +1290,7 @@ export default async function courselore({
                   flex-direction: column;
 
                   .dropdown--menu--item {
+                    text-align: left;
                     width: 100%;
                     padding-left: var(--space--2);
                     padding-right: var(--space--2);
@@ -9658,7 +9659,7 @@ export default async function courselore({
                             this.mentionUser.anchorIndex--;
                             if (this.value[this.mentionUser.anchorIndex] !== "@") return;
                           }
-                          if (this.mentionUser.anchorIndex > 0 && this.value[this.mentionUser.anchorIndex - 1].match(/\\w/)) return;
+                          if (this.mentionUser.anchorIndex > 0 && this.value[this.mentionUser.anchorIndex - 1].match(/[\\w@]/)) return;
                           const boundingClientRect = this.getBoundingClientRect();
                           const caretCoordinates = getCaretCoordinates(this, this.mentionUser.anchorIndex);
                           const top = boundingClientRect.top + caretCoordinates.top + caretCoordinates.height / 2;
@@ -9758,14 +9759,7 @@ ${value}</textarea
                       <i class="bi bi-at"></i>
                       Mention User
                     </p>
-                    <div
-                      class="dropdown--menu"
-                      style="${css`
-                        .dropdown--menu--item {
-                          text-align: left;
-                        }
-                      `}"
-                    >
+                    <div class="dropdown--menu">
                       <button
                         type="button"
                         class="dropdown--menu--item button button--transparent"
