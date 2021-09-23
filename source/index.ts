@@ -8248,7 +8248,7 @@ export default async function courselore({
                               $${isSelected
                                 ? html`
                                     data-ondomcontentloaded="${javascript`
-                                      this.scrollIntoView();
+                                      this.scrollIntoView({ block: "center" });
                                     `}"
                                   `
                                 : html``}
@@ -9722,7 +9722,7 @@ export default async function courselore({
                       buttons[currentHoverIndex].classList.remove("hover");
                       const buttonToHover = buttons[currentHoverIndex - 1];
                       buttonToHover.classList.add("hover");
-                      // buttonToHover.scrollIntoView();
+                      buttonToHover.scrollIntoView({ block: "center" });
                     });
                     Mousetrap(this).bind("down", () => {
                       if (!this.mentionUser.tippy.state.isShown) return;
@@ -9733,7 +9733,7 @@ export default async function courselore({
                       buttons[currentHoverIndex].classList.remove("hover");
                       const buttonToHover = buttons[currentHoverIndex + 1];
                       buttonToHover.classList.add("hover");
-                      // buttonToHover.scrollIntoView();
+                      buttonToHover.scrollIntoView({ block: "center" });
                     });
                     Mousetrap(this).bind("escape", () => { this.mentionUser.tippy.hide(); });
                   `}"
