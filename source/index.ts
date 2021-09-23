@@ -9681,10 +9681,7 @@ export default async function courselore({
                           });
                           dropdownMenu.show();
                         }
-                        if (
-                          selectionMin <= anchorIndex ||
-                          this.value[anchorIndex] !== "@"
-                        ) {
+                        if (selectionMin <= anchorIndex || this.value[anchorIndex] !== "@") {
                           dropdownMenu.hide();
                           return;
                         }
@@ -9712,7 +9709,7 @@ export default async function courselore({
                       switch (event.code) {
                         case "ArrowUp":
                         case "ArrowDown":
-                          // ??? event.preventDefault();
+                          event.preventDefault();
                           const buttonsContainer = this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user");
                           const buttons = [...buttonsContainer.querySelectorAll(".button")];
                           const currentHoverIndex = buttons.indexOf(buttonsContainer.querySelector(".button.hover"));
@@ -9727,7 +9724,11 @@ export default async function courselore({
                           buttonToHover.scrollIntoView({ block: "center" });
                           break;
 
-                        // TODO: Enter & Tab
+                        case "Enter":
+                        case "Tab":
+                          event.preventDefault();
+                          this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user .button.hover").click();
+                          break;
 
                         case "Escape":
                         case "ArrowLeft":
