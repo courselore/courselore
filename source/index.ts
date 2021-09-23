@@ -9712,7 +9712,7 @@ export default async function courselore({
                       },
                     };
                     this.addEventListener("input", this.mentionUser.search);
-                    this.addEventListener("keyup", (event) => {
+                    this.addEventListener("keydown", (event) => {
                       if (!this.mentionUser.tippy.state.isShown) return;
                       switch (event.code) {
                         case "ArrowUp":
@@ -9727,7 +9727,7 @@ export default async function courselore({
                             (event.code === "ArrowDown" && currentHoverIndex === buttons.length - 1)
                           ) return;
                           buttons[currentHoverIndex].classList.remove("hover");
-                          const buttonToHover = buttons[currentHoverIndex + (event.code === "ArrowUp" ? 1 : -1)];
+                          const buttonToHover = buttons[currentHoverIndex + (event.code === "ArrowUp" ? -1 : 1)];
                           buttonToHover.classList.add("hover");
                           buttonToHover.scrollIntoView({ block: "center" });
                           break;
