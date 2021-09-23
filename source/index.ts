@@ -981,7 +981,8 @@ export default async function courselore({
                 &.button--transparent {
                   &:not(:disabled):not(.disabled) {
                     &:hover,
-                    &:focus-within {
+                    &:focus-within,
+                    &.hover {
                       background-color: var(--color--gray--medium--200);
                     }
                     &:active {
@@ -989,7 +990,8 @@ export default async function courselore({
                     }
                     @media (prefers-color-scheme: dark) {
                       &:hover,
-                      &:focus-within {
+                      &:focus-within,
+                      &.hover {
                         background-color: var(--color--gray--medium--700);
                       }
                       &:active {
@@ -1016,7 +1018,8 @@ export default async function courselore({
                       &:not(:disabled):not(.disabled) {
                         background-color: var(--color--${color}--600);
                         &:hover,
-                        &:focus-within {
+                        &:focus-within,
+                        &.hover {
                           background-color: var(--color--${color}--500);
                         }
                         &:active {
@@ -1025,7 +1028,8 @@ export default async function courselore({
                         @media (prefers-color-scheme: dark) {
                           background-color: var(--color--${color}--800);
                           &:hover,
-                          &:focus-within {
+                          &:focus-within,
+                          &.hover {
                             background-color: var(--color--${color}--700);
                           }
                           &:active {
@@ -1042,9 +1046,9 @@ export default async function courselore({
                       }
                       .secondary,
                       [class^="text--"] {
-                        color: var(--color--blue--50);
+                        color: var(--color--${color}--50);
                         @media (prefers-color-scheme: dark) {
-                          color: var(--color--blue--100);
+                          color: var(--color--${color}--100);
                         }
                       }
                     }
@@ -9694,6 +9698,9 @@ export default async function courselore({
                           name.trim() === ""
                           ? ""
                           : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name }))).text();
+                        const buttons = this.closest(".markdown-editor").querySelectorAll(".markdown-editor--mention-user .button");
+                        for (const button of buttons) button.classList.remove("hover");
+                        buttons[0].classList.add("hover");
                         this.mentionUser.isSearching = false;
                         if (this.mentionUser.shouldSearchAgain) this.mentionUser.search();
                       },
