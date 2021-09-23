@@ -4862,7 +4862,7 @@ export default async function courselore({
     { courseReference: string },
     any,
     {},
-    { search?: string; tag?: string },
+    { search?: string; tag?: string; [otherQueryParameters: string]: unknown },
     IsEnrolledInCourseMiddlewareLocals
   >[] = [
     ...isSignedInMiddleware,
@@ -9693,15 +9693,7 @@ export default async function courselore({
                         this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user--search-results").innerHTML =
                           name.trim() === ""
                           ? ""
-                          : await (
-                            await fetch(
-                              "${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search",
-                              {
-                                method: "POST",
-                                body: new URLSearchParams({ name }),
-                              }
-                            )
-                          ).text();
+                          : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name }))).text();
                         this.mentionUser.isSearching = false;
                         if (this.mentionUser.shouldSearchAgain) this.mentionUser.search();
                       },
@@ -9822,17 +9814,17 @@ ${value}</textarea
     </div>
   `;
 
-  app.post<
+  app.get<
     { courseReference: string },
     any,
-    { name?: string },
     {},
+    { name?: string },
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/markdown-editor/mention-user-search",
     ...isEnrolledInCourseMiddleware,
     (req, res, next) => {
-      if (typeof req.body.name !== "string" || req.body.name.trim() === "")
+      if (typeof req.query.name !== "string" || req.query.name.trim() === "")
         return next("validation");
 
       const users = database.all<{
@@ -9851,7 +9843,7 @@ ${value}</textarea
           FROM "users"
           JOIN "usersSearch" ON "users"."id" = "usersSearch"."rowid" AND
                                 "usersSearch" MATCH ${sanitizeSearch(
-                                  req.body.name,
+                                  req.query.name,
                                   { prefix: true }
                                 )}
           JOIN "enrollments" ON "users"."id" = "enrollments"."user" AND
@@ -9889,7 +9881,10 @@ ${value}</textarea
                           />
                         `}
                     <span>
-                      $${highlightSearchResult(user.nameSearch, req.body.name!)}
+                      $${highlightSearchResult(
+                        user.nameSearch,
+                        req.query.name!
+                      )}
                       <span class="secondary">
                         · ${lodash.capitalize(user.enrollmentRole)}
                       </span>
