@@ -9752,6 +9752,9 @@ ${value}</textarea
                       Mention User
                     </p>
                     <div class="dropdown--menu">
+                      <div
+                        class="markdown-editor--mention-user--search-results"
+                      ></div>
                       <button
                         type="button"
                         class="dropdown--menu--item button button--transparent"
@@ -9779,9 +9782,6 @@ ${value}</textarea
                       >
                         Students in the Conversation
                       </button>
-                      <div
-                        class="markdown-editor--mention-user--search-results"
-                      ></div>
                     </div>
                   </div>
                 </div>
