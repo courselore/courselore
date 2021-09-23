@@ -9712,30 +9712,34 @@ export default async function courselore({
                       },
                     };
                     this.addEventListener("input", this.mentionUser.search);
-                    // TODO: Arrow keys, Tab (& Shift-Tab), and Enter.
-                    Mousetrap(this).bind("up", () => {
+                    this.addEventListener("keyup", (event) => {
                       if (!this.mentionUser.tippy.state.isShown) return;
-                      const mentionUser = this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user");
-                      const buttons = [...mentionUser.querySelectorAll(".button")];
-                      const currentHoverIndex = buttons.indexOf(mentionUser.querySelector(".button.hover"));
-                      if (currentHoverIndex === -1 || currentHoverIndex === 0) return;
-                      buttons[currentHoverIndex].classList.remove("hover");
-                      const buttonToHover = buttons[currentHoverIndex - 1];
-                      buttonToHover.classList.add("hover");
-                      buttonToHover.scrollIntoView({ block: "center" });
+                      switch (event.code) {
+                        case "ArrowUp":
+                        case "ArrowDown":
+                          // ??? event.preventDefault();
+                          const mentionUser = this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user");
+                          const buttons = [...mentionUser.querySelectorAll(".button")];
+                          const currentHoverIndex = buttons.indexOf(mentionUser.querySelector(".button.hover"));
+                          if (
+                            currentHoverIndex === -1 ||
+                            (event.code === "ArrowUp" && currentHoverIndex === 0) ||
+                            (event.code === "ArrowDown" && currentHoverIndex === buttons.length - 1)
+                          ) return;
+                          buttons[currentHoverIndex].classList.remove("hover");
+                          const buttonToHover = buttons[currentHoverIndex + (event.code === "ArrowUp" ? 1 : -1)];
+                          buttonToHover.classList.add("hover");
+                          buttonToHover.scrollIntoView({ block: "center" });
+                          break;
+                        case "Escape":
+                        case "ArrowLeft":
+                        case "ArrowRight":
+                        case "Home":
+                        case "End":
+                          this.mentionUser.tippy.hide();
+                          break;
+                      }
                     });
-                    Mousetrap(this).bind("down", () => {
-                      if (!this.mentionUser.tippy.state.isShown) return;
-                      const mentionUser = this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user");
-                      const buttons = [...mentionUser.querySelectorAll(".button")];
-                      const currentHoverIndex = buttons.indexOf(mentionUser.querySelector(".button.hover"));
-                      if (currentHoverIndex === -1 || currentHoverIndex === buttons.length - 1) return;
-                      buttons[currentHoverIndex].classList.remove("hover");
-                      const buttonToHover = buttons[currentHoverIndex + 1];
-                      buttonToHover.classList.add("hover");
-                      buttonToHover.scrollIntoView({ block: "center" });
-                    });
-                    Mousetrap(this).bind("escape", () => { this.mentionUser.tippy.hide(); });
                   `}"
                 `
               : html``}
