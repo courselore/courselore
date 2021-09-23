@@ -9713,6 +9713,28 @@ export default async function courselore({
                     };
                     this.addEventListener("input", this.mentionUser.search);
                     // TODO: Arrow keys, Tab (& Shift-Tab), and Enter.
+                    Mousetrap(this).bind("up", () => {
+                      if (!this.mentionUser.tippy.state.isShown) return;
+                      const mentionUser = this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user");
+                      const buttons = [...mentionUser.querySelectorAll(".button")];
+                      const currentHoverIndex = buttons.indexOf(mentionUser.querySelector(".button.hover"));
+                      if (currentHoverIndex === -1 || currentHoverIndex === 0) return;
+                      buttons[currentHoverIndex].classList.remove("hover");
+                      const buttonToHover = buttons[currentHoverIndex - 1];
+                      buttonToHover.classList.add("hover");
+                      // buttonToHover.scrollIntoView();
+                    });
+                    Mousetrap(this).bind("down", () => {
+                      if (!this.mentionUser.tippy.state.isShown) return;
+                      const mentionUser = this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user");
+                      const buttons = [...mentionUser.querySelectorAll(".button")];
+                      const currentHoverIndex = buttons.indexOf(mentionUser.querySelector(".button.hover"));
+                      if (currentHoverIndex === -1 || currentHoverIndex === buttons.length - 1) return;
+                      buttons[currentHoverIndex].classList.remove("hover");
+                      const buttonToHover = buttons[currentHoverIndex + 1];
+                      buttonToHover.classList.add("hover");
+                      // buttonToHover.scrollIntoView();
+                    });
                     Mousetrap(this).bind("escape", () => { this.mentionUser.tippy.hide(); });
                   `}"
                 `
