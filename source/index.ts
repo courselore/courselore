@@ -12186,36 +12186,35 @@ export default async function courselore({
                         <div>
                           <div
                             data-ondomcontentloaded="${javascript`
-                              this.dropdownMenu = tippy(this, {
+                              const dropdownMenu = tippy(this, {
                                 content: this.nextElementSibling.firstElementChild,
                                 trigger: "manual",
                                 interactive: true,
-                                offset: [0, 20],
                                 touch: false,
                               });
-                            `}"
-                            onmouseup="${javascript`
-                              const selection = window.getSelection();
-                              const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
-                              const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode.parentElement;
-                              if (
-                                selection.isCollapsed ||
-                                !this.contains(anchorElement) ||
-                                !this.contains(focusElement) ||
-                                anchorElement.dataset.position === undefined ||
-                                focusElement.dataset.position === undefined
-                              ) return;
-                              this.dropdownMenu.setProps({
-                                getReferenceClientRect: () => ({
-                                  width: 0,
-                                  height: 0,
-                                  top: event.clientY,
-                                  right: event.clientX,
-                                  bottom: event.clientY,
-                                  left: event.clientX,
-                                }),
+                              this.addEventListener("mouseup", () => {
+                                const selection = window.getSelection();
+                                const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
+                                const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode.parentElement;
+                                if (
+                                  selection.isCollapsed ||
+                                  !this.contains(anchorElement) ||
+                                  !this.contains(focusElement) ||
+                                  anchorElement.dataset.position === undefined ||
+                                  focusElement.dataset.position === undefined
+                                ) return;
+                                dropdownMenu.setProps({
+                                  getReferenceClientRect: () => ({
+                                    width: 0,
+                                    height: 0,
+                                    top: event.clientY,
+                                    right: event.clientX,
+                                    bottom: event.clientY,
+                                    left: event.clientX,
+                                  }),
+                                });
+                                dropdownMenu.show();
                               });
-                              this.dropdownMenu.show();
                             `}"
                           >
                             $${markdownProcessor({
