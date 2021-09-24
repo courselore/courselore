@@ -9622,6 +9622,14 @@ export default async function courselore({
               </div>
             </div>
           </div>
+          <div
+            class="markdown-editor--write--textarea--dropdown-menu-target"
+            style="${css`
+              width: var(--space--0);
+              height: var(--line-height--sm);
+              position: absolute;
+            `}"
+          ></div>
           <textarea
             name="${name}"
             $${required ? html`required` : html``}
@@ -9643,12 +9651,12 @@ export default async function courselore({
             $${res.locals.course !== undefined
               ? html`
                   data-ondomcontentloaded="${javascript`
-                    const dropdownMenu = tippy(this, {
+                    const dropdownMenuTarget = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea--dropdown-menu-target");
+                    const dropdownMenu = tippy(dropdownMenuTarget, {
                       content: this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user"),
                       placement: "bottom-start",
                       trigger: "manual",
                       interactive: true,
-                      offset: [0, 16],
                     });
                     let anchorIndex = null;
 
@@ -9661,20 +9669,9 @@ export default async function courselore({
                         if (!dropdownMenu.state.isShown) {
                           anchorIndex = selectionMin - 1;
                           if (this.value[anchorIndex] !== "@" || (anchorIndex > 0 && this.value[anchorIndex - 1].match(/[\\w@]/))) return;
-                          const boundingClientRect = this.getBoundingClientRect();
                           const caretCoordinates = getCaretCoordinates(this, anchorIndex);
-                          const top = boundingClientRect.top + caretCoordinates.top + caretCoordinates.height / 2;
-                          const left = boundingClientRect.left + caretCoordinates.left;
-                          dropdownMenu.setProps({
-                            getReferenceClientRect: () => ({
-                              width: 0,
-                              height: 0,
-                              top: top,
-                              right: left,
-                              bottom: top,
-                              left: left,
-                            }),
-                          });
+                          dropdownMenuTarget.style.marginLeft = String(caretCoordinates.left) + "px";
+                          dropdownMenuTarget.style.marginTop = String(caretCoordinates.top) + "px";
                           dropdownMenu.show();
                         }
                         if (selectionMin <= anchorIndex || this.value[anchorIndex] !== "@") {
