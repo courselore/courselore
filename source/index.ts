@@ -12183,11 +12183,25 @@ export default async function courselore({
                               `;
                         })()}
 
-                        <div class="message--show--content">
+                        <div
+                          class="message--show--content"
+                          style="${css`
+                            position: relative;
+                          `}"
+                        >
+                          <div
+                            class="message--show--content--dropdown-menu-target"
+                            style="${css`
+                              width: var(--space--0);
+                              height: var(--line-height--sm);
+                              position: absolute;
+                            `}"
+                          ></div>
                           <div
                             class="message--show--content--content"
                             data-ondomcontentloaded="${javascript`
-                              const dropdownMenu = tippy(this, {
+                              const dropdownMenuTarget = this.closest(".message--show--content").querySelector(".message--show--content--dropdown-menu-target");
+                              const dropdownMenu = tippy(dropdownMenuTarget, {
                                 content: this.nextElementSibling.firstElementChild,
                                 trigger: "manual",
                                 interactive: true,
@@ -12207,16 +12221,8 @@ export default async function courselore({
                                     anchorElement.dataset.position === undefined ||
                                     focusElement.dataset.position === undefined
                                   ) return;
-                                  dropdownMenu.setProps({
-                                    getReferenceClientRect: () => ({
-                                      width: 0,
-                                      height: 0,
-                                      top: event.clientY,
-                                      right: event.clientX,
-                                      bottom: event.clientY,
-                                      left: event.clientX,
-                                    }),
-                                  });
+                                  dropdownMenuTarget.style.top = String(event.layerY) + "px";
+                                  dropdownMenuTarget.style.left = String(event.layerX) + "px";
                                   dropdownMenu.show();
                                 }, 0);
                               });
