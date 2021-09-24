@@ -9742,7 +9742,7 @@ export default async function courselore({
 
                     this.mentionUser = (user) => {
                       this.setSelectionRange(anchorIndex + 1, Math.max(this.selectionStart, this.selectionEnd));
-                      textFieldEdit.insert(this, user);
+                      textFieldEdit.insert(this, user + " ");
                       dropdownMenu.hide();
                       this.focus();
                     };
