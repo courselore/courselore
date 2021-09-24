@@ -12188,7 +12188,7 @@ ${value}</textarea
                                 touch: false,
                               });
                             `}"
-                            onpointerup="${javascript`
+                            onmouseup="${javascript`
                               const selection = window.getSelection();
                               const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
                               const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode.parentElement;
