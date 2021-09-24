@@ -44,7 +44,6 @@
 
 - “Quote” glitches:
   - Scrolling detaches the dropdown.
-  - Select some text, then tap on the selected text.
 - Search:
   - Include users in search.
   - Include snippets in search results.
