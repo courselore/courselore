@@ -424,8 +424,8 @@ export default async function courselore({
           </script>
 
           <script src="${url}/node_modules/mousetrap/mousetrap.min.js"></script>
-
           <script src="${url}/node_modules/textarea-caret/index.js"></script>
+          <script src="${url}/node_modules/scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js"></script>
 
           <script>
             /* TODO: Extract the following global auxiliary functions into @leafac/javascript */
@@ -9721,7 +9721,7 @@ export default async function courselore({
                           buttons[currentHoverIndex].classList.remove("hover");
                           const buttonToHover = buttons[currentHoverIndex + (event.code === "ArrowUp" ? -1 : 1)];
                           buttonToHover.classList.add("hover");
-                          buttonToHover.scrollIntoView({ block: "center" });
+                          scrollIntoView(buttonToHover, { scrollMode: "if-needed" });
                           break;
 
                         case "Enter":

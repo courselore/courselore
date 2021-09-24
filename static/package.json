@@ -4,6 +4,7 @@
     "katex": "^0.13.16",
     "morphdom": "^2.6.1",
     "mousetrap": "^1.6.5",
+    "scroll-into-view-if-needed": "^2.2.28",
     "text-field-edit": "^3.1.0",
     "textarea-caret": "^3.1.0",
     "tippy.js": "^6.3.1"
