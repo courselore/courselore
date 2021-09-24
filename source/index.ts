@@ -12183,8 +12183,9 @@ export default async function courselore({
                               `;
                         })()}
 
-                        <div>
+                        <div class="message--show--content">
                           <div
+                            class="message--show--content--content"
                             data-ondomcontentloaded="${javascript`
                               const dropdownMenu = tippy(this, {
                                 content: this.nextElementSibling.firstElementChild,
@@ -12236,12 +12237,13 @@ export default async function courselore({
                                   const selection = window.getSelection();
                                   const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode?.parentElement;
                                   const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode?.parentElement;
+                                  const contentElement = this.closest(".message--show--content").querySelector(".message--show--content--content");
                                   if (
                                     selection.isCollapsed ||
                                     anchorElement === null ||
                                     focusElement === null ||
-                                    !this.contains(anchorElement) ||
-                                    !this.contains(focusElement) ||
+                                    !contentElement.contains(anchorElement) ||
+                                    !contentElement.contains(focusElement) ||
                                     anchorElement.dataset.position === undefined ||
                                     focusElement.dataset.position === undefined
                                   ) return;
