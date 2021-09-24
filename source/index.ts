@@ -9666,21 +9666,20 @@ export default async function courselore({
                       let anchorIndex = null;
 
                       this.addEventListener("input", (() => {
-                        const dropdownMenuTextarea = this;
                         let isSearching = false;
                         let shouldSearchAgain = false;
                         return async function search() {
-                          const selectionMin = Math.min(dropdownMenuTextarea.selectionStart, dropdownMenuTextarea.selectionEnd);
-                          const selectionMax = Math.max(dropdownMenuTextarea.selectionStart, dropdownMenuTextarea.selectionEnd);
+                          const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
+                          const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
                           if (!dropdownMenu.state.isShown) {
                             anchorIndex = selectionMin - 1;
-                            if (dropdownMenuTextarea.value[anchorIndex] !== "@" || (anchorIndex > 0 && dropdownMenuTextarea.value[anchorIndex - 1].match(/[\\w@]/))) return;
-                            const caretCoordinates = getCaretCoordinates(dropdownMenuTextarea, anchorIndex);
+                            if (this.value[anchorIndex] !== "@" || (anchorIndex > 0 && this.value[anchorIndex - 1].match(/[\\w@]/))) return;
+                            const caretCoordinates = getCaretCoordinates(this, anchorIndex);
                             dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
                             dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
                             dropdownMenu.show();
                           }
-                          if (selectionMin <= anchorIndex || dropdownMenuTextarea.value[anchorIndex] !== "@") {
+                          if (selectionMin <= anchorIndex || this.value[anchorIndex] !== "@") {
                             dropdownMenu.hide();
                             return;
                           }
@@ -9690,12 +9689,12 @@ export default async function courselore({
                           }
                           shouldSearchAgain = false;
                           isSearching = true;
-                          const name = dropdownMenuTextarea.value.slice(anchorIndex + 1, selectionMax);
-                          dropdownMenuTextarea.closest(".markdown-editor").querySelector(".markdown-editor--mention-user--search-results").innerHTML =
+                          const name = this.value.slice(anchorIndex + 1, selectionMax);
+                          this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user--search-results").innerHTML =
                             name.trim() === ""
                             ? ""
                             : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name }))).text();
-                          const buttons = dropdownMenuTextarea.closest(".markdown-editor").querySelectorAll(".markdown-editor--mention-user .button");
+                          const buttons = this.closest(".markdown-editor").querySelectorAll(".markdown-editor--mention-user .button");
                           for (const button of buttons) button.classList.remove("hover");
                           buttons[0].classList.add("hover");
                           isSearching = false;
