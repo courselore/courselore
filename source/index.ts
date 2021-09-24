@@ -12192,28 +12192,32 @@ export default async function courselore({
                                 interactive: true,
                                 touch: false,
                               });
-                              this.addEventListener("mouseup", () => {
-                                const selection = window.getSelection();
-                                const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
-                                const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode.parentElement;
-                                if (
-                                  selection.isCollapsed ||
-                                  !this.contains(anchorElement) ||
-                                  !this.contains(focusElement) ||
-                                  anchorElement.dataset.position === undefined ||
-                                  focusElement.dataset.position === undefined
-                                ) return;
-                                dropdownMenu.setProps({
-                                  getReferenceClientRect: () => ({
-                                    width: 0,
-                                    height: 0,
-                                    top: event.clientY,
-                                    right: event.clientX,
-                                    bottom: event.clientY,
-                                    left: event.clientX,
-                                  }),
-                                });
-                                dropdownMenu.show();
+                              this.addEventListener("mouseup", (event) => {
+                                window.setTimeout(() => {
+                                  const selection = window.getSelection();
+                                  const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode?.parentElement;
+                                  const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode?.parentElement;
+                                  if (
+                                    selection.isCollapsed ||
+                                    anchorElement === null ||
+                                    focusElement === null ||
+                                    !this.contains(anchorElement) ||
+                                    !this.contains(focusElement) ||
+                                    anchorElement.dataset.position === undefined ||
+                                    focusElement.dataset.position === undefined
+                                  ) return;
+                                  dropdownMenu.setProps({
+                                    getReferenceClientRect: () => ({
+                                      width: 0,
+                                      height: 0,
+                                      top: event.clientY,
+                                      right: event.clientX,
+                                      bottom: event.clientY,
+                                      left: event.clientX,
+                                    }),
+                                  });
+                                  dropdownMenu.show();
+                                }, 0);
                               });
                             `}"
                           >
@@ -12230,8 +12234,17 @@ export default async function courselore({
                                 onclick="${javascript`
                                   tippy.hideAll();
                                   const selection = window.getSelection();
-                                  const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode.parentElement;
-                                  const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode.parentElement;  
+                                  const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode?.parentElement;
+                                  const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode?.parentElement;
+                                  if (
+                                    selection.isCollapsed ||
+                                    anchorElement === null ||
+                                    focusElement === null ||
+                                    !this.contains(anchorElement) ||
+                                    !this.contains(focusElement) ||
+                                    anchorElement.dataset.position === undefined ||
+                                    focusElement.dataset.position === undefined
+                                  ) return;
                                   // TODO: May have to get ‘closest()’ child of ‘.text’ to prevent some elements (for example, tables) from breaking.
                                   const anchorPosition = JSON.parse(anchorElement.dataset.position);
                                   const focusPosition = JSON.parse(focusElement.dataset.position);
