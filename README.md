@@ -45,6 +45,7 @@
 - Scrolling issues:
   - Scrolling detaches the `dropdownMenu` from the target.
     - Same applies to “Quote”.
+  - Another glitch on “Quote”: Select some text, then tap on the selected text.
 - Search:
   - Include users in search.
   - Include snippets in search results.
