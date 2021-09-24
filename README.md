@@ -43,7 +43,6 @@
 ### Polish Existing Features
 
 - Scrolling issues:
-  - Up/down arrows move the whole page.
   - Scrolling detaches the `dropdownMenu` from the target.
     - Same applies to “Quote”.
 - Search:
