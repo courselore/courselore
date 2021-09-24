@@ -9623,202 +9623,209 @@ export default async function courselore({
             </div>
           </div>
           <div
-            class="markdown-editor--write--textarea--dropdown-menu-target"
             style="${css`
-              width: var(--space--0);
-              height: var(--line-height--sm);
-              position: absolute;
+              position: relative;
             `}"
-          ></div>
-          <textarea
-            name="${name}"
-            $${required ? html`required` : html``}
-            class="markdown-editor--write--textarea input--text input--text--textarea"
-            style="${css`
-              height: var(--space--20);
-              transition-property: var(--transition-property--all);
-              transition-duration: var(--transition-duration--150);
-              transition-timing-function: var(
-                --transition-timing-function--in-out
-              );
-              &.drag {
-                background-color: var(--color--blue--200);
-                @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--blue--900);
+          >
+            <div
+              class="markdown-editor--write--textarea--dropdown-menu-target"
+              style="${css`
+                width: var(--space--0);
+                height: var(--line-height--sm);
+                position: absolute;
+              `}"
+            ></div>
+            <textarea
+              name="${name}"
+              $${required ? html`required` : html``}
+              class="markdown-editor--write--textarea input--text input--text--textarea"
+              style="${css`
+                height: var(--space--20);
+                transition-property: var(--transition-property--all);
+                transition-duration: var(--transition-duration--150);
+                transition-timing-function: var(
+                  --transition-timing-function--in-out
+                );
+                &.drag {
+                  background-color: var(--color--blue--200);
+                  @media (prefers-color-scheme: dark) {
+                    background-color: var(--color--blue--900);
+                  }
                 }
-              }
-            `}"
+              `}"
+              $${res.locals.course !== undefined
+                ? html`
+                    data-ondomcontentloaded="${javascript`
+                      const dropdownMenuTarget = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea--dropdown-menu-target");
+                      const dropdownMenu = tippy(dropdownMenuTarget, {
+                        content: this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user"),
+                        placement: "bottom-start",
+                        trigger: "manual",
+                        interactive: true,
+                      });
+                      let anchorIndex = null;
+
+                      this.addEventListener("input", (() => {
+                        const dropdownMenuTextarea = this;
+                        let isSearching = false;
+                        let shouldSearchAgain = false;
+                        return async function search() {
+                          const selectionMin = Math.min(dropdownMenuTextarea.selectionStart, dropdownMenuTextarea.selectionEnd);
+                          const selectionMax = Math.max(dropdownMenuTextarea.selectionStart, dropdownMenuTextarea.selectionEnd);
+                          if (!dropdownMenu.state.isShown) {
+                            anchorIndex = selectionMin - 1;
+                            if (dropdownMenuTextarea.value[anchorIndex] !== "@" || (anchorIndex > 0 && dropdownMenuTextarea.value[anchorIndex - 1].match(/[\\w@]/))) return;
+                            const caretCoordinates = getCaretCoordinates(dropdownMenuTextarea, anchorIndex);
+                            dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
+                            dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
+                            dropdownMenu.show();
+                          }
+                          if (selectionMin <= anchorIndex || dropdownMenuTextarea.value[anchorIndex] !== "@") {
+                            dropdownMenu.hide();
+                            return;
+                          }
+                          if (isSearching) {
+                            shouldSearchAgain = true;
+                            return;
+                          }
+                          shouldSearchAgain = false;
+                          isSearching = true;
+                          const name = dropdownMenuTextarea.value.slice(anchorIndex + 1, selectionMax);
+                          dropdownMenuTextarea.closest(".markdown-editor").querySelector(".markdown-editor--mention-user--search-results").innerHTML =
+                            name.trim() === ""
+                            ? ""
+                            : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name }))).text();
+                          const buttons = dropdownMenuTextarea.closest(".markdown-editor").querySelectorAll(".markdown-editor--mention-user .button");
+                          for (const button of buttons) button.classList.remove("hover");
+                          buttons[0].classList.add("hover");
+                          isSearching = false;
+                          if (shouldSearchAgain) search();
+                        }
+                      })());
+
+                      this.addEventListener("keydown", (event) => {
+                        if (!dropdownMenu.state.isShown) return;
+                        switch (event.code) {
+                          case "ArrowUp":
+                          case "ArrowDown":
+                            event.preventDefault();
+                            const buttonsContainer = this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user");
+                            const buttons = [...buttonsContainer.querySelectorAll(".button")];
+                            const currentHoverIndex = buttons.indexOf(buttonsContainer.querySelector(".button.hover"));
+                            if (
+                              currentHoverIndex === -1 ||
+                              (event.code === "ArrowUp" && currentHoverIndex === 0) ||
+                              (event.code === "ArrowDown" && currentHoverIndex === buttons.length - 1)
+                            ) return;
+                            buttons[currentHoverIndex].classList.remove("hover");
+                            const buttonToHover = buttons[currentHoverIndex + (event.code === "ArrowUp" ? -1 : 1)];
+                            buttonToHover.classList.add("hover");
+                            scrollIntoView(buttonToHover, { scrollMode: "if-needed" });
+                            break;
+
+                          case "Enter":
+                          case "Tab":
+                            event.preventDefault();
+                            this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user .button.hover").click();
+                            break;
+
+                          case "Escape":
+                          case "ArrowLeft":
+                          case "ArrowRight":
+                          case "Home":
+                          case "End":
+                            dropdownMenu.hide();
+                            break;
+                        }
+                      });
+
+                      this.mentionUser = (user) => {
+                        this.setSelectionRange(anchorIndex + 1, Math.max(this.selectionStart, this.selectionEnd));
+                        textFieldEdit.insert(this, user + " ");
+                        dropdownMenu.hide();
+                        this.focus();
+                      };
+                    `}"
+                  `
+                : html``}
+              onfocus="${javascript`
+                this.style.height = "var(--space--52)";
+              `}"
+              ondragenter="${javascript`
+                this.classList.add("drag");
+              `}"
+              ondragover="${javascript`
+                event.preventDefault(); // TODO: Firefox seems to require this. Investigate more.
+              `}"
+              ondrop="${javascript`
+                event.preventDefault();
+                // TODO: I read somewhere that some browsers also need ‘event.stopPropagation()’. Investigate.
+                this.classList.remove("drag");
+                this.closest(".markdown-editor").querySelector(".attachments").upload(event.dataTransfer.files);
+              `}"
+              ondragleave="${javascript`
+                this.classList.remove("drag");
+              `}"
+              onpaste="${javascript`
+                if (event.clipboardData.files.length === 0) return;
+                event.preventDefault();
+                this.closest(".markdown-editor").querySelector(".attachments").upload(event.clipboardData.files);
+              `}"
+            >
+  ${value}</textarea
+            >
             $${res.locals.course !== undefined
               ? html`
-                  data-ondomcontentloaded="${javascript`
-                    const dropdownMenuTarget = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea--dropdown-menu-target");
-                    const dropdownMenu = tippy(dropdownMenuTarget, {
-                      content: this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user"),
-                      placement: "bottom-start",
-                      trigger: "manual",
-                      interactive: true,
-                    });
-                    let anchorIndex = null;
-
-                    this.addEventListener("input", (() => {
-                      let isSearching = false;
-                      let shouldSearchAgain = false;
-                      return async function search() {
-                        const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
-                        const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
-                        if (!dropdownMenu.state.isShown) {
-                          anchorIndex = selectionMin - 1;
-                          if (this.value[anchorIndex] !== "@" || (anchorIndex > 0 && this.value[anchorIndex - 1].match(/[\\w@]/))) return;
-                          const caretCoordinates = getCaretCoordinates(this, anchorIndex);
-                          dropdownMenuTarget.style.marginLeft = String(caretCoordinates.left) + "px";
-                          dropdownMenuTarget.style.marginTop = String(caretCoordinates.top) + "px";
-                          dropdownMenu.show();
-                        }
-                        if (selectionMin <= anchorIndex || this.value[anchorIndex] !== "@") {
-                          dropdownMenu.hide();
-                          return;
-                        }
-                        if (isSearching) {
-                          shouldSearchAgain = true;
-                          return;
-                        }
-                        shouldSearchAgain = false;
-                        isSearching = true;
-                        const name = this.value.slice(anchorIndex + 1, selectionMax);
-                        this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user--search-results").innerHTML =
-                          name.trim() === ""
-                          ? ""
-                          : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name }))).text();
-                        const buttons = this.closest(".markdown-editor").querySelectorAll(".markdown-editor--mention-user .button");
-                        for (const button of buttons) button.classList.remove("hover");
-                        buttons[0].classList.add("hover");
-                        isSearching = false;
-                        if (shouldSearchAgain) search();
-                      }
-                    })());
-
-                    this.addEventListener("keydown", (event) => {
-                      if (!dropdownMenu.state.isShown) return;
-                      switch (event.code) {
-                        case "ArrowUp":
-                        case "ArrowDown":
-                          event.preventDefault();
-                          const buttonsContainer = this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user");
-                          const buttons = [...buttonsContainer.querySelectorAll(".button")];
-                          const currentHoverIndex = buttons.indexOf(buttonsContainer.querySelector(".button.hover"));
-                          if (
-                            currentHoverIndex === -1 ||
-                            (event.code === "ArrowUp" && currentHoverIndex === 0) ||
-                            (event.code === "ArrowDown" && currentHoverIndex === buttons.length - 1)
-                          ) return;
-                          buttons[currentHoverIndex].classList.remove("hover");
-                          const buttonToHover = buttons[currentHoverIndex + (event.code === "ArrowUp" ? -1 : 1)];
-                          buttonToHover.classList.add("hover");
-                          scrollIntoView(buttonToHover, { scrollMode: "if-needed" });
-                          break;
-
-                        case "Enter":
-                        case "Tab":
-                          event.preventDefault();
-                          this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user .button.hover").click();
-                          break;
-
-                        case "Escape":
-                        case "ArrowLeft":
-                        case "ArrowRight":
-                        case "Home":
-                        case "End":
-                          dropdownMenu.hide();
-                          break;
-                      }
-                    });
-
-                    this.mentionUser = (user) => {
-                      this.setSelectionRange(anchorIndex + 1, Math.max(this.selectionStart, this.selectionEnd));
-                      textFieldEdit.insert(this, user + " ");
-                      dropdownMenu.hide();
-                      this.focus();
-                    };
-                  `}"
-                `
-              : html``}
-            onfocus="${javascript`
-              this.style.height = "var(--space--52)";
-            `}"
-            ondragenter="${javascript`
-              this.classList.add("drag");
-            `}"
-            ondragover="${javascript`
-              event.preventDefault(); // TODO: Firefox seems to require this. Investigate more.
-            `}"
-            ondrop="${javascript`
-              event.preventDefault();
-              // TODO: I read somewhere that some browsers also need ‘event.stopPropagation()’. Investigate.
-              this.classList.remove("drag");
-              this.closest(".markdown-editor").querySelector(".attachments").upload(event.dataTransfer.files);
-            `}"
-            ondragleave="${javascript`
-              this.classList.remove("drag");
-            `}"
-            onpaste="${javascript`
-              if (event.clipboardData.files.length === 0) return;
-              event.preventDefault();
-              this.closest(".markdown-editor").querySelector(".attachments").upload(event.clipboardData.files);
-            `}"
-          >
-${value}</textarea
-          >
-          $${res.locals.course !== undefined
-            ? html`
-                <div hidden>
-                  <div
-                    class="markdown-editor--mention-user"
-                    style="${css`
-                      width: var(--space--56);
-                      max-height: var(--space--44);
-                      overflow: auto;
-                    `}"
-                  >
-                    <p class="heading">
-                      <i class="bi bi-at"></i>
-                      Mention User
-                    </p>
-                    <div class="dropdown--menu">
-                      <div
-                        class="markdown-editor--mention-user--search-results"
-                      ></div>
-                      <button
-                        type="button"
-                        class="dropdown--menu--item button button--transparent"
-                        onclick="${javascript`
-                          this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser("all");
-                        `}"
-                      >
-                        Everyone in the Conversation
-                      </button>
-                      <button
-                        type="button"
-                        class="dropdown--menu--item button button--transparent"
-                        onclick="${javascript`
-                          this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser("staff");
-                        `}"
-                      >
-                        Staff in the Conversation
-                      </button>
-                      <button
-                        type="button"
-                        class="dropdown--menu--item button button--transparent"
-                        onclick="${javascript`
-                          this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser("students");
-                        `}"
-                      >
-                        Students in the Conversation
-                      </button>
+                  <div hidden>
+                    <div
+                      class="markdown-editor--mention-user"
+                      style="${css`
+                        width: var(--space--56);
+                        max-height: var(--space--44);
+                        overflow: auto;
+                      `}"
+                    >
+                      <p class="heading">
+                        <i class="bi bi-at"></i>
+                        Mention User
+                      </p>
+                      <div class="dropdown--menu">
+                        <div
+                          class="markdown-editor--mention-user--search-results"
+                        ></div>
+                        <button
+                          type="button"
+                          class="dropdown--menu--item button button--transparent"
+                          onclick="${javascript`
+                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser("all");
+                          `}"
+                        >
+                          Everyone in the Conversation
+                        </button>
+                        <button
+                          type="button"
+                          class="dropdown--menu--item button button--transparent"
+                          onclick="${javascript`
+                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser("staff");
+                          `}"
+                        >
+                          Staff in the Conversation
+                        </button>
+                        <button
+                          type="button"
+                          class="dropdown--menu--item button button--transparent"
+                          onclick="${javascript`
+                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser("students");
+                          `}"
+                        >
+                          Students in the Conversation
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              `
-            : html``}
+                `
+              : html``}
+          </div>
         </div>
 
         <div
