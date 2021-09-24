@@ -42,15 +42,6 @@
 
 ### Polish Existing Features
 
-- “Quote” glitches:
-  - Scrolling detaches the dropdown.
-    - x/y: Same as clientX/Y.
-    - clientX/Y: Relative to viewport.
-    - layerX/Y: Relative to document or positioned element (non-standard).
-    - movementX/Y: Relative to last mousemove event.
-    - offsetX/Y: Relative to padding edge of target node (for example, the clicked node).
-    - pageX/Y: Relative to document.
-    - screenX/Y: Relative to whole screen.
 - Search:
   - Include users in search.
   - Include snippets in search results.
