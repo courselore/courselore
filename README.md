@@ -322,6 +322,16 @@
 <summary><strong>Meetings</strong></summary>
 
 <details>
+<summary>2021-09-25</summary>
+
+- Progress:
+  - Finished the @mentions widget.
+  - Fixed the issue that was crashing the server last Saturday.
+  - More importantly, fixed the process supervisor so that even if the server goes down, it respawns.
+
+</details>
+
+<details>
 <summary>2021-09-18</summary>
 
 - Progress:
