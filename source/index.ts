@@ -415,7 +415,6 @@ export default async function courselore({
           <script src="${url}/node_modules/textarea-caret/index.js"></script>
           <script src="${url}/node_modules/scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js"></script>
           <script src="${url}/browser.js"></script>
-
           <script>
             leafac.evaluateOnInteractive();
             leafac.customFormValidation();
