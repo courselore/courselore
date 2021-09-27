@@ -73,7 +73,7 @@ const leafac = {
       if (element.value.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/) === null)
         return "Match the pattern YYYY-MM-DD HH:MM.";
       const date = new Date(element.value.replace(" ", "T"));
-      if (isNaN(date.getTime())) return "Invalid datetime";
+      if (isNaN(date.getTime())) return "Invalid date & time";
       element.value = date.toISOString();
     });
   },
