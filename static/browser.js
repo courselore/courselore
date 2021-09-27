@@ -83,4 +83,19 @@ const leafac = {
       element.value = date.toISOString();
     });
   },
+
+  warnAboutLosingInputs: (() => {
+    const warnAboutLosingInputs = (event) => {
+      if (!isModified(document.body)) return;
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", warnAboutLosingInputs);
+    document.addEventListener("submit", (event) => {
+      window.removeEventListener(
+        "beforeunload",
+        warnAboutLosingInputs
+      );
+    });
+  })()
 };

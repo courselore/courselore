@@ -417,6 +417,8 @@ export default async function courselore({
           <script src="${url}/browser.js"></script>
 
           <script>
+            leafac.warnAboutLosingInputs();
+
             document.addEventListener(
               "submit",
               (event) => {
@@ -512,21 +514,6 @@ export default async function courselore({
                 }
               }
             }
-
-            (() => {
-              const warnAboutLosingInputs = (event) => {
-                if (!isModified(document.body)) return;
-                event.preventDefault();
-                event.returnValue = "";
-              };
-              window.addEventListener("beforeunload", warnAboutLosingInputs);
-              document.addEventListener("submit", (event) => {
-                window.removeEventListener(
-                  "beforeunload",
-                  warnAboutLosingInputs
-                );
-              });
-            })();
 
             function isModified(element) {
               const elementsToCheck = [
