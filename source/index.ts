@@ -2891,7 +2891,7 @@ export default async function courselore({
     asyncHandler(async (req, res, next) => {
       if (
         typeof req.body.email !== "string" ||
-        !req.body.email.match(emailRegExp) ||
+        req.body.email.match(emailRegExp) === null ||
         typeof req.body.password !== "string" ||
         req.body.password.trim() === ""
       )
@@ -3057,7 +3057,7 @@ export default async function courselore({
   >("/reset-password", ...isSignedOutMiddleware, (req, res, next) => {
     if (
       typeof req.body.email !== "string" ||
-      !req.body.email.match(emailRegExp)
+      req.body.email.match(emailRegExp) === null
     )
       return next("validation");
 
@@ -3457,7 +3457,7 @@ export default async function courselore({
         typeof req.body.name !== "string" ||
         req.body.name.trim() === "" ||
         typeof req.body.email !== "string" ||
-        !req.body.email.match(emailRegExp) ||
+        req.body.email.match(emailRegExp) === null ||
         typeof req.body.password !== "string" ||
         req.body.password.trim() === "" ||
         req.body.password.length < 8
@@ -4279,7 +4279,7 @@ export default async function courselore({
     ...isSignedInMiddleware,
     asyncHandler(async (req, res, next) => {
       if (typeof req.body.email === "string") {
-        if (!req.body.email.match(emailRegExp)) return next("validation");
+        if (req.body.email.match(emailRegExp) === null) return next("validation");
         if (
           database.get<{ exists: number }>(
             sql`
@@ -6119,7 +6119,7 @@ export default async function courselore({
           }
           if (
             emails.length === 0 ||
-            emails.some(({ email }) => !email.match(emailRegExp))
+            emails.some(({ email }) => email.match(emailRegExp) === null)
           )
             return next("validation");
 
@@ -9431,7 +9431,7 @@ export default async function courselore({
                           const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
                           if (!dropdownMenu.state.isShown) {
                             anchorIndex = selectionMin - 1;
-                            if (this.value[anchorIndex] !== "@" || (anchorIndex > 0 && this.value[anchorIndex - 1].match(/[\\w@]/))) return;
+                            if (this.value[anchorIndex] !== "@" || (anchorIndex > 0 && this.value[anchorIndex - 1].match(/[\\w@]/) !== null)) return;
                             const caretCoordinates = getCaretCoordinates(this, anchorIndex);
                             dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
                             dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
