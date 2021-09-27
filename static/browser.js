@@ -1,8 +1,3 @@
-window.addEventListener("DOMContentLoaded", () => {
-  for (const element of document.querySelectorAll("[ondomcontentloaded]"))
-    new Function(element.getAttribute("ondomcontentloaded")).call(element);
-});
-
 if (tippy !== undefined)
   tippy.setDefaultProps({
     arrow: tippy.roundArrow + tippy.roundArrow,
@@ -12,6 +7,13 @@ if (tippy !== undefined)
   });
 
 const leafac = {
+  evaluateOnInteractive: () => {
+    window.addEventListener("DOMContentLoaded", () => {
+      for (const element of document.querySelectorAll("[ondomcontentloaded]"))
+        new Function(element.getAttribute("ondomcontentloaded")).call(element);
+    });
+  },
+
   customFormValidation: () => {
     document.addEventListener(
       "submit",

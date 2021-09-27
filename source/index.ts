@@ -417,6 +417,7 @@ export default async function courselore({
           <script src="${url}/browser.js"></script>
 
           <script>
+            leafac.evaluateOnInteractive();
             leafac.customFormValidation();
             leafac.warnAboutLosingInputs();
             leafac.disableButtonsOnSubmit();
