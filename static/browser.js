@@ -12,22 +12,22 @@ if (tippy !== undefined)
   });
 
 const leafac = {
-  getDate: (dateString) => {
+  formatDate: (dateString) => {
     const date = new Date(dateString);
     return `${String(date.getFullYear())}-${String(
       date.getMonth() + 1
     ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
   },
 
-  getTime: (dateString) => {
+  formatTime: (dateString) => {
     const date = new Date(dateString);
     return `${String(date.getHours()).padStart(2, "0")}:${String(
       date.getMinutes()
     ).padStart(2, "0")}`;
   },
 
-  getDateTime: (dateString) =>
-    `${leafac.getDate(dateString)} ${leafac.getTime(dateString)}`,
+  formatDateTime: (dateString) =>
+    `${leafac.formatDate(dateString)} ${leafac.formatTime(dateString)}`,
 
   relativizeDateTime: (() => {
     const relativeTimeFormat = new Intl.RelativeTimeFormat("en-US", {
@@ -50,7 +50,7 @@ const leafac = {
         ? relativeTimeFormat.format(Math.trunc(difference / hour), "hours")
         : absoluteDifference < month
         ? relativeTimeFormat.format(Math.trunc(difference / day), "days")
-        : `at ${leafac.getDateTime(dateString)}`;
+        : `at ${leafac.formatDateTime(dateString)}`;
     };
   })(),
 
@@ -68,7 +68,7 @@ const leafac = {
   },
 
   dateTimeInput: (element) => {
-    element.defaultValue = leafac.getDateTime(element.defaultValue);
+    element.defaultValue = leafac.formatDateTime(element.defaultValue);
     (element.validators ??= []).push(() => {
       if (element.value.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/) === null)
         return "Match the pattern YYYY-MM-DD HH:MM.";
