@@ -5581,7 +5581,7 @@ export default async function courselore({
                   disabled
                   class="input--text"
                   ondomcontentloaded="${javascript`
-                    leafac.dateTimeInput(this);
+                    leafac.formatDateTimeInput(this);
                     (this.validators ??= []).push(() => {
                       if (new Date(this.value).getTime() <= Date.now())
                         return "Must be in the future.";
@@ -5922,7 +5922,7 @@ export default async function courselore({
                                           autocomplete="off"
                                           class="input--text"
                                           ondomcontentloaded="${javascript`
-                                            leafac.dateTimeInput(this);
+                                            leafac.formatDateTimeInput(this);
                                             (this.validators ??= []).push(() => {
                                               if (new Date(this.value).getTime() <= Date.now())
                                                 return "Must be in the future.";

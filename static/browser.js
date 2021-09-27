@@ -74,7 +74,7 @@ const leafac = {
     })();
   },
 
-  dateTimeInput: (element) => {
+  formatDateTimeInput: (element) => {
     element.defaultValue = leafac.formatDateTime(element.defaultValue);
     (element.validators ??= []).push(() => {
       const date = leafac.parseDateTime(element.value);
