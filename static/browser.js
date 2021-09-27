@@ -22,37 +22,6 @@ const leafac = {
     );
   },
 
-  warnAboutLosingInputs: () => {
-    const warnAboutLosingInputs = (event) => {
-      if (!leafac.isModified(document.body)) return;
-      event.preventDefault();
-      event.returnValue = "";
-    };
-    window.addEventListener("beforeunload", warnAboutLosingInputs);
-    document.addEventListener("submit", (event) => {
-      window.removeEventListener("beforeunload", warnAboutLosingInputs);
-    });
-  },
-
-  disableButtonsOnSubmit: () => {
-    document.addEventListener("submit", (event) => {
-      for (const button of event.target.querySelectorAll(
-        'button:not([type="button"])'
-      ))
-        button.disabled = true;
-    });
-  },
-
-  tippySetDefaultProps: (extraProps = {}) => {
-    tippy.setDefaultProps({
-      arrow: tippy.roundArrow + tippy.roundArrow,
-      duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? 1
-        : 150,
-      ...extraProps,
-    });
-  },
-
   isValid: (element) => {
     const elementsToValidate = [element, ...element.querySelectorAll("*")];
     const elementsToReset = new Map();
@@ -131,6 +100,37 @@ const leafac = {
         if (typeof error === "string") return error;
       }
     }
+  },
+
+  warnAboutLosingInputs: () => {
+    const warnAboutLosingInputs = (event) => {
+      if (!leafac.isModified(document.body)) return;
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", warnAboutLosingInputs);
+    document.addEventListener("submit", (event) => {
+      window.removeEventListener("beforeunload", warnAboutLosingInputs);
+    });
+  },
+
+  disableButtonsOnSubmit: () => {
+    document.addEventListener("submit", (event) => {
+      for (const button of event.target.querySelectorAll(
+        'button:not([type="button"])'
+      ))
+        button.disabled = true;
+    });
+  },
+
+  tippySetDefaultProps: (extraProps = {}) => {
+    tippy.setDefaultProps({
+      arrow: tippy.roundArrow + tippy.roundArrow,
+      duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? 1
+        : 150,
+      ...extraProps,
+    });
   },
 
   isModified: (element) => {
