@@ -48,10 +48,7 @@ const leafac = {
   },
 
   isValid: (element) => {
-    const elementsToValidate = [
-      element,
-      ...element.querySelectorAll("*"),
-    ];
+    const elementsToValidate = [element, ...element.querySelectorAll("*")];
     const elementsToReset = new Map();
 
     for (const element of elementsToValidate) {
@@ -84,9 +81,7 @@ const leafac = {
             if (
               element
                 .closest("form")
-                .querySelector(
-                  '[name="' + element.name + '"]:checked'
-                ) === null
+                .querySelector('[name="' + element.name + '"]:checked') === null
             )
               return "Please select one of these options.";
             break;
@@ -110,8 +105,7 @@ const leafac = {
       if (
         element.matches("[minlength]") &&
         element.value.trim() !== "" &&
-        element.value.length <
-          Number(element.getAttribute("minlength"))
+        element.value.length < Number(element.getAttribute("minlength"))
       )
         return (
           "This field must have at least " +
@@ -122,7 +116,7 @@ const leafac = {
       if (
         element.matches('[type="email"]') &&
         element.value.trim() !== "" &&
-        !element.value.match(${emailRegExp})
+        !element.value.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)
       )
         return "Please enter an email address.";
 
@@ -133,11 +127,8 @@ const leafac = {
     }
   },
 
-  isModified :(element) => {
-    const elementsToCheck = [
-      element,
-      ...element.querySelectorAll("*"),
-    ];
+  isModified: (element) => {
+    const elementsToCheck = [element, ...element.querySelectorAll("*")];
     for (const element of elementsToCheck) {
       if (
         element.dataset.skipIsModified === "true" ||
