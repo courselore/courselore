@@ -84,7 +84,7 @@ const leafac = {
     });
   },
 
-  warnAboutLosingInputs: (() => {
+  warnAboutLosingInputs: () => {
     const warnAboutLosingInputs = (event) => {
       if (!isModified(document.body)) return;
       event.preventDefault();
@@ -94,5 +94,5 @@ const leafac = {
     document.addEventListener("submit", (event) => {
       window.removeEventListener("beforeunload", warnAboutLosingInputs);
     });
-  })(),
+  },
 };
