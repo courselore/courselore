@@ -225,6 +225,17 @@ const leafac = {
     return date;
   },
 
+  liveReload: () => {
+    const liveReloadEventSource = new EventSource("/live-reload");
+    liveReloadEventSource.addEventListener("error", (event) => {
+      liveReloadEventSource.close();
+      (async function reload() {
+        if ((await fetch(location.href)).ok) location.reload();
+        else window.setTimeout(reload, 200);
+      })();
+    });
+  },
+
   regExps: {
     email: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
     formattedDateTime: /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/,
