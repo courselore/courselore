@@ -421,6 +421,11 @@ export default async function courselore({
             leafac.warnAboutLosingInputs();
             leafac.disableButtonsOnSubmit();
             leafac.tippySetDefaultProps();
+            ${liveReload
+              ? javascript`
+                  leafac.liveReload();
+                `
+              : javascript``};
           </script>
 
           $${res?.locals.eventSource
@@ -457,20 +462,6 @@ export default async function courselore({
                         console.error(response);
                         break;
                     }
-                  });
-                </script>
-              `
-            : html``}
-          $${liveReload
-            ? html`
-                <script>
-                  const liveReload = new EventSource("/live-reload");
-                  liveReload.addEventListener("error", (event) => {
-                    liveReload.close();
-                    (async function reload() {
-                      if ((await fetch(location.href)).ok) location.reload();
-                      else window.setTimeout(reload, 200);
-                    })();
                   });
                 </script>
               `

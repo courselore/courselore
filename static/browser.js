@@ -230,8 +230,12 @@ const leafac = {
     liveReloadEventSource.addEventListener("error", (event) => {
       liveReloadEventSource.close();
       (async function reload() {
-        if ((await fetch(location.href)).ok) location.reload();
-        else window.setTimeout(reload, 200);
+        try {
+          if (!(await fetch(location.href)).ok) throw new Error();
+          location.reload();
+        } catch (error) {
+          window.setTimeout(reload, 200);
+        }
       })();
     });
   },
