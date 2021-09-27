@@ -16,7 +16,7 @@ const leafac = {
     document.addEventListener(
       "submit",
       (event) => {
-        if (isValid(event.target)) return;
+        if (leafac.isValid(event.target)) return;
         event.preventDefault();
         event.stopPropagation();
       },
@@ -26,7 +26,7 @@ const leafac = {
 
   warnAboutLosingInputs: () => {
     const warnAboutLosingInputs = (event) => {
-      if (!isModified(document.body)) return;
+      if (!leafac.isModified(document.body)) return;
       event.preventDefault();
       event.returnValue = "";
     };
@@ -43,6 +43,117 @@ const leafac = {
       ))
         button.disabled = true;
     });
+  },
+
+  isValid: (element) => {
+    const elementsToValidate = [
+      element,
+      ...element.querySelectorAll("*"),
+    ];
+    const elementsToReset = new Map();
+
+    for (const element of elementsToValidate) {
+      if (element.closest("[disabled]") !== null) continue;
+      const valueInputByUser = element.value;
+      const error = validate(element);
+      if (element.value !== valueInputByUser)
+        elementsToReset.set(element, valueInputByUser);
+      if (typeof error !== "string") continue;
+      element.focus();
+      const tooltip = tippy(element, {
+        content: error,
+        theme: "rose",
+        trigger: "click",
+        onHidden: () => {
+          tooltip.destroy();
+        },
+      });
+      tooltip.show();
+      for (const [element, valueInputByUser] of elementsToReset)
+        element.value = valueInputByUser;
+      return false;
+    }
+    return true;
+
+    function validate(element) {
+      if (element.matches("[required]"))
+        switch (element.type) {
+          case "radio":
+            if (
+              element
+                .closest("form")
+                .querySelector(
+                  '[name="' + element.name + '"]:checked'
+                ) === null
+            )
+              return "Please select one of these options.";
+            break;
+          case "checkbox":
+            const checkboxes = [
+              ...element
+                .closest("form")
+                .querySelectorAll('[name="' + element.name + '"]'),
+            ];
+            if (!checkboxes.some((checkbox) => checkbox.checked))
+              return checkboxes.length === 1
+                ? "Please check this checkbox."
+                : "Please select at least one of these options.";
+            break;
+          default:
+            if (element.value.trim() === "")
+              return "Please fill out this field.";
+            break;
+        }
+
+      if (
+        element.matches("[minlength]") &&
+        element.value.trim() !== "" &&
+        element.value.length <
+          Number(element.getAttribute("minlength"))
+      )
+        return (
+          "This field must have at least " +
+          element.getAttribute("minlength") +
+          " characters."
+        );
+
+      if (
+        element.matches('[type="email"]') &&
+        element.value.trim() !== "" &&
+        !element.value.match(${emailRegExp})
+      )
+        return "Please enter an email address.";
+
+      for (const validator of element.validators ?? []) {
+        const error = validator();
+        if (typeof error === "string") return error;
+      }
+    }
+  },
+
+  isModified :(element) => {
+    const elementsToCheck = [
+      element,
+      ...element.querySelectorAll("*"),
+    ];
+    for (const element of elementsToCheck) {
+      if (
+        element.dataset.skipIsModified === "true" ||
+        element.closest("[disabled]") !== null
+      )
+        continue;
+      if (element.dataset.forceIsModified === "true") return true;
+      if (["radio", "checkbox"].includes(element.type)) {
+        if (element.checked !== element.defaultChecked) return true;
+      } else if (element.tagName.toLowerCase() === "option") {
+        if (element.selected !== element.defaultSelected) return true;
+      } else if (
+        typeof element.value === "string" &&
+        typeof element.defaultValue === "string"
+      )
+        if (element.value !== element.defaultValue) return true;
+    }
+    return false;
   },
 
   relativizeDateTimeElement: (element) => {
