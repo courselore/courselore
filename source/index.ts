@@ -397,18 +397,8 @@ export default async function courselore({
             rel="stylesheet"
             href="${url}/node_modules/katex/dist/katex.min.css"
           />
-
           <script src="${url}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
           <script src="${url}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
-          <script>
-            tippy.setDefaultProps({
-              arrow: tippy.roundArrow + tippy.roundArrow,
-              duration: window.matchMedia("(prefers-reduced-motion: reduce)")
-                .matches
-                ? 1
-                : 150,
-            });
-          </script>
           <link
             rel="stylesheet"
             href="${url}/node_modules/tippy.js/dist/svg-arrow.css"
@@ -417,16 +407,13 @@ export default async function courselore({
             rel="stylesheet"
             href="${url}/node_modules/tippy.js/dist/border.css"
           />
-
           <script type="module">
             import * as textFieldEdit from "${url}/node_modules/text-field-edit/index.js";
             window.textFieldEdit = textFieldEdit;
           </script>
-
           <script src="${url}/node_modules/mousetrap/mousetrap.min.js"></script>
           <script src="${url}/node_modules/textarea-caret/index.js"></script>
           <script src="${url}/node_modules/scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js"></script>
-
           <script src="${url}/browser.js"></script>
 
           <script>
@@ -6036,7 +6023,7 @@ export default async function courselore({
                                               Used
                                               <time
                                                 ondomcontentloaded="${javascript`
-                                                  relativizeTime(this);
+                                                  leafac.relativizeTime(this);
                                                 `}"
                                               >
                                                 ${new Date(
@@ -6082,7 +6069,7 @@ export default async function courselore({
                                                   Expired
                                                   <time
                                                     ondomcontentloaded="${javascript`
-                                                      relativizeTime(this);
+                                                      leafac.relativizeTime(this);
                                                     `}"
                                                   >
                                                     ${new Date(
@@ -6171,7 +6158,7 @@ export default async function courselore({
                                                   Expires
                                                   <time
                                                     ondomcontentloaded="${javascript`
-                                                      relativizeTime(this);
+                                                      leafac.relativizeTime(this);
                                                     `}"
                                                   >
                                                     ${new Date(
@@ -8213,7 +8200,7 @@ export default async function courselore({
                                     #${conversation.reference} created
                                     <time
                                       ondomcontentloaded="${javascript`
-                                        relativizeTime(this);
+                                        leafac.relativizeTime(this);
                                       `}"
                                     >
                                       ${conversation.createdAt}
@@ -8275,7 +8262,7 @@ export default async function courselore({
                                           and last updated
                                           <time
                                             ondomcontentloaded="${javascript`
-                                              relativizeTime(this);
+                                              leafac.relativizeTime(this);
                                             `}"
                                           >
                                             ${conversation.updatedAt}
@@ -11631,7 +11618,7 @@ export default async function courselore({
                               said
                               <time
                                 ondomcontentloaded="${javascript`
-                                  relativizeTime(this);
+                                  leafac.relativizeTime(this);
                                 `}"
                               >
                                 ${message.createdAt}
@@ -11641,7 +11628,7 @@ export default async function courselore({
                                     and last edited
                                     <time
                                       ondomcontentloaded="${javascript`
-                                        relativizeTime(this);
+                                        leafac.relativizeTime(this);
                                       `}"
                                     >
                                       ${message.updatedAt}
