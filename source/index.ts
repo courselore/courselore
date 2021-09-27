@@ -440,12 +440,9 @@ export default async function courselore({
                             await response.text(),
                             "text/html"
                           );
-                        for (const element of refreshedDocument.querySelectorAll(
-                          "[oninteractive]"
-                        ))
-                          new Function(
-                            element.getAttribute("oninteractive")
-                          ).call(element);
+                        leafac.evaluateWithElements(
+                          refreshedDocument.querySelectorAll("[oninteractive]")
+                        );
                         document.head.append(
                           ...refreshedDocument.head.querySelectorAll("style")
                         );
@@ -7000,8 +6997,7 @@ export default async function courselore({
                     onclick="${javascript`
                       const newTag = this.nextElementSibling.firstElementChild.cloneNode(true);
                       this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
-                      for (const element of newTag.querySelectorAll("[onmount]"))
-                        new Function(element.getAttribute("onmount")).call(element);
+                      leafac.evaluateWithElements(newTag.querySelectorAll("[onmount]"), "onmount");
                     `}"
                   >
                     <i class="bi bi-plus-circle"></i>
