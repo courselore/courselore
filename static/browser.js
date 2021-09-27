@@ -1,11 +1,11 @@
 const leafac = {
   evaluateOnInteractive: () => {
     window.addEventListener("DOMContentLoaded", () => {
-      leafac.evaluateElements(document);
+      leafac.evaluateElementsAttribute(document);
     });
   },
 
-  evaluateElements: (parentElement, attribute = "oninteractive") => {
+  evaluateElementsAttribute: (parentElement, attribute = "oninteractive") => {
     for (const element of parentElement.querySelectorAll(`[${attribute}]`))
       new Function(element.getAttribute(attribute)).call(element);
   },
