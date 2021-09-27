@@ -5351,7 +5351,7 @@ export default async function courselore({
                       if (
                         emails.length === 0 ||
                         emails.some(
-                          ({ email }) => !email.match(${emailRegExp})
+                          ({ email }) => email.match(leafac.regExps.email) === null
                         )
                       )
                         return "Match the requested format.";
@@ -13370,12 +13370,12 @@ export default async function courselore({
   ): HTML =>
     searchResult.replace(
       new RegExp(
-        `(?:${(typeof searchPhrases === "string"
+        `${(typeof searchPhrases === "string"
           ? splitSearchPhrases(searchPhrases)
           : searchPhrases
         )
           .map((searchPhrase) => escapeStringRegexp(searchPhrase))
-          .join("|")})`,
+          .join("|")}`,
         "gi"
       ),
       (searchPhrase) =>

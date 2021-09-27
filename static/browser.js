@@ -91,7 +91,7 @@ const leafac = {
       if (
         element.matches('[type="email"]') &&
         element.value.trim() !== "" &&
-        !element.value.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)
+        element.value.match(leafac.regExps.email) === null
       )
         return "Please enter an email address.";
 
@@ -221,9 +221,14 @@ const leafac = {
     `${leafac.formatDate(dateString)} ${leafac.formatTime(dateString)}`,
 
   parseDateTime: (dateString) => {
-    if (dateString.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/) === null) return;
+    if (dateString.match(leafac.regExps.formattedDateTime) === null) return;
     const date = new Date(dateString.replace(" ", "T"));
     if (isNaN(date.getTime())) return;
     return date;
+  },
+
+  regExps: {
+    email: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+    formattedDateTime: /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/,
   },
 };
