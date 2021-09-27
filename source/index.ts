@@ -7000,8 +7000,8 @@ export default async function courselore({
                     onclick="${javascript`
                       const newTag = this.nextElementSibling.firstElementChild.cloneNode(true);
                       this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
-                      for (const element of newTag.querySelectorAll("[data-onmount]"))
-                        new Function(element.dataset.onmount).call(element);
+                      for (const element of newTag.querySelectorAll("[onmount]"))
+                        new Function(element.getAttribute("onmount")).call(element);
                     `}"
                   >
                     <i class="bi bi-plus-circle"></i>
@@ -7032,7 +7032,7 @@ export default async function courselore({
                           autocomplete="off"
                           disabled
                           class="input--text"
-                          data-onmount="${javascript`
+                          onmount="${javascript`
                             this.dataset.forceIsModified = true;
                             this.disabled = false;
                             this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][name]";
@@ -7053,7 +7053,7 @@ export default async function courselore({
                               type="checkbox"
                               disabled
                               class="input--checkbox"
-                              data-onmount="${javascript`
+                              onmount="${javascript`
                                 this.dataset.forceIsModified = true;
                                 this.disabled = false;
                                 this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][isStaffOnly]";
@@ -7065,7 +7065,7 @@ export default async function courselore({
                         <button
                           type="button"
                           class="button button--tight button--tight--inline button--transparent"
-                          data-onmount="${javascript`
+                          onmount="${javascript`
                             tippy(this, {
                               content: "Remove Tag",
                               theme: "rose",
