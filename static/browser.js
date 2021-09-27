@@ -92,10 +92,7 @@ const leafac = {
     };
     window.addEventListener("beforeunload", warnAboutLosingInputs);
     document.addEventListener("submit", (event) => {
-      window.removeEventListener(
-        "beforeunload",
-        warnAboutLosingInputs
-      );
+      window.removeEventListener("beforeunload", warnAboutLosingInputs);
     });
-  })()
+  })(),
 };
