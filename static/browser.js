@@ -66,4 +66,15 @@ const leafac = {
       window.setTimeout(update, 10 * 1000);
     })();
   },
+
+  dateTimeInput: (element) => {
+    element.defaultValue = leafac.getDateTime(element.defaultValue);
+    (element.validators ??= []).push(() => {
+      if (element.value.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/) === null)
+        return "Match the pattern YYYY-MM-DD HH:MM.";
+      const date = new Date(element.value.replace(" ", "T"));
+      if (isNaN(date.getTime())) return "Invalid datetime";
+      element.value = date.toISOString();
+    });
+  },
 };
