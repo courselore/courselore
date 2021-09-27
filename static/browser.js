@@ -56,7 +56,7 @@ const leafac = {
             if (
               element
                 .closest("form")
-                .querySelector('[name="' + element.name + '"]:checked') === null
+                .querySelector(`[name="${element.name}"]:checked`) === null
             )
               return "Please select one of these options.";
             break;
@@ -64,7 +64,7 @@ const leafac = {
             const checkboxes = [
               ...element
                 .closest("form")
-                .querySelectorAll('[name="' + element.name + '"]'),
+                .querySelectorAll(`[name="${element.name}"]`),
             ];
             if (!checkboxes.some((checkbox) => checkbox.checked))
               return checkboxes.length === 1
@@ -82,14 +82,12 @@ const leafac = {
         element.value.trim() !== "" &&
         element.value.length < Number(element.getAttribute("minlength"))
       )
-        return (
-          "This field must have at least " +
-          element.getAttribute("minlength") +
-          " characters."
-        );
+        return `This field must have at least ${element.getAttribute(
+          "minlength"
+        )} characters.`;
 
       if (
-        element.matches('[type="email"]') &&
+        element.matches(`[type="email"]`) &&
         element.value.trim() !== "" &&
         element.value.match(leafac.regExps.email) === null
       )
@@ -103,33 +101,14 @@ const leafac = {
   },
 
   warnAboutLosingInputs: () => {
-    const warnAboutLosingInputs = (event) => {
+    const warner = (event) => {
       if (!leafac.isModified(document.body)) return;
       event.preventDefault();
       event.returnValue = "";
     };
-    window.addEventListener("beforeunload", warnAboutLosingInputs);
-    document.addEventListener("submit", (event) => {
-      window.removeEventListener("beforeunload", warnAboutLosingInputs);
-    });
-  },
-
-  disableButtonsOnSubmit: () => {
-    document.addEventListener("submit", (event) => {
-      for (const button of event.target.querySelectorAll(
-        'button:not([type="button"])'
-      ))
-        button.disabled = true;
-    });
-  },
-
-  tippySetDefaultProps: (extraProps = {}) => {
-    tippy.setDefaultProps({
-      arrow: tippy.roundArrow + tippy.roundArrow,
-      duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? 1
-        : 150,
-      ...extraProps,
+    window.addEventListener("beforeunload", warner);
+    document.addEventListener("submit", () => {
+      window.removeEventListener("beforeunload", warner);
     });
   },
 
@@ -153,6 +132,25 @@ const leafac = {
         if (element.value !== element.defaultValue) return true;
     }
     return false;
+  },
+
+  disableButtonsOnSubmit: () => {
+    document.addEventListener("submit", (event) => {
+      for (const button of event.target.querySelectorAll(
+        `button:not([type="button"])`
+      ))
+        button.disabled = true;
+    });
+  },
+
+  tippySetDefaultProps: (extraProps = {}) => {
+    tippy.setDefaultProps({
+      arrow: tippy.roundArrow + tippy.roundArrow,
+      duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? 1
+        : 150,
+      ...extraProps,
+    });
   },
 
   relativizeDateTimeElement: (element) => {
