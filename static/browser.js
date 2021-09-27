@@ -1,11 +1,3 @@
-if (tippy !== undefined)
-  tippy.setDefaultProps({
-    arrow: tippy.roundArrow + tippy.roundArrow,
-    duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      ? 1
-      : 150,
-  });
-
 const leafac = {
   evaluateOnInteractive: () => {
     window.addEventListener("DOMContentLoaded", () => {
@@ -44,6 +36,16 @@ const leafac = {
         'button:not([type="button"])'
       ))
         button.disabled = true;
+    });
+  },
+
+  tippySetDefaultProps: (extraProps = {}) => {
+    tippy.setDefaultProps({
+      arrow: tippy.roundArrow + tippy.roundArrow,
+      duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? 1
+        : 150,
+      ...extraProps,
     });
   },
 

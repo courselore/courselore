@@ -421,6 +421,7 @@ export default async function courselore({
             leafac.customFormValidation();
             leafac.warnAboutLosingInputs();
             leafac.disableButtonsOnSubmit();
+            leafac.tippySetDefaultProps();
           </script>
 
           $${res?.locals.eventSource
