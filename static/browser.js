@@ -1,9 +1,13 @@
 const leafac = {
   evaluateOnInteractive: () => {
     window.addEventListener("DOMContentLoaded", () => {
-      for (const element of document.querySelectorAll("[oninteractive]"))
-        new Function(element.getAttribute("oninteractive")).call(element);
+      leafac.evaluateWithElements(document.querySelectorAll("[oninteractive]"));
     });
+  },
+
+  evaluateWithElements: (elements, attribute = "oninteractive") => {
+    for (const element of elements)
+      new Function(element.getAttribute(attribute)).call(element);
   },
 
   customFormValidation: () => {
