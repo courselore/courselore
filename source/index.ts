@@ -85,15 +85,15 @@ export default async function courselore({
     "pink",
   ] as const;
 
-  type GhostEnrollment = typeof ghostEnrollment;
-  const ghostEnrollment = {
+  type NoLongerEnrolledEnrollment = typeof noLongerEnrolledEnrollment;
+  const noLongerEnrolledEnrollment = {
     id: null,
     user: {
       id: null,
       email: null,
-      name: "Ghost",
+      name: "No Longer Enrolled",
       avatar: null,
-      biography: "This person is no longer enrolled in the course.",
+      biography: null,
     },
     reference: null,
     role: null,
@@ -8563,7 +8563,7 @@ export default async function courselore({
               reference: string;
               role: EnrollmentRole;
             }
-          | GhostEnrollment;
+          | NoLongerEnrolledEnrollment;
         updatedAt: string | null;
         messagesCount: number;
         readingsCount: number;
@@ -8582,7 +8582,7 @@ export default async function courselore({
                 reference: string;
                 role: EnrollmentRole;
               }
-            | GhostEnrollment;
+            | NoLongerEnrolledEnrollment;
         }[];
         likesCount: number;
         taggings: {
@@ -8783,7 +8783,7 @@ export default async function courselore({
               reference: originalMessage.authorEnrollmentReference,
               role: originalMessage.authorEnrollmentRole,
             }
-          : ghostEnrollment,
+          : noLongerEnrolledEnrollment,
       updatedAt:
         mostRecentlyUpdatedMessage.updatedAt === originalMessage.createdAt
           ? null
@@ -8811,7 +8811,7 @@ export default async function courselore({
                 reference: endorsement.enrollmentReference,
                 role: endorsement.enrollmentRole,
               }
-            : ghostEnrollment,
+            : noLongerEnrolledEnrollment,
       })),
       likesCount,
       taggings: taggings.map((tagging) => ({
@@ -10761,7 +10761,7 @@ export default async function courselore({
                       reference: endorsement.enrollmentReference,
                       role: endorsement.enrollmentRole,
                     }
-                  : ghostEnrollment,
+                  : noLongerEnrolledEnrollment,
             }));
           const likes = database
             .all<{
@@ -10813,7 +10813,7 @@ export default async function courselore({
                       reference: like.enrollmentReference,
                       role: like.enrollmentRole,
                     }
-                  : ghostEnrollment,
+                  : noLongerEnrolledEnrollment,
             }));
 
           return {
@@ -10840,7 +10840,7 @@ export default async function courselore({
                     reference: message.authorEnrollmentReference,
                     role: message.authorEnrollmentRole,
                   }
-                : ghostEnrollment,
+                : noLongerEnrolledEnrollment,
             content: message.content,
             answerAt: message.answerAt,
             anonymousAt: message.anonymousAt,
