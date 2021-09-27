@@ -6023,7 +6023,7 @@ export default async function courselore({
                                               Used
                                               <time
                                                 ondomcontentloaded="${javascript`
-                                                  leafac.relativizeTime(this);
+                                                  leafac.relativizeDateTimeElement(this);
                                                 `}"
                                               >
                                                 ${new Date(
@@ -6069,7 +6069,7 @@ export default async function courselore({
                                                   Expired
                                                   <time
                                                     ondomcontentloaded="${javascript`
-                                                      leafac.relativizeTime(this);
+                                                      leafac.relativizeDateTimeElement(this);
                                                     `}"
                                                   >
                                                     ${new Date(
@@ -6158,7 +6158,7 @@ export default async function courselore({
                                                   Expires
                                                   <time
                                                     ondomcontentloaded="${javascript`
-                                                      leafac.relativizeTime(this);
+                                                      leafac.relativizeDateTimeElement(this);
                                                     `}"
                                                   >
                                                     ${new Date(
@@ -8200,7 +8200,7 @@ export default async function courselore({
                                     #${conversation.reference} created
                                     <time
                                       ondomcontentloaded="${javascript`
-                                        leafac.relativizeTime(this);
+                                        leafac.relativizeDateTimeElement(this);
                                       `}"
                                     >
                                       ${conversation.createdAt}
@@ -8262,7 +8262,7 @@ export default async function courselore({
                                           and last updated
                                           <time
                                             ondomcontentloaded="${javascript`
-                                              leafac.relativizeTime(this);
+                                              leafac.relativizeDateTimeElement(this);
                                             `}"
                                           >
                                             ${conversation.updatedAt}
@@ -11618,7 +11618,7 @@ export default async function courselore({
                               said
                               <time
                                 ondomcontentloaded="${javascript`
-                                  leafac.relativizeTime(this);
+                                  leafac.relativizeDateTimeElement(this);
                                 `}"
                               >
                                 ${message.createdAt}
@@ -11628,7 +11628,7 @@ export default async function courselore({
                                     and last edited
                                     <time
                                       ondomcontentloaded="${javascript`
-                                        leafac.relativizeTime(this);
+                                        leafac.relativizeDateTimeElement(this);
                                       `}"
                                     >
                                       ${message.updatedAt}
