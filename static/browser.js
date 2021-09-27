@@ -29,6 +29,13 @@ const leafac = {
   formatDateTime: (dateString) =>
     `${leafac.formatDate(dateString)} ${leafac.formatTime(dateString)}`,
 
+  parseDateTime: (dateString) => {
+    if (dateString.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/) === null) return;
+    const date = new Date(dateString.replace(" ", "T"));
+    if (isNaN(date.getTime())) return;
+    return date;
+  },
+
   relativizeDateTime: (() => {
     const relativeTimeFormat = new Intl.RelativeTimeFormat("en-US", {
       localeMatcher: "lookup",
@@ -70,10 +77,9 @@ const leafac = {
   dateTimeInput: (element) => {
     element.defaultValue = leafac.formatDateTime(element.defaultValue);
     (element.validators ??= []).push(() => {
-      if (element.value.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/) === null)
-        return "Match the pattern YYYY-MM-DD HH:MM.";
-      const date = new Date(element.value.replace(" ", "T"));
-      if (isNaN(date.getTime())) return "Invalid date & time";
+      const date = leafac.parseDateTime(element.value);
+      if (date === undefined)
+        return "Invalid date & time. Match the pattern YYYY-MM-DD HH:MM.";
       element.value = date.toISOString();
     });
   },
