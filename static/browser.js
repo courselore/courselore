@@ -12,28 +12,39 @@ if (tippy !== undefined)
   });
 
 const leafac = {
-  formatDate: (dateString) => {
-    const date = new Date(dateString);
-    return `${String(date.getFullYear())}-${String(
-      date.getMonth() + 1
-    ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  warnAboutLosingInputs: () => {
+    const warnAboutLosingInputs = (event) => {
+      if (!isModified(document.body)) return;
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", warnAboutLosingInputs);
+    document.addEventListener("submit", (event) => {
+      window.removeEventListener("beforeunload", warnAboutLosingInputs);
+    });
   },
 
-  formatTime: (dateString) => {
-    const date = new Date(dateString);
-    return `${String(date.getHours()).padStart(2, "0")}:${String(
-      date.getMinutes()
-    ).padStart(2, "0")}`;
+  relativizeDateTimeElement: (element) => {
+    const dateString = element.textContent.trim();
+    element.setAttribute("datetime", dateString);
+    if (tippy !== undefined)
+      tippy(element, { content: dateString, touch: false });
+    else element.setAttribute("title", dateString);
+
+    (function update() {
+      element.textContent = leafac.relativizeDateTime(dateString);
+      window.setTimeout(update, 10 * 1000);
+    })();
   },
 
-  formatDateTime: (dateString) =>
-    `${leafac.formatDate(dateString)} ${leafac.formatTime(dateString)}`,
-
-  parseDateTime: (dateString) => {
-    if (dateString.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/) === null) return;
-    const date = new Date(dateString.replace(" ", "T"));
-    if (isNaN(date.getTime())) return;
-    return date;
+  formatDateTimeInput: (element) => {
+    element.defaultValue = leafac.formatDateTime(element.defaultValue);
+    (element.validators ??= []).push(() => {
+      const date = leafac.parseDateTime(element.value);
+      if (date === undefined)
+        return "Invalid date & time. Match the pattern YYYY-MM-DD HH:MM.";
+      element.value = date.toISOString();
+    });
   },
 
   relativizeDateTime: (() => {
@@ -61,38 +72,27 @@ const leafac = {
     };
   })(),
 
-  relativizeDateTimeElement: (element) => {
-    const dateString = element.textContent.trim();
-    element.setAttribute("datetime", dateString);
-    if (tippy !== undefined)
-      tippy(element, { content: dateString, touch: false });
-    else element.setAttribute("title", dateString);
-
-    (function update() {
-      element.textContent = leafac.relativizeDateTime(dateString);
-      window.setTimeout(update, 10 * 1000);
-    })();
+  formatDate: (dateString) => {
+    const date = new Date(dateString);
+    return `${String(date.getFullYear())}-${String(
+      date.getMonth() + 1
+    ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
   },
 
-  formatDateTimeInput: (element) => {
-    element.defaultValue = leafac.formatDateTime(element.defaultValue);
-    (element.validators ??= []).push(() => {
-      const date = leafac.parseDateTime(element.value);
-      if (date === undefined)
-        return "Invalid date & time. Match the pattern YYYY-MM-DD HH:MM.";
-      element.value = date.toISOString();
-    });
+  formatTime: (dateString) => {
+    const date = new Date(dateString);
+    return `${String(date.getHours()).padStart(2, "0")}:${String(
+      date.getMinutes()
+    ).padStart(2, "0")}`;
   },
 
-  warnAboutLosingInputs: () => {
-    const warnAboutLosingInputs = (event) => {
-      if (!isModified(document.body)) return;
-      event.preventDefault();
-      event.returnValue = "";
-    };
-    window.addEventListener("beforeunload", warnAboutLosingInputs);
-    document.addEventListener("submit", (event) => {
-      window.removeEventListener("beforeunload", warnAboutLosingInputs);
-    });
+  formatDateTime: (dateString) =>
+    `${leafac.formatDate(dateString)} ${leafac.formatTime(dateString)}`,
+
+  parseDateTime: (dateString) => {
+    if (dateString.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/) === null) return;
+    const date = new Date(dateString.replace(" ", "T"));
+    if (isNaN(date.getTime())) return;
+    return date;
   },
 };
