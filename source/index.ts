@@ -464,11 +464,11 @@ export default async function courselore({
           $${liveReload
             ? html`
                 <script>
-                  const liveReload = new EventSource("${url}/live-reload");
+                  const liveReload = new EventSource("/live-reload");
                   liveReload.addEventListener("error", (event) => {
                     liveReload.close();
                     (async function reload() {
-                      if ((await fetch("${url}")).ok) location.reload();
+                      if ((await fetch(location.href)).ok) location.reload();
                       else window.setTimeout(reload, 200);
                     })();
                   });
@@ -4278,7 +4278,8 @@ export default async function courselore({
     ...isSignedInMiddleware,
     asyncHandler(async (req, res, next) => {
       if (typeof req.body.email === "string") {
-        if (req.body.email.match(emailRegExp) === null) return next("validation");
+        if (req.body.email.match(emailRegExp) === null)
+          return next("validation");
         if (
           database.get<{ exists: number }>(
             sql`
