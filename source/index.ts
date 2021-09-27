@@ -419,6 +419,7 @@ export default async function courselore({
           <script>
             leafac.customFormValidation();
             leafac.warnAboutLosingInputs();
+            leafac.disableButtonsOnSubmit();
 
             function isValid(element) {
               const elementsToValidate = [
@@ -530,13 +531,6 @@ export default async function courselore({
               }
               return false;
             }
-
-            document.addEventListener("submit", (event) => {
-              for (const button of event.target.querySelectorAll(
-                'button:not([type="button"])'
-              ))
-                button.disabled = true;
-            });
           </script>
 
           $${res?.locals.eventSource

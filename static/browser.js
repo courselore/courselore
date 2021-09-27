@@ -36,6 +36,15 @@ const leafac = {
     });
   },
 
+  disableButtonsOnSubmit: () => {
+    document.addEventListener("submit", (event) => {
+      for (const button of event.target.querySelectorAll(
+        'button:not([type="button"])'
+      ))
+        button.disabled = true;
+    });
+  },
+
   relativizeDateTimeElement: (element) => {
     const dateString = element.textContent.trim();
     element.setAttribute("datetime", dateString);
