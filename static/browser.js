@@ -12,6 +12,18 @@ if (tippy !== undefined)
   });
 
 const leafac = {
+  customFormValidation: () => {
+    document.addEventListener(
+      "submit",
+      (event) => {
+        if (isValid(event.target)) return;
+        event.preventDefault();
+        event.stopPropagation();
+      },
+      true
+    );
+  },
+
   warnAboutLosingInputs: () => {
     const warnAboutLosingInputs = (event) => {
       if (!isModified(document.body)) return;

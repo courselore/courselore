@@ -417,17 +417,8 @@ export default async function courselore({
           <script src="${url}/browser.js"></script>
 
           <script>
+            leafac.customFormValidation();
             leafac.warnAboutLosingInputs();
-
-            document.addEventListener(
-              "submit",
-              (event) => {
-                if (isValid(event.target)) return;
-                event.preventDefault();
-                event.stopPropagation();
-              },
-              true
-            );
 
             function isValid(element) {
               const elementsToValidate = [
