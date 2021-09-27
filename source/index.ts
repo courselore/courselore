@@ -441,10 +441,10 @@ export default async function courselore({
                             "text/html"
                           );
                         for (const element of refreshedDocument.querySelectorAll(
-                          "[ondomcontentloaded]"
+                          "[oninteractive]"
                         ))
                           new Function(
-                            element.getAttribute("ondomcontentloaded")
+                            element.getAttribute("oninteractive")
                           ).call(element);
                         document.head.append(
                           ...refreshedDocument.head.querySelectorAll("style")
@@ -1474,7 +1474,7 @@ export default async function courselore({
                         border-radius: var(--border-radius--none);
                         flex: 1;
                       `}"
-                      ondomcontentloaded="${javascript`
+                      oninteractive="${javascript`
                         tippy(this, {
                           content: "What’s This?",
                           touch: false,
@@ -1547,7 +1547,7 @@ export default async function courselore({
                       <div>
                         <button
                           class="button button--transparent"
-                          ondomcontentloaded="${javascript`
+                          oninteractive="${javascript`
                             tippy(this, {
                               content: this.nextElementSibling.firstElementChild,
                               trigger: "click",
@@ -1909,7 +1909,7 @@ export default async function courselore({
                     style="${css`
                       max-width: 100%;
                     `}"
-                    ondomcontentloaded="${javascript`
+                    oninteractive="${javascript`
                       tippy(this, {
                         content: this.nextElementSibling.firstElementChild,
                         trigger: "click",
@@ -2043,7 +2043,7 @@ export default async function courselore({
           <div>
             <button
               class="button button--tight button--tight--inline button--transparent"
-              ondomcontentloaded="${javascript`
+              oninteractive="${javascript`
                 tippy(this, {
                   content: ${JSON.stringify(
                     res.locals.invitations!.length === 0
@@ -2110,7 +2110,7 @@ export default async function courselore({
                 <div class="dropdown--menu">
                   <button
                     class="dropdown--menu--item button button--transparent"
-                    ondomcontentloaded="${javascript`
+                    oninteractive="${javascript`
                       tippy(this, {
                         content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
                         trigger: "click",
@@ -2134,7 +2134,7 @@ export default async function courselore({
           <div>
             <button
               class="button button--tight button--tight--inline button--transparent"
-              ondomcontentloaded="${javascript`
+              oninteractive="${javascript`
                 tippy(this, {
                   content: ${JSON.stringify(res.locals.user.name)},
                   touch: false,
@@ -2305,7 +2305,7 @@ export default async function courselore({
               >
                 <button
                   class="button button--transparent"
-                  ondomcontentloaded="${javascript`
+                  oninteractive="${javascript`
                     tippy(this, {
                       content: this.nextElementSibling.firstElementChild,
                       trigger: "click",
@@ -3212,7 +3212,7 @@ export default async function courselore({
                   type="password"
                   required
                   class="input--text"
-                  ondomcontentloaded="${javascript`
+                  oninteractive="${javascript`
                     (this.validators ??= []).push(() => {
                       if (this.value !== this.closest("form").querySelector('[name="password"]').value)
                         return "Password & Password Confirmation don’t match.";
@@ -3357,7 +3357,7 @@ export default async function courselore({
                 type="password"
                 required
                 class="input--text"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   (this.validators ??= []).push(() => {
                     if (this.value !== this.closest("form").querySelector('[name="password"]').value)
                       return "Password & Password Confirmation don’t match.";
@@ -3654,7 +3654,7 @@ export default async function courselore({
                   >
                     <button
                       class="button button--blue"
-                      ondomcontentloaded="${javascript`
+                      oninteractive="${javascript`
                         tippy(this, {
                           content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
                           trigger: "click",
@@ -3921,7 +3921,7 @@ export default async function courselore({
                           }
                         }
                       `}"
-                      ondomcontentloaded="${javascript`
+                      oninteractive="${javascript`
                         tippy(this, {
                           content: "Add Avatar",
                           touch: false,
@@ -3964,7 +3964,7 @@ export default async function courselore({
                           filter: brightness(var(--brightness--95));
                         }
                       `}"
-                      ondomcontentloaded="${javascript`
+                      oninteractive="${javascript`
                         tippy(this, {
                           content: "Update Avatar",
                           touch: false,
@@ -3996,7 +3996,7 @@ export default async function courselore({
                         margin-right: var(--space--2);
                         align-items: center;
                       `}"
-                      ondomcontentloaded="${javascript`
+                      oninteractive="${javascript`
                         tippy(this, {
                           content: "Remove Avatar",
                           theme: "rose",
@@ -4249,7 +4249,7 @@ export default async function courselore({
                   type="password"
                   required
                   class="input--text"
-                  ondomcontentloaded="${javascript`
+                  oninteractive="${javascript`
                     (this.validators ??= []).push(() => {
                       if (this.value !== this.closest("form").querySelector('[name="newPassword"]').value)
                         return "New Password & New Password Confirmation don’t match.";
@@ -5297,7 +5297,7 @@ export default async function courselore({
                   <button
                     type="button"
                     class="button button--tight button--tight--inline button--transparent"
-                    ondomcontentloaded="${javascript`
+                    oninteractive="${javascript`
                       tippy(this, {
                         content: this.nextElementSibling.firstElementChild,
                         trigger: "click",
@@ -5336,7 +5336,7 @@ export default async function courselore({
                   style="${css`
                     height: var(--space--32);
                   `}"
-                  ondomcontentloaded="${javascript`
+                  oninteractive="${javascript`
                     (this.validators ??= []).push(() => {
                       const emails = [];
                       for (let email of this.value.split(${/[,\n]/})) {
@@ -5425,7 +5425,7 @@ export default async function courselore({
                   <button
                     type="button"
                     class="button button--tight button--tight--inline button--transparent"
-                    ondomcontentloaded="${javascript`
+                    oninteractive="${javascript`
                       tippy(this, {
                         content: "This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving change.",
                         trigger: "click",
@@ -5443,7 +5443,7 @@ export default async function courselore({
                   autocomplete="off"
                   disabled
                   class="input--text"
-                  ondomcontentloaded="${javascript`
+                  oninteractive="${javascript`
                     leafac.formatDateTimeInput(this);
                     (this.validators ??= []).push(() => {
                       if (new Date(this.value).getTime() <= Date.now())
@@ -5501,7 +5501,7 @@ export default async function courselore({
                                     <button
                                       id="invitation--${invitation.reference}"
                                       class="button button--tight button--tight--inline button--transparent strong"
-                                      ondomcontentloaded="${javascript`
+                                      oninteractive="${javascript`
                                         this.tooltip = tippy(this, {
                                           content: "See Invitation Link",
                                           touch: false,
@@ -5563,7 +5563,7 @@ export default async function courselore({
                                               </div>
                                               <button
                                                 class="button button--tight button--transparent"
-                                                ondomcontentloaded="${javascript`
+                                                oninteractive="${javascript`
                                                   tippy(this, {
                                                     content: "Copy",
                                                     touch: false,
@@ -5602,7 +5602,7 @@ export default async function courselore({
                                         align-items: flex-start;
                                         gap: var(--space--0);
                                       `}"
-                                      ondomcontentloaded="${javascript`
+                                      oninteractive="${javascript`
                                         tippy(this, {
                                           content: this.nextElementSibling.firstElementChild,
                                           trigger: "click",
@@ -5645,7 +5645,7 @@ export default async function courselore({
                                             $${isUsed
                                               ? html`
                                                   type="button"
-                                                  ondomcontentloaded="${javascript`
+                                                  oninteractive="${javascript`
                                                     tippy(this, {
                                                       content: "You may not resend this invitation because it’s used.",
                                                       theme: "rose",
@@ -5656,7 +5656,7 @@ export default async function courselore({
                                               : isInvitationExpired
                                               ? html`
                                                   type="button"
-                                                  ondomcontentloaded="${javascript`
+                                                  oninteractive="${javascript`
                                                     tippy(this, {
                                                       content: "You may not resend this invitation because it’s expired.",
                                                       theme: "rose",
@@ -5691,7 +5691,7 @@ export default async function courselore({
                               >
                                 <button
                                   class="button button--tight button--tight--inline button--transparent"
-                                  ondomcontentloaded="${javascript`
+                                  oninteractive="${javascript`
                                     tippy(this, {
                                       content: "Update Role",
                                       touch: false,
@@ -5726,7 +5726,7 @@ export default async function courselore({
                                                 $${isUsed
                                                   ? html`
                                                       type="button"
-                                                      ondomcontentloaded="${javascript`
+                                                      oninteractive="${javascript`
                                                         tippy(this, {
                                                           content: "You may not update the role of this invitation because it’s used.",
                                                           theme: "rose",
@@ -5737,7 +5737,7 @@ export default async function courselore({
                                                   : isInvitationExpired
                                                   ? html`
                                                       type="button"
-                                                      ondomcontentloaded="${javascript`
+                                                      oninteractive="${javascript`
                                                         tippy(this, {
                                                           content: "You may not update the role of this invitation because it’s expired.",
                                                           theme: "rose",
@@ -5784,7 +5784,7 @@ export default async function courselore({
                                           required
                                           autocomplete="off"
                                           class="input--text"
-                                          ondomcontentloaded="${javascript`
+                                          oninteractive="${javascript`
                                             leafac.formatDateTimeInput(this);
                                             (this.validators ??= []).push(() => {
                                               if (new Date(this.value).getTime() <= Date.now())
@@ -5848,7 +5848,7 @@ export default async function courselore({
                                             style="${css`
                                               cursor: default;
                                             `}"
-                                            ondomcontentloaded="${javascript`
+                                            oninteractive="${javascript`
                                               tippy(this, {
                                                 content: this.nextElementSibling.firstElementChild,
                                               });
@@ -5861,7 +5861,7 @@ export default async function courselore({
                                             <div>
                                               Used
                                               <time
-                                                ondomcontentloaded="${javascript`
+                                                oninteractive="${javascript`
                                                   leafac.relativizeDateTimeElement(this);
                                                 `}"
                                               >
@@ -5878,7 +5878,7 @@ export default async function courselore({
                                         <div>
                                           <button
                                             class="button button--tight button--tight--inline button--transparent text--rose"
-                                            ondomcontentloaded="${javascript`
+                                            oninteractive="${javascript`
                                               tippy(this, {
                                                 content: "Update Expiration",
                                                 touch: false,
@@ -5907,7 +5907,7 @@ export default async function courselore({
                                                 <span>
                                                   Expired
                                                   <time
-                                                    ondomcontentloaded="${javascript`
+                                                    oninteractive="${javascript`
                                                       leafac.relativizeDateTimeElement(this);
                                                     `}"
                                                   >
@@ -5929,7 +5929,7 @@ export default async function courselore({
                                         <div>
                                           <button
                                             class="button button--tight button--tight--inline button--transparent text--blue"
-                                            ondomcontentloaded="${javascript`
+                                            oninteractive="${javascript`
                                               tippy(this, {
                                                 content: "Update Expiration",
                                                 touch: false,
@@ -5965,7 +5965,7 @@ export default async function courselore({
                                         <div>
                                           <button
                                             class="button button--tight button--tight--inline button--transparent text--amber"
-                                            ondomcontentloaded="${javascript`
+                                            oninteractive="${javascript`
                                               tippy(this, {
                                                 content: "Update Expiration",
                                                 touch: false,
@@ -5996,7 +5996,7 @@ export default async function courselore({
                                                 <span>
                                                   Expires
                                                   <time
-                                                    ondomcontentloaded="${javascript`
+                                                    oninteractive="${javascript`
                                                       leafac.relativizeDateTimeElement(this);
                                                     `}"
                                                   >
@@ -6468,7 +6468,7 @@ export default async function courselore({
                         >
                           <button
                             class="button button--tight button--tight--inline button--transparent"
-                            ondomcontentloaded="${javascript`
+                            oninteractive="${javascript`
                               tippy(this, {
                                 content: "Update Role",
                                 touch: false,
@@ -6504,7 +6504,7 @@ export default async function courselore({
                                             $${isOnlyStaff
                                               ? html`
                                                   type="button"
-                                                  ondomcontentloaded="${javascript`
+                                                  oninteractive="${javascript`
                                                     tippy(this, {
                                                       content: "You may not update your own role because you’re the only staff member.",
                                                       theme: "rose",
@@ -6515,7 +6515,7 @@ export default async function courselore({
                                               : isSelf
                                               ? html`
                                                   type="button"
-                                                  ondomcontentloaded="${javascript`
+                                                  oninteractive="${javascript`
                                                     const element = this.nextElementSibling.firstElementChild;
                                                     element.form = this.closest("form");
                                                     tippy(this, {
@@ -6590,7 +6590,7 @@ export default async function courselore({
                         >
                           <button
                             class="button button--tight button--tight--inline button--transparent"
-                            ondomcontentloaded="${javascript`
+                            oninteractive="${javascript`
                               tippy(this, {
                                 content: "Remove from the Course",
                                 theme: "rose",
@@ -6875,7 +6875,7 @@ export default async function courselore({
                               <button
                                 type="button"
                                 class="button button--tight button--tight--inline button--transparent"
-                                ondomcontentloaded="${javascript`
+                                oninteractive="${javascript`
                                   tippy(this, {
                                     content: "Remove Tag",
                                     theme: "rose",
@@ -6950,7 +6950,7 @@ export default async function courselore({
                               <button
                                 type="button"
                                 class="button button--tight button--tight--inline button--transparent"
-                                ondomcontentloaded="${javascript`
+                                oninteractive="${javascript`
                                   tippy(this, {
                                     content: "Don’t Remove Tag",
                                     touch: false,
@@ -6991,7 +6991,7 @@ export default async function courselore({
                   <button
                     type="button"
                     class="button button--transparent button--full-width-on-small-screen"
-                    ondomcontentloaded="${javascript`
+                    oninteractive="${javascript`
                       (this.validators ??= []).push(() => {
                         if ([...this.closest("form").querySelector(".tags").children].filter((tag) => !tag.hidden).length === 0)
                           return "Please add at least one tag.";
@@ -7223,7 +7223,7 @@ export default async function courselore({
                   <button
                     type="button"
                     class="button button--tight button--tight--inline button--transparent"
-                    ondomcontentloaded="${javascript`
+                    oninteractive="${javascript`
                         tippy(this, {
                           content: "A bar with the accent color appears at the top of pages related to this course to help you differentiate between courses.",
                           trigger: "click",
@@ -7842,7 +7842,7 @@ export default async function courselore({
                               tag: req.query.tag,
                             })}"
                             class="button button--tight button--tight--inline button--transparent"
-                            ondomcontentloaded="${javascript`
+                            oninteractive="${javascript`
                               tippy(this, {
                                 content: "Remove Search",
                                 touch: false,
@@ -7855,7 +7855,7 @@ export default async function courselore({
                       : html``}
                     <button
                       class="button button--tight button--tight--inline button--transparent"
-                      ondomcontentloaded="${javascript`
+                      oninteractive="${javascript`
                         tippy(this, {
                           content: "Search",
                           touch: false,
@@ -7877,7 +7877,7 @@ export default async function courselore({
                           <div>
                             <button
                               class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                              ondomcontentloaded="${javascript`
+                              oninteractive="${javascript`
                                 tippy(this, {
                                   content: this.nextElementSibling.firstElementChild,
                                   trigger: "click",
@@ -7940,7 +7940,7 @@ export default async function courselore({
                                     tag: undefined,
                                   })}"
                                   class="button button--tight button--tight--inline button--transparent"
-                                  ondomcontentloaded="${javascript`
+                                  oninteractive="${javascript`
                                     tippy(this, {
                                       content: "Remove Filter",
                                       touch: false,
@@ -8011,7 +8011,7 @@ export default async function courselore({
                               `}"
                               $${isSelected
                                 ? html`
-                                    ondomcontentloaded="${javascript`
+                                    oninteractive="${javascript`
                                       this.scrollIntoView({ block: "center" });
                                     `}"
                                   `
@@ -8038,7 +8038,7 @@ export default async function courselore({
                                   <div>
                                     #${conversation.reference} created
                                     <time
-                                      ondomcontentloaded="${javascript`
+                                      oninteractive="${javascript`
                                         leafac.relativizeDateTimeElement(this);
                                       `}"
                                     >
@@ -8080,7 +8080,7 @@ export default async function courselore({
                                           res.locals.enrollment.id
                                       ? html`
                                           <span
-                                            ondomcontentloaded="${javascript`
+                                            oninteractive="${javascript`
                                               tippy(this, {
                                                 content: "Anonymous to other students.",
                                                 touch: false,
@@ -8100,7 +8100,7 @@ export default async function courselore({
                                         <div>
                                           and last updated
                                           <time
-                                            ondomcontentloaded="${javascript`
+                                            oninteractive="${javascript`
                                               leafac.relativizeDateTimeElement(this);
                                             `}"
                                           >
@@ -8178,7 +8178,7 @@ export default async function courselore({
                                         : html`
                                             <div
                                               class="text--green"
-                                              ondomcontentloaded="${javascript`
+                                              oninteractive="${javascript`
                                                 tippy(this, {
                                                   content: ${JSON.stringify(
                                                     `Endorsed by ${
@@ -8250,7 +8250,7 @@ export default async function courselore({
                                               --line-height--2xs
                                             );
                                           `}"
-                                          ondomcontentloaded="${javascript`
+                                          oninteractive="${javascript`
                                             tippy(this, {
                                               content: "Unread Messages",
                                               touch: false,
@@ -8713,7 +8713,7 @@ export default async function courselore({
           />
           <span
             class="button button--transparent"
-            ondomcontentloaded="${javascript`
+            oninteractive="${javascript`
               Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+p", () => { this.click(); return false; });
               tippy(this, {
                 content: ${JSON.stringify(html`
@@ -8761,7 +8761,7 @@ export default async function courselore({
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+1", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
@@ -8789,7 +8789,7 @@ export default async function courselore({
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+2", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
@@ -8817,7 +8817,7 @@ export default async function courselore({
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+3", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
@@ -8847,7 +8847,7 @@ export default async function courselore({
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+b", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
@@ -8874,7 +8874,7 @@ export default async function courselore({
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+i", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
@@ -8901,7 +8901,7 @@ export default async function courselore({
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+k", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
@@ -8930,7 +8930,7 @@ export default async function courselore({
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+8", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
@@ -8958,7 +8958,7 @@ export default async function courselore({
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+7", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
@@ -8986,7 +8986,7 @@ export default async function courselore({
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+9", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
@@ -9016,7 +9016,7 @@ export default async function courselore({
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+'", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
@@ -9043,7 +9043,7 @@ export default async function courselore({
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+t", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
@@ -9072,7 +9072,7 @@ export default async function courselore({
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+d", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
@@ -9102,7 +9102,7 @@ export default async function courselore({
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+e", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
@@ -9129,7 +9129,7 @@ export default async function courselore({
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+e", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
@@ -9159,7 +9159,7 @@ export default async function courselore({
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+e", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
@@ -9187,7 +9187,7 @@ export default async function courselore({
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+shift+e", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
@@ -9219,7 +9219,7 @@ export default async function courselore({
                     <button
                       type="button"
                       class="button button--tight button--transparent"
-                      ondomcontentloaded="${javascript`
+                      oninteractive="${javascript`
                         tippy(this, {
                           content: ${JSON.stringify(html`
                             Mention User
@@ -9240,7 +9240,7 @@ export default async function courselore({
                     <button
                       type="button"
                       class="button button--tight button--transparent"
-                      ondomcontentloaded="${javascript`
+                      oninteractive="${javascript`
                         tippy(this, {
                           content: ${JSON.stringify(html`
                             Refer to Conversation or Message
@@ -9265,7 +9265,7 @@ export default async function courselore({
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+i", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
@@ -9292,7 +9292,7 @@ export default async function courselore({
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+k", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
@@ -9322,7 +9322,7 @@ export default async function courselore({
                 multiple
                 hidden
                 data-skip-is-modified="true"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   this.upload = async (fileList) => {
                     const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                     // TODO: Give some visual indication of progress.
@@ -9350,7 +9350,7 @@ export default async function courselore({
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   tippy(this, {
                     content: "Help",
                     touch: false,
@@ -9419,7 +9419,7 @@ export default async function courselore({
               `}"
               $${res.locals.course !== undefined
                 ? html`
-                    ondomcontentloaded="${javascript`
+                    oninteractive="${javascript`
                       const dropdownMenuTarget = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea--dropdown-menu-target");
                       const dropdownMenu = tippy(dropdownMenuTarget, {
                         content: this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user"),
@@ -10018,7 +10018,7 @@ export default async function courselore({
                           <button
                             type="button"
                             class="button button--tight button--tight--inline button--transparent"
-                            ondomcontentloaded="${javascript`
+                            oninteractive="${javascript`
                               tippy(this, {
                                 content: "Tags help to organize conversations. You must select at least one tag.",
                                 trigger: "click",
@@ -10062,7 +10062,7 @@ export default async function courselore({
                                       <button
                                         type="button"
                                         class="button button--tight button--tight--inline button--transparent"
-                                        ondomcontentloaded="${javascript`
+                                        oninteractive="${javascript`
                                           tippy(this, {
                                             content: "This tag is visible by staff only.",
                                             trigger: "click",
@@ -10095,7 +10095,7 @@ export default async function courselore({
                             <button
                               type="button"
                               class="button button--tight button--tight--inline button--transparent"
-                              ondomcontentloaded="${javascript`
+                              oninteractive="${javascript`
                               tippy(this, {
                                 content: "Pinned conversations are listed first.",
                                 trigger: "click",
@@ -10178,7 +10178,7 @@ export default async function courselore({
                 <div>
                   <button
                     class="button button--full-width-on-small-screen button--blue"
-                    ondomcontentloaded="${javascript`
+                    oninteractive="${javascript`
                       Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                       tippy(this, {
                         content: ${JSON.stringify(html`
@@ -10777,7 +10777,7 @@ export default async function courselore({
                         line-height: var(--line-height--xs);
                         display: inline-flex;
                       `}"
-                      ondomcontentloaded="${javascript`
+                      oninteractive="${javascript`
                         tippy(this, {
                           content: "Permanent Link to Conversation",
                           touch: false,
@@ -10796,7 +10796,7 @@ export default async function courselore({
                         <div>
                           <button
                             class="button button--tight button--tight--inline button--transparent"
-                            ondomcontentloaded="${javascript`
+                            oninteractive="${javascript`
                               tippy(this, {
                                 content: "Remove Conversation",
                                 theme: "rose",
@@ -10851,7 +10851,7 @@ export default async function courselore({
                       content.push(html`
                         <button
                           class="button button--tight button--tight--inline button--transparent"
-                          ondomcontentloaded="${javascript`
+                          oninteractive="${javascript`
                             tippy(this, {
                               content: "Edit Title",
                               touch: false,
@@ -10911,7 +10911,7 @@ export default async function courselore({
                           style="${css`
                             flex: 1;
                           `}"
-                          ondomcontentloaded="${javascript`
+                          oninteractive="${javascript`
                             tippy(this, {
                               content: "Update Title",
                               theme: "green",
@@ -10924,7 +10924,7 @@ export default async function courselore({
                         <button
                           type="reset"
                           class="button button--tight button--tight--inline button--transparent text--rose"
-                          ondomcontentloaded="${javascript`
+                          oninteractive="${javascript`
                             tippy(this, {
                               content: "Cancel",
                               theme: "rose",
@@ -10971,7 +10971,7 @@ export default async function courselore({
                                     <div>
                                       <button
                                         class="button button--tight button--tight--inline button--transparent text--teal"
-                                        ondomcontentloaded="${javascript`
+                                        oninteractive="${javascript`
                                           tippy(this, {
                                             content: "Add Tag",
                                             touch: false,
@@ -11036,7 +11036,7 @@ export default async function courselore({
                                 ? html`
                                     <button
                                       class="button button--tight button--tight--inline button--tight-gap text--teal disabled"
-                                      ondomcontentloaded="${javascript`
+                                      oninteractive="${javascript`
                                         tippy(this, {
                                           content: "You may not remove this tag because a conversation must have at least one tag.",
                                           theme: "rose",
@@ -11075,7 +11075,7 @@ export default async function courselore({
                                             />
                                             <button
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal"
-                                              ondomcontentloaded="${javascript`
+                                              oninteractive="${javascript`
                                                 tippy(this, {
                                                   content: "Remove Tag",
                                                   theme: "rose",
@@ -11166,7 +11166,7 @@ export default async function courselore({
                       ? html`
                           <button
                             class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                            ondomcontentloaded="${javascript`
+                            oninteractive="${javascript`
                               tippy(this, {
                                 content: "Set as Visible by Staff Only",
                                 touch: false,
@@ -11241,7 +11241,7 @@ export default async function courselore({
                         <div>
                           <button
                             class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                            ondomcontentloaded="${javascript`
+                            oninteractive="${javascript`
                               tippy(this, {
                                 content: "Update Conversation Type",
                                 touch: false,
@@ -11328,7 +11328,7 @@ export default async function courselore({
                       ? (() => {
                           isScrolledIntoView = true;
                           return html`
-                            ondomcontentloaded="${javascript`
+                            oninteractive="${javascript`
                               this.scrollIntoView();
                             `}"
                           `;
@@ -11350,7 +11350,7 @@ export default async function courselore({
                                 margin-left: var(--space---4);
                               }
                             `}"
-                            ondomcontentloaded="${javascript`
+                            oninteractive="${javascript`
                               tippy(this, {
                                 content: "Unread Message",
                                 touch: false,
@@ -11440,7 +11440,7 @@ export default async function courselore({
                                     $${message.anonymousAt !== null
                                       ? html`
                                           <span
-                                            ondomcontentloaded="${javascript`
+                                            oninteractive="${javascript`
                                               tippy(this, {
                                                 content: "Anonymous to other students.",
                                                 touch: false,
@@ -11456,7 +11456,7 @@ export default async function courselore({
                             <span class="secondary">
                               said
                               <time
-                                ondomcontentloaded="${javascript`
+                                oninteractive="${javascript`
                                   leafac.relativizeDateTimeElement(this);
                                 `}"
                               >
@@ -11466,7 +11466,7 @@ export default async function courselore({
                                 ? html`
                                     and last edited
                                     <time
-                                      ondomcontentloaded="${javascript`
+                                      oninteractive="${javascript`
                                         leafac.relativizeDateTimeElement(this);
                                       `}"
                                     >
@@ -11485,7 +11485,7 @@ export default async function courselore({
                                   line-height: var(--line-height--xs);
                                   display: inline-flex;
                                 `}"
-                                ondomcontentloaded="${javascript`
+                                oninteractive="${javascript`
                                   tippy(this, {
                                     content: "Permanent Link to Message",
                                     touch: false,
@@ -11513,7 +11513,7 @@ export default async function courselore({
                                 <div>
                                   <button
                                     class="button button--tight button--tight--inline button--transparent"
-                                    ondomcontentloaded="${javascript`
+                                    oninteractive="${javascript`
                                       tippy(this, {
                                         content: "Update Identity",
                                         touch: false,
@@ -11596,7 +11596,7 @@ export default async function courselore({
                                 <div>
                                   <button
                                     class="button button--tight button--tight--inline button--transparent"
-                                    ondomcontentloaded="${javascript`
+                                    oninteractive="${javascript`
                                       tippy(this, {
                                         content: "Remove Message",
                                         theme: "rose",
@@ -11654,7 +11654,7 @@ export default async function courselore({
                             ? html`
                                 <button
                                   class="button button--tight button--tight--inline button--transparent"
-                                  ondomcontentloaded="${javascript`
+                                  oninteractive="${javascript`
                                       tippy(this, {
                                         content: "Edit Message",
                                         touch: false,
@@ -11672,7 +11672,7 @@ export default async function courselore({
 
                           <button
                             class="button button--tight button--tight--inline button--transparent"
-                            ondomcontentloaded="${javascript`
+                            oninteractive="${javascript`
                               tippy(this, {
                                 content: "Reply",
                                 touch: false,
@@ -11733,7 +11733,7 @@ export default async function courselore({
                                       />
                                       <button
                                         class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                        ondomcontentloaded="${javascript`
+                                        oninteractive="${javascript`
                                           tippy(this, {
                                             content: "Set as an Answer",
                                             touch: false,
@@ -11752,7 +11752,7 @@ export default async function courselore({
                                       />
                                       <button
                                         class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                        ondomcontentloaded="${javascript`
+                                        oninteractive="${javascript`
                                             tippy(this, {
                                               content: "Set as Not an Answer",
                                               touch: false,
@@ -11807,7 +11807,7 @@ export default async function courselore({
                                       />
                                       <button
                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--blue"
-                                        ondomcontentloaded="${javascript`
+                                        oninteractive="${javascript`
                                           tippy(this, {
                                             content: ${JSON.stringify(
                                               `Remove Endorsement${
@@ -11859,7 +11859,7 @@ export default async function courselore({
                                         $${message.endorsements.length === 0
                                           ? html``
                                           : html`
-                                              ondomcontentloaded="${javascript`
+                                              oninteractive="${javascript`
                                                 tippy(this, {
                                                   content: ${JSON.stringify(
                                                     `Endorse (Already endorsed by ${
@@ -11903,7 +11903,7 @@ export default async function courselore({
                                   display: flex;
                                   gap: var(--space--1);
                                 `}"
-                                ondomcontentloaded="${javascript`
+                                oninteractive="${javascript`
                                   tippy(this, {
                                     content: ${JSON.stringify(
                                       `Endorsed by ${
@@ -11963,7 +11963,7 @@ export default async function courselore({
                           ></div>
                           <div
                             class="message--show--content--content"
-                            ondomcontentloaded="${javascript`
+                            oninteractive="${javascript`
                               const dropdownMenuTarget = this.closest(".message--show--content").querySelector(".message--show--content--dropdown-menu-target");
                               const dropdownMenu = tippy(dropdownMenuTarget, {
                                 content: this.nextElementSibling.firstElementChild,
@@ -12082,7 +12082,7 @@ export default async function courselore({
                                   $${likesCount === 0
                                     ? html``
                                     : html`
-                                        ondomcontentloaded="${javascript`
+                                        oninteractive="${javascript`
                                           tippy(this, {
                                             content: ${JSON.stringify(
                                               isLiked ? "Remove Like" : "Like"
@@ -12148,7 +12148,7 @@ export default async function courselore({
                               >
                                 <button
                                   class="button button--blue"
-                                  ondomcontentloaded="${javascript`
+                                  oninteractive="${javascript`
                                     Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                                     tippy(this, {
                                       content: ${JSON.stringify(html`
@@ -12206,7 +12206,7 @@ export default async function courselore({
             >
               <div
                 class="new-message"
-                ondomcontentloaded="${javascript`
+                oninteractive="${javascript`
                   const content = this.querySelector(".markdown-editor--write--textarea");
                   content.defaultValue =
                     JSON.parse(
@@ -12294,7 +12294,7 @@ export default async function courselore({
               <div>
                 <button
                   class="button button--full-width-on-small-screen button--blue"
-                  ondomcontentloaded="${javascript`
+                  oninteractive="${javascript`
                       Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                       tippy(this, {
                         content: ${JSON.stringify(html`

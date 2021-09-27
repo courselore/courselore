@@ -1,8 +1,8 @@
 const leafac = {
   evaluateOnInteractive: () => {
     window.addEventListener("DOMContentLoaded", () => {
-      for (const element of document.querySelectorAll("[ondomcontentloaded]"))
-        new Function(element.getAttribute("ondomcontentloaded")).call(element);
+      for (const element of document.querySelectorAll("[oninteractive]"))
+        new Function(element.getAttribute("oninteractive")).call(element);
     });
   },
 
