@@ -29,7 +29,7 @@ const leafac = {
     for (const element of elementsToValidate) {
       if (element.closest("[disabled]") !== null) continue;
       const valueInputByUser = element.value;
-      const error = validate(element);
+      const error = validateElement(element);
       if (element.value !== valueInputByUser)
         elementsToReset.set(element, valueInputByUser);
       if (typeof error !== "string") continue;
@@ -49,7 +49,7 @@ const leafac = {
     }
     return true;
 
-    function validate(element) {
+    function validateElement(element) {
       if (element.matches("[required]"))
         switch (element.type) {
           case "radio":
