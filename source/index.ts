@@ -6866,7 +6866,7 @@ export default async function courselore({
                               `}"
                             >
                               <label
-                                class="button button--tight button--tight--inline button--justify-start"
+                                class="button button--tight button--tight--inline button--transparent button--justify-start"
                               >
                                 <input
                                   type="checkbox"
