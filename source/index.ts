@@ -6801,7 +6801,6 @@ export default async function courselore({
                 <div class="tags stripped">
                   $${res.locals.tags.map(
                     (tag, index) => html`
-                      <!-- TODO: Add link to see all conversations tagged with this tag -->
                       <div
                         class="tag"
                         style="${css`
@@ -6858,7 +6857,7 @@ export default async function courselore({
                                 $${tag.staffOnlyAt === null
                                   ? html``
                                   : html`checked`}
-                                class="input--checkbox"
+                                class="disable-on-delete input--checkbox"
                               />
                               <i class="bi bi-eye-slash"></i>
                               Visible by Staff Only
@@ -6974,6 +6973,9 @@ export default async function courselore({
                                 <i class="bi bi-recycle"></i>
                               </button>
                             </div>
+                            <a href="/" class="link"
+                              >Conversations with this tag</a
+                            >
                           </div>
                         </div>
                       </div>
