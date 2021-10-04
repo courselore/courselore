@@ -5288,6 +5288,7 @@ export default async function courselore({
                       Invitation Link
                     </span>
                   </label>
+                  <span class="secondary">|</span>
                   <label
                     class="button button--tight button--tight--inline button--transparent"
                   >
@@ -5399,24 +5400,29 @@ export default async function courselore({
                     gap: var(--space--4);
                   `}"
                 >
-                  $${enrollmentRoles.map(
-                    (role) =>
-                      html`
-                        <label
-                          class="button button--tight button--tight--inline"
-                        >
-                          <input
-                            type="radio"
-                            name="role"
-                            value="${role}"
-                            required
-                            autocomplete="off"
-                            class="input--radio"
-                          />
-                          ${lodash.capitalize(role)}
-                        </label>
-                      `
-                  )}
+                  $${enrollmentRoles
+                    .map(
+                      (role) =>
+                        html`
+                          <label
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <input
+                              type="radio"
+                              name="role"
+                              value="${role}"
+                              required
+                              autocomplete="off"
+                              class="visually-hidden input--radio-or-checkbox--multilabel"
+                            />
+                            <span>${lodash.capitalize(role)}</span>
+                            <span class="text--blue">
+                              ${lodash.capitalize(role)}
+                            </span>
+                          </label>
+                        `
+                    )
+                    .join(html`<span class="secondary">|</span>`)}
                 </div>
               </div>
 
