@@ -7099,22 +7099,49 @@ export default async function courselore({
                             row-gap: var(--space--2);
                           `}"
                         >
-                          <label
-                            class="button button--tight button--tight--inline"
+                          <div
+                            style="${css`
+                              width: var(--space--40);
+                            `}"
                           >
-                            <input
-                              type="checkbox"
-                              disabled
-                              class="input--checkbox"
-                              onmount="${javascript`
-                                this.dataset.forceIsModified = true;
-                                this.disabled = false;
-                                this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][isStaffOnly]";
-                              `}"
-                            />
-                            <i class="bi bi-eye-slash"></i>
-                            Visible by Staff Only
-                          </label>
+                            <label
+                              class="button button--tight button--tight--inline button--justify-start button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                disabled
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
+                                onmount="${javascript`
+                                  this.dataset.forceIsModified = true;
+                                  this.disabled = false;
+                                  this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][isStaffOnly]";
+                                `}"
+                              />
+                              <span
+                                onmount="${javascript`
+                                  tippy(this, {
+                                    content: "Set as Visible by Staff Only",
+                                    touch: false,
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-eye"></i>
+                                Visible by Everyone
+                              </span>
+                              <span
+                                class="text--orange"
+                                onmount="${javascript`
+                                  tippy(this, {
+                                    content: "Set as Visible by Everyone",
+                                    touch: false,
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-eye-slash-fill"></i>
+                                Visible by Staff Only
+                              </span>
+                            </label>
+                          </div>
                           <button
                             type="button"
                             class="button button--tight button--tight--inline button--transparent"
