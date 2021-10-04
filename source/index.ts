@@ -6974,11 +6974,14 @@ export default async function courselore({
                               </button>
                             </div>
                             <a
-                              href="/"
+                              href="${url}/courses/${res.locals.course
+                                .reference}?${qs.stringify({
+                                tag: tag.reference,
+                              })}"
                               class="button button--tight button--tight--inline button--transparent"
                               oninteractive="${javascript`
                                 tippy(this, {
-                                  content: "See Conversations with this tag",
+                                  content: "See Conversations with This Tag",
                                   touch: false,
                                 });
                               `}"
