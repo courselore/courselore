@@ -1074,6 +1074,17 @@ export default async function courselore({
                     }
                   `
                 )}
+
+                &[data-theme~="validation--error"] {
+                  color: var(--color--rose--700);
+                  --background-color: var(--color--rose--100);
+                  --border-color: var(--color--rose--200);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--rose--200);
+                    --background-color: var(--color--rose--900);
+                    --border-color: var(--color--rose--800);
+                  }
+                }
               }
 
               .dark {

@@ -33,18 +33,18 @@ const leafac = {
       if (element.value !== valueInputByUser)
         elementsToReset.set(element, valueInputByUser);
       if (typeof error !== "string") continue;
-      element.focus();
+      for (const [element, valueInputByUser] of elementsToReset)
+        element.value = valueInputByUser;
       const tooltip = tippy(element, {
         content: error,
-        theme: "rose",
-        trigger: "click",
+        theme: "validation--error",
+        trigger: "manual",
+        showOnCreate: true,
         onHidden: () => {
           tooltip.destroy();
         },
       });
-      tooltip.show();
-      for (const [element, valueInputByUser] of elementsToReset)
-        element.value = valueInputByUser;
+      element.focus();
       return false;
     }
     return true;
