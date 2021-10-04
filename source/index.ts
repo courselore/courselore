@@ -5262,14 +5262,16 @@ export default async function courselore({
                     gap: var(--space--4);
                   `}"
                 >
-                  <label class="button button--tight button--tight--inline">
+                  <label
+                    class="button button--tight button--tight--inline button--transparent"
+                  >
                     <input
                       type="radio"
                       name="type"
                       value="link"
                       required
                       autocomplete="off"
-                      class="input--radio"
+                      class="visually-hidden input--radio-or-checkbox--multilabel"
                       onchange="${javascript`
                         const emails = this.closest("form").querySelector(".emails");
                         emails.hidden = true;
@@ -5277,17 +5279,25 @@ export default async function courselore({
                           if (element.disabled !== null) element.disabled = true;
                       `}"
                     />
-                    <i class="bi bi-link"></i>
-                    Invitation Link
+                    <span>
+                      <i class="bi bi-link"></i>
+                      Invitation Link
+                    </span>
+                    <span class="text--blue">
+                      <i class="bi bi-link"></i>
+                      Invitation Link
+                    </span>
                   </label>
-                  <label class="button button--tight button--tight--inline">
+                  <label
+                    class="button button--tight button--tight--inline button--transparent"
+                  >
                     <input
                       type="radio"
                       name="type"
                       value="email"
                       required
                       autocomplete="off"
-                      class="input--radio"
+                      class="visually-hidden input--radio-or-checkbox--multilabel"
                       onchange="${javascript`
                         const emails = this.closest("form").querySelector(".emails");
                         emails.hidden = false;
@@ -5295,8 +5305,14 @@ export default async function courselore({
                           if (element.disabled !== null) element.disabled = false;
                       `}"
                     />
-                    <i class="bi bi-envelope"></i>
-                    Email
+                    <span>
+                      <i class="bi bi-envelope"></i>
+                      Email
+                    </span>
+                    <span class="text--blue">
+                      <i class="bi bi-envelope"></i>
+                      Email
+                    </span>
                   </label>
                 </div>
               </div>
