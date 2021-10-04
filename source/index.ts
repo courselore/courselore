@@ -4149,6 +4149,7 @@ export default async function courselore({
         -ext.length
       )}--avatar${ext}`;
       await sharp(req.files.avatar.data)
+        .rotate()
         .resize(/* var(--space--64) */ 256, 256, {
           position: sharp.strategy.attention,
         })
