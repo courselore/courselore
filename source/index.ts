@@ -6771,31 +6771,28 @@ export default async function courselore({
               Tags
             </h2>
 
-            $${
-              res.locals.tags.length === 0
-                ? html`
-                    <div
-                      style="${css`
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--space--2);
-                        align-items: center;
-                      `}"
-                    >
-                      <div class="decorative-icon">
-                        <i class="bi bi-tags"></i>
-                      </div>
-                      <p class="secondary">Organize conversations with tags.</p>
+            $${res.locals.tags.length === 0
+              ? html`
+                  <div
+                    style="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--2);
+                      align-items: center;
+                    `}"
+                  >
+                    <div class="decorative-icon">
+                      <i class="bi bi-tags"></i>
                     </div>
-                  `
-                : html``
-            }
+                    <p class="secondary">Organize conversations with tags.</p>
+                  </div>
+                `
+              : html``}
 
             <form
               method="POST"
-              action="${url}/courses/${
-            res.locals.course.reference
-          }/settings/tags?_method=PUT"
+              action="${url}/courses/${res.locals.course
+                .reference}/settings/tags?_method=PUT"
               novalidate
               style="${css`
                 display: flex;
@@ -7070,7 +7067,9 @@ export default async function courselore({
                         align-items: baseline;
                       `}"
                     >
-                      <div class="text--teal"><i class="bi bi-tag-fill"></i></div>
+                      <div class="text--teal">
+                        <i class="bi bi-tag-fill"></i>
+                      </div>
                       <div
                         style="${css`
                           flex: 1;
@@ -7116,24 +7115,25 @@ export default async function courselore({
                             <i class="bi bi-eye-slash"></i>
                             Visible by Staff Only
                           </label>
-                        <button
-                          type="button"
-                          class="button button--tight button--tight--inline button--transparent"
-                          onmount="${javascript`
-                            tippy(this, {
-                              content: "Remove Tag",
-                              theme: "rose",
-                              touch: false,
-                            });
-                          `}"
-                          onclick="${javascript`
-                            const tag = this.closest(".tag");
-                            tag.replaceChildren();
-                            tag.hidden = true;
-                          `}"
-                        >
-                          <i class="bi bi-trash"></i>
-                        </button>
+                          <button
+                            type="button"
+                            class="button button--tight button--tight--inline button--transparent"
+                            onmount="${javascript`
+                              tippy(this, {
+                                content: "Remove Tag",
+                                theme: "rose",
+                                touch: false,
+                              });
+                            `}"
+                            onclick="${javascript`
+                              const tag = this.closest(".tag");
+                              tag.replaceChildren();
+                              tag.hidden = true;
+                            `}"
+                          >
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
