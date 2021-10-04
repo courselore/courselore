@@ -8676,7 +8676,7 @@ export default async function courselore({
                         textarea.setAttribute("required", "");
                       `
                 }
-                const isWriteValid = leafac.isValid(write);
+                const isWriteValid = leafac.validate(write);
                 ${
                   required
                     ? javascript``

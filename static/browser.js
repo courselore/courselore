@@ -14,7 +14,7 @@ const leafac = {
     document.addEventListener(
       "submit",
       (event) => {
-        if (leafac.isValid(event.target)) return;
+        if (leafac.validate(event.target)) return;
         event.preventDefault();
         event.stopPropagation();
       },
@@ -22,7 +22,7 @@ const leafac = {
     );
   },
 
-  isValid: (element) => {
+  validate: (element) => {
     const elementsToValidate = [element, ...element.querySelectorAll("*")];
     const elementsToReset = new Map();
 
