@@ -9531,7 +9531,7 @@ export default async function courselore({
                 this.closest(".markdown-editor").querySelector(".attachments").upload(event.clipboardData.files);
               `}"
             >
-  ${value}</textarea
+${value}</textarea
             >
             $${res.locals.course !== undefined
               ? html`
