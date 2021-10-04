@@ -727,6 +727,10 @@ export default async function courselore({
                   }
                 }
 
+                &.button--justify-start {
+                  justify-content: flex-start;
+                }
+
                 &.button--transparent {
                   &:not(:disabled):not(.disabled) {
                     &:hover,
@@ -879,7 +883,15 @@ export default async function courselore({
                 }
               }
 
-              ${["blue", "green", "rose", "amber", "teal", "fuchsia"].map(
+              ${[
+                "blue",
+                "green",
+                "rose",
+                "orange",
+                "amber",
+                "teal",
+                "fuchsia",
+              ].map(
                 (color) => css`
                   .text--${color} {
                     color: var(--color--${color}--600);
@@ -6848,20 +6860,47 @@ export default async function courselore({
                               row-gap: var(--space--2);
                             `}"
                           >
-                            <label
-                              class="button button--tight button--tight--inline"
+                            <div
+                              style="${css`
+                                width: var(--space--40);
+                              `}"
                             >
-                              <input
-                                type="checkbox"
-                                name="tags[${index}][isStaffOnly]"
-                                $${tag.staffOnlyAt === null
-                                  ? html``
-                                  : html`checked`}
-                                class="disable-on-delete input--checkbox"
-                              />
-                              <i class="bi bi-eye-slash"></i>
-                              Visible by Staff Only
-                            </label>
+                              <label
+                                class="button button--tight button--tight--inline button--justify-start"
+                              >
+                                <input
+                                  type="checkbox"
+                                  name="tags[${index}][isStaffOnly]"
+                                  $${tag.staffOnlyAt === null
+                                    ? html``
+                                    : html`checked`}
+                                  class="disable-on-delete visually-hidden input--radio-or-checkbox--multilabel"
+                                />
+                                <span
+                                  oninteractive="${javascript`
+                                    tippy(this, {
+                                      content: "Set as Visible by Staff Only",
+                                      touch: false,
+                                    });
+                                  `}"
+                                >
+                                  <i class="bi bi-eye"></i>
+                                  Visible by Everyone
+                                </span>
+                                <span
+                                  class="text--orange"
+                                  oninteractive="${javascript`
+                                    tippy(this, {
+                                      content: "Set as Visible by Everyone",
+                                      touch: false,
+                                    });
+                                  `}"
+                                >
+                                  <i class="bi bi-eye-slash-fill"></i>
+                                  Visible by Staff Only
+                                </span>
+                              </label>
+                            </div>
                             <div
                               style="${css`
                                 .tag.deleted & {
