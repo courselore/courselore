@@ -6973,9 +6973,18 @@ export default async function courselore({
                                 <i class="bi bi-recycle"></i>
                               </button>
                             </div>
-                            <a href="/" class="link"
-                              >Conversations with this tag</a
+                            <a
+                              href="/"
+                              class="button button--tight button--tight--inline button--transparent"
+                              oninteractive="${javascript`
+                                tippy(this, {
+                                  content: "See Conversations with this tag",
+                                  touch: false,
+                                });
+                              `}"
                             >
+                              <i class="bi bi-chat-left-text"></i>
+                            </a>
                           </div>
                         </div>
                       </div>
