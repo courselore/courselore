@@ -6973,21 +6973,25 @@ export default async function courselore({
                                 <i class="bi bi-recycle"></i>
                               </button>
                             </div>
-                            <a
-                              href="${url}/courses/${res.locals.course
-                                .reference}?${qs.stringify({
-                                tag: tag.reference,
-                              })}"
-                              class="button button--tight button--tight--inline button--transparent"
-                              oninteractive="${javascript`
-                                tippy(this, {
-                                  content: "See Conversations with This Tag",
-                                  touch: false,
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-chat-left-text"></i>
-                            </a>
+                            $${res.locals.conversationsCount > 0
+                              ? html`
+                                  <a
+                                    href="${url}/courses/${res.locals.course
+                                      .reference}?${qs.stringify({
+                                      tag: tag.reference,
+                                    })}"
+                                    class="button button--tight button--tight--inline button--transparent"
+                                    oninteractive="${javascript`
+                                      tippy(this, {
+                                        content: "See Conversations with This Tag",
+                                        touch: false,
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-chat-left-text"></i>
+                                  </a>
+                                `
+                              : html``}
                           </div>
                         </div>
                       </div>
