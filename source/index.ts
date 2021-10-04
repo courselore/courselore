@@ -13349,7 +13349,7 @@ export default async function courselore({
     );
   }) as express.ErrorRequestHandler<{}, any, {}, {}, {}>);
 
-  const emailRegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+  const emailRegExp = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
 
   const isDate = (string: string): boolean =>
     string.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/) !== null &&

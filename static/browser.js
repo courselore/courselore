@@ -226,9 +226,9 @@ const leafac = {
   },
 
   liveReload: () => {
-    const liveReloadEventSource = new EventSource("/live-reload");
-    liveReloadEventSource.addEventListener("error", (event) => {
-      liveReloadEventSource.close();
+    const eventSource = new EventSource("/live-reload");
+    eventSource.addEventListener("error", () => {
+      eventSource.close();
       (async function reload() {
         try {
           if (!(await fetch(location.href)).ok) throw new Error();
@@ -241,7 +241,7 @@ const leafac = {
   },
 
   regExps: {
-    email: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+    email: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i,
     formattedDateTime: /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/,
   },
 };
