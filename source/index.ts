@@ -12,7 +12,7 @@ import qs from "qs";
 import { Database, sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
 import { css, extractInlineStyles } from "@leafac/css";
-import javascript from "tagged-template-noop";
+import javascript from "@leafac/javascript";
 type Markdown = string;
 import markdown from "tagged-template-noop";
 import dedent from "dedent";
@@ -414,7 +414,7 @@ export default async function courselore({
           <script src="${url}/node_modules/mousetrap/mousetrap.min.js"></script>
           <script src="${url}/node_modules/textarea-caret/index.js"></script>
           <script src="${url}/node_modules/scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js"></script>
-          <script src="${url}/browser.js"></script>
+          <script src="${url}/node_modules/@leafac/javascript/browser.js"></script>
           <script>
             leafac.evaluateOnInteractive();
             leafac.customFormValidation();
