@@ -13351,6 +13351,71 @@ ${value}</textarea
             ),
           ];
 
+          const tags: { id: number }[] = [
+            {
+              name: "Assignment 1",
+              staffOnlyAt: null,
+            },
+            {
+              name: "Assignment 2",
+              staffOnlyAt: null,
+            },
+            {
+              name: "Assignment 3",
+              staffOnlyAt: null,
+            },
+            {
+              name: "Assignment 4",
+              staffOnlyAt: null,
+            },
+            {
+              name: "Assignment 5",
+              staffOnlyAt: null,
+            },
+            {
+              name: "Assignment 6",
+              staffOnlyAt: null,
+            },
+            {
+              name: "Assignment 7",
+              staffOnlyAt: null,
+            },
+            {
+              name: "Assignment 8",
+              staffOnlyAt: null,
+            },
+            {
+              name: "Assignment 9",
+              staffOnlyAt: null,
+            },
+            {
+              name: "Assignment 10",
+              staffOnlyAt: null,
+            },
+            {
+              name: "Change for Next Year",
+              staffOnlyAt: new Date().toISOString(),
+            },
+            {
+              name: "Duplicate Question",
+              staffOnlyAt: new Date().toISOString(),
+            },
+          ].map(
+            ({ name, staffOnlyAt }) =>
+              database.get<{ id: number }>(
+                sql`
+                    INSERT INTO "tags" ("course", "reference", "name", "staffOnlyAt")
+                    VALUES (
+                      ${course.id},
+                      ${cryptoRandomString({ length: 10, type: "numeric" })},
+                      ${name},
+                      ${staffOnlyAt}
+                    )
+                    RETURNING *
+                  `
+              )!
+          );
+
           // FIXME: If staffOnly, then create a random reference.
           let conversationCreatedAt = new Date(
             Date.now() -
@@ -13474,7 +13539,7 @@ ${value}</textarea
                   )
                 `
               )!;
-              // TODO: endorsements, likes, tags, taggings
+              // TODO: endorsements, likes, taggings
             }
           }
         }
