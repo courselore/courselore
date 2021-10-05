@@ -13416,7 +13416,6 @@ ${value}</textarea
               )!
           );
 
-          // FIXME: If staffOnly, then create a random reference.
           let conversationCreatedAt = new Date(
             Date.now() -
               Math.floor(30 * 24 * 60 * 60 * 1000) -
