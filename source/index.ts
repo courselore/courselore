@@ -10124,23 +10124,31 @@ ${value}</textarea
                       row-gap: var(--space--2);
                     `}"
                   >
-                    $${res.locals.conversationTypes.map(
-                      (conversationType) => html`
-                        <label
-                          class="button button--tight button--tight--inline"
-                        >
-                          <input
-                            type="radio"
-                            name="type"
-                            value="${conversationType}"
-                            required
-                            class="input--radio"
-                          />
-                          $${conversationTypeIcon[conversationType]}
-                          $${lodash.capitalize(conversationType)}
-                        </label>
-                      `
-                    )}
+                    $${res.locals.conversationTypes
+                      .map(
+                        (conversationType) => html`
+                          <label
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <input
+                              type="radio"
+                              name="type"
+                              value="${conversationType}"
+                              required
+                              class="visually-hidden input--radio-or-checkbox--multilabel"
+                            />
+                            <span>
+                              $${conversationTypeIcon[conversationType]}
+                              $${lodash.capitalize(conversationType)}
+                            </span>
+                            <span class="text--blue">
+                              $${conversationTypeIcon[conversationType]}
+                              $${lodash.capitalize(conversationType)}
+                            </span>
+                          </label>
+                        `
+                      )
+                      .join(html`<span class="secondary">|</span>`)}
                   </div>
                 </div>
 
