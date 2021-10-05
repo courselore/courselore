@@ -13481,6 +13481,17 @@ ${value}</textarea
                 )}
               `
             )!;
+
+            database.run(
+              sql`
+                INSERT INTO "taggings" ("conversation", "tag")
+                VALUES (
+                  ${conversation.id},
+                  ${tags[Math.floor(Math.random() * tags.length)].id}
+                )
+              `
+            );
+
             let messageCreatedAt = conversationCreatedAt;
             for (
               let messageReference = 1;
@@ -13538,7 +13549,7 @@ ${value}</textarea
                   )
                 `
               )!;
-              // TODO: endorsements, likes, taggings
+              // TODO: endorsements, likes
             }
           }
         }
