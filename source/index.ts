@@ -10201,46 +10201,54 @@ ${value}</textarea
                             row-gap: var(--space--2);
                           `}"
                         >
-                          $${res.locals.tags.map(
-                            (tag) => html`
-                              <div
-                                style="${css`
-                                  display: flex;
-                                  gap: var(--space--2);
-                                `}"
-                              >
-                                <label
-                                  class="button button--tight button--tight--inline text--teal"
+                          $${res.locals.tags
+                            .map(
+                              (tag) => html`
+                                <div
+                                  style="${css`
+                                    display: flex;
+                                    gap: var(--space--2);
+                                  `}"
                                 >
-                                  <input
-                                    type="checkbox"
-                                    name="tagsReferences[]"
-                                    value="${tag.reference}"
-                                    required
-                                    class="input--checkbox"
-                                  />
-                                  <i class="bi bi-tag-fill"></i>
-                                  ${tag.name}
-                                </label>
-                                $${tag.staffOnlyAt !== null
-                                  ? html`
-                                      <button
-                                        type="button"
-                                        class="button button--tight button--tight--inline button--transparent"
-                                        oninteractive="${javascript`
+                                  <label
+                                    class="button button--tight button--tight--inline button--transparent"
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      name="tagsReferences[]"
+                                      value="${tag.reference}"
+                                      required
+                                      class="visually-hidden input--radio-or-checkbox--multilabel"
+                                    />
+                                    <span>
+                                      <i class="bi bi-tag"></i>
+                                      ${tag.name}
+                                    </span>
+                                    <span class="text--teal">
+                                      <i class="bi bi-tag-fill"></i>
+                                      ${tag.name}
+                                    </span>
+                                  </label>
+                                  $${tag.staffOnlyAt !== null
+                                    ? html`
+                                        <button
+                                          type="button"
+                                          class="button button--tight button--tight--inline button--transparent"
+                                          oninteractive="${javascript`
                                           tippy(this, {
                                             content: "This tag is visible by staff only.",
                                             trigger: "click",
                                           });
                                         `}"
-                                      >
-                                        <i class="bi bi-eye-slash"></i>
-                                      </button>
-                                    `
-                                  : html``}
-                              </div>
-                            `
-                          )}
+                                        >
+                                          <i class="bi bi-eye-slash"></i>
+                                        </button>
+                                      `
+                                    : html``}
+                                </div>
+                              `
+                            )
+                            .join(html`<span class="secondary">|</span>`)}
                         </div>
                       </div>
                     `}
