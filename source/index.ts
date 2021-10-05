@@ -891,6 +891,7 @@ export default async function courselore({
                 "amber",
                 "teal",
                 "fuchsia",
+                "violet",
               ].map(
                 (color) => css`
                   .text--${color} {
@@ -10358,7 +10359,7 @@ ${value}</textarea
                         <span
                           oninteractive="${javascript`
                             tippy(this, {
-                              content: "Set as Visible by Everyone",
+                              content: "Set as Visible by Staff Only",
                               touch: false,
                             });
                           `}"
@@ -10370,7 +10371,7 @@ ${value}</textarea
                           class="text--orange"
                           oninteractive="${javascript`
                             tippy(this, {
-                              content: "Set as Visible by Staff Only",
+                              content: "Set as Visible by Everyone",
                               touch: false,
                             });
                           `}"
@@ -10385,20 +10386,60 @@ ${value}</textarea
                   $${res.locals.enrollment.role === "staff"
                     ? html``
                     : html`
-                        <div class="anonymity label">
+                        <div
+                          class="anonymity label"
+                          style="${css`
+                            width: var(--space--56);
+                          `}"
+                        >
                           <div class="label--text">Anonymity</div>
-                          <label
-                            class="button button--tight button--tight--inline"
+                          <div
+                            style="${css`
+                              display: flex;
+                            `}"
                           >
-                            <input
-                              type="checkbox"
-                              name="isAnonymous"
-                              autocomplete="off"
-                              class="input--checkbox"
-                            />
-                            <i class="bi bi-sunglasses"></i>
-                            Anonymous to Other Students
-                          </label>
+                            <label
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="isAnonymous"
+                                autocomplete="off"
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
+                              />
+                              <span
+                                oninteractive="${javascript`
+                                  tippy(this, {
+                                    content: "Set as Anonymous to Other Students",
+                                    touch: false,
+                                  });
+                                `}"
+                              >
+                                $${res.locals.user.avatar === null
+                                  ? html`<i class="bi bi-person-circle"></i>`
+                                  : html`
+                                      <img
+                                        src="${res.locals.user.avatar}"
+                                        alt="${res.locals.user.name}"
+                                        class="avatar avatar--sm avatar--vertical-align"
+                                      />
+                                    `}
+                                Identified to Other Students
+                              </span>
+                              <span
+                                class="text--violet"
+                                oninteractive="${javascript`
+                                  tippy(this, {
+                                    content: "Set as Identified to Other Students",
+                                    touch: false,
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-sunglasses"></i>
+                                Anonymous to Other Students
+                              </span>
+                            </label>
+                          </div>
                         </div>
                       `}
                 </div>
