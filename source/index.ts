@@ -5926,6 +5926,7 @@ export default async function courselore({
                                             oninteractive="${javascript`
                                               tippy(this, {
                                                 content: this.nextElementSibling.firstElementChild,
+                                                touch: false,
                                               });
                                             `}"
                                           >
@@ -10301,7 +10302,7 @@ ${value}</textarea
                                 oninteractive="${javascript`
                                   tippy(this, {
                                     content: "Pin",
-                                    trigger: "click",
+                                    touch: false,
                                   });
                                 `}"
                               >
@@ -10313,7 +10314,7 @@ ${value}</textarea
                                 oninteractive="${javascript`
                                   tippy(this, {
                                     content: "Unpin",
-                                    trigger: "click",
+                                    touch: false,
                                   });
                                 `}"
                               >
@@ -10326,29 +10327,57 @@ ${value}</textarea
                       `
                     : html``}
 
-                  <div class="label">
+                  <div
+                    class="label"
+                    style="${css`
+                      width: var(--space--40);
+                    `}"
+                  >
                     <p class="label--text">Visibility</p>
                     <div
                       style="${css`
                         display: flex;
                       `}"
                     >
-                      <label class="button button--tight button--tight--inline">
+                      <label
+                        class="button button--tight button--tight--inline button--transparent"
+                      >
                         <input
                           type="checkbox"
                           name="isStaffOnly"
                           autocomplete="off"
-                          class="input--checkbox"
+                          class="visually-hidden input--radio-or-checkbox--multilabel"
                           onchange="${javascript`
-                          const anonymity = this.closest("form").querySelector(".anonymity");
-                          if (anonymity === null) return;
-                          anonymity.hidden = this.checked;
-                          for (const element of anonymity.querySelectorAll("*"))
-                            if (element.disabled !== null) element.disabled = this.checked;
-                        `}"
+                            const anonymity = this.closest("form").querySelector(".anonymity");
+                            if (anonymity === null) return;
+                            anonymity.hidden = this.checked;
+                            for (const element of anonymity.querySelectorAll("*"))
+                              if (element.disabled !== null) element.disabled = this.checked;
+                          `}"
                         />
-                        <i class="bi bi-eye-slash"></i>
-                        Visible by Staff Only
+                        <span
+                          oninteractive="${javascript`
+                            tippy(this, {
+                              content: "Set as Visible by Everyone",
+                              touch: false,
+                            });
+                          `}"
+                        >
+                          <i class="bi bi-eye"></i>
+                          Visible by Everyone
+                        </span>
+                        <span
+                          class="text--orange"
+                          oninteractive="${javascript`
+                            tippy(this, {
+                              content: "Set as Visible by Staff Only",
+                              touch: false,
+                            });
+                          `}"
+                        >
+                          <i class="bi bi-eye-slash-fill"></i>
+                          Visible by Staff Only
+                        </span>
                       </label>
                     </div>
                   </div>
