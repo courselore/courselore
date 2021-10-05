@@ -10233,7 +10233,7 @@ ${value}</textarea
                                     ? html`
                                         <button
                                           type="button"
-                                          class="button button--tight button--tight--inline button--transparent"
+                                          class="button button--tight button--tight--inline button--transparent text--orange"
                                           oninteractive="${javascript`
                                           tippy(this, {
                                             content: "This tag is visible by staff only.",
@@ -10241,7 +10241,7 @@ ${value}</textarea
                                           });
                                         `}"
                                         >
-                                          <i class="bi bi-eye-slash"></i>
+                                          <i class="bi bi-eye-slash-fill"></i>
                                         </button>
                                       `
                                     : html``}
