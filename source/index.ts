@@ -5911,8 +5911,8 @@ export default async function courselore({
                                               });
                                             `}"
                                           >
-                                            Used
                                             <i class="bi bi-check-lg"></i>
+                                            Used
                                           </div>
                                           <div hidden>
                                             <div>
