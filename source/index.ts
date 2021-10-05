@@ -1007,6 +1007,22 @@ export default async function courselore({
                 }
               }
 
+              .menu-box {
+                background-color: var(--color--gray--medium--100);
+                @media (prefers-color-scheme: dark) {
+                  background-color: var(--color--gray--medium--800);
+                }
+                padding: var(--space--2);
+                border-radius: var(--border-radius--lg);
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+
+                .menu-box--item {
+                  justify-content: flex-start;
+                }
+              }
+
               .tippy-box {
                 font-size: var(--font-size--sm);
                 line-height: var(--line-height--sm);
@@ -3647,21 +3663,9 @@ export default async function courselore({
                     $${logo}
                   </div>
 
-                  <div
-                    style="${css`
-                      background-color: var(--color--gray--medium--100);
-                      @media (prefers-color-scheme: dark) {
-                        background-color: var(--color--gray--medium--800);
-                      }
-                      padding: var(--space--2);
-                      border-radius: var(--border-radius--lg);
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--space--2);
-                    `}"
-                  >
+                  <div class="menu-box">
                     <button
-                      class="button button--justify-start button--blue"
+                      class="menu-box--item button button--blue"
                       oninteractive="${javascript`
                         tippy(this, {
                           content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
@@ -3674,14 +3678,14 @@ export default async function courselore({
                     </button>
                     <a
                       href="${url}/settings"
-                      class="button button--justify-start button--transparent"
+                      class="menu-box--item button button--transparent"
                     >
                       <i class="bi bi-person-circle"></i>
                       Fill in Your Profile
                     </a>
                     <a
                       href="${url}/courses/new"
-                      class="button button--justify-start button--transparent"
+                      class="menu-box--item button button--transparent"
                     >
                       <i class="bi bi-journal-plus"></i>
                       Create a New Course
@@ -4754,25 +4758,13 @@ export default async function courselore({
                   <i class="bi bi-journal-text"></i>
                 </div>
 
-                <div
-                  style="${css`
-                    background-color: var(--color--gray--medium--100);
-                    @media (prefers-color-scheme: dark) {
-                      background-color: var(--color--gray--medium--800);
-                    }
-                    padding: var(--space--2);
-                    border-radius: var(--border-radius--lg);
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--2);
-                  `}"
-                >
+                <div class="menu-box">
                   $${res.locals.enrollment.role === "staff"
                     ? html`
                         <a
                           href="${url}/courses/${res.locals.course
                             .reference}/settings/invitations"
-                          class="button button--blue"
+                          class="menu-box--item button button--blue"
                         >
                           <i class="bi bi-person-plus"></i>
                           Invite Other People to the Course
@@ -4782,7 +4774,8 @@ export default async function courselore({
                   <a
                     href="${url}/courses/${res.locals.course
                       .reference}/conversations/new"
-                    class="button ${res.locals.enrollment.role === "staff"
+                    class="menu-box--item button ${res.locals.enrollment
+                      .role === "staff"
                       ? "button--transparent"
                       : "button--blue"}"
                   >
