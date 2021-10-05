@@ -10266,7 +10266,7 @@ ${value}</textarea
                         <div
                           class="label"
                           style="${css`
-                            width: var(--space--20);
+                            width: var(--space--24);
                           `}"
                         >
                           <div class="label--text">
