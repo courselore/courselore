@@ -13144,13 +13144,8 @@ ${value}</textarea
   if (demonstration)
     app.post<{}, any, {}, {}, {}>(
       "/demonstration-data",
-      asyncHandler(async (req, res, next) => {
-        const password = await argon2.hash("courselore", {
-          type: argon2.argon2id,
-          memoryCost: 15 * 2 ** 10,
-          timeCost: 2,
-          parallelism: 1,
-        });
+      asyncHandler(async (req, res) => {
+        const password = await argon2.hash("courselore", argon2Options);
         const card = faker.helpers.contextualCard();
         const name = `${card.name} ${faker.name.lastName()}`;
         // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
