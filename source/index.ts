@@ -2474,9 +2474,18 @@ export default async function courselore({
   };
 
   const conversationTypeTextColor = {
-    announcement: "text--fuchsia",
-    question: "text--rose",
-    other: "",
+    announcement: {
+      display: "text--fuchsia",
+      select: "text--fuchsia",
+    },
+    question: {
+      display: "text--rose",
+      select: "text--rose",
+    },
+    other: {
+      display: "",
+      select: "text--blue",
+    },
   };
 
   app.use(express.static(path.join(__dirname, "../static")));
@@ -8302,7 +8311,7 @@ export default async function courselore({
                                       <div
                                         class="${conversationTypeTextColor[
                                           conversation.type
-                                        ]}"
+                                        ].display}"
                                       >
                                         $${conversationTypeIcon[
                                           conversation.type
@@ -10153,7 +10162,7 @@ ${value}</textarea
                             <span
                               class="${conversationTypeTextColor[
                                 conversationType
-                              ]}"
+                              ].select}"
                             >
                               $${conversationTypeIcon[conversationType].fill}
                               $${lodash.capitalize(conversationType)}
