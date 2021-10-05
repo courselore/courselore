@@ -2364,24 +2364,7 @@ export default async function courselore({
                     }
                   `}"
                 >
-                  <div
-                    style="${css`
-                      background-color: var(--color--gray--medium--100);
-                      @media (prefers-color-scheme: dark) {
-                        background-color: var(--color--gray--medium--800);
-                      }
-                      padding: var(--space--2);
-                      border-radius: var(--border-radius--lg);
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--space--2);
-                      .dropdown--menu--item {
-                        justify-content: flex-start;
-                      }
-                    `}"
-                  >
-                    $${menu}
-                  </div>
+                  <div class="menu-box">$${menu}</div>
                 </div>
               `}
           <div
@@ -3824,7 +3807,9 @@ export default async function courselore({
       menu: html`
         <a
           href="${url}/settings"
-          class="dropdown--menu--item button ${req.path.endsWith("/settings")
+          class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
+            "/settings"
+          )
             ? "button--blue"
             : "button--transparent"}"
         >
@@ -3833,7 +3818,7 @@ export default async function courselore({
         </a>
         <a
           href="${url}/settings/update-email-and-password"
-          class="dropdown--menu--item button ${req.path.endsWith(
+          class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
             "/settings/update-email-and-password"
           )
             ? "button--blue"
@@ -3844,7 +3829,7 @@ export default async function courselore({
         </a>
         <a
           href="${url}/settings/notifications-preferences"
-          class="dropdown--menu--item button ${req.path.endsWith(
+          class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
             "/settings/notifications-preferences"
           )
             ? "button--blue"
@@ -5019,7 +5004,7 @@ export default async function courselore({
           ? html`
               <a
                 href="${url}/courses/${res.locals.course.reference}/settings"
-                class="dropdown--menu--item button ${req.path.endsWith(
+                class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings"
                 )
                   ? "button--blue"
@@ -5031,7 +5016,7 @@ export default async function courselore({
               <a
                 href="${url}/courses/${res.locals.course
                   .reference}/settings/invitations"
-                class="dropdown--menu--item button ${req.path.endsWith(
+                class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings/invitations"
                 )
                   ? "button--blue"
@@ -5043,7 +5028,7 @@ export default async function courselore({
               <a
                 href="${url}/courses/${res.locals.course
                   .reference}/settings/enrollments"
-                class="dropdown--menu--item button ${req.path.endsWith(
+                class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings/enrollments"
                 )
                   ? "button--blue"
@@ -5055,7 +5040,7 @@ export default async function courselore({
               <a
                 href="${url}/courses/${res.locals.course
                   .reference}/settings/tags"
-                class="dropdown--menu--item button ${req.path.endsWith(
+                class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings/tags"
                 )
                   ? "button--blue"
@@ -5067,7 +5052,7 @@ export default async function courselore({
               <a
                 href="${url}/courses/${res.locals.course
                   .reference}/settings/your-enrollment"
-                class="dropdown--menu--item button ${req.path.endsWith(
+                class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings/your-enrollment"
                 )
                   ? "button--blue"
