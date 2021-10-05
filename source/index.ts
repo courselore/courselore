@@ -10150,7 +10150,11 @@ ${value}</textarea
                               $${conversationTypeIcon[conversationType].regular}
                               $${lodash.capitalize(conversationType)}
                             </span>
-                            <span class="text--blue">
+                            <span
+                              class="${conversationTypeTextColor[
+                                conversationType
+                              ]}"
+                            >
                               $${conversationTypeIcon[conversationType].fill}
                               $${lodash.capitalize(conversationType)}
                             </span>
