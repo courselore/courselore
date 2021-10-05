@@ -10235,11 +10235,11 @@ ${value}</textarea
                                           type="button"
                                           class="button button--tight button--tight--inline button--transparent text--orange"
                                           oninteractive="${javascript`
-                                          tippy(this, {
-                                            content: "This tag is visible by staff only.",
-                                            trigger: "click",
-                                          });
-                                        `}"
+                                            tippy(this, {
+                                              content: "This tag is visible by staff only.",
+                                              trigger: "click",
+                                            });
+                                          `}"
                                         >
                                           <i class="bi bi-eye-slash-fill"></i>
                                         </button>
@@ -10262,7 +10262,12 @@ ${value}</textarea
                 >
                   $${res.locals.enrollment.role === "staff"
                     ? html`
-                        <div class="label">
+                        <div
+                          class="label"
+                          style="${css`
+                            width: var(--space--20);
+                          `}"
+                        >
                           <div class="label--text">
                             Pin
                             <button
@@ -10284,16 +10289,37 @@ ${value}</textarea
                             `}"
                           >
                             <label
-                              class="button button--tight button--tight--inline text--amber"
+                              class="button button--tight button--tight--inline button--transparent"
                             >
                               <input
                                 type="checkbox"
                                 name="isPinned"
                                 autocomplete="off"
-                                class="input--checkbox"
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
                               />
-                              <i class="bi bi-pin-fill"></i>
-                              Pinned
+                              <span
+                                oninteractive="${javascript`
+                                  tippy(this, {
+                                    content: "Pin",
+                                    trigger: "click",
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-pin-angle"></i>
+                                Unpinned
+                              </span>
+                              <span
+                                class="text--amber"
+                                oninteractive="${javascript`
+                                  tippy(this, {
+                                    content: "Unpin",
+                                    trigger: "click",
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-pin-fill"></i>
+                                Pinned
+                              </span>
                             </label>
                           </div>
                         </div>
