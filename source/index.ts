@@ -5574,7 +5574,7 @@ export default async function courselore({
                                                     `}"
                                                   >
                                                     <i
-                                                      class="bi bi-calendar-x"
+                                                      class="bi bi-calendar-x-fill"
                                                     ></i>
                                                     Expired
                                                   </p>
@@ -5923,7 +5923,9 @@ export default async function courselore({
                                               });
                                             `}"
                                           >
-                                            <i class="bi bi-calendar-x"></i>
+                                            <i
+                                              class="bi bi-calendar-x-fill"
+                                            ></i>
                                             Expired
                                             <i class="bi bi-chevron-down"></i>
                                           </button>
@@ -5974,7 +5976,9 @@ export default async function courselore({
                                               });
                                             `}"
                                           >
-                                            <i class="bi bi-calendar-minus"></i>
+                                            <i
+                                              class="bi bi-calendar-minus-fill"
+                                            ></i>
                                             Doesn’t Expire
                                             <i class="bi bi-chevron-down"></i>
                                           </button>
@@ -6010,7 +6014,9 @@ export default async function courselore({
                                               });
                                             `}"
                                           >
-                                            <i class="bi bi-calendar-plus"></i>
+                                            <i
+                                              class="bi bi-calendar-plus-fill"
+                                            ></i>
                                             Expires
                                             <i class="bi bi-chevron-down"></i>
                                           </button>
