@@ -3661,7 +3661,7 @@ export default async function courselore({
                     `}"
                   >
                     <button
-                      class="button button--blue"
+                      class="button button--justify-start button--blue"
                       oninteractive="${javascript`
                         tippy(this, {
                           content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
@@ -3674,14 +3674,14 @@ export default async function courselore({
                     </button>
                     <a
                       href="${url}/settings"
-                      class="button button--transparent"
+                      class="button button--justify-start button--transparent"
                     >
                       <i class="bi bi-person-circle"></i>
                       Fill in Your Profile
                     </a>
                     <a
                       href="${url}/courses/new"
-                      class="button button--transparent"
+                      class="button button--justify-start button--transparent"
                     >
                       <i class="bi bi-journal-plus"></i>
                       Create a New Course
