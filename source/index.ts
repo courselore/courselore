@@ -5514,12 +5514,36 @@ export default async function courselore({
                           style="${css`
                             display: flex;
                             gap: var(--space--2);
-                            align-items: baseline;
+                            /*align-items: baseline;*/
                           `}"
                         >
-                          $${invitation.email === null
-                            ? html`<i class="bi bi-link"></i>`
-                            : html`<i class="bi bi-envelope"></i>`}
+                          <div>
+                            $${invitation.email === null
+                              ? html`
+                                  <span
+                                    oninteractive="${javascript`
+                                      tippy(this, {
+                                        content: "Invitation Link",
+                                        touch: false,
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-link"></i>
+                                  </span>
+                                `
+                              : html`
+                                  <span
+                                    oninteractive="${javascript`
+                                      tippy(this, {
+                                        content: "Invitation Email",
+                                        touch: false,
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-envelope"></i>
+                                  </span>
+                                `}
+                          </div>
                           <div
                             style="${css`
                               flex: 1;
