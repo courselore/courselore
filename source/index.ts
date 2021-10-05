@@ -5411,11 +5411,13 @@ export default async function courselore({
                     display: flex;
                   `}"
                 >
-                  <label class="button button--tight button--tight--inline">
+                  <label
+                    class="button button--tight button--tight--inline button--transparent"
+                  >
                     <input
                       type="checkbox"
                       autocomplete="off"
-                      class="input--checkbox"
+                      class="visually-hidden input--radio-or-checkbox--multilabel"
                       onchange="${javascript`
                         const expiresAt = this.closest("form").querySelector(".expires-at");
                         expiresAt.hidden = !this.checked;
@@ -5423,8 +5425,29 @@ export default async function courselore({
                           if (element.disabled !== undefined) element.disabled = !this.checked;
                       `}"
                     />
-                    <i class="bi bi-calendar-plus"></i>
-                    Expires
+                    <span
+                      oninteractive="${javascript`
+                        tippy(this, {
+                          content: "Set as Expiring",
+                          touch: false,
+                        });
+                      `}"
+                    >
+                      <i class="bi bi-calendar-minus"></i>
+                      Doesn’t Expire
+                    </span>
+                    <span
+                      class="text--amber"
+                      oninteractive="${javascript`
+                        tippy(this, {
+                          content: "Set as Not Expiring",
+                          touch: false,
+                        });
+                      `}"
+                    >
+                      <i class="bi bi-calendar-plus-fill"></i>
+                      Expires
+                    </span>
                   </label>
                 </div>
               </div>
