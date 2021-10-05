@@ -13183,11 +13183,11 @@ ${value}</textarea
           `
         )!;
 
-        const users = [...new Array(400)].map((_) => {
+        const users = [...new Array(150)].map((_) => {
           const card = faker.helpers.contextualCard();
           const name = `${card.name} ${faker.name.lastName()}`;
           // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
-          const user = database.get<{
+          return database.get<{
             id: number;
             email: string;
             name: string;
@@ -13224,35 +13224,22 @@ ${value}</textarea
               )}
             `
           )!;
-          return user;
         });
 
         for (const { name, role, accentColor, enrollmentsUsers } of [
           {
-            name: "Pharmacology",
-            role: enrollmentRoles[0],
-            accentColor: enrollmentAccentColors[3],
-            enrollmentsUsers: users.slice(0, 100),
-          },
-          {
-            name: "Advanced Harmony",
-            role: enrollmentRoles[1],
-            accentColor: enrollmentAccentColors[2],
-            enrollmentsUsers: users.slice(100, 200),
-          },
-          {
-            name: "Introduction to Statistics",
-            role: enrollmentRoles[1],
-            accentColor: enrollmentAccentColors[1],
-            enrollmentsUsers: users.slice(200, 300),
-          },
-          {
             name: "Principles of Programming Languages",
             role: enrollmentRoles[1],
             accentColor: enrollmentAccentColors[0],
-            enrollmentsUsers: users.slice(300, 400),
+            enrollmentsUsers: users.slice(0, 100),
           },
-        ]) {
+          {
+            name: "Pharmacology",
+            role: enrollmentRoles[0],
+            accentColor: enrollmentAccentColors[1],
+            enrollmentsUsers: users.slice(50, 150),
+          },
+        ].reverse()) {
           const course = database.get<{
             id: number;
             nextConversationReference: number;
