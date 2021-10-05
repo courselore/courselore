@@ -2459,9 +2459,18 @@ export default async function courselore({
   `;
 
   const conversationTypeIcon = {
-    announcement: html`<i class="bi bi-megaphone"></i>`,
-    question: html`<i class="bi bi-patch-question"></i>`,
-    other: html`<i class="bi bi-chat-left-text"></i>`,
+    announcement: {
+      regular: html`<i class="bi bi-megaphone"></i>`,
+      fill: html`<i class="bi bi-megaphone-fill"></i>`,
+    },
+    question: {
+      regular: html`<i class="bi bi-patch-question"></i>`,
+      fill: html`<i class="bi bi-patch-question-fill"></i>`,
+    },
+    other: {
+      regular: html`<i class="bi bi-chat-left-text"></i>`,
+      fill: html`<i class="bi bi-chat-left-text-fill"></i>`,
+    },
   };
 
   const conversationTypeTextColor = {
@@ -5289,7 +5298,7 @@ export default async function courselore({
                       Email
                     </span>
                     <span class="text--blue">
-                      <i class="bi bi-envelope"></i>
+                      <i class="bi bi-envelope-fill"></i>
                       Email
                     </span>
                   </label>
@@ -8297,7 +8306,7 @@ export default async function courselore({
                                       >
                                         $${conversationTypeIcon[
                                           conversation.type
-                                        ]}
+                                        ].fill}
                                         ${lodash.capitalize(conversation.type)}
                                       </div>
                                       <div>
@@ -10138,11 +10147,11 @@ ${value}</textarea
                               class="visually-hidden input--radio-or-checkbox--multilabel"
                             />
                             <span>
-                              $${conversationTypeIcon[conversationType]}
+                              $${conversationTypeIcon[conversationType].regular}
                               $${lodash.capitalize(conversationType)}
                             </span>
                             <span class="text--blue">
-                              $${conversationTypeIcon[conversationType]}
+                              $${conversationTypeIcon[conversationType].fill}
                               $${lodash.capitalize(conversationType)}
                             </span>
                           </label>
@@ -11398,7 +11407,7 @@ ${value}</textarea
                           >
                             $${conversationTypeIcon[
                               res.locals.conversation.type
-                            ]}
+                            ].fill}
                             $${lodash.capitalize(res.locals.conversation.type)}
                           </button>
                           <div hidden>
@@ -11422,7 +11431,8 @@ ${value}</textarea
                                         ? "button--blue"
                                         : "button--transparent"}"
                                     >
-                                      $${conversationTypeIcon[conversationType]}
+                                      $${conversationTypeIcon[conversationType]
+                                        .fill}
                                       $${lodash.capitalize(conversationType)}
                                     </button>
                                   </form>
@@ -11439,7 +11449,8 @@ ${value}</textarea
                             gap: var(--space--1);
                           `}"
                         >
-                          $${conversationTypeIcon[res.locals.conversation.type]}
+                          $${conversationTypeIcon[res.locals.conversation.type]
+                            .fill}
                           $${lodash.capitalize(res.locals.conversation.type)}
                         </div>
                       `}
