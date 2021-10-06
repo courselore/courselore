@@ -13562,7 +13562,7 @@ ${value}</textarea
 
               for (const enrollment of lodash.sampleSize(
                 staff,
-                lodash.random(5)
+                Math.random() < 0.8 ? 0 : lodash.random(2)
               ))
                 database.run(
                   sql`
@@ -13573,7 +13573,7 @@ ${value}</textarea
 
               for (const enrollment of lodash.sampleSize(
                 enrollments,
-                Math.random() < 0.8 ? 0 : lodash.random(5)
+                Math.random() < 0.5 ? 0 : lodash.random(5)
               ))
                 database.run(
                   sql`
