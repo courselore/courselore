@@ -8300,7 +8300,15 @@ export default async function courselore({
                                       if (conversation.pinnedAt !== null)
                                         content.push(html`
                                           <div>
-                                            <div class="text--amber">
+                                            <div
+                                              class="text--amber"
+                                              oninteractive="${javascript`
+                                                tippy(this, {
+                                                  content: "Pinned conversations are listed first.",
+                                                  touch: false,
+                                                });
+                                              `}"
+                                            >
                                               <i class="bi bi-pin-fill"></i>
                                               Pinned
                                             </div>
