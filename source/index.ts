@@ -13287,7 +13287,7 @@ ${value}</textarea
                       )
                   ).toISOString()
                 : null;
-            const user = Math.random() < 0.2 ? lodash.sample(users)! : null;
+            const user = Math.random() < 0.5 ? lodash.sample(users)! : null;
             database.run(
               sql`
                 INSERT INTO "invitations" (
