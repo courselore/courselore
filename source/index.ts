@@ -11651,7 +11651,7 @@ ${value}</textarea
             </div>
 
             $${(() => {
-              let isScrolledIntoView = false;
+              let shouldScrollIntoView = true;
               return res.locals.messages.map(
                 (message) => html`
                   <div
@@ -11670,9 +11670,9 @@ ${value}</textarea
                         grid-area: 1 / 1;
                       }
                     `}"
-                    $${message.reading === null && !isScrolledIntoView
+                    $${shouldScrollIntoView && message.reading === null
                       ? (() => {
-                          isScrolledIntoView = true;
+                          shouldScrollIntoView = false;
                           return html`
                             oninteractive="${javascript`
                               this.scrollIntoView();
