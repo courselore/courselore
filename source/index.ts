@@ -11573,32 +11573,59 @@ ${value}</textarea
                             gap: var(--space--4);
                           `}"
                         >
-                          <input
-                            type="hidden"
-                            name="isStaffOnly"
-                            value="true"
-                          />
-                          <p>
-                            Are you sure you want to set this conversation as
-                            visible by staff only?
-                          </p>
-                          <p>
-                            Students who already participated in the
-                            conversation will continue to have access to it.
-                          </p>
-                          <p>
-                            <strong
-                              style="${css`
-                                font-weight: var(--font-weight--bold);
-                              `}"
-                            >
-                              You may not undo this action!
-                            </strong>
-                          </p>
-                          <button class="button button--rose">
-                            <i class="bi bi-eye-slash"></i>
-                            Set as Visible by Staff Only
-                          </button>
+                          $${res.locals.conversation.staffOnlyAt === null
+                            ? html`
+                                <input
+                                  type="hidden"
+                                  name="isStaffOnly"
+                                  value="true"
+                                />
+                                <p>
+                                  Are you sure you want to set this conversation
+                                  as Visible by Staff Only?
+                                </p>
+                                <p>
+                                  <strong
+                                    style="${css`
+                                      font-weight: var(--font-weight--bold);
+                                    `}"
+                                  >
+                                    Students who already participated in the
+                                    conversation will continue to have access to
+                                    it.
+                                  </strong>
+                                </p>
+                                <button class="button button--rose">
+                                  <i class="bi bi-eye-slash"></i>
+                                  Set as Visible by Staff Only
+                                </button>
+                              `
+                            : html`
+                                <input
+                                  type="hidden"
+                                  name="isStaffOnly"
+                                  value="false"
+                                />
+                                <p>
+                                  Are you sure you want to set this conversation
+                                  as Visible by Everyone?
+                                </p>
+                                <p>
+                                  <strong
+                                    style="${css`
+                                      font-weight: var(--font-weight--bold);
+                                    `}"
+                                  >
+                                    Ensure that people involved in the
+                                    conversation consent to having their
+                                    messages visible by everyone.
+                                  </strong>
+                                </p>
+                                <button class="button button--rose">
+                                  <i class="bi bi-eye"></i>
+                                  Set as Visible by Everyone
+                                </button>
+                              `}
                         </form>
                       </div>
                     `);
