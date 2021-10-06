@@ -13571,7 +13571,16 @@ ${value}</textarea
                   `
                 );
 
-              // TODO: likes
+              for (const enrollment of lodash.sampleSize(
+                enrollments,
+                Math.random() < 0.8 ? 0 : lodash.random(5)
+              ))
+                database.run(
+                  sql`
+                    INSERT INTO "likes" ("message", "enrollment")
+                    VALUES (${message.id}, ${enrollment.id})
+                  `
+                );
             }
           }
         }
