@@ -11281,7 +11281,9 @@ ${value}</textarea
                                       class="dropdown--menu--item button ${conversationType ===
                                       res.locals.conversation.type
                                         ? "button--blue"
-                                        : "button--transparent"}"
+                                        : "button--transparent"} ${conversationTypeTextColor[
+                                        conversationType
+                                      ].display}"
                                     >
                                       $${conversationTypeIcon[conversationType]
                                         .fill}
