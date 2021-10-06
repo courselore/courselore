@@ -887,7 +887,7 @@ export default async function courselore({
                 "blue",
                 "green",
                 "rose",
-                "orange",
+                "pink",
                 "amber",
                 "teal",
                 "fuchsia",
@@ -6949,7 +6949,7 @@ export default async function courselore({
                                   Visible by Everyone
                                 </span>
                                 <span
-                                  class="text--orange"
+                                  class="text--pink"
                                   oninteractive="${javascript`
                                     tippy(this, {
                                       content: "Set as Visible by Everyone",
@@ -7193,7 +7193,7 @@ export default async function courselore({
                                 Visible by Everyone
                               </span>
                               <span
-                                class="text--orange"
+                                class="text--pink"
                                 onmount="${javascript`
                                   tippy(this, {
                                     content: "Set as Visible by Everyone",
@@ -8325,7 +8325,7 @@ export default async function courselore({
                                         `);
                                       if (conversation.staffOnlyAt !== null)
                                         content.push(html`
-                                          <div class="text--orange">
+                                          <div class="text--pink">
                                             <i class="bi bi-eye-slash-fill"></i>
                                             Visible by Staff Only
                                           </div>
@@ -10246,7 +10246,7 @@ ${value}</textarea
                                   ? html`
                                       <button
                                         type="button"
-                                        class="button button--tight button--tight--inline button--transparent text--orange"
+                                        class="button button--tight button--tight--inline button--transparent text--pink"
                                         oninteractive="${javascript`
                                             tippy(this, {
                                               content: "This tag is visible by staff only.",
@@ -10378,7 +10378,7 @@ ${value}</textarea
                           Visible by Everyone
                         </span>
                         <span
-                          class="text--orange"
+                          class="text--pink"
                           oninteractive="${javascript`
                             tippy(this, {
                               content: "Set as Visible by Everyone",
@@ -11532,7 +11532,7 @@ ${value}</textarea
                         class="button button--tight button--tight--inline button--tight-gap button--transparent ${res
                           .locals.conversation.staffOnlyAt === null
                           ? ""
-                          : "text--orange"}"
+                          : "text--pink"}"
                         oninteractive="${javascript`
                           tippy(this, {
                             content: "Set as ${
@@ -11632,7 +11632,7 @@ ${value}</textarea
                   else if (res.locals.conversation.staffOnlyAt !== null)
                     content.push(html`
                       <div
-                        class="text--orange"
+                        class="text--pink"
                         style="${css`
                           display: flex;
                           gap: var(--space--1);
