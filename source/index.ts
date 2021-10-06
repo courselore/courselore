@@ -3726,28 +3726,13 @@ export default async function courselore({
 
                   <p class="secondary">Go to one of your courses.</p>
 
-                  <div
-                    style="${css`
-                      background-color: var(--color--gray--medium--100);
-                      @media (prefers-color-scheme: dark) {
-                        background-color: var(--color--gray--medium--800);
-                      }
-                      padding: var(--space--2);
-                      border-radius: var(--border-radius--lg);
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--space--2);
-                    `}"
-                  >
+                  <div class="menu-box">
                     $${res.locals.enrollments.map(
                       (enrollment) =>
                         html`
                           <a
                             href="${url}/courses/${enrollment.course.reference}"
-                            class="button button--tight button--transparent"
-                            style="${css`
-                              justify-content: flex-start;
-                            `}"
+                            class="menu-box--item button button--tight button--transparent"
                           >
                             <div
                               class="button button--tight"
