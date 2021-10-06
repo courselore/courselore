@@ -5241,7 +5241,7 @@ export default async function courselore({
                 <div
                   style="${css`
                     display: flex;
-                    gap: var(--space--4);
+                    gap: var(--space--8);
                   `}"
                 >
                   <label
@@ -5270,7 +5270,6 @@ export default async function courselore({
                       Invitation Link
                     </span>
                   </label>
-                  <span class="secondary">|</span>
                   <label
                     class="button button--tight button--tight--inline button--transparent"
                   >
@@ -5379,32 +5378,30 @@ export default async function courselore({
                 <div
                   style="${css`
                     display: flex;
-                    gap: var(--space--4);
+                    gap: var(--space--8);
                   `}"
                 >
-                  $${enrollmentRoles
-                    .map(
-                      (role) =>
-                        html`
-                          <label
-                            class="button button--tight button--tight--inline button--transparent"
-                          >
-                            <input
-                              type="radio"
-                              name="role"
-                              value="${role}"
-                              required
-                              autocomplete="off"
-                              class="visually-hidden input--radio-or-checkbox--multilabel"
-                            />
-                            <span>${lodash.capitalize(role)}</span>
-                            <span class="text--blue">
-                              ${lodash.capitalize(role)}
-                            </span>
-                          </label>
-                        `
-                    )
-                    .join(html`<span class="secondary">|</span>`)}
+                  $${enrollmentRoles.map(
+                    (role) =>
+                      html`
+                        <label
+                          class="button button--tight button--tight--inline button--transparent"
+                        >
+                          <input
+                            type="radio"
+                            name="role"
+                            value="${role}"
+                            required
+                            autocomplete="off"
+                            class="visually-hidden input--radio-or-checkbox--multilabel"
+                          />
+                          <span>${lodash.capitalize(role)}</span>
+                          <span class="text--blue">
+                            ${lodash.capitalize(role)}
+                          </span>
+                        </label>
+                      `
+                  )}
                 </div>
               </div>
 
@@ -10129,39 +10126,36 @@ ${value}</textarea
                     style="${css`
                       display: flex;
                       flex-wrap: wrap;
-                      column-gap: var(--space--4);
+                      column-gap: var(--space--8);
                       row-gap: var(--space--2);
                     `}"
                   >
-                    $${res.locals.conversationTypes
-                      .map(
-                        (conversationType) => html`
-                          <label
-                            class="button button--tight button--tight--inline button--transparent"
+                    $${res.locals.conversationTypes.map(
+                      (conversationType) => html`
+                        <label
+                          class="button button--tight button--tight--inline button--transparent"
+                        >
+                          <input
+                            type="radio"
+                            name="type"
+                            value="${conversationType}"
+                            required
+                            class="visually-hidden input--radio-or-checkbox--multilabel"
+                          />
+                          <span>
+                            $${conversationTypeIcon[conversationType].regular}
+                            $${lodash.capitalize(conversationType)}
+                          </span>
+                          <span
+                            class="${conversationTypeTextColor[conversationType]
+                              .select}"
                           >
-                            <input
-                              type="radio"
-                              name="type"
-                              value="${conversationType}"
-                              required
-                              class="visually-hidden input--radio-or-checkbox--multilabel"
-                            />
-                            <span>
-                              $${conversationTypeIcon[conversationType].regular}
-                              $${lodash.capitalize(conversationType)}
-                            </span>
-                            <span
-                              class="${conversationTypeTextColor[
-                                conversationType
-                              ].select}"
-                            >
-                              $${conversationTypeIcon[conversationType].fill}
-                              $${lodash.capitalize(conversationType)}
-                            </span>
-                          </label>
-                        `
-                      )
-                      .join(html`<span class="secondary">|</span>`)}
+                            $${conversationTypeIcon[conversationType].fill}
+                            $${lodash.capitalize(conversationType)}
+                          </span>
+                        </label>
+                      `
+                    )}
                   </div>
                 </div>
 
@@ -10188,58 +10182,56 @@ ${value}</textarea
                           style="${css`
                             display: flex;
                             flex-wrap: wrap;
-                            column-gap: var(--space--6);
+                            column-gap: var(--space--8);
                             row-gap: var(--space--2);
                           `}"
                         >
-                          $${res.locals.tags
-                            .map(
-                              (tag) => html`
-                                <div
-                                  style="${css`
-                                    display: flex;
-                                    gap: var(--space--2);
-                                  `}"
+                          $${res.locals.tags.map(
+                            (tag) => html`
+                              <div
+                                style="${css`
+                                  display: flex;
+                                  gap: var(--space--2);
+                                `}"
+                              >
+                                <label
+                                  class="button button--tight button--tight--inline button--transparent"
                                 >
-                                  <label
-                                    class="button button--tight button--tight--inline button--transparent"
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      name="tagsReferences[]"
-                                      value="${tag.reference}"
-                                      required
-                                      class="visually-hidden input--radio-or-checkbox--multilabel"
-                                    />
-                                    <span>
-                                      <i class="bi bi-tag"></i>
-                                      ${tag.name}
-                                    </span>
-                                    <span class="text--teal">
-                                      <i class="bi bi-tag-fill"></i>
-                                      ${tag.name}
-                                    </span>
-                                  </label>
-                                  $${tag.staffOnlyAt !== null
-                                    ? html`
-                                        <button
-                                          type="button"
-                                          class="button button--tight button--tight--inline button--transparent text--orange"
-                                          oninteractive="${javascript`
+                                  <input
+                                    type="checkbox"
+                                    name="tagsReferences[]"
+                                    value="${tag.reference}"
+                                    required
+                                    class="visually-hidden input--radio-or-checkbox--multilabel"
+                                  />
+                                  <span>
+                                    <i class="bi bi-tag"></i>
+                                    ${tag.name}
+                                  </span>
+                                  <span class="text--teal">
+                                    <i class="bi bi-tag-fill"></i>
+                                    ${tag.name}
+                                  </span>
+                                </label>
+                                $${tag.staffOnlyAt !== null
+                                  ? html`
+                                      <button
+                                        type="button"
+                                        class="button button--tight button--tight--inline button--transparent text--orange"
+                                        oninteractive="${javascript`
                                             tippy(this, {
                                               content: "This tag is visible by staff only.",
                                               trigger: "click",
                                             });
                                           `}"
-                                        >
-                                          <i class="bi bi-eye-slash-fill"></i>
-                                        </button>
-                                      `
-                                    : html``}
-                                </div>
-                              `
-                            )
-                            .join(html`<span class="secondary">|</span>`)}
+                                      >
+                                        <i class="bi bi-eye-slash-fill"></i>
+                                      </button>
+                                    `
+                                  : html``}
+                              </div>
+                            `
+                          )}
                         </div>
                       </div>
                     `}
