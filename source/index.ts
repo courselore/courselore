@@ -8265,15 +8265,17 @@ export default async function courselore({
                                       }
                                     `}"
                                   >
-                                    <div>
-                                      $${conversation.pinnedAt !== null
-                                        ? html`
+                                    $${conversation.pinnedAt !== null
+                                      ? html`
+                                          <div>
                                             <div class="text--amber">
                                               <i class="bi bi-pin-fill"></i>
                                               Pinned
                                             </div>
-                                          `
-                                        : html``}
+                                          </div>
+                                        `
+                                      : html``}
+                                    <div>
                                       $${conversation.staffOnlyAt !== null
                                         ? html`
                                             <div class="text--orange">
