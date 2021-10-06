@@ -8175,7 +8175,7 @@ export default async function courselore({
                                     line-height: var(--line-height--xs);
                                   `}"
                                 >
-                                  <div>
+                                  <div class="secondary">
                                     #${conversation.reference} created
                                     <time
                                       oninteractive="${javascript`
@@ -8237,7 +8237,7 @@ export default async function courselore({
                                   </div>
                                   $${conversation.updatedAt !== null
                                     ? html`
-                                        <div>
+                                        <div class="secondary">
                                           and last updated
                                           <time
                                             oninteractive="${javascript`
@@ -8289,8 +8289,10 @@ export default async function courselore({
                                         : html``}
                                       $${conversation.staffOnlyAt !== null
                                         ? html`
-                                            <div>
-                                              <i class="bi bi-eye-slash"></i>
+                                            <div class="text--orange">
+                                              <i
+                                                class="bi bi-eye-slash-fill"
+                                              ></i>
                                               Visible by Staff Only
                                             </div>
                                           `
