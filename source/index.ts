@@ -8176,79 +8176,81 @@ export default async function courselore({
                                   `}"
                                 >
                                   <div class="secondary">
-                                    #${conversation.reference} created
-                                    <time
-                                      oninteractive="${javascript`
-                                        leafac.relativizeDateTimeElement(this);
-                                      `}"
-                                    >
-                                      ${conversation.createdAt}
-                                    </time>
-                                    by
-                                    $${conversation.anonymousAt === null ||
-                                    res.locals.enrollment.role === "staff" ||
-                                    conversation.authorEnrollment.id ===
-                                      res.locals.enrollment.id
+                                    <div>
+                                      #${conversation.reference} created
+                                      <time
+                                        oninteractive="${javascript`
+                                          leafac.relativizeDateTimeElement(this);
+                                        `}"
+                                      >
+                                        ${conversation.createdAt}
+                                      </time>
+                                      by
+                                      $${conversation.anonymousAt === null ||
+                                      res.locals.enrollment.role === "staff" ||
+                                      conversation.authorEnrollment.id ===
+                                        res.locals.enrollment.id
+                                        ? html`
+                                            $${conversation.authorEnrollment
+                                              .user.avatar === null
+                                              ? html`
+                                                  <i
+                                                    class="bi bi-person-circle"
+                                                  ></i>
+                                                `
+                                              : html`
+                                                  <img
+                                                    src="${conversation
+                                                      .authorEnrollment.user
+                                                      .avatar}"
+                                                    alt="${conversation
+                                                      .authorEnrollment.user
+                                                      .name}"
+                                                    class="avatar avatar--xs avatar--vertical-align"
+                                                  />
+                                                `}
+                                            ${conversation.authorEnrollment.user
+                                              .name}
+                                          `
+                                        : html``}
+                                      $${conversation.anonymousAt === null
+                                        ? html``
+                                        : res.locals.enrollment.role ===
+                                            "staff" ||
+                                          conversation.authorEnrollment.id ===
+                                            res.locals.enrollment.id
+                                        ? html`
+                                            <span
+                                              oninteractive="${javascript`
+                                                tippy(this, {
+                                                  content: "Anonymous to other students.",
+                                                  touch: false,
+                                                });
+                                              `}"
+                                            >
+                                              <i class="bi bi-sunglasses"></i>
+                                            </span>
+                                          `
+                                        : html`
+                                            <i class="bi bi-sunglasses"></i>
+                                            Anonymous
+                                          `}
+                                    </div>
+                                    $${conversation.updatedAt !== null
                                       ? html`
-                                          $${conversation.authorEnrollment.user
-                                            .avatar === null
-                                            ? html`
-                                                <i
-                                                  class="bi bi-person-circle"
-                                                ></i>
-                                              `
-                                            : html`
-                                                <img
-                                                  src="${conversation
-                                                    .authorEnrollment.user
-                                                    .avatar}"
-                                                  alt="${conversation
-                                                    .authorEnrollment.user
-                                                    .name}"
-                                                  class="avatar avatar--xs avatar--vertical-align"
-                                                />
-                                              `}
-                                          ${conversation.authorEnrollment.user
-                                            .name}
+                                          <div>
+                                            and last updated
+                                            <time
+                                              oninteractive="${javascript`
+                                                leafac.relativizeDateTimeElement(this);
+                                              `}"
+                                            >
+                                              ${conversation.updatedAt}
+                                            </time>
+                                          </div>
                                         `
                                       : html``}
-                                    $${conversation.anonymousAt === null
-                                      ? html``
-                                      : res.locals.enrollment.role ===
-                                          "staff" ||
-                                        conversation.authorEnrollment.id ===
-                                          res.locals.enrollment.id
-                                      ? html`
-                                          <span
-                                            oninteractive="${javascript`
-                                              tippy(this, {
-                                                content: "Anonymous to other students.",
-                                                touch: false,
-                                              });
-                                            `}"
-                                          >
-                                            <i class="bi bi-sunglasses"></i>
-                                          </span>
-                                        `
-                                      : html`
-                                          <i class="bi bi-sunglasses"></i>
-                                          Anonymous
-                                        `}
                                   </div>
-                                  $${conversation.updatedAt !== null
-                                    ? html`
-                                        <div class="secondary">
-                                          and last updated
-                                          <time
-                                            oninteractive="${javascript`
-                                              leafac.relativizeDateTimeElement(this);
-                                            `}"
-                                          >
-                                            ${conversation.updatedAt}
-                                          </time>
-                                        </div>
-                                      `
-                                    : html``}
                                   <div
                                     style="${css`
                                       & > * {
