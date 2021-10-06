@@ -11651,7 +11651,8 @@ ${value}</textarea
             </div>
 
             $${(() => {
-              let shouldScrollIntoView = true;
+              let shouldScrollIntoView =
+                res.locals.messages[0].reading !== null;
               return res.locals.messages.map(
                 (message) => html`
                   <div
