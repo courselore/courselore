@@ -42,6 +42,7 @@
 
 ### Polish Existing Features
 
+- Students who sent at least one message to a staff-only conversation should have access to it.
 - Search:
   - Include users in search.
   - Include snippets in search results.
