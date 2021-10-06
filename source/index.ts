@@ -11529,10 +11529,17 @@ ${value}</textarea
                   if (res.locals.enrollment.role === "staff")
                     content.push(html`
                       <button
-                        class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                        class="button button--tight button--tight--inline button--tight-gap button--transparent ${res
+                          .locals.conversation.staffOnlyAt === null
+                          ? ""
+                          : "text--orange"}"
                         oninteractive="${javascript`
                           tippy(this, {
-                            content: "Set as Visible by Staff Only",
+                            content: "Set as ${
+                              res.locals.conversation.staffOnlyAt === null
+                                ? "Visible by Staff Only"
+                                : "Visible by Everyone"
+                            }",
                             touch: false,
                           });
                           tippy(this, {
@@ -11543,8 +11550,15 @@ ${value}</textarea
                           });
                         `}"
                       >
-                        <i class="bi bi-eye"></i>
-                        Visible by Everyone
+                        $${res.locals.conversation.staffOnlyAt === null
+                          ? html`
+                              <i class="bi bi-eye"></i>
+                              Visible by Everyone
+                            `
+                          : html`
+                              <i class="bi bi-eye-slash-fill"></i>
+                              Visible by Staff Only
+                            `}
                       </button>
                       <div hidden>
                         <form
