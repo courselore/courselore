@@ -13183,7 +13183,7 @@ ${value}</textarea
           `
         )!;
 
-        const users = [...new Array(150)].map((_) => {
+        const users = lodash.times(150, () => {
           const card = faker.helpers.contextualCard();
           const name = `${card.name} ${faker.name.lastName()}`;
           // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
@@ -13276,7 +13276,7 @@ ${value}</textarea
             `
           )!;
 
-          for (const _ of new Array(20)) {
+          for (const _ of lodash.times(20)) {
             const expiresAt =
               Math.random() < 0.3
                 ? new Date(
