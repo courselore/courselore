@@ -8172,6 +8172,9 @@ export default async function courselore({
                                   style="${css`
                                     font-size: var(--font-size--xs);
                                     line-height: var(--line-height--xs);
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--space--1);
                                   `}"
                                 >
                                   <div class="secondary">
@@ -8252,6 +8255,9 @@ export default async function courselore({
                                   </div>
                                   <div
                                     style="${css`
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--space--0-5);
                                       & > * {
                                         display: flex;
                                         flex-wrap: wrap;
