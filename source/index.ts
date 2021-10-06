@@ -8305,7 +8305,7 @@ export default async function courselore({
                                           `}
                                     </div>
                                     $${(() => {
-                                      const content = [];
+                                      const content: HTML[] = [];
                                       if (conversation.pinnedAt !== null)
                                         content.push(html`
                                           <div>
@@ -9875,7 +9875,7 @@ ${value}</textarea
     ...isSignedInMiddleware,
     asyncHandler(async (req, res, next) => {
       if (req.files?.attachments === undefined) return next("validation");
-      const attachmentsMarkdowns: string[] = [];
+      const attachmentsMarkdowns: Markdown[] = [];
       for (const attachment of Array.isArray(req.files.attachments)
         ? req.files.attachments
         : [req.files.attachments]) {
@@ -11460,51 +11460,59 @@ ${value}</textarea
                       `}
                 </div>
 
-                <div>
-                  $${res.locals.enrollment.role === "staff"
-                    ? html`
-                        <form
-                          method="POST"
-                          action="${url}/courses/${res.locals.course
-                            .reference}/conversations/${res.locals.conversation
-                            .reference}?_method=PATCH"
+                $${(() => {
+                  const content: HTML[] = [];
+
+                  if (res.locals.enrollment.role === "staff")
+                    content.push(html`
+                      <form
+                        method="POST"
+                        action="${url}/courses/${res.locals.course
+                          .reference}/conversations/${res.locals.conversation
+                          .reference}?_method=PATCH"
+                      >
+                        <input
+                          type="hidden"
+                          name="isPinned"
+                          value="${res.locals.conversation.pinnedAt === null
+                            ? "true"
+                            : "false"}"
+                        />
+                        <button
+                          class="button button--tight button--tight--inline button--tight-gap text--amber"
                         >
                           <input
-                            type="hidden"
-                            name="isPinned"
-                            value="${res.locals.conversation.pinnedAt === null
-                              ? "true"
-                              : "false"}"
+                            type="checkbox"
+                            $${res.locals.conversation.pinnedAt === null
+                              ? html``
+                              : html`checked`}
+                            class="input--checkbox"
                           />
-                          <button
-                            class="button button--tight button--tight--inline button--tight-gap text--amber"
-                          >
-                            <input
-                              type="checkbox"
-                              $${res.locals.conversation.pinnedAt === null
-                                ? html``
-                                : html`checked`}
-                              class="input--checkbox"
-                            />
-                            <i class="bi bi-pin-fill"></i>
-                            Pinned
-                          </button>
-                        </form>
-                      `
-                    : res.locals.conversation.pinnedAt !== null
-                    ? html`
-                        <div
-                          class="text--amber"
-                          style="${css`
-                            display: flex;
-                            gap: var(--space--1);
-                          `}"
-                        >
                           <i class="bi bi-pin-fill"></i>
                           Pinned
-                        </div>
-                      `
-                    : html``}
+                        </button>
+                      </form>
+                    `);
+                  else if (res.locals.conversation.pinnedAt !== null)
+                    content.push(html`
+                      <div
+                        class="text--amber"
+                        style="${css`
+                          display: flex;
+                          gap: var(--space--1);
+                        `}"
+                      >
+                        <i class="bi bi-pin-fill"></i>
+                        Pinned
+                      </div>
+                    `);
+
+                  return content.length === 0
+                    ? html``
+                    : html`<div>$${content}</div>`;
+                })()}
+
+                <div>
                   $${res.locals.conversation.staffOnlyAt === null
                     ? res.locals.enrollment.role === "staff"
                       ? html`
