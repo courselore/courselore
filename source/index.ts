@@ -12675,7 +12675,7 @@ ${value}</textarea
       title?: string;
       type?: ConversationType;
       isPinned?: "true" | "false";
-      isStaffOnly?: "true";
+      isStaffOnly?: "true" | "false";
     },
     {},
     MayEditConversationMiddlewareLocals
@@ -12730,16 +12730,23 @@ ${value}</textarea
 
       if (typeof req.body.isStaffOnly === "string")
         if (
-          req.body.isStaffOnly !== "true" ||
+          !["true", "false"].includes(req.body.isStaffOnly) ||
           res.locals.enrollment.role !== "staff" ||
-          res.locals.conversation.staffOnlyAt !== null
+          (req.body.isStaffOnly === "true" &&
+            res.locals.conversation.staffOnlyAt !== null) ||
+          (req.body.isStaffOnly === "false" &&
+            res.locals.conversation.staffOnlyAt === null)
         )
           return next("validation");
         else
           database.run(
             sql`
               UPDATE "conversations"
-              SET "staffOnlyAt" = ${new Date().toISOString()}
+              SET "staffOnlyAt" = ${
+                req.body.isStaffOnly === "true"
+                  ? new Date().toISOString()
+                  : null
+              }
               WHERE "id" = ${res.locals.conversation.id}
             `
           );
