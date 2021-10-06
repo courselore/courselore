@@ -13253,7 +13253,7 @@ ${value}</textarea
               VALUES (
                 ${cryptoRandomString({ length: 10, type: "numeric" })},
                 ${name},
-                ${30 + Math.floor(Math.random() * 20)}
+                ${lodash.random(30, 50)}
               )
               RETURNING *
             `
@@ -13280,15 +13280,14 @@ ${value}</textarea
             const expiresAt =
               Math.random() < 0.3
                 ? new Date(
-                    Date.now() -
-                      30 * 24 * 60 * 60 * 1000 +
-                      Math.floor(Math.random() * 60 * 24 * 60 * 60 * 1000)
+                    Date.now() +
+                      lodash.random(
+                        -30 * 24 * 60 * 60 * 1000,
+                        30 * 24 * 60 * 60 * 1000
+                      )
                   ).toISOString()
                 : null;
-            const user =
-              Math.random() < 0.2
-                ? users[Math.floor(Math.random() * users.length)]
-                : null;
+            const user = Math.random() < 0.2 ? lodash.sample(users)! : null;
             database.run(
               sql`
                 INSERT INTO "invitations" (
@@ -13309,7 +13308,7 @@ ${value}</textarea
                           (expiresAt === null
                             ? Date.now()
                             : new Date(expiresAt).getTime()) -
-                            Math.floor(Math.random() * 20 * 24 * 60 * 60 * 1000)
+                            lodash.random(20 * 24 * 60 * 60 * 1000)
                         ).toISOString()
                   },
                   ${course.id},
@@ -13337,13 +13336,7 @@ ${value}</textarea
                       ${course.id},
                       ${cryptoRandomString({ length: 10, type: "numeric" })},
                       ${enrollmentRoles[Math.random() < 0.1 ? 1 : 0]},
-                      ${
-                        enrollmentAccentColors[
-                          Math.floor(
-                            Math.random() * enrollmentAccentColors.length
-                          )
-                        ]
-                      }
+                      ${lodash.sample(enrollmentAccentColors)!}
                     )
                     RETURNING *
                   `
@@ -13420,9 +13413,11 @@ ${value}</textarea
           );
 
           let conversationCreatedAt = new Date(
-            Date.now() -
-              Math.floor(30 * 24 * 60 * 60 * 1000) -
-              Math.floor(Math.random() * 20 * 24 * 60 * 60 * 1000)
+            Date.now() +
+              lodash.random(
+                -50 * 24 * 60 * 60 * 1000,
+                -30 * 24 * 60 * 60 * 1000
+              )
           ).toISOString();
           for (
             let conversationReference = 1;
@@ -13431,12 +13426,11 @@ ${value}</textarea
           ) {
             conversationCreatedAt = new Date(
               new Date(conversationCreatedAt).getTime() +
-                6 * 60 * 60 * 1000 +
-                Math.floor(Math.random() * 12 * 60 * 60 * 1000)
+                lodash.random(6 * 60 * 60 * 1000, 18 * 60 * 60 * 1000)
             ).toISOString();
             // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
             const title = lodash.capitalize(
-              faker.lorem.words(1 + Math.floor(Math.random() * 10))
+              faker.lorem.words(lodash.random(1, 10))
             );
             const conversation = database.get<{
               id: number;
@@ -13462,7 +13456,7 @@ ${value}</textarea
                         ${String(conversationReference)},
                         ${title},
                         ${html`${title}`},
-                        ${Math.floor(Math.random() * 10) + 2},
+                        ${lodash.random(2, 13)},
                         ${
                           conversationTypes[
                             Math.random() < 0.7
@@ -13490,7 +13484,7 @@ ${value}</textarea
                 INSERT INTO "taggings" ("conversation", "tag")
                 VALUES (
                   ${conversation.id},
-                  ${tags[Math.floor(Math.random() * tags.length)].id}
+                  ${lodash.sample(tags)!.id}
                 )
               `
             );
@@ -13503,10 +13497,10 @@ ${value}</textarea
             ) {
               messageCreatedAt = new Date(
                 new Date(messageCreatedAt).getTime() +
-                  Math.floor(Math.random() * 12 * 60 * 60 * 1000)
+                  lodash.random(12 * 60 * 60 * 1000)
               ).toISOString();
               const content = faker.lorem.paragraphs(
-                1 + Math.floor(Math.random() * 5),
+                lodash.random(1, 6),
                 "\n\n"
               );
               const processedContent = markdownProcessor({
@@ -13538,19 +13532,15 @@ ${value}</textarea
                               ? null
                               : new Date(
                                   new Date(messageCreatedAt).getTime() +
-                                    5 * 60 * 60 * 1000 +
-                                    Math.floor(
-                                      Math.random() * 12 * 60 * 60 * 1000
+                                    lodash.random(
+                                      5 * 60 * 60 * 1000,
+                                      18 * 60 * 60 * 1000
                                     )
                                 ).toISOString()
                           },
                           ${conversation.id},
                           ${String(messageReference)},
-                          ${
-                            enrollments[
-                              Math.floor(Math.random() * enrollments.length)
-                            ].id
-                          },
+                          ${lodash.sample(enrollments)!.id},
                           ${content},
                           ${processedContent.text},
                           ${
@@ -13572,7 +13562,7 @@ ${value}</textarea
 
               for (const enrollment of lodash.sampleSize(
                 staff,
-                Math.floor(Math.random() * 5)
+                lodash.random(5)
               ))
                 database.run(
                   sql`
@@ -13581,7 +13571,7 @@ ${value}</textarea
                   `
                 );
 
-              // TODO: endorsements, likes
+              // TODO: likes
             }
           }
         }
