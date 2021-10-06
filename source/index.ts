@@ -8289,28 +8289,29 @@ export default async function courselore({
                                             )}
                                           `}
                                     </div>
-                                    $${conversation.pinnedAt !== null
-                                      ? html`
+                                    $${(() => {
+                                      const content = [];
+                                      if (conversation.pinnedAt !== null)
+                                        content.push(html`
                                           <div>
                                             <div class="text--amber">
                                               <i class="bi bi-pin-fill"></i>
                                               Pinned
                                             </div>
                                           </div>
-                                        `
-                                      : html``}
+                                        `);
+                                      if (conversation.staffOnlyAt !== null)
+                                        content.push(html`
+                                          <div class="text--orange">
+                                            <i class="bi bi-eye-slash-fill"></i>
+                                            Visible by Staff Only
+                                          </div>
+                                        `);
+                                      return content.length === 0
+                                        ? html``
+                                        : html`<div>$${content}</div>`;
+                                    })()}
                                     <div>
-                                      $${conversation.staffOnlyAt !== null
-                                        ? html`
-                                            <div class="text--orange">
-                                              <i
-                                                class="bi bi-eye-slash-fill"
-                                              ></i>
-                                              Visible by Staff Only
-                                            </div>
-                                          `
-                                        : html``}
-
                                       <div>
                                         <i class="bi bi-chat-left-text"></i>
                                         ${conversation.messagesCount}
