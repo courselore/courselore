@@ -11526,88 +11526,86 @@ ${value}</textarea
                       </div>
                     `);
 
+                  if (res.locals.enrollment.role === "staff")
+                    content.push(html`
+                      <button
+                        class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                        oninteractive="${javascript`
+                          tippy(this, {
+                            content: "Set as Visible by Staff Only",
+                            touch: false,
+                          });
+                          tippy(this, {
+                            content: this.nextElementSibling.firstElementChild,
+                            theme: "rose",
+                            trigger: "click",
+                            interactive: true,
+                          });
+                        `}"
+                      >
+                        <i class="bi bi-eye"></i>
+                        Visible by Everyone
+                      </button>
+                      <div hidden>
+                        <form
+                          method="POST"
+                          action="${url}/courses/${res.locals.course
+                            .reference}/conversations/${res.locals.conversation
+                            .reference}?_method=PATCH"
+                          style="${css`
+                            padding: var(--space--2);
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--4);
+                          `}"
+                        >
+                          <input
+                            type="hidden"
+                            name="isStaffOnly"
+                            value="true"
+                          />
+                          <p>
+                            Are you sure you want to set this conversation as
+                            visible by staff only?
+                          </p>
+                          <p>
+                            Students who already participated in the
+                            conversation will continue to have access to it.
+                          </p>
+                          <p>
+                            <strong
+                              style="${css`
+                                font-weight: var(--font-weight--bold);
+                              `}"
+                            >
+                              You may not undo this action!
+                            </strong>
+                          </p>
+                          <button class="button button--rose">
+                            <i class="bi bi-eye-slash"></i>
+                            Set as Visible by Staff Only
+                          </button>
+                        </form>
+                      </div>
+                    `);
+                  else if (res.locals.conversation.staffOnlyAt !== null)
+                    content.push(html`
+                      <div
+                        class="text--orange"
+                        style="${css`
+                          display: flex;
+                          gap: var(--space--1);
+                        `}"
+                      >
+                        <i class="bi bi-eye-slash-fill"></i>
+                        Visible by Staff Only
+                      </div>
+                    `);
+
                   return content.length === 0
                     ? html``
                     : html`<div>$${content}</div>`;
                 })()}
-
-                <div>
-                  $${res.locals.conversation.staffOnlyAt === null
-                    ? res.locals.enrollment.role === "staff"
-                      ? html`
-                          <button
-                            class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                            oninteractive="${javascript`
-                              tippy(this, {
-                                content: "Set as Visible by Staff Only",
-                                touch: false,
-                              });
-                              tippy(this, {
-                                content: this.nextElementSibling.firstElementChild,
-                                theme: "rose",
-                                trigger: "click",
-                                interactive: true,
-                              });
-                            `}"
-                          >
-                            <i class="bi bi-eye"></i>
-                            Visible by Everyone
-                          </button>
-                          <div hidden>
-                            <form
-                              method="POST"
-                              action="${url}/courses/${res.locals.course
-                                .reference}/conversations/${res.locals
-                                .conversation.reference}?_method=PATCH"
-                              style="${css`
-                                padding: var(--space--2);
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--4);
-                              `}"
-                            >
-                              <input
-                                type="hidden"
-                                name="isStaffOnly"
-                                value="true"
-                              />
-                              <p>
-                                Are you sure you want to set this conversation
-                                as visible by staff only?
-                              </p>
-                              <p>
-                                Students who already participated in the
-                                conversation will continue to have access to it.
-                              </p>
-                              <p>
-                                <strong
-                                  style="${css`
-                                    font-weight: var(--font-weight--bold);
-                                  `}"
-                                >
-                                  You may not undo this action!
-                                </strong>
-                              </p>
-                              <button class="button button--rose">
-                                <i class="bi bi-eye-slash"></i>
-                                Set as Visible by Staff Only
-                              </button>
-                            </form>
-                          </div>
-                        `
-                      : html``
-                    : html`
-                        <div
-                          style="${css`
-                            display: flex;
-                            gap: var(--space--1);
-                          `}"
-                        >
-                          <i class="bi bi-eye-slash"></i>
-                          Visible by Staff Only
-                        </div>
-                      `}
-                </div>
               </div>
             </div>
 
