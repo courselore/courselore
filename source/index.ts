@@ -13350,6 +13350,9 @@ ${value}</textarea
                 )!
             ),
           ];
+          const staff = enrollments.filter(
+            (enrollment) => enrollment.role === "staff"
+          );
 
           const tags: { id: number }[] = [
             {
@@ -13511,44 +13514,73 @@ ${value}</textarea
                 res,
                 markdown: content,
               });
-              database.run(
+              // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
+              const message = database.get<{ id: number }>(
                 sql`
-                  INSERT INTO "messages" (
-                    "createdAt",
-                    "updatedAt",
-                    "conversation",
-                    "reference",
-                    "authorEnrollment",
-                    "content",
-                    "contentSearch",
-                    "answerAt",
-                    "anonymousAt"
-                  )
-                  VALUES (
-                    ${messageCreatedAt},
-                    ${
-                      Math.random() < 0.8
-                        ? null
-                        : new Date(
-                            new Date(messageCreatedAt).getTime() +
-                              5 * 60 * 60 * 1000 +
-                              Math.floor(Math.random() * 12 * 60 * 60 * 1000)
-                          ).toISOString()
-                    },
-                    ${conversation.id},
-                    ${String(messageReference)},
-                    ${
-                      enrollments[
-                        Math.floor(Math.random() * enrollments.length)
-                      ].id
-                    },
-                    ${content},
-                    ${processedContent.text},
-                    ${Math.random() < 0.5 ? new Date().toISOString() : null},
-                    ${Math.random() < 0.25 ? new Date().toISOString() : null}
-                  )
+                  SELECT * FROM "messages" WHERE "id" = ${Number(
+                    database.run(
+                      sql`
+                        INSERT INTO "messages" (
+                          "createdAt",
+                          "updatedAt",
+                          "conversation",
+                          "reference",
+                          "authorEnrollment",
+                          "content",
+                          "contentSearch",
+                          "answerAt",
+                          "anonymousAt"
+                        )
+                        VALUES (
+                          ${messageCreatedAt},
+                          ${
+                            Math.random() < 0.8
+                              ? null
+                              : new Date(
+                                  new Date(messageCreatedAt).getTime() +
+                                    5 * 60 * 60 * 1000 +
+                                    Math.floor(
+                                      Math.random() * 12 * 60 * 60 * 1000
+                                    )
+                                ).toISOString()
+                          },
+                          ${conversation.id},
+                          ${String(messageReference)},
+                          ${
+                            enrollments[
+                              Math.floor(Math.random() * enrollments.length)
+                            ].id
+                          },
+                          ${content},
+                          ${processedContent.text},
+                          ${
+                            Math.random() < 0.5
+                              ? new Date().toISOString()
+                              : null
+                          },
+                          ${
+                            Math.random() < 0.25
+                              ? new Date().toISOString()
+                              : null
+                          }
+                        )
+                      `
+                    ).lastInsertRowid
+                  )}
                 `
               )!;
+
+              for (const enrollment of lodash.sampleSize(
+                staff,
+                Math.floor(Math.random() * 5)
+              ))
+                database.run(
+                  sql`
+                    INSERT INTO "endorsements" ("message", "enrollment")
+                    VALUES (${message.id}, ${enrollment.id})
+                  `
+                );
+
               // TODO: endorsements, likes
             }
           }
