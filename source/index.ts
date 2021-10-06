@@ -8265,6 +8265,30 @@ export default async function courselore({
                                       }
                                     `}"
                                   >
+                                    <div>
+                                      <div
+                                        class="${conversationTypeTextColor[
+                                          conversation.type
+                                        ].display}"
+                                      >
+                                        $${conversationTypeIcon[
+                                          conversation.type
+                                        ].fill}
+                                        ${lodash.capitalize(conversation.type)}
+                                      </div>
+                                      $${conversation.taggings.length === 0
+                                        ? html``
+                                        : html`
+                                            $${conversation.taggings.map(
+                                              (tagging) => html`
+                                                <div class="text--teal">
+                                                  <i class="bi bi-tag-fill"></i>
+                                                  ${tagging.tag.name}
+                                                </div>
+                                              `
+                                            )}
+                                          `}
+                                    </div>
                                     $${conversation.pinnedAt !== null
                                       ? html`
                                           <div>
@@ -8286,16 +8310,7 @@ export default async function courselore({
                                             </div>
                                           `
                                         : html``}
-                                      <div
-                                        class="${conversationTypeTextColor[
-                                          conversation.type
-                                        ].display}"
-                                      >
-                                        $${conversationTypeIcon[
-                                          conversation.type
-                                        ].fill}
-                                        ${lodash.capitalize(conversation.type)}
-                                      </div>
+
                                       <div>
                                         <i class="bi bi-chat-left-text"></i>
                                         ${conversation.messagesCount}
@@ -8354,20 +8369,6 @@ export default async function courselore({
                                             </div>
                                           `}
                                     </div>
-                                    $${conversation.taggings.length === 0
-                                      ? html``
-                                      : html`
-                                          <div>
-                                            $${conversation.taggings.map(
-                                              (tagging) => html`
-                                                <div class="text--teal">
-                                                  <i class="bi bi-tag-fill"></i>
-                                                  ${tagging.tag.name}
-                                                </div>
-                                              `
-                                            )}
-                                          </div>
-                                        `}
                                   </div>
                                 </div>
                               </div>
