@@ -5632,16 +5632,24 @@ export default async function courselore({
                                                     await navigator.clipboard.writeText(${JSON.stringify(
                                                       link
                                                     )});
-                                                    const classList = this.firstElementChild.classList;
-                                                    classList.remove("bi-clipboard");
-                                                    classList.add("bi-check-lg");
+                                                    const clipboard = this.querySelector(".clipboard");
+                                                    const check = this.querySelector(".check");
+                                                    clipboard.hidden = true;
+                                                    check.hidden = false;
                                                     await new Promise((resolve) => { window.setTimeout(resolve, 500); });
-                                                    classList.remove("bi-check-lg");
-                                                    classList.add("bi-clipboard");
+                                                    clipboard.hidden = false;
+                                                    check.hidden = true;
                                                   })();
                                                 `}"
                                               >
-                                                <i class="bi bi-clipboard"></i>
+                                                <span class="clipboard">
+                                                  <i
+                                                    class="bi bi-clipboard"
+                                                  ></i>
+                                                </span>
+                                                <span hidden class="check text--green">
+                                                  <i class="bi bi-check-lg"></i>
+                                                </span>
                                               </button>
                                             </div>
                                           </div>
