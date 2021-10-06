@@ -6776,7 +6776,7 @@ export default async function courselore({
 
       res.redirect(
         res.locals.managedEnrollment.isSelf
-          ? `${url}/courses/${res.locals.course.reference}/settings`
+          ? `${url}/courses/${res.locals.course.reference}`
           : `${url}/courses/${res.locals.course.reference}/settings/enrollments`
       );
     }
