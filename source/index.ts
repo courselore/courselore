@@ -5612,12 +5612,10 @@ export default async function courselore({
                                                 align-items: center;
                                               `}"
                                             >
-                                              <div
-                                                style="${css`
-                                                  user-select: all;
-                                                `}"
-                                              >
-                                                ${link}
+                                              <div>
+                                                <a href="${link}" class="link"
+                                                  >${link}</a
+                                                >
                                               </div>
                                               <button
                                                 class="button button--tight button--transparent"
@@ -5647,7 +5645,10 @@ export default async function courselore({
                                                     class="bi bi-clipboard"
                                                   ></i>
                                                 </span>
-                                                <span hidden class="check text--green">
+                                                <span
+                                                  hidden
+                                                  class="check text--green"
+                                                >
                                                   <i class="bi bi-check-lg"></i>
                                                 </span>
                                               </button>
