@@ -11242,7 +11242,9 @@ ${value}</textarea
                     ? html`
                         <div>
                           <button
-                            class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                            class="button button--tight button--tight--inline button--tight-gap button--transparent ${conversationTypeTextColor[
+                              res.locals.conversation.type
+                            ].display}"
                             oninteractive="${javascript`
                               tippy(this, {
                                 content: "Update Conversation Type",
@@ -11294,6 +11296,9 @@ ${value}</textarea
                       `
                     : html`
                         <div
+                          class="${conversationTypeTextColor[
+                            res.locals.conversation.type
+                          ].display}"
                           style="${css`
                             display: flex;
                             gap: var(--space--1);
