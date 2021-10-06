@@ -13413,10 +13413,14 @@ ${value}</textarea
               new Date(conversationCreatedAt).getTime() +
                 lodash.random(6 * 60 * 60 * 1000, 18 * 60 * 60 * 1000)
             ).toISOString();
+            const type =
+              conversationTypes[
+                Math.random() < 0.7 ? 1 : Math.random() < 0.7 ? 0 : 2
+              ];
             // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
-            const title = lodash.capitalize(
-              faker.lorem.words(lodash.random(1, 10))
-            );
+            const title =
+              lodash.capitalize(faker.lorem.words(lodash.random(1, 10))) +
+              (type === "question" ? "?" : "");
             const conversation = database.get<{
               id: number;
               title: string;
@@ -13442,15 +13446,7 @@ ${value}</textarea
                         ${title},
                         ${html`${title}`},
                         ${lodash.random(2, 13)},
-                        ${
-                          conversationTypes[
-                            Math.random() < 0.7
-                              ? 1
-                              : Math.random() < 0.7
-                              ? 0
-                              : 2
-                          ]
-                        },
+                        ${type},
                         ${
                           Math.random() < 0.05 ? new Date().toISOString() : null
                         },
