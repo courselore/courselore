@@ -7929,6 +7929,8 @@ export default async function courselore({
                   </a>
                 </div>
 
+                <hr class="separator" />
+
                 <div
                   style="${css`
                     font-size: var(--font-size--xs);
