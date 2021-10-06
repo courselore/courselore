@@ -8265,20 +8265,6 @@ export default async function courselore({
                                       }
                                     `}"
                                   >
-                                    $${conversation.taggings.length === 0
-                                      ? html``
-                                      : html`
-                                          <div>
-                                            $${conversation.taggings.map(
-                                              (tagging) => html`
-                                                <div class="text--teal">
-                                                  <i class="bi bi-tag-fill"></i>
-                                                  ${tagging.tag.name}
-                                                </div>
-                                              `
-                                            )}
-                                          </div>
-                                        `}
                                     <div>
                                       $${conversation.pinnedAt !== null
                                         ? html`
@@ -8366,6 +8352,20 @@ export default async function courselore({
                                             </div>
                                           `}
                                     </div>
+                                    $${conversation.taggings.length === 0
+                                      ? html``
+                                      : html`
+                                          <div>
+                                            $${conversation.taggings.map(
+                                              (tagging) => html`
+                                                <div class="text--teal">
+                                                  <i class="bi bi-tag-fill"></i>
+                                                  ${tagging.tag.name}
+                                                </div>
+                                              `
+                                            )}
+                                          </div>
+                                        `}
                                   </div>
                                 </div>
                               </div>
