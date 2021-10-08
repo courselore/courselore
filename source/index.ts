@@ -9818,7 +9818,7 @@ export default async function courselore({
                 ? html`
                     oninteractive="${javascript`
                       const dropdownMenuTarget = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea--dropdown-menu-target");
-                      const dropdownMenu = tippy(dropdownMenuTarget, {
+                      const dropdownMenuMentionUser = tippy(dropdownMenuTarget, {
                         content: this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user"),
                         placement: "bottom-start",
                         trigger: "manual",
@@ -9832,16 +9832,16 @@ export default async function courselore({
                         return async function search() {
                           const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
                           const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
-                          if (!dropdownMenu.state.isShown) {
+                          if (!dropdownMenuMentionUser.state.isShown) {
                             anchorIndex = selectionMin - 1;
                             if (this.value[anchorIndex] !== "@" || (anchorIndex > 0 && this.value[anchorIndex - 1].match(/[\\w@]/) !== null)) return;
                             const caretCoordinates = getCaretCoordinates(this, anchorIndex);
                             dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
                             dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
-                            dropdownMenu.show();
+                            dropdownMenuMentionUser.show();
                           }
                           if (selectionMin <= anchorIndex || this.value[anchorIndex] !== "@") {
-                            dropdownMenu.hide();
+                            dropdownMenuMentionUser.hide();
                             return;
                           }
                           if (isSearching) {
@@ -9864,7 +9864,7 @@ export default async function courselore({
                       })());
 
                       this.addEventListener("keydown", (event) => {
-                        if (!dropdownMenu.state.isShown) return;
+                        if (!dropdownMenuMentionUser.state.isShown) return;
                         switch (event.code) {
                           case "ArrowUp":
                           case "ArrowDown":
@@ -9894,7 +9894,7 @@ export default async function courselore({
                           case "ArrowRight":
                           case "Home":
                           case "End":
-                            dropdownMenu.hide();
+                            dropdownMenuMentionUser.hide();
                             break;
                         }
                       });
@@ -9902,7 +9902,7 @@ export default async function courselore({
                       this.mentionUser = (user) => {
                         this.setSelectionRange(anchorIndex + 1, Math.max(this.selectionStart, this.selectionEnd));
                         textFieldEdit.insert(this, user + " ");
-                        dropdownMenu.hide();
+                        dropdownMenuMentionUser.hide();
                         this.focus();
                       };
                     `}"
