@@ -12669,7 +12669,7 @@ ${value}</textarea
                 res.locals.conversation.staffOnlyAt !== null
                   ? html``
                   : html`
-                      <div class="identity label">
+                      <div class="label">
                         <p class="label--text">Anonymity</p>
                         <label
                           class="button button--tight button--tight--inline"
