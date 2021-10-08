@@ -11910,12 +11910,11 @@ ${value}</textarea
                                     class="button button--tight button--tight--inline button--transparent"
                                     oninteractive="${javascript`
                                       tippy(this, {
-                                        content: "Update Identity",
+                                        content: "Update Anonymity",
                                         touch: false,
                                       });
                                       tippy(this, {
                                         content: this.nextElementSibling.firstElementChild,
-                                        theme: "rose",
                                         trigger: "click",
                                         interactive: true,
                                       });
@@ -11930,12 +11929,7 @@ ${value}</textarea
                                         .reference}/conversations/${res.locals
                                         .conversation
                                         .reference}/messages/${message.reference}?_method=PATCH"
-                                      style="${css`
-                                        padding: var(--space--2);
-                                        display: flex;
-                                        flex-direction: column;
-                                        gap: var(--space--4);
-                                      `}"
+                                      class="dropdown--menu"
                                     >
                                       $${message.anonymousAt === null
                                         ? html`
@@ -11944,11 +11938,9 @@ ${value}</textarea
                                               name="isAnonymous"
                                               value="true"
                                             />
-                                            <p>
-                                              Other students may see that you’re
-                                              the author of this message.
-                                            </p>
-                                            <button class="button button--rose">
+                                            <button
+                                              class="dropdown--menu--item button button--transparent text--violet"
+                                            >
                                               <i class="bi bi-sunglasses"></i>
                                               Go Anonymous to Other Students
                                             </button>
@@ -11959,15 +11951,15 @@ ${value}</textarea
                                               name="isAnonymous"
                                               value="false"
                                             />
-                                            <p>
-                                              Other students see this message as
-                                              anonymous.
-                                            </p>
-                                            <button class="button button--rose">
+                                            <button
+                                              class="dropdown--menu--item button button--transparent"
+                                            >
                                               $${res.locals.user.avatar === null
-                                                ? html`<i
-                                                    class="bi bi-person-circle"
-                                                  ></i>`
+                                                ? html`
+                                                    <i
+                                                      class="bi bi-person-circle"
+                                                    ></i>
+                                                  `
                                                 : html`
                                                     <img
                                                       src="${res.locals.user
@@ -11977,7 +11969,8 @@ ${value}</textarea
                                                       class="avatar avatar--sm avatar--vertical-align"
                                                     />
                                                   `}
-                                              Go Public to Other Students
+                                              Identify Yourself to Other
+                                              Students
                                             </button>
                                           `}
                                     </form>
