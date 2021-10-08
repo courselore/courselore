@@ -42,7 +42,6 @@
 
 ### Polish Existing Features
 
-- Fix private questions from students to staff. (Don’t `WHERE` away conversations if you’ve been part of it.)
 - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by staff).
 - Search:
