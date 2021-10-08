@@ -12072,10 +12072,14 @@ ${value}</textarea
                               newMessage.querySelector(".markdown-editor--button--write").click();
                               const element = newMessage.querySelector(".markdown-editor--write--textarea");
                               textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
-                                message.authorEnrollment.reference
-                              }--${slugify(
-                              message.authorEnrollment.user.name
-                            )}" + " · #" + ${JSON.stringify(
+                                message.anonymousAt === null
+                                  ? `${
+                                      message.authorEnrollment.reference
+                                    }--${slugify(
+                                      message.authorEnrollment.user.name
+                                    )}`
+                                  : `anonymous`
+                              }" + " · #" + ${JSON.stringify(
                               res.locals.conversation.reference
                             )} + "/" + ${JSON.stringify(
                               message.reference
@@ -12417,10 +12421,14 @@ ${value}</textarea
                                   newMessage.querySelector(".markdown-editor--button--write").click();
                                   const element = newMessage.querySelector(".markdown-editor--write--textarea");
                                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
-                                    message.authorEnrollment.reference
-                                  }--${slugify(
-                                  message.authorEnrollment.user.name
-                                )}" + " · #" + ${JSON.stringify(
+                                    message.anonymousAt === null
+                                      ? `${
+                                          message.authorEnrollment.reference
+                                        }--${slugify(
+                                          message.authorEnrollment.user.name
+                                        )}`
+                                      : `anonymous`
+                                  }" + " · #" + ${JSON.stringify(
                                   res.locals.conversation.reference
                                 )} + "/" + ${JSON.stringify(
                                   message.reference
