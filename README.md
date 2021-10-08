@@ -174,9 +174,13 @@
 
 - Performance:
   - n+1 queries:
-    - Single follow-up query with `IN` operator (but then you end up with a bunch of prepared statements in the cache).
-    - Use a temporary table instead of `IN`.
-    - Nest first query as a subquery and bundle all the information together, then deduplicate the 1–N relationships in the code.
+    - Cases:
+      - Getting the conversation information for the sidebar.
+      - Getting message information such as endorsements and likes for the conversation page.
+    - Potential solutions:
+      - Single follow-up query with `IN` operator (but then you end up with a bunch of prepared statements in the cache).
+      - Use a temporary table instead of `IN`.
+      - Nest first query as a subquery and bundle all the information together, then deduplicate the 1–N relationships in the code.
 - An internal queue to guarantee email delivery.
 - `try.courselore.org` (reference https://moodle.org/demo)
 - Investigate why `kill -9` isn’t triggering the `await` in `development.js` (this could be a major issue in production when a process dies and the other isn’t killed to let them both be respawned).
@@ -221,6 +225,8 @@
   - For users, who may want to migrate data from a hosted version to another.
     - Rewrite URLs in messages.
 - Automated tests.
+- In some situations, we’re unnecessarily updating the boolean fields in the database that are represented as dates. For example, `"tags"."staffOnlyAt"` on `PUT /courses/:courseReference/settings/tags`.
+- Live updates with Server-Sent Events currently depend on the fact that we’re running in a single process. Use a message broker like ZeroMQ to support multiple processes.
 
 ### API
 

@@ -2508,7 +2508,6 @@ export default async function courselore({
       res.type("text/event-stream").flushHeaders();
     });
 
-  // FIXME: This only works for a single process. To support multiple processes poll the database for updates or use a message broker mechanism (ZeroMQ seems like a good candidate).
   const eventDestinations = new Set<express.Response>();
 
   interface EventSourceMiddlewareLocals {
@@ -7298,7 +7297,6 @@ export default async function courselore({
               DELETE FROM "tags" WHERE "reference" = ${tag.reference}
             `
           );
-        // FIXME: Don’t update ‘staffOnlyAt’ unless necessary.
         else
           database.run(
             sql`
@@ -7813,7 +7811,6 @@ export default async function courselore({
                     "conversations"."id" DESC
         `
       )
-      // FIXME: Try to get rid of these n+1 queries.
       .flatMap((conversationRow) => {
         const conversation = getConversation(
           req,
@@ -10753,7 +10750,6 @@ ${value}</textarea
           `
         )
         .map((message) => {
-          // FIXME: Try to get rid of these n+1 queries.
           const endorsements = database
             .all<{
               id: number;
