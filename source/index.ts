@@ -10001,9 +10001,8 @@ ${value}</textarea
             continue;
         }
         const wrapper = JSDOM.fragment(html`<div></div>`).firstElementChild!;
-        // FIXME: When this gets released https://github.com/microsoft/TypeScript/blob/6cdbf98a6f945b7e498b7cb44c8d4132b370b1ea/lib/lib.dom.d.ts#L10948-L10953
-        (wrapper as any).replaceChildren(...rest);
-        (element as any).replaceChildren(summaries[0], wrapper);
+        wrapper.replaceChildren(...rest);
+        element.replaceChildren(summaries[0], wrapper);
       }
       // TODO: Actually compute mentions
       const mentions: string[] = [];
