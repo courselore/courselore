@@ -8551,12 +8551,12 @@ export default async function courselore({
     }>(
       sql`
         SELECT "conversations"."id",
-                "conversations"."reference",
-                "conversations"."title",
-                "conversations"."nextMessageReference",
-                "conversations"."type",
-                "conversations"."pinnedAt",
-                "conversations"."staffOnlyAt"
+               "conversations"."reference",
+               "conversations"."title",
+               "conversations"."nextMessageReference",
+               "conversations"."type",
+               "conversations"."pinnedAt",
+               "conversations"."staffOnlyAt"
         FROM "conversations"
         WHERE "conversations"."course" = ${res.locals.course.id} AND
               "conversations"."reference" = ${conversationReference}
