@@ -9824,6 +9824,12 @@ export default async function courselore({
                         trigger: "manual",
                         interactive: true,
                       });
+                      const dropdownMenuReferToConversationOrMessage = tippy(dropdownMenuTarget, {
+                        content: this.closest(".markdown-editor").querySelector(".markdown-editor--refer-to-conversation-or-message"),
+                        placement: "bottom-start",
+                        trigger: "manual",
+                        interactive: true,
+                      });
                       let anchorIndex = null;
 
                       this.addEventListener("input", (() => {
@@ -9980,6 +9986,24 @@ ${value}</textarea
                         >
                           Students in the Conversation
                         </button>
+                      </div>
+                    </div>
+                    <div
+                      class="markdown-editor--refer-to-conversation-or-message"
+                      style="${css`
+                        width: var(--space--56);
+                        max-height: var(--space--44);
+                        overflow: auto;
+                      `}"
+                    >
+                      <p class="heading">
+                        <i class="bi bi-hash"></i>
+                        Refer to Conversation or Message
+                      </p>
+                      <div class="dropdown--menu">
+                        <div
+                          class="markdown-editor--refer-to-conversation-or-message--search-results"
+                        ></div>
                       </div>
                     </div>
                   </div>
