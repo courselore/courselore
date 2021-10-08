@@ -8196,10 +8196,7 @@ export default async function courselore({
                                         ${conversation.createdAt}
                                       </time>
                                       by
-                                      $${conversation.anonymousAt === null ||
-                                      res.locals.enrollment.role === "staff" ||
-                                      conversation.authorEnrollment.id ===
-                                        res.locals.enrollment.id
+                                      $${conversation.anonymousAt === null
                                         ? html`
                                             $${conversation.authorEnrollment
                                               .user.avatar === null
@@ -8222,15 +8219,9 @@ export default async function courselore({
                                             ${conversation.authorEnrollment.user
                                               .name}
                                           `
-                                        : html``}
-                                      $${conversation.anonymousAt === null
-                                        ? html``
-                                        : res.locals.enrollment.role ===
-                                            "staff" ||
-                                          conversation.authorEnrollment.id ===
-                                            res.locals.enrollment.id
-                                        ? html`
+                                        : html`
                                             <span
+                                              class="text--violet"
                                               oninteractive="${javascript`
                                                 tippy(this, {
                                                   content: "Anonymous to other students.",
@@ -8239,12 +8230,32 @@ export default async function courselore({
                                               `}"
                                             >
                                               <i class="bi bi-sunglasses"></i>
+                                              Anonymous
                                             </span>
-                                          `
-                                        : html`
-                                            <i class="bi bi-sunglasses"></i>
-                                            Anonymous
                                           `}
+                                      $${conversation.anonymousAt !== null &&
+                                      (res.locals.enrollment.role === "staff" ||
+                                        conversation.authorEnrollment.id ===
+                                          res.locals.enrollment.id)
+                                        ? html`
+                                            ($${conversation.authorEnrollment
+                                              .user.avatar === null
+                                              ? html`<i
+                                                  class="bi bi-person-circle"
+                                                ></i>`
+                                              : html`<img
+                                                  src="${conversation
+                                                    .authorEnrollment.user
+                                                    .avatar}"
+                                                  alt="${conversation
+                                                    .authorEnrollment.user
+                                                    .name}"
+                                                  class="avatar avatar--xs avatar--vertical-align"
+                                                />`}
+                                            ${conversation.authorEnrollment.user
+                                              .name})
+                                          `
+                                        : html``}
                                     </div>
                                     $${conversation.updatedAt !== null
                                       ? html`
