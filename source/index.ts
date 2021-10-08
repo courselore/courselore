@@ -890,6 +890,7 @@ export default async function courselore({
                 "pink",
                 "amber",
                 "teal",
+                "lime",
                 "emerald",
                 "fuchsia",
                 "violet",
@@ -8345,7 +8346,7 @@ export default async function courselore({
                                         ? html``
                                         : html`
                                             <div
-                                              class="text--green"
+                                              class="text--lime"
                                               oninteractive="${javascript`
                                                 tippy(this, {
                                                   content: ${JSON.stringify(
