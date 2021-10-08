@@ -10606,7 +10606,7 @@ ${value}</textarea
                             width: var(--space--56);
                           `}"
                         >
-                          <div class="label--text">Anonymity</div>
+                          <p class="label--text">Anonymity</p>
                           <div
                             style="${css`
                               display: flex;
@@ -12669,20 +12669,60 @@ ${value}</textarea
                 res.locals.conversation.staffOnlyAt !== null
                   ? html``
                   : html`
-                      <div class="label">
+                      <div
+                        class="label"
+                        style="${css`
+                          width: var(--space--56);
+                        `}"
+                      >
                         <p class="label--text">Anonymity</p>
-                        <label
-                          class="button button--tight button--tight--inline"
+                        <div
+                          style="${css`
+                            display: flex;
+                          `}"
                         >
-                          <input
-                            type="checkbox"
-                            name="isAnonymous"
-                            autocomplete="off"
-                            class="input--checkbox"
-                          />
-                          <i class="bi bi-sunglasses"></i>
-                          Anonymous to Other Students
-                        </label>
+                          <label
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <input
+                              type="checkbox"
+                              name="isAnonymous"
+                              autocomplete="off"
+                              class="visually-hidden input--radio-or-checkbox--multilabel"
+                            />
+                            <span
+                              oninteractive="${javascript`
+                                tippy(this, {
+                                  content: "Set as Anonymous to Other Students",
+                                  touch: false,
+                                });
+                              `}"
+                            >
+                              $${res.locals.user.avatar === null
+                                ? html`<i class="bi bi-person-circle"></i>`
+                                : html`
+                                    <img
+                                      src="${res.locals.user.avatar}"
+                                      alt="${res.locals.user.name}"
+                                      class="avatar avatar--sm avatar--vertical-align"
+                                    />
+                                  `}
+                              Identified to Other Students
+                            </span>
+                            <span
+                              class="text--violet"
+                              oninteractive="${javascript`
+                                tippy(this, {
+                                  content: "Set as Identified to Other Students",
+                                  touch: false,
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-sunglasses"></i>
+                              Anonymous to Other Students
+                            </span>
+                          </label>
+                        </div>
                       </div>
                     `}
               </div>
