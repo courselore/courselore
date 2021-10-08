@@ -11765,28 +11765,31 @@ ${value}</textarea
                             `}"
                           >
                             $${message.anonymousAt === null
-                              ? message.authorEnrollment.user.avatar === null
-                                ? html`
-                                    <div
-                                      style="${css`
-                                        font-size: var(--font-size--2xl);
-                                        & > *::before {
-                                          vertical-align: baseline;
-                                        }
-                                      `}"
-                                    >
-                                      <i class="bi bi-person-circle"></i>
-                                    </div>
-                                  `
-                                : html`
-                                    <img
-                                      src="${message.authorEnrollment.user
-                                        .avatar}"
-                                      alt="${message.authorEnrollment.user
-                                        .name}"
-                                      class="avatar avatar--2xl"
-                                    />
-                                  `
+                              ? html`
+                                  $${message.authorEnrollment.user.avatar ===
+                                  null
+                                    ? html`
+                                        <div
+                                          style="${css`
+                                            font-size: var(--font-size--2xl);
+                                            & > *::before {
+                                              vertical-align: baseline;
+                                            }
+                                          `}"
+                                        >
+                                          <i class="bi bi-person-circle"></i>
+                                        </div>
+                                      `
+                                    : html`
+                                        <img
+                                          src="${message.authorEnrollment.user
+                                            .avatar}"
+                                          alt="${message.authorEnrollment.user
+                                            .name}"
+                                          class="avatar avatar--2xl"
+                                        />
+                                      `}
+                                `
                               : html`
                                   <div
                                     class="text--violet"
