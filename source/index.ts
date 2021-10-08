@@ -11828,6 +11828,24 @@ ${value}</textarea
                                     </span>
                                   `}
                             </span>
+                            $${message.anonymousAt !== null &&
+                            (res.locals.enrollment.role === "staff" ||
+                              message.authorEnrollment.id ===
+                                res.locals.enrollment.id)
+                              ? html`
+                                  ($${message.authorEnrollment.user.avatar ===
+                                  null
+                                    ? html`<i class="bi bi-person-circle"></i>`
+                                    : html`<img
+                                        src="${message.authorEnrollment.user
+                                          .avatar}"
+                                        alt="${message.authorEnrollment.user
+                                          .name}"
+                                        class="avatar avatar--xs avatar--vertical-align"
+                                      />`}
+                                  ${message.authorEnrollment.user.name})
+                                `
+                              : html``}
                             <span class="secondary">
                               said
                               <time
