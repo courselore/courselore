@@ -13495,22 +13495,26 @@ ${value}</textarea
               )!
           );
 
-          let conversationCreatedAt = new Date(
-            Date.now() +
-              lodash.random(
-                -50 * 24 * 60 * 60 * 1000,
-                -30 * 24 * 60 * 60 * 1000
-              )
-          ).toISOString();
+          const conversationCreatedAts = [
+            new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+          ];
+          for (
+            let conversationReference = 2;
+            conversationReference < course.nextConversationReference;
+            conversationReference++
+          )
+            conversationCreatedAts.unshift(
+              new Date(
+                new Date(conversationCreatedAts[0]).getTime() -
+                  lodash.random(6 * 60 * 60 * 1000, 2 * 24 * 60 * 60 * 1000)
+              ).toISOString()
+            );
+
           for (
             let conversationReference = 1;
             conversationReference < course.nextConversationReference;
             conversationReference++
           ) {
-            conversationCreatedAt = new Date(
-              new Date(conversationCreatedAt).getTime() +
-                lodash.random(6 * 60 * 60 * 1000, 18 * 60 * 60 * 1000)
-            ).toISOString();
             const type =
               conversationTypes[
                 Math.random() < 0.7 ? 1 : Math.random() < 0.7 ? 0 : 2
@@ -13568,7 +13572,8 @@ ${value}</textarea
               `
             );
 
-            let messageCreatedAt = conversationCreatedAt;
+            let messageCreatedAt =
+              conversationCreatedAts[conversationReference - 1];
             for (
               let messageReference = 1;
               messageReference < conversation.nextMessageReference;
