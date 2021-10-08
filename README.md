@@ -42,19 +42,19 @@
 
 ### Polish Existing Features
 
+- Anonymity:
+  - Improve the presentation of anonymity for people who get to see the true identity of the person (the person themselves, and staff).
+  - Remove reference to anonymous student in the reply button.
+- Improve display of endorsements & answers (on the sidebar, include number of answers).
+  - Manage answer badges more intelligently (answered at all, answered by staff).
 - Search:
   - Include users in search.
   - Include snippets in search results.
   - Highlight search terms on the entire page.
   - Filters (for example, by conversation type).
 - Widget to refer to conversations or messages.
-- Anonymity:
-  - Improve the presentation of anonymity for people who get to see the true identity of the person (the person themselves, and staff).
-  - Remove reference to anonymous student in the reply button.
 - Fix private questions from students to staff. (Don’t `WHERE` away conversations if you’ve been part of it.)
 - Mathematics, code, and possibly other things are overflowing in small screens.
-- Improve display of endorsements & answers (on the sidebar, include number of answers).
-  - Manage answer badges more intelligently (answered at all, answered by staff).
 - Let original question asker approve an answer.
 - Test interface with weird data: Long text, long words, too many tags, and so forth.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
