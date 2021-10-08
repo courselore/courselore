@@ -8757,6 +8757,212 @@ export default async function courselore({
     };
   };
 
+  const getMessage = (
+    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>,
+    res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
+    conversation: { id: number },
+    messageReference: string
+  ):
+    | {
+        id: number;
+        createdAt: string;
+        updatedAt: string | null;
+        reference: string;
+        authorEnrollment: IsConversationAccessibleMiddlewareLocals["conversation"]["authorEnrollment"];
+        content: string;
+        answerAt: string | null;
+        anonymousAt: string | null;
+        reading: { id: number } | null;
+        endorsements: IsConversationAccessibleMiddlewareLocals["conversation"]["endorsements"];
+        likes: {
+          id: number;
+          enrollment: IsConversationAccessibleMiddlewareLocals["conversation"]["authorEnrollment"];
+        }[];
+      }
+    | undefined => {
+    const message = database.get<{
+      id: number;
+      createdAt: string;
+      updatedAt: string | null;
+      reference: string;
+      authorEnrollmentId: number | null;
+      authorUserId: number | null;
+      authorUserEmail: string | null;
+      authorUserName: string | null;
+      authorUserAvatar: string | null;
+      authorUserBiography: string | null;
+      authorEnrollmentReference: EnrollmentRole | null;
+      authorEnrollmentRole: EnrollmentRole | null;
+      content: string;
+      answerAt: string | null;
+      anonymousAt: string | null;
+      readingId: number | null;
+    }>(
+      sql`
+        SELECT "messages"."id",
+               "messages"."createdAt",
+               "messages"."updatedAt",
+               "messages"."reference",
+               "authorEnrollment"."id" AS "authorEnrollmentId",
+               "authorUser"."id" AS "authorUserId",
+               "authorUser"."email" AS "authorUserEmail",
+               "authorUser"."name" AS "authorUserName",
+               "authorUser"."avatar" AS "authorUserAvatar",
+               "authorUser"."biography" AS "authorUserBiography",
+               "authorEnrollment"."reference" AS "authorEnrollmentReference",
+               "authorEnrollment"."role" AS "authorEnrollmentRole",
+               "messages"."content",
+               "messages"."answerAt",
+               "messages"."anonymousAt",
+               "readings"."id" AS "readingId"
+        FROM "messages"
+        LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
+        LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
+        LEFT JOIN "readings" ON "messages"."id" = "readings"."message" AND
+                                "readings"."enrollment" = ${res.locals.enrollment.id}
+        WHERE "messages"."conversation" = ${conversation.id} AND
+              "messages"."reference" = ${messageReference}
+        ORDER BY "messages"."id" ASC
+      `
+    );
+    if (message === undefined) return undefined;
+
+    const endorsements = database.all<{
+      id: number;
+      enrollmentId: number | null;
+      userId: number | null;
+      userEmail: string | null;
+      userName: string | null;
+      userAvatar: string | null;
+      userBiography: string | null;
+      enrollmentReference: string | null;
+      enrollmentRole: EnrollmentRole | null;
+    }>(
+      sql`
+        SELECT "endorsements"."id",
+                "enrollments"."id" AS "enrollmentId",
+                "users"."id" AS "userId",
+                "users"."email" AS "userEmail",
+                "users"."name" AS "userName",
+                "users"."avatar" AS "userAvatar",
+                "users"."biography" AS "userBiography",
+                "enrollments"."reference" AS "enrollmentReference",
+                "enrollments"."role" AS "enrollmentRole"
+        FROM "endorsements"
+        JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
+        JOIN "users" ON "enrollments"."user" = "users"."id"
+        WHERE "endorsements"."message" = ${message.id}
+        ORDER BY "endorsements"."id" ASC
+      `
+    );
+
+    const likes = database.all<{
+      id: number;
+      enrollmentId: number | null;
+      userId: number | null;
+      userEmail: string | null;
+      userName: string | null;
+      userAvatar: string | null;
+      userBiography: string | null;
+      enrollmentReference: string | null;
+      enrollmentRole: EnrollmentRole | null;
+    }>(
+      sql`
+        SELECT "likes"."id",
+                "enrollments"."id" AS "enrollmentId",
+                "users"."id" AS "userId",
+                "users"."email" AS "userEmail",
+                "users"."name" AS "userName",
+                "users"."avatar" AS "userAvatar",
+                "users"."biography" AS "userBiography",
+                "enrollments"."reference" AS "enrollmentReference",
+                "enrollments"."role" AS "enrollmentRole"
+        FROM "likes"
+        LEFT JOIN "enrollments" ON "likes"."enrollment" = "enrollments"."id"
+        LEFT JOIN "users" ON "enrollments"."user" = "users"."id"
+        WHERE "likes"."message" = ${message.id}
+        ORDER BY "likes"."id" ASC
+      `
+    );
+
+    return {
+      id: message.id,
+      createdAt: message.createdAt,
+      updatedAt: message.updatedAt,
+      reference: message.reference,
+      authorEnrollment:
+        message.authorEnrollmentId !== null &&
+        message.authorUserId !== null &&
+        message.authorUserEmail !== null &&
+        message.authorUserName !== null &&
+        message.authorEnrollmentReference !== null &&
+        message.authorEnrollmentRole !== null
+          ? {
+              id: message.authorEnrollmentId,
+              user: {
+                id: message.authorUserId,
+                email: message.authorUserEmail,
+                name: message.authorUserName,
+                avatar: message.authorUserAvatar,
+                biography: message.authorUserBiography,
+              },
+              reference: message.authorEnrollmentReference,
+              role: message.authorEnrollmentRole,
+            }
+          : noLongerEnrolledEnrollment,
+      content: message.content,
+      answerAt: message.answerAt,
+      anonymousAt: message.anonymousAt,
+      reading: message.readingId === null ? null : { id: message.readingId },
+      endorsements: endorsements.map((endorsement) => ({
+        id: endorsement.id,
+        enrollment:
+          endorsement.enrollmentId !== null &&
+          endorsement.userId !== null &&
+          endorsement.userEmail !== null &&
+          endorsement.userName !== null &&
+          endorsement.enrollmentReference !== null &&
+          endorsement.enrollmentRole !== null
+            ? {
+                id: endorsement.enrollmentId,
+                user: {
+                  id: endorsement.userId,
+                  email: endorsement.userEmail,
+                  name: endorsement.userName,
+                  avatar: endorsement.userAvatar,
+                  biography: endorsement.userBiography,
+                },
+                reference: endorsement.enrollmentReference,
+                role: endorsement.enrollmentRole,
+              }
+            : noLongerEnrolledEnrollment,
+      })),
+      likes: likes.map((like) => ({
+        id: like.id,
+        enrollment:
+          like.enrollmentId !== null &&
+          like.userId !== null &&
+          like.userEmail !== null &&
+          like.userName !== null &&
+          like.enrollmentReference !== null &&
+          like.enrollmentRole !== null
+            ? {
+                id: like.enrollmentId,
+                user: {
+                  id: like.userId,
+                  email: like.userEmail,
+                  name: like.userName,
+                  avatar: like.userAvatar,
+                  biography: like.userBiography,
+                },
+                reference: like.enrollmentReference,
+                role: like.enrollmentRole,
+              }
+            : noLongerEnrolledEnrollment,
+      })),
+    };
+  };
+
   const markdownEditor = ({
     req,
     res,
