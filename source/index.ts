@@ -890,6 +890,7 @@ export default async function courselore({
                 "pink",
                 "amber",
                 "teal",
+                "emerald",
                 "fuchsia",
                 "violet",
               ].map(
@@ -12111,7 +12112,7 @@ ${value}</textarea
                                         value="false"
                                       />
                                       <button
-                                        class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                                        class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
                                         oninteractive="${javascript`
                                             tippy(this, {
                                               content: "Set as Not an Answer",
@@ -12132,6 +12133,7 @@ ${value}</textarea
                           )
                             content.push(html`
                               <div
+                                class="text--emerald"
                                 style="${css`
                                   display: flex;
                                   gap: var(--space--1);
