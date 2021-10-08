@@ -12095,7 +12095,7 @@ ${value}</textarea
                                         class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                         oninteractive="${javascript`
                                           tippy(this, {
-                                            content: "Set as an Answer",
+                                            content: "Set as Answer",
                                             touch: false,
                                           });
                                         `}"
@@ -12126,6 +12126,7 @@ ${value}</textarea
                               </form>
                             `);
                           else if (
+                            message.reference !== "1" &&
                             res.locals.conversation.type === "question" &&
                             message.answerAt !== null
                           )
