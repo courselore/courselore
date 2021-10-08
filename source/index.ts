@@ -8760,7 +8760,7 @@ export default async function courselore({
   const getMessage = (
     req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>,
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
-    conversation: { id: number },
+    conversation: IsConversationAccessibleMiddlewareLocals["conversation"],
     messageReference: string
   ):
     | {
@@ -11148,8 +11148,11 @@ ${value}</textarea
   >[] = [
     ...isConversationAccessibleMiddleware,
     (req, res, next) => {
-      const message = res.locals.messages.find(
-        (message) => message.reference === req.params.messageReference
+      const message = getMessage(
+        req,
+        res,
+        res.locals.conversation,
+        req.params.messageReference
       );
       if (message === undefined) return next("route");
       res.locals.message = message;
