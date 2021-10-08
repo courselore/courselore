@@ -8558,12 +8558,23 @@ export default async function courselore({
                "conversations"."pinnedAt",
                "conversations"."staffOnlyAt"
         FROM "conversations"
+        $${
+          res.locals.enrollment.role !== "staff"
+            ? sql`
+                LEFT JOIN "messages" ON "conversations"."id" = "messages"."conversation" AND
+                                        "messages"."authorEnrollment" = ${res.locals.user.id}
+              `
+            : sql``
+        }
         WHERE "conversations"."course" = ${res.locals.course.id} AND
               "conversations"."reference" = ${conversationReference}
               $${
                 res.locals.enrollment.role !== "staff"
                   ? sql`
-                      AND "conversations"."staffOnlyAt" IS NULL
+                      AND (
+                        "conversations"."staffOnlyAt" IS NULL OR
+                        "messages"."id" IS NOT NULL
+                      )
                     `
                   : sql``
               }
