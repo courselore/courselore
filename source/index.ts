@@ -11764,42 +11764,47 @@ ${value}</textarea
                               bottom: var(--space---1-5);
                             `}"
                           >
-                            $${message.anonymousAt !== null &&
-                            res.locals.enrollment.role !== "staff" &&
-                            message.authorEnrollment.id !==
-                              res.locals.enrollment.id
-                              ? html`
+                            $${message.anonymousAt === null
+                              ? message.authorEnrollment.user.avatar === null
+                                ? html`
+                                    <div
+                                      style="${css`
+                                        font-size: var(--font-size--2xl);
+                                        & > *::before {
+                                          vertical-align: baseline;
+                                        }
+                                      `}"
+                                    >
+                                      <i class="bi bi-person-circle"></i>
+                                    </div>
+                                  `
+                                : html`
+                                    <img
+                                      src="${message.authorEnrollment.user
+                                        .avatar}"
+                                      alt="${message.authorEnrollment.user
+                                        .name}"
+                                      class="avatar avatar--2xl"
+                                    />
+                                  `
+                              : html`
                                   <div
+                                    class="text--violet"
                                     style="${css`
                                       font-size: var(--font-size--2xl);
                                       & > *::before {
                                         vertical-align: baseline;
                                       }
+                                    `}"
+                                    oninteractive="${javascript`
+                                      tippy(this, {
+                                        content: "Anonymous to other students.",
+                                        touch: false,
+                                      });
                                     `}"
                                   >
                                     <i class="bi bi-sunglasses"></i>
                                   </div>
-                                `
-                              : message.authorEnrollment.user.avatar === null
-                              ? html`
-                                  <div
-                                    style="${css`
-                                      font-size: var(--font-size--2xl);
-                                      & > *::before {
-                                        vertical-align: baseline;
-                                      }
-                                    `}"
-                                  >
-                                    <i class="bi bi-person-circle"></i>
-                                  </div>
-                                `
-                              : html`
-                                  <img
-                                    src="${message.authorEnrollment.user
-                                      .avatar}"
-                                    alt="${message.authorEnrollment.user.name}"
-                                    class="avatar avatar--2xl"
-                                  />
                                 `}
                           </div>
                           <h3>
