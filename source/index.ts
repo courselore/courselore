@@ -11809,27 +11809,20 @@ ${value}</textarea
                           </div>
                           <h3>
                             <span class="strong">
-                              $${message.anonymousAt !== null &&
-                              res.locals.enrollment.role !== "staff" &&
-                              message.authorEnrollment.id !==
-                                res.locals.enrollment.id
-                                ? html`Anonymous`
+                              $${message.anonymousAt === null
+                                ? html`${message.authorEnrollment.user.name}`
                                 : html`
-                                    ${message.authorEnrollment.user.name}
-                                    $${message.anonymousAt !== null
-                                      ? html`
-                                          <span
-                                            oninteractive="${javascript`
-                                              tippy(this, {
-                                                content: "Anonymous to other students.",
-                                                touch: false,
-                                              });
-                                            `}"
-                                          >
-                                            <i class="bi bi-sunglasses"></i>
-                                          </span>
-                                        `
-                                      : html``}
+                                    <span
+                                      class="text--violet"
+                                      oninteractive="${javascript`
+                                        tippy(this, {
+                                          content: "Anonymous to other students.",
+                                          touch: false,
+                                        });
+                                      `}"
+                                    >
+                                      Anonymous
+                                    </span>
                                   `}
                             </span>
                             <span class="secondary">
