@@ -11352,7 +11352,7 @@ ${value}</textarea
                                       style="${css`
                                         display: flex;
                                         flex-wrap: wrap;
-                                        column-gap: var(--space--6);
+                                        column-gap: var(--space--8);
                                         row-gap: var(--space--1);
                                       `}"
                                     >
@@ -12299,7 +12299,7 @@ ${value}</textarea
                                     line-height: var(--line-height--xs);
                                     display: flex;
                                     flex-wrap: wrap;
-                                    column-gap: var(--space--6);
+                                    column-gap: var(--space--8);
                                     row-gap: var(--space--1);
                                   `}"
                                 >
@@ -12411,7 +12411,7 @@ ${value}</textarea
                             line-height: var(--line-height--xs);
                             display: flex;
                             flex-wrap: wrap;
-                            column-gap: var(--space--6);
+                            column-gap: var(--space--8);
                             row-gap: var(--space--1);
                           `}"
                         >
