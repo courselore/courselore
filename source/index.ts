@@ -13580,8 +13580,11 @@ ${value}</textarea
               messageReference++
             ) {
               messageCreatedAt = new Date(
-                new Date(messageCreatedAt).getTime() +
-                  lodash.random(12 * 60 * 60 * 1000)
+                Math.min(
+                  Date.now(),
+                  new Date(messageCreatedAt).getTime() +
+                    lodash.random(12 * 60 * 60 * 1000)
+                )
               ).toISOString();
               const content = faker.lorem.paragraphs(
                 lodash.random(1, 6),
@@ -13615,11 +13618,14 @@ ${value}</textarea
                             Math.random() < 0.8
                               ? null
                               : new Date(
-                                  new Date(messageCreatedAt).getTime() +
-                                    lodash.random(
-                                      5 * 60 * 60 * 1000,
-                                      18 * 60 * 60 * 1000
-                                    )
+                                  Math.min(
+                                    Date.now(),
+                                    new Date(messageCreatedAt).getTime() +
+                                      lodash.random(
+                                        5 * 60 * 60 * 1000,
+                                        18 * 60 * 60 * 1000
+                                      )
+                                  )
                                 ).toISOString()
                           },
                           ${conversation.id},
