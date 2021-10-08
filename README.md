@@ -42,8 +42,6 @@
 
 ### Polish Existing Features
 
-- Anonymity:
-  - Remove reference to anonymous student in the reply button.
 - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by staff).
 - Search:
