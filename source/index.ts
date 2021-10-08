@@ -11014,6 +11014,7 @@ ${value}</textarea
             SELECT "messages"."reference"
             FROM "messages"
             WHERE "messages"."conversation" = ${res.locals.conversation.id}
+            ORDER BY "messages"."id" ASC
           `
         )
         .map(
