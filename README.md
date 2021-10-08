@@ -47,6 +47,7 @@
   - Include snippets in search results.
   - Highlight search terms on the entire page.
   - Filters (for example, by conversation type).
+- Widget to refer to conversations or messages.
 - Anonymity:
   - Improve the presentation of anonymity for people who get to see the true identity of the person (the person themselves, and staff).
   - Remove reference to anonymous student in the reply button.

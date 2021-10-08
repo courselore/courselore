@@ -12613,23 +12613,55 @@ ${value}</textarea
               >
                 $${res.locals.conversation.type === "question"
                   ? html`
-                      <div class="label">
+                      <div
+                        class="label"
+                        style="${css`
+                          width: var(--space--32);
+                        `}"
+                      >
                         <p class="label--text">Type</p>
-                        <label
-                          class="button button--tight button--tight--inline"
+                        <div
+                          style="${css`
+                            display: flex;
+                          `}"
                         >
-                          <input
-                            type="checkbox"
-                            name="isAnswer"
-                            autocomplete="off"
-                            $${res.locals.enrollment.role === "staff"
-                              ? `checked`
-                              : ``}
-                            class="input--checkbox"
-                          />
-                          <i class="bi bi-patch-check"></i>
-                          Answer
-                        </label>
+                          <label
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <input
+                              type="checkbox"
+                              name="isAnswer"
+                              autocomplete="off"
+                              $${res.locals.enrollment.role === "staff"
+                                ? `checked`
+                                : ``}
+                              class="visually-hidden input--radio-or-checkbox--multilabel"
+                            />
+                            <span
+                              oninteractive="${javascript`
+                                tippy(this, {
+                                  content: "Set as Answer",
+                                  touch: false,
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-patch-check"></i>
+                              Not an Answer
+                            </span>
+                            <span
+                              class="text--emerald"
+                              oninteractive="${javascript`
+                                tippy(this, {
+                                  content: "Set as Not an Answer",
+                                  touch: false,
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-patch-check-fill"></i>
+                              Answer
+                            </span>
+                          </label>
+                        </div>
                       </div>
                     `
                   : html``}
