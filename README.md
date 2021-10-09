@@ -318,6 +318,22 @@
 <summary><strong>Meetings</strong></summary>
 
 <details>
+<summary>2021-10-09</summary>
+
+- @leafac/javascript
+  - Treatment of relative dates is more consistent with GitHub & Mail.app.
+  - Manually tested the application across browsers.
+    - Firefox login wasn’t working(!)
+- Accent colors.
+- Presentation of radios & checkboxes.
+- Made possible to change the visibility of existing conversations (previously you could only go from visible to everyone to visible by staff-only—now it’s possible to go the other way as well).
+- Improved the presentation of anonymity.
+- Fixed staff-only conversations being innacessible by students who participated.
+- Started the `#references` widget.
+
+</details>
+
+<details>
 <summary>2021-09-25</summary>
 
 - Progress:
