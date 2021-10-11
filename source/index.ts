@@ -905,7 +905,7 @@ export default async function courselore({
                 `
               )}
 
-              .highlight {
+              .mark {
                 color: var(--color--amber--700);
                 background-color: var(--color--amber--200);
                 @media (prefers-color-scheme: dark) {
@@ -7756,7 +7756,7 @@ export default async function courselore({
                 LEFT JOIN (
                   SELECT "messages"."conversation" AS "conversationId",
                          "usersSearch"."rank" AS "rank",
-                         highlight("usersSearch", -1, '<mark class="highlight">', '</mark>') AS "highlight"
+                         highlight("usersSearch", -1, '<mark class="mark">', '</mark>') AS "highlight"
                   FROM "usersSearch"
                   JOIN "users" ON "usersSearch"."rowid" = "users"."id"
                   JOIN "enrollments" ON "users"."id" = "enrollments"."user"
@@ -7767,7 +7767,7 @@ export default async function courselore({
                 LEFT JOIN (
                   SELECT "rowid",
                          "rank",
-                         highlight("conversationsSearch", -1, '<mark class="highlight">', '</mark>') AS "highlight"
+                         highlight("conversationsSearch", -1, '<mark class="mark">', '</mark>') AS "highlight"
                   FROM "conversationsSearch"
                   WHERE "conversationsSearch" MATCH ${search}
                 ) AS "conversationsSearchResult" ON "conversations"."id" = "conversationsSearchResult"."rowid"
@@ -7775,7 +7775,7 @@ export default async function courselore({
                 LEFT JOIN (
                   SELECT "messages"."conversation" AS "conversationId",
                          "messagesSearch"."rank" AS "rank",
-                         snippet("messagesSearch", -1, '<mark class="highlight">', '</mark>', '…', 10) AS "snippet"
+                         snippet("messagesSearch", -1, '<mark class="mark">', '</mark>', '…', 10) AS "snippet"
                   FROM "messagesSearch"
                   JOIN "messages" ON "messagesSearch"."rowid" = "messages"."id"
                   WHERE "messagesSearch" MATCH ${search}
@@ -9963,7 +9963,7 @@ ${value}</textarea
                           type="button"
                           class="dropdown--menu--item button button--transparent"
                           onclick="${javascript`
-                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser("all");
+                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser("everyone");
                           `}"
                         >
                           Everyone in the Conversation
@@ -10220,7 +10220,7 @@ ${value}</textarea
       >;
       res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>;
       markdown: Markdown;
-    }): { html: HTML; text: string; mentions: string[] } => {
+    }): { html: HTML; text: string; mentions: Set<string> } => {
       const document = JSDOM.fragment(html`
         <div class="markdown">
           $${unifiedProcessor.processSync(markdown).toString()}
@@ -10258,8 +10258,7 @@ ${value}</textarea
         wrapper.replaceChildren(...rest);
         element.replaceChildren(summaries[0], wrapper);
       }
-      // TODO: Actually compute mentions
-      const mentions: string[] = [];
+      const mentions = new Set<string>();
       if (res.locals.course !== undefined)
         (function processReferencesAndMentions(node: Node): void {
           switch (node.nodeType) {
@@ -10288,6 +10287,38 @@ ${value}</textarea
                   >`;
                 }
               );
+              // newNodeHTML = newNodeHTML.replace(
+              //   /(?<=^|\W)@(everyone|staff|students|\d+)(?=\W|$)/g,
+              //   (match, mention) => {
+              //     switch (mention) {
+              //       case "everyone":
+              //         mentions.add("everyone");
+              //         return html`<mark class="mark">@${}</mark>`;
+              //         break;
+              //       case "staff":
+              //         mentions.add("staff");
+              //         return html`<mark class="mark">@${}</mark>`;
+              //         break;
+              //       case "students":
+              //         mentions.add("students");
+              //         return html`<mark class="mark">@${}</mark>`;
+              //         break;
+              //       default:
+              //         // TODO: Add to ‘mentions’
+              //         break;
+              //     }
+              //     // TODO: Check that the conversation/message exists and is accessible by user.
+              //     // TODO: Do a tooltip to reveal what would be under the link.
+              //     return html`<a
+              //       href="${url}/courses/${res.locals.course!
+              //         .reference}/conversations/${conversation}${message ===
+              //       undefined
+              //         ? ""
+              //         : `#message--${message}`}"
+              //       >${match}</a
+              //     >`;
+              //   }
+              // );
               parentElement.replaceChild(JSDOM.fragment(newNodeHTML), node);
               break;
           }
@@ -13991,7 +14022,7 @@ ${value}</textarea
           .join("|")}`,
         "gi"
       ),
-      (searchPhrase) => html`<mark class="highlight">$${searchPhrase}</mark>`
+      (searchPhrase) => html`<mark class="mark">$${searchPhrase}</mark>`
     );
 
   const splitSearchPhrases = (search: string): string[] => search.split(/\s+/);
