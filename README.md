@@ -42,6 +42,7 @@
 
 ### Polish Existing Features
 
+- Widget to refer to conversations or messages.
 - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by staff).
 - Search:
@@ -49,7 +50,6 @@
   - Include snippets in search results.
   - Highlight search terms on the entire page.
   - Filters (for example, by conversation type).
-- Widget to refer to conversations or messages.
 - Test interface with weird data: Long text, long words, too many tags, and so forth.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
 - Add different notification badges for when you’re @mentioned.
