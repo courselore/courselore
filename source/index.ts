@@ -905,7 +905,7 @@ export default async function courselore({
                 `
               )}
 
-              .search-result-highlight {
+              .highlight {
                 color: var(--color--amber--700);
                 background-color: var(--color--amber--200);
                 @media (prefers-color-scheme: dark) {
@@ -7756,7 +7756,7 @@ export default async function courselore({
                 LEFT JOIN (
                   SELECT "messages"."conversation" AS "conversationId",
                          "usersSearch"."rank" AS "rank",
-                         highlight("usersSearch", -1, '<span class="search-result-highlight">', '</span>') AS "highlight"
+                         highlight("usersSearch", -1, '<mark class="highlight">', '</mark>') AS "highlight"
                   FROM "usersSearch"
                   JOIN "users" ON "usersSearch"."rowid" = "users"."id"
                   JOIN "enrollments" ON "users"."id" = "enrollments"."user"
@@ -7767,7 +7767,7 @@ export default async function courselore({
                 LEFT JOIN (
                   SELECT "rowid",
                          "rank",
-                         highlight("conversationsSearch", -1, '<span class="search-result-highlight">', '</span>') AS "highlight"
+                         highlight("conversationsSearch", -1, '<mark class="highlight">', '</mark>') AS "highlight"
                   FROM "conversationsSearch"
                   WHERE "conversationsSearch" MATCH ${search}
                 ) AS "conversationsSearchResult" ON "conversations"."id" = "conversationsSearchResult"."rowid"
@@ -7775,7 +7775,7 @@ export default async function courselore({
                 LEFT JOIN (
                   SELECT "messages"."conversation" AS "conversationId",
                          "messagesSearch"."rank" AS "rank",
-                         snippet("messagesSearch", -1, '<span class="search-result-highlight">', '</span>', '…', 10) AS "snippet"
+                         snippet("messagesSearch", -1, '<mark class="highlight">', '</mark>', '…', 10) AS "snippet"
                   FROM "messagesSearch"
                   JOIN "messages" ON "messagesSearch"."rowid" = "messages"."id"
                   WHERE "messagesSearch" MATCH ${search}
@@ -13991,8 +13991,7 @@ ${value}</textarea
           .join("|")}`,
         "gi"
       ),
-      (searchPhrase) =>
-        html`<mark class="search-result-highlight">$${searchPhrase}</mark>`
+      (searchPhrase) => html`<mark class="highlight">$${searchPhrase}</mark>`
     );
 
   const splitSearchPhrases = (search: string): string[] => search.split(/\s+/);
