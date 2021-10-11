@@ -10287,38 +10287,57 @@ ${value}</textarea
                   >`;
                 }
               );
-              // newNodeHTML = newNodeHTML.replace(
-              //   /(?<=^|\W)@(everyone|staff|students|\d+)(?=\W|$)/g,
-              //   (match, mention) => {
-              //     switch (mention) {
-              //       case "everyone":
-              //         mentions.add("everyone");
-              //         return html`<mark class="mark">@${}</mark>`;
-              //         break;
-              //       case "staff":
-              //         mentions.add("staff");
-              //         return html`<mark class="mark">@${}</mark>`;
-              //         break;
-              //       case "students":
-              //         mentions.add("students");
-              //         return html`<mark class="mark">@${}</mark>`;
-              //         break;
-              //       default:
-              //         // TODO: Add to ‘mentions’
-              //         break;
-              //     }
-              //     // TODO: Check that the conversation/message exists and is accessible by user.
-              //     // TODO: Do a tooltip to reveal what would be under the link.
-              //     return html`<a
-              //       href="${url}/courses/${res.locals.course!
-              //         .reference}/conversations/${conversation}${message ===
-              //       undefined
-              //         ? ""
-              //         : `#message--${message}`}"
-              //       >${match}</a
-              //     >`;
-              //   }
-              // );
+              newNodeHTML = newNodeHTML.replace(
+                /(?<=^|\W)@(everyone|staff|students|[0-9a-z-]+)(?=\W|$)/g,
+                (match, mention) => {
+                  switch (mention) {
+                    case "everyone":
+                      mentions.add("everyone");
+                      return html`<strong
+                        oninteractive="${javascript`
+                          tippy(this, {
+                            content: "Mention everyone in the conversation",
+                            touch: false,
+                          });
+                        `}"
+                        >${match}</strong
+                      >`;
+                    case "staff":
+                      mentions.add("staff");
+                      return html`<strong
+                        oninteractive="${javascript`
+                          tippy(this, {
+                            content: "Mention staff in the conversation",
+                            touch: false,
+                          });
+                        `}"
+                        >${match}</strong
+                      >`;
+                    case "students":
+                      mentions.add("students");
+                      return html`<strong
+                        oninteractive="${javascript`
+                          tippy(this, {
+                            content: "Mention students in the conversation",
+                            touch: false,
+                          });
+                        `}"
+                        >${match}</strong
+                      >`;
+                    default:
+                      // TODO: Add to ‘mentions’
+                      return html`<strong
+                        oninteractive="${javascript`
+                          tippy(this, {
+                            content: "Mention <PERSON>",
+                            touch: false,
+                          });
+                        `}"
+                        >${match}</strong
+                      >`;
+                  }
+                }
+              );
               parentElement.replaceChild(JSDOM.fragment(newNodeHTML), node);
               break;
           }
