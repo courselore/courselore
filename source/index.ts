@@ -9837,37 +9837,47 @@ export default async function courselore({
                       this.addEventListener("input", (() => {
                         let isSearching = false;
                         let shouldSearchAgain = false;
-                        return async function search() {
+                        return async function onInput() {
                           const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
                           const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
-                          if (!dropdownMenuMentionUser.state.isShown) {
-                            anchorIndex = selectionMin - 1;
-                            if (this.value[anchorIndex] !== "@" || (anchorIndex > 0 && this.value[anchorIndex - 1].match(/[\\w]/) !== null)) return;
-                            const caretCoordinates = getCaretCoordinates(this, anchorIndex);
-                            dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
-                            dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
-                            dropdownMenuMentionUser.show();
+                          for (const { anchor, dropdown, search } of [
+                            {
+                              anchor: "@",
+                              dropdown: dropdownMenuMentionUser,
+                              search: async (searchTerm) => {
+                                const markdownEditor = this.closest(".markdown-editor");
+                                markdownEditor.querySelector(".markdown-editor--mention-user--search-results").innerHTML =
+                                  searchTerm === ""
+                                  ? ""
+                                  : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name: searchTerm }))).text();
+                                const buttons = markdownEditor.querySelectorAll(".markdown-editor--mention-user .button");
+                                for (const button of buttons) button.classList.remove("hover");
+                                buttons[0].classList.add("hover");
+                              }
+                            }
+                          ]) {
+                            if (!dropdown.state.isShown) {
+                              anchorIndex = selectionMin - 1;
+                              if (this.value[anchorIndex] !== anchor || (anchorIndex > 0 && this.value[anchorIndex - 1].match(/[\\w]/) !== null)) return;
+                              const caretCoordinates = getCaretCoordinates(this, anchorIndex);
+                              dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
+                              dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
+                              dropdown.show();
+                            }
+                            if (selectionMin <= anchorIndex || this.value[anchorIndex] !== anchor) {
+                              tippy.hideAll();
+                              return;
+                            }
+                            if (isSearching) {
+                              shouldSearchAgain = true;
+                              return;
+                            }
+                            shouldSearchAgain = false;
+                            isSearching = true;
+                            await search(this.value.slice(anchorIndex + 1, selectionMax).trim());
+                            isSearching = false;
+                            if (shouldSearchAgain) onInput();
                           }
-                          if (selectionMin <= anchorIndex || this.value[anchorIndex] !== "@") {
-                            dropdownMenuMentionUser.hide();
-                            return;
-                          }
-                          if (isSearching) {
-                            shouldSearchAgain = true;
-                            return;
-                          }
-                          shouldSearchAgain = false;
-                          isSearching = true;
-                          const name = this.value.slice(anchorIndex + 1, selectionMax);
-                          this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user--search-results").innerHTML =
-                            name.trim() === ""
-                            ? ""
-                            : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name }))).text();
-                          const buttons = this.closest(".markdown-editor").querySelectorAll(".markdown-editor--mention-user .button");
-                          for (const button of buttons) button.classList.remove("hover");
-                          buttons[0].classList.add("hover");
-                          isSearching = false;
-                          if (shouldSearchAgain) search();
                         }
                       })());
 
