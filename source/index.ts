@@ -9102,6 +9102,7 @@ export default async function courselore({
                     body: new URLSearchParams({ content: textarea.value }),
                   })
                 ).text();
+                leafac.evaluateElementsAttribute(preview);
                 write.hidden = true;
                 loading.hidden = true;
                 preview.hidden = false;
