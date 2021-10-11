@@ -10330,7 +10330,20 @@ ${value}</textarea
                       return html`<strong
                         oninteractive="${javascript`
                           tippy(this, {
-                            content: "Mention ${enrollment.userName}",
+                            content: ${JSON.stringify(
+                              html`Mention
+                              $${enrollment.userAvatar === null
+                                ? html`<i class="bi bi-person-circle"></i>`
+                                : html`
+                                    <img
+                                      src="${enrollment.userAvatar}"
+                                      alt="${enrollment.userName}"
+                                      class="avatar avatar--sm avatar--vertical-align"
+                                    />
+                                  `}
+                              ${enrollment.userName}`
+                            )},
+                            allowHTML: true,
                             touch: false,
                           });
                         `}"
