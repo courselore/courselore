@@ -10326,18 +10326,19 @@ ${value}</textarea
                         `
                       );
                       if (enrollment === undefined) return html`${match}`;
-                      const mentionHTML = html`<strong
+                      return html`<strong
                         oninteractive="${javascript`
                           tippy(this, {
                             content: "Mention ${enrollment.userName}",
                             touch: false,
                           });
                         `}"
-                        >@${enrollment.userName}</strong
+                        >$${enrollment.userId === res.locals.user!.id
+                          ? html`<mark class="mark"
+                              >@$${enrollment.userName}</mark
+                            >`
+                          : html`@$${enrollment.userName}`}</strong
                       >`;
-                      return enrollment.userId === res.locals.user!.id
-                        ? html`<mark class="mark">$${mentionHTML}</mark>`
-                        : html`$${mentionHTML}`;
                   }
                 }
               );
