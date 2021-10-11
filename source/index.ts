@@ -9840,7 +9840,7 @@ export default async function courselore({
                           const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
                           if (!dropdownMenuMentionUser.state.isShown) {
                             anchorIndex = selectionMin - 1;
-                            if (this.value[anchorIndex] !== "@" || (anchorIndex > 0 && this.value[anchorIndex - 1].match(/[\\w@]/) !== null)) return;
+                            if (this.value[anchorIndex] !== "@" || (anchorIndex > 0 && this.value[anchorIndex - 1].match(/[\\w]/) !== null)) return;
                             const caretCoordinates = getCaretCoordinates(this, anchorIndex);
                             dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
                             dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
