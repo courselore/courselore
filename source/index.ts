@@ -10017,7 +10017,7 @@ ${value}</textarea
                     <div
                       class="markdown-editor--refer-to-conversation-or-message"
                       style="${css`
-                        width: var(--space--56);
+                        width: var(--space--72);
                         max-height: var(--space--44);
                         overflow: auto;
                       `}"
