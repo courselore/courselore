@@ -10258,6 +10258,7 @@ ${value}</textarea
         wrapper.replaceChildren(...rest);
         element.replaceChildren(summaries[0], wrapper);
       }
+      // TODO: Compute these mentions.
       const mentions = new Set<string>();
       if (res.locals.course !== undefined)
         (function processReferencesAndMentions(node: Node): void {
@@ -10292,7 +10293,6 @@ ${value}</textarea
                 (match, mention) => {
                   switch (mention) {
                     case "everyone":
-                      mentions.add("everyone");
                       return html`<strong
                         oninteractive="${javascript`
                           tippy(this, {
@@ -10303,7 +10303,6 @@ ${value}</textarea
                         >${match}</strong
                       >`;
                     case "staff":
-                      mentions.add("staff");
                       return html`<strong
                         oninteractive="${javascript`
                           tippy(this, {
@@ -10314,7 +10313,6 @@ ${value}</textarea
                         >${match}</strong
                       >`;
                     case "students":
-                      mentions.add("students");
                       return html`<strong
                         oninteractive="${javascript`
                           tippy(this, {
@@ -10325,7 +10323,6 @@ ${value}</textarea
                         >${match}</strong
                       >`;
                     default:
-                      // TODO: Add to ‘mentions’
                       return html`<strong
                         oninteractive="${javascript`
                           tippy(this, {
