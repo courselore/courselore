@@ -9879,7 +9879,7 @@ export default async function courselore({
                               dropdown.show();
                             }
                             if (selectionMin <= anchorIndex || this.value[anchorIndex] !== anchor) {
-                              tippy.hideAll();
+                              dropdown.hide();
                               continue;
                             }
                             if (isSearching) {
