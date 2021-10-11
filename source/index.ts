@@ -10293,30 +10293,12 @@ ${value}</textarea
                 (match, mention) => {
                   switch (mention) {
                     case "everyone":
-                      return html`<strong
-                        oninteractive="${javascript`
-                          tippy(this, {
-                            content: "Mention everyone in the conversation",
-                            touch: false,
-                          });
-                        `}"
-                        >${match}</strong
-                      >`;
                     case "staff":
-                      return html`<strong
-                        oninteractive="${javascript`
-                          tippy(this, {
-                            content: "Mention staff in the conversation",
-                            touch: false,
-                          });
-                        `}"
-                        >${match}</strong
-                      >`;
                     case "students":
                       return html`<strong
                         oninteractive="${javascript`
                           tippy(this, {
-                            content: "Mention students in the conversation",
+                            content: "Mention ${mention} in the conversation",
                             touch: false,
                           });
                         `}"
