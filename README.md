@@ -50,9 +50,10 @@
   - Highlight search terms on the entire page.
   - Filters (for example, by conversation type).
 - Widget to refer to conversations or messages.
-- Let original question asker approve an answer.
 - Test interface with weird data: Long text, long words, too many tags, and so forth.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
+- Add different notification badges for when you’re @mentioned.
+- Let original question asker approve an answer.
 - Come up with a better term than “Demonstration”, which may imply a paid product.
 
 ### Users
