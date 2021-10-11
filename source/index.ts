@@ -11843,6 +11843,7 @@ ${value}</textarea
                         display: flex;
                         flex-direction: column;
                         gap: var(--space--2);
+                        min-width: var(--space--0);
                       `}"
                     >
                       <div
