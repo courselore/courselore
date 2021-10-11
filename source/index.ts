@@ -1420,6 +1420,7 @@ export default async function courselore({
                     color: var(--color--amber--200);
                     background-color: var(--color--amber--700);
                   }
+                  border-radius: var(--border-radius--base);
                 }
 
                 small {
@@ -10348,9 +10349,7 @@ ${value}</textarea
                           });
                         `}"
                         >$${enrollment.userId === res.locals.user!.id
-                          ? html`<mark class="mark"
-                              >@$${enrollment.userName}</mark
-                            >`
+                          ? html`<mark>@$${enrollment.userName}</mark>`
                           : html`@$${enrollment.userName}`}</strong
                       >`;
                   }
