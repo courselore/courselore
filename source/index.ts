@@ -9855,20 +9855,20 @@ export default async function courselore({
                                 buttons[0].classList.add("hover");
                               }
                             },
-                            {
-                              anchor: "#",
-                              dropdown: dropdownMenuReferToConversationOrMessage,
-                              search: async (searchTerm) => {
-                                const markdownEditor = this.closest(".markdown-editor");
-                                markdownEditor.querySelector(".markdown-editor--refer-to-conversation-or-message--search-results").innerHTML =
-                                  searchTerm === ""
-                                  ? ""
-                                  : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name: searchTerm }))).text();
-                                // const buttons = markdownEditor.querySelectorAll(".markdown-editor--mention-user .button");
-                                // for (const button of buttons) button.classList.remove("hover");
-                                // buttons[0].classList.add("hover");
-                              }
-                            },
+                            // {
+                            //   anchor: "#",
+                            //   dropdown: dropdownMenuReferToConversationOrMessage,
+                            //   search: async (searchTerm) => {
+                            //     const markdownEditor = this.closest(".markdown-editor");
+                            //     markdownEditor.querySelector(".markdown-editor--refer-to-conversation-or-message--search-results").innerHTML =
+                            //       searchTerm === ""
+                            //       ? ""
+                            //       : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name: searchTerm }))).text();
+                            //     // const buttons = markdownEditor.querySelectorAll(".markdown-editor--mention-user .button");
+                            //     // for (const button of buttons) button.classList.remove("hover");
+                            //     // buttons[0].classList.add("hover");
+                            //   }
+                            // },
                           ]) {
                             if (!dropdown.state.isShown) {
                               anchorIndex = selectionMin - 1;
