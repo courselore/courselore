@@ -42,7 +42,6 @@
 
 ### Polish Existing Features
 
-- Mathematics, code, and possibly other things are overflowing in small screens.
 - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by staff).
 - Search:
