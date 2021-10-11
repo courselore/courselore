@@ -10305,15 +10305,39 @@ ${value}</textarea
                         >${match}</strong
                       >`;
                     default:
-                      return html`<strong
+                      const enrollmentReference = mention.split("--")[0];
+                      const enrollment = database.get<{
+                        userId: number;
+                        userName: string;
+                        userAvatar: string | null;
+                        userBiography: string | null;
+                      }>(
+                        sql`
+                          SELECT "users"."id" AS "userId",
+                                 "users"."name" AS "userName",
+                                 "users"."avatar" AS "userAvatar",
+                                 "users"."biography" AS "userBiography"
+                          FROM "enrollments"
+                          JOIN "users" ON "enrollments"."user" = "users"."id"
+                          WHERE "enrollments"."course" = ${
+                            res.locals.course!.id
+                          } AND
+                                "enrollments"."reference" = ${enrollmentReference}
+                        `
+                      );
+                      if (enrollment === undefined) return html`${match}`;
+                      const mentionHTML = html`<strong
                         oninteractive="${javascript`
                           tippy(this, {
-                            content: "Mention <PERSON>",
+                            content: "Mention ${enrollment.userName}",
                             touch: false,
                           });
                         `}"
-                        >${match}</strong
+                        >@${enrollment.userName}</strong
                       >`;
+                      return enrollment.userId === res.locals.user!.id
+                        ? html`<mark class="mark">$${mentionHTML}</mark>`
+                        : html`$${mentionHTML}`;
                   }
                 }
               );
