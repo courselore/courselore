@@ -9864,9 +9864,9 @@ export default async function courselore({
                                   searchTerm === ""
                                   ? ""
                                   : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name: searchTerm }))).text();
-                                const buttons = markdownEditor.querySelectorAll(".markdown-editor--mention-user .button");
-                                for (const button of buttons) button.classList.remove("hover");
-                                buttons[0].classList.add("hover");
+                                // const buttons = markdownEditor.querySelectorAll(".markdown-editor--mention-user .button");
+                                // for (const button of buttons) button.classList.remove("hover");
+                                // buttons[0].classList.add("hover");
                               }
                             },
                           ]) {
