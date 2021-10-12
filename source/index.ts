@@ -10153,6 +10153,92 @@ ${value}</textarea
     }
   );
 
+  app.get<
+    { courseReference: string },
+    any,
+    {},
+    { search?: string },
+    IsEnrolledInCourseMiddlewareLocals
+  >(
+    "/courses/:courseReference/markdown-editor/refer-to-conversation-or-message-search",
+    ...isEnrolledInCourseMiddleware,
+    (req, res, next) => {
+      if (
+        typeof req.query.search !== "string" ||
+        req.query.search.trim() === ""
+      )
+        return next("validation");
+
+      const users = database.all<{
+        name: string;
+        nameSearch: string;
+        avatar: string | null;
+        enrollmentReference: string;
+        enrollmentRole: string;
+      }>(
+        sql`
+          SELECT "users"."name" AS "name",
+                 "users"."nameSearch" AS "nameSearch",
+                 "users"."avatar" AS "avatar",
+                 "enrollments"."reference" AS "enrollmentReference",
+                 "enrollments"."role" AS "enrollmentRole"
+          FROM "users"
+          JOIN "usersSearch" ON "users"."id" = "usersSearch"."rowid" AND
+                                "usersSearch" MATCH ${sanitizeSearch(
+                                  req.query.search,
+                                  { prefix: true }
+                                )}
+          JOIN "enrollments" ON "users"."id" = "enrollments"."user" AND
+                                "enrollments"."course" = ${res.locals.course.id}
+          WHERE "users"."id" != ${res.locals.user.id}
+          ORDER BY "usersSearch"."rank" ASC,
+                   "users"."name" ASC
+        `
+      );
+
+      res.send(
+        html`
+          $${users.length === 0
+            ? html`
+                <div class="dropdown--menu--item secondary">No user found.</div>
+              `
+            : users.map(
+                (user) => html`
+                  <button
+                    type="button"
+                    class="dropdown--menu--item button button--transparent"
+                    onclick="${javascript`
+                      this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${
+                        user.enrollmentReference
+                      }--${slugify(user.name)}");
+                    `}"
+                  >
+                    $${user.avatar === null
+                      ? html`<i class="bi bi-person-circle"></i>`
+                      : html`
+                          <img
+                            src="${user.avatar}"
+                            alt="${user.name}"
+                            class="avatar avatar--sm avatar--vertical-align"
+                          />
+                        `}
+                    <span>
+                      $${highlightSearchResult(
+                        user.nameSearch,
+                        req.query.search!
+                      )}
+                      <span class="secondary">
+                        · ${lodash.capitalize(user.enrollmentRole)}
+                      </span>
+                    </span>
+                  </button>
+                `
+              )}
+        `
+      );
+    }
+  );
+
   // TODO: https://github.com/sindresorhus/filenamify
   app.post<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/markdown-editor/attachments",
