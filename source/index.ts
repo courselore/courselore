@@ -10200,7 +10200,9 @@ ${value}</textarea
         html`
           $${users.length === 0
             ? html`
-                <div class="dropdown--menu--item secondary">No user found.</div>
+                <div class="dropdown--menu--item secondary">
+                  No conversation or message found.
+                </div>
               `
             : users.map(
                 (user) => html`
