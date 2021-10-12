@@ -126,7 +126,7 @@ export default async function courselore({
         "biography" TEXT NULL,
         "emailNotifications" TEXT NOT NULL
       );
-      CREATE VIRTUAL TABLE "usersNameSearchIndex" USING fts5 (
+      CREATE VIRTUAL TABLE "usersNameSearchIndex" USING fts5(
         content = "users",
         content_rowid = "id",
         "nameSearch",
