@@ -9878,7 +9878,7 @@ export default async function courselore({
                                 (selectionMin > 1 && value[selectionMin - 2].match(/\\w/) !== null)
                               ) continue;
                               anchorIndex = selectionMin;
-                              const caretCoordinates = getCaretCoordinates(this, anchorIndex);
+                              const caretCoordinates = getCaretCoordinates(this, anchorIndex - 1);
                               dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
                               dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
                               tippy.hideAll();
