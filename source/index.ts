@@ -9823,6 +9823,7 @@ export default async function courselore({
                       const dropdownMenuTarget = markdownEditor.querySelector(".markdown-editor--write--textarea--dropdown-menu-target");
                       const dropdownMenus = [
                         {
+                          buttonsContainer: markdownEditor.querySelector(".markdown-editor--mention-user"),
                           dropdownMenu: tippy(dropdownMenuTarget, {
                             content: markdownEditor.querySelector(".markdown-editor--mention-user"),
                             placement: "bottom-start",
@@ -9836,9 +9837,9 @@ export default async function courselore({
                               ? ""
                               : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name: search }))).text();
                           },
-                          getButtonsContainer: () => markdownEditor.querySelector(".markdown-editor--mention-user"),
                         },
                         {
+                          buttonsContainer: markdownEditor.querySelector(".markdown-editor--refer-to-conversation-or-message"),
                           dropdownMenu: tippy(dropdownMenuTarget, {
                             content: markdownEditor.querySelector(".markdown-editor--refer-to-conversation-or-message"),
                             placement: "bottom-start",
@@ -9852,7 +9853,6 @@ export default async function courselore({
                               ? ""
                               : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name: search }))).text();
                           },
-                          getButtonsContainer: () => markdownEditor.querySelector(".markdown-editor--refer-to-conversation-or-message"),
                         },
                       ];
                       let anchorIndex = null;
@@ -9864,7 +9864,7 @@ export default async function courselore({
                           const value = this.value;
                           const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
                           const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
-                          for (const { dropdownMenu, trigger, update, getButtonsContainer } of dropdownMenus) {
+                          for (const { buttonsContainer, dropdownMenu, trigger, update } of dropdownMenus) {
                             if (!dropdownMenu.state.isShown) {
                               if (
                                 value[selectionMin - 1] !== trigger ||
@@ -9888,7 +9888,7 @@ export default async function courselore({
                             isUpdating = true;
                             shouldUpdateAgain = false;
                             await update(value.slice(anchorIndex, selectionMax).trim());
-                            const buttons = getButtonsContainer().querySelectorAll(".button");
+                            const buttons = buttonsContainer.querySelectorAll(".button");
                             for (const button of buttons) button.classList.remove("hover");
                             if (buttons.length > 0) buttons[0].classList.add("hover");
                             isUpdating = false;
@@ -9898,13 +9898,12 @@ export default async function courselore({
                       })());
 
                       this.addEventListener("keydown", (event) => {
-                        for (const { dropdownMenu, getButtonsContainer } of dropdownMenus) {
+                        for (const { buttonsContainer, dropdownMenu } of dropdownMenus) {
                           if (!dropdownMenu.state.isShown) continue;
                           switch (event.code) {
                             case "ArrowUp":
                             case "ArrowDown":
                               event.preventDefault();
-                              const buttonsContainer = getButtonsContainer();
                               const buttons = [...buttonsContainer.querySelectorAll(".button")];
                               if (buttons.length === 0) continue;    
                               const currentHoverIndex = buttons.indexOf(buttonsContainer.querySelector(".button.hover"));
@@ -9921,7 +9920,7 @@ export default async function courselore({
 
                             case "Enter":
                             case "Tab":
-                              const buttonHover = getButtonsContainer().querySelector(".button.hover");
+                              const buttonHover = buttonsContainer.querySelector(".button.hover");
                               if (buttonHover === null) tippy.hideAll();
                               else {
                                 event.preventDefault();
