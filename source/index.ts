@@ -10169,73 +10169,54 @@ ${value}</textarea
       )
         return next("validation");
 
-      const users = database.all<{
-        name: string;
-        nameSearch: string;
-        avatar: string | null;
-        enrollmentReference: string;
-        enrollmentRole: string;
-      }>(
-        sql`
-          SELECT "users"."name" AS "name",
-                 "users"."nameSearch" AS "nameSearch",
-                 "users"."avatar" AS "avatar",
-                 "enrollments"."reference" AS "enrollmentReference",
-                 "enrollments"."role" AS "enrollmentRole"
-          FROM "users"
-          JOIN "usersSearch" ON "users"."id" = "usersSearch"."rowid" AND
-                                "usersSearch" MATCH ${sanitizeSearch(
-                                  req.query.search,
-                                  { prefix: true }
-                                )}
-          JOIN "enrollments" ON "users"."id" = "enrollments"."user" AND
-                                "enrollments"."course" = ${res.locals.course.id}
-          WHERE "users"."id" != ${res.locals.user.id}
-          ORDER BY "usersSearch"."rank" ASC,
-                   "users"."name" ASC
-        `
-      );
+      const results: HTML[] = [];
+
+      if (req.query.search.match(/^\d+$/) !== null)
+        results.push(
+          ...database
+            .all<{ reference: string }>(
+              sql`
+                SELECT "reference" FROM "conversations" WHERE "reference" = ${req.query.search} ORDER BY "id"
+              `
+            )
+            .flatMap((conversationRow) => {
+              const conversation = getConversation(
+                req,
+                res,
+                conversationRow.reference
+              );
+              if (conversation === undefined) return [];
+              return [
+                html`
+                  <button
+                    type="button"
+                    class="dropdown--menu--item button button--transparent"
+                    onclick="${javascript`
+                      this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
+                    `}"
+                  >
+                    <span class="strong">
+                      #$${highlightSearchResult(
+                        conversation.reference,
+                        req.query.search!
+                      )}
+                      ${conversation.title}
+                    </span>
+                  </button>
+                `,
+              ];
+            })
+        );
 
       res.send(
         html`
-          $${users.length === 0
+          $${results.length === 0
             ? html`
                 <div class="dropdown--menu--item secondary">
                   No conversation or message found.
                 </div>
               `
-            : users.map(
-                (user) => html`
-                  <button
-                    type="button"
-                    class="dropdown--menu--item button button--transparent"
-                    onclick="${javascript`
-                      this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${
-                        user.enrollmentReference
-                      }--${slugify(user.name)}");
-                    `}"
-                  >
-                    $${user.avatar === null
-                      ? html`<i class="bi bi-person-circle"></i>`
-                      : html`
-                          <img
-                            src="${user.avatar}"
-                            alt="${user.name}"
-                            class="avatar avatar--sm avatar--vertical-align"
-                          />
-                        `}
-                    <span>
-                      $${highlightSearchResult(
-                        user.nameSearch,
-                        req.query.search!
-                      )}
-                      <span class="secondary">
-                        · ${lodash.capitalize(user.enrollmentRole)}
-                      </span>
-                    </span>
-                  </button>
-                `
-              )}
+            : results}
         `
       );
     }
