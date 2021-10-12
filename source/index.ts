@@ -9861,7 +9861,7 @@ export default async function courselore({
                       this.addEventListener("input", (() => {
                         let isUpdating = false;
                         let shouldUpdateAgain = false;
-                        return async function updateDropdownMenus() {
+                        return async function onInput() {
                           const value = this.value;
                           const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
                           const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
@@ -9890,7 +9890,7 @@ export default async function courselore({
                             shouldUpdateAgain = false;
                             await update(value.slice(anchorIndex, selectionMax).trim());
                             isUpdating = false;
-                            if (shouldUpdateAgain) updateDropdownMenus();
+                            if (shouldUpdateAgain) onInput();
                           }
                         }
                       })());
