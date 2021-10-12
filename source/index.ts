@@ -267,20 +267,36 @@ export default async function courselore({
         UNIQUE ("conversation", "reference")
       );
       CREATE INDEX "messagesConversationIndex" ON "messages" ("conversation");
+      CREATE VIRTUAL TABLE "messagesReferenceIndex" USING fts5(
+        content = "messages",
+        content_rowid = "id",
+        "reference",
+        tokenize = 'porter'
+      );
+      CREATE TRIGGER "messagesReferenceIndexInsert" AFTER INSERT ON "messages" BEGIN
+        INSERT INTO "messagesReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
+      END;
+      CREATE TRIGGER "messagesReferenceIndexUpdate" AFTER UPDATE ON "messages" BEGIN
+        INSERT INTO "messagesReferenceIndex" ("messagesReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
+        INSERT INTO "messagesReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
+      END;
+      CREATE TRIGGER "messagesReferenceIndexDelete" AFTER DELETE ON "messages" BEGIN
+        INSERT INTO "messagesReferenceIndex" ("messagesReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
+      END;
       CREATE VIRTUAL TABLE "messagesContentSearchIndex" USING fts5(
         content = "messages",
         content_rowid = "id",
         "contentSearch",
         tokenize = 'porter'
       );
-      CREATE TRIGGER "messagesSearchInsert" AFTER INSERT ON "messages" BEGIN
+      CREATE TRIGGER "messagesContentSearchIndexInsert" AFTER INSERT ON "messages" BEGIN
         INSERT INTO "messagesContentSearchIndex" ("rowid", "contentSearch") VALUES ("new"."id", "new"."contentSearch");
       END;
-      CREATE TRIGGER "messagesSearchUpdate" AFTER UPDATE ON "messages" BEGIN
+      CREATE TRIGGER "messagesContentSearchIndexUpdate" AFTER UPDATE ON "messages" BEGIN
         INSERT INTO "messagesContentSearchIndex" ("messagesContentSearchIndex", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
         INSERT INTO "messagesContentSearchIndex" ("rowid", "contentSearch") VALUES ("new"."id", "new"."contentSearch");
       END;
-      CREATE TRIGGER "messagesSearchDelete" AFTER DELETE ON "messages" BEGIN
+      CREATE TRIGGER "messagesContentSearchIndexDelete" AFTER DELETE ON "messages" BEGIN
         INSERT INTO "messagesContentSearchIndex" ("messagesContentSearchIndex", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
       END;
       CREATE INDEX "messagesAnswerAtIndex" ON "messages" ("answerAt");
