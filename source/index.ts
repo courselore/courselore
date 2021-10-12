@@ -9835,7 +9835,7 @@ export default async function courselore({
                             markdownEditor.querySelector(".markdown-editor--mention-user--search-results").innerHTML =
                               search === ""
                               ? ""
-                              : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name: search }))).text();
+                              : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ search }))).text();
                           },
                         },
                         {
@@ -9851,7 +9851,7 @@ export default async function courselore({
                             markdownEditor.querySelector(".markdown-editor--refer-to-conversation-or-message--search-results").innerHTML =
                               search === ""
                               ? ""
-                              : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name: search }))).text();
+                              : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ search }))).text();
                           },
                         },
                       ];
@@ -10075,13 +10075,16 @@ ${value}</textarea
     { courseReference: string },
     any,
     {},
-    { name?: string },
+    { search?: string },
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/markdown-editor/mention-user-search",
     ...isEnrolledInCourseMiddleware,
     (req, res, next) => {
-      if (typeof req.query.name !== "string" || req.query.name.trim() === "")
+      if (
+        typeof req.query.search !== "string" ||
+        req.query.search.trim() === ""
+      )
         return next("validation");
 
       const users = database.all<{
@@ -10100,7 +10103,7 @@ ${value}</textarea
           FROM "users"
           JOIN "usersSearch" ON "users"."id" = "usersSearch"."rowid" AND
                                 "usersSearch" MATCH ${sanitizeSearch(
-                                  req.query.name,
+                                  req.query.search,
                                   { prefix: true }
                                 )}
           JOIN "enrollments" ON "users"."id" = "enrollments"."user" AND
