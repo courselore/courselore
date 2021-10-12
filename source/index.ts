@@ -126,21 +126,21 @@ export default async function courselore({
         "biography" TEXT NULL,
         "emailNotifications" TEXT NOT NULL
       );
-      CREATE VIRTUAL TABLE "usersSearch" USING fts5 (
+      CREATE VIRTUAL TABLE "usersNameSearchIndex" USING fts5 (
         content = "users",
         content_rowid = "id",
         "nameSearch",
         tokenize = 'porter'
       );
-      CREATE TRIGGER "usersSearchInsert" AFTER INSERT ON "users" BEGIN
-        INSERT INTO "usersSearch" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
+      CREATE TRIGGER "usersNameSearchIndexInsert" AFTER INSERT ON "users" BEGIN
+        INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
       END;
-      CREATE TRIGGER "usersSearchUpdate" AFTER UPDATE ON "users" BEGIN
-        INSERT INTO "usersSearch" ("usersSearch", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
-        INSERT INTO "usersSearch" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
+      CREATE TRIGGER "usersNameSearchIndexUpdate" AFTER UPDATE ON "users" BEGIN
+        INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
+        INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
       END;
-      CREATE TRIGGER "usersSearchDelete" AFTER DELETE ON "users" BEGIN
-        INSERT INTO "usersSearch" ("usersSearch", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
+      CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
+        INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
       END;
 
       CREATE TABLE "emailConfirmations" (
@@ -7744,7 +7744,7 @@ export default async function courselore({
                       ? sql``
                       : sql`
                           ,
-                          "usersSearchResult"."highlight" AS "usersSearchResultHighlight",
+                          "usersNameSearchIndexResult"."highlight" AS "usersNameSearchIndexResultHighlight",
                           "conversationsSearchResult"."highlight" AS "conversationsSearchResultHighlight",
                           "messagesSearchResult"."snippet" AS "messagesSearchResultSnippet"
                         `
@@ -7756,14 +7756,14 @@ export default async function courselore({
               : sql`
                 LEFT JOIN (
                   SELECT "messages"."conversation" AS "conversationId",
-                         "usersSearch"."rank" AS "rank",
-                         highlight("usersSearch", -1, '<mark class="mark">', '</mark>') AS "highlight"
-                  FROM "usersSearch"
-                  JOIN "users" ON "usersSearch"."rowid" = "users"."id"
+                         "usersNameSearchIndex"."rank" AS "rank",
+                         highlight("usersNameSearchIndex", -1, '<mark class="mark">', '</mark>') AS "highlight"
+                  FROM "usersNameSearchIndex"
+                  JOIN "users" ON "usersNameSearchIndex"."rowid" = "users"."id"
                   JOIN "enrollments" ON "users"."id" = "enrollments"."user"
                   JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment"
-                  WHERE "usersSearch" MATCH ${search}
-                ) AS "usersSearchResult" ON "conversations"."id" = "usersSearchResult"."conversationId"
+                  WHERE "usersNameSearchIndex" MATCH ${search}
+                ) AS "usersNameSearchIndexResult" ON "conversations"."id" = "usersNameSearchIndexResult"."conversationId"
 
                 LEFT JOIN (
                   SELECT "rowid",
@@ -10097,15 +10097,15 @@ ${value}</textarea
                  "enrollments"."reference" AS "enrollmentReference",
                  "enrollments"."role" AS "enrollmentRole"
           FROM "users"
-          JOIN "usersSearch" ON "users"."id" = "usersSearch"."rowid" AND
-                                "usersSearch" MATCH ${sanitizeSearch(
+          JOIN "usersNameSearchIndex" ON "users"."id" = "usersNameSearchIndex"."rowid" AND
+                                "usersNameSearchIndex" MATCH ${sanitizeSearch(
                                   req.query.search,
                                   { prefix: true }
                                 )}
           JOIN "enrollments" ON "users"."id" = "enrollments"."user" AND
                                 "enrollments"."course" = ${res.locals.course.id}
           WHERE "users"."id" != ${res.locals.user.id}
-          ORDER BY "usersSearch"."rank" ASC,
+          ORDER BY "usersNameSearchIndex"."rank" ASC,
                    "users"."name" ASC
         `
       );
