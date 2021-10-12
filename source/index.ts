@@ -10176,7 +10176,11 @@ ${value}</textarea
           ...database
             .all<{ reference: string }>(
               sql`
-                SELECT "reference" FROM "conversations" WHERE "reference" = ${req.query.search} ORDER BY "id"
+                SELECT "reference"
+                FROM "conversations"
+                WHERE "course" = ${res.locals.course.id} AND
+                      "reference" = ${req.query.search}
+                ORDER BY "id"
               `
             )
             .flatMap((conversationRow) => {
