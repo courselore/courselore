@@ -9832,6 +9832,7 @@ export default async function courselore({
                             trigger: "manual",
                             interactive: true,
                           }),
+                          route: "mention-user-search",
                         },
                         {
                           trigger: "#",
@@ -9843,6 +9844,7 @@ export default async function courselore({
                             trigger: "manual",
                             interactive: true,
                           }),
+                          route: "refer-to-conversation-or-message-search",
                         },
                       ];
                       let anchorIndex = null;
@@ -9854,7 +9856,7 @@ export default async function courselore({
                           const value = this.value;
                           const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
                           const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
-                          for (const { trigger, searchResultsContainer, buttonsContainer, dropdownMenu } of dropdownMenus) {
+                          for (const { trigger, searchResultsContainer, buttonsContainer, dropdownMenu, route } of dropdownMenus) {
                             if (!dropdownMenu.state.isShown) {
                               if (
                                 value[selectionMin - 1] !== trigger ||
@@ -9881,7 +9883,7 @@ export default async function courselore({
                             searchResultsContainer.innerHTML =
                               search === ""
                               ? ""
-                              : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ search }))).text();
+                              : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/" + route + "?" + new URLSearchParams({ search }))).text();
                             const buttons = buttonsContainer.querySelectorAll(".button");
                             for (const button of buttons) button.classList.remove("hover");
                             if (buttons.length > 0) buttons[0].classList.add("hover");
