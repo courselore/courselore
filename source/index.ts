@@ -220,21 +220,21 @@ export default async function courselore({
       CREATE INDEX "conversationsTypeIndex" ON "conversations" ("type");
       CREATE INDEX "conversationsPinnedAtIndex" ON "conversations" ("pinnedAt");
       CREATE INDEX "conversationsStaffOnlyAtIndex" ON "conversations" ("staffOnlyAt");
-      CREATE VIRTUAL TABLE "conversationsSearch" USING fts5(
+      CREATE VIRTUAL TABLE "conversationsTitleSearchIndex" USING fts5(
         content = "conversations",
         content_rowid = "id",
         "titleSearch",
         tokenize = 'porter'
       );
-      CREATE TRIGGER "conversationsSearchInsert" AFTER INSERT ON "conversations" BEGIN
-        INSERT INTO "conversationsSearch" ("rowid", "titleSearch") VALUES ("new"."id", "new"."titleSearch");
+      CREATE TRIGGER "conversationsTitleSearchIndexInsert" AFTER INSERT ON "conversations" BEGIN
+        INSERT INTO "conversationsTitleSearchIndex" ("rowid", "titleSearch") VALUES ("new"."id", "new"."titleSearch");
       END;
-      CREATE TRIGGER "conversationsSearchUpdate" AFTER UPDATE ON "conversations" BEGIN
-        INSERT INTO "conversationsSearch" ("conversationsSearch", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
-        INSERT INTO "conversationsSearch" ("rowid", "titleSearch") VALUES ("new"."id", "new"."titleSearch");
+      CREATE TRIGGER "conversationsTitleSearchIndexUpdate" AFTER UPDATE ON "conversations" BEGIN
+        INSERT INTO "conversationsTitleSearchIndex" ("conversationsTitleSearchIndex", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
+        INSERT INTO "conversationsTitleSearchIndex" ("rowid", "titleSearch") VALUES ("new"."id", "new"."titleSearch");
       END;
-      CREATE TRIGGER "conversationsSearchDelete" AFTER DELETE ON "conversations" BEGIN
-        INSERT INTO "conversationsSearch" ("conversationsSearch", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
+      CREATE TRIGGER "conversationsTitleSearchIndexDelete" AFTER DELETE ON "conversations" BEGIN
+        INSERT INTO "conversationsTitleSearchIndex" ("conversationsTitleSearchIndex", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
       END;
 
       CREATE TABLE "messages" (
@@ -7745,7 +7745,7 @@ export default async function courselore({
                       : sql`
                           ,
                           "usersNameSearchIndexResult"."highlight" AS "usersNameSearchIndexResultHighlight",
-                          "conversationsSearchResult"."highlight" AS "conversationsSearchResultHighlight",
+                          "conversationsTitleSearchIndexResult"."highlight" AS "conversationsTitleSearchIndexResultHighlight",
                           "messagesSearchResult"."snippet" AS "messagesSearchResultSnippet"
                         `
                   }
@@ -7768,10 +7768,10 @@ export default async function courselore({
                 LEFT JOIN (
                   SELECT "rowid",
                          "rank",
-                         highlight("conversationsSearch", -1, '<mark class="mark">', '</mark>') AS "highlight"
-                  FROM "conversationsSearch"
-                  WHERE "conversationsSearch" MATCH ${search}
-                ) AS "conversationsSearchResult" ON "conversations"."id" = "conversationsSearchResult"."rowid"
+                         highlight("conversationsTitleSearchIndex", -1, '<mark class="mark">', '</mark>') AS "highlight"
+                  FROM "conversationsTitleSearchIndex"
+                  WHERE "conversationsTitleSearchIndex" MATCH ${search}
+                ) AS "conversationsTitleSearchIndexResult" ON "conversations"."id" = "conversationsTitleSearchIndexResult"."rowid"
 
                 LEFT JOIN (
                   SELECT "messages"."conversation" AS "conversationId",
@@ -7797,7 +7797,7 @@ export default async function courselore({
               ? sql``
               : sql`
                 AND (
-                  "conversationsSearchResult"."rank" IS NOT NULL OR
+                  "conversationsTitleSearchIndexResult"."rank" IS NOT NULL OR
                   "messagesSearchResult"."rank" IS NOT NULL
                 )
               `
@@ -7808,7 +7808,7 @@ export default async function courselore({
                       search === undefined
                         ? sql``
                         : sql`
-                          min(coalesce("conversationsSearchResult"."rank", 0), coalesce(min("messagesSearchResult"."rank"), 0)) ASC,
+                          min(coalesce("conversationsTitleSearchIndexResult"."rank", 0), coalesce(min("messagesSearchResult"."rank"), 0)) ASC,
                         `
                     }
                     "conversations"."id" DESC
