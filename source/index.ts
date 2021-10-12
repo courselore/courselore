@@ -216,6 +216,22 @@ export default async function courselore({
         "staffOnlyAt" TEXT NULL,
         UNIQUE ("course", "reference")
       );
+      CREATE VIRTUAL TABLE "conversationsReferenceIndex" USING fts5(
+        content = "conversations",
+        content_rowid = "id",
+        "reference",
+        tokenize = 'porter'
+      );
+      CREATE TRIGGER "conversationsReferenceIndexInsert" AFTER INSERT ON "conversations" BEGIN
+        INSERT INTO "conversationsReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
+      END;
+      CREATE TRIGGER "conversationsReferenceIndexUpdate" AFTER UPDATE ON "conversations" BEGIN
+        INSERT INTO "conversationsReferenceIndex" ("conversationsReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
+        INSERT INTO "conversationsReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
+      END;
+      CREATE TRIGGER "conversationsReferenceIndexDelete" AFTER DELETE ON "conversations" BEGIN
+        INSERT INTO "conversationsReferenceIndex" ("conversationsReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
+      END;
       CREATE INDEX "conversationsCourseIndex" ON "conversations" ("course");
       CREATE INDEX "conversationsTypeIndex" ON "conversations" ("type");
       CREATE INDEX "conversationsPinnedAtIndex" ON "conversations" ("pinnedAt");
