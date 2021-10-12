@@ -252,21 +252,21 @@ export default async function courselore({
       );
       CREATE INDEX "messagesConversationIndex" ON "messages" ("conversation");
       CREATE INDEX "messagesAnswerAtIndex" ON "messages" ("answerAt");
-      CREATE VIRTUAL TABLE "messagesSearch" USING fts5(
+      CREATE VIRTUAL TABLE "messagesContentSearchIndex" USING fts5(
         content = "messages",
         content_rowid = "id",
         "contentSearch",
         tokenize = 'porter'
       );
       CREATE TRIGGER "messagesSearchInsert" AFTER INSERT ON "messages" BEGIN
-        INSERT INTO "messagesSearch" ("rowid", "contentSearch") VALUES ("new"."id", "new"."contentSearch");
+        INSERT INTO "messagesContentSearchIndex" ("rowid", "contentSearch") VALUES ("new"."id", "new"."contentSearch");
       END;
       CREATE TRIGGER "messagesSearchUpdate" AFTER UPDATE ON "messages" BEGIN
-        INSERT INTO "messagesSearch" ("messagesSearch", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
-        INSERT INTO "messagesSearch" ("rowid", "contentSearch") VALUES ("new"."id", "new"."contentSearch");
+        INSERT INTO "messagesContentSearchIndex" ("messagesContentSearchIndex", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
+        INSERT INTO "messagesContentSearchIndex" ("rowid", "contentSearch") VALUES ("new"."id", "new"."contentSearch");
       END;
       CREATE TRIGGER "messagesSearchDelete" AFTER DELETE ON "messages" BEGIN
-        INSERT INTO "messagesSearch" ("messagesSearch", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
+        INSERT INTO "messagesContentSearchIndex" ("messagesContentSearchIndex", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
       END;
 
       CREATE TABLE "readings" (
@@ -7775,11 +7775,11 @@ export default async function courselore({
 
                 LEFT JOIN (
                   SELECT "messages"."conversation" AS "conversationId",
-                         "messagesSearch"."rank" AS "rank",
-                         snippet("messagesSearch", -1, '<mark class="mark">', '</mark>', '…', 10) AS "snippet"
-                  FROM "messagesSearch"
-                  JOIN "messages" ON "messagesSearch"."rowid" = "messages"."id"
-                  WHERE "messagesSearch" MATCH ${search}
+                         "messagesContentSearchIndex"."rank" AS "rank",
+                         snippet("messagesContentSearchIndex", -1, '<mark class="mark">', '</mark>', '…', 10) AS "snippet"
+                  FROM "messagesContentSearchIndex"
+                  JOIN "messages" ON "messagesContentSearchIndex"."rowid" = "messages"."id"
+                  WHERE "messagesContentSearchIndex" MATCH ${search}
                 ) AS "messagesSearchResult" ON "conversations"."id" = "messagesSearchResult"."conversationId"
               `
           }
