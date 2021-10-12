@@ -9895,41 +9895,43 @@ export default async function courselore({
                         }
                       })());
 
-                      // this.addEventListener("keydown", (event) => {
-                      //   if (!dropdownMenuMentionUser.state.isShown) return;
-                      //   switch (event.code) {
-                      //     case "ArrowUp":
-                      //     case "ArrowDown":
-                      //       event.preventDefault();
-                      //       const buttonsContainer = this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user");
-                      //       const buttons = [...buttonsContainer.querySelectorAll(".button")];
-                      //       const currentHoverIndex = buttons.indexOf(buttonsContainer.querySelector(".button.hover"));
-                      //       if (
-                      //         currentHoverIndex === -1 ||
-                      //         (event.code === "ArrowUp" && currentHoverIndex === 0) ||
-                      //         (event.code === "ArrowDown" && currentHoverIndex === buttons.length - 1)
-                      //       ) return;
-                      //       buttons[currentHoverIndex].classList.remove("hover");
-                      //       const buttonToHover = buttons[currentHoverIndex + (event.code === "ArrowUp" ? -1 : 1)];
-                      //       buttonToHover.classList.add("hover");
-                      //       scrollIntoView(buttonToHover, { scrollMode: "if-needed" });
-                      //       break;
+                      this.addEventListener("keydown", (event) => {
+                        for (const { dropdownMenu } of dropdownMenus) {
+                          if (!dropdownMenu.state.isShown) continue;
+                          switch (event.code) {
+                            case "ArrowUp":
+                            case "ArrowDown":
+                              event.preventDefault();
+                              const buttonsContainer = markdownEditor.querySelector(".markdown-editor--mention-user");
+                              const buttons = [...buttonsContainer.querySelectorAll(".button")];
+                              const currentHoverIndex = buttons.indexOf(buttonsContainer.querySelector(".button.hover"));
+                              if (
+                                currentHoverIndex === -1 ||
+                                (event.code === "ArrowUp" && currentHoverIndex === 0) ||
+                                (event.code === "ArrowDown" && currentHoverIndex === buttons.length - 1)
+                              ) continue;
+                              buttons[currentHoverIndex].classList.remove("hover");
+                              const buttonToHover = buttons[currentHoverIndex + (event.code === "ArrowUp" ? -1 : 1)];
+                              buttonToHover.classList.add("hover");
+                              scrollIntoView(buttonToHover, { scrollMode: "if-needed" });
+                              break;
 
-                      //     case "Enter":
-                      //     case "Tab":
-                      //       event.preventDefault();
-                      //       this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user .button.hover").click();
-                      //       break;
+                            case "Enter":
+                            case "Tab":
+                              event.preventDefault();
+                              markdownEditor.querySelector(".markdown-editor--mention-user .button.hover").click();
+                              break;
 
-                      //     case "Escape":
-                      //     case "ArrowLeft":
-                      //     case "ArrowRight":
-                      //     case "Home":
-                      //     case "End":
-                      //       dropdownMenuMentionUser.hide();
-                      //       break;
-                      //   }
-                      // });
+                            case "Escape":
+                            case "ArrowLeft":
+                            case "ArrowRight":
+                            case "Home":
+                            case "End":
+                              dropdownMenu.hide();
+                              break;
+                          }
+                        }
+                      });
 
                       this.dropdownMenuComplete = (text) => {
                         this.setSelectionRange(anchorIndex, Math.max(this.selectionStart, this.selectionEnd));
