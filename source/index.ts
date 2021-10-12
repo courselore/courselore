@@ -9862,12 +9862,6 @@ export default async function courselore({
                         let isUpdatingDropdownMenus = false;
                         let shouldUpdateDropdownMenusAgain = false;
                         return async function updateDropdownMenus() {
-                          if (isUpdatingDropdownMenus) {
-                            shouldUpdateDropdownMenusAgain = true;
-                            return;
-                          }
-                          shouldUpdateDropdownMenusAgain = false;
-                          isUpdatingDropdownMenus = true;
                           const value = this.value;
                           const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
                           const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
@@ -9888,10 +9882,16 @@ export default async function courselore({
                               dropdownMenu.hide();
                               continue;
                             }
+                            if (isUpdatingDropdownMenus) {
+                              shouldUpdateDropdownMenusAgain = true;
+                              continue;
+                            }
+                            isUpdatingDropdownMenus = true;
+                            shouldUpdateDropdownMenusAgain = false;
                             await update(value.slice(anchorIndex, selectionMax).trim());
+                            isUpdatingDropdownMenus = false;
+                            if (shouldUpdateDropdownMenusAgain) updateDropdownMenus();
                           }
-                          isUpdatingDropdownMenus = false;
-                          if (shouldUpdateDropdownMenusAgain) updateDropdownMenus();
                         }
                       })());
 
