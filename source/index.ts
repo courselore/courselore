@@ -216,6 +216,7 @@ export default async function courselore({
         "staffOnlyAt" TEXT NULL,
         UNIQUE ("course", "reference")
       );
+      CREATE INDEX "conversationsCourseIndex" ON "conversations" ("course");
       CREATE VIRTUAL TABLE "conversationsReferenceIndex" USING fts5(
         content = "conversations",
         content_rowid = "id",
@@ -232,10 +233,6 @@ export default async function courselore({
       CREATE TRIGGER "conversationsReferenceIndexDelete" AFTER DELETE ON "conversations" BEGIN
         INSERT INTO "conversationsReferenceIndex" ("conversationsReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
       END;
-      CREATE INDEX "conversationsCourseIndex" ON "conversations" ("course");
-      CREATE INDEX "conversationsTypeIndex" ON "conversations" ("type");
-      CREATE INDEX "conversationsPinnedAtIndex" ON "conversations" ("pinnedAt");
-      CREATE INDEX "conversationsStaffOnlyAtIndex" ON "conversations" ("staffOnlyAt");
       CREATE VIRTUAL TABLE "conversationsTitleSearchIndex" USING fts5(
         content = "conversations",
         content_rowid = "id",
@@ -252,6 +249,9 @@ export default async function courselore({
       CREATE TRIGGER "conversationsTitleSearchIndexDelete" AFTER DELETE ON "conversations" BEGIN
         INSERT INTO "conversationsTitleSearchIndex" ("conversationsTitleSearchIndex", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
       END;
+      CREATE INDEX "conversationsTypeIndex" ON "conversations" ("type");
+      CREATE INDEX "conversationsPinnedAtIndex" ON "conversations" ("pinnedAt");
+      CREATE INDEX "conversationsStaffOnlyAtIndex" ON "conversations" ("staffOnlyAt");
 
       CREATE TABLE "messages" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -267,7 +267,6 @@ export default async function courselore({
         UNIQUE ("conversation", "reference")
       );
       CREATE INDEX "messagesConversationIndex" ON "messages" ("conversation");
-      CREATE INDEX "messagesAnswerAtIndex" ON "messages" ("answerAt");
       CREATE VIRTUAL TABLE "messagesContentSearchIndex" USING fts5(
         content = "messages",
         content_rowid = "id",
@@ -284,6 +283,7 @@ export default async function courselore({
       CREATE TRIGGER "messagesSearchDelete" AFTER DELETE ON "messages" BEGIN
         INSERT INTO "messagesContentSearchIndex" ("messagesContentSearchIndex", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
       END;
+      CREATE INDEX "messagesAnswerAtIndex" ON "messages" ("answerAt");
 
       CREATE TABLE "readings" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
