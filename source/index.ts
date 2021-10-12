@@ -9931,12 +9931,12 @@ export default async function courselore({
                       //   }
                       // });
 
-                      // this.mentionUser = (user) => {
-                      //   this.setSelectionRange(anchorIndex + 1, Math.max(this.selectionStart, this.selectionEnd));
-                      //   textFieldEdit.insert(this, user + " ");
-                      //   dropdownMenuMentionUser.hide();
-                      //   this.focus();
-                      // };
+                      this.dropdownMenuComplete = (text) => {
+                        this.setSelectionRange(anchorIndex, Math.max(this.selectionStart, this.selectionEnd));
+                        textFieldEdit.insert(this, text + " ");
+                        tippy.hideAll();
+                        this.focus();
+                      };
                     `}"
                   `
                 : html``}
@@ -9989,7 +9989,7 @@ ${value}</textarea
                           type="button"
                           class="dropdown--menu--item button button--transparent"
                           onclick="${javascript`
-                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser("everyone");
+                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("everyone");
                           `}"
                         >
                           Everyone in the Conversation
@@ -9998,7 +9998,7 @@ ${value}</textarea
                           type="button"
                           class="dropdown--menu--item button button--transparent"
                           onclick="${javascript`
-                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser("staff");
+                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("staff");
                           `}"
                         >
                           Staff in the Conversation
@@ -10007,7 +10007,7 @@ ${value}</textarea
                           type="button"
                           class="dropdown--menu--item button button--transparent"
                           onclick="${javascript`
-                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser("students");
+                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("students");
                           `}"
                         >
                           Students in the Conversation
@@ -10115,7 +10115,7 @@ ${value}</textarea
                     type="button"
                     class="dropdown--menu--item button button--transparent"
                     onclick="${javascript`
-                      this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").mentionUser("${
+                      this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${
                         user.enrollmentReference
                       }--${slugify(user.name)}");
                     `}"
