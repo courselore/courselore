@@ -9823,6 +9823,8 @@ export default async function courselore({
                       const dropdownMenuTarget = markdownEditor.querySelector(".markdown-editor--write--textarea--dropdown-menu-target");
                       const dropdownMenus = [
                         {
+                          trigger: "@",
+                          searchResultsContainer: markdownEditor.querySelector(".markdown-editor--mention-user--search-results"),
                           buttonsContainer: markdownEditor.querySelector(".markdown-editor--mention-user"),
                           dropdownMenu: tippy(dropdownMenuTarget, {
                             content: markdownEditor.querySelector(".markdown-editor--mention-user"),
@@ -9830,15 +9832,10 @@ export default async function courselore({
                             trigger: "manual",
                             interactive: true,
                           }),
-                          trigger: "@",
-                          update: async (search) => {
-                            markdownEditor.querySelector(".markdown-editor--mention-user--search-results").innerHTML =
-                              search === ""
-                              ? ""
-                              : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ search }))).text();
-                          },
                         },
                         {
+                          trigger: "#",
+                          searchResultsContainer: markdownEditor.querySelector(".markdown-editor--refer-to-conversation-or-message--search-results"),
                           buttonsContainer: markdownEditor.querySelector(".markdown-editor--refer-to-conversation-or-message"),
                           dropdownMenu: tippy(dropdownMenuTarget, {
                             content: markdownEditor.querySelector(".markdown-editor--refer-to-conversation-or-message"),
@@ -9846,13 +9843,6 @@ export default async function courselore({
                             trigger: "manual",
                             interactive: true,
                           }),
-                          trigger: "#",
-                          update: async (search) => {
-                            markdownEditor.querySelector(".markdown-editor--refer-to-conversation-or-message--search-results").innerHTML =
-                              search === ""
-                              ? ""
-                              : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ search }))).text();
-                          },
                         },
                       ];
                       let anchorIndex = null;
@@ -9864,7 +9854,7 @@ export default async function courselore({
                           const value = this.value;
                           const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
                           const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
-                          for (const { buttonsContainer, dropdownMenu, trigger, update } of dropdownMenus) {
+                          for (const { trigger, searchResultsContainer, buttonsContainer, dropdownMenu } of dropdownMenus) {
                             if (!dropdownMenu.state.isShown) {
                               if (
                                 value[selectionMin - 1] !== trigger ||
@@ -9887,7 +9877,11 @@ export default async function courselore({
                             }
                             isUpdating = true;
                             shouldUpdateAgain = false;
-                            await update(value.slice(anchorIndex, selectionMax).trim());
+                            const search = value.slice(anchorIndex, selectionMax).trim();
+                            searchResultsContainer.innerHTML =
+                              search === ""
+                              ? ""
+                              : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ search }))).text();
                             const buttons = buttonsContainer.querySelectorAll(".button");
                             for (const button of buttons) button.classList.remove("hover");
                             if (buttons.length > 0) buttons[0].classList.add("hover");
