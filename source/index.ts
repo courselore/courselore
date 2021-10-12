@@ -10143,7 +10143,7 @@ ${value}</textarea
                     <span>
                       $${highlightSearchResult(
                         user.nameSearch,
-                        req.query.name!
+                        req.query.search!
                       )}
                       <span class="secondary">
                         · ${lodash.capitalize(user.enrollmentRole)}
