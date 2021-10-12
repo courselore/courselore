@@ -9889,9 +9889,9 @@ export default async function courselore({
                               continue;
                             }
                             await update(value.slice(anchorIndex, selectionMax).trim());
-                            isUpdatingDropdownMenus = false;
-                            if (shouldUpdateDropdownMenusAgain) updateDropdownMenus();
                           }
+                          isUpdatingDropdownMenus = false;
+                          if (shouldUpdateDropdownMenusAgain) updateDropdownMenus();
                         }
                       })());
 
