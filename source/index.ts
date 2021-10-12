@@ -9835,10 +9835,8 @@ export default async function courselore({
                               search === ""
                               ? ""
                               : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name: search }))).text();
-                            const buttons = markdownEditor.querySelectorAll(".markdown-editor--mention-user .button");
-                            for (const button of buttons) button.classList.remove("hover");
-                            buttons[0].classList.add("hover");
-                          }
+                          },
+                          getButtonsContainer: () => markdownEditor.querySelector(".markdown-editor--mention-user"),
                         },
                         {
                           dropdownMenu: tippy(dropdownMenuTarget, {
@@ -9853,7 +9851,8 @@ export default async function courselore({
                               search === ""
                               ? ""
                               : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name: search }))).text();
-                          }
+                          },
+                          getButtonsContainer: () => markdownEditor.querySelector(".markdown-editor--refer-to-conversation-or-message"),
                         },
                       ];
                       let anchorIndex = null;
@@ -9865,7 +9864,7 @@ export default async function courselore({
                           const value = this.value;
                           const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
                           const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
-                          for (const { dropdownMenu, trigger, update } of dropdownMenus) {
+                          for (const { dropdownMenu, trigger, update, getButtonsContainer } of dropdownMenus) {
                             if (!dropdownMenu.state.isShown) {
                               if (
                                 value[selectionMin - 1] !== trigger ||
@@ -9889,6 +9888,9 @@ export default async function courselore({
                             isUpdating = true;
                             shouldUpdateAgain = false;
                             await update(value.slice(anchorIndex, selectionMax).trim());
+                            const buttons = getButtonsContainer().querySelectorAll(".button");
+                            for (const button of buttons) button.classList.remove("hover");
+                            if (buttons.length > 0) buttons[0].classList.add("hover");
                             isUpdating = false;
                             if (shouldUpdateAgain) onInput();
                           }
@@ -9896,14 +9898,15 @@ export default async function courselore({
                       })());
 
                       this.addEventListener("keydown", (event) => {
-                        for (const { dropdownMenu } of dropdownMenus) {
+                        for (const { dropdownMenu, getButtonsContainer } of dropdownMenus) {
                           if (!dropdownMenu.state.isShown) continue;
                           switch (event.code) {
                             case "ArrowUp":
                             case "ArrowDown":
                               event.preventDefault();
-                              const buttonsContainer = markdownEditor.querySelector(".markdown-editor--mention-user");
+                              const buttonsContainer = getButtonsContainer();
                               const buttons = [...buttonsContainer.querySelectorAll(".button")];
+                              if (buttons.length === 0) continue;    
                               const currentHoverIndex = buttons.indexOf(buttonsContainer.querySelector(".button.hover"));
                               if (
                                 currentHoverIndex === -1 ||
@@ -9918,8 +9921,12 @@ export default async function courselore({
 
                             case "Enter":
                             case "Tab":
-                              event.preventDefault();
-                              markdownEditor.querySelector(".markdown-editor--mention-user .button.hover").click();
+                              const buttonHover = getButtonsContainer().querySelector(".button.hover");
+                              if (buttonHover === null) tippy.hideAll();
+                              else {
+                                event.preventDefault();
+                                buttonHover.click();
+                              }
                               break;
 
                             case "Escape":
