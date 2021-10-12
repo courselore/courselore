@@ -9819,124 +9819,124 @@ export default async function courselore({
               $${res.locals.course !== undefined
                 ? html`
                     oninteractive="${javascript`
-                      const dropdownMenuTarget = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea--dropdown-menu-target");
-                      const dropdownMenuMentionUser = tippy(dropdownMenuTarget, {
-                        content: this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user"),
-                        placement: "bottom-start",
-                        trigger: "manual",
-                        interactive: true,
-                      });
-                      const dropdownMenuReferToConversationOrMessage = tippy(dropdownMenuTarget, {
-                        content: this.closest(".markdown-editor").querySelector(".markdown-editor--refer-to-conversation-or-message"),
-                        placement: "bottom-start",
-                        trigger: "manual",
-                        interactive: true,
-                      });
+                      const markdownEditor = this.closest(".markdown-editor");
+                      const dropdownMenuTarget = markdownEditor.querySelector(".markdown-editor--write--textarea--dropdown-menu-target");
+                      const dropdownMenus = [
+                        {
+                          dropdownMenu: tippy(dropdownMenuTarget, {
+                            content: markdownEditor.querySelector(".markdown-editor--mention-user"),
+                            placement: "bottom-start",
+                            trigger: "manual",
+                            interactive: true,
+                          }),
+                          trigger: "@",
+                          update: async (search) => {
+                            markdownEditor.querySelector(".markdown-editor--mention-user--search-results").innerHTML =
+                              search === ""
+                              ? ""
+                              : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name: search }))).text();
+                            const buttons = markdownEditor.querySelectorAll(".markdown-editor--mention-user .button");
+                            for (const button of buttons) button.classList.remove("hover");
+                            buttons[0].classList.add("hover");
+                          }
+                        },
+                        {
+                          dropdownMenu: tippy(dropdownMenuTarget, {
+                            content: markdownEditor.querySelector(".markdown-editor--refer-to-conversation-or-message"),
+                            placement: "bottom-start",
+                            trigger: "manual",
+                            interactive: true,
+                          }),
+                          trigger: "#",
+                          update: async (search) => {
+                            markdownEditor.querySelector(".markdown-editor--refer-to-conversation-or-message--search-results").innerHTML =
+                              search === ""
+                              ? ""
+                              : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name: search }))).text();
+                          }
+                        },
+                      ];
                       let anchorIndex = null;
 
                       this.addEventListener("input", (() => {
-                        let isSearching = false;
-                        let shouldSearchAgain = false;
-                        return async function onInput() {
+                        let isUpdatingDropdownMenus = false;
+                        let shouldUpdateDropdownMenusAgain = false;
+                        return async function updateDropdownMenus() {
+                          if (isUpdatingDropdownMenus) {
+                            shouldUpdateDropdownMenusAgain = true;
+                            return;
+                          }
+                          shouldUpdateDropdownMenusAgain = false;
+                          isUpdatingDropdownMenus = true;
+                          const value = this.value;
                           const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
                           const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
-                          for (const { anchor, dropdown, search } of [
-                            {
-                              anchor: "@",
-                              dropdown: dropdownMenuMentionUser,
-                              search: async (searchTerm) => {
-                                const markdownEditor = this.closest(".markdown-editor");
-                                markdownEditor.querySelector(".markdown-editor--mention-user--search-results").innerHTML =
-                                  searchTerm === ""
-                                  ? ""
-                                  : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name: searchTerm }))).text();
-                                const buttons = markdownEditor.querySelectorAll(".markdown-editor--mention-user .button");
-                                for (const button of buttons) button.classList.remove("hover");
-                                buttons[0].classList.add("hover");
-                              }
-                            },
-                            // {
-                            //   anchor: "#",
-                            //   dropdown: dropdownMenuReferToConversationOrMessage,
-                            //   search: async (searchTerm) => {
-                            //     const markdownEditor = this.closest(".markdown-editor");
-                            //     markdownEditor.querySelector(".markdown-editor--refer-to-conversation-or-message--search-results").innerHTML =
-                            //       searchTerm === ""
-                            //       ? ""
-                            //       : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/mention-user-search?" + new URLSearchParams({ name: searchTerm }))).text();
-                            //     // const buttons = markdownEditor.querySelectorAll(".markdown-editor--mention-user .button");
-                            //     // for (const button of buttons) button.classList.remove("hover");
-                            //     // buttons[0].classList.add("hover");
-                            //   }
-                            // },
-                          ]) {
-                            if (!dropdown.state.isShown) {
-                              anchorIndex = selectionMin - 1;
-                              if (this.value[anchorIndex] !== anchor || (anchorIndex > 0 && this.value[anchorIndex - 1].match(/[\\w]/) !== null)) continue;
+                          for (const { dropdownMenu, trigger, update } of dropdownMenus) {
+                            if (!dropdownMenu.state.isShown) {
+                              if (
+                                value[selectionMin - 1] !== trigger ||
+                                (selectionMin > 1 && value[selectionMin - 2].match(/\\w/) !== null)
+                              ) continue;
+                              anchorIndex = selectionMin;
                               const caretCoordinates = getCaretCoordinates(this, anchorIndex);
                               dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
                               dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
-                              dropdown.show();
+                              tippy.hideAll();
+                              dropdownMenu.show();
                             }
-                            if (selectionMin <= anchorIndex || this.value[anchorIndex] !== anchor) {
-                              dropdown.hide();
+                            if (selectionMin < anchorIndex || value[anchorIndex - 1] !== trigger) {
+                              dropdownMenu.hide();
                               continue;
                             }
-                            if (isSearching) {
-                              shouldSearchAgain = true;
-                              continue;
-                            }
-                            shouldSearchAgain = false;
-                            isSearching = true;
-                            await search(this.value.slice(anchorIndex + 1, selectionMax).trim());
-                            isSearching = false;
-                            if (shouldSearchAgain) onInput();
+                            await update(value.slice(anchorIndex, selectionMax).trim());
+                            isUpdatingDropdownMenus = false;
+                            if (shouldUpdateDropdownMenusAgain) updateDropdownMenus();
                           }
                         }
                       })());
 
-                      this.addEventListener("keydown", (event) => {
-                        if (!dropdownMenuMentionUser.state.isShown) return;
-                        switch (event.code) {
-                          case "ArrowUp":
-                          case "ArrowDown":
-                            event.preventDefault();
-                            const buttonsContainer = this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user");
-                            const buttons = [...buttonsContainer.querySelectorAll(".button")];
-                            const currentHoverIndex = buttons.indexOf(buttonsContainer.querySelector(".button.hover"));
-                            if (
-                              currentHoverIndex === -1 ||
-                              (event.code === "ArrowUp" && currentHoverIndex === 0) ||
-                              (event.code === "ArrowDown" && currentHoverIndex === buttons.length - 1)
-                            ) return;
-                            buttons[currentHoverIndex].classList.remove("hover");
-                            const buttonToHover = buttons[currentHoverIndex + (event.code === "ArrowUp" ? -1 : 1)];
-                            buttonToHover.classList.add("hover");
-                            scrollIntoView(buttonToHover, { scrollMode: "if-needed" });
-                            break;
+                      // this.addEventListener("keydown", (event) => {
+                      //   if (!dropdownMenuMentionUser.state.isShown) return;
+                      //   switch (event.code) {
+                      //     case "ArrowUp":
+                      //     case "ArrowDown":
+                      //       event.preventDefault();
+                      //       const buttonsContainer = this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user");
+                      //       const buttons = [...buttonsContainer.querySelectorAll(".button")];
+                      //       const currentHoverIndex = buttons.indexOf(buttonsContainer.querySelector(".button.hover"));
+                      //       if (
+                      //         currentHoverIndex === -1 ||
+                      //         (event.code === "ArrowUp" && currentHoverIndex === 0) ||
+                      //         (event.code === "ArrowDown" && currentHoverIndex === buttons.length - 1)
+                      //       ) return;
+                      //       buttons[currentHoverIndex].classList.remove("hover");
+                      //       const buttonToHover = buttons[currentHoverIndex + (event.code === "ArrowUp" ? -1 : 1)];
+                      //       buttonToHover.classList.add("hover");
+                      //       scrollIntoView(buttonToHover, { scrollMode: "if-needed" });
+                      //       break;
 
-                          case "Enter":
-                          case "Tab":
-                            event.preventDefault();
-                            this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user .button.hover").click();
-                            break;
+                      //     case "Enter":
+                      //     case "Tab":
+                      //       event.preventDefault();
+                      //       this.closest(".markdown-editor").querySelector(".markdown-editor--mention-user .button.hover").click();
+                      //       break;
 
-                          case "Escape":
-                          case "ArrowLeft":
-                          case "ArrowRight":
-                          case "Home":
-                          case "End":
-                            dropdownMenuMentionUser.hide();
-                            break;
-                        }
-                      });
+                      //     case "Escape":
+                      //     case "ArrowLeft":
+                      //     case "ArrowRight":
+                      //     case "Home":
+                      //     case "End":
+                      //       dropdownMenuMentionUser.hide();
+                      //       break;
+                      //   }
+                      // });
 
-                      this.mentionUser = (user) => {
-                        this.setSelectionRange(anchorIndex + 1, Math.max(this.selectionStart, this.selectionEnd));
-                        textFieldEdit.insert(this, user + " ");
-                        dropdownMenuMentionUser.hide();
-                        this.focus();
-                      };
+                      // this.mentionUser = (user) => {
+                      //   this.setSelectionRange(anchorIndex + 1, Math.max(this.selectionStart, this.selectionEnd));
+                      //   textFieldEdit.insert(this, user + " ");
+                      //   dropdownMenuMentionUser.hide();
+                      //   this.focus();
+                      // };
                     `}"
                   `
                 : html``}
