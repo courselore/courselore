@@ -10339,7 +10339,8 @@ ${value}</textarea
               FROM "conversations"
               JOIN "conversationsTitleSearchIndex" ON "conversations"."id" = "conversationsTitleSearchIndex"."rowid" AND
                                                       "conversationsTitleSearchIndex" MATCH ${sanitizeSearch(
-                                                        req.query.search
+                                                        req.query.search,
+                                                        { prefix: true }
                                                       )}
               WHERE "conversations"."course" = ${res.locals.course.id}
               ORDER BY "conversationsTitleSearchIndex"."rank" ASC,
@@ -10385,7 +10386,8 @@ ${value}</textarea
               FROM "messages"
               JOIN "messagesContentSearchIndex" ON "messages"."id" = "messagesContentSearchIndex"."rowid" AND
                                                    "messagesContentSearchIndex" MATCH ${sanitizeSearch(
-                                                     req.query.search
+                                                     req.query.search,
+                                                     { prefix: true }
                                                    )}
               JOIN "conversations" ON "messages"."conversation" = "conversations"."id" AND
                                       "conversations"."course" = ${

@@ -43,7 +43,7 @@
 ### Polish Existing Features
 
 - Widget to refer to conversations or messages.
-  - Search through messages.
+  - Search through authors.
   - Limit?
   - Details to include:
     - Author.
