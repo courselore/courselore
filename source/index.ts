@@ -10339,8 +10339,7 @@ ${value}</textarea
               FROM "conversations"
               JOIN "conversationsTitleSearchIndex" ON "conversations"."id" = "conversationsTitleSearchIndex"."rowid" AND
                                                       "conversationsTitleSearchIndex" MATCH ${sanitizeSearch(
-                                                        req.query.search,
-                                                        { prefix: true }
+                                                        req.query.search
                                                       )}
               WHERE "conversations"."course" = ${res.locals.course.id}
               ORDER BY "conversationsTitleSearchIndex"."rank" ASC,
@@ -10370,6 +10369,59 @@ ${value}</textarea
                           conversation.titleSearch,
                           req.query.search!
                         )}
+                      </span>
+                    </button>
+                  `,
+                ];
+          })
+      );
+
+      results.push(
+        ...database
+          .all<{ messageReference: string; conversationReference: string }>(
+            sql`
+              SELECT "messages"."reference" AS "messageReference",
+                     "conversations"."reference" AS "conversationReference"
+              FROM "messages"
+              JOIN "messagesContentSearchIndex" ON "messages"."id" = "messagesContentSearchIndex"."rowid" AND
+                                                   "messagesContentSearchIndex" MATCH ${sanitizeSearch(
+                                                     req.query.search
+                                                   )}
+              JOIN "conversations" ON "messages"."conversation" = "conversations"."id" AND
+                                      "conversations"."course" = ${
+                                        res.locals.course.id
+                                      }
+              ORDER BY "messagesContentSearchIndex"."rank" ASC,
+                       "messages"."id" DESC
+            `
+          )
+          .flatMap((messageRow) => {
+            const conversation = getConversation(
+              req,
+              res,
+              messageRow.conversationReference
+            );
+            if (conversation === undefined) return [];
+            const message = getMessage(
+              req,
+              res,
+              conversation,
+              messageRow.messageReference
+            );
+            return message === undefined
+              ? []
+              : [
+                  html`
+                    <button
+                      type="button"
+                      class="dropdown--menu--item button button--transparent"
+                      onclick="${javascript`
+                        this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
+                      `}"
+                    >
+                      <span class="strong">
+                        #${conversation.reference}/${message.reference}
+                        ${conversation.title}
                       </span>
                     </button>
                   `,
