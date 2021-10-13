@@ -43,12 +43,11 @@
 ### Polish Existing Features
 
 - Widget to refer to conversations or messages.
-  - Sort by ranking.
+  - Search through messages.
   - Details to include:
     - Author.
     - Date.
     - Message snippet.
-  - Search through messages.
 - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by staff).
 - Search:
