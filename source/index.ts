@@ -10208,11 +10208,15 @@ ${value}</textarea
           ...database
             .all<{ reference: string }>(
               sql`
-                SELECT "reference"
+                SELECT "conversations"."reference"
                 FROM "conversations"
-                WHERE "course" = ${res.locals.course.id} AND
-                      "reference" = ${req.query.search}
-                ORDER BY "id"
+                JOIN "conversationsReferenceIndex" ON "conversations"."id" = "conversationsReferenceIndex"."rowid"
+                WHERE "conversations"."course" = ${res.locals.course.id} AND
+                      "conversationsReferenceIndex" MATCH ${sanitizeSearch(
+                        req.query.search,
+                        { prefix: true }
+                      )}
+                ORDER BY "id" DESC
               `
             )
             .flatMap((conversationRow) => {
@@ -10221,26 +10225,27 @@ ${value}</textarea
                 res,
                 conversationRow.reference
               );
-              if (conversation === undefined) return [];
-              return [
-                html`
-                  <button
-                    type="button"
-                    class="dropdown--menu--item button button--transparent"
-                    onclick="${javascript`
-                      this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
-                    `}"
-                  >
-                    <span class="strong">
-                      #$${highlightSearchResult(
-                        conversation.reference,
-                        req.query.search!
-                      )}
-                      ${conversation.title}
-                    </span>
-                  </button>
-                `,
-              ];
+              return conversation === undefined
+                ? []
+                : [
+                    html`
+                      <button
+                        type="button"
+                        class="dropdown--menu--item button button--transparent"
+                        onclick="${javascript`
+                          this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
+                        `}"
+                      >
+                        <span class="strong">
+                          #$${highlightSearchResult(
+                            conversation.reference,
+                            req.query.search!
+                          )}
+                          ${conversation.title}
+                        </span>
+                      </button>
+                    `,
+                  ];
             })
         );
 
