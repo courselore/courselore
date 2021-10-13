@@ -170,8 +170,8 @@
 - Performance:
   - n+1 queries:
     - Cases:
-      - Getting the conversation information for the sidebar.
-      - Getting message information such as endorsements and likes for the conversation page.
+      - `getConversation()`.
+      - `getMessage()`.
     - Potential solutions:
       - Single follow-up query with `IN` operator (but then you end up with a bunch of prepared statements in the cache).
       - Use a temporary table instead of `IN`.
