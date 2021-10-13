@@ -8521,6 +8521,7 @@ export default async function courselore({
         id: number;
         reference: string;
         title: string;
+        titleSearch: string;
         nextMessageReference: number;
         type: ConversationType;
         pinnedAt: string | null;
@@ -8577,6 +8578,7 @@ export default async function courselore({
       id: number;
       reference: string;
       title: string;
+      titleSearch: string;
       nextMessageReference: number;
       type: ConversationType;
       pinnedAt: string | null;
@@ -8586,6 +8588,7 @@ export default async function courselore({
         SELECT "conversations"."id",
                "conversations"."reference",
                "conversations"."title",
+               "conversations"."titleSearch",
                "conversations"."nextMessageReference",
                "conversations"."type",
                "conversations"."pinnedAt",
@@ -8746,6 +8749,7 @@ export default async function courselore({
       id: conversation.id,
       reference: conversation.reference,
       title: conversation.title,
+      titleSearch: conversation.titleSearch,
       nextMessageReference: conversation.nextMessageReference,
       type: conversation.type,
       pinnedAt: conversation.pinnedAt,
@@ -10326,6 +10330,51 @@ ${value}</textarea
           );
         }
       }
+
+      results.push(
+        ...database
+          .all<{ reference: string }>(
+            sql`
+              SELECT "conversations"."reference"
+              FROM "conversations"
+              JOIN "conversationsTitleSearchIndex" ON "conversations"."id" = "conversationsTitleSearchIndex"."rowid" AND
+                                                      "conversationsTitleSearchIndex" MATCH ${sanitizeSearch(
+                                                        req.query.search,
+                                                        { prefix: true }
+                                                      )}
+              WHERE "conversations"."course" = ${res.locals.course.id}
+              ORDER BY "id" DESC
+            `
+          )
+          .flatMap((conversationRow) => {
+            const conversation = getConversation(
+              req,
+              res,
+              conversationRow.reference
+            );
+            return conversation === undefined
+              ? []
+              : [
+                  html`
+                    <button
+                      type="button"
+                      class="dropdown--menu--item button button--transparent"
+                      onclick="${javascript`
+                        this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
+                      `}"
+                    >
+                      <span class="strong">
+                        #${conversation.reference}
+                        $${highlightSearchResult(
+                          conversation.titleSearch,
+                          req.query.search!
+                        )}
+                      </span>
+                    </button>
+                  `,
+                ];
+          })
+      );
 
       res.send(
         html`
