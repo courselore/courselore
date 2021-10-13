@@ -10210,12 +10210,12 @@ ${value}</textarea
               sql`
                 SELECT "conversations"."reference"
                 FROM "conversations"
-                JOIN "conversationsReferenceIndex" ON "conversations"."id" = "conversationsReferenceIndex"."rowid"
-                WHERE "conversations"."course" = ${res.locals.course.id} AND
-                      "conversationsReferenceIndex" MATCH ${sanitizeSearch(
-                        req.query.search,
-                        { prefix: true }
-                      )}
+                JOIN "conversationsReferenceIndex" ON "conversations"."id" = "conversationsReferenceIndex"."rowid" AND
+                                                      "conversationsReferenceIndex" MATCH ${sanitizeSearch(
+                                                        req.query.search,
+                                                        { prefix: true }
+                                                      )}
+                WHERE "conversations"."course" = ${res.locals.course.id}
                 ORDER BY "id" DESC
               `
             )
@@ -10248,6 +10248,84 @@ ${value}</textarea
                   ];
             })
         );
+
+      const messageReferenceSearchMatch =
+        req.query.search.match(/^(\d+)\/(\d*)$/);
+      if (messageReferenceSearchMatch !== null) {
+        const [_, conversationReference, messageReferenceSearch] =
+          messageReferenceSearchMatch;
+        const conversation = getConversation(req, res, conversationReference);
+        if (conversation !== undefined) {
+          if (messageReferenceSearch !== "")
+            results.push(
+              ...database
+                .all<{ reference: string }>(
+                  sql`
+                    SELECT "messages"."reference"
+                    FROM "messages"
+                    JOIN "messagesReferenceIndex" ON "messages"."id" = "messagesReferenceIndex"."rowid" AND
+                                                     "messagesReferenceIndex" MATCH ${sanitizeSearch(
+                                                       messageReferenceSearch,
+                                                       { prefix: true }
+                                                     )}
+                    WHERE "messages"."conversation" = ${conversation.id}
+                    ORDER BY "id" DESC
+                  `
+                )
+                .flatMap((messageRow) => {
+                  const message = getMessage(
+                    req,
+                    res,
+                    conversation,
+                    messageRow.reference
+                  );
+                  return message === undefined
+                    ? []
+                    : [
+                        html`
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            onclick="${javascript`
+                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
+                          `}"
+                          >
+                            <span class="strong">
+                              #$${highlightSearchResult(
+                                conversation.reference,
+                                conversationReference
+                              )}/$${highlightSearchResult(
+                                message.reference,
+                                messageReferenceSearch
+                              )}
+                              ${conversation.title}
+                            </span>
+                          </button>
+                        `,
+                      ];
+                })
+            );
+          results.push(
+            html`
+              <button
+                type="button"
+                class="dropdown--menu--item button button--transparent"
+                onclick="${javascript`
+                  this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
+                `}"
+              >
+                <span class="strong">
+                  #$${highlightSearchResult(
+                    conversation.reference,
+                    conversationReference
+                  )}
+                  ${conversation.title}
+                </span>
+              </button>
+            `
+          );
+        }
+      }
 
       res.send(
         html`
