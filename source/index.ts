@@ -10220,7 +10220,7 @@ ${value}</textarea
                                                         { prefix: true }
                                                       )}
                 WHERE "conversations"."course" = ${res.locals.course.id}
-                ORDER BY "id" DESC
+                ORDER BY "conversations"."id" DESC
               `
             )
             .flatMap((conversationRow) => {
@@ -10273,7 +10273,7 @@ ${value}</textarea
                                                        { prefix: true }
                                                      )}
                     WHERE "messages"."conversation" = ${conversation.id}
-                    ORDER BY "id" DESC
+                    ORDER BY "messages"."id" DESC
                   `
                 )
                 .flatMap((messageRow) => {
@@ -10343,7 +10343,8 @@ ${value}</textarea
                                                         { prefix: true }
                                                       )}
               WHERE "conversations"."course" = ${res.locals.course.id}
-              ORDER BY "id" DESC
+              ORDER BY "conversationsTitleSearchIndex"."rank" ASC,
+                       "conversations"."id" DESC
             `
           )
           .flatMap((conversationRow) => {
