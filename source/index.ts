@@ -9949,7 +9949,7 @@ export default async function courselore({
                             case "Enter":
                             case "Tab":
                               const buttonHover = buttonsContainer.querySelector(".button.hover");
-                              if (buttonHover === null) tippy.hideAll();
+                              if (buttonHover === null) dropdownMenu.hide();
                               else {
                                 event.preventDefault();
                                 buttonHover.click();
