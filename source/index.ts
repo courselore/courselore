@@ -10221,7 +10221,8 @@ ${value}</textarea
                                                         { prefix: true }
                                                       )}
                 WHERE "conversations"."course" = ${res.locals.course.id}
-                ORDER BY "conversations"."id" DESC
+                ORDER BY "conversations"."id" ASC
+                LIMIT 11
               `
             )
             .flatMap((conversationRow) => {
