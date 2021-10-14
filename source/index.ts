@@ -10143,6 +10143,7 @@ ${value}</textarea
           WHERE "users"."id" != ${res.locals.user.id}
           ORDER BY "usersNameSearchIndex"."rank" ASC,
                    "users"."name" ASC
+          LIMIT 10
         `
       );
 
