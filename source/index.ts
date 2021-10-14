@@ -10240,12 +10240,14 @@ ${value}</textarea
                           this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
                         `}"
                       >
-                        <span class="strong">
-                          #$${highlightSearchResult(
-                            conversation.reference,
-                            req.query.search!
-                          )}
-                          ${conversation.title}
+                        <span>
+                          <span class="secondary">
+                            #$${highlightSearchResult(
+                              conversation.reference,
+                              req.query.search!
+                            )}
+                          </span>
+                          <span class="strong"> ${conversation.title} </span>
                         </span>
                       </button>
                     `,
@@ -10291,18 +10293,19 @@ ${value}</textarea
                             type="button"
                             class="dropdown--menu--item button button--transparent"
                             onclick="${javascript`
-                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
-                          `}"
+                              this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
+                            `}"
                           >
-                            <span class="strong">
-                              #$${highlightSearchResult(
-                                conversation.reference,
-                                conversationReference
-                              )}/$${highlightSearchResult(
-                                message.reference,
-                                messageReferenceSearch
-                              )}
-                              ${conversation.title}
+                            <span>
+                              <span class="secondary">
+                                #$${highlightSearchResult(
+                                  `${conversation.reference}/${message.reference}`,
+                                  req.query.search!
+                                )}
+                              </span>
+                              <span class="strong">
+                                ${conversation.title}
+                              </span>
                             </span>
                           </button>
                         `,
@@ -10318,12 +10321,14 @@ ${value}</textarea
                   this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
                 `}"
               >
-                <span class="strong">
-                  #$${highlightSearchResult(
-                    conversation.reference,
-                    conversationReference
-                  )}
-                  ${conversation.title}
+                <span>
+                  <span class="secondary">
+                    #$${highlightSearchResult(
+                      conversation.reference,
+                      conversationReference
+                    )}
+                  </span>
+                  <span class="strong"> ${conversation.title} </span>
                 </span>
               </button>
             `
