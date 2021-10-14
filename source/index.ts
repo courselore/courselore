@@ -8831,6 +8831,7 @@ export default async function courselore({
         reference: string;
         authorEnrollment: IsConversationAccessibleMiddlewareLocals["conversation"]["authorEnrollment"];
         content: string;
+        contentSearch: string;
         answerAt: string | null;
         anonymousAt: string | null;
         reading: { id: number } | null;
@@ -8855,6 +8856,7 @@ export default async function courselore({
       authorEnrollmentReference: EnrollmentRole | null;
       authorEnrollmentRole: EnrollmentRole | null;
       content: string;
+      contentSearch: string;
       answerAt: string | null;
       anonymousAt: string | null;
       readingId: number | null;
@@ -8873,6 +8875,7 @@ export default async function courselore({
                "authorEnrollment"."reference" AS "authorEnrollmentReference",
                "authorEnrollment"."role" AS "authorEnrollmentRole",
                "messages"."content",
+               "messages"."contentSearch",
                "messages"."answerAt",
                "messages"."anonymousAt",
                "readings"."id" AS "readingId"
@@ -8972,6 +8975,7 @@ export default async function courselore({
             }
           : noLongerEnrolledEnrollment,
       content: message.content,
+      contentSearch: message.contentSearch,
       answerAt: message.answerAt,
       anonymousAt: message.anonymousAt,
       reading: message.readingId === null ? null : { id: message.readingId },
@@ -10301,18 +10305,26 @@ ${value}</textarea
                               this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
                             `}"
                           >
-                            <span>
-                              <span class="secondary">
-                                #$${highlightSearchResult(
-                                  `${conversation.reference}/${message.reference}`,
-                                  req.query.search!,
-                                  { prefix: true }
-                                )}
-                              </span>
-                              <span class="strong">
-                                ${conversation.title}
-                              </span>
-                            </span>
+                            <div>
+                              <div>
+                                <span class="secondary">
+                                  #$${highlightSearchResult(
+                                    `${conversation.reference}/${message.reference}`,
+                                    req.query.search!,
+                                    { prefix: true }
+                                  )}
+                                </span>
+                                <span class="strong">
+                                  ${conversation.title}
+                                </span>
+                              </div>
+                              <div class="secondary">
+                                $${lodash.truncate(message.contentSearch, {
+                                  length: 100,
+                                  separator: /\W/,
+                                })}
+                              </div>
+                            </div>
                           </button>
                         `,
                       ];
