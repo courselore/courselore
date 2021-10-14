@@ -10176,7 +10176,8 @@ ${value}</textarea
                     <span>
                       $${highlightSearchResult(
                         user.nameSearch,
-                        req.query.search!
+                        req.query.search!,
+                        { prefix: true }
                       )}
                       <span class="secondary">
                         · ${lodash.capitalize(user.enrollmentRole)}
@@ -10246,7 +10247,8 @@ ${value}</textarea
                           <span class="secondary">
                             #$${highlightSearchResult(
                               conversation.reference,
-                              req.query.search!
+                              req.query.search!,
+                              { prefix: true }
                             )}
                           </span>
                           <span class="strong">${conversation.title}</span>
@@ -10302,7 +10304,8 @@ ${value}</textarea
                               <span class="secondary">
                                 #$${highlightSearchResult(
                                   `${conversation.reference}/${message.reference}`,
-                                  req.query.search!
+                                  req.query.search!,
+                                  { prefix: true }
                                 )}
                               </span>
                               <span class="strong">
@@ -10375,7 +10378,8 @@ ${value}</textarea
                         #${conversation.reference}
                         $${highlightSearchResult(
                           conversation.titleSearch,
-                          req.query.search!
+                          req.query.search!,
+                          { prefix: true }
                         )}
                       </span>
                     </button>
@@ -14377,16 +14381,17 @@ ${value}</textarea
 
   const highlightSearchResult = (
     searchResult: string,
-    searchPhrases: string | string[]
+    searchPhrases: string | string[],
+    { prefix = false }: { prefix?: boolean } = {}
   ): HTML =>
     searchResult.replace(
       new RegExp(
-        `${(typeof searchPhrases === "string"
+        `(?<!\\w)${(typeof searchPhrases === "string"
           ? splitSearchPhrases(searchPhrases)
           : searchPhrases
         )
           .map((searchPhrase) => escapeStringRegexp(searchPhrase))
-          .join("|")}`,
+          .join("|")}${prefix ? "" : "(?!\\w)"}`,
         "gi"
       ),
       (searchPhrase) => html`<mark class="mark">$${searchPhrase}</mark>`
