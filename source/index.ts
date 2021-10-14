@@ -10249,7 +10249,7 @@ ${value}</textarea
                               req.query.search!
                             )}
                           </span>
-                          <span class="strong"> ${conversation.title} </span>
+                          <span class="strong">${conversation.title}</span>
                         </span>
                       </button>
                     `,
@@ -10330,7 +10330,7 @@ ${value}</textarea
                       conversationReference
                     )}
                   </span>
-                  <span class="strong"> ${conversation.title} </span>
+                  <span class="strong">${conversation.title}</span>
                 </span>
               </button>
             `
