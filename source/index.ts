@@ -10279,7 +10279,8 @@ ${value}</textarea
                                                        { prefix: true }
                                                      )}
                     WHERE "messages"."conversation" = ${conversation.id}
-                    ORDER BY "messages"."id" DESC
+                    ORDER BY "messages"."id" ASC
+                    LIMIT 11
                   `
                 )
                 .flatMap((messageRow) => {
