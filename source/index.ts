@@ -14386,12 +14386,12 @@ ${value}</textarea
   ): HTML =>
     searchResult.replace(
       new RegExp(
-        `(?<!\\w)${(typeof searchPhrases === "string"
+        `(?<!\\w)(?:${(typeof searchPhrases === "string"
           ? splitSearchPhrases(searchPhrases)
           : searchPhrases
         )
           .map((searchPhrase) => escapeStringRegexp(searchPhrase))
-          .join("|")}${prefix ? "" : "(?!\\w)"}`,
+          .join("|")})${prefix ? "" : "(?!\\w)"}`,
         "gi"
       ),
       (searchPhrase) => html`<mark class="mark">$${searchPhrase}</mark>`
