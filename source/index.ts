@@ -10594,6 +10594,7 @@ ${value}</textarea
           $${unifiedProcessor.processSync(markdown).toString()}
         </div>
       `);
+
       for (const element of document.querySelectorAll("li, td, th, dt, dd"))
         element.innerHTML = [...element.childNodes].some(
           (node) =>
@@ -10601,6 +10602,7 @@ ${value}</textarea
         )
           ? html`<div><p>$${element.innerHTML}</p></div>`
           : html`<div>$${element.innerHTML}</div>`;
+
       for (const element of document.querySelectorAll("details")) {
         const summaries: Node[] = [];
         const rest: Node[] = [];
@@ -10626,6 +10628,7 @@ ${value}</textarea
         wrapper.replaceChildren(...rest);
         element.replaceChildren(summaries[0], wrapper);
       }
+
       // TODO: Compute these mentions.
       const mentions = new Set<string>();
       if (res.locals.course !== undefined)
@@ -10728,6 +10731,7 @@ ${value}</textarea
             for (const childNode of node.childNodes)
               processReferencesAndMentions(childNode);
         })(document);
+
       return {
         html: document.firstElementChild!.outerHTML,
         text: document.textContent!,
