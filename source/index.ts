@@ -10138,10 +10138,10 @@ ${value}</textarea
                  "enrollments"."role" AS "enrollmentRole"
           FROM "users"
           JOIN "usersNameSearchIndex" ON "users"."id" = "usersNameSearchIndex"."rowid" AND
-                                "usersNameSearchIndex" MATCH ${sanitizeSearch(
-                                  req.query.search,
-                                  { prefix: true }
-                                )}
+                                         "usersNameSearchIndex" MATCH ${sanitizeSearch(
+                                           req.query.search,
+                                           { prefix: true }
+                                         )}
           JOIN "enrollments" ON "users"."id" = "enrollments"."user" AND
                                 "enrollments"."course" = ${res.locals.course.id}
           WHERE "users"."id" != ${res.locals.user.id}
@@ -10638,7 +10638,7 @@ ${value}</textarea
                 }
               );
               newNodeHTML = newNodeHTML.replace(
-                /(?<=^|\W)@(everyone|staff|students|[0-9a-z-]+)(?=\W|$)/g,
+                /(?<!\w)@(everyone|staff|students|[0-9a-z-]+)(?!\w)/g,
                 (match, mention) => {
                   switch (mention) {
                     case "everyone":
