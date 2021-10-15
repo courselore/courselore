@@ -10249,9 +10249,9 @@ ${value}</textarea
                       >
                         <span>
                           <span class="secondary">
-                            #$${highlightSearchResult(
-                              conversation.reference,
-                              req.query.search!,
+                            $${highlightSearchResult(
+                              `#${conversation.reference}`,
+                              `#${req.query.search}`,
                               { prefix: true }
                             )}
                           </span>
@@ -10308,9 +10308,9 @@ ${value}</textarea
                             <div>
                               <div>
                                 <span class="secondary">
-                                  #$${highlightSearchResult(
-                                    `${conversation.reference}/${message.reference}`,
-                                    req.query.search!,
+                                  $${highlightSearchResult(
+                                    `#${conversation.reference}/${message.reference}`,
+                                    `#${req.query.search}`,
                                     { prefix: true }
                                   )}
                                 </span>
@@ -10341,9 +10341,9 @@ ${value}</textarea
               >
                 <span>
                   <span class="secondary">
-                    #$${highlightSearchResult(
-                      conversation.reference,
-                      conversationReference
+                    $${highlightSearchResult(
+                      `#${conversation.reference}`,
+                      `#${conversationReference}`
                     )}
                   </span>
                   <span class="strong">${conversation.title}</span>
