@@ -10589,6 +10589,9 @@ ${value}</textarea
       res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>;
       markdown: Markdown;
     }): { html: HTML; text: string; mentions: Set<string> } => {
+      // TODO: Compute these mentions in ‘processReferencesAndMentions’.
+      const mentions = new Set<string>();
+
       const document = JSDOM.fragment(html`
         <div class="markdown">
           $${unifiedProcessor.processSync(markdown).toString()}
@@ -10629,9 +10632,32 @@ ${value}</textarea
         element.replaceChildren(summaries[0], wrapper);
       }
 
-      // TODO: Compute these mentions.
-      const mentions = new Set<string>();
-      if (res.locals.course !== undefined)
+      if (res.locals.course !== undefined) {
+        for (const element of document.querySelectorAll("a")) {
+          if (element.href !== element.textContent!.trim()) continue;
+          const match = element.href.match(
+            new RegExp(
+              `^${escapeStringRegexp(url)}/courses/(\\d+)/conversations/(\\d+)$`
+            )
+          );
+          if (match === null) continue;
+          const [_, courseReference, conversationReference] = match;
+          if (courseReference !== res.locals.course.reference) continue;
+          const conversation = getConversation(
+            req as express.Request<
+              {},
+              any,
+              {},
+              {},
+              IsEnrolledInCourseMiddlewareLocals
+            >,
+            res as express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
+            conversationReference
+          );
+          if (conversation === undefined) continue;
+          element.textContent = `#${conversation.reference}`;
+        }
+
         (function processReferencesAndMentions(node: Node): void {
           switch (node.nodeType) {
             case node.TEXT_NODE:
@@ -10733,6 +10759,7 @@ ${value}</textarea
             for (const childNode of node.childNodes)
               processReferencesAndMentions(childNode);
         })(document);
+      }
 
       return {
         html: document.firstElementChild!.outerHTML,
