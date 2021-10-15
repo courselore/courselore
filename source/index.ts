@@ -10718,7 +10718,9 @@ ${value}</textarea
                           });
                         `}"
                         >$${enrollment.userId === res.locals.user!.id
-                          ? html`<mark>@$${enrollment.userName}</mark>`
+                          ? html`<mark class="mark"
+                              >@$${enrollment.userName}</mark
+                            >`
                           : html`@$${enrollment.userName}`}</strong
                       >`;
                   }
