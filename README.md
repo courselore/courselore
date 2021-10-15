@@ -44,11 +44,6 @@
 
 - Widget to refer to conversations or messages.
   - Full links to conversations/messages should also be converted for presentation.
-  - Search through authors.
-  - Details to include:
-    - Author.
-    - Date.
-    - Message snippet.
 - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by staff).
 - Search:
@@ -119,10 +114,12 @@
   - Type.
   - Chat or not.
 - Search in all courses you’re taking (for example, search for `deadline extension`) (see how GitHub does it).
-- Dropdown helpers to pick mentions & references (consider using https://github.com/zurb/tribute).
 
 ### Markdown Editor
 
+- `#references` widget:
+  - Search through authors?
+  - Include author, date, and so forth in the response?
 - Templates for questions (like GitHub Issues).
 - Reuse answers.
 - Paste tables from Excel and have them formatted as Markdown tables.
