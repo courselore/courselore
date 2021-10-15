@@ -10393,13 +10393,17 @@ ${value}</textarea
                         this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
                       `}"
                     >
-                      <span class="strong">
-                        #${conversation.reference}
-                        $${highlightSearchResult(
-                          conversation.titleSearch,
-                          req.query.search!,
-                          { prefix: true }
-                        )}
+                      <span>
+                        <span class="secondary">
+                          #${conversation.reference}
+                        </span>
+                        <span class="strong">
+                          $${highlightSearchResult(
+                            conversation.titleSearch,
+                            req.query.search!,
+                            { prefix: true }
+                          )}
+                        </span>
                       </span>
                     </button>
                   `,
