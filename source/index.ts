@@ -10125,15 +10125,15 @@ ${value}</textarea
 
       const users = database.all<{
         name: string;
-        nameSearch: string;
         avatar: string | null;
+        usersNameSearchHighlight: string;
         enrollmentReference: string;
         enrollmentRole: string;
       }>(
         sql`
           SELECT "users"."name" AS "name",
-                 "users"."nameSearch" AS "nameSearch",
                  "users"."avatar" AS "avatar",
+                 highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "usersNameSearchHighlight",
                  "enrollments"."reference" AS "enrollmentReference",
                  "enrollments"."role" AS "enrollmentRole"
           FROM "users"
@@ -10178,11 +10178,7 @@ ${value}</textarea
                           />
                         `}
                     <span>
-                      $${highlightSearchResult(
-                        user.nameSearch,
-                        req.query.search!,
-                        { prefix: true }
-                      )}
+                      $${user.usersNameSearchHighlight}
                       <span class="secondary">
                         · ${lodash.capitalize(user.enrollmentRole)}
                       </span>
