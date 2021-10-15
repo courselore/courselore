@@ -10637,11 +10637,14 @@ ${value}</textarea
           if (element.href !== element.textContent!.trim()) continue;
           const match = element.href.match(
             new RegExp(
-              `^${escapeStringRegexp(url)}/courses/(\\d+)/conversations/(\\d+)$`
+              `^${escapeStringRegexp(
+                url
+              )}/courses/(\\d+)/conversations/(\\d+)(?:#message--(\\d+))?$`
             )
           );
           if (match === null) continue;
-          const [_, courseReference, conversationReference] = match;
+          const [_, courseReference, conversationReference, messageReference] =
+            match;
           if (courseReference !== res.locals.course.reference) continue;
           const conversation = getConversation(
             req as express.Request<
@@ -10655,7 +10658,24 @@ ${value}</textarea
             conversationReference
           );
           if (conversation === undefined) continue;
-          element.textContent = `#${conversation.reference}`;
+          if (messageReference === undefined) {
+            element.textContent = `#${conversation.reference}`;
+            continue;
+          }
+          const message = getMessage(
+            req as express.Request<
+              {},
+              any,
+              {},
+              {},
+              IsEnrolledInCourseMiddlewareLocals
+            >,
+            res as express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
+            conversation,
+            messageReference
+          );
+          if (message === undefined) continue;
+          element.textContent = `#${conversation.reference}/${message.reference}`;
         }
 
         (function processReferencesAndMentions(node: Node): void {
