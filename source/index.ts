@@ -10270,66 +10270,71 @@ ${value}</textarea
           messageReferenceSearchMatch;
         const conversation = getConversation(req, res, conversationReference);
         if (conversation !== undefined) {
-          if (messageReferenceSearch !== "")
-            results.push(
-              ...database
-                .all<{ reference: string }>(
-                  sql`
-                    SELECT "messages"."reference"
-                    FROM "messages"
-                    JOIN "messagesReferenceIndex" ON "messages"."id" = "messagesReferenceIndex"."rowid" AND
-                                                     "messagesReferenceIndex" MATCH ${sanitizeSearch(
-                                                       messageReferenceSearch,
-                                                       { prefix: true }
-                                                     )}
-                    WHERE "messages"."conversation" = ${conversation.id}
-                    ORDER BY "messages"."id" ASC
-                    LIMIT 11
-                  `
-                )
-                .flatMap((messageRow) => {
-                  const message = getMessage(
-                    req,
-                    res,
-                    conversation,
-                    messageRow.reference
-                  );
-                  return message === undefined
-                    ? []
-                    : [
-                        html`
-                          <button
-                            type="button"
-                            class="dropdown--menu--item button button--transparent"
-                            onclick="${javascript`
-                              this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
-                            `}"
-                          >
+          results.push(
+            ...database
+              .all<{ reference: string }>(
+                sql`
+                  SELECT "messages"."reference"
+                  FROM "messages"
+                  $${
+                    messageReferenceSearch === ""
+                      ? sql``
+                      : sql`
+                        JOIN "messagesReferenceIndex" ON "messages"."id" = "messagesReferenceIndex"."rowid" AND
+                                                         "messagesReferenceIndex" MATCH ${sanitizeSearch(
+                                                           messageReferenceSearch,
+                                                           { prefix: true }
+                                                         )}
+                      `
+                  }
+                  WHERE "messages"."conversation" = ${conversation.id}
+                  ORDER BY "messages"."id" ASC
+                  LIMIT 11
+                `
+              )
+              .flatMap((messageRow) => {
+                const message = getMessage(
+                  req,
+                  res,
+                  conversation,
+                  messageRow.reference
+                );
+                return message === undefined
+                  ? []
+                  : [
+                      html`
+                        <button
+                          type="button"
+                          class="dropdown--menu--item button button--transparent"
+                          onclick="${javascript`
+                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
+                          `}"
+                        >
+                          <div>
                             <div>
-                              <div>
-                                <span class="secondary">
-                                  $${highlightSearchResult(
-                                    `#${conversation.reference}/${message.reference}`,
-                                    `#${req.query.search}`,
-                                    { prefix: true }
-                                  )}
-                                </span>
-                                <span class="strong">
-                                  ${conversation.title}
-                                </span>
-                              </div>
-                              <div class="secondary">
-                                $${lodash.truncate(message.contentSearch, {
-                                  length: 100,
-                                  separator: /\W/,
-                                })}
-                              </div>
+                              <span class="secondary">
+                                $${highlightSearchResult(
+                                  `#${conversation.reference}/${message.reference}`,
+                                  `#${req.query.search}`,
+                                  { prefix: true }
+                                )}
+                              </span>
+                              <span class="strong">
+                                ${conversation.title}
+                              </span>
                             </div>
-                          </button>
-                        `,
-                      ];
-                })
-            );
+                            <div class="secondary">
+                              $${lodash.truncate(message.contentSearch, {
+                                length: 100,
+                                separator: /\W/,
+                              })}
+                            </div>
+                          </div>
+                        </button>
+                      `,
+                    ];
+              })
+          );
           results.push(
             html`
               <button
