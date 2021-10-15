@@ -44,7 +44,6 @@
 
 - Widget to refer to conversations or messages.
   - Search through authors.
-  - Limit?
   - Details to include:
     - Author.
     - Date.
