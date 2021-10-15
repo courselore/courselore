@@ -11595,10 +11595,7 @@ ${value}</textarea
                       ${res.locals.conversation.title}
                     </span>
 
-                    <a
-                      href="${url}/courses/${res.locals.course
-                        .reference}/conversations/${res.locals.conversation
-                        .reference}"
+                    <button
                       class="button button--tight button--transparent secondary"
                       style="${css`
                         font-size: var(--font-size--xs);
@@ -11607,13 +11604,26 @@ ${value}</textarea
                       `}"
                       oninteractive="${javascript`
                         tippy(this, {
-                          content: "Permanent Link to Conversation",
+                          content: "Copy Permanent Link to Conversation",
                           touch: false,
                         });
+                        this.copied = tippy(this, {
+                          content: "Copied",
+                          theme: "green",
+                          trigger: "manual",
+                        });
+                      `}"
+                      onclick="${javascript`
+                        (async () => {
+                          await navigator.clipboard.writeText("${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
+                          this.copied.show();
+                          await new Promise((resolve) => { window.setTimeout(resolve, 700); });
+                          this.copied.hide();
+                        })();
                       `}"
                     >
                       #${res.locals.conversation.reference}
-                    </a>
+                    </button>
                   </h2>
 
                   $${(() => {
