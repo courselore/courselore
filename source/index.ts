@@ -11608,7 +11608,7 @@ ${value}</textarea
                           touch: false,
                         });
                         this.copied = tippy(this, {
-                          content: "Copied",
+                          content: "Copied Permanent Link to Conversation",
                           theme: "green",
                           trigger: "manual",
                         });
@@ -11617,7 +11617,7 @@ ${value}</textarea
                         (async () => {
                           await navigator.clipboard.writeText("${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
                           this.copied.show();
-                          await new Promise((resolve) => { window.setTimeout(resolve, 700); });
+                          await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                           this.copied.hide();
                         })();
                       `}"
@@ -12401,11 +12401,7 @@ ${value}</textarea
                                     </time>
                                   `
                                 : html``}
-                              <a
-                                href="${url}/courses/${res.locals.course
-                                  .reference}/conversations/${res.locals
-                                  .conversation
-                                  .reference}#message--${message.reference}"
+                              <button
                                 class="button button--tight button--tight--inline button--transparent"
                                 style="${css`
                                   font-size: var(--font-size--xs);
@@ -12414,14 +12410,27 @@ ${value}</textarea
                                 `}"
                                 oninteractive="${javascript`
                                   tippy(this, {
-                                    content: "Permanent Link to Message",
+                                    content: "Copy Permanent Link to Message",
                                     touch: false,
                                   });
+                                  this.copied = tippy(this, {
+                                    content: "Copied Permanent Link to Message",
+                                    theme: "green",
+                                    trigger: "manual",
+                                  });
+                                `}"
+                                onclick="${javascript`
+                                  (async () => {
+                                    await navigator.clipboard.writeText("${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${message.reference}");
+                                    this.copied.show();
+                                    await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                                    this.copied.hide();
+                                  })();
                                 `}"
                               >
                                 #${res.locals.conversation
                                   .reference}/${message.reference}
-                              </a>
+                              </button>
                             </span>
                           </h3>
                         </div>
