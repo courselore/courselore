@@ -10147,7 +10147,7 @@ ${value}</textarea
           WHERE "users"."id" != ${res.locals.user.id}
           ORDER BY "usersNameSearchIndex"."rank" ASC,
                    "users"."name" ASC
-          LIMIT 10
+          LIMIT 5
         `
       );
 
@@ -10227,7 +10227,7 @@ ${value}</textarea
                                                       )}
                 WHERE "conversations"."course" = ${res.locals.course.id}
                 ORDER BY "conversations"."id" ASC
-                LIMIT 11
+                LIMIT 5
               `
             )
             .flatMap((conversationRow) => {
@@ -10289,7 +10289,7 @@ ${value}</textarea
                   }
                   WHERE "messages"."conversation" = ${conversation.id}
                   ORDER BY "messages"."id" ASC
-                  LIMIT 11
+                  LIMIT 5
                 `
               )
               .flatMap((messageRow) => {
@@ -10373,6 +10373,7 @@ ${value}</textarea
               WHERE "conversations"."course" = ${res.locals.course.id}
               ORDER BY "conversationsTitleSearchIndex"."rank" ASC,
                        "conversations"."id" DESC
+              LIMIT 5
             `
           )
           .flatMap((conversationRow) => {
@@ -10424,6 +10425,7 @@ ${value}</textarea
                                       }
               ORDER BY "messagesContentSearchIndex"."rank" ASC,
                        "messages"."id" DESC
+              LIMIT 5
             `
           )
           .flatMap((messageRow) => {
