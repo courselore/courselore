@@ -10361,9 +10361,13 @@ ${value}</textarea
 
       results.push(
         ...database
-          .all<{ reference: string }>(
+          .all<{
+            reference: string;
+            conversationsTitleSearchHighlight: string;
+          }>(
             sql`
-              SELECT "conversations"."reference"
+              SELECT "conversations"."reference",
+                     highlight("conversationsTitleSearchIndex", 0, '<mark class="mark">', '</mark>') AS "conversationsTitleSearchHighlight"
               FROM "conversations"
               JOIN "conversationsTitleSearchIndex" ON "conversations"."id" = "conversationsTitleSearchIndex"."rowid" AND
                                                       "conversationsTitleSearchIndex" MATCH ${sanitizeSearch(
@@ -10398,11 +10402,7 @@ ${value}</textarea
                           #${conversation.reference}
                         </span>
                         <span class="strong">
-                          $${highlightSearchResult(
-                            conversation.titleSearch,
-                            req.query.search!,
-                            { prefix: true }
-                          )}
+                          $${conversationRow.conversationsTitleSearchHighlight}
                         </span>
                       </span>
                     </button>
@@ -10421,7 +10421,7 @@ ${value}</textarea
             sql`
               SELECT "messages"."reference" AS "messageReference",
                      "conversations"."reference" AS "conversationReference",
-                     snippet("messagesContentSearchIndex", -1, '<mark class="mark">', '</mark>', '…', 16) AS "messageContentSearchSnippet"
+                     snippet("messagesContentSearchIndex", 0, '<mark class="mark">', '</mark>', '…', 16) AS "messageContentSearchSnippet"
               FROM "messages"
               JOIN "messagesContentSearchIndex" ON "messages"."id" = "messagesContentSearchIndex"."rowid" AND
                                                    "messagesContentSearchIndex" MATCH ${sanitizeSearch(
