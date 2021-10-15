@@ -43,6 +43,7 @@
 ### Polish Existing Features
 
 - Widget to refer to conversations or messages.
+  - Full links to conversations/messages should also be converted for presentation.
   - Search through authors.
   - Details to include:
     - Author.

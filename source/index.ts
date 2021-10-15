@@ -10413,10 +10413,15 @@ ${value}</textarea
 
       results.push(
         ...database
-          .all<{ messageReference: string; conversationReference: string }>(
+          .all<{
+            messageReference: string;
+            conversationReference: string;
+            messageContentSearchSnippet: string;
+          }>(
             sql`
               SELECT "messages"."reference" AS "messageReference",
-                     "conversations"."reference" AS "conversationReference"
+                     "conversations"."reference" AS "conversationReference",
+                     snippet("messagesContentSearchIndex", -1, '<mark class="mark">', '</mark>', '…', 16) AS "messageContentSearchSnippet"
               FROM "messages"
               JOIN "messagesContentSearchIndex" ON "messages"."id" = "messagesContentSearchIndex"."rowid" AND
                                                    "messagesContentSearchIndex" MATCH ${sanitizeSearch(
@@ -10456,10 +10461,17 @@ ${value}</textarea
                         this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
                       `}"
                     >
-                      <span class="strong">
-                        #${conversation.reference}/${message.reference}
-                        ${conversation.title}
-                      </span>
+                      <div>
+                        <div>
+                          <span class="secondary">
+                            #${conversation.reference}/${message.reference}
+                          </span>
+                          <span class="strong">${conversation.title}</span>
+                        </div>
+                        <div class="secondary">
+                          $${messageRow.messageContentSearchSnippet}
+                        </div>
+                      </div>
                     </button>
                   `,
                 ];
