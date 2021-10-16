@@ -10802,11 +10802,11 @@ ${value}</textarea
           );
           if (hrefMatch === null) continue;
           const [
-            courseReference,
+            hrefCourseReference,
             hrefConversationReference,
             hrefMessageReference,
           ] = hrefMatch.slice(1);
-          if (courseReference !== res.locals.course.reference) continue;
+          if (hrefCourseReference !== res.locals.course.reference) continue;
           const textContentMatch = element
             .textContent!.trim()
             .match(/^#(\d+)(?:\/(\d+))?$/);
@@ -10820,6 +10820,54 @@ ${value}</textarea
             hrefMessageReference !== textContentMessageReference
           )
             continue;
+          const conversation = getConversation(
+            narrowReq,
+            narrowRes,
+            hrefConversationReference
+          );
+          if (conversation === undefined) continue;
+          if (hrefMessageReference === undefined) {
+            element.setAttribute(
+              "oninteractive",
+              javascript`
+                tippy(this, {
+                  content: ${JSON.stringify(html`
+                    <span class="strong">$${conversation.title}</span>
+                  `)},
+                  allowHTML: true,
+                  touch: false,
+                });
+              `
+            );
+            continue;
+          }
+          const message = getMessage(
+            narrowReq,
+            narrowRes,
+            conversation,
+            hrefMessageReference
+          );
+          if (message === undefined) continue;
+          element.setAttribute(
+            "oninteractive",
+            javascript`
+              tippy(this, {
+                content: ${JSON.stringify(html`
+                  <div>
+                    <div class="strong">$${conversation.title}</div>
+                    <div class="secondary">
+                      $${lodash.truncate(message.contentSearch, {
+                        length: 100,
+                        separator: /\W/,
+                      })}
+                    </div>
+                  </div>
+                `)},
+                allowHTML: true,
+                touch: false,
+              });
+            `
+          );
         }
       }
 
