@@ -10688,7 +10688,8 @@ ${value}</textarea
                 const parentElement = node.parentElement;
                 if (
                   parentElement === null ||
-                  parentElement.closest("a, code") !== null
+                  parentElement.closest("a, code, .mention, .reference") !==
+                    null
                 )
                   return;
                 let newNodeHTML = html`${node.textContent}`;
@@ -10746,6 +10747,7 @@ ${value}</textarea
                         break;
                     }
                     return html`<strong
+                      class="mention"
                       oninteractive="${javascript`
                         tippy(this, {
                           content: "Mention",
@@ -10769,6 +10771,7 @@ ${value}</textarea
                     if (conversation === undefined) return match;
                     if (messageReference === undefined)
                       return html`<a
+                        class="reference"
                         href="${url}/courses/${res.locals.course!
                           .reference}/conversations/${conversation.reference}"
                         >${match}</a
@@ -10781,6 +10784,7 @@ ${value}</textarea
                     );
                     if (message === undefined) return match;
                     return html`<a
+                      class="reference"
                       href="${url}/courses/${res.locals.course!
                         .reference}/conversations/${conversation.reference}#message--${message.reference}"
                       >${match}</a
