@@ -43,9 +43,6 @@
 ### Polish Existing Features
 
 - Search:
-  - Include snippets in search results.
-  - Highlight search terms on the entire page.
-  - Include users in search.
   - Filters (for example, by conversation type).
   - Don’t scroll on search.
   - `EXPLAIN QUERY PLAN`.
