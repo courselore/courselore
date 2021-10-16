@@ -11726,7 +11726,10 @@ ${value}</textarea
                         line-height: var(--line-height--lg);
                       `}"
                     >
-                      ${res.locals.conversation.title}
+                      $${highlightSearchResult(
+                        html`${res.locals.conversation.title}`,
+                        req.query.search
+                      )}
                     </span>
 
                     <button
@@ -14619,21 +14622,23 @@ ${value}</textarea
 
   const highlightSearchResult = (
     searchResult: string,
-    searchPhrases: string | string[],
+    searchPhrases: string | string[] | undefined,
     { prefix = false }: { prefix?: boolean } = {}
   ): HTML =>
-    searchResult.replace(
-      new RegExp(
-        `(?<!\\w)(?:${(typeof searchPhrases === "string"
-          ? splitSearchPhrases(searchPhrases)
-          : searchPhrases
-        )
-          .map((searchPhrase) => escapeStringRegexp(searchPhrase))
-          .join("|")})${prefix ? "" : "(?!\\w)"}`,
-        "gi"
-      ),
-      (searchPhrase) => html`<mark class="mark">$${searchPhrase}</mark>`
-    );
+    searchPhrases === undefined
+      ? searchResult
+      : searchResult.replace(
+          new RegExp(
+            `(?<!\\w)(?:${(typeof searchPhrases === "string"
+              ? splitSearchPhrases(searchPhrases)
+              : searchPhrases
+            )
+              .map((searchPhrase) => escapeStringRegexp(searchPhrase))
+              .join("|")})${prefix ? "" : "(?!\\w)"}`,
+            "gi"
+          ),
+          (searchPhrase) => html`<mark class="mark">$${searchPhrase}</mark>`
+        );
 
   const splitSearchPhrases = (search: string): string[] => search.split(/\s+/);
 
