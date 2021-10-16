@@ -8513,6 +8513,11 @@ export default async function courselore({
           </div>
         </div>
       </div>
+      $${typeof conversation.messagesSearchResultSnippet === "string"
+        ? html`
+            <div>$${conversation.messagesSearchResultSnippet}</div>
+          `
+        : html``}
     </div>
   `;
 
