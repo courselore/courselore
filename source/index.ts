@@ -10643,6 +10643,7 @@ ${value}</textarea
           any,
           IsEnrolledInCourseMiddlewareLocals
         >;
+
         for (const element of document.querySelectorAll("a")) {
           if (element.href !== element.textContent!.trim()) continue;
           const match = element.href.match(
@@ -10790,9 +10791,9 @@ ${value}</textarea
             }
           }
         })(document);
-      }
 
-      // TODO: Do a tooltip to reveal more information about #references.
+        // TODO: Do a tooltip to reveal more information about #references.
+      }
 
       return {
         html: document.firstElementChild!.outerHTML,
