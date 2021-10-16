@@ -10817,7 +10817,15 @@ ${value}</textarea
               `
             );
             references.push(
-              conversationPartial(narrowReq, narrowRes, conversation)
+              html`
+                <div
+                  style="${css`
+                    padding: var(--space--2);
+                  `}"
+                >
+                  $${conversationPartial(narrowReq, narrowRes, conversation)}
+                </div>
+              `
             );
             continue;
           }
