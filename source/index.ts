@@ -12482,7 +12482,13 @@ ${value}</textarea
                           <h3>
                             <span class="strong">
                               $${message.anonymousAt === null
-                                ? html`${message.authorEnrollment.user.name}`
+                                ? message.reference === "1"
+                                  ? highlightSearchResult(
+                                      html`${message.authorEnrollment.user
+                                        .name}`,
+                                      req.query.search
+                                    )
+                                  : html`${message.authorEnrollment.user.name}`
                                 : html`
                                     <span
                                       class="text--violet"
@@ -12515,7 +12521,14 @@ ${value}</textarea
                                             .name}"
                                           class="avatar avatar--xs avatar--vertical-align"
                                         />`}
-                                    ${message.authorEnrollment.user.name})
+                                    $${message.reference === "1"
+                                      ? highlightSearchResult(
+                                          html`${message.authorEnrollment.user
+                                            .name}`,
+                                          req.query.search
+                                        )
+                                      : html`${message.authorEnrollment.user
+                                          .name}`})
                                   `
                                 : html``}
                               said
