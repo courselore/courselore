@@ -47,6 +47,7 @@
   - Highlight search terms on the entire page.
   - Include users in search.
   - Filters (for example, by conversation type).
+  - `EXPLAIN QUERY PLAN`.
 - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by staff).
 - Test interface with weird data: Long text, long words, too many tags, and so forth.

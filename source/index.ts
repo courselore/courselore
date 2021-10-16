@@ -7768,6 +7768,9 @@ export default async function courselore({
     const conversations = database
       .all<{
         reference: string;
+        conversationsTitleSearchIndexResultHighlight: string | null;
+        messagesSearchResultSnippet: string | null;
+        usersNameSearchIndexResultHighlight: string | null;
       }>(
         sql`
           SELECT "conversations"."reference"
@@ -7789,7 +7792,7 @@ export default async function courselore({
                 LEFT JOIN (
                   SELECT "rowid",
                          "rank",
-                         highlight("conversationsTitleSearchIndex", -1, '<mark class="mark">', '</mark>') AS "highlight"
+                         highlight("conversationsTitleSearchIndex", 0, '<mark class="mark">', '</mark>') AS "highlight"
                   FROM "conversationsTitleSearchIndex"
                   WHERE "conversationsTitleSearchIndex" MATCH ${search}
                 ) AS "conversationsTitleSearchIndexResult" ON "conversations"."id" = "conversationsTitleSearchIndexResult"."rowid"
@@ -7797,7 +7800,7 @@ export default async function courselore({
                 LEFT JOIN (
                   SELECT "messages"."conversation" AS "conversationId",
                          "messagesContentSearchIndex"."rank" AS "rank",
-                         snippet("messagesContentSearchIndex", -1, '<mark class="mark">', '</mark>', '…', 10) AS "snippet"
+                         snippet("messagesContentSearchIndex", 0, '<mark class="mark">', '</mark>', '…', 16) AS "snippet"
                   FROM "messagesContentSearchIndex"
                   JOIN "messages" ON "messagesContentSearchIndex"."rowid" = "messages"."id"
                   WHERE "messagesContentSearchIndex" MATCH ${search}
@@ -7806,7 +7809,7 @@ export default async function courselore({
                 LEFT JOIN (
                   SELECT "messages"."conversation" AS "conversationId",
                          "usersNameSearchIndex"."rank" AS "rank",
-                         highlight("usersNameSearchIndex", -1, '<mark class="mark">', '</mark>') AS "highlight"
+                         highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "highlight"
                   FROM "usersNameSearchIndex"
                   JOIN "users" ON "usersNameSearchIndex"."rowid" = "users"."id"
                   JOIN "enrollments" ON "users"."id" = "enrollments"."user"
