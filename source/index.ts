@@ -10804,12 +10804,18 @@ ${value}</textarea
               "oninteractive",
               javascript`
                 tippy(this, {
-                  content: ${JSON.stringify(
-                    conversationPartial(narrowReq, narrowRes, conversation)
-                  )},
+                  content: this.nextElementSibling.firstElementChild,
                   allowHTML: true,
                   touch: false,
                 });
+              `
+            );
+            element.insertAdjacentHTML(
+              "afterend",
+              html`
+                <div hidden>
+                  $${conversationPartial(narrowReq, narrowRes, conversation)}
+                </div>
               `
             );
             continue;
