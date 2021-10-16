@@ -8602,7 +8602,7 @@ export default async function courselore({
           res.locals.enrollment.role !== "staff"
             ? sql`
                 LEFT JOIN "messages" ON "conversations"."id" = "messages"."conversation" AND
-                                        "messages"."authorEnrollment" = ${res.locals.user.id}
+                                        "messages"."authorEnrollment" = ${res.locals.enrollment.id}
               `
             : sql``
         }
