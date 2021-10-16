@@ -10262,8 +10262,8 @@ ${value}</textarea
       const messageReferenceSearchMatch =
         req.query.search.match(/^(\d+)\/(\d*)$/);
       if (messageReferenceSearchMatch !== null) {
-        const [_, conversationReference, messageReferenceSearch] =
-          messageReferenceSearchMatch;
+        const [conversationReference, messageReferenceSearch] =
+          messageReferenceSearchMatch.slice(1);
         const conversation = getConversation(req, res, conversationReference);
         if (conversation !== undefined) {
           results.push(
@@ -10654,8 +10654,8 @@ ${value}</textarea
             )
           );
           if (match === null) continue;
-          const [_, courseReference, conversationReference, messageReference] =
-            match;
+          const [courseReference, conversationReference, messageReference] =
+            match.slice(1);
           if (courseReference !== res.locals.course.reference) continue;
           const conversation = getConversation(
             narrowReq,
@@ -10792,7 +10792,35 @@ ${value}</textarea
           }
         })(document);
 
-        // TODO: Do a tooltip to reveal more information about #references.
+        for (const element of document.querySelectorAll("a")) {
+          const hrefMatch = element.href.match(
+            new RegExp(
+              `^${escapeStringRegexp(
+                url
+              )}/courses/(\\d+)/conversations/(\\d+)(?:#message--(\\d+))?$`
+            )
+          );
+          if (hrefMatch === null) continue;
+          const [
+            courseReference,
+            hrefConversationReference,
+            hrefMessageReference,
+          ] = hrefMatch.slice(1);
+          if (courseReference !== res.locals.course.reference) continue;
+          const textContentMatch = element
+            .textContent!.trim()
+            .match(/^#(\d+)(?:\/(\d+))?$/);
+          if (textContentMatch === null) continue;
+          const [
+            textContentConversationReference,
+            textContentMessageReference,
+          ] = hrefMatch.slice(1);
+          if (
+            hrefConversationReference !== textContentConversationReference ||
+            hrefMessageReference !== textContentMessageReference
+          )
+            continue;
+        }
       }
 
       return {
