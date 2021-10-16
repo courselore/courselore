@@ -10589,7 +10589,6 @@ ${value}</textarea
       res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>;
       markdown: Markdown;
     }): { html: HTML; text: string; mentions: Set<string> } => {
-      // TODO: Compute these mentions in ‘processReferencesAndMentions’.
       const mentions = new Set<string>();
 
       const document = JSDOM.fragment(html`
@@ -10696,10 +10695,12 @@ ${value}</textarea
                 newNodeHTML = newNodeHTML.replace(
                   /(?<!\w)@(everyone|staff|students|[0-9a-z-]+)(?!\w)/gi,
                   (match, mention) => {
-                    switch (mention.toLowerCase()) {
+                    mention = mention.toLowerCase();
+                    switch (mention) {
                       case "everyone":
                       case "staff":
                       case "students":
+                        mentions.add(mention);
                         return html`<strong
                           oninteractive="${javascript`
                             tippy(this, {
@@ -10713,13 +10714,15 @@ ${value}</textarea
                       default:
                         const enrollmentReference = mention.split("--")[0];
                         const enrollment = database.get<{
+                          reference: string;
                           userId: number;
                           userName: string;
                           userAvatar: string | null;
                           userBiography: string | null;
                         }>(
                           sql`
-                            SELECT "users"."id" AS "userId",
+                            SELECT "enrollments"."reference",
+                                   "users"."id" AS "userId",
                                    "users"."name" AS "userName",
                                    "users"."avatar" AS "userAvatar",
                                    "users"."biography" AS "userBiography"
@@ -10732,6 +10735,7 @@ ${value}</textarea
                           `
                         );
                         if (enrollment === undefined) return html`${match}`;
+                        mentions.add(enrollment.reference);
                         return html`<strong
                           oninteractive="${javascript`
                             tippy(this, {
@@ -10763,7 +10767,7 @@ ${value}</textarea
                 );
 
                 newNodeHTML = newNodeHTML.replace(
-                  /#(\d+)(?:\/(\d+))?/g,
+                  /(?<!\w)#(\d+)(?:\/(\d+))?(?!\w)/g,
                   (match, conversationReference, messageReference) => {
                     // TODO: Do a tooltip to reveal what would be under the link.
                     const conversation = getConversation(
