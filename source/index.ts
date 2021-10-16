@@ -10678,11 +10678,11 @@ ${value}</textarea
         }
 
         (function processMentionsAndReferences(node: Node): void {
-          process();
+          processNode();
           if (node.hasChildNodes())
             for (const childNode of node.childNodes)
               processMentionsAndReferences(childNode);
-          function process() {
+          function processNode() {
             switch (node.nodeType) {
               case node.TEXT_NODE:
                 const parentElement = node.parentElement;
