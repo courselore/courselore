@@ -7756,7 +7756,7 @@ export default async function courselore({
     onlyConversationLayoutSidebarOnSmallScreen?: boolean;
   }): HTML => {
     const search =
-      req.query.search === "string"
+      typeof req.query.search === "string"
         ? sanitizeSearch(req.query.search)
         : undefined;
 
