@@ -10677,12 +10677,12 @@ ${value}</textarea
           element.textContent = `#${conversation.reference}/${message.reference}`;
         }
 
-        (function processReferencesAndMentions(node: Node): void {
-          processReferencesAndMentionsNode();
+        (function processMentionsAndReferences(node: Node): void {
+          process();
           if (node.hasChildNodes())
             for (const childNode of node.childNodes)
-              processReferencesAndMentions(childNode);
-          function processReferencesAndMentionsNode() {
+              processMentionsAndReferences(childNode);
+          function process() {
             switch (node.nodeType) {
               case node.TEXT_NODE:
                 const parentElement = node.parentElement;
