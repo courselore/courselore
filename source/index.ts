@@ -10679,101 +10679,103 @@ ${value}</textarea
         }
 
         (function processReferencesAndMentions(node: Node): void {
-          switch (node.nodeType) {
-            case node.TEXT_NODE:
-              const parentElement = node.parentElement;
-              if (
-                parentElement === null ||
-                parentElement.closest("a, code") !== null
-              )
-                return;
-              let newNodeHTML = html`${node.textContent}`;
-              newNodeHTML = newNodeHTML.replace(
-                /#(\d+)(?:\/(\d+))?/g,
-                (match, conversation, message) => {
-                  // TODO: Check that the conversation/message exists and is accessible by user.
-                  // TODO: Do a tooltip to reveal what would be under the link.
-                  return html`<a
-                    href="${url}/courses/${res.locals.course!
-                      .reference}/conversations/${conversation}${message ===
-                    undefined
-                      ? ""
-                      : `#message--${message}`}"
-                    >${match}</a
-                  >`;
-                }
-              );
-              newNodeHTML = newNodeHTML.replace(
-                /(?<!\w)@(everyone|staff|students|[0-9a-z-]+)(?!\w)/gi,
-                (match, mention) => {
-                  switch (mention.toLowerCase()) {
-                    case "everyone":
-                    case "staff":
-                    case "students":
-                      return html`<strong
-                        oninteractive="${javascript`
-                          tippy(this, {
-                            content: "Mention",
-                            touch: false,
-                          });
-                        `}"
-                        >@${lodash.capitalize(mention)} in the
-                        Conversation</strong
-                      >`;
-                    default:
-                      const enrollmentReference = mention.split("--")[0];
-                      const enrollment = database.get<{
-                        userId: number;
-                        userName: string;
-                        userAvatar: string | null;
-                        userBiography: string | null;
-                      }>(
-                        sql`
-                          SELECT "users"."id" AS "userId",
-                                 "users"."name" AS "userName",
-                                 "users"."avatar" AS "userAvatar",
-                                 "users"."biography" AS "userBiography"
-                          FROM "enrollments"
-                          JOIN "users" ON "enrollments"."user" = "users"."id"
-                          WHERE "enrollments"."course" = ${
-                            res.locals.course!.id
-                          } AND
-                                "enrollments"."reference" = ${enrollmentReference}
-                        `
-                      );
-                      if (enrollment === undefined) return html`${match}`;
-                      return html`<strong
-                        oninteractive="${javascript`
-                          tippy(this, {
-                            content: ${JSON.stringify(
-                              html`Mention
-                              $${enrollment.userAvatar === null
-                                ? html`<i class="bi bi-person-circle"></i>`
-                                : html`
-                                    <img
-                                      src="${enrollment.userAvatar}"
-                                      alt="${enrollment.userName}"
-                                      class="avatar avatar--sm avatar--vertical-align"
-                                    />
-                                  `}
-                              ${enrollment.userName}`
-                            )},
-                            allowHTML: true,
-                            touch: false,
-                          });
-                        `}"
-                        >$${enrollment.userId === res.locals.user!.id
-                          ? html`<mark class="mark"
-                              >@$${enrollment.userName}</mark
-                            >`
-                          : html`@$${enrollment.userName}`}</strong
-                      >`;
+          (() => {
+            switch (node.nodeType) {
+              case node.TEXT_NODE:
+                const parentElement = node.parentElement;
+                if (
+                  parentElement === null ||
+                  parentElement.closest("a, code") !== null
+                )
+                  return;
+                let newNodeHTML = html`${node.textContent}`;
+                newNodeHTML = newNodeHTML.replace(
+                  /#(\d+)(?:\/(\d+))?/g,
+                  (match, conversation, message) => {
+                    // TODO: Check that the conversation/message exists and is accessible by user.
+                    // TODO: Do a tooltip to reveal what would be under the link.
+                    return html`<a
+                      href="${url}/courses/${res.locals.course!
+                        .reference}/conversations/${conversation}${message ===
+                      undefined
+                        ? ""
+                        : `#message--${message}`}"
+                      >${match}</a
+                    >`;
                   }
-                }
-              );
-              parentElement.replaceChild(JSDOM.fragment(newNodeHTML), node);
-              break;
-          }
+                );
+                newNodeHTML = newNodeHTML.replace(
+                  /(?<!\w)@(everyone|staff|students|[0-9a-z-]+)(?!\w)/gi,
+                  (match, mention) => {
+                    switch (mention.toLowerCase()) {
+                      case "everyone":
+                      case "staff":
+                      case "students":
+                        return html`<strong
+                          oninteractive="${javascript`
+                            tippy(this, {
+                              content: "Mention",
+                              touch: false,
+                            });
+                          `}"
+                          >@${lodash.capitalize(mention)} in the
+                          Conversation</strong
+                        >`;
+                      default:
+                        const enrollmentReference = mention.split("--")[0];
+                        const enrollment = database.get<{
+                          userId: number;
+                          userName: string;
+                          userAvatar: string | null;
+                          userBiography: string | null;
+                        }>(
+                          sql`
+                            SELECT "users"."id" AS "userId",
+                                   "users"."name" AS "userName",
+                                   "users"."avatar" AS "userAvatar",
+                                   "users"."biography" AS "userBiography"
+                            FROM "enrollments"
+                            JOIN "users" ON "enrollments"."user" = "users"."id"
+                            WHERE "enrollments"."course" = ${
+                              res.locals.course!.id
+                            } AND
+                                  "enrollments"."reference" = ${enrollmentReference}
+                          `
+                        );
+                        if (enrollment === undefined) return html`${match}`;
+                        return html`<strong
+                          oninteractive="${javascript`
+                            tippy(this, {
+                              content: ${JSON.stringify(
+                                html`Mention
+                                $${enrollment.userAvatar === null
+                                  ? html`<i class="bi bi-person-circle"></i>`
+                                  : html`
+                                      <img
+                                        src="${enrollment.userAvatar}"
+                                        alt="${enrollment.userName}"
+                                        class="avatar avatar--sm avatar--vertical-align"
+                                      />
+                                    `}
+                                ${enrollment.userName}`
+                              )},
+                              allowHTML: true,
+                              touch: false,
+                            });
+                          `}"
+                          >$${enrollment.userId === res.locals.user!.id
+                            ? html`<mark class="mark"
+                                >@$${enrollment.userName}</mark
+                              >`
+                            : html`@$${enrollment.userName}`}</strong
+                        >`;
+                    }
+                  }
+                );
+                parentElement.replaceChild(JSDOM.fragment(newNodeHTML), node);
+                break;
+            }
+          })();
           if (node.hasChildNodes())
             for (const childNode of node.childNodes)
               processReferencesAndMentions(childNode);
