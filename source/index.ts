@@ -10820,7 +10820,7 @@ ${value}</textarea
           const [
             textContentConversationReference,
             textContentMessageReference,
-          ] = hrefMatch.slice(1);
+          ] = textContentMatch.slice(1);
           if (
             hrefConversationReference !== textContentConversationReference ||
             hrefMessageReference !== textContentMessageReference
