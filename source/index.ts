@@ -10727,7 +10727,7 @@ ${value}</textarea
                                   "enrollments"."reference" = ${enrollmentReference}
                           `
                         );
-                        if (enrollment === undefined) return html`${match}`;
+                        if (enrollment === undefined) return match;
                         mentions.add(enrollment.reference);
                         const mentionInnerHTML = html`$${enrollment.userAvatar ===
                         null
