@@ -10851,6 +10851,9 @@ ${value}</textarea
               <div
                 style="${css`
                   padding: var(--space--2);
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--2);
                 `}"
               >
                 $${conversationPartial(narrowReq, narrowRes, conversation)}
