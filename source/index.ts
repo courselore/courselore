@@ -10758,7 +10758,6 @@ ${value}</textarea
                 newNodeHTML = newNodeHTML.replace(
                   /(?<!\w)#(\d+)(?:\/(\d+))?(?!\w)/g,
                   (match, conversationReference, messageReference) => {
-                    // TODO: Do a tooltip to reveal what would be under the link.
                     const conversation = getConversation(
                       narrowReq,
                       narrowRes,
@@ -10792,6 +10791,8 @@ ${value}</textarea
           }
         })(document);
       }
+
+      // TODO: Do a tooltip to reveal more information about #references.
 
       return {
         html: document.firstElementChild!.outerHTML,
