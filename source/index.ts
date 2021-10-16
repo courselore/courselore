@@ -10678,7 +10678,11 @@ ${value}</textarea
         }
 
         (function processReferencesAndMentions(node: Node): void {
-          (() => {
+          processReferencesAndMentionsNode();
+          if (node.hasChildNodes())
+            for (const childNode of node.childNodes)
+              processReferencesAndMentions(childNode);
+          function processReferencesAndMentionsNode() {
             switch (node.nodeType) {
               case node.TEXT_NODE:
                 const parentElement = node.parentElement;
@@ -10791,10 +10795,7 @@ ${value}</textarea
                 parentElement.replaceChild(JSDOM.fragment(newNodeHTML), node);
                 break;
             }
-          })();
-          if (node.hasChildNodes())
-            for (const childNode of node.childNodes)
-              processReferencesAndMentions(childNode);
+          }
         })(document);
       }
 
