@@ -10714,12 +10714,10 @@ ${value}</textarea
                       conversation,
                       messageReference
                     );
+                    if (message === undefined) return match;
                     return html`<a
                       href="${url}/courses/${res.locals.course!
-                        .reference}/conversations/${conversation}${message ===
-                      undefined
-                        ? ""
-                        : `#message--${message}`}"
+                        .reference}/conversations/${conversation.reference}#message--${message.reference}"
                       >${match}</a
                     >`;
                   }
