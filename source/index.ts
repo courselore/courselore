@@ -10692,36 +10692,7 @@ ${value}</textarea
                 )
                   return;
                 let newNodeHTML = html`${node.textContent}`;
-                newNodeHTML = newNodeHTML.replace(
-                  /#(\d+)(?:\/(\d+))?/g,
-                  (match, conversationReference, messageReference) => {
-                    // TODO: Do a tooltip to reveal what would be under the link.
-                    const conversation = getConversation(
-                      narrowReq,
-                      narrowRes,
-                      conversationReference
-                    );
-                    if (conversation === undefined) return match;
-                    if (messageReference === undefined)
-                      return html`<a
-                        href="${url}/courses/${res.locals.course!
-                          .reference}/conversations/${conversation.reference}"
-                        >${match}</a
-                      >`;
-                    const message = getMessage(
-                      narrowReq,
-                      narrowRes,
-                      conversation,
-                      messageReference
-                    );
-                    if (message === undefined) return match;
-                    return html`<a
-                      href="${url}/courses/${res.locals.course!
-                        .reference}/conversations/${conversation.reference}#message--${message.reference}"
-                      >${match}</a
-                    >`;
-                  }
-                );
+
                 newNodeHTML = newNodeHTML.replace(
                   /(?<!\w)@(everyone|staff|students|[0-9a-z-]+)(?!\w)/gi,
                   (match, mention) => {
@@ -10790,6 +10761,38 @@ ${value}</textarea
                     }
                   }
                 );
+
+                newNodeHTML = newNodeHTML.replace(
+                  /#(\d+)(?:\/(\d+))?/g,
+                  (match, conversationReference, messageReference) => {
+                    // TODO: Do a tooltip to reveal what would be under the link.
+                    const conversation = getConversation(
+                      narrowReq,
+                      narrowRes,
+                      conversationReference
+                    );
+                    if (conversation === undefined) return match;
+                    if (messageReference === undefined)
+                      return html`<a
+                        href="${url}/courses/${res.locals.course!
+                          .reference}/conversations/${conversation.reference}"
+                        >${match}</a
+                      >`;
+                    const message = getMessage(
+                      narrowReq,
+                      narrowRes,
+                      conversation,
+                      messageReference
+                    );
+                    if (message === undefined) return match;
+                    return html`<a
+                      href="${url}/courses/${res.locals.course!
+                        .reference}/conversations/${conversation.reference}#message--${message.reference}"
+                      >${match}</a
+                    >`;
+                  }
+                );
+
                 parentElement.replaceChild(JSDOM.fragment(newNodeHTML), node);
                 break;
             }
