@@ -10585,6 +10585,7 @@ ${value}</textarea
       req,
       res,
       markdown,
+      search = undefined,
     }: {
       req: express.Request<
         {},
@@ -10595,6 +10596,7 @@ ${value}</textarea
       >;
       res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>;
       markdown: Markdown;
+      search?: string | string[] | undefined;
     }): { html: HTML; text: string; mentions: Set<string> } => {
       const mentions = new Set<string>();
 
@@ -10914,6 +10916,27 @@ ${value}</textarea
             html`<div hidden class="markdown--references">$${references}</div>`
           );
       }
+
+      if (search !== undefined)
+        (function processSearch(node: Node): void {
+          processNode();
+          if (node.hasChildNodes())
+            for (const childNode of node.childNodes) processSearch(childNode);
+          function processNode() {
+            switch (node.nodeType) {
+              case node.TEXT_NODE:
+                const parentElement = node.parentElement;
+                if (parentElement === null) return;
+                parentElement.replaceChild(
+                  JSDOM.fragment(
+                    highlightSearchResult(html`${node.textContent}`, search)
+                  ),
+                  node
+                );
+                break;
+            }
+          }
+        })(document);
 
       return {
         html: document.firstElementChild!.outerHTML,
@@ -13081,6 +13104,7 @@ ${value}</textarea
                               req,
                               res,
                               markdown: message.content,
+                              search: req.query.search,
                             }).html}
                           </div>
                           <div hidden>
