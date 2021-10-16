@@ -10696,21 +10696,14 @@ ${value}</textarea
                   /(?<!\w)@(everyone|staff|students|[0-9a-z-]+)(?!\w)/gi,
                   (match, mention) => {
                     mention = mention.toLowerCase();
+                    let mentionHTML: HTML;
                     switch (mention) {
                       case "everyone":
                       case "staff":
                       case "students":
                         mentions.add(mention);
-                        return html`<strong
-                          oninteractive="${javascript`
-                            tippy(this, {
-                              content: "Mention",
-                              touch: false,
-                            });
-                          `}"
-                          >@${lodash.capitalize(mention)} in the
-                          Conversation</strong
-                        >`;
+                        mentionHTML = html`${lodash.capitalize(mention)} in the
+                        Conversation`;
                       default:
                         const enrollmentReference = mention.split("--")[0];
                         const enrollment = database.get<{
@@ -10736,7 +10729,7 @@ ${value}</textarea
                         );
                         if (enrollment === undefined) return html`${match}`;
                         mentions.add(enrollment.reference);
-                        const mentionHTML = html`@$${enrollment.userAvatar ===
+                        const mentionInnerHTML = html`$${enrollment.userAvatar ===
                         null
                           ? html`<i class="bi bi-person-circle"></i>`
                           : html`<img
@@ -10744,19 +10737,21 @@ ${value}</textarea
                               alt="${enrollment.userName}"
                               class="avatar avatar--sm avatar--vertical-align"
                             />`}$${enrollment.userName}`;
-                        return html`<strong
-                          oninteractive="${javascript`
-                            tippy(this, {
-                              content: "Mention",
-                              allowHTML: true,
-                              touch: false,
-                            });
-                          `}"
-                          >$${enrollment.userId === res.locals.user!.id
-                            ? html`<mark class="mark">$${mentionHTML}</mark>`
-                            : html`$${mentionHTML}`}</strong
-                        >`;
+                        mentionHTML = html`$${enrollment.userId ===
+                        res.locals.user!.id
+                          ? html`<mark class="mark">$${mentionInnerHTML}</mark>`
+                          : html`$${mentionInnerHTML}`}`;
                     }
+                    return html`<strong
+                      oninteractive="${javascript`
+                        tippy(this, {
+                          content: "Mention",
+                          allowHTML: true,
+                          touch: false,
+                        });
+                      `}"
+                      >@$${mentionHTML}</strong
+                    >`;
                   }
                 );
 
