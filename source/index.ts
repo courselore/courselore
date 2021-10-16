@@ -1215,7 +1215,7 @@ export default async function courselore({
                   }
                 }
 
-                i,
+                i:not(.bi),
                 em {
                   font-style: italic;
                   color: var(--color--gray--medium--800);
@@ -10667,7 +10667,7 @@ ${value}</textarea
                 let newNodeHTML = html`${node.textContent}`;
 
                 newNodeHTML = newNodeHTML.replace(
-                  /(?<!\w)@(everyone|staff|students|[0-9a-z-]+)(?!\w)/gi,
+                  /(?<!\w)@(everyone|staff|students|anonymous|[0-9a-z-]+)(?!\w)/gi,
                   (match, mention) => {
                     mention = mention.toLowerCase();
                     let mentionHTML: HTML;
@@ -10678,6 +10678,11 @@ ${value}</textarea
                         mentions.add(mention);
                         mentionHTML = html`@${lodash.capitalize(mention)} in the
                         Conversation`;
+                        break;
+                      case "anonymous":
+                        mentionHTML = html`<span class="text--violet"
+                          >@<i class="bi bi-sunglasses"></i> Anonymous</span
+                        >`;
                         break;
                       default:
                         const enrollmentReference = mention.split("--")[0];
