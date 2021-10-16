@@ -10736,31 +10736,25 @@ ${value}</textarea
                         );
                         if (enrollment === undefined) return html`${match}`;
                         mentions.add(enrollment.reference);
+                        const mentionHTML = html`@$${enrollment.userAvatar ===
+                        null
+                          ? html`<i class="bi bi-person-circle"></i>`
+                          : html`<img
+                              src="${enrollment.userAvatar}"
+                              alt="${enrollment.userName}"
+                              class="avatar avatar--sm avatar--vertical-align"
+                            />`}$${enrollment.userName}`;
                         return html`<strong
                           oninteractive="${javascript`
                             tippy(this, {
-                              content: ${JSON.stringify(
-                                html`Mention
-                                $${enrollment.userAvatar === null
-                                  ? html`<i class="bi bi-person-circle"></i>`
-                                  : html`
-                                      <img
-                                        src="${enrollment.userAvatar}"
-                                        alt="${enrollment.userName}"
-                                        class="avatar avatar--sm avatar--vertical-align"
-                                      />
-                                    `}
-                                ${enrollment.userName}`
-                              )},
+                              content: "Mention",
                               allowHTML: true,
                               touch: false,
                             });
                           `}"
                           >$${enrollment.userId === res.locals.user!.id
-                            ? html`<mark class="mark"
-                                >@$${enrollment.userName}</mark
-                              >`
-                            : html`@$${enrollment.userName}`}</strong
+                            ? html`<mark class="mark">$${mentionHTML}</mark>`
+                            : html`$${mentionHTML}`}</strong
                         >`;
                     }
                   }
