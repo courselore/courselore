@@ -7813,7 +7813,18 @@ export default async function courselore({
                   FROM "usersNameSearchIndex"
                   JOIN "users" ON "usersNameSearchIndex"."rowid" = "users"."id"
                   JOIN "enrollments" ON "users"."id" = "enrollments"."user"
-                  JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment"
+                  JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment" AND
+                                     "messages"."reference" = ${"1"}
+                                      $${
+                                        res.locals.enrollment.role === "staff"
+                                          ? sql``
+                                          : sql`
+                                              AND (
+                                                "messages"."anonymousAt" IS NULL OR
+                                                "messages"."authorEnrollment" = ${res.locals.enrollment.id}
+                                              )
+                                            `
+                                      }
                   WHERE "usersNameSearchIndex" MATCH ${search}
                 ) AS "usersNameSearchIndexResult" ON "conversations"."id" = "usersNameSearchIndexResult"."conversationId"
               `
@@ -8288,7 +8299,11 @@ export default async function courselore({
   const conversationPartial = (
     req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>,
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
-    conversation: NonNullable<ReturnType<typeof getConversation>>
+    conversation: NonNullable<ReturnType<typeof getConversation>> & {
+      conversationsTitleSearchIndexResultHighlight?: string | null;
+      messagesSearchResultSnippet?: string | null;
+      usersNameSearchIndexResultHighlight?: string | null;
+    }
   ): HTML => html`
     <div>
       <h3
@@ -8296,7 +8311,10 @@ export default async function courselore({
           font-weight: var(--font-weight--bold);
         `}"
       >
-        ${conversation.title}
+        $${typeof conversation.conversationsTitleSearchIndexResultHighlight ===
+        "string"
+          ? conversation.conversationsTitleSearchIndexResultHighlight
+          : html`${conversation.title}`}
       </h3>
       <div
         style="${css`
@@ -8329,7 +8347,10 @@ export default async function courselore({
                           class="avatar avatar--xs avatar--vertical-align"
                         />
                       `}
-                  ${conversation.authorEnrollment.user.name}
+                  $${typeof conversation.usersNameSearchIndexResultHighlight ===
+                  "string"
+                    ? conversation.usersNameSearchIndexResultHighlight
+                    : html`${conversation.authorEnrollment.user.name}`}
                 `
               : html`
                   <span
@@ -8356,7 +8377,10 @@ export default async function courselore({
                         alt="${conversation.authorEnrollment.user.name}"
                         class="avatar avatar--xs avatar--vertical-align"
                       />`}
-                  ${conversation.authorEnrollment.user.name})
+                  $${typeof conversation.usersNameSearchIndexResultHighlight ===
+                  "string"
+                    ? conversation.usersNameSearchIndexResultHighlight
+                    : html`${conversation.authorEnrollment.user.name}`})
                 `
               : html``}
           </div>

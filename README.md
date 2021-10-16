@@ -49,6 +49,8 @@
   - Filters (for example, by conversation type).
   - Don’t scroll on search.
   - `EXPLAIN QUERY PLAN`.
+  - Limit.
+  - Search for author only includes author of first message. (How should we present search results otherwise?) (Wouldn’t including every message result in too many messages?)
 - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by staff).
 - Test interface with weird data: Long text, long words, too many tags, and so forth.
