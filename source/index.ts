@@ -7776,9 +7776,9 @@ export default async function courselore({
                       ? sql``
                       : sql`
                           ,
-                          "usersNameSearchIndexResult"."highlight" AS "usersNameSearchIndexResultHighlight",
                           "conversationsTitleSearchIndexResult"."highlight" AS "conversationsTitleSearchIndexResultHighlight",
-                          "messagesSearchResult"."snippet" AS "messagesSearchResultSnippet"
+                          "messagesSearchResult"."snippet" AS "messagesSearchResultSnippet",
+                          "usersNameSearchIndexResult"."highlight" AS "usersNameSearchIndexResultHighlight"
                         `
                   }
           FROM "conversations"
@@ -7786,17 +7786,6 @@ export default async function courselore({
             search === undefined
               ? sql``
               : sql`
-                LEFT JOIN (
-                  SELECT "messages"."conversation" AS "conversationId",
-                         "usersNameSearchIndex"."rank" AS "rank",
-                         highlight("usersNameSearchIndex", -1, '<mark class="mark">', '</mark>') AS "highlight"
-                  FROM "usersNameSearchIndex"
-                  JOIN "users" ON "usersNameSearchIndex"."rowid" = "users"."id"
-                  JOIN "enrollments" ON "users"."id" = "enrollments"."user"
-                  JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment"
-                  WHERE "usersNameSearchIndex" MATCH ${search}
-                ) AS "usersNameSearchIndexResult" ON "conversations"."id" = "usersNameSearchIndexResult"."conversationId"
-
                 LEFT JOIN (
                   SELECT "rowid",
                          "rank",
@@ -7813,6 +7802,17 @@ export default async function courselore({
                   JOIN "messages" ON "messagesContentSearchIndex"."rowid" = "messages"."id"
                   WHERE "messagesContentSearchIndex" MATCH ${search}
                 ) AS "messagesSearchResult" ON "conversations"."id" = "messagesSearchResult"."conversationId"
+
+                LEFT JOIN (
+                  SELECT "messages"."conversation" AS "conversationId",
+                         "usersNameSearchIndex"."rank" AS "rank",
+                         highlight("usersNameSearchIndex", -1, '<mark class="mark">', '</mark>') AS "highlight"
+                  FROM "usersNameSearchIndex"
+                  JOIN "users" ON "usersNameSearchIndex"."rowid" = "users"."id"
+                  JOIN "enrollments" ON "users"."id" = "enrollments"."user"
+                  JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment"
+                  WHERE "usersNameSearchIndex" MATCH ${search}
+                ) AS "usersNameSearchIndexResult" ON "conversations"."id" = "usersNameSearchIndexResult"."conversationId"
               `
           }
           $${
@@ -7830,7 +7830,8 @@ export default async function courselore({
               : sql`
                 AND (
                   "conversationsTitleSearchIndexResult"."rank" IS NOT NULL OR
-                  "messagesSearchResult"."rank" IS NOT NULL
+                  "messagesSearchResult"."rank" IS NOT NULL OR
+                  "usersNameSearchIndexResult"."rank" IS NOT NULL
                 )
               `
           }
@@ -7840,7 +7841,11 @@ export default async function courselore({
                       search === undefined
                         ? sql``
                         : sql`
-                          min(coalesce("conversationsTitleSearchIndexResult"."rank", 0), coalesce(min("messagesSearchResult"."rank"), 0)) ASC,
+                          min(
+                            coalesce("conversationsTitleSearchIndexResult"."rank", 0),
+                            coalesce("messagesSearchResult"."rank", 0),
+                            coalesce("usersNameSearchIndexResult"."rank", 0)
+                          ) ASC,
                         `
                     }
                     "conversations"."id" DESC
