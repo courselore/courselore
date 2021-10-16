@@ -10706,20 +10706,21 @@ ${value}</textarea
                 }
               );
               newNodeHTML = newNodeHTML.replace(
-                /(?<!\w)@(everyone|staff|students|[0-9a-z-]+)(?!\w)/g,
+                /(?<!\w)@(everyone|staff|students|[0-9a-z-]+)(?!\w)/gi,
                 (match, mention) => {
-                  switch (mention) {
+                  switch (mention.toLowerCase()) {
                     case "everyone":
                     case "staff":
                     case "students":
                       return html`<strong
                         oninteractive="${javascript`
                           tippy(this, {
-                            content: "Mention ${mention} in the conversation",
+                            content: "Mention",
                             touch: false,
                           });
                         `}"
-                        >${match}</strong
+                        >@${lodash.capitalize(mention)} in the
+                        Conversation</strong
                       >`;
                     default:
                       const enrollmentReference = mention.split("--")[0];
