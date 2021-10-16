@@ -10633,6 +10633,17 @@ ${value}</textarea
       }
 
       if (res.locals.course !== undefined) {
+        const narrowReq = req as express.Request<
+          {},
+          any,
+          {},
+          {},
+          IsEnrolledInCourseMiddlewareLocals
+        >;
+        const narrowRes = res as express.Response<
+          any,
+          IsEnrolledInCourseMiddlewareLocals
+        >;
         for (const element of document.querySelectorAll("a")) {
           if (element.href !== element.textContent!.trim()) continue;
           const match = element.href.match(
@@ -10647,14 +10658,8 @@ ${value}</textarea
             match;
           if (courseReference !== res.locals.course.reference) continue;
           const conversation = getConversation(
-            req as express.Request<
-              {},
-              any,
-              {},
-              {},
-              IsEnrolledInCourseMiddlewareLocals
-            >,
-            res as express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
+            narrowReq,
+            narrowRes,
             conversationReference
           );
           if (conversation === undefined) continue;
@@ -10663,14 +10668,8 @@ ${value}</textarea
             continue;
           }
           const message = getMessage(
-            req as express.Request<
-              {},
-              any,
-              {},
-              {},
-              IsEnrolledInCourseMiddlewareLocals
-            >,
-            res as express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
+            narrowReq,
+            narrowRes,
             conversation,
             messageReference
           );
@@ -10691,9 +10690,26 @@ ${value}</textarea
                 let newNodeHTML = html`${node.textContent}`;
                 newNodeHTML = newNodeHTML.replace(
                   /#(\d+)(?:\/(\d+))?/g,
-                  (match, conversation, message) => {
-                    // TODO: Check that the conversation/message exists and is accessible by user.
+                  (match, conversationReference, messageReference) => {
                     // TODO: Do a tooltip to reveal what would be under the link.
+                    const conversation = getConversation(
+                      narrowReq,
+                      narrowRes,
+                      conversationReference
+                    );
+                    if (conversation === undefined) return match;
+                    if (messageReference === undefined)
+                      return html`<a
+                        href="${url}/courses/${res.locals.course!
+                          .reference}/conversations/${conversation.reference}"
+                        >${match}</a
+                      >`;
+                    const message = getMessage(
+                      narrowReq,
+                      narrowRes,
+                      conversation,
+                      messageReference
+                    );
                     return html`<a
                       href="${url}/courses/${res.locals.course!
                         .reference}/conversations/${conversation}${message ===
