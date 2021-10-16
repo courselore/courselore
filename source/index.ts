@@ -10687,9 +10687,7 @@ ${value}</textarea
                 parentElement.closest("a, code") !== null
               )
                 return;
-              const textContent = node.textContent;
-              if (textContent === null) return;
-              let newNodeHTML = html`${textContent}`;
+              let newNodeHTML = html`${node.textContent}`;
               newNodeHTML = newNodeHTML.replace(
                 /#(\d+)(?:\/(\d+))?/g,
                 (match, conversation, message) => {
