@@ -10737,7 +10737,7 @@ ${value}</textarea
                               src="${enrollment.userAvatar}"
                               alt="${enrollment.userName}"
                               class="avatar avatar--sm avatar--vertical-align"
-                            />`}$${enrollment.userName}`;
+                            />`} $${enrollment.userName}`;
                         mentionHTML = html`$${enrollment.userId ===
                         res.locals.user!.id
                           ? html`<mark class="mark">$${mentionInnerHTML}</mark>`
