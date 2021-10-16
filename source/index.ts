@@ -8282,198 +8282,203 @@ export default async function courselore({
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
     conversation: NonNullable<ReturnType<typeof getConversation>>
   ): HTML => html`
-    <h3
-      style="${css`
-        font-weight: var(--font-weight--bold);
-      `}"
-    >
-      ${conversation.title}
-    </h3>
-    <div
-      style="${css`
-        font-size: var(--font-size--xs);
-        line-height: var(--line-height--xs);
-        display: flex;
-        flex-direction: column;
-        gap: var(--space--1);
-      `}"
-    >
-      <div class="secondary">
-        <div>
-          #${conversation.reference} created
-          <time
-            oninteractive="${javascript`
-              leafac.relativizeDateTimeElement(this);
-            `}"
-          >
-            ${conversation.createdAt}
-          </time>
-          by
-          $${conversation.anonymousAt === null
-            ? html`
-                $${conversation.authorEnrollment.user.avatar === null
-                  ? html` <i class="bi bi-person-circle"></i> `
-                  : html`
-                      <img
+    <div>
+      <h3
+        style="${css`
+          font-weight: var(--font-weight--bold);
+        `}"
+      >
+        ${conversation.title}
+      </h3>
+      <div
+        style="${css`
+          font-size: var(--font-size--xs);
+          line-height: var(--line-height--xs);
+          display: flex;
+          flex-direction: column;
+          gap: var(--space--1);
+        `}"
+      >
+        <div class="secondary">
+          <div>
+            #${conversation.reference} created
+            <time
+              oninteractive="${javascript`
+                leafac.relativizeDateTimeElement(this);
+              `}"
+            >
+              ${conversation.createdAt}
+            </time>
+            by
+            $${conversation.anonymousAt === null
+              ? html`
+                  $${conversation.authorEnrollment.user.avatar === null
+                    ? html` <i class="bi bi-person-circle"></i> `
+                    : html`
+                        <img
+                          src="${conversation.authorEnrollment.user.avatar}"
+                          alt="${conversation.authorEnrollment.user.name}"
+                          class="avatar avatar--xs avatar--vertical-align"
+                        />
+                      `}
+                  ${conversation.authorEnrollment.user.name}
+                `
+              : html`
+                  <span
+                    class="text--violet"
+                    oninteractive="${javascript`
+                      tippy(this, {
+                        content: "Anonymous to other students.",
+                        touch: false,
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-sunglasses"></i>
+                    Anonymous
+                  </span>
+                `}
+            $${conversation.anonymousAt !== null &&
+            (res.locals.enrollment.role === "staff" ||
+              conversation.authorEnrollment.id === res.locals.enrollment.id)
+              ? html`
+                  ($${conversation.authorEnrollment.user.avatar === null
+                    ? html`<i class="bi bi-person-circle"></i>`
+                    : html`<img
                         src="${conversation.authorEnrollment.user.avatar}"
                         alt="${conversation.authorEnrollment.user.name}"
                         class="avatar avatar--xs avatar--vertical-align"
-                      />
-                    `}
-                ${conversation.authorEnrollment.user.name}
-              `
-            : html`
-                <span
-                  class="text--violet"
-                  oninteractive="${javascript`
-                    tippy(this, {
-                      content: "Anonymous to other students.",
-                      touch: false,
-                    });
-                  `}"
-                >
-                  <i class="bi bi-sunglasses"></i>
-                  Anonymous
-                </span>
-              `}
-          $${conversation.anonymousAt !== null &&
-          (res.locals.enrollment.role === "staff" ||
-            conversation.authorEnrollment.id === res.locals.enrollment.id)
+                      />`}
+                  ${conversation.authorEnrollment.user.name})
+                `
+              : html``}
+          </div>
+          $${conversation.updatedAt !== null
             ? html`
-                ($${conversation.authorEnrollment.user.avatar === null
-                  ? html`<i class="bi bi-person-circle"></i>`
-                  : html`<img
-                      src="${conversation.authorEnrollment.user.avatar}"
-                      alt="${conversation.authorEnrollment.user.name}"
-                      class="avatar avatar--xs avatar--vertical-align"
-                    />`}
-                ${conversation.authorEnrollment.user.name})
+                <div>
+                  and last updated
+                  <time
+                    oninteractive="${javascript`
+                      leafac.relativizeDateTimeElement(this);
+                    `}"
+                  >
+                    ${conversation.updatedAt}
+                  </time>
+                </div>
               `
             : html``}
         </div>
-        $${conversation.updatedAt !== null
-          ? html`
-              <div>
-                and last updated
-                <time
-                  oninteractive="${javascript`
-                    leafac.relativizeDateTimeElement(this);
-                  `}"
-                >
-                  ${conversation.updatedAt}
-                </time>
-              </div>
-            `
-          : html``}
-      </div>
-      <div
-        style="${css`
-          display: flex;
-          flex-direction: column;
-          gap: var(--space--0-5);
-          & > * {
+        <div
+          style="${css`
             display: flex;
-            flex-wrap: wrap;
-            column-gap: var(--space--4);
-            row-gap: var(--space--0-5);
-
+            flex-direction: column;
+            gap: var(--space--0-5);
             & > * {
               display: flex;
-              gap: var(--space--1);
+              flex-wrap: wrap;
+              column-gap: var(--space--4);
+              row-gap: var(--space--0-5);
+
+              & > * {
+                display: flex;
+                gap: var(--space--1);
+              }
             }
-          }
-        `}"
-      >
-        <div>
-          <div class="${conversationTypeTextColor[conversation.type].display}">
-            $${conversationTypeIcon[conversation.type].fill}
-            ${lodash.capitalize(conversation.type)}
-          </div>
-          $${conversation.taggings.length === 0
-            ? html``
-            : html`
-                $${conversation.taggings.map(
-                  (tagging) => html`
-                    <div class="text--teal">
-                      <i class="bi bi-tag-fill"></i>
-                      ${tagging.tag.name}
-                    </div>
-                  `
-                )}
-              `}
-        </div>
-        $${(() => {
-          const content: HTML[] = [];
-          if (conversation.pinnedAt !== null)
-            content.push(html`
-              <div>
-                <div
-                  class="text--amber"
-                  oninteractive="${javascript`
-                    tippy(this, {
-                      content: "Pinned conversations are listed first.",
-                      touch: false,
-                    });
-                  `}"
-                >
-                  <i class="bi bi-pin-fill"></i>
-                  Pinned
-                </div>
-              </div>
-            `);
-          if (conversation.staffOnlyAt !== null)
-            content.push(html`
-              <div class="text--pink">
-                <i class="bi bi-eye-slash-fill"></i>
-                Visible by Staff Only
-              </div>
-            `);
-          return content.length === 0 ? html`` : html`<div>$${content}</div>`;
-        })()}
-        <div>
+          `}"
+        >
           <div>
-            <i class="bi bi-chat-left-text"></i>
-            ${conversation.messagesCount}
-            Message${conversation.messagesCount === 1 ? "" : "s"}
+            <div
+              class="${conversationTypeTextColor[conversation.type].display}"
+            >
+              $${conversationTypeIcon[conversation.type].fill}
+              ${lodash.capitalize(conversation.type)}
+            </div>
+            $${conversation.taggings.length === 0
+              ? html``
+              : html`
+                  $${conversation.taggings.map(
+                    (tagging) => html`
+                      <div class="text--teal">
+                        <i class="bi bi-tag-fill"></i>
+                        ${tagging.tag.name}
+                      </div>
+                    `
+                  )}
+                `}
           </div>
-          $${conversation.endorsements.length === 0
-            ? html``
-            : html`
-                <div
-                  class="text--lime"
-                  oninteractive="${javascript`
-                    tippy(this, {
-                      content: ${JSON.stringify(
-                        `Endorsed by ${
-                          /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                            Intl as any
-                          ).ListFormat("en").format(
-                            conversation.endorsements.map(
-                              (endorsement) => endorsement.enrollment.user.name
-                            )
-                          )
-                        }`
-                      )},
-                      touch: false,
-                    });
-                  `}"
-                >
-                  <i class="bi bi-award"></i>
-                  ${conversation.endorsements.length} Staff
-                  Endorsement${conversation.endorsements.length === 1
-                    ? ""
-                    : "s"}
-                </div>
-              `}
-          $${conversation.likesCount === 0
-            ? html``
-            : html`
+          $${(() => {
+            const content: HTML[] = [];
+            if (conversation.pinnedAt !== null)
+              content.push(html`
                 <div>
-                  <i class="bi bi-hand-thumbs-up"></i>
-                  ${conversation.likesCount}
-                  Like${conversation.likesCount === 1 ? "" : "s"}
+                  <div
+                    class="text--amber"
+                    oninteractive="${javascript`
+                      tippy(this, {
+                        content: "Pinned conversations are listed first.",
+                        touch: false,
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-pin-fill"></i>
+                    Pinned
+                  </div>
                 </div>
-              `}
+              `);
+            if (conversation.staffOnlyAt !== null)
+              content.push(html`
+                <div class="text--pink">
+                  <i class="bi bi-eye-slash-fill"></i>
+                  Visible by Staff Only
+                </div>
+              `);
+            return content.length === 0 ? html`` : html`<div>$${content}</div>`;
+          })()}
+          <div>
+            <div>
+              <i class="bi bi-chat-left-text"></i>
+              ${conversation.messagesCount}
+              Message${conversation.messagesCount === 1 ? "" : "s"}
+            </div>
+            $${conversation.endorsements.length === 0
+              ? html``
+              : html`
+                  <div
+                    class="text--lime"
+                    oninteractive="${javascript`
+                      tippy(this, {
+                        content: ${JSON.stringify(
+                          `Endorsed by ${
+                            /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                              Intl as any
+                            ).ListFormat("en").format(
+                              conversation.endorsements.map(
+                                (endorsement) =>
+                                  endorsement.enrollment.user.name
+                              )
+                            )
+                          }`
+                        )},
+                        touch: false,
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-award"></i>
+                    ${conversation.endorsements.length} Staff
+                    Endorsement${conversation.endorsements.length === 1
+                      ? ""
+                      : "s"}
+                  </div>
+                `}
+            $${conversation.likesCount === 0
+              ? html``
+              : html`
+                  <div>
+                    <i class="bi bi-hand-thumbs-up"></i>
+                    ${conversation.likesCount}
+                    Like${conversation.likesCount === 1 ? "" : "s"}
+                  </div>
+                `}
+          </div>
         </div>
       </div>
     </div>
@@ -10765,6 +10770,7 @@ ${value}</textarea
           }
         })(document);
 
+        const references: HTML[] = [];
         for (const element of document.querySelectorAll("a")) {
           const hrefMatch = element.href.match(
             new RegExp(
@@ -10804,19 +10810,14 @@ ${value}</textarea
               "oninteractive",
               javascript`
                 tippy(this, {
-                  content: this.nextElementSibling.firstElementChild,
+                  content: this.closest(".markdown").querySelector(".markdown--references").firstElementChild,
                   allowHTML: true,
                   touch: false,
                 });
               `
             );
-            element.insertAdjacentHTML(
-              "afterend",
-              html`
-                <div hidden>
-                  $${conversationPartial(narrowReq, narrowRes, conversation)}
-                </div>
-              `
+            references.push(
+              conversationPartial(narrowReq, narrowRes, conversation)
             );
             continue;
           }
@@ -10848,6 +10849,12 @@ ${value}</textarea
             `
           );
         }
+        document
+          .querySelector(".markdown")!
+          .insertAdjacentHTML(
+            "beforeend",
+            html`<div hidden class="markdown--references">$${references}</div>`
+          );
       }
 
       return {
