@@ -10703,7 +10703,7 @@ ${value}</textarea
                       case "staff":
                       case "students":
                         mentions.add(mention);
-                        mentionHTML = html`${lodash.capitalize(mention)} in the
+                        mentionHTML = html`@${lodash.capitalize(mention)} in the
                         Conversation`;
                       default:
                         const enrollmentReference = mention.split("--")[0];
@@ -10730,7 +10730,7 @@ ${value}</textarea
                         );
                         if (enrollment === undefined) return match;
                         mentions.add(enrollment.reference);
-                        const mentionInnerHTML = html`$${enrollment.userAvatar ===
+                        const mentionInnerHTML = html`@$${enrollment.userAvatar ===
                         null
                           ? html`<i class="bi bi-person-circle"></i>`
                           : html`<img
@@ -10751,7 +10751,7 @@ ${value}</textarea
                           touch: false,
                         });
                       `}"
-                      >@$${mentionHTML}</strong
+                      >$${mentionHTML}</strong
                     >`;
                   }
                 );
