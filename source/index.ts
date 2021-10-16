@@ -10840,20 +10840,27 @@ ${value}</textarea
             "oninteractive",
             javascript`
               tippy(this, {
-                content: ${JSON.stringify(html`
-                  <div>
-                    <div class="strong">$${conversation.title}</div>
-                    <div class="secondary">
-                      $${lodash.truncate(message.contentSearch, {
-                        length: 100,
-                        separator: /\W/,
-                      })}
-                    </div>
-                  </div>
-                `)},
+                content: this.closest(".markdown").querySelector(".markdown--references").firstElementChild,
                 allowHTML: true,
                 touch: false,
               });
+            `
+          );
+          references.push(
+            html`
+              <div
+                style="${css`
+                  padding: var(--space--2);
+                `}"
+              >
+                $${conversationPartial(narrowReq, narrowRes, conversation)}
+                <div>
+                  $${lodash.truncate(message.contentSearch, {
+                    length: 100,
+                    separator: /\W/,
+                  })}
+                </div>
+              </div>
             `
           );
         }
