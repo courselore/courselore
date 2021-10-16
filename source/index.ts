@@ -10705,6 +10705,7 @@ ${value}</textarea
                         mentions.add(mention);
                         mentionHTML = html`@${lodash.capitalize(mention)} in the
                         Conversation`;
+                        break;
                       default:
                         const enrollmentReference = mention.split("--")[0];
                         const enrollment = database.get<{
@@ -10742,6 +10743,7 @@ ${value}</textarea
                         res.locals.user!.id
                           ? html`<mark class="mark">$${mentionInnerHTML}</mark>`
                           : html`$${mentionInnerHTML}`}`;
+                        break;
                     }
                     return html`<strong
                       oninteractive="${javascript`
