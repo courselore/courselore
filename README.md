@@ -42,6 +42,15 @@
 
 ### Polish Existing Features
 
+- Search authors of every message.
+- Hide blue dots after a second.
+- Make blue dot count indicator a “mark as read” button.
+- Make all as read.
+- “Copy to clipboard” wording.
+- Cache.
+- Chat.
+- Notifications.
+- Look into FERPA compliance.
 - Search:
   - Filters (for example, by conversation type).
   - Don’t scroll on search.
@@ -322,6 +331,33 @@
 
 <details>
 <summary><strong>Meetings</strong></summary>
+
+<details>
+<summary>2021-10-16</summary>
+
+- Progress:
+  - Finished the #references widget.
+  - Markdown processor:
+    - Improved display of @mentions (in particular, when you’re mentioned).
+    - Links to conversations/messages are converted into #reference format.
+  - Search:
+    - Include authors.
+    - Highlight search results.
+    - Include message snippets.
+  - Made permalinks copyable.
+  - Fixed overflow of code blocks in small screens.
+- Requests:
+  - Search authors of every message.
+  - Hide blue dots after a second.
+  - Make blue dot count indicator a “mark as read” button.
+  - Make all as read.
+  - “Copy to clipboard” wording.
+  - Cache.
+  - Chat.
+  - Notifications.
+  - Look into FERPA compliance.
+
+</details>
 
 <details>
 <summary>2021-10-09</summary>
