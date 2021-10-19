@@ -7769,9 +7769,10 @@ export default async function courselore({
       .all<{
         reference: string;
         conversationsTitleSearchIndexResultHighlight: string | null;
+        messagesSearchResultMessageReference: string | null;
         messagesSearchResultSnippet: string | null;
-        usersNameSearchIndexResultHighlight: string | null;
         usersNameSearchIndexResultMessageReference: string | null;
+        usersNameSearchIndexResultHighlight: string | null;
       }>(
         sql`
           SELECT "conversations"."reference"
@@ -7781,9 +7782,10 @@ export default async function courselore({
                       : sql`
                           ,
                           "conversationsTitleSearchIndexResult"."highlight" AS "conversationsTitleSearchIndexResultHighlight",
+                          "messagesSearchResult"."messageReference" AS "messagesSearchResultMessageReference",
                           "messagesSearchResult"."snippet" AS "messagesSearchResultSnippet",
-                          "usersNameSearchIndexResult"."highlight" AS "usersNameSearchIndexResultHighlight",
-                          "usersNameSearchIndexResult"."messageReference" AS "usersNameSearchIndexResultMessageReference"
+                          "usersNameSearchIndexResult"."messageReference" AS "usersNameSearchIndexResultMessageReference",
+                          "usersNameSearchIndexResult"."highlight" AS "usersNameSearchIndexResultHighlight"
                         `
                   }
           FROM "conversations"
@@ -7800,7 +7802,8 @@ export default async function courselore({
                 ) AS "conversationsTitleSearchIndexResult" ON "conversations"."id" = "conversationsTitleSearchIndexResult"."rowid"
 
                 LEFT JOIN (
-                  SELECT "messages"."conversation" AS "conversationId",
+                  SELECT "messages"."reference" AS "messageReference",
+                         "messages"."conversation" AS "conversationId",
                          "messagesContentSearchIndex"."rank" AS "rank",
                          snippet("messagesContentSearchIndex", 0, '<mark class="mark">', '</mark>', '…', 16) AS "snippet"
                   FROM "messagesContentSearchIndex"
@@ -7882,18 +7885,21 @@ export default async function courselore({
         ];
       })
       .map((conversation) => {
-        // FIXME: Include messagesContentSearch results.
-        if (conversation.usersNameSearchIndexResultMessageReference === null)
+        const messageReference =
+          conversation.messagesSearchResultMessageReference !== null &&
+          conversation.messagesSearchResultSnippet !== null
+            ? conversation.messagesSearchResultMessageReference
+            : conversation.usersNameSearchIndexResultMessageReference !==
+                null &&
+              conversation.usersNameSearchIndexResultHighlight !== null
+            ? conversation.usersNameSearchIndexResultMessageReference
+            : undefined;
+        if (messageReference === undefined)
           return {
             ...conversation,
             message: undefined,
           };
-        const message = getMessage(
-          req,
-          res,
-          conversation,
-          conversation.usersNameSearchIndexResultMessageReference
-        );
+        const message = getMessage(req, res, conversation, messageReference);
         if (message === undefined)
           return {
             ...conversation,

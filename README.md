@@ -42,6 +42,12 @@
 
 ### Polish Existing Features
 
+- Conversation partials:
+  - Locations:
+    - Sidebar (including search results).
+    - Tooltips on rendered messages.
+    - #references widget.
+  - Remember anonymity!
 - Highlight message that has been #message--... targeted.
 - Search authors of every message.
 - Hide blue dots after a second.
