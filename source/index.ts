@@ -10491,7 +10491,7 @@ ${value}</textarea
                       type="button"
                       class="dropdown--menu--item button button--transparent"
                       onclick="${javascript`
-                        this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
+                        this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
                       `}"
                     >
                       <div>
@@ -10569,7 +10569,7 @@ ${value}</textarea
                       type="button"
                       class="dropdown--menu--item button button--transparent"
                       onclick="${javascript`
-                        this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
+                        this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
                       `}"
                     >
                       <div>
