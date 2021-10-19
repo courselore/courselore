@@ -7874,9 +7874,30 @@ export default async function courselore({
           conversationRow.reference
         );
         if (conversation === undefined) return [];
+        if (conversationRow.usersNameSearchIndexResultMessageReference === null)
+          return [
+            {
+              ...conversationRow,
+              ...conversation,
+            },
+          ];
+        const message = getMessage(
+          req,
+          res,
+          conversation,
+          conversationRow.usersNameSearchIndexResultMessageReference
+        );
+        if (message === undefined)
+          return [
+            {
+              ...conversationRow,
+              ...conversation,
+            },
+          ];
         return [
           {
             ...conversationRow,
+            message,
             ...conversation,
           },
         ];
