@@ -10481,6 +10481,102 @@ ${value}</textarea
           })
       );
 
+      results.push(
+        ...database
+          .all<{
+            messageReference: string;
+            conversationReference: string;
+            usersNameSearchHighlight: string;
+          }>(
+            sql`
+              SELECT "messages"."reference" AS "messageReference",
+                     "conversations"."reference" AS "conversationReference",
+                     highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "usersNameSearchHighlight"
+              FROM "messages"
+              JOIN "enrollments" ON "messages"."authorEnrollment" = "enrollments"."id"
+              JOIN "usersNameSearchIndex" ON "enrollments"."user" = "usersNameSearchIndex"."rowid" AND
+                                             "usersNameSearchIndex" MATCH ${sanitizeSearch(
+                                               req.query.search,
+                                               { prefix: true }
+                                             )}
+              JOIN "conversations" ON "messages"."conversation" = "conversations"."id" AND
+                                      "conversations"."course" = ${
+                                        res.locals.course.id
+                                      }
+              $${
+                res.locals.enrollment.role === "staff"
+                  ? sql``
+                  : sql`
+                      WHERE (
+                       "messages"."anonymousAt" IS NULL OR
+                       "messages"."authorEnrollment" = ${res.locals.enrollment.id}
+                     )
+                   `
+              }
+              ORDER BY "usersNameSearchIndex"."rank" ASC,
+                       "messages"."id" DESC
+              LIMIT 5
+            `
+          )
+          .flatMap((messageRow) => {
+            const conversation = getConversation(
+              req,
+              res,
+              messageRow.conversationReference
+            );
+            if (conversation === undefined) return [];
+            const message = getMessage(
+              req,
+              res,
+              conversation,
+              messageRow.messageReference
+            );
+            return message === undefined
+              ? []
+              : [
+                  html`
+                    <button
+                      type="button"
+                      class="dropdown--menu--item button button--transparent"
+                      onclick="${javascript`
+                        this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
+                      `}"
+                    >
+                      <div>
+                        <div>
+                          <span class="secondary">
+                            #${conversation.reference}/${message.reference}
+                          </span>
+                          <span class="strong">${conversation.title}</span>
+                        </div>
+                        <div class="secondary">
+                          <div>
+                            $${message.authorEnrollment.user.avatar === null
+                              ? html`<i class="bi bi-person-circle"></i>`
+                              : html`
+                                  <img
+                                    src="${message.authorEnrollment.user
+                                      .avatar}"
+                                    alt="${message.authorEnrollment.user.name}"
+                                    class="avatar avatar--sm avatar--vertical-align"
+                                  />
+                                `}
+                            $${messageRow.usersNameSearchHighlight}
+                          </div>
+                          <div>
+                            $${lodash.truncate(message.contentSearch, {
+                              length: 100,
+                              separator: /\W/,
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    </button>
+                  `,
+                ];
+          })
+      );
+
       res.send(
         html`
           $${results.length === 0
