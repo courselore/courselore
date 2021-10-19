@@ -7874,33 +7874,35 @@ export default async function courselore({
           conversationRow.reference
         );
         if (conversation === undefined) return [];
-        if (conversationRow.usersNameSearchIndexResultMessageReference === null)
-          return [
-            {
-              ...conversationRow,
-              ...conversation,
-            },
-          ];
+        return [
+          {
+            ...conversationRow,
+            ...conversation,
+          },
+        ];
+      })
+      .map((conversation) => {
+        // FIXME: Include messagesContentSearch results.
+        if (conversation.usersNameSearchIndexResultMessageReference === null)
+          return {
+            ...conversation,
+            message: undefined,
+          };
         const message = getMessage(
           req,
           res,
           conversation,
-          conversationRow.usersNameSearchIndexResultMessageReference
+          conversation.usersNameSearchIndexResultMessageReference
         );
         if (message === undefined)
-          return [
-            {
-              ...conversationRow,
-              ...conversation,
-            },
-          ];
-        return [
-          {
-            ...conversationRow,
-            message,
+          return {
             ...conversation,
-          },
-        ];
+            message: undefined,
+          };
+        return {
+          ...conversation,
+          message,
+        };
       });
 
     return applicationLayout({
@@ -8211,7 +8213,9 @@ export default async function courselore({
                                   search: req.query.search,
                                   tag: req.query.tag,
                                 }
-                              )}"
+                              )}${conversation.message === undefined
+                                ? ""
+                                : `#message--${conversation.message.reference}`}"
                               class="button ${isSelected
                                 ? "button--blue"
                                 : "button--transparent"}"
