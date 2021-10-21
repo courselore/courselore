@@ -8356,6 +8356,7 @@ export default async function courselore({
       messagesSearchResultMessage?: ReturnType<typeof getMessage>;
       usersNameSearchIndexResultHighlight?: string | null;
       usersNameSearchIndexResultMessage?: ReturnType<typeof getMessage>;
+      message?: ReturnType<typeof getMessage>;
     }
   ): HTML => html`
     <div>
@@ -8611,6 +8612,31 @@ export default async function courselore({
                       separator: /\W/,
                     }
                   )}
+                </div>
+              </div>
+            `
+          : conversation.message !== undefined
+          ? html`
+              <div>
+                <div class="secondary">
+                  $${conversation.message.authorEnrollment.user.avatar === null
+                    ? html`<i class="bi bi-person-circle"></i>`
+                    : html`
+                        <img
+                          src="${conversation.message.authorEnrollment.user
+                            .avatar}"
+                          alt="${conversation.message.authorEnrollment.user
+                            .name}"
+                          class="avatar avatar--xs avatar--vertical-align"
+                        />
+                      `}
+                  ${conversation.message.authorEnrollment.user.name}
+                </div>
+                <div>
+                  $${lodash.truncate(conversation.message.contentSearch, {
+                    length: 100,
+                    separator: /\W/,
+                  })}
                 </div>
               </div>
             `
@@ -11094,13 +11120,10 @@ ${value}</textarea
                   gap: var(--space--2);
                 `}"
               >
-                $${conversationPartial(narrowReq, narrowRes, conversation)}
-                <div>
-                  $${lodash.truncate(message.contentSearch, {
-                    length: 100,
-                    separator: /\W/,
-                  })}
-                </div>
+                $${conversationPartial(narrowReq, narrowRes, {
+                  ...conversation,
+                  message,
+                })}
               </div>
             `
           );
