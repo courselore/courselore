@@ -43,7 +43,6 @@
 ### Polish Existing Features
 
 - Conversation partials:
-  - Remember anonymity!
   - On preview, #references tooltip isn’t styled
 - Highlight message that has been #message--... targeted.
 - Search authors of every message.
