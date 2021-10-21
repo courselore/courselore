@@ -7885,29 +7885,43 @@ export default async function courselore({
         ];
       })
       .map((conversation) => {
-        const messageReference =
+        if (
           conversation.messagesSearchResultMessageReference !== null &&
           conversation.messagesSearchResultSnippet !== null
-            ? conversation.messagesSearchResultMessageReference
-            : conversation.usersNameSearchIndexResultMessageReference !==
-                null &&
-              conversation.usersNameSearchIndexResultHighlight !== null
-            ? conversation.usersNameSearchIndexResultMessageReference
-            : undefined;
-        if (messageReference === undefined)
-          return {
-            ...conversation,
-            message: undefined,
-          };
-        const message = getMessage(req, res, conversation, messageReference);
-        if (message === undefined)
-          return {
-            ...conversation,
-            message: undefined,
-          };
+        ) {
+          const message = getMessage(
+            req,
+            res,
+            conversation,
+            conversation.messagesSearchResultMessageReference
+          );
+          if (message !== undefined)
+            return {
+              ...conversation,
+              messagesSearchResultMessage: message,
+              usersNameSearchIndexResultMessage: undefined,
+            };
+        } else if (
+          conversation.usersNameSearchIndexResultMessageReference !== null &&
+          conversation.usersNameSearchIndexResultHighlight !== null
+        ) {
+          const message = getMessage(
+            req,
+            res,
+            conversation,
+            conversation.usersNameSearchIndexResultMessageReference
+          );
+          if (message !== undefined)
+            return {
+              ...conversation,
+              messagesSearchResultMessage: undefined,
+              usersNameSearchIndexResultMessage: message,
+            };
+        }
         return {
           ...conversation,
-          message,
+          messagesSearchResultMessage: undefined,
+          usersNameSearchIndexResultMessage: undefined,
         };
       });
 
@@ -8219,9 +8233,13 @@ export default async function courselore({
                                   search: req.query.search,
                                   tag: req.query.tag,
                                 }
-                              )}${conversation.message === undefined
-                                ? ""
-                                : `#message--${conversation.message.reference}`}"
+                              )}${conversation.messagesSearchResultMessage !==
+                              undefined
+                                ? `#message--${conversation.messagesSearchResultMessage.reference}`
+                                : ""}${conversation.usersNameSearchIndexResultMessage !==
+                              undefined
+                                ? `#message--${conversation.usersNameSearchIndexResultMessage.reference}`
+                                : ""}"
                               class="button ${isSelected
                                 ? "button--blue"
                                 : "button--transparent"}"
@@ -8335,8 +8353,9 @@ export default async function courselore({
     conversation: NonNullable<ReturnType<typeof getConversation>> & {
       conversationsTitleSearchIndexResultHighlight?: string | null;
       messagesSearchResultSnippet?: string | null;
+      messagesSearchResultMessage?: ReturnType<typeof getMessage>;
       usersNameSearchIndexResultHighlight?: string | null;
-      usersNameSearchIndexResultMessageReference?: string | null;
+      usersNameSearchIndexResultMessage?: ReturnType<typeof getMessage>;
     }
   ): HTML => html`
     <div>
@@ -8540,41 +8559,61 @@ export default async function courselore({
                 `}
           </div>
         </div>
-        $${typeof conversation.messagesSearchResultSnippet === "string"
-          ? html`<div>$${conversation.messagesSearchResultSnippet}</div>`
-          : typeof conversation.usersNameSearchIndexResultHighlight ===
-              "string" &&
-            typeof conversation.usersNameSearchIndexResultMessageReference ===
-              "string"
-          ? (() => {
-              const message = getMessage(
-                req,
-                res,
-                conversation,
-                conversation.usersNameSearchIndexResultMessageReference
-              );
-              if (message === undefined) return html``;
-              return html`<div>
+        $${typeof conversation.messagesSearchResultSnippet === "string" &&
+        conversation.messagesSearchResultMessage !== undefined
+          ? html`
+              <div>
                 <div>
-                  $${message.authorEnrollment.user.avatar === null
+                  $${conversation.messagesSearchResultMessage.authorEnrollment
+                    .user.avatar === null
                     ? html`<i class="bi bi-person-circle"></i>`
                     : html`
                         <img
-                          src="${message.authorEnrollment.user.avatar}"
-                          alt="${message.authorEnrollment.user.name}"
+                          src="${conversation.messagesSearchResultMessage
+                            .authorEnrollment.user.avatar}"
+                          alt="${conversation.messagesSearchResultMessage
+                            .authorEnrollment.user.name}"
+                          class="avatar avatar--xs avatar--vertical-align"
+                        />
+                      `}
+                  ${conversation.messagesSearchResultMessage.authorEnrollment
+                    .user.name}
+                </div>
+                <div>$${conversation.messagesSearchResultSnippet}</div>
+              </div>
+            `
+          : typeof conversation.usersNameSearchIndexResultHighlight ===
+              "string" &&
+            conversation.usersNameSearchIndexResultMessage !== undefined
+          ? html`
+              <div>
+                <div>
+                  $${conversation.usersNameSearchIndexResultMessage
+                    .authorEnrollment.user.avatar === null
+                    ? html`<i class="bi bi-person-circle"></i>`
+                    : html`
+                        <img
+                          src="${conversation.usersNameSearchIndexResultMessage
+                            .authorEnrollment.user.avatar}"
+                          alt="${conversation.usersNameSearchIndexResultMessage
+                            .authorEnrollment.user.name}"
                           class="avatar avatar--xs avatar--vertical-align"
                         />
                       `}
                   $${conversation.usersNameSearchIndexResultHighlight}
                 </div>
-                <div class="secondary">
-                  $${lodash.truncate(message.contentSearch, {
-                    length: 100,
-                    separator: /\W/,
-                  })}
+                <div>
+                  $${lodash.truncate(
+                    conversation.usersNameSearchIndexResultMessage
+                      .contentSearch,
+                    {
+                      length: 100,
+                      separator: /\W/,
+                    }
+                  )}
                 </div>
-              </div>`;
-            })()
+              </div>
+            `
           : html``}
       </div>
     </div>
