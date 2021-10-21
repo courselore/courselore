@@ -10824,7 +10824,10 @@ ${value}</textarea
 
       const document = JSDOM.fragment(html`
         <div class="markdown">
-          $${unifiedProcessor.processSync(markdown).toString()}
+          <div class="markdown--content">
+            $${unifiedProcessor.processSync(markdown).toString()}
+          </div>
+          <div hidden class="markdown--references"></div>
         </div>
       `);
 
@@ -11128,12 +11131,9 @@ ${value}</textarea
             `
           );
         }
-        document
-          .querySelector(".markdown")!
-          .insertAdjacentHTML(
-            "beforeend",
-            html`<div hidden class="markdown--references">$${references}</div>`
-          );
+        document.querySelector(
+          ".markdown--references"
+        )!.innerHTML = html`$${references}`;
       }
 
       if (search !== undefined)
@@ -11159,7 +11159,7 @@ ${value}</textarea
 
       return {
         html: document.firstElementChild!.outerHTML,
-        text: document.textContent!,
+        text: document.querySelector(".markdown--content")!.textContent!,
         mentions,
       };
     };
