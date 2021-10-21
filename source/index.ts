@@ -8428,7 +8428,7 @@ export default async function courselore({
                         alt="${conversation.authorEnrollment.user.name}"
                         class="avatar avatar--xs avatar--vertical-align"
                       />`}
-                  ${conversation.authorEnrollment.user.name}
+                  ${conversation.authorEnrollment.user.name})
                 `
               : html``}
           </div>

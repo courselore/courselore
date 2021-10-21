@@ -43,11 +43,8 @@
 ### Polish Existing Features
 
 - Conversation partials:
-  - Locations:
-    - Sidebar (including search results).
-    - Tooltips on rendered messages.
-    - #references widget.
   - Remember anonymity!
+  - On preview, #references tooltip isn’t styled
 - Highlight message that has been #message--... targeted.
 - Search authors of every message.
 - Hide blue dots after a second.
