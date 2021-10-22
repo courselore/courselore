@@ -42,7 +42,6 @@
 
 ### Polish Existing Features
 
-- Highlight message that has been #message--... targeted.
 - Search authors of every message.
 - Hide blue dots after a second.
 - Make blue dot count indicator a “mark as read” button.
