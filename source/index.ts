@@ -12698,12 +12698,19 @@ ${value}</textarea
                       data-content="${JSON.stringify(message.content)}"
                       class="message"
                       style="${css`
+                        --color--message--highlight-background-on-target: var(
+                          --color--amber--200
+                        );
+                        @media (prefers-color-scheme: dark) {
+                          --color--message--highlight-background-on-target: var(
+                            --color--amber--900
+                          );
+                        }
                         @keyframes message--highlight-background-on-target {
                           from {
-                            background-color: var(--color--amber--200);
-                            @media (prefers-color-scheme: dark) {
-                              background-color: var(--color--amber--900);
-                            }
+                            background-color: var(
+                              --color--message--highlight-background-on-target
+                            );
                           }
                           to {
                             background-color: transparent;
