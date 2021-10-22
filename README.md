@@ -42,7 +42,6 @@
 
 ### Polish Existing Features
 
-- Make blue dot count indicator a “mark as read” button.
 - Make all as read.
 - “Copy to clipboard” wording.
 - Cache.
