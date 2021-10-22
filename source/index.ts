@@ -12726,7 +12726,7 @@ ${value}</textarea
                             shouldScrollIntoView = false;
                             return html`
                               oninteractive="${javascript`
-                                this.scrollIntoView();
+                                if (window.location.hash === "") this.scrollIntoView();
                               `}"
                             `;
                           })()
