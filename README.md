@@ -42,7 +42,6 @@
 
 ### Polish Existing Features
 
-- On preview on markdownEditor, #references tooltip isn’t styled.
 - Highlight message that has been #message--... targeted.
 - Search authors of every message.
 - Hide blue dots after a second.
