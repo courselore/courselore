@@ -9340,16 +9340,21 @@ export default async function courselore({
                 write.hidden = true;
                 loading.hidden = false;
                 preview.hidden = true;
-                preview.innerHTML = await (
-                  await fetch("${url}${
+                const previewDocument = new DOMParser().parseFromString(
+                  await (
+                    await fetch("${url}${
               res.locals.course === undefined
                 ? ""
                 : `/courses/${res.locals.course.reference}`
             }/markdown-editor/preview", {
-                    method: "POST",
-                    body: new URLSearchParams({ content: textarea.value }),
-                  })
-                ).text();
+                      method: "POST",
+                      body: new URLSearchParams({ content: textarea.value }),
+                    })
+                  ).text(),
+                  "text/html"
+                );
+                document.querySelector("head").insertAdjacentHTML("beforeend", previewDocument.querySelector("head").innerHTML);
+                preview.innerHTML = previewDocument.querySelector("body").innerHTML;
                 leafac.evaluateElementsAttribute(preview);
                 write.hidden = true;
                 loading.hidden = true;
