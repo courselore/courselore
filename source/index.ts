@@ -12759,6 +12759,7 @@ ${value}</textarea
                                   content: "Unread Message",
                                   touch: false,
                                 });
+                                window.setTimeout(() => { this.click(); }, 2000);
                               `}"
                               onclick="${javascript`
                                 this.remove();
