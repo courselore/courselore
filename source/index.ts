@@ -8300,9 +8300,14 @@ export default async function courselore({
                                           `}"
                                           oninteractive="${javascript`
                                             tippy(this, {
-                                              content: "Unread Messages",
+                                              content: "Mark as Read",
                                               touch: false,
                                             });
+                                          `}"
+                                          onclick="${javascript`
+                                            event.preventDefault();
+                                            fetch(this.closest("a").href);
+                                            this.remove();
                                           `}"
                                         >
                                           ${unreadCount}
