@@ -45,7 +45,6 @@
 - Cache.
 - Chat.
 - Notifications.
-- Look into FERPA compliance.
 - Search:
   - Filters (for example, by conversation type).
   - Don’t scroll on search.
