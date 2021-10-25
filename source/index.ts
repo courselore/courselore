@@ -8219,26 +8219,35 @@ export default async function courselore({
                       </div>
                     `
                   : html`
-                      <form
-                        method="POST"
-                        action="${url}/courses/${res.locals.course
-                          .reference}/mark-all-conversations-as-read"
-                        style="${css`
-                          display: flex;
-                          justify-content: flex-end;
-                        `}"
-                      >
-                        <button
-                          class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                          style="${css`
-                            font-size: var(--font-size--xs);
-                            line-height: var(--line-height--xs);
-                          `}"
-                        >
-                          <i class="bi bi-check-all"></i>
-                          Mark All Conversations as Read
-                        </button>
-                      </form>
+                      $${conversations.some(
+                        (conversation) =>
+                          conversation.readingsCount <
+                          conversation.messagesCount
+                      )
+                        ? html`
+                            <form
+                              method="POST"
+                              action="${url}/courses/${res.locals.course
+                                .reference}/mark-all-conversations-as-read"
+                              style="${css`
+                                display: flex;
+                                justify-content: flex-end;
+                              `}"
+                            >
+                              <button
+                                class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                                style="${css`
+                                  font-size: var(--font-size--xs);
+                                  line-height: var(--line-height--xs);
+                                `}"
+                              >
+                                <i class="bi bi-check-all"></i>
+                                Mark All Conversations as Read
+                              </button>
+                            </form>
+                          `
+                        : html``}
+
                       <div>
                         $${conversations.map((conversation) => {
                           const isSelected =
