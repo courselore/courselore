@@ -5655,7 +5655,7 @@ export default async function courselore({
                                                 class="button button--tight button--transparent"
                                                 oninteractive="${javascript`
                                                   tippy(this, {
-                                                    content: "Copy",
+                                                    content: "Copy to Clipboard",
                                                     touch: false,
                                                   });
                                                 `}"
@@ -12147,11 +12147,11 @@ ${value}</textarea
                       `}"
                       oninteractive="${javascript`
                         tippy(this, {
-                          content: "Copy Permanent Link to Conversation",
+                          content: "Copy Conversation Permanent Link to Clipboard",
                           touch: false,
                         });
                         this.copied = tippy(this, {
-                          content: "Copied Permanent Link to Conversation",
+                          content: "Copied Conversation Permanent Link to Clipboard",
                           theme: "green",
                           trigger: "manual",
                         });
@@ -12991,11 +12991,11 @@ ${value}</textarea
                                   `}"
                                   oninteractive="${javascript`
                                     tippy(this, {
-                                      content: "Copy Permanent Link to Message",
+                                      content: "Copy Message Permanent Link to Clipboard",
                                       touch: false,
                                     });
                                     this.copied = tippy(this, {
-                                      content: "Copied Permanent Link to Message",
+                                      content: "Copied Message Permanent Link to Clipboard",
                                       theme: "green",
                                       trigger: "manual",
                                     });

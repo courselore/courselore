@@ -42,8 +42,6 @@
 
 ### Polish Existing Features
 
-- Make all as read.
-- “Copy to clipboard” wording.
 - Cache.
 - Chat.
 - Notifications.
