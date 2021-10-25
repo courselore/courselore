@@ -8228,7 +8228,7 @@ export default async function courselore({
                             <form
                               method="POST"
                               action="${url}/courses/${res.locals.course
-                                .reference}/mark-all-conversations-as-read"
+                                .reference}/conversations/mark-all-conversations-as-read"
                               style="${css`
                                 display: flex;
                                 justify-content: flex-end;
@@ -11908,6 +11908,39 @@ ${value}</textarea
       //     </p>
       //   `,
       // });
+    }
+  );
+
+  app.post<
+    { courseReference: string },
+    any,
+    {},
+    {},
+    IsEnrolledInCourseMiddlewareLocals
+  >(
+    "/courses/:courseReference/conversations/mark-all-conversations-as-read",
+    ...isEnrolledInCourseMiddleware,
+    (req, res) => {
+      const messages = database.all<{ id: number }>(
+        sql`
+          SELECT "messages"."id"
+          FROM "messages"
+          JOIN "conversations" ON "messages"."conversation" = "conversations"."id" AND
+                                  "conversations"."course" = ${res.locals.course.id}
+          LEFT JOIN "readings" ON "messages"."id" = "readings"."message" AND
+                                  "readings"."enrollment" = ${res.locals.enrollment.id}
+          WHERE "readings"."id" IS NULL
+          ORDER BY "messages"."id" ASC
+        `
+      );
+      for (const message of messages)
+        database.run(
+          sql`
+            INSERT INTO "readings" ("message", "enrollment")
+            VALUES (${message.id}, ${res.locals.enrollment.id})
+          `
+        );
+      res.redirect("back");
     }
   );
 
