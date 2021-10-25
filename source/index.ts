@@ -8014,7 +8014,11 @@ export default async function courselore({
             `}"
           >
             <div>
-              <div>
+              <div
+                style="${css`
+                  gap: var(--space--2);
+                `}"
+              >
                 <div
                   style="${css`
                     display: flex;
@@ -8215,7 +8219,30 @@ export default async function courselore({
                       </div>
                     `
                   : html`
-                      <div>
+                      <div
+                        style="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--2);
+                        `}"
+                      >
+                        <div
+                          style="${css`
+                            display: flex;
+                            justify-content: flex-end;
+                          `}"
+                        >
+                          <button
+                            class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                            style="${css`
+                              font-size: var(--font-size--xs);
+                              line-height: var(--line-height--xs);
+                            `}"
+                          >
+                            <i class="bi bi-check-all"></i>
+                            Mark All Conversations as Read
+                          </button>
+                        </div>
                         $${conversations.map((conversation) => {
                           const isSelected =
                             conversation.id === res.locals.conversation?.id;
