@@ -8219,7 +8219,10 @@ export default async function courselore({
                       </div>
                     `
                   : html`
-                      <div
+                      <form
+                        method="POST"
+                        action="${url}/courses/${res.locals.course
+                          .reference}/mark-all-conversations-as-read"
                         style="${css`
                           display: flex;
                           justify-content: flex-end;
@@ -8235,7 +8238,7 @@ export default async function courselore({
                           <i class="bi bi-check-all"></i>
                           Mark All Conversations as Read
                         </button>
-                      </div>
+                      </form>
                       <div>
                         $${conversations.map((conversation) => {
                           const isSelected =
