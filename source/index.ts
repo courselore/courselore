@@ -4218,7 +4218,10 @@ export default async function courselore({
         path.join(dataDirectory, `files/${folder}/${name}`)
       );
       const ext = path.extname(name);
-      const nameAvatar = `${name.slice(0, -ext.length)}--avatar${ext}`;
+      const nameAvatar =
+        ext === ""
+          ? `${name}--avatar`
+          : `${name.slice(0, -ext.length)}--avatar${ext}`;
       await sharp(req.files.avatar.data)
         .rotate()
         .resize(/* var(--space--64) */ 256, 256, {
