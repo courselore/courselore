@@ -4208,7 +4208,7 @@ export default async function courselore({
       )
         return next("validation");
       if (req.files.avatar.truncated) return res.sendStatus(413);
-      const name = filenamify(req.files.avatar.name);
+      const name = filenamify(req.files.avatar.name, { replacement: "-" });
       if (name.trim() === "") return next("validation");
       const relativePathOriginal = `files/${cryptoRandomString({
         length: 20,
@@ -10869,7 +10869,6 @@ ${value}</textarea
     }
   );
 
-  // TODO: https://github.com/sindresorhus/filenamify
   app.post<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/markdown-editor/attachments",
     ...isSignedInMiddleware,
@@ -10885,12 +10884,12 @@ ${value}</textarea
 <!-- Failed to upload: Attachments must be smaller than 10MB. -->
             `.trim()
           );
-        if (filenamify(attachment.name).trim() === "")
+        if (filenamify(attachment.name, { replacement: "-" }).trim() === "")
           return next("validation");
       }
       const attachmentsMarkdowns: Markdown[] = [];
       for (const attachment of attachments) {
-        const name = filenamify(attachment.name);
+        const name = filenamify(attachment.name, { replacement: "-" });
         const relativePath = `files/${cryptoRandomString({
           length: 20,
           type: "numeric",
