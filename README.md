@@ -42,6 +42,12 @@
 
 ### Polish Existing Features
 
+- Improve security around uploads.
+  - File size.
+  - File name.
+    - Size.
+    - Weird characters: uriDecodeFileNames, safeFileNames.
+  - Double check the use of sharp.
 - Notifications.
 - Search:
   - Filters (for example, by conversation type).

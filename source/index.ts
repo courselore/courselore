@@ -2536,11 +2536,13 @@ export default async function courselore({
   };
   app.use(express.urlencoded({ extended: true }));
   // TODO: Make this secure: https://github.com/richardgirges/express-fileupload
-  // File size
-  // File name
-  //   Size
-  //   Weird characters: uriDecodeFileNames, safeFileNames
-  app.use(expressFileUpload({ createParentPath: true }));
+  app.use(
+    expressFileUpload({
+      createParentPath: true,
+      abortOnLimit: true,
+      limits: { fileSize: 10 * 1024 * 1024 },
+    })
+  );
 
   if (liveReload)
     app.get<{}, any, {}, {}, {}>("/live-reload", (req, res, next) => {
