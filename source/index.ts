@@ -4219,14 +4219,13 @@ export default async function courselore({
       );
       const ext = path.extname(name);
       const nameAvatar = `${name.slice(0, -ext.length)}--avatar${ext}`;
-      const pathAvatar = `files/${folder}/${nameAvatar}`;
       await sharp(req.files.avatar.data)
         .rotate()
         .resize(/* var(--space--64) */ 256, 256, {
           position: sharp.strategy.attention,
         })
-        .toFile(path.join(dataDirectory, pathAvatar));
-      res.send(`${url}/files/${folder}/${encodeURIComponent(pathAvatar)}`);
+        .toFile(path.join(dataDirectory, `files/${folder}/${nameAvatar}`));
+      res.send(`${url}/files/${folder}/${encodeURIComponent(nameAvatar)}`);
     })
   );
 
