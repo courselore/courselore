@@ -4210,23 +4210,23 @@ export default async function courselore({
       if (req.files.avatar.truncated) return res.sendStatus(413);
       const name = filenamify(req.files.avatar.name, { replacement: "-" });
       if (name.trim() === "") return next("validation");
-      const relativePathOriginal = `files/${cryptoRandomString({
+      const folder = cryptoRandomString({
         length: 20,
         type: "numeric",
-      })}/${name}`;
-      await req.files.avatar.mv(path.join(dataDirectory, relativePathOriginal));
-      const ext = path.extname(relativePathOriginal);
-      const relativePathAvatar = `${relativePathOriginal.slice(
-        0,
-        -ext.length
-      )}--avatar${ext}`;
+      });
+      await req.files.avatar.mv(
+        path.join(dataDirectory, `files/${folder}/${name}`)
+      );
+      const ext = path.extname(name);
+      const nameAvatar = `${name.slice(0, -ext.length)}--avatar${ext}`;
+      const pathAvatar = `files/${folder}/${nameAvatar}`;
       await sharp(req.files.avatar.data)
         .rotate()
         .resize(/* var(--space--64) */ 256, 256, {
           position: sharp.strategy.attention,
         })
-        .toFile(path.join(dataDirectory, relativePathAvatar));
-      res.send(`${url}/${relativePathAvatar}`);
+        .toFile(path.join(dataDirectory, pathAvatar));
+      res.send(`${url}/files/${folder}/${encodeURIComponent(pathAvatar)}`);
     })
   );
 
