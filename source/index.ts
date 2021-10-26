@@ -2535,11 +2535,9 @@ export default async function courselore({
     secure: true,
   };
   app.use(express.urlencoded({ extended: true }));
-  // TODO: Make this secure: https://github.com/richardgirges/express-fileupload
   app.use(
     expressFileUpload({
       createParentPath: true,
-      abortOnLimit: true,
       limits: { fileSize: 10 * 1024 * 1024 },
     })
   );
@@ -3923,6 +3921,7 @@ export default async function courselore({
                 `}"
               >
                 <div
+                  class="avatar-chooser"
                   style="${css`
                     display: flex;
                     justify-content: center;
@@ -3934,7 +3933,7 @@ export default async function courselore({
                   `}"
                 >
                   <div
-                    class="avatar--empty"
+                    class="avatar-chooser--empty"
                     $${res.locals.user.avatar === null ? html`` : html`hidden`}
                   >
                     <button
@@ -3969,14 +3968,14 @@ export default async function courselore({
                         });
                       `}"
                       onclick="${javascript`
-                        this.closest("form").querySelector(".avatar--upload").click();
+                        this.closest("form").querySelector(".avatar-chooser--upload").click();
                       `}"
                     >
                       <i class="bi bi-person-circle"></i>
                     </button>
                   </div>
                   <div
-                    class="avatar--filled"
+                    class="avatar-chooser--filled"
                     $${res.locals.user.avatar === null ? html`hidden` : html``}
                     style="${css`
                       display: grid;
@@ -4012,7 +4011,7 @@ export default async function courselore({
                         });
                       `}"
                       onclick="${javascript`
-                        this.closest("form").querySelector(".avatar--upload").click();
+                        this.closest("form").querySelector(".avatar-chooser--upload").click();
                       `}"
                     >
                       <img
@@ -4048,8 +4047,8 @@ export default async function courselore({
                         const form = this.closest("form");
                         const avatar = form.querySelector('[name="avatar"]')
                         avatar.value = "";
-                        form.querySelector(".avatar--empty").hidden = false;
-                        form.querySelector(".avatar--filled").hidden = true;
+                        form.querySelector(".avatar-chooser--empty").hidden = false;
+                        form.querySelector(".avatar-chooser--filled").hidden = true;
                       `}"
                     >
                       <i class="bi bi-trash"></i>
@@ -4057,7 +4056,7 @@ export default async function courselore({
                   </div>
                   <input
                     type="file"
-                    class="avatar--upload"
+                    class="avatar-chooser--upload"
                     accept="image/*"
                     autocomplete="off"
                     hidden
@@ -4068,15 +4067,40 @@ export default async function courselore({
                         const body = new FormData();
                         body.append("avatar", this.files[0]);
                         this.value = "";
-                        const avatarURL = await (await fetch("${url}/settings/avatar", {
+                        const response = await fetch("${url}/settings/avatar", {
                           method: "POST",
                           body,
-                        })).text();
+                        });
+                        if (response.status === 413) {
+                          const tooltip = tippy(this.closest(".avatar-chooser"), {
+                            content: "Avatars must be smaller than 10MB.",
+                            theme: "validation--error",
+                            trigger: "manual",
+                            showOnCreate: true,
+                            onHidden: () => {
+                              tooltip.destroy();
+                            },
+                          });
+                          return;
+                        }
+                        if (!response.ok) {
+                          const tooltip = tippy(this.closest(".avatar-chooser"), {
+                            content: "Something went wrong in uploading your avatar. Please report to administrator@courselore.org.",
+                            theme: "validation--error",
+                            trigger: "manual",
+                            showOnCreate: true,
+                            onHidden: () => {
+                              tooltip.destroy();
+                            },
+                          });
+                          return;
+                        }
+                        const avatarURL = await response.text();
                         const form = this.closest("form");
                         const avatar = form.querySelector('[name="avatar"]')
                         avatar.value = avatarURL;
-                        form.querySelector(".avatar--empty").hidden = true;
-                        const avatarFilled = form.querySelector(".avatar--filled");
+                        form.querySelector(".avatar-chooser--empty").hidden = true;
+                        const avatarFilled = form.querySelector(".avatar-chooser--filled");
                         avatarFilled.hidden = false;
                         avatarFilled.querySelector("img").setAttribute("src", avatarURL);
                       })();
@@ -4183,6 +4207,7 @@ export default async function courselore({
         !req.files.avatar.mimetype.startsWith("image/")
       )
         return next("validation");
+      if (req.files.avatar.truncated) return res.sendStatus(413);
       const relativePathOriginal = `files/${cryptoRandomString({
         length: 20,
         type: "numeric",
@@ -10848,10 +10873,18 @@ ${value}</textarea
     ...isSignedInMiddleware,
     asyncHandler(async (req, res, next) => {
       if (req.files?.attachments === undefined) return next("validation");
-      const attachmentsMarkdowns: Markdown[] = [];
-      for (const attachment of Array.isArray(req.files.attachments)
+      const attachments = Array.isArray(req.files.attachments)
         ? req.files.attachments
-        : [req.files.attachments]) {
+        : [req.files.attachments];
+      for (const attachment of attachments)
+        if (attachment.truncated)
+          return res.status(413).send(
+            markdown`
+<!-- Failed to upload: Attachments must be smaller than 10MB. -->
+            `.trim()
+          );
+      const attachmentsMarkdowns: Markdown[] = [];
+      for (const attachment of attachments) {
         const relativePath = `files/${cryptoRandomString({
           length: 20,
           type: "numeric",
