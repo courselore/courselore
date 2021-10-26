@@ -43,7 +43,7 @@
 ### Polish Existing Features
 
 - Improve security around uploads.
-  - File size.
+  - [x] File size.
   - File name.
     - Size.
     - Weird characters: uriDecodeFileNames, safeFileNames.
