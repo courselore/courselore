@@ -40,6 +40,7 @@ import argon2 from "argon2";
 import sharp from "sharp";
 import lodash from "lodash";
 import slugify from "@sindresorhus/slugify";
+import filenamify from "filenamify";
 import escapeStringRegexp from "escape-string-regexp";
 import QRCode from "qrcode";
 import faker from "faker";
@@ -4197,7 +4198,6 @@ export default async function courselore({
     res.redirect(`${url}/settings`);
   });
 
-  // TODO: https://github.com/sindresorhus/filenamify
   app.post<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings/avatar",
     asyncHandler(async (req, res, next) => {
@@ -4208,10 +4208,12 @@ export default async function courselore({
       )
         return next("validation");
       if (req.files.avatar.truncated) return res.sendStatus(413);
+      const name = filenamify(req.files.avatar.name);
+      if (name.trim() === "") return next("validation");
       const relativePathOriginal = `files/${cryptoRandomString({
         length: 20,
         type: "numeric",
-      })}/${req.files.avatar.name}`;
+      })}/${name}`;
       await req.files.avatar.mv(path.join(dataDirectory, relativePathOriginal));
       const ext = path.extname(relativePathOriginal);
       const relativePathAvatar = `${relativePathOriginal.slice(
@@ -10876,19 +10878,23 @@ ${value}</textarea
       const attachments = Array.isArray(req.files.attachments)
         ? req.files.attachments
         : [req.files.attachments];
-      for (const attachment of attachments)
+      for (const attachment of attachments) {
         if (attachment.truncated)
           return res.status(413).send(
             markdown`
 <!-- Failed to upload: Attachments must be smaller than 10MB. -->
             `.trim()
           );
+        if (filenamify(attachment.name).trim() === "")
+          return next("validation");
+      }
       const attachmentsMarkdowns: Markdown[] = [];
       for (const attachment of attachments) {
+        const name = filenamify(attachment.name);
         const relativePath = `files/${cryptoRandomString({
           length: 20,
           type: "numeric",
-        })}/${attachment.name}`;
+        })}/${name}`;
         await attachment.mv(path.join(dataDirectory, relativePath));
         // TODO: URI encode relative path.
         const href = `${url}/${relativePath}`;
@@ -10898,14 +10904,14 @@ ${value}</textarea
           if (metadata.width !== undefined && metadata.density !== undefined) {
             // TODO: Resize big images.
             attachmentsMarkdowns.push(
-              markdown`<img src="${href}" alt="${attachment.name}" width="${
+              markdown`<img src="${href}" alt="${name}" width="${
                 metadata.density < 100 ? metadata.width / 2 : metadata.width
               }" />`
             );
             continue;
           }
         }
-        attachmentsMarkdowns.push(markdown`[${attachment.name}](${href})`);
+        attachmentsMarkdowns.push(markdown`[${name}](${href})`);
       }
       // TODO: Handle spacing more intelligently.
       res.send(attachmentsMarkdowns.join(" "));

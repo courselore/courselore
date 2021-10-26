@@ -45,6 +45,7 @@
     "express": "^4.17.1",
     "express-fileupload": "^1.2.1",
     "faker": "^5.5.3",
+    "filenamify": "^4.3.0",
     "fs-extra": "^10.0.0",
     "hast-util-sanitize": "^3.0.2",
     "jsdom": "^17.0.0",
