@@ -42,8 +42,6 @@
 
 ### Polish Existing Features
 
-- Cache.
-- Chat.
 - Notifications.
 - Search:
   - Filters (for example, by conversation type).
@@ -54,6 +52,7 @@
   - Include `<person> says`:
     - Search results.
     - Tooltip for #references.
+- Chat.
 - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by staff).
 - Test interface with weird data: Long text, long words, too many tags, and so forth.
