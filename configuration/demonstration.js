@@ -2,13 +2,18 @@ export default async (importFromCourselore) => {
   const url = process.env.URL ?? `https://localhost:5000`;
   const email = "development@courselore.org";
   if (process.argv[3] === undefined) {
-    const execa = await importFromCourselore("execa");
-    const caddyfile = await importFromCourselore("dedent");
+    const nodeURL = await importFromCourselore("node:url");
+    const execa = (await importFromCourselore("execa")).default;
+    const caddyfile = (await importFromCourselore("dedent")).default;
     const subprocesses = [
-      execa(process.argv[0], [process.argv[1], process.argv[2], "server"], {
-        preferLocal: true,
-        stdio: "inherit",
-      }),
+      execa(
+        process.argv[0],
+        [process.argv[1], nodeURL.fileURLToPath(import.meta.url), "server"],
+        {
+          preferLocal: true,
+          stdio: "inherit",
+        }
+      ),
       execa("caddy", ["run", "--config", "-", "--adapter", "caddyfile"], {
         preferLocal: true,
         stdout: "inherit",
@@ -32,8 +37,8 @@ export default async (importFromCourselore) => {
           if (subprocess !== otherSubprocess) otherSubprocess.cancel();
       });
   } else {
-    const path = await importFromCourselore("path");
-    const nodemailer = await importFromCourselore("nodemailer");
+    const path = await importFromCourselore("node:path");
+    const nodemailer = await importFromCourselore("nodemailer").default;
     const courselore = await importFromCourselore(".").default;
     const { version } = await importFromCourselore("../package.json");
     const app = await courselore({
