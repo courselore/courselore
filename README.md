@@ -42,6 +42,13 @@
 
 ### Polish Existing Features
 
+- Migrate to ESM:
+  - https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
+  - https://github.com/TypeStrong/ts-node/issues/1007
+  - https://www.typescriptlang.org/tsconfig
+  - https://github.com/sindresorhus/tsconfig/blob/main/tsconfig.json
+  - Update packages.
+    - Check that long filename truncation keeps extension.
 - Improve security around uploads.
   - [x] File size.
   - File name.
