@@ -2528,7 +2528,9 @@ export default async function courselore({
     },
   };
 
-  app.use(express.static(path.join(__dirname, "../static")));
+  app.use(
+    express.static(nodeURL.fileURLToPath(new URL("../static", import.meta.url)))
+  );
   app.use(methodOverride("_method"));
   app.use(cookieParser());
   const cookieOptions = {
