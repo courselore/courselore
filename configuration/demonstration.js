@@ -1,11 +1,10 @@
-import nodeURL from "node:url";
-
-export default async (courseloreImportMetaURL) => {
+export default async (courseloreImport, courseloreImportMetaURL) => {
   const url = process.env.URL ?? `https://localhost:5000`;
   const email = "development@courselore.org";
   if (process.argv[3] === undefined) {
-    const execa = (await import("execa")).default;
-    const caddyfile = (await import("dedent")).default;
+    const nodeURL = await courseloreImport("node:url");
+    const execa = (await courseloreImport("execa")).default;
+    const caddyfile = (await courseloreImport("dedent")).default;
     const subprocesses = [
       execa(
         process.argv[0],
@@ -38,10 +37,19 @@ export default async (courseloreImportMetaURL) => {
           if (subprocess !== otherSubprocess) otherSubprocess.cancel();
       });
   } else {
-    const path = await import("node:path");
-    const nodemailer = await import("nodemailer").default;
-    const courselore = await import(".").default;
-    const { version } = await import("../package.json");
+    const path = await courseloreImport("node:path");
+    const nodeURL = await courseloreImport("node:url");
+    const fs = await courseloreImport("fs-extra");
+    const nodemailer = await courseloreImport("nodemailer").default;
+    const courselore = await courseloreImport("./index.js").default;
+    const { version } = JSON.parse(
+      await fs.readFile(
+        nodeURL.fileURLToPath(
+          new URL("../package.json", courseloreImportMetaURL)
+        ),
+        "utf8"
+      )
+    );
     const app = await courselore({
       dataDirectory: path.join(process.cwd(), "data"),
       url,
