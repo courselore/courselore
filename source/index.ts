@@ -15149,6 +15149,14 @@ ${value}</textarea
 }
 
 if (process.argv[1] === url.fileURLToPath(import.meta.url))
-  require(path.resolve(
-    process.argv[2] ?? path.join(__dirname, "../configuration/demonstration.js")
-  ))(require);
+  (async () => {
+    (
+      await import(
+        process.argv[2] === undefined
+          ? url.fileURLToPath(
+              new URL("../configuration/demonstration.js", import.meta.url)
+            )
+          : path.resolve(process.argv[2])
+      )
+    ).default(async (modulePath: string) => await import(modulePath));
+  })();
