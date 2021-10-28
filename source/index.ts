@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import path from "node:path";
-import url from "node:url";
+import nodeURL from "node:url";
 
 import express from "express";
 import methodOverride from "method-override";
@@ -15148,12 +15148,12 @@ ${value}</textarea
   return app;
 }
 
-if (process.argv[1] === url.fileURLToPath(import.meta.url))
+if (process.argv[1] === nodeURL.fileURLToPath(import.meta.url))
   (async () => {
     (
       await import(
         process.argv[2] === undefined
-          ? url.fileURLToPath(
+          ? nodeURL.fileURLToPath(
               new URL("../configuration/demonstration.js", import.meta.url)
             )
           : path.resolve(process.argv[2])
