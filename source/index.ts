@@ -15158,5 +15158,5 @@ if (process.argv[1] === nodeURL.fileURLToPath(import.meta.url))
             )
           : path.resolve(process.argv[2])
       )
-    ).default(async (modulePath: string) => await import(modulePath));
+    ).default(import.meta.url);
   })();
