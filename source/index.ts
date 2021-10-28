@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-import path from "path";
+import path from "node:path";
+import url from "node:url";
 
 import express from "express";
 import methodOverride from "method-override";
@@ -12,7 +13,9 @@ import qs from "qs";
 import { Database, sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
 import { css, extractInlineStyles } from "@leafac/css";
-import { javascript } from "@leafac/javascript";
+// FIXME
+import leafacJavaScript from "@leafac/javascript";
+const { javascript } = leafacJavaScript;
 type Markdown = string;
 import markdown from "tagged-template-noop";
 import dedent from "dedent";
@@ -15145,7 +15148,7 @@ ${value}</textarea
   return app;
 }
 
-if (require.main === module)
+if (process.argv[0] === url.fileURLToPath(import.meta.url))
   require(path.resolve(
     process.argv[2] ?? path.join(__dirname, "../configuration/demonstration.js")
   ))(require);
