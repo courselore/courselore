@@ -1,10 +1,11 @@
-export default async (importFromCourselore) => {
+import nodeURL from "node:url";
+
+export default async (courseloreImportMetaURL) => {
   const url = process.env.URL ?? `https://localhost:5000`;
   const email = "development@courselore.org";
   if (process.argv[3] === undefined) {
-    const nodeURL = await importFromCourselore("node:url");
-    const execa = (await importFromCourselore("execa")).default;
-    const caddyfile = (await importFromCourselore("dedent")).default;
+    const execa = (await import("execa")).default;
+    const caddyfile = (await import("dedent")).default;
     const subprocesses = [
       execa(
         process.argv[0],
@@ -37,10 +38,10 @@ export default async (importFromCourselore) => {
           if (subprocess !== otherSubprocess) otherSubprocess.cancel();
       });
   } else {
-    const path = await importFromCourselore("node:path");
-    const nodemailer = await importFromCourselore("nodemailer").default;
-    const courselore = await importFromCourselore(".").default;
-    const { version } = await importFromCourselore("../package.json");
+    const path = await import("node:path");
+    const nodemailer = await import("nodemailer").default;
+    const courselore = await import(".").default;
+    const { version } = await import("../package.json");
     const app = await courselore({
       dataDirectory: path.join(process.cwd(), "data"),
       url,
