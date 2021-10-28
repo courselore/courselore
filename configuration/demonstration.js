@@ -1,9 +1,9 @@
-module.exports = async (require) => {
+export default async (importFromCourselore) => {
   const url = process.env.URL ?? `https://localhost:5000`;
   const email = "development@courselore.org";
   if (process.argv[3] === undefined) {
-    const execa = require("execa");
-    const caddyfile = require("dedent");
+    const execa = await importFromCourselore("execa");
+    const caddyfile = await importFromCourselore("dedent");
     const subprocesses = [
       execa(process.argv[0], [process.argv[1], __filename, "server"], {
         preferLocal: true,
@@ -32,10 +32,10 @@ module.exports = async (require) => {
           if (subprocess !== otherSubprocess) otherSubprocess.cancel();
       });
   } else {
-    const path = require("path");
-    const nodemailer = require("nodemailer");
-    const courselore = require(".").default;
-    const { version } = require("../package.json");
+    const path = await importFromCourselore("path");
+    const nodemailer = await importFromCourselore("nodemailer");
+    const courselore = await importFromCourselore(".").default;
+    const { version } = await importFromCourselore("../package.json");
     const app = await courselore({
       dataDirectory: path.join(process.cwd(), "data"),
       url,
