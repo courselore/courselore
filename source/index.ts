@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import path from "node:path";
-import nodeURL from "node:url";
+import url from "node:url";
 
 import express from "express";
 import methodOverride from "method-override";
@@ -50,14 +50,14 @@ import faker from "faker";
 
 export default async function courselore({
   dataDirectory,
-  url,
+  baseURL,
   administrator,
   sendMail,
   demonstration = process.env.NODE_ENV !== "production",
   liveReload = false,
 }: {
   dataDirectory: string;
-  url: string;
+  baseURL: string;
   administrator: string;
   sendMail: (
     mailOptions: nodemailer.SendMailOptions
@@ -427,30 +427,30 @@ export default async function courselore({
 
           <link
             rel="stylesheet"
-            href="${url}/node_modules/bootstrap-icons/font/bootstrap-icons.css"
+            href="${baseURL}/node_modules/bootstrap-icons/font/bootstrap-icons.css"
           />
           <link
             rel="stylesheet"
-            href="${url}/node_modules/katex/dist/katex.min.css"
+            href="${baseURL}/node_modules/katex/dist/katex.min.css"
           />
-          <script src="${url}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
-          <script src="${url}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
+          <script src="${baseURL}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
+          <script src="${baseURL}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
           <link
             rel="stylesheet"
-            href="${url}/node_modules/tippy.js/dist/svg-arrow.css"
+            href="${baseURL}/node_modules/tippy.js/dist/svg-arrow.css"
           />
           <link
             rel="stylesheet"
-            href="${url}/node_modules/tippy.js/dist/border.css"
+            href="${baseURL}/node_modules/tippy.js/dist/border.css"
           />
           <script type="module">
-            import * as textFieldEdit from "${url}/node_modules/text-field-edit/index.js";
+            import * as textFieldEdit from "${baseURL}/node_modules/text-field-edit/index.js";
             window.textFieldEdit = textFieldEdit;
           </script>
-          <script src="${url}/node_modules/mousetrap/mousetrap.min.js"></script>
-          <script src="${url}/node_modules/textarea-caret/index.js"></script>
-          <script src="${url}/node_modules/scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js"></script>
-          <script src="${url}/node_modules/@leafac/javascript/browser.js"></script>
+          <script src="${baseURL}/node_modules/mousetrap/mousetrap.min.js"></script>
+          <script src="${baseURL}/node_modules/textarea-caret/index.js"></script>
+          <script src="${baseURL}/node_modules/scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js"></script>
+          <script src="${baseURL}/node_modules/@leafac/javascript/browser.js"></script>
           <script>
             leafac.evaluateOnInteractive();
             leafac.customFormValidation();
@@ -467,7 +467,7 @@ export default async function courselore({
           $${res?.locals.eventSource
             ? html`
                 <!-- TODO: Improve this such that the diff is done on the server. -->
-                <script src="${url}/node_modules/morphdom/dist/morphdom-umd.min.js"></script>
+                <script src="${baseURL}/node_modules/morphdom/dist/morphdom-umd.min.js"></script>
 
                 <script>
                   const eventSource = new EventSource(window.location.href);
@@ -491,7 +491,7 @@ export default async function courselore({
                         alert(
                           "This page has been removed.\\n\\nYou’ll be redirected now."
                         );
-                        window.location.href = $${JSON.stringify(url)};
+                        window.location.href = $${JSON.stringify(baseURL)};
                         break;
 
                       default:
@@ -1566,7 +1566,7 @@ export default async function courselore({
                         </p>
                         <a
                           class="button button--blue"
-                          href="${url}/courses/${res.locals.course!
+                          href="${baseURL}/courses/${res.locals.course!
                             .reference}/settings/your-enrollment"
                           style="${css`
                             width: 100%;
@@ -1643,7 +1643,7 @@ export default async function courselore({
                             </p>
                             <form
                               method="POST"
-                              action="${url}/demonstration-data"
+                              action="${baseURL}/demonstration-data"
                             >
                               <button
                                 class="button button--blue"
@@ -1662,7 +1662,7 @@ export default async function courselore({
                         ? html`
                             <form
                               method="POST"
-                              action="${url}/turn-off?_method=DELETE"
+                              action="${baseURL}/turn-off?_method=DELETE"
                             >
                               <button class="button button--transparent">
                                 <i class="bi bi-power"></i>
@@ -1723,7 +1723,7 @@ export default async function courselore({
                     >
                       <form
                         method="POST"
-                        action="${url}/resend-confirmation-email"
+                        action="${baseURL}/resend-confirmation-email"
                       >
                         Please confirm your email by following the link sent to
                         ${res.locals.user.email}.<br />
@@ -1882,7 +1882,7 @@ export default async function courselore({
               `}"
             >
               <a
-                href="${url}/"
+                href="${baseURL}/"
                 class="heading--display button button--transparent"
                 style="${css`
                   align-items: center;
@@ -1951,7 +1951,7 @@ export default async function courselore({
           `}"
         >
           <a
-            href="${url}/"
+            href="${baseURL}/"
             class="button button--tight button--tight--inline button--transparent"
           >
             $${logo}
@@ -2017,7 +2017,8 @@ export default async function courselore({
                         </h3>
                         <div class="dropdown--menu">
                           <a
-                            href="${url}/courses/${res.locals.course.reference}"
+                            href="${baseURL}/courses/${res.locals.course
+                              .reference}"
                             class="dropdown--menu--item button ${req.path.includes(
                               "settings"
                             )
@@ -2028,7 +2029,7 @@ export default async function courselore({
                             Conversations
                           </a>
                           <a
-                            href="${url}/courses/${res.locals.course
+                            href="${baseURL}/courses/${res.locals.course
                               .reference}/settings"
                             class="dropdown--menu--item button ${req.path.includes(
                               "settings"
@@ -2052,8 +2053,8 @@ export default async function courselore({
                                 $${res.locals.enrollments.map(
                                   (enrollment) => html`
                                     <a
-                                      href="${url}/courses/${enrollment.course
-                                        .reference}"
+                                      href="${baseURL}/courses/${enrollment
+                                        .course.reference}"
                                       class="dropdown--menu--item button ${enrollment.id ===
                                       res.locals.enrollment?.id
                                         ? "button--blue"
@@ -2157,7 +2158,7 @@ export default async function courselore({
                           $${res.locals.invitations!.map(
                             (invitation) => html`
                               <a
-                                href="${url}/courses/${invitation.course
+                                href="${baseURL}/courses/${invitation.course
                                   .reference}/invitations/${invitation.reference}"
                                 class="dropdown--menu--item button button--transparent"
                               >
@@ -2185,7 +2186,7 @@ export default async function courselore({
                     Enroll in an Existing Course
                   </button>
                   <a
-                    href="${url}/courses/new"
+                    href="${baseURL}/courses/new"
                     class="dropdown--menu--item button button--transparent"
                   >
                     <i class="bi bi-journal-plus"></i>
@@ -2251,12 +2252,15 @@ export default async function courselore({
                 <div class="dropdown--menu">
                   <a
                     class="dropdown--menu--item button button--transparent"
-                    href="${url}/settings"
+                    href="${baseURL}/settings"
                   >
                     <i class="bi bi-sliders"></i>
                     User Settings
                   </a>
-                  <form method="POST" action="${url}/sign-out?_method=DELETE">
+                  <form
+                    method="POST"
+                    action="${baseURL}/sign-out?_method=DELETE"
+                  >
                     <button
                       class="dropdown--menu--item button button--transparent"
                     >
@@ -2529,14 +2533,14 @@ export default async function courselore({
   };
 
   app.use(
-    express.static(nodeURL.fileURLToPath(new URL("../static", import.meta.url)))
+    express.static(url.fileURLToPath(new URL("../static", import.meta.url)))
   );
   app.use(methodOverride("_method"));
   app.use(cookieParser());
   const cookieOptions = {
-    domain: new URL(url).hostname,
+    domain: new URL(baseURL).hostname,
     httpOnly: true,
-    path: new URL(url).pathname,
+    path: new URL(baseURL).pathname,
     sameSite: true,
     secure: true,
   };
@@ -2854,7 +2858,7 @@ export default async function courselore({
     "/",
     ...isSignedOutMiddleware,
     (req, res) => {
-      res.redirect(`${url}/sign-in`);
+      res.redirect(`${baseURL}/sign-in`);
     }
   );
 
@@ -2877,7 +2881,7 @@ export default async function courselore({
         body: html`
           <form
             method="POST"
-            action="${url}/sign-in?${qs.stringify({
+            action="${baseURL}/sign-in?${qs.stringify({
               redirect: req.query.redirect,
               name: req.query.name,
               email: req.query.email,
@@ -2927,7 +2931,7 @@ export default async function courselore({
             <p>
               Don’t have an account?
               <a
-                href="${url}/sign-up?${qs.stringify({
+                href="${baseURL}/sign-up?${qs.stringify({
                   redirect: req.query.redirect,
                   name: req.query.name,
                   email: req.query.email,
@@ -2939,7 +2943,7 @@ export default async function courselore({
             <p>
               Forgot your password?
               <a
-                href="${url}/reset-password?${qs.stringify({
+                href="${baseURL}/reset-password?${qs.stringify({
                   redirect: req.query.redirect,
                   name: req.query.name,
                   email: req.query.email,
@@ -2984,7 +2988,7 @@ export default async function courselore({
           html`<div class="flash--rose">Incorrect email & password.</div>`
         );
         return res.redirect(
-          `${url}/sign-in?${qs.stringify({
+          `${baseURL}/sign-in?${qs.stringify({
             redirect: req.query.redirect,
             name: req.query.name,
             email: req.query.email,
@@ -2992,7 +2996,7 @@ export default async function courselore({
         );
       }
       Session.open(req, res, user.id);
-      res.redirect(`${url}${req.query.redirect ?? "/"}`);
+      res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
     })
   );
 
@@ -3056,7 +3060,7 @@ export default async function courselore({
         body: html`
           <form
             method="POST"
-            action="${url}/reset-password?${qs.stringify({
+            action="${baseURL}/reset-password?${qs.stringify({
               redirect: req.query.redirect,
               name: req.query.name,
               email: req.query.email,
@@ -3096,7 +3100,7 @@ export default async function courselore({
             <p>
               Don’t have an account?
               <a
-                href="${url}/sign-up?${qs.stringify({
+                href="${baseURL}/sign-up?${qs.stringify({
                   redirect: req.query.redirect,
                   name: req.query.name,
                   email: req.query.email,
@@ -3108,7 +3112,7 @@ export default async function courselore({
             <p>
               Remember your password?
               <a
-                href="${url}/sign-in?${qs.stringify({
+                href="${baseURL}/sign-in?${qs.stringify({
                   redirect: req.query.redirect,
                   name: req.query.name,
                   email: req.query.email,
@@ -3146,7 +3150,7 @@ export default async function courselore({
         html`<div class="flash--rose">Email not found.</div>`
       );
       return res.redirect(
-        `${url}/reset-password?${qs.stringify({
+        `${baseURL}/reset-password?${qs.stringify({
           redirect: req.query.redirect,
           name: req.query.name,
           email: req.query.email,
@@ -3154,7 +3158,7 @@ export default async function courselore({
       );
     }
 
-    const link = `${url}/reset-password/${PasswordReset.create(
+    const link = `${baseURL}/reset-password/${PasswordReset.create(
       user.id
     )}?${qs.stringify({
       redirect: req.query.redirect,
@@ -3193,7 +3197,7 @@ export default async function courselore({
           </p>
           <form
             method="POST"
-            action="${url}/reset-password?${qs.stringify({
+            action="${baseURL}/reset-password?${qs.stringify({
               redirect: req.query.redirect,
               name: req.query.name,
               email: req.query.email,
@@ -3233,7 +3237,7 @@ export default async function courselore({
           `
         );
         return res.redirect(
-          `${url}/reset-password?${qs.stringify({
+          `${baseURL}/reset-password?${qs.stringify({
             redirect: req.query.redirect,
             name: req.query.name,
             email: req.query.email,
@@ -3252,7 +3256,7 @@ export default async function courselore({
           body: html`
             <form
               method="POST"
-              action="${url}/reset-password/${PasswordReset.create(
+              action="${baseURL}/reset-password/${PasswordReset.create(
                 userId
               )}?${qs.stringify({
                 redirect: req.query.redirect,
@@ -3330,7 +3334,7 @@ export default async function courselore({
           `
         );
         return res.redirect(
-          `${url}/reset-password?${qs.stringify({
+          `${baseURL}/reset-password?${qs.stringify({
             redirect: req.query.redirect,
             name: req.query.name,
             email: req.query.email,
@@ -3354,7 +3358,7 @@ export default async function courselore({
         res,
         html`<div class="flash--green">Password reset successfully.</div>`
       );
-      res.redirect(`${url}${req.query.redirect ?? "/"}`);
+      res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
     })
   );
 
@@ -3377,7 +3381,7 @@ export default async function courselore({
         body: html`
           <form
             method="POST"
-            action="${url}/sign-up?${qs.stringify({
+            action="${baseURL}/sign-up?${qs.stringify({
               redirect: req.query.redirect,
               name: req.query.name,
               email: req.query.email,
@@ -3450,7 +3454,7 @@ export default async function courselore({
             <p>
               Already have an account account?
               <a
-                href="${url}/sign-in?${qs.stringify({
+                href="${baseURL}/sign-in?${qs.stringify({
                   redirect: req.query.redirect,
                   name: req.query.name,
                   email: req.query.email,
@@ -3462,7 +3466,7 @@ export default async function courselore({
             <p>
               Forgot your password?
               <a
-                href="${url}/reset-password?${qs.stringify({
+                href="${baseURL}/reset-password?${qs.stringify({
                   redirect: req.query.redirect,
                   name: req.query.name,
                   email: req.query.email,
@@ -3505,7 +3509,7 @@ export default async function courselore({
         RETURNING *
       `
     )!;
-    const link = `${url}/email-confirmation/${emailConfirmation.nonce}`;
+    const link = `${baseURL}/email-confirmation/${emailConfirmation.nonce}`;
     await sendMail({
       to: user.email,
       subject: "Welcome to CourseLore!",
@@ -3553,7 +3557,7 @@ export default async function courselore({
           html`<div class="flash--rose">Email already taken.</div>`
         );
         return res.redirect(
-          `${url}/sign-in?${qs.stringify({
+          `${baseURL}/sign-in?${qs.stringify({
             redirect: req.query.redirect,
             name: req.query.name,
             email: req.query.email,
@@ -3589,7 +3593,7 @@ export default async function courselore({
       )!;
       sendConfirmationEmail(user);
       Session.open(req, res, user.id);
-      res.redirect(`${url}${req.query.redirect ?? "/"}`);
+      res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
     })
   );
 
@@ -3603,7 +3607,7 @@ export default async function courselore({
           res,
           html`<div class="flash--rose">Email already confirmed.</div>`
         );
-        return res.redirect(`${url}/`);
+        return res.redirect(`${baseURL}/`);
       }
 
       sendConfirmationEmail(res.locals.user);
@@ -3612,7 +3616,7 @@ export default async function courselore({
         res,
         html`<div class="flash--green">Confirmation email resent.</div>`
       );
-      res.redirect(`${url}/`);
+      res.redirect(`${baseURL}/`);
     }
   );
 
@@ -3649,7 +3653,7 @@ export default async function courselore({
             </div>
           `
         );
-        return res.redirect(`${url}/`);
+        return res.redirect(`${baseURL}/`);
       }
       database.run(
         sql`
@@ -3663,7 +3667,7 @@ export default async function courselore({
         res,
         html`<div class="flash--green">Email confirmed successfully.</div>`
       );
-      return res.redirect(`${url}/`);
+      return res.redirect(`${baseURL}/`);
     }
   );
 
@@ -3672,7 +3676,7 @@ export default async function courselore({
     ...isSignedInMiddleware,
     (req, res) => {
       Session.close(req, res);
-      res.redirect(`${url}/`);
+      res.redirect(`${baseURL}/`);
     }
   );
 
@@ -3723,14 +3727,14 @@ export default async function courselore({
                       Enroll in an Existing Course
                     </button>
                     <a
-                      href="${url}/settings"
+                      href="${baseURL}/settings"
                       class="menu-box--item button button--transparent"
                     >
                       <i class="bi bi-person-circle"></i>
                       Fill in Your Profile
                     </a>
                     <a
-                      href="${url}/courses/new"
+                      href="${baseURL}/courses/new"
                       class="menu-box--item button button--transparent"
                     >
                       <i class="bi bi-journal-plus"></i>
@@ -3745,7 +3749,7 @@ export default async function courselore({
 
         case 1:
           res.redirect(
-            `${url}/courses/${res.locals.enrollments[0].course.reference}`
+            `${baseURL}/courses/${res.locals.enrollments[0].course.reference}`
           );
           break;
 
@@ -3775,7 +3779,8 @@ export default async function courselore({
                       (enrollment) =>
                         html`
                           <a
-                            href="${url}/courses/${enrollment.course.reference}"
+                            href="${baseURL}/courses/${enrollment.course
+                              .reference}"
                             class="menu-box--item button button--tight button--transparent"
                           >
                             <div
@@ -3854,7 +3859,7 @@ export default async function courselore({
       `,
       menu: html`
         <a
-          href="${url}/settings"
+          href="${baseURL}/settings"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
             "/settings"
           )
@@ -3865,7 +3870,7 @@ export default async function courselore({
           Profile
         </a>
         <a
-          href="${url}/settings/update-email-and-password"
+          href="${baseURL}/settings/update-email-and-password"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
             "/settings/update-email-and-password"
           )
@@ -3876,7 +3881,7 @@ export default async function courselore({
           Update Email & Password
         </a>
         <a
-          href="${url}/settings/notifications-preferences"
+          href="${baseURL}/settings/notifications-preferences"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
             "/settings/notifications-preferences"
           )
@@ -3909,7 +3914,7 @@ export default async function courselore({
 
             <form
               method="POST"
-              action="${url}/settings?_method=PATCH"
+              action="${baseURL}/settings?_method=PATCH"
               novalidate
               style="${css`
                 display: flex;
@@ -4073,7 +4078,7 @@ export default async function courselore({
                         const body = new FormData();
                         body.append("avatar", this.files[0]);
                         this.value = "";
-                        const response = await fetch("${url}/settings/avatar", {
+                        const response = await fetch("${baseURL}/settings/avatar", {
                           method: "POST",
                           body,
                         });
@@ -4200,7 +4205,7 @@ export default async function courselore({
       res,
       html`<div class="flash--green">Profile updated successfully.</div>`
     );
-    res.redirect(`${url}/settings`);
+    res.redirect(`${baseURL}/settings`);
   });
 
   app.post<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
@@ -4233,7 +4238,7 @@ export default async function courselore({
           position: sharp.strategy.attention,
         })
         .toFile(path.join(dataDirectory, `files/${folder}/${nameAvatar}`));
-      res.send(`${url}/files/${folder}/${encodeURIComponent(nameAvatar)}`);
+      res.send(`${baseURL}/files/${folder}/${encodeURIComponent(nameAvatar)}`);
     })
   );
 
@@ -4258,7 +4263,7 @@ export default async function courselore({
 
             <form
               method="POST"
-              action="${url}/settings/update-email-and-password?_method=PATCH"
+              action="${baseURL}/settings/update-email-and-password?_method=PATCH"
               novalidate
               style="${css`
                 display: flex;
@@ -4292,7 +4297,7 @@ export default async function courselore({
 
             <form
               method="POST"
-              action="${url}/settings/update-email-and-password?_method=PATCH"
+              action="${baseURL}/settings/update-email-and-password?_method=PATCH"
               novalidate
               style="${css`
                 display: flex;
@@ -4376,7 +4381,7 @@ export default async function courselore({
             res,
             html`<div class="flash--rose">Email already taken.</div>`
           );
-          return res.redirect(`${url}/settings/update-email-and-password`);
+          return res.redirect(`${baseURL}/settings/update-email-and-password`);
         }
 
         database.run(
@@ -4416,7 +4421,7 @@ export default async function courselore({
             res,
             html`<div class="flash--rose">Incorrect current password.</div>`
           );
-          return res.redirect(`${url}/settings/update-email-and-password`);
+          return res.redirect(`${baseURL}/settings/update-email-and-password`);
         }
 
         database.run(
@@ -4435,7 +4440,7 @@ export default async function courselore({
           html`<div class="flash--green">Password updated successfully.</div>`
         );
       }
-      res.redirect(`${url}/settings/update-email-and-password`);
+      res.redirect(`${baseURL}/settings/update-email-and-password`);
     })
   );
 
@@ -4460,7 +4465,7 @@ export default async function courselore({
 
             <form
               method="POST"
-              action="${url}/settings/notifications-preferences?_method=PATCH"
+              action="${baseURL}/settings/notifications-preferences?_method=PATCH"
               novalidate
               style="${css`
                 display: flex;
@@ -4582,7 +4587,7 @@ export default async function courselore({
         `
       );
 
-      res.redirect(`${url}/settings/notifications-preferences`);
+      res.redirect(`${baseURL}/settings/notifications-preferences`);
     }
   );
 
@@ -4603,7 +4608,7 @@ export default async function courselore({
 
             <form
               method="POST"
-              action="${url}/courses"
+              action="${baseURL}/courses"
               novalidate
               style="${css`
                 display: flex;
@@ -4670,7 +4675,7 @@ export default async function courselore({
           )
         `
       );
-      res.redirect(`${url}/courses/${course.reference}`);
+      res.redirect(`${baseURL}/courses/${course.reference}`);
     }
   );
 
@@ -4825,7 +4830,7 @@ export default async function courselore({
                   $${res.locals.enrollment.role === "staff"
                     ? html`
                         <a
-                          href="${url}/courses/${res.locals.course
+                          href="${baseURL}/courses/${res.locals.course
                             .reference}/settings/invitations"
                           class="menu-box--item button button--blue"
                         >
@@ -4835,7 +4840,7 @@ export default async function courselore({
                       `
                     : html``}
                   <a
-                    href="${url}/courses/${res.locals.course
+                    href="${baseURL}/courses/${res.locals.course
                       .reference}/conversations/new"
                     class="menu-box--item button ${res.locals.enrollment
                       .role === "staff"
@@ -4976,7 +4981,7 @@ export default async function courselore({
       email: string;
     }
   ): Promise<nodemailer.SentMessageInfo> => {
-    const link = `${url}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
+    const link = `${baseURL}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
     await sendMail({
       to: invitation.email,
       subject: `Enroll in ${invitation.course.name}`,
@@ -5081,7 +5086,8 @@ export default async function courselore({
         res.locals.enrollment.role === "staff"
           ? html`
               <a
-                href="${url}/courses/${res.locals.course.reference}/settings"
+                href="${baseURL}/courses/${res.locals.course
+                  .reference}/settings"
                 class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings"
                 )
@@ -5092,7 +5098,7 @@ export default async function courselore({
                 Course Settings
               </a>
               <a
-                href="${url}/courses/${res.locals.course
+                href="${baseURL}/courses/${res.locals.course
                   .reference}/settings/invitations"
                 class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings/invitations"
@@ -5104,7 +5110,7 @@ export default async function courselore({
                 Invitations
               </a>
               <a
-                href="${url}/courses/${res.locals.course
+                href="${baseURL}/courses/${res.locals.course
                   .reference}/settings/enrollments"
                 class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings/enrollments"
@@ -5116,7 +5122,7 @@ export default async function courselore({
                 Enrollments
               </a>
               <a
-                href="${url}/courses/${res.locals.course
+                href="${baseURL}/courses/${res.locals.course
                   .reference}/settings/tags"
                 class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings/tags"
@@ -5128,7 +5134,7 @@ export default async function courselore({
                 Tags
               </a>
               <a
-                href="${url}/courses/${res.locals.course
+                href="${baseURL}/courses/${res.locals.course
                   .reference}/settings/your-enrollment"
                 class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings/your-enrollment"
@@ -5170,7 +5176,7 @@ export default async function courselore({
             </h2>
             <form
               method="POST"
-              action="${url}/courses/${res.locals.course
+              action="${baseURL}/courses/${res.locals.course
                 .reference}/settings?_method=PATCH"
               novalidate
               style="${css`
@@ -5234,7 +5240,9 @@ export default async function courselore({
         `
       );
 
-      res.redirect(`${url}/courses/${res.locals.course.reference}/settings`);
+      res.redirect(
+        `${baseURL}/courses/${res.locals.course.reference}/settings`
+      );
     }
   );
 
@@ -5249,7 +5257,7 @@ export default async function courselore({
     ...isEnrolledInCourseMiddleware,
     (req, res) => {
       res.redirect(
-        `${url}/courses/${res.locals.course.reference}/settings/your-enrollment`
+        `${baseURL}/courses/${res.locals.course.reference}/settings/your-enrollment`
       );
     }
   );
@@ -5301,7 +5309,7 @@ export default async function courselore({
 
             <form
               method="POST"
-              action="${url}/courses/${res.locals.course
+              action="${baseURL}/courses/${res.locals.course
                 .reference}/settings/invitations"
               novalidate
               style="${css`
@@ -5578,7 +5586,7 @@ export default async function courselore({
 
                   <div class="stripped">
                     $${invitations.map((invitation) => {
-                      const action = `${url}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
+                      const action = `${baseURL}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
                       const isInvitationExpired = isExpired(
                         invitation.expiresAt
                       );
@@ -5652,7 +5660,7 @@ export default async function courselore({
                                       <i class="bi bi-chevron-down"></i>
                                     </button>
                                     $${(() => {
-                                      const link = `${url}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
+                                      const link = `${baseURL}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
                                       return html`
                                         <div hidden>
                                           <div
@@ -6357,7 +6365,7 @@ export default async function courselore({
       }
 
       res.redirect(
-        `${url}/courses/${res.locals.course.reference}/settings/invitations`
+        `${baseURL}/courses/${res.locals.course.reference}/settings/invitations`
       );
     }
   );
@@ -6488,7 +6496,7 @@ export default async function courselore({
       }
 
       res.redirect(
-        `${url}/courses/${res.locals.course.reference}/settings/invitations`
+        `${baseURL}/courses/${res.locals.course.reference}/settings/invitations`
       );
     }
   );
@@ -6549,7 +6557,7 @@ export default async function courselore({
 
             <div class="stripped">
               $${enrollments.map((enrollment) => {
-                const action = `${url}/courses/${res.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
+                const action = `${baseURL}/courses/${res.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
                 const isSelf = enrollment.id === res.locals.enrollment.id;
                 const isOnlyStaff =
                   isSelf &&
@@ -6841,8 +6849,8 @@ export default async function courselore({
 
       res.redirect(
         res.locals.managedEnrollment.isSelf
-          ? `${url}/courses/${res.locals.course.reference}`
-          : `${url}/courses/${res.locals.course.reference}/settings/enrollments`
+          ? `${baseURL}/courses/${res.locals.course.reference}`
+          : `${baseURL}/courses/${res.locals.course.reference}/settings/enrollments`
       );
     }
   );
@@ -6876,8 +6884,8 @@ export default async function courselore({
 
       res.redirect(
         res.locals.managedEnrollment.isSelf
-          ? `${url}/`
-          : `${url}/courses/${res.locals.course.reference}/settings/enrollments`
+          ? `${baseURL}/`
+          : `${baseURL}/courses/${res.locals.course.reference}/settings/enrollments`
       );
     }
   );
@@ -6929,7 +6937,7 @@ export default async function courselore({
 
             <form
               method="POST"
-              action="${url}/courses/${res.locals.course
+              action="${baseURL}/courses/${res.locals.course
                 .reference}/settings/tags?_method=PUT"
               novalidate
               style="${css`
@@ -7150,7 +7158,7 @@ export default async function courselore({
                             $${res.locals.conversationsCount > 0
                               ? html`
                                   <a
-                                    href="${url}/courses/${res.locals.course
+                                    href="${baseURL}/courses/${res.locals.course
                                       .reference}?${qs.stringify({
                                       tag: tag.reference,
                                     })}"
@@ -7391,7 +7399,7 @@ export default async function courselore({
       );
 
       res.redirect(
-        `${url}/courses/${res.locals.course.reference}/settings/tags`
+        `${baseURL}/courses/${res.locals.course.reference}/settings/tags`
       );
     }
   );
@@ -7426,7 +7434,7 @@ export default async function courselore({
 
             <form
               method="POST"
-              action="${url}/courses/${res.locals.course
+              action="${baseURL}/courses/${res.locals.course
                 .reference}/settings/your-enrollment?_method=PATCH"
               novalidate
               style="${css`
@@ -7541,7 +7549,7 @@ export default async function courselore({
       );
 
       res.redirect(
-        `${url}/courses/${res.locals.course.reference}/settings/your-enrollment`
+        `${baseURL}/courses/${res.locals.course.reference}/settings/your-enrollment`
       );
     }
   );
@@ -7579,14 +7587,14 @@ export default async function courselore({
             </p>
             $${(
               await QRCode.toString(
-                `${url}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`,
+                `${baseURL}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`,
                 { type: "svg" }
               )
             )
               .replace("#000000", "currentColor")
               .replace("#ffffff", "transparent")}
             <a
-              href="${url}/courses/${res.locals.course.reference}"
+              href="${baseURL}/courses/${res.locals.course.reference}"
               class="button button--blue"
             >
               Go to ${res.locals.course.name}
@@ -7628,7 +7636,7 @@ export default async function courselore({
             </p>
             <form
               method="POST"
-              action="${url}/courses/${res.locals.invitation.course
+              action="${baseURL}/courses/${res.locals.invitation.course
                 .reference}/invitations/${res.locals.invitation.reference}"
             >
               <button
@@ -7679,7 +7687,9 @@ export default async function courselore({
           `
         );
 
-      res.redirect(`${url}/courses/${res.locals.invitation.course.reference}`);
+      res.redirect(
+        `${baseURL}/courses/${res.locals.invitation.course.reference}`
+      );
     }
   );
 
@@ -7721,7 +7731,7 @@ export default async function courselore({
               `}"
             >
               <a
-                href="${url}/sign-up?${qs.stringify({
+                href="${baseURL}/sign-up?${qs.stringify({
                   redirect: req.originalUrl,
                   ...(res.locals.invitation.email === null
                     ? {}
@@ -7740,7 +7750,7 @@ export default async function courselore({
                 Sign up
               </a>
               <a
-                href="${url}/sign-in?${qs.stringify({
+                href="${baseURL}/sign-in?${qs.stringify({
                   redirect: req.originalUrl,
                   ...(res.locals.invitation.email === null
                     ? {}
@@ -8066,7 +8076,7 @@ export default async function courselore({
                   `}"
                 >
                   <a
-                    href="${url}/courses/${res.locals.course
+                    href="${baseURL}/courses/${res.locals.course
                       .reference}/conversations/new?${qs.stringify({
                       search: req.query.search,
                       tag: req.query.tag,
@@ -8269,7 +8279,7 @@ export default async function courselore({
                         ? html`
                             <form
                               method="POST"
-                              action="${url}/courses/${res.locals.course
+                              action="${baseURL}/courses/${res.locals.course
                                 .reference}/conversations/mark-all-conversations-as-read"
                               style="${css`
                                 display: flex;
@@ -8302,7 +8312,7 @@ export default async function courselore({
                               `}"
                             />
                             <a
-                              href="${url}/courses/${res.locals.course
+                              href="${baseURL}/courses/${res.locals.course
                                 .reference}/conversations/${conversation.reference}?${qs.stringify(
                                 {
                                   search: req.query.search,
@@ -9422,7 +9432,7 @@ export default async function courselore({
                 preview.hidden = true;
                 const previewDocument = new DOMParser().parseFromString(
                   await (
-                    await fetch("${url}${
+                    await fetch("${baseURL}${
               res.locals.course === undefined
                 ? ""
                 : `/courses/${res.locals.course.reference}`
@@ -10060,7 +10070,7 @@ export default async function courselore({
                     element.disabled = true;
                     const body = new FormData();
                     for (const file of fileList) body.append("attachments", file);
-                    const response = await (await fetch("${url}/markdown-editor/attachments", {
+                    const response = await (await fetch("${baseURL}/markdown-editor/attachments", {
                       method: "POST",
                       body,
                     })).text();
@@ -10215,7 +10225,7 @@ export default async function courselore({
                             searchResultsContainer.innerHTML =
                               search === ""
                               ? ""
-                              : await (await fetch("${url}/courses/${res.locals.course.reference}/markdown-editor/" + route + "?" + new URLSearchParams({ search }))).text();
+                              : await (await fetch("${baseURL}/courses/${res.locals.course.reference}/markdown-editor/" + route + "?" + new URLSearchParams({ search }))).text();
                             const buttons = buttonsContainer.querySelectorAll(".button");
                             for (const button of buttons) button.classList.remove("hover");
                             if (buttons.length > 0) buttons[0].classList.add("hover");
@@ -10903,7 +10913,7 @@ ${value}</textarea
         })}/${name}`;
         await attachment.mv(path.join(dataDirectory, relativePath));
         // TODO: URI encode relative path.
-        const href = `${url}/${relativePath}`;
+        const href = `${baseURL}/${relativePath}`;
         if (attachment.mimetype.startsWith("image/")) {
           // TODO: Handle error on sharp constructor: https://sharp.pixelplumbing.com/api-constructor / https://sharp.pixelplumbing.com/api-input
           const metadata = await sharp(attachment.data).metadata();
@@ -10944,7 +10954,7 @@ ${value}</textarea
         deepMerge<hastUtilSanitize.Schema>(
           JSON.parse(
             await fs.readFile(
-              nodeURL.fileURLToPath(
+              url.fileURLToPath(
                 new URL(
                   "../node_modules/hast-util-sanitize/lib/github.json",
                   import.meta.url
@@ -11063,7 +11073,7 @@ ${value}</textarea
           const match = element.href.match(
             new RegExp(
               `^${escapeStringRegexp(
-                url
+                baseURL
               )}/courses/(\\d+)/conversations/(\\d+)(?:#message--(\\d+))?$`
             )
           );
@@ -11191,7 +11201,7 @@ ${value}</textarea
                     if (messageReference === undefined)
                       return html`<a
                         class="reference"
-                        href="${url}/courses/${res.locals.course!
+                        href="${baseURL}/courses/${res.locals.course!
                           .reference}/conversations/${conversation.reference}"
                         >${match}</a
                       >`;
@@ -11204,7 +11214,7 @@ ${value}</textarea
                     if (message === undefined) return match;
                     return html`<a
                       class="reference"
-                      href="${url}/courses/${res.locals.course!
+                      href="${baseURL}/courses/${res.locals.course!
                         .reference}/conversations/${conversation.reference}#message--${message.reference}"
                       >${match}</a
                     >`;
@@ -11222,7 +11232,7 @@ ${value}</textarea
           const hrefMatch = element.href.match(
             new RegExp(
               `^${escapeStringRegexp(
-                url
+                baseURL
               )}/courses/(\\d+)/conversations/(\\d+)(?:#message--(\\d+))?$`
             )
           );
@@ -11430,7 +11440,7 @@ ${value}</textarea
 
               <form
                 method="POST"
-                action="${url}/courses/${res.locals.course
+                action="${baseURL}/courses/${res.locals.course
                   .reference}/conversations"
                 novalidate
                 style="${css`
@@ -11930,7 +11940,7 @@ ${value}</textarea
       emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.course.nextConversationReference}`
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.course.nextConversationReference}`
       );
 
       // TODO:
@@ -12219,7 +12229,7 @@ ${value}</textarea
                       `}"
                       onclick="${javascript`
                         (async () => {
-                          await navigator.clipboard.writeText("${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
+                          await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
                           this.copied.show();
                           await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                           this.copied.hide();
@@ -12257,7 +12267,7 @@ ${value}</textarea
                           <div hidden>
                             <form
                               method="POST"
-                              action="${url}/courses/${res.locals.course
+                              action="${baseURL}/courses/${res.locals.course
                                 .reference}/conversations/${res.locals
                                 .conversation.reference}?_method=DELETE"
                               style="${css`
@@ -12327,7 +12337,7 @@ ${value}</textarea
                   ? html`
                       <form
                         method="POST"
-                        action="${url}/courses/${res.locals.course
+                        action="${baseURL}/courses/${res.locals.course
                           .reference}/conversations/${res.locals.conversation
                           .reference}?_method=PATCH"
                         novalidate
@@ -12431,9 +12441,10 @@ ${value}</textarea
                                 (conversationType) => html`
                                   <form
                                     method="POST"
-                                    action="${url}/courses/${res.locals.course
-                                      .reference}/conversations/${res.locals
-                                      .conversation.reference}?_method=PATCH"
+                                    action="${baseURL}/courses/${res.locals
+                                      .course.reference}/conversations/${res
+                                      .locals.conversation
+                                      .reference}?_method=PATCH"
                                   >
                                     <input
                                       type="hidden"
@@ -12509,8 +12520,8 @@ ${value}</textarea
                                         (tagging) => html`
                                           <form
                                             method="POST"
-                                            action="${url}/courses/${res.locals
-                                              .course
+                                            action="${baseURL}/courses/${res
+                                              .locals.course
                                               .reference}/conversations/${res
                                               .locals.conversation
                                               .reference}/taggings?_method=DELETE"
@@ -12578,7 +12589,7 @@ ${value}</textarea
                                               (tag) => html`
                                                 <form
                                                   method="POST"
-                                                  action="${url}/courses/${res
+                                                  action="${baseURL}/courses/${res
                                                     .locals.course
                                                     .reference}/conversations/${res
                                                     .locals.conversation
@@ -12630,7 +12641,7 @@ ${value}</textarea
                     content.push(html`
                       <form
                         method="POST"
-                        action="${url}/courses/${res.locals.course
+                        action="${baseURL}/courses/${res.locals.course
                           .reference}/conversations/${res.locals.conversation
                           .reference}?_method=PATCH"
                       >
@@ -12726,7 +12737,7 @@ ${value}</textarea
                       <div hidden>
                         <form
                           method="POST"
-                          action="${url}/courses/${res.locals.course
+                          action="${baseURL}/courses/${res.locals.course
                             .reference}/conversations/${res.locals.conversation
                             .reference}?_method=PATCH"
                           style="${css`
@@ -13063,7 +13074,7 @@ ${value}</textarea
                                   `}"
                                   onclick="${javascript`
                                     (async () => {
-                                      await navigator.clipboard.writeText("${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${message.reference}");
+                                      await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${message.reference}");
                                       this.copied.show();
                                       await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                                       this.copied.hide();
@@ -13108,7 +13119,7 @@ ${value}</textarea
                                     <div hidden>
                                       <form
                                         method="POST"
-                                        action="${url}/courses/${res.locals
+                                        action="${baseURL}/courses/${res.locals
                                           .course.reference}/conversations/${res
                                           .locals.conversation
                                           .reference}/messages/${message.reference}?_method=PATCH"
@@ -13187,7 +13198,7 @@ ${value}</textarea
                                     <div hidden>
                                       <form
                                         method="POST"
-                                        action="${url}/courses/${res.locals
+                                        action="${baseURL}/courses/${res.locals
                                           .course.reference}/conversations/${res
                                           .locals.conversation
                                           .reference}/messages/${message.reference}?_method=DELETE"
@@ -13295,7 +13306,7 @@ ${value}</textarea
                               content.push(html`
                                 <form
                                   method="POST"
-                                  action="${url}/courses/${res.locals.course
+                                  action="${baseURL}/courses/${res.locals.course
                                     .reference}/conversations/${res.locals
                                     .conversation
                                     .reference}/messages/${message.reference}?_method=PATCH"
@@ -13369,7 +13380,7 @@ ${value}</textarea
                               content.push(html`
                                 <form
                                   method="POST"
-                                  action="${url}/courses/${res.locals.course
+                                  action="${baseURL}/courses/${res.locals.course
                                     .reference}/conversations/${res.locals
                                     .conversation
                                     .reference}/messages/${message.reference}/endorsements${isEndorsed
@@ -13654,7 +13665,7 @@ ${value}</textarea
                               return html`
                                 <form
                                   method="POST"
-                                  action="${url}/courses/${res.locals.course
+                                  action="${baseURL}/courses/${res.locals.course
                                     .reference}/conversations/${res.locals
                                     .conversation
                                     .reference}/messages/${message.reference}/likes${isLiked
@@ -13708,7 +13719,7 @@ ${value}</textarea
                           ? html`
                               <form
                                 method="POST"
-                                action="${url}/courses/${res.locals.course
+                                action="${baseURL}/courses/${res.locals.course
                                   .reference}/conversations/${res.locals
                                   .conversation
                                   .reference}/messages/${message.reference}?_method=PATCH"
@@ -13785,7 +13796,7 @@ ${value}</textarea
 
             <form
               method="POST"
-              action="${url}/courses/${res.locals.course
+              action="${baseURL}/courses/${res.locals.course
                 .reference}/conversations/${res.locals.conversation
                 .reference}/messages"
               novalidate
@@ -14071,7 +14082,7 @@ ${value}</textarea
       emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
       );
     }
   );
@@ -14091,7 +14102,7 @@ ${value}</textarea
         sql`DELETE FROM "conversations" WHERE "id" = ${res.locals.conversation.id}`
       );
       emitCourseRefresh(res.locals.course.id);
-      res.redirect(`${url}/courses/${res.locals.course.reference}`);
+      res.redirect(`${baseURL}/courses/${res.locals.course.reference}`);
     }
   );
 
@@ -14164,7 +14175,7 @@ ${value}</textarea
       emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.conversation.nextMessageReference}`
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.conversation.nextMessageReference}`
       );
     }
   );
@@ -14256,7 +14267,7 @@ ${value}</textarea
       emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
       );
     }
   );
@@ -14282,7 +14293,7 @@ ${value}</textarea
       );
       emitCourseRefresh(res.locals.course.id);
       res.redirect(
-        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
       );
     }
   );
@@ -14315,7 +14326,7 @@ ${value}</textarea
       emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
       );
     }
   );
@@ -14348,7 +14359,7 @@ ${value}</textarea
       emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
       );
     }
   );
@@ -14422,7 +14433,7 @@ ${value}</textarea
       emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
       );
     }
   );
@@ -14453,7 +14464,7 @@ ${value}</textarea
       emitCourseRefresh(res.locals.course.id);
 
       res.redirect(
-        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
       );
     }
   );
@@ -14495,7 +14506,7 @@ ${value}</textarea
       );
 
       res.redirect(
-        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
       );
     }
   );
@@ -14535,7 +14546,7 @@ ${value}</textarea
       );
 
       res.redirect(
-        `${url}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
       );
     }
   );
@@ -15007,7 +15018,7 @@ ${value}</textarea
             </div>
           `
         );
-        res.redirect(url);
+        res.redirect(baseURL);
       })
     );
 
@@ -15070,7 +15081,7 @@ ${value}</textarea
               `}"
             >
               <a
-                href="${url}/sign-up?${qs.stringify({
+                href="${baseURL}/sign-up?${qs.stringify({
                   redirect: req.originalUrl,
                 })}"
                 class="button button--blue"
@@ -15079,7 +15090,7 @@ ${value}</textarea
                 Sign up
               </a>
               <a
-                href="${url}/sign-in?${qs.stringify({
+                href="${baseURL}/sign-in?${qs.stringify({
                   redirect: req.originalUrl,
                 })}"
                 class="button button--transparent"
@@ -15160,12 +15171,12 @@ ${value}</textarea
   return app;
 }
 
-if (process.argv[1] === nodeURL.fileURLToPath(import.meta.url))
+if (process.argv[1] === url.fileURLToPath(import.meta.url))
   (async () => {
     await (
       await import(
         process.argv[2] === undefined
-          ? nodeURL.fileURLToPath(
+          ? url.fileURLToPath(
               new URL("../configuration/demonstration.js", import.meta.url)
             )
           : path.resolve(process.argv[2])
