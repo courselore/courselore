@@ -15150,7 +15150,7 @@ ${value}</textarea
 
 if (process.argv[1] === nodeURL.fileURLToPath(import.meta.url))
   (async () => {
-    (
+    await (
       await import(
         process.argv[2] === undefined
           ? nodeURL.fileURLToPath(
