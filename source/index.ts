@@ -15148,7 +15148,7 @@ ${value}</textarea
   return app;
 }
 
-if (process.argv[0] === url.fileURLToPath(import.meta.url))
+if (process.argv[1] === url.fileURLToPath(import.meta.url))
   require(path.resolve(
     process.argv[2] ?? path.join(__dirname, "../configuration/demonstration.js")
   ))(require);
