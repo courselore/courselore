@@ -5,7 +5,7 @@ export default async (importFromCourselore) => {
     const execa = await importFromCourselore("execa");
     const caddyfile = await importFromCourselore("dedent");
     const subprocesses = [
-      execa(process.argv[0], [process.argv[1], __filename, "server"], {
+      execa(process.argv[0], [process.argv[1], process.argv[2], "server"], {
         preferLocal: true,
         stdio: "inherit",
       }),
