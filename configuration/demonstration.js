@@ -39,9 +39,9 @@ export default async (courseloreImport, courseloreImportMetaURL) => {
   } else {
     const path = await courseloreImport("node:path");
     const nodeURL = await courseloreImport("node:url");
-    const fs = await courseloreImport("fs-extra");
-    const nodemailer = await courseloreImport("nodemailer").default;
-    const courselore = await courseloreImport("./index.js").default;
+    const fs = (await courseloreImport("fs-extra")).default;
+    const nodemailer = (await courseloreImport("nodemailer")).default;
+    const courselore = (await courseloreImport("./index.js")).default;
     const { version } = JSON.parse(
       await fs.readFile(
         nodeURL.fileURLToPath(
