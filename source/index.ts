@@ -10942,7 +10942,17 @@ ${value}</textarea
       .use(
         rehypeSanitize,
         deepMerge<hastUtilSanitize.Schema>(
-          require("hast-util-sanitize/lib/github.json"),
+          JSON.parse(
+            await fs.readFile(
+              nodeURL.fileURLToPath(
+                new URL(
+                  "../node_modules/hast-util-sanitize/lib/github.json",
+                  import.meta.url
+                )
+              ),
+              "utf8"
+            )
+          ),
           {
             attributes: {
               code: ["className"],
