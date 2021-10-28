@@ -1,14 +1,14 @@
 export default async (courseloreImport, courseloreImportMetaURL) => {
-  const url = process.env.URL ?? `https://localhost:5000`;
+  const baseURL = process.env.BASE_URL ?? `https://localhost:5000`;
   const email = "development@courselore.org";
   if (process.argv[3] === undefined) {
-    const nodeURL = await courseloreImport("node:url");
+    const url = await courseloreImport("node:url");
     const execa = (await courseloreImport("execa")).default;
     const caddyfile = (await courseloreImport("dedent")).default;
     const subprocesses = [
       execa(
         process.argv[0],
-        [process.argv[1], nodeURL.fileURLToPath(import.meta.url), "server"],
+        [process.argv[1], url.fileURLToPath(import.meta.url), "server"],
         {
           preferLocal: true,
           stdio: "inherit",
@@ -24,7 +24,7 @@ export default async (courseloreImport, courseloreImportMetaURL) => {
             local_certs
           }
 
-          ${url} {
+          ${baseURL} {
             reverse_proxy 127.0.0.1:4000
             encode zstd gzip
           }
@@ -52,7 +52,7 @@ export default async (courseloreImport, courseloreImportMetaURL) => {
     );
     const app = await courselore({
       dataDirectory: path.join(process.cwd(), "data"),
-      url,
+      url: baseURL,
       administrator: `mailto:${email}`,
       sendMail: (() => {
         const transporter = nodemailer.createTransport(
@@ -67,7 +67,7 @@ export default async (courseloreImport, courseloreImportMetaURL) => {
       })(),
     });
     app.listen(4000, "127.0.0.1", () => {
-      console.log(`CourseLore/${version} started at ${url}`);
+      console.log(`CourseLore/${version} started at ${baseURL}`);
     });
   }
 };
