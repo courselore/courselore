@@ -47,6 +47,7 @@
   - https://github.com/TypeStrong/ts-node/issues/1007
   - https://www.typescriptlang.org/tsconfig
   - https://github.com/sindresorhus/tsconfig/blob/main/tsconfig.json
+  - Top-level await.
   - Update packages.
     - Check that long filename truncation keeps extension.
 - Improve security around uploads.
