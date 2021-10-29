@@ -15172,6 +15172,7 @@ ${value}</textarea
 }
 
 if (process.argv[1] === url.fileURLToPath(import.meta.url))
+  // FIXME: Top-level await.
   (async () => {
     await (
       await import(
