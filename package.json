@@ -3,9 +3,9 @@
   "version": "0.0.8",
   "description": "Communication Platform for Education",
   "exports": "./distribution/index.js",
-  "types": "distribution/index.d.ts",
+  "types": "./distribution/index.d.ts",
   "bin": {
-    "courselore": "distribution/index.js"
+    "courselore": "./distribution/index.js"
   },
   "repository": "courselore/courselore",
   "keywords": [
@@ -23,8 +23,8 @@
   "type": "module",
   "scripts": {
     "postinstall": "npm --prefix static install",
-    "start": "npx ts-node source/index.ts configuration/development.js",
-    "test": "prettier --check \"source/**/*\" --end-of-line auto && jest",
+    "start": "npx ts-node ./source/index.ts ./configuration/development.js",
+    "test": "prettier --check \"./source/**/*\" --end-of-line auto && jest",
     "prepare": "tsc"
   },
   "dependencies": {
