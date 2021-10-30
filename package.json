@@ -23,7 +23,7 @@
   "type": "module",
   "scripts": {
     "postinstall": "npm --prefix ./static/ install",
-    "start": "nodemon --watch \"./source/\" --ext ts --exec \"npm run prepare && node ./distribution/index.js ./configuration/development.js\"",
+    "start": "nodemon --watch \"./source/\" --ext ts --exec \"npm run prepare && node ./distribution/index.js\"",
     "test": "prettier --check \"./source/**/*\" --end-of-line auto",
     "prepare": "tsc"
   },

@@ -15164,7 +15164,7 @@ if (process.argv[1] === url.fileURLToPath(import.meta.url))
     await import(
       process.argv[2] === undefined
         ? url.fileURLToPath(
-            new URL("../configuration/demonstration.js", import.meta.url)
+            new URL("../configuration/development.mjs", import.meta.url)
           )
         : path.resolve(process.argv[2])
     )

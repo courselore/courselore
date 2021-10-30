@@ -70,7 +70,7 @@ jobs:
 
           ssh root@courselore.org "mkdir -p courselore"
           rsync -a courselore root@courselore.org:courselore/courselore
-          rsync -a configuration/production.js root@courselore.org:courselore/configuration.js
+          rsync -a configuration/production.mjs root@courselore.org:courselore/configuration.mjs
           rsync -a configuration/courselore.service root@courselore.org:/etc/systemd/system/courselore.service
 
           ssh root@courselore.org << "EOF"
