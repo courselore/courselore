@@ -48,6 +48,9 @@
     - [x] ts-node
     - [ ] node-dev
     - [ ] caxa
+  - Configuration:
+    - [ ] development
+    - [ ] production
   - [x] https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
   - [x] https://github.com/TypeStrong/ts-node/issues/1007
   - [x] https://www.typescriptlang.org/tsconfig
