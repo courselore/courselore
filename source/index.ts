@@ -15175,18 +15175,16 @@ if (
   process.argv[1].slice(0, -".js".length) ===
   url.fileURLToPath(import.meta.url).slice(0, -".js".length)
 )
-  // FIXME: Top-level await.
-  (async () => {
-    await (
-      await import(
-        process.argv[2] === undefined
-          ? url.fileURLToPath(
-              new URL("../configuration/demonstration.js", import.meta.url)
-            )
-          : path.resolve(process.argv[2])
-      )
-    ).default(
-      async (modulePath: string) => await import(modulePath),
-      import.meta.url
-    );
-  })();
+  await (
+    await import(
+      process.argv[2] === undefined
+        ? url.fileURLToPath(
+            new URL("../configuration/demonstration.js", import.meta.url)
+          )
+        : path.resolve(process.argv[2])
+    )
+  ).default(
+    courselore,
+    async (modulePath: string) => await import(modulePath),
+    import.meta.url
+  );

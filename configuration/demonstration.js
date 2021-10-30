@@ -1,4 +1,8 @@
-export default async (courseloreImport, courseloreImportMetaURL) => {
+export default async (
+  courselore,
+  courseloreImport,
+  courseloreImportMetaURL
+) => {
   const baseURL = process.env.BASE_URL ?? `https://localhost:5000`;
   const email = "development@courselore.org";
   if (process.argv[3] === undefined) {
@@ -41,7 +45,6 @@ export default async (courseloreImport, courseloreImportMetaURL) => {
     const url = await courseloreImport("node:url");
     const fs = (await courseloreImport("fs-extra")).default;
     const nodemailer = (await courseloreImport("nodemailer")).default;
-    const courselore = (await courseloreImport("./index.js")).default;
     const { version } = JSON.parse(
       await fs.readFile(
         url.fileURLToPath(new URL("../package.json", courseloreImportMetaURL)),
