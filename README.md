@@ -54,6 +54,7 @@
   - [x] https://github.com/sindresorhus/tsconfig/blob/main/tsconfig.json
   - [x] Top-level await.
   - [x] Update packages.
+    - [ ] rehype-shiki
     - [ ] Check that long filename truncation keeps extension.
 - Improve security around uploads.
   - [x] File size.
