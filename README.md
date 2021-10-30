@@ -43,6 +43,7 @@
 ### Polish Existing Features
 
 - Migrate to ESM:
+  - [ ] Test math.
   - Steps:
     - [ ] node-dev
     - [ ] caxa

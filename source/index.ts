@@ -26,8 +26,9 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkRehype from "remark-rehype";
 import rehypeRaw from "rehype-raw";
-import rehypeSanitize from "rehype-sanitize";
-import hastUtilSanitize from "hast-util-sanitize";
+import rehypeSanitize, {
+  defaultSchema as rehypeSanitizeDefaultSchema,
+} from "rehype-sanitize";
 import deepMerge from "deepmerge";
 // import rehypeShiki from "@leafac/rehype-shiki";
 import * as shiki from "shiki";
@@ -10951,26 +10952,13 @@ ${value}</textarea
       .use(rehypeRaw)
       .use(
         rehypeSanitize,
-        deepMerge<hastUtilSanitize.Schema>(
-          JSON.parse(
-            await fs.readFile(
-              url.fileURLToPath(
-                new URL(
-                  "../node_modules/hast-util-sanitize/lib/github.json",
-                  import.meta.url
-                )
-              ),
-              "utf8"
-            )
-          ),
-          {
-            attributes: {
-              code: ["className"],
-              span: [["className", "math-inline"]],
-              div: [["className", "math-display"]],
-            },
-          }
-        )
+        deepMerge(rehypeSanitizeDefaultSchema, {
+          attributes: {
+            code: ["className"],
+            span: [["className", "math-inline"]],
+            div: [["className", "math-display"]],
+          },
+        })
       )
       // .use(rehypeShiki, {
       //   highlighter: {
