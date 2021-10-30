@@ -23,7 +23,7 @@
   "type": "module",
   "scripts": {
     "postinstall": "npm --prefix ./static/ install",
-    "start": "npx ts-node ./source/index.ts ./configuration/development.js",
+    "start": "cross-env NODE_OPTIONS=\"--loader ts-node/esm\" node ./source/index.ts ./configuration/development.js",
     "test": "prettier --check \"./source/**/*\" --end-of-line auto && jest",
     "prepare": "tsc"
   },
@@ -87,6 +87,7 @@
     "@types/sharp": "^0.28.3",
     "@types/tough-cookie": "^4.0.0",
     "caxa": "^2.0.0",
+    "cross-env": "^7.0.3",
     "got": "^11.8.1",
     "jest": "^27.1.0",
     "node-dev": "^7.0.0",

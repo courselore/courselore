@@ -15171,10 +15171,7 @@ ${value}</textarea
   return app;
 }
 
-if (
-  process.argv[1].slice(0, -".js".length) ===
-  url.fileURLToPath(import.meta.url).slice(0, -".js".length)
-)
+if (process.argv[1] === url.fileURLToPath(import.meta.url))
   await (
     await import(
       process.argv[2] === undefined
