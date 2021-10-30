@@ -43,13 +43,13 @@
 ### Polish Existing Features
 
 - Migrate to ESM:
-  - [ ] Test math.
   - Steps:
     - [ ] node-dev
     - [ ] caxa
   - Configuration:
     - [ ] development
     - [ ] production
+  - [ ] Test math.
   - FIXME:
     - https://github.com/syntax-tree/hast-util-to-html/issues/25
     - rehype-shiki
