@@ -44,11 +44,7 @@
 
 - Migrate to ESM:
   - Steps:
-    - [ ] node-dev
     - [ ] caxa
-  - Configuration:
-    - [ ] development
-    - [ ] production
   - [ ] Test math & sanitization.
   - FIXME:
     - https://github.com/syntax-tree/hast-util-to-html/issues/25
