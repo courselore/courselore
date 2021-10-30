@@ -1,14 +1,23 @@
-export default async (importFromCourselore) => {
-  const url = process.env.URL ?? `https://localhost:5000`;
+export default async (
+  courselore,
+  courseloreImport,
+  courseloreImportMetaURL
+) => {
+  const baseURL = process.env.BASE_URL ?? `https://localhost:5000`;
   const email = "development@courselore.org";
   if (process.argv[3] === undefined) {
-    const execa = await importFromCourselore("execa");
-    const caddyfile = await importFromCourselore("dedent");
+    const url = await courseloreImport("node:url");
+    const execa = (await courseloreImport("execa")).default;
+    const caddyfile = (await courseloreImport("dedent")).default;
     const subprocesses = [
-      execa("node-dev", [process.argv[1], __filename, "server"], {
-        preferLocal: true,
-        stdio: "inherit",
-      }),
+      execa(
+        process.argv[0],
+        [process.argv[1], url.fileURLToPath(import.meta.url), "server"],
+        {
+          preferLocal: true,
+          stdio: "inherit",
+        }
+      ),
       execa("caddy", ["run", "--config", "-", "--adapter", "caddyfile"], {
         preferLocal: true,
         stdout: "inherit",
@@ -19,7 +28,7 @@ export default async (importFromCourselore) => {
             local_certs
           }
 
-          ${url} {
+          ${baseURL} {
             reverse_proxy 127.0.0.1:4000
             encode zstd gzip
           }
@@ -32,13 +41,19 @@ export default async (importFromCourselore) => {
           if (subprocess !== otherSubprocess) otherSubprocess.cancel();
       });
   } else {
-    const path = await importFromCourselore("node:path");
-    const nodemailer = await importFromCourselore("nodemailer");
-    const courselore = await importFromCourselore(".").default;
-    const { version } = await importFromCourselore("../package.json");
+    const path = await courseloreImport("node:path");
+    const url = await courseloreImport("node:url");
+    const fs = (await courseloreImport("fs-extra")).default;
+    const nodemailer = (await courseloreImport("nodemailer")).default;
+    const { version } = JSON.parse(
+      await fs.readFile(
+        url.fileURLToPath(new URL("../package.json", courseloreImportMetaURL)),
+        "utf8"
+      )
+    );
     const app = await courselore({
       dataDirectory: path.join(process.cwd(), "data"),
-      url,
+      baseURL,
       administrator: `mailto:${email}`,
       sendMail: (() => {
         const transporter = nodemailer.createTransport(
@@ -54,7 +69,7 @@ export default async (importFromCourselore) => {
       liveReload: true,
     });
     app.listen(4000, "127.0.0.1", () => {
-      console.log(`CourseLore/${version} started at ${url}`);
+      console.log(`CourseLore/${version} started at ${baseURL}`);
     });
   }
 };

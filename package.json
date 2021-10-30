@@ -23,8 +23,8 @@
   "type": "module",
   "scripts": {
     "postinstall": "npm --prefix ./static/ install",
-    "start": "cross-env NODE_OPTIONS=\"--loader ts-node/esm\" node ./source/index.ts ./configuration/development.js",
-    "test": "prettier --check \"./source/**/*\" --end-of-line auto && jest",
+    "start": "npm run prepare && node ./distribution/index.js ./configuration/development.js",
+    "test": "prettier --check \"./source/**/*\" --end-of-line auto",
     "prepare": "tsc"
   },
   "dependencies": {
