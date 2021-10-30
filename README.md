@@ -49,7 +49,7 @@
   - Configuration:
     - [ ] development
     - [ ] production
-  - [ ] Test math.
+  - [ ] Test math & sanitization.
   - FIXME:
     - https://github.com/syntax-tree/hast-util-to-html/issues/25
     - rehype-shiki
