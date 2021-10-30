@@ -53,7 +53,7 @@
   - [x] https://www.typescriptlang.org/tsconfig
   - [x] https://github.com/sindresorhus/tsconfig/blob/main/tsconfig.json
   - [x] Top-level await.
-  - [ ] Update packages.
+  - [x] Update packages.
     - [ ] Check that long filename truncation keeps extension.
 - Improve security around uploads.
   - [x] File size.
