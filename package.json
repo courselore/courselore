@@ -98,6 +98,6 @@
   },
   "jest": {
     "preset": "ts-jest",
-    "rootDir": "source"
+    "rootDir": "./source/"
   }
 }
