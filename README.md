@@ -50,8 +50,8 @@
     - [ ] caxa
   - [x] https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
   - [x] https://github.com/TypeStrong/ts-node/issues/1007
-  - [ ] https://www.typescriptlang.org/tsconfig
-  - [ ] https://github.com/sindresorhus/tsconfig/blob/main/tsconfig.json
+  - [x] https://www.typescriptlang.org/tsconfig
+  - [x] https://github.com/sindresorhus/tsconfig/blob/main/tsconfig.json
   - [x] Top-level await.
   - [ ] Update packages.
     - [ ] Check that long filename truncation keeps extension.
