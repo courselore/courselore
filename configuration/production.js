@@ -46,7 +46,6 @@ export default async (
           if (subprocess !== otherSubprocess) otherSubprocess.cancel();
       });
   } else {
-    const path = await courseloreImport("node:path");
     const url = await courseloreImport("node:url");
     const fs = (await courseloreImport("fs-extra")).default;
     const nodemailer = (await courseloreImport("nodemailer")).default;
@@ -63,10 +62,7 @@ export default async (
       )
     );
     const app = await courselore({
-      dataDirectory: path.join(
-        url.fileURLToPath(new URL(".", import.meta.url)),
-        "data"
-      ),
+      dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
       baseURL,
       administrator: `mailto:${email}`,
       sendMail: (() => {
