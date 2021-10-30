@@ -20,7 +20,7 @@ type Markdown = string;
 import markdown from "tagged-template-noop";
 import dedent from "dedent";
 
-import unified from "unified";
+import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
