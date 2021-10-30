@@ -32,7 +32,7 @@ import deepMerge from "deepmerge";
 import rehypeShiki from "@leafac/rehype-shiki";
 import * as shiki from "shiki";
 import rehypeKatex from "rehype-katex";
-import unistUtilVisit from "unist-util-visit";
+import { visit as unistUtilVisit } from "unist-util-visit";
 import rehypeStringify from "rehype-stringify";
 import { JSDOM } from "jsdom";
 
