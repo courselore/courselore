@@ -65,6 +65,7 @@
     "remark-rehype": "^10.0.0",
     "sharp": "^0.29.2",
     "shiki": "^0.9.12",
+    "stringify-entities": "^4.0.1",
     "tagged-template-noop": "^2.1.1",
     "unified": "^10.1.0",
     "unist-util-visit": "^4.1.0"

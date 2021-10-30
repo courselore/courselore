@@ -57,8 +57,11 @@
   - [x] https://github.com/sindresorhus/tsconfig/blob/main/tsconfig.json
   - [x] Top-level await.
   - [x] Update packages.
-    - [ ] rehype-shiki
-    - [ ] Check that long filename truncation keeps extension.
+    - [x] rehype-shiki
+    - [x] Check that long filename truncation keeps extension.
+  - FIXME:
+    - https://github.com/syntax-tree/hast-util-to-html/issues/25
+    - rehype-shiki
 - Improve security around uploads.
   - [x] File size.
   - File name.

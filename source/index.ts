@@ -29,7 +29,7 @@ import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import hastUtilSanitize from "hast-util-sanitize";
 import deepMerge from "deepmerge";
-import rehypeShiki from "@leafac/rehype-shiki";
+// import rehypeShiki from "@leafac/rehype-shiki";
 import * as shiki from "shiki";
 import rehypeKatex from "rehype-katex";
 import { visit as unistUtilVisit } from "unist-util-visit";
@@ -10972,12 +10972,12 @@ ${value}</textarea
           }
         )
       )
-      .use(rehypeShiki, {
-        highlighter: {
-          light: await shiki.getHighlighter({ theme: "light-plus" }),
-          dark: await shiki.getHighlighter({ theme: "dark-plus" }),
-        },
-      })
+      // .use(rehypeShiki, {
+      //   highlighter: {
+      //     light: await shiki.getHighlighter({ theme: "light-plus" }),
+      //     dark: await shiki.getHighlighter({ theme: "dark-plus" }),
+      //   },
+      // })
       .use(rehypeKatex, { maxSize: 25, maxExpand: 10, output: "html" })
       .use(() => (tree) => {
         unistUtilVisit(tree, (node) => {
