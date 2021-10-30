@@ -22,7 +22,7 @@
   "homepage": "https://github.com/courselore/courselore#readme",
   "type": "module",
   "scripts": {
-    "postinstall": "npm --prefix static install",
+    "postinstall": "npm --prefix ./static/ install",
     "start": "npx ts-node ./source/index.ts ./configuration/development.js",
     "test": "prettier --check \"./source/**/*\" --end-of-line auto && jest",
     "prepare": "tsc"
