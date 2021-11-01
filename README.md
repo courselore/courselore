@@ -59,7 +59,6 @@
   - More lightweight design for messages.
 - Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
 - Bookmarks / flags / saved items. These are personal, for example, for something you have to follow up on.
-- The first post is a chatroom description
 
 ### Users
 
@@ -75,7 +74,6 @@
 
 - Different course states, for example, archived.
 - Remove course entirely.
-- Create custom roles (beyond “staff” and “student”) and manage fine-grained permissions.
 - Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
 - Control who’s able to create courses, which makes sense for people who self-host.
 
@@ -91,12 +89,9 @@
   - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by staff).
   - Let original question asker approve an answer.
-- Pin messages.
 - More sophisticated tag system: dependencies between tags, actions triggered by tags, and so forth.
 - Modify the order of tags.
-- Different modes: Forum vs Chat.
 - Different states: Open vs archived.
-- Flag messages to answer later.
 - Assign questions to CAs.
 
 ### Advanced Access Control
@@ -105,6 +100,7 @@
 - Groups, for example, Graders, Project Advisors, Group members, different sections on courses.
   - Some groups are available only to students, while others only to staff.
   - People assign themselves to groups.
+- Add mentions like `@group-3`.
 
 ### Anonymity
 
@@ -115,8 +111,7 @@
 
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
 - Add different notification badges for when you’re @mentioned.
-- Add support for things like `@staff` / `@students` / `@channel` / `@group-3`.
-- A list of unread messages and other things that require your attention.
+- A timeline-like list of unread messages and other things that require your attention.
 - More granular control over what to be notified about.
   - Course-level configuration.
   - Subscribe/unsubscribe to particular conversations of interest/disinterest.
@@ -131,9 +126,6 @@
 
 ### Markdown Editor
 
-- `#references` widget:
-  - Search through authors?
-  - Include author, date, and so forth in the response?
 - Templates for questions (like GitHub Issues).
 - Reuse answers.
 - Paste tables from Excel and have them formatted as Markdown tables.
