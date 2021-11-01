@@ -28,6 +28,8 @@
 
 ### Polish Existing Features
 
+- CSRF: https://github.com/expressjs/csurf
+  - It seems to be using a session-wide token. How does it send different tokens in the form every time?
 - Investigate why `kill -9` isn’t triggering the `await` in `development.js` (this could be a major issue in production when a process dies and the other isn’t killed to let them both be respawned).
 - Migrate to ESM:
   - Test math & sanitization.
@@ -222,7 +224,6 @@
   ```
   - https://github.com/gajus/http-terminator
 - Helmet.
-- csurf.
 - Auto-updater for self-hosted.
 - Backups.
   - For us, as system administrators.
