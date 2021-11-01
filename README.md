@@ -28,6 +28,7 @@
 
 ### Polish Existing Features
 
+- Investigate why `kill -9` isn’t triggering the `await` in `development.js` (this could be a major issue in production when a process dies and the other isn’t killed to let them both be respawned).
 - Migrate to ESM:
   - Test math & sanitization.
   - https://github.com/syntax-tree/hast-util-to-html/issues/25
@@ -191,16 +192,15 @@
       - Nest first query as a subquery and bundle all the information together, then deduplicate the 1–N relationships in the code.
 - An internal queue to guarantee email delivery.
 - `try.courselore.org` (reference https://moodle.org/demo)
-- Investigate why `kill -9` isn’t triggering the `await` in `development.js` (this could be a major issue in production when a process dies and the other isn’t killed to let them both be respawned).
 - Live updates: Try to come up with a solution that doesn’t require you requesting the page again, instead, just send the data in the first place.
 - Rate limiting.
 - Database transactions:
   - One transaction per request?
   - Considerations:
     - We shouldn’t keep the transaction open across ticks of the event loop, which entails that all request handlers would have to be synchronous.
-    - Moreover, as far as I can tell the only way to run a middle **after** the router is to listen to the `res.once("finish", () => {...})` event. But I think that this goes across ticks of the event loop.
+    - Moreover, as far as I can tell the only way to run a middleware **after** the router is to listen to the `res.once("finish", () => {...})` event. But I think that this goes across ticks of the event loop.
     - Maybe I can just call `next()` and then look at the `res.statusCode`?
-    - I think that transactions are only relevant if you’re running in cluster mode, because otherwise Node.js is single-threaded and queries are serialized, anyway.
+    - For synchronous action handlers I think that transactions are only relevant if you’re running in cluster mode, because otherwise Node.js is single-threaded and queries are serialized, anyway.
   - References:
     - https://goenning.net/2017/06/20/session-per-request-pattern-go/
     - https://stackoverflow.com/questions/24258782/node-express-4-middleware-after-routes
@@ -210,7 +210,6 @@
     - https://github.com/jshttp/on-finished
     - https://github.com/pillarjs/router/issues/18
 - Use `Cache-control: no-store`.
-- Database indices: Check every `SELECT` to make sure they aren’t causing full table scans.
 - Graceful HTTP shutdown
   ```js
   process.on("SIGTERM", () => {
