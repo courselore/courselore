@@ -8,17 +8,17 @@
 
 ### Roadmap
 
-#### First Release
+#### 1.0.0
 
 **Soft Deadline:** 2022-01-15
 
 **Hard Deadline:** 2022-02-01
 
-#### November
+**November**
 
 - Chat.
 
-#### December
+**December**
 
 - More granular control of who’s in a conversation (1-on-1, just a group of people, and so forth).
 - Performance.
