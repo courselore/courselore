@@ -14,28 +14,14 @@
 
 **Hard Deadline:** 2022-02-01
 
-#### Milestones
-
-- Chat.
-- Performance.
-- More granular control of who’s in a conversation (1-on-1, just a group of people, and so forth).
-- More strategic marketing
-  - User groups.
-  - Marketing page.
-  - Maybe hire a designer.
-
-#### September
-
-- Finish the features that still need some polish and address comments from the first round of reviews.
-
-#### October
-
-- Chat.
-- Performance.
-
 #### November
 
+- Chat.
+
+#### December
+
 - More granular control of who’s in a conversation (1-on-1, just a group of people, and so forth).
+- Performance.
 
 <details>
 <summary><strong>Backlog</strong></summary>
@@ -43,18 +29,13 @@
 ### Polish Existing Features
 
 - Migrate to ESM:
-  - Steps:
-    - [ ] caxa
-  - [ ] Test math & sanitization.
-  - FIXME:
-    - https://github.com/syntax-tree/hast-util-to-html/issues/25
-    - rehype-shiki
+  - Test math & sanitization.
+  - https://github.com/syntax-tree/hast-util-to-html/issues/25
+  - rehype-shiki
 - Improve security around uploads.
-  - [x] File size.
-  - File name.
-    - Size.
-    - Weird characters: uriDecodeFileNames, safeFileNames.
+  - Double check all the upload stuff.
   - Double check the use of sharp.
+- Rename “Type = Other” to “Note”.
 - Notifications.
 - Search:
   - Filters (for example, by conversation type).
@@ -65,7 +46,6 @@
   - Include `<person> says`:
     - Search results.
     - Tooltip for #references.
-- Chat.
 - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by staff).
 - Test interface with weird data: Long text, long words, too many tags, and so forth.
@@ -73,6 +53,18 @@
 - Add different notification badges for when you’re @mentioned.
 - Let original question asker approve an answer.
 - Come up with a better term than “Demonstration”, which may imply a paid product.
+
+### Chat
+
+- Tags aren’t required.
+- The first post is a chatroom description
+- Layout changes:
+  - Fixed header on top & textarea on bottom.
+  - Load from the bottom.
+  - More lightweight design for messages.
+- Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
+- Bookmarks / flags / saved items. These are personal, for example, for something you have to follow up on.
+- The first post is a chatroom description
 
 ### Users
 
@@ -100,6 +92,7 @@
 
 ### Conversations
 
+- Change the visualization of “types” a little more, for example, make announcements pop up.
 - Pin messages.
 - More sophisticated tag system: dependencies between tags, actions triggered by tags, and so forth.
 - Modify the order of tags.
@@ -107,6 +100,13 @@
 - Different states: Open vs archived.
 - Flag messages to answer later.
 - Assign questions to CAs.
+
+### Advanced Access Control
+
+- Chats with only a few people.
+- Groups, for example, Graders, Project Advisors, Group members, different sections on courses.
+  - Some groups are available only to students, while others only to staff.
+  - People assign themselves to groups.
 
 ### Anonymity
 
@@ -127,9 +127,6 @@
 
 ### Search
 
-- Advanced filters:
-  - Type.
-  - Chat or not.
 - Search in all courses you’re taking (for example, search for `deadline extension`) (see how GitHub does it).
 
 ### Markdown Editor
@@ -152,6 +149,15 @@
 
 ### File Management
 
+- Access control around attachments:
+  - Possibilities:
+    1. Anyone with a link may see the attachment.
+    2. Only people who are logged in may see the attachment.
+    3. Only people in the same course may see the attachment.
+    4. Only people with access to the particular conversation may see the attachment.
+  - Right now we’re implementing 2, but we may want to go more strict if FERPA requires it or if someone asks for it.
+  - The advantage of 1 is that we can have a link directly to something like S3, so we don’t have to proxy the file ourselves.
+  - The disadvantage of something like 3 or 4 is that a person can’t copy and paste messages across courses (think of a PDF with course rules being sent at the beginning of a semester).
 - Let people configure other storage engines (for example, S3).
 - Create a garbage collection routine for attachments.
 - Clean geolocation from images.
@@ -279,8 +285,10 @@
 
 ### Marketing
 
+- User groups.
 - Landing page:
   - https://capacitorjs.com
+  - Maybe hire a designer.
 - Newsletter.
 - Create CourseLore Gravatar.
   - Use in npm.
@@ -333,6 +341,36 @@
 
 <details>
 <summary><strong>Meetings</strong></summary>
+
+<details>
+<summary>2021-10-30</summary>
+
+- Finishing touches on showing messages:
+  - Added a “mark all as read” button.
+  - Changed “Copy to clipboard” wording.
+  - Looked into FERPA compliance.
+  - Improved security around uploads.
+  - Migrated to ESM.
+  - Hide blue dots indicating unread messages after a second.
+  - Made blue dot count indicator on sidebar a “mark as read” button.
+  - Added highlight message that has been #message--... targeted.
+  - Included every message (not just the first one) to search results when searching for author.
+  - Fixed anonymity violations on partial that shows conversation information.
+- Other things we talked about:
+  - Attachments should be attached to conversations?
+  - Change the visualization of “types” a little more: Make announcements pop up.
+  - “Other” -> “Note”
+  - Chat highlights (for everyone in the chat)
+  - Bookmarks / flags / saved items (for you only)
+  - More granular access control:
+    - Chats with only a few people.
+    - Groups, for example, Graders, Project Advisors, Group members, different sections on courses.
+    - Invitations for groups? No.
+    - People assign themselves to groups.
+  - Tags required for chats? No.
+  - The first post is a chatroom description
+
+</details>
 
 <details>
 <summary>2021-10-16</summary>
