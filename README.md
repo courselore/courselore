@@ -133,7 +133,7 @@
 ### Markdown Processor
 
 - Emoji with the `:smile:` form.
-- Proxy insecure content: https://github.com/atmos/camo
+- Proxy hotlinked images (particularly if served with HTTP because of insecure content): https://github.com/atmos/camo
 - Reference on more features ideas: <https://github.com/gjtorikian/html-pipeline>
 - Polls.
 - Resize images & lightbox modal for resized images.
