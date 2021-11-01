@@ -46,6 +46,7 @@
   - Include `<person> says`:
     - Search results.
     - Tooltip for #references.
+- Address FIXMEs & TODOs.
 - Test interface with weird data: Long text, long words, too many tags, and so forth.
 - Come up with a better term than “Demonstration”, which may imply a paid product.
 
