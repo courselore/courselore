@@ -35,7 +35,6 @@
 - Improve security around uploads.
   - Double check all the upload stuff.
   - Double check the use of sharp.
-- Rename “Type = Other” to “Note”.
 - Notifications.
 - Search:
   - Filters (for example, by conversation type).
@@ -46,16 +45,12 @@
   - Include `<person> says`:
     - Search results.
     - Tooltip for #references.
-- Improve display of endorsements & answers (on the sidebar, include number of answers).
-  - Manage answer badges more intelligently (answered at all, answered by staff).
 - Test interface with weird data: Long text, long words, too many tags, and so forth.
-- Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
-- Add different notification badges for when you’re @mentioned.
-- Let original question asker approve an answer.
 - Come up with a better term than “Demonstration”, which may imply a paid product.
 
 ### Chat
 
+- Rename “Type = Other” to “Note”.
 - Tags aren’t required.
 - The first post is a chatroom description
 - Layout changes:
@@ -93,6 +88,9 @@
 ### Conversations
 
 - Change the visualization of “types” a little more, for example, make announcements pop up.
+  - Improve display of endorsements & answers (on the sidebar, include number of answers).
+  - Manage answer badges more intelligently (answered at all, answered by staff).
+  - Let original question asker approve an answer.
 - Pin messages.
 - More sophisticated tag system: dependencies between tags, actions triggered by tags, and so forth.
 - Modify the order of tags.
@@ -115,6 +113,8 @@
 
 ### Notifications
 
+- Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
+- Add different notification badges for when you’re @mentioned.
 - Add support for things like `@staff` / `@students` / `@channel` / `@group-3`.
 - A list of unread messages and other things that require your attention.
 - More granular control over what to be notified about.
