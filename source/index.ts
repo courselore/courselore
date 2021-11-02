@@ -1647,6 +1647,11 @@ export default async function courselore({
                               method="POST"
                               action="${baseURL}/demonstration-data"
                             >
+                              <input
+                                type="hidden"
+                                name="_csrf"
+                                value="${req.csrfToken()}"
+                              />
                               <button
                                 class="button button--blue"
                                 style="${css`
@@ -2263,6 +2268,11 @@ export default async function courselore({
                     method="POST"
                     action="${baseURL}/sign-out?_method=DELETE"
                   >
+                    <input
+                      type="hidden"
+                      name="_csrf"
+                      value="${req.csrfToken()}"
+                    />
                     <button
                       class="dropdown--menu--item button button--transparent"
                     >
