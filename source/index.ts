@@ -15104,10 +15104,14 @@ ${value}</textarea
 
   app.use(((err, req, res, next) => {
     console.error(err);
-    const isValidation = err === "validation";
     const isCSRF = err.code === "EBADCSRFTOKEN";
-    const message = isValidation || isCSRF ? "Validation" : "Server";
-    res.status(isValidation ? 422 : isCSRF ? 403 : 500).send(
+    const isValidation = err === "validation";
+    const message = isCSRF
+      ? "Cross-Site"
+      : isValidation
+      ? "Validation"
+      : "Server";
+    res.status(isCSRF ? 403 : isValidation ? 422 : 500).send(
       boxLayout({
         req,
         res,
