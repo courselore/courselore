@@ -28,10 +28,8 @@
 
 ### Polish Existing Features
 
-- Investigate why `kill -9` isn’t triggering the `await` in `development.js` (this could be a major issue in production when a process dies and the other isn’t killed to let them both be respawned).
 - Migrate to ESM:
   - Test math & sanitization.
-  - https://github.com/syntax-tree/hast-util-to-html/issues/25
   - rehype-shiki
 - Improve security around uploads.
   - Double check all the upload stuff.
