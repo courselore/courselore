@@ -29,7 +29,7 @@
 ### Polish Existing Features
 
 - CSRF: https://github.com/expressjs/csurf
-  - Cookie age.
+  - Test skipLib
   - `fetch()`
 - Investigate why `kill -9` isn’t triggering the `await` in `development.js` (this could be a major issue in production when a process dies and the other isn’t killed to let them both be respawned).
 - Migrate to ESM:
