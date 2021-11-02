@@ -702,6 +702,12 @@ Some _emphasis_, **importance**, and \`code\`.
 
 www.example.com, https://example.com, and contact@example.com.
 
+## Footnote
+
+A note[^1]
+
+[^1]: Big note.
+
 ## Strikethrough
 
 ~one~ or ~~two~~ tildes.
