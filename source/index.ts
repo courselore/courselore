@@ -7,6 +7,7 @@ import express from "express";
 import methodOverride from "method-override";
 import cookieParser from "cookie-parser";
 import expressFileUpload from "express-fileupload";
+import csurf from "csurf";
 import { asyncHandler } from "@leafac/express-async-handler";
 import qs from "qs";
 
@@ -2550,6 +2551,14 @@ export default async function courselore({
     expressFileUpload({
       createParentPath: true,
       limits: { fileSize: 10 * 1024 * 1024 },
+    })
+  );
+  app.use(
+    csurf({
+      cookie: {
+        ...cookieOptions,
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      },
     })
   );
 

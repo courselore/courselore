@@ -39,6 +39,7 @@
     "argon2": "^0.28.2",
     "cookie-parser": "^1.4.5",
     "crypto-random-string": "^4.0.0",
+    "csurf": "^1.11.0",
     "dedent": "^0.7.0",
     "deepmerge": "^4.2.2",
     "escape-string-regexp": "^5.0.0",
@@ -72,6 +73,7 @@
   "caddy": "2.4.5",
   "devDependencies": {
     "@types/cookie-parser": "^1.4.2",
+    "@types/csurf": "^1.11.2",
     "@types/dedent": "^0.7.0",
     "@types/express": "^4.17.13",
     "@types/express-fileupload": "^1.1.7",
