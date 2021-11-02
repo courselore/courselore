@@ -29,7 +29,6 @@
 ### Polish Existing Features
 
 - Migrate to ESM:
-  - Test math & sanitization.
   - rehype-shiki
 - Improve security around uploads.
   - Double check all the upload stuff.
