@@ -1671,6 +1671,11 @@ export default async function courselore({
                               method="POST"
                               action="${baseURL}/turn-off?_method=DELETE"
                             >
+                              <input
+                                type="hidden"
+                                name="_csrf"
+                                value="${req.csrfToken()}"
+                              />
                               <button class="button button--transparent">
                                 <i class="bi bi-power"></i>
                                 Turn off
@@ -1732,6 +1737,11 @@ export default async function courselore({
                         method="POST"
                         action="${baseURL}/resend-confirmation-email"
                       >
+                        <input
+                          type="hidden"
+                          name="_csrf"
+                          value="${req.csrfToken()}"
+                        />
                         Please confirm your email by following the link sent to
                         ${res.locals.user.email}.<br />
                         Didn’t receive the email? Already checked your spam
@@ -2913,6 +2923,7 @@ export default async function courselore({
               gap: var(--space--4);
             `}"
           >
+            <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
             <label class="label">
               <p class="label--text">Email</p>
               <input
@@ -3092,6 +3103,7 @@ export default async function courselore({
               gap: var(--space--4);
             `}"
           >
+            <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
             <label class="label">
               <p class="label--text">Email</p>
               <input
@@ -3223,6 +3235,7 @@ export default async function courselore({
               email: req.query.email,
             })}"
           >
+            <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
             <input type="hidden" name="email" value="${req.body.email}" />
             <input type="hidden" name="resend" value="true" />
             <p>
@@ -3290,6 +3303,7 @@ export default async function courselore({
                 gap: var(--space--4);
               `}"
             >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <label class="label">
                 <p class="label--text">Password</p>
                 <input
@@ -3413,6 +3427,7 @@ export default async function courselore({
               gap: var(--space--4);
             `}"
           >
+            <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
             <label class="label">
               <p class="label--text">Name</p>
               <input
@@ -3942,6 +3957,7 @@ export default async function courselore({
                 gap: var(--space--4);
               `}"
             >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <div
                 style="${css`
                   display: flex;
@@ -4291,6 +4307,7 @@ export default async function courselore({
                 gap: var(--space--4);
               `}"
             >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <label class="label">
                 <p class="label--text">Email</p>
                 <input
@@ -4325,6 +4342,7 @@ export default async function courselore({
                 gap: var(--space--4);
               `}"
             >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <label class="label">
                 <p class="label--text">Current Password</p>
                 <input
@@ -4493,6 +4511,7 @@ export default async function courselore({
                 gap: var(--space--4);
               `}"
             >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <div class="label">
                 <p class="label--text">Email Notifications</p>
                 <div
@@ -4636,6 +4655,7 @@ export default async function courselore({
                 gap: var(--space--4);
               `}"
             >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <label class="label">
                 <p class="label--text">Name</p>
                 <input
@@ -5205,6 +5225,7 @@ export default async function courselore({
                 gap: var(--space--4);
               `}"
             >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <label class="label">
                 <p class="label--text">Name</p>
                 <input
@@ -5338,6 +5359,7 @@ export default async function courselore({
                 gap: var(--space--4);
               `}"
             >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <div class="label">
                 <p class="label--text">Type</p>
                 <div
@@ -5806,6 +5828,11 @@ export default async function courselore({
                                         >
                                           <input
                                             type="hidden"
+                                            name="_csrf"
+                                            value="${req.csrfToken()}"
+                                          />
+                                          <input
+                                            type="hidden"
                                             name="resend"
                                             value="true"
                                           />
@@ -5887,6 +5914,11 @@ export default async function courselore({
                                             >
                                               <input
                                                 type="hidden"
+                                                name="_csrf"
+                                                value="${req.csrfToken()}"
+                                              />
+                                              <input
+                                                type="hidden"
                                                 name="role"
                                                 value="${role}"
                                               />
@@ -5943,6 +5975,11 @@ export default async function courselore({
                                         gap: var(--space--2);
                                       `}"
                                     >
+                                      <input
+                                        type="hidden"
+                                        name="_csrf"
+                                        value="${req.csrfToken()}"
+                                      />
                                       <div class="dropdown--menu--item">
                                         <input
                                           type="text"
@@ -5978,6 +6015,11 @@ export default async function courselore({
                                     >
                                       <input
                                         type="hidden"
+                                        name="_csrf"
+                                        value="${req.csrfToken()}"
+                                      />
+                                      <input
+                                        type="hidden"
                                         name="removeExpiration"
                                         value="true"
                                       />
@@ -5995,6 +6037,11 @@ export default async function courselore({
                                       action="${action}?_method=PATCH"
                                       class="dropdown--menu"
                                     >
+                                      <input
+                                        type="hidden"
+                                        name="_csrf"
+                                        value="${req.csrfToken()}"
+                                      />
                                       <input
                                         type="hidden"
                                         name="expire"
@@ -6671,6 +6718,11 @@ export default async function courselore({
                                       >
                                         <input
                                           type="hidden"
+                                          name="_csrf"
+                                          value="${req.csrfToken()}"
+                                        />
+                                        <input
+                                          type="hidden"
                                           name="role"
                                           value="${role}"
                                         />
@@ -6808,6 +6860,11 @@ export default async function courselore({
                                       gap: var(--space--4);
                                     `}"
                                   >
+                                    <input
+                                      type="hidden"
+                                      name="_csrf"
+                                      value="${req.csrfToken()}"
+                                    />
                                     <p>
                                       Are you sure you want to remove
                                       ${isSelf ? "yourself" : "this person"}
@@ -6966,6 +7023,7 @@ export default async function courselore({
                 gap: var(--space--4);
               `}"
             >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <div
                 style="${css`
                   display: flex;
@@ -7463,6 +7521,7 @@ export default async function courselore({
                 gap: var(--space--4);
               `}"
             >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <div class="label">
                 <div class="label--text">
                   Accent Color
@@ -7659,6 +7718,7 @@ export default async function courselore({
               action="${baseURL}/courses/${res.locals.invitation.course
                 .reference}/invitations/${res.locals.invitation.reference}"
             >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <button
                 class="button button--blue"
                 style="${css`
@@ -8129,6 +8189,11 @@ export default async function courselore({
                   >
                     <input
                       type="hidden"
+                      name="_csrf"
+                      value="${req.csrfToken()}"
+                    />
+                    <input
+                      type="hidden"
                       name="conversationLayoutSidebarOpenOnSmallScreen"
                       value="true"
                     />
@@ -8306,6 +8371,11 @@ export default async function courselore({
                                 justify-content: flex-end;
                               `}"
                             >
+                              <input
+                                type="hidden"
+                                name="_csrf"
+                                value="${req.csrfToken()}"
+                              />
                               <button
                                 class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                 style="${css`
@@ -11456,6 +11526,7 @@ ${value}</textarea
                   gap: var(--space--4);
                 `}"
               >
+                <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
                 <div class="label">
                   <p class="label--text">Title</p>
                   <input
@@ -12284,6 +12355,11 @@ ${value}</textarea
                                 gap: var(--space--4);
                               `}"
                             >
+                              <input
+                                type="hidden"
+                                name="_csrf"
+                                value="${req.csrfToken()}"
+                              />
                               <p>
                                 Are you sure you want to remove this
                                 conversation?
@@ -12357,6 +12433,11 @@ ${value}</textarea
                           align-items: center;
                         `}"
                       >
+                        <input
+                          type="hidden"
+                          name="_csrf"
+                          value="${req.csrfToken()}"
+                        />
                         <input
                           type="text"
                           name="title"
@@ -12455,6 +12536,11 @@ ${value}</textarea
                                   >
                                     <input
                                       type="hidden"
+                                      name="_csrf"
+                                      value="${req.csrfToken()}"
+                                    />
+                                    <input
+                                      type="hidden"
                                       name="type"
                                       value="${conversationType}"
                                     />
@@ -12535,6 +12621,11 @@ ${value}</textarea
                                           >
                                             <input
                                               type="hidden"
+                                              name="_csrf"
+                                              value="${req.csrfToken()}"
+                                            />
+                                            <input
+                                              type="hidden"
                                               name="reference"
                                               value="${tagging.tag.reference}"
                                             />
@@ -12604,6 +12695,11 @@ ${value}</textarea
                                                 >
                                                   <input
                                                     type="hidden"
+                                                    name="_csrf"
+                                                    value="${req.csrfToken()}"
+                                                  />
+                                                  <input
+                                                    type="hidden"
                                                     name="reference"
                                                     value="${tag.reference}"
                                                   />
@@ -12652,6 +12748,11 @@ ${value}</textarea
                           .reference}/conversations/${res.locals.conversation
                           .reference}?_method=PATCH"
                       >
+                        <input
+                          type="hidden"
+                          name="_csrf"
+                          value="${req.csrfToken()}"
+                        />
                         $${res.locals.conversation.pinnedAt === null
                           ? html`
                               <input
@@ -12754,6 +12855,11 @@ ${value}</textarea
                             gap: var(--space--4);
                           `}"
                         >
+                          <input
+                            type="hidden"
+                            name="_csrf"
+                            value="${req.csrfToken()}"
+                          />
                           $${res.locals.conversation.staffOnlyAt === null
                             ? html`
                                 <input
@@ -13132,6 +13238,11 @@ ${value}</textarea
                                           .reference}/messages/${message.reference}?_method=PATCH"
                                         class="dropdown--menu"
                                       >
+                                        <input
+                                          type="hidden"
+                                          name="_csrf"
+                                          value="${req.csrfToken()}"
+                                        />
                                         $${message.anonymousAt === null
                                           ? html`
                                               <input
@@ -13216,6 +13327,11 @@ ${value}</textarea
                                           gap: var(--space--4);
                                         `}"
                                       >
+                                        <input
+                                          type="hidden"
+                                          name="_csrf"
+                                          value="${req.csrfToken()}"
+                                        />
                                         <p>
                                           Are you sure you want to remove this
                                           message?
@@ -13318,6 +13434,11 @@ ${value}</textarea
                                     .conversation
                                     .reference}/messages/${message.reference}?_method=PATCH"
                                 >
+                                  <input
+                                    type="hidden"
+                                    name="_csrf"
+                                    value="${req.csrfToken()}"
+                                  />
                                   $${message.answerAt === null
                                     ? html`
                                         <input
@@ -13394,6 +13515,11 @@ ${value}</textarea
                                     ? "?_method=DELETE"
                                     : ""}"
                                 >
+                                  <input
+                                    type="hidden"
+                                    name="_csrf"
+                                    value="${req.csrfToken()}"
+                                  />
                                   $${isEndorsed
                                     ? html`
                                         <input
@@ -13683,6 +13809,11 @@ ${value}</textarea
                                     fetch(this.action, { method: this.method });
                                   `}"
                                 >
+                                  <input
+                                    type="hidden"
+                                    name="_csrf"
+                                    value="${req.csrfToken()}"
+                                  />
                                   <button
                                     class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
                                       ? "text--blue"
@@ -13739,6 +13870,11 @@ ${value}</textarea
                                   gap: var(--space--2);
                                 `}"
                               >
+                                <input
+                                  type="hidden"
+                                  name="_csrf"
+                                  value="${req.csrfToken()}"
+                                />
                                 $${markdownEditor({
                                   req,
                                   res,
@@ -13813,6 +13949,7 @@ ${value}</textarea
                 gap: var(--space--4);
               `}"
             >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <div
                 class="new-message"
                 oninteractive="${javascript`
