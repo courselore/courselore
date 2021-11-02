@@ -4112,6 +4112,9 @@ export default async function courselore({
                         // TODO: Give some visual indication of progress.
                         // TODO: Work with drag-and-drop.
                         const body = new FormData();
+                        body.append("_csrf", ${JSON.stringify(
+                          req.csrfToken()
+                        )});
                         body.append("avatar", this.files[0]);
                         this.value = "";
                         const response = await fetch("${baseURL}/settings/avatar", {
@@ -9528,7 +9531,10 @@ export default async function courselore({
                 : `/courses/${res.locals.course.reference}`
             }/markdown-editor/preview", {
                       method: "POST",
-                      body: new URLSearchParams({ content: textarea.value }),
+                      body: new URLSearchParams({
+                        _csrf: ${JSON.stringify(req.csrfToken())},
+                        content: textarea.value,
+                      }),
                     })
                   ).text(),
                   "text/html"
@@ -10159,6 +10165,7 @@ export default async function courselore({
                     // TODO: Give some visual indication of progress.
                     element.disabled = true;
                     const body = new FormData();
+                    body.append("_csrf", ${JSON.stringify(req.csrfToken())});
                     for (const file of fileList) body.append("attachments", file);
                     const response = await (await fetch("${baseURL}/markdown-editor/attachments", {
                       method: "POST",
@@ -13806,7 +13813,10 @@ ${value}</textarea
                                     : ""}"
                                   onsubmit="${javascript`
                                     event.preventDefault();
-                                    fetch(this.action, { method: this.method });
+                                    fetch(this.action, {
+                                      method: this.method,
+                                      body: new URLSearchParams(new FormData(this)),
+                                    });
                                   `}"
                                 >
                                   <input
