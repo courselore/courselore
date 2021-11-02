@@ -15105,8 +15105,9 @@ ${value}</textarea
   app.use(((err, req, res, next) => {
     console.error(err);
     const isValidation = err === "validation";
-    const message = isValidation ? "Validation" : "Server";
-    res.status(isValidation ? 422 : 500).send(
+    const isCSRF = err.code === "EBADCSRFTOKEN";
+    const message = isValidation || isCSRF ? "Validation" : "Server";
+    res.status(isValidation ? 422 : isCSRF ? 403 : 500).send(
       boxLayout({
         req,
         res,
@@ -15116,11 +15117,29 @@ ${value}</textarea
             <i class="bi bi-bug"></i>
             ${message} Error
           </h2>
-          <p>This is an issue in CourseLore.</p>
-          <a href="mailto:issues@courselore.org" class="button button--blue">
-            <i class="bi bi-envelope"></i>
-            Report to issues@courselore.org
-          </a>
+          $${isCSRF
+            ? html`
+                <p>
+                  This request doesn’t appear to have come from CourseLore.
+                  Please try again.
+                </p>
+                <p>
+                  If the issue persists, please report to
+                  <a href="mailto:issues@courselore.org" class="link"
+                    >issues@courselore.org</a
+                  >.
+                </p>
+              `
+            : html`
+                <p>This is an issue in CourseLore.</p>
+                <a
+                  href="mailto:issues@courselore.org"
+                  class="button button--blue"
+                >
+                  <i class="bi bi-envelope"></i>
+                  Report to issues@courselore.org
+                </a>
+              `}
         `,
       })
     );
