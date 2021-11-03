@@ -14,9 +14,7 @@ import qs from "qs";
 import { Database, sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
 import { css, extractInlineStyles } from "@leafac/css";
-// FIXME
-import leafacJavaScript from "@leafac/javascript";
-const { javascript } = leafacJavaScript;
+import javascript from "@leafac/javascript";
 type Markdown = string;
 import markdown from "tagged-template-noop";
 import dedent from "dedent";
