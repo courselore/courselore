@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "@leafac/javascript": "^0.0.2",
-    "bootstrap-icons": "^1.6.1",
+    "bootstrap-icons": "^1.7.0",
     "katex": "^0.13.23",
     "morphdom": "^2.6.1",
     "mousetrap": "^1.6.5",
