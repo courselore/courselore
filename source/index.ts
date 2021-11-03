@@ -5923,7 +5923,7 @@ export default async function courselore({
                             >
                               <div
                                 style="${css`
-                                  width: var(--space--24);
+                                  width: var(--space--28);
                                   display: flex;
                                   justify-content: flex-start;
                                 `}"
@@ -5942,6 +5942,8 @@ export default async function courselore({
                                     });
                                   `}"
                                 >
+                                  $${enrollmentRoleIcon[invitation.role]
+                                    .regular}
                                   ${lodash.capitalize(invitation.role)}
                                   <i class="bi bi-chevron-down"></i>
                                 </button>
@@ -5991,6 +5993,8 @@ export default async function courselore({
                                                     `
                                                   : html``}
                                               >
+                                                $${enrollmentRoleIcon[role]
+                                                  .regular}
                                                 ${lodash.capitalize(role)}
                                               </button>
                                             </form>
@@ -6727,7 +6731,7 @@ export default async function courselore({
                       >
                         <div
                           style="${css`
-                            width: var(--space--24);
+                            width: var(--space--28);
                             display: flex;
                             justify-content: flex-start;
                           `}"
@@ -6746,6 +6750,7 @@ export default async function courselore({
                               });
                             `}"
                           >
+                            $${enrollmentRoleIcon[enrollment.role].regular}
                             ${lodash.capitalize(enrollment.role)}
                             <i class="bi bi-chevron-down"></i>
                           </button>
@@ -6800,6 +6805,7 @@ export default async function courselore({
                                                 `
                                               : html``}
                                           >
+                                            $${enrollmentRoleIcon[role].regular}
                                             ${lodash.capitalize(role)}
                                           </button>
                                           $${isSelf
@@ -10363,6 +10369,7 @@ export default async function courselore({
                               search === ""
                               ? ""
                               : await (await fetch("${baseURL}/courses/${res.locals.course.reference}/markdown-editor/" + route + "?" + new URLSearchParams({ search }))).text();
+                            leafac.evaluateElementsAttribute(searchResultsContainer);
                             const buttons = buttonsContainer.querySelectorAll(".button");
                             for (const button of buttons) button.classList.remove("hover");
                             if (buttons.length > 0) buttons[0].classList.add("hover");
@@ -10567,7 +10574,7 @@ ${value}</textarea
         avatar: string | null;
         usersNameSearchHighlight: string;
         enrollmentReference: string;
-        enrollmentRole: string;
+        enrollmentRole: EnrollmentRole;
       }>(
         sql`
           SELECT "users"."name" AS "name",
@@ -10618,8 +10625,18 @@ ${value}</textarea
                         `}
                     <span>
                       $${user.usersNameSearchHighlight}
-                      <span class="secondary">
-                        · ${lodash.capitalize(user.enrollmentRole)}
+                      <span
+                        class="secondary"
+                        oninteractive="${javascript`
+                          tippy(this, {
+                            content: ${JSON.stringify(
+                              lodash.capitalize(user.enrollmentRole)
+                            )},
+                            touch: false,
+                          });
+                        `}"
+                      >
+                        $${enrollmentRoleIcon[user.enrollmentRole].regular}
                       </span>
                     </span>
                   </button>

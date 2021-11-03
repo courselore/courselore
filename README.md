@@ -31,9 +31,7 @@
 - New icons:
   - mortarboard
     - Look for
-      - lodash.capitalize
       - .role
-      - Course Settings pages
 - Add button in editor for footnotes.
 - Improve security around uploads.
   - Double check all the upload stuff.
