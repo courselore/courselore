@@ -28,8 +28,6 @@
 
 ### Polish Existing Features
 
-- Migrate to ESM:
-  - Verify the consequences of putting the `dataPosition` before Shiki & KaTeX.
 - Add button in editor for footnotes.
 - Improve security around uploads.
   - Double check all the upload stuff.
@@ -132,6 +130,7 @@
 
 ### Markdown Processor
 
+- Code blocks don’t include the position information, so selecting text & quoting on an answer doesn’t work.
 - Emoji with the `:smile:` form.
 - Proxy hotlinked images (particularly if served with HTTP because of insecure content): https://github.com/atmos/camo
 - Reference on more features ideas: <https://github.com/gjtorikian/html-pipeline>
