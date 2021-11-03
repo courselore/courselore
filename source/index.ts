@@ -2011,8 +2011,17 @@ export default async function courselore({
                           font-size: var(--font-size--xs);
                           line-height: var(--line-height--xs);
                         `}"
+                        oninteractive="${javascript`
+                          tippy(this, {
+                            content: ${JSON.stringify(
+                              lodash.capitalize(res.locals.enrollment!.role)
+                            )},
+                            touch: false,
+                          });
+                        `}"
                       >
-                        · ${lodash.capitalize(res.locals.enrollment!.role)}
+                        $${enrollmentRoleIcon[res.locals.enrollment!.role]
+                          .regular}
                       </span>
                     </span>
                     <i class="bi bi-chevron-down"></i>
@@ -2104,9 +2113,19 @@ export default async function courselore({
                                             font-size: var(--font-size--xs);
                                             line-height: var(--line-height--xs);
                                           `}"
+                                          oninteractive="${javascript`
+                                            tippy(this, {
+                                              content: ${JSON.stringify(
+                                                lodash.capitalize(
+                                                  enrollment.role
+                                                )
+                                              )},
+                                              touch: false,
+                                            });
+                                          `}"
                                         >
-                                          ·
-                                          ${lodash.capitalize(enrollment.role)}
+                                          $${enrollmentRoleIcon[enrollment.role]
+                                            .regular}
                                         </span>
                                       </span>
                                     </a>
@@ -2523,8 +2542,14 @@ export default async function courselore({
   `;
 
   const enrollmentRoleIcon = {
-    student: html`<i class="bi bi-person"></i>`,
-    staff: html`<i class="bi bi-mortarboard"></i>`,
+    student: {
+      regular: html`<i class="bi bi-person"></i>`,
+      fill: html`<i class="bi bi-person-fill"></i>`,
+    },
+    staff: {
+      regular: html`<i class="bi bi-mortarboard"></i>`,
+      fill: html`<i class="bi bi-mortarboard-fill"></i>`,
+    },
   };
 
   const conversationTypeIcon = {
@@ -3858,7 +3883,8 @@ export default async function courselore({
                                     touch: false,
                                   });
                                 `}"
-                                >$${enrollmentRoleIcon[enrollment.role]}
+                              >
+                                $${enrollmentRoleIcon[enrollment.role].regular}
                               </span>
                             </span>
                           </a>
@@ -5532,8 +5558,12 @@ export default async function courselore({
                             autocomplete="off"
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                           />
-                          <span>${lodash.capitalize(role)}</span>
+                          <span>
+                            $${enrollmentRoleIcon[role].regular}
+                            ${lodash.capitalize(role)}
+                          </span>
                           <span class="text--blue">
+                            $${enrollmentRoleIcon[role].fill}
                             ${lodash.capitalize(role)}
                           </span>
                         </label>
