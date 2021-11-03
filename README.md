@@ -29,8 +29,6 @@
 ### Polish Existing Features
 
 - New icons:
-  - qr-code
-  - send
   - mortarboard
 - Add button in editor for footnotes.
 - Improve security around uploads.

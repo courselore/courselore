@@ -14137,7 +14137,7 @@ ${value}</textarea
                       });
                     `}"
                 >
-                  <i class="bi bi-chat-left-text"></i>
+                  <i class="bi bi-send"></i>
                   Send Message
                 </button>
               </div>
