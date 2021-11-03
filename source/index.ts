@@ -2522,6 +2522,11 @@ export default async function courselore({
     </svg>
   `;
 
+  const enrollmentRoleIcon = {
+    student: html`<i class="bi bi-person"></i>`,
+    staff: html`<i class="bi bi-mortarboard"></i>`,
+  };
+
   const conversationTypeIcon = {
     announcement: {
       regular: html`<i class="bi bi-megaphone"></i>`,
@@ -3845,8 +3850,15 @@ export default async function courselore({
                                   font-size: var(--font-size--xs);
                                   line-height: var(--line-height--xs);
                                 `}"
-                              >
-                                · ${lodash.capitalize(enrollment.role)}
+                                oninteractive="${javascript`
+                                  tippy(this, {
+                                    content: ${JSON.stringify(
+                                      lodash.capitalize(enrollment.role)
+                                    )},
+                                    touch: false,
+                                  });
+                                `}"
+                                >$${enrollmentRoleIcon[enrollment.role]}
                               </span>
                             </span>
                           </a>
