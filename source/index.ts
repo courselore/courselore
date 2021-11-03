@@ -104,7 +104,7 @@ export default async function courselore({
   } as const;
 
   type ConversationType = typeof conversationTypes[number];
-  const conversationTypes = ["announcement", "question", "other"] as const;
+  const conversationTypes = ["announcement", "question", "note"] as const;
 
   const database = new Database(path.join(dataDirectory, "courselore.db"));
   database.pragma("journal_mode = WAL");
@@ -2561,9 +2561,9 @@ export default async function courselore({
       regular: html`<i class="bi bi-patch-question"></i>`,
       fill: html`<i class="bi bi-patch-question-fill"></i>`,
     },
-    other: {
-      regular: html`<i class="bi bi-chat-left-text"></i>`,
-      fill: html`<i class="bi bi-chat-left-text-fill"></i>`,
+    note: {
+      regular: html`<i class="bi bi-sticky"></i>`,
+      fill: html`<i class="bi bi-sticky-fill"></i>`,
     },
   };
 
@@ -2576,7 +2576,7 @@ export default async function courselore({
       display: "text--rose",
       select: "text--rose",
     },
-    other: {
+    note: {
       display: "",
       select: "text--blue",
     },
