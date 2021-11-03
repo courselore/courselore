@@ -47,7 +47,6 @@
 
 ### Chat
 
-- Rename “Type = Other” to “Note”.
 - Tags aren’t required.
 - The first post is a chatroom description
 - Layout changes:
