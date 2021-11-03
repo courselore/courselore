@@ -31,6 +31,7 @@
 - Migrate to ESM:
   - rehype-shiki
   - Verify the consequences of putting the `dataPosition` before Shiki & KaTeX.
+- Add button in editor for footnotes.
 - Improve security around uploads.
   - Double check all the upload stuff.
   - Double check the use of sharp.
