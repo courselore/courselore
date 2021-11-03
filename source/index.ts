@@ -9980,6 +9980,34 @@ export default async function courselore({
               >
                 <i class="bi bi-chevron-bar-expand"></i>
               </button>
+              <button
+                type="button"
+                class="button button--tight button--transparent"
+                oninteractive="${javascript`
+                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+f", () => { this.click(); return false; });
+                  tippy(this, {
+                    content: ${JSON.stringify(html`
+                      Footnote
+                      <span class="keyboard-shortcut">
+                        (Ctrl+Shift+F or
+                        <span class="keyboard-shortcut--cluster"
+                          ><i class="bi bi-shift"></i
+                          ><i class="bi bi-command"></i>F</span
+                        >)
+                      </span>
+                    `)},
+                    touch: false,
+                    allowHTML: true,
+                  });
+                `}"
+                onclick="${javascript`
+                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                  textFieldEdit.wrapSelection(element, "[^", "<identifier>]\\n\\n[^<identifier>]: <footnote>");
+                  element.focus();
+                `}"
+              >
+                <i class="bi bi-sticky"></i>
+              </button>
             </div>
             <div>
               <button
