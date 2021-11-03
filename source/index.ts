@@ -10006,7 +10006,7 @@ export default async function courselore({
                   element.focus();
                 `}"
               >
-                <i class="bi bi-sticky"></i>
+                <i class="bi bi-card-text"></i>
               </button>
             </div>
             <div>
