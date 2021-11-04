@@ -2062,7 +2062,7 @@ export default async function courselore({
                               : "button--transparent"}"
                           >
                             <i class="bi bi-sliders"></i>
-                            Course Settings
+                            Course Information
                           </a>
                         </div>
                       </div>
@@ -5167,22 +5167,22 @@ export default async function courselore({
       head,
       menuButton: html`
         <i class="bi bi-sliders"></i>
-        Course Settings
+        Course Information
       `,
       menu:
         res.locals.enrollment.role === "staff"
           ? html`
               <a
                 href="${baseURL}/courses/${res.locals.course
-                  .reference}/settings/course-settings"
+                  .reference}/settings/course-information"
                 class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-                  "/settings/course-settings"
+                  "/settings/course-information"
                 )
                   ? "button--blue"
                   : "button--transparent"}"
               >
                 <i class="bi bi-sliders"></i>
-                Course Settings
+                Course Information
               </a>
               <a
                 href="${baseURL}/courses/${res.locals.course
@@ -5250,7 +5250,7 @@ export default async function courselore({
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/settings/${
           res.locals.enrollment.role === "staff"
-            ? "course-settings"
+            ? "course-information"
             : "your-enrollment"
         }`
       );
@@ -5264,7 +5264,7 @@ export default async function courselore({
     {},
     IsCourseStaffMiddlewareLocals
   >(
-    "/courses/:courseReference/settings/course-settings",
+    "/courses/:courseReference/settings/course-information",
     ...isCourseStaffMiddleware,
     (req, res) => {
       res.send(
@@ -5273,18 +5273,18 @@ export default async function courselore({
           res,
           head: html`
             <title>
-              Course Settings · ${res.locals.course.name} · CourseLore
+              Course Information · ${res.locals.course.name} · CourseLore
             </title>
           `,
           body: html`
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
-              Course Settings
+              Course Information
             </h2>
             <form
               method="POST"
               action="${baseURL}/courses/${res.locals.course
-                .reference}/settings/course-settings?_method=PATCH"
+                .reference}/settings/course-information?_method=PATCH"
               novalidate
               style="${css`
                 display: flex;
@@ -5309,7 +5309,7 @@ export default async function courselore({
                   class="button button--full-width-on-small-screen button--blue"
                 >
                   <i class="bi bi-pencil"></i>
-                  Update Course Settings
+                  Update Course Information
                 </button>
               </div>
             </form>
@@ -5326,7 +5326,7 @@ export default async function courselore({
     {},
     IsCourseStaffMiddlewareLocals
   >(
-    "/courses/:courseReference/settings/course-settings",
+    "/courses/:courseReference/settings/course-information",
     ...isCourseStaffMiddleware,
     (req, res, next) => {
       if (typeof req.body.name !== "string" || req.body.name.trim() === "")
@@ -5344,12 +5344,14 @@ export default async function courselore({
         req,
         res,
         html`
-          <div class="flash--green">Course settings updated successfully.</div>
+          <div class="flash--green">
+            Course information updated successfully.
+          </div>
         `
       );
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/settings/course-settings`
+        `${baseURL}/courses/${res.locals.course.reference}/settings/course-information`
       );
     }
   );
@@ -5387,14 +5389,14 @@ export default async function courselore({
           res,
           head: html`
             <title>
-              Invitations · Course Settings · ${res.locals.course.name} ·
+              Invitations · Course Information · ${res.locals.course.name} ·
               CourseLore
             </title>
           `,
           body: html`
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
-              Course Settings ·
+              Course Information ·
               <i class="bi bi-person-plus"></i>
               Invitations
             </h2>
@@ -6669,14 +6671,14 @@ export default async function courselore({
           res,
           head: html`
             <title>
-              Enrollments · Course Settings · ${res.locals.course.name} ·
+              Enrollments · Course Information · ${res.locals.course.name} ·
               CourseLore
             </title>
           `,
           body: html`
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
-              Course Settings ·
+              Course Information ·
               <i class="bi bi-people"></i>
               Enrollments
             </h2>
@@ -7044,13 +7046,13 @@ export default async function courselore({
           res,
           head: html`
             <title>
-              Tags · Course Settings · ${res.locals.course.name} · CourseLore
+              Tags · Course Information · ${res.locals.course.name} · CourseLore
             </title>
           `,
           body: html`
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
-              Course Settings ·
+              Course Information ·
               <i class="bi bi-tags"></i>
               Tags
             </h2>
@@ -7559,14 +7561,14 @@ export default async function courselore({
           res,
           head: html`
             <title>
-              Your Enrollment · Course Settings · ${res.locals.course.name} ·
+              Your Enrollment · Course Information · ${res.locals.course.name} ·
               CourseLore
             </title>
           `,
           body: html`
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
-              Course Settings ·
+              Course Information ·
               <i class="bi bi-person"></i>
               Your Enrollment
             </h2>
