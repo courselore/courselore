@@ -11133,18 +11133,26 @@ ${value}</textarea
         const href = `${baseURL}/files/${folder}/${encodeURIComponent(
           attachment.name
         )}`;
-        if (attachment.mimetype.startsWith("image/")) {
-          const metadata = await sharp(attachment.data).metadata();
-          if (metadata.width !== undefined && metadata.density !== undefined) {
-            // TODO: Resize big images.
-            attachmentsMarkdowns.push(
-              markdown`<img src="${href}" alt="${attachment.name}" width="${
-                metadata.density < 100 ? metadata.width / 2 : metadata.width
-              }" />`
-            );
-            continue;
+        if (attachment.mimetype.startsWith("image/"))
+          try {
+            const metadata = await sharp(attachment.data, {
+              limitInputPixels: false,
+            }).metadata();
+            if (
+              metadata.width !== undefined &&
+              metadata.density !== undefined
+            ) {
+              // TODO: Resize big images.
+              attachmentsMarkdowns.push(
+                markdown`<img src="${href}" alt="${attachment.name}" width="${
+                  metadata.density < 100 ? metadata.width / 2 : metadata.width
+                }" />`
+              );
+              continue;
+            }
+          } catch (error) {
+            console.error(error);
           }
-        }
         attachmentsMarkdowns.push(markdown`[${attachment.name}](${href})`);
       }
       res.send(attachmentsMarkdowns.join("\n\n"));
