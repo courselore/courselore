@@ -2920,6 +2920,9 @@ export default async function courselore({
       dotfiles: "allow",
       immutable: true,
       maxAge: 60 * 24 * 60 * 60 * 1000,
+      setHeaders: (res, path, stat) => {
+        res.attachment();
+      },
     })
   );
 

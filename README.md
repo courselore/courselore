@@ -29,7 +29,6 @@
 ### Polish Existing Features
 
 - Improve security around uploads.
-  - Always offer to download file. Risk of uploading an HTML file and XSS.
   - Double check the use of sharp.
     - https://sharp.pixelplumbing.com/api-constructor / https://sharp.pixelplumbing.com/api-input
 - Notifications.
