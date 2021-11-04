@@ -130,7 +130,7 @@
 - Proxy hotlinked images (particularly if served with HTTP because of insecure content): https://github.com/atmos/camo
 - Reference on more features ideas: <https://github.com/gjtorikian/html-pipeline>
 - Polls.
-- Resize images & lightbox modal for resized images.
+- Lightbox modal for resized images.
 - Add support for videos: Sanitization, dimensions, and so forth.
 
 ### File Management
@@ -146,7 +146,7 @@
   - The disadvantage of something like 3 or 4 is that a person can’t copy and paste messages across courses (think of a PDF with course rules being sent at the beginning of a semester).
 - Let people configure other storage engines (for example, S3).
 - Create a garbage collection routine for attachments.
-- Clean geolocation from images.
+- Clean geolocation & other metadata from images.
 
 ### Forms
 
