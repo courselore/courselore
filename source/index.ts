@@ -11140,6 +11140,14 @@ ${value}</textarea
             }).metadata();
             if (metadata.width === undefined || metadata.density === undefined)
               throw new Error("Metadata unavailable");
+            if (metadata.width < 1200) {
+              attachmentsMarkdowns.push(
+                markdown`<img src="${href}" alt="${attachment.name}" width="${
+                  metadata.density < 100 ? metadata.width / 2 : metadata.width
+                }" />`
+              );
+              continue;
+            }
             // TODO: Resize big images.
             //   await sharp(req.files.avatar.data, { limitInputPixels: false })
             // .rotate()
@@ -11147,11 +11155,6 @@ ${value}</textarea
             //   position: sharp.strategy.attention,
             // })
             // .toFile(path.join(dataDirectory, `files/${folder}/${nameAvatar}`));
-            attachmentsMarkdowns.push(
-              markdown`<img src="${href}" alt="${attachment.name}" width="${
-                metadata.density < 100 ? metadata.width / 2 : metadata.width
-              }" />`
-            );
             continue;
           } catch (error) {
             console.error(error);
