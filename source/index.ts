@@ -11100,36 +11100,36 @@ ${value}</textarea
 <!-- Failed to upload: Attachments must be smaller than 10MB. -->
             `.trim()
           );
-        if (filenamify(attachment.name, { replacement: "-" }).trim() === "")
-          return next("validation");
+        attachment.name = filenamify(attachment.name, { replacement: "-" });
+        if (attachment.name.trim() === "") return next("validation");
       }
       const attachmentsMarkdowns: Markdown[] = [];
       for (const attachment of attachments) {
-        const name = filenamify(attachment.name, { replacement: "-" });
-        const relativePath = `files/${cryptoRandomString({
+        const folder = cryptoRandomString({
           length: 20,
           type: "numeric",
-        })}/${name}`;
-        await attachment.mv(path.join(dataDirectory, relativePath));
-        // TODO: URI encode relative path.
-        const href = `${baseURL}/${relativePath}`;
+        });
+        await attachment.mv(
+          path.join(dataDirectory, `files/${folder}/${attachment.name}`)
+        );
+        const href = `${baseURL}/files/${folder}/${encodeURIComponent(
+          attachment.name
+        )}`;
         if (attachment.mimetype.startsWith("image/")) {
-          // TODO: Handle error on sharp constructor: https://sharp.pixelplumbing.com/api-constructor / https://sharp.pixelplumbing.com/api-input
           const metadata = await sharp(attachment.data).metadata();
           if (metadata.width !== undefined && metadata.density !== undefined) {
             // TODO: Resize big images.
             attachmentsMarkdowns.push(
-              markdown`<img src="${href}" alt="${name}" width="${
+              markdown`<img src="${href}" alt="${attachment.name}" width="${
                 metadata.density < 100 ? metadata.width / 2 : metadata.width
               }" />`
             );
             continue;
           }
         }
-        attachmentsMarkdowns.push(markdown`[${name}](${href})`);
+        attachmentsMarkdowns.push(markdown`[${attachment.name}](${href})`);
       }
-      // TODO: Handle spacing more intelligently.
-      res.send(attachmentsMarkdowns.join(" "));
+      res.send(attachmentsMarkdowns.join("\n\n"));
     })
   );
 
