@@ -11138,18 +11138,21 @@ ${value}</textarea
             const metadata = await sharp(attachment.data, {
               limitInputPixels: false,
             }).metadata();
-            if (
-              metadata.width !== undefined &&
-              metadata.density !== undefined
-            ) {
-              // TODO: Resize big images.
-              attachmentsMarkdowns.push(
-                markdown`<img src="${href}" alt="${attachment.name}" width="${
-                  metadata.density < 100 ? metadata.width / 2 : metadata.width
-                }" />`
-              );
-              continue;
-            }
+            if (metadata.width === undefined || metadata.density === undefined)
+              throw new Error("Metadata unavailable");
+            // TODO: Resize big images.
+            //   await sharp(req.files.avatar.data, { limitInputPixels: false })
+            // .rotate()
+            // .resize(/* var(--space--64) */ 256, 256, {
+            //   position: sharp.strategy.attention,
+            // })
+            // .toFile(path.join(dataDirectory, `files/${folder}/${nameAvatar}`));
+            attachmentsMarkdowns.push(
+              markdown`<img src="${href}" alt="${attachment.name}" width="${
+                metadata.density < 100 ? metadata.width / 2 : metadata.width
+              }" />`
+            );
+            continue;
           } catch (error) {
             console.error(error);
           }
