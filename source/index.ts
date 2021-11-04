@@ -4332,7 +4332,9 @@ export default async function courselore({
       try {
         await sharp(req.files.avatar.data, { limitInputPixels: false })
           .rotate()
-          .resize(/* var(--space--64) */ 256, 256, {
+          .resize({
+            width: 256 /* var(--space--64) */,
+            height: 256 /* var(--space--64) */,
             position: sharp.strategy.attention,
           })
           .toFile(path.join(dataDirectory, `files/${folder}/${nameAvatar}`));
@@ -11135,12 +11137,14 @@ ${value}</textarea
         )}`;
         if (attachment.mimetype.startsWith("image/"))
           try {
-            const metadata = await sharp(attachment.data, {
+            const image = sharp(attachment.data, {
               limitInputPixels: false,
-            }).metadata();
+            });
+            const metadata = await image.metadata();
             if (metadata.width === undefined || metadata.density === undefined)
               throw new Error("Metadata unavailable");
-            if (metadata.width < 1200) {
+            const maximumWidth = 1152; /* var(--width--6xl) */
+            if (metadata.width <= maximumWidth) {
               attachmentsMarkdowns.push(
                 markdown`<img src="${href}" alt="${attachment.name}" width="${
                   metadata.density < 100 ? metadata.width / 2 : metadata.width
@@ -11148,13 +11152,26 @@ ${value}</textarea
               );
               continue;
             }
-            // TODO: Resize big images.
-            //   await sharp(req.files.avatar.data, { limitInputPixels: false })
-            // .rotate()
-            // .resize(/* var(--space--64) */ 256, 256, {
-            //   position: sharp.strategy.attention,
-            // })
-            // .toFile(path.join(dataDirectory, `files/${folder}/${nameAvatar}`));
+            const ext = path.extname(attachment.name);
+            const nameThumbnail = `${attachment.name.slice(
+              0,
+              attachment.name.length - ext.length
+            )}--thumbnail${ext}`;
+            await image
+              .rotate()
+              .resize({
+                width: maximumWidth,
+              })
+              .toFile(
+                path.join(dataDirectory, `files/${folder}/${nameThumbnail}`)
+              );
+            attachmentsMarkdowns.push(
+              markdown`[<img src="${baseURL}/files/${folder}/${encodeURIComponent(
+                nameThumbnail
+              )}" alt="${attachment.name}" width="${
+                maximumWidth / 2
+              }" />](${href})`
+            );
             continue;
           } catch (error) {
             console.error(error);
