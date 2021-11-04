@@ -29,7 +29,6 @@
 ### Polish Existing Features
 
 - Improve security around uploads.
-  - Double check all the upload stuff.
   - Double check the use of sharp.
     - https://sharp.pixelplumbing.com/api-constructor / https://sharp.pixelplumbing.com/api-input
 - Notifications.
