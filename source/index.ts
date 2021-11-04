@@ -2912,6 +2912,17 @@ export default async function courselore({
     },
   ];
 
+  app.get<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
+    "/files/*",
+    ...isSignedInMiddleware,
+    express.static(dataDirectory, {
+      index: false,
+      dotfiles: "allow",
+      immutable: true,
+      maxAge: 60 * 24 * 60 * 60 * 1000,
+    })
+  );
+
   app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "/",
     ...isSignedOutMiddleware,
@@ -11131,14 +11142,6 @@ ${value}</textarea
       }
       res.send(attachmentsMarkdowns.join("\n\n"));
     })
-  );
-
-  // TODO: Verify the security of this: https://expressjs.com/en/4x/api.html#express.static
-  // TODO: Move this route to a more generic place.
-  app.get<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
-    "/files/*",
-    ...isSignedInMiddleware,
-    express.static(dataDirectory)
   );
 
   const markdownProcessor = await (async () => {
