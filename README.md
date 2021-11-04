@@ -28,7 +28,6 @@
 
 ### Polish Existing Features
 
-course settings -> course information
 - Improve security around uploads.
   - Double check all the upload stuff.
   - Double check the use of sharp.

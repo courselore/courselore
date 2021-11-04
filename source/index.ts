@@ -2062,7 +2062,7 @@ export default async function courselore({
                               : "button--transparent"}"
                           >
                             <i class="bi bi-sliders"></i>
-                            Course Information
+                            Course Settings
                           </a>
                         </div>
                       </div>
@@ -5167,7 +5167,7 @@ export default async function courselore({
       head,
       menuButton: html`
         <i class="bi bi-sliders"></i>
-        Course Information
+        Course Settings
       `,
       menu:
         res.locals.enrollment.role === "staff"
@@ -5181,7 +5181,7 @@ export default async function courselore({
                   ? "button--blue"
                   : "button--transparent"}"
               >
-                <i class="bi bi-sliders"></i>
+                <i class="bi bi-journal-text"></i>
                 Course Information
               </a>
               <a
@@ -5273,12 +5273,15 @@ export default async function courselore({
           res,
           head: html`
             <title>
-              Course Information · ${res.locals.course.name} · CourseLore
+              Course Information · Course Settings · ${res.locals.course.name} ·
+              CourseLore
             </title>
           `,
           body: html`
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
+              Course Settings ·
+              <i class="bi bi-journal-text"></i>
               Course Information
             </h2>
             <form
@@ -5389,14 +5392,14 @@ export default async function courselore({
           res,
           head: html`
             <title>
-              Invitations · Course Information · ${res.locals.course.name} ·
+              Invitations · Course Settings · ${res.locals.course.name} ·
               CourseLore
             </title>
           `,
           body: html`
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
-              Course Information ·
+              Course Settings ·
               <i class="bi bi-person-plus"></i>
               Invitations
             </h2>
@@ -6671,14 +6674,14 @@ export default async function courselore({
           res,
           head: html`
             <title>
-              Enrollments · Course Information · ${res.locals.course.name} ·
+              Enrollments · Course Settings · ${res.locals.course.name} ·
               CourseLore
             </title>
           `,
           body: html`
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
-              Course Information ·
+              Course Settings ·
               <i class="bi bi-people"></i>
               Enrollments
             </h2>
@@ -7046,13 +7049,13 @@ export default async function courselore({
           res,
           head: html`
             <title>
-              Tags · Course Information · ${res.locals.course.name} · CourseLore
+              Tags · Course Settings · ${res.locals.course.name} · CourseLore
             </title>
           `,
           body: html`
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
-              Course Information ·
+              Course Settings ·
               <i class="bi bi-tags"></i>
               Tags
             </h2>
@@ -7561,14 +7564,14 @@ export default async function courselore({
           res,
           head: html`
             <title>
-              Your Enrollment · Course Information · ${res.locals.course.name} ·
+              Your Enrollment · Course Settings · ${res.locals.course.name} ·
               CourseLore
             </title>
           `,
           body: html`
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
-              Course Information ·
+              Course Settings ·
               <i class="bi bi-person"></i>
               Your Enrollment
             </h2>
