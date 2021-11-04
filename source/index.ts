@@ -2044,7 +2044,7 @@ export default async function courselore({
                             href="${baseURL}/courses/${res.locals.course
                               .reference}"
                             class="dropdown--menu--item button ${req.path.includes(
-                              "settings"
+                              "/settings/"
                             )
                               ? "button--transparent"
                               : "button--blue"}"
@@ -2056,7 +2056,7 @@ export default async function courselore({
                             href="${baseURL}/courses/${res.locals.course
                               .reference}/settings"
                             class="dropdown--menu--item button ${req.path.includes(
-                              "settings"
+                              "/settings/"
                             )
                               ? "button--blue"
                               : "button--transparent"}"
@@ -3790,7 +3790,7 @@ export default async function courselore({
                       Enroll in an Existing Course
                     </button>
                     <a
-                      href="${baseURL}/settings"
+                      href="${baseURL}/settings/profile"
                       class="menu-box--item button button--transparent"
                     >
                       <i class="bi bi-person-circle"></i>
@@ -3930,9 +3930,9 @@ export default async function courselore({
       `,
       menu: html`
         <a
-          href="${baseURL}/settings"
+          href="${baseURL}/settings/profile"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-            "/settings"
+            "/settings/profile"
           )
             ? "button--blue"
             : "button--transparent"}"
@@ -3970,6 +3970,14 @@ export default async function courselore({
     "/settings",
     ...isSignedInMiddleware,
     (req, res) => {
+      res.redirect(`${baseURL}/settings/profile`);
+    }
+  );
+
+  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+    "/settings/profile",
+    ...isSignedInMiddleware,
+    (req, res) => {
       res.send(
         userSettingsLayout({
           req,
@@ -3985,7 +3993,7 @@ export default async function courselore({
 
             <form
               method="POST"
-              action="${baseURL}/settings?_method=PATCH"
+              action="${baseURL}/settings/profile?_method=PATCH"
               novalidate
               style="${css`
                 display: flex;
@@ -4153,7 +4161,7 @@ export default async function courselore({
                         )});
                         body.append("avatar", this.files[0]);
                         this.value = "";
-                        const response = await fetch("${baseURL}/settings/avatar", {
+                        const response = await fetch("${baseURL}/settings/profile/avatar", {
                           method: "POST",
                           body,
                         });
@@ -4253,7 +4261,7 @@ export default async function courselore({
     { name?: string; avatar?: string; biography?: string },
     {},
     IsSignedInMiddlewareLocals
-  >("/settings", ...isSignedInMiddleware, (req, res, next) => {
+  >("/settings/profile", ...isSignedInMiddleware, (req, res, next) => {
     if (
       typeof req.body.name !== "string" ||
       req.body.name.trim() === "" ||
@@ -4280,11 +4288,11 @@ export default async function courselore({
       res,
       html`<div class="flash--green">Profile updated successfully.</div>`
     );
-    res.redirect(`${baseURL}/settings`);
+    res.redirect(`${baseURL}/settings/profile`);
   });
 
   app.post<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
-    "/settings/avatar",
+    "/settings/profile/avatar",
     asyncHandler(async (req, res, next) => {
       if (
         req.files?.avatar === undefined ||
@@ -5166,9 +5174,9 @@ export default async function courselore({
           ? html`
               <a
                 href="${baseURL}/courses/${res.locals.course
-                  .reference}/settings"
+                  .reference}/settings/course-settings"
                 class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-                  "/settings"
+                  "/settings/course-settings"
                 )
                   ? "button--blue"
                   : "button--transparent"}"
@@ -5234,9 +5242,29 @@ export default async function courselore({
     HTML,
     {},
     {},
-    IsCourseStaffMiddlewareLocals
+    IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/settings",
+    ...isEnrolledInCourseMiddleware,
+    (req, res) => {
+      res.redirect(
+        `${baseURL}/courses/${res.locals.course.reference}/settings/${
+          res.locals.enrollment.role === "staff"
+            ? "course-settings"
+            : "your-enrollment"
+        }`
+      );
+    }
+  );
+
+  app.get<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    IsCourseStaffMiddlewareLocals
+  >(
+    "/courses/:courseReference/settings/course-settings",
     ...isCourseStaffMiddleware,
     (req, res) => {
       res.send(
@@ -5256,7 +5284,7 @@ export default async function courselore({
             <form
               method="POST"
               action="${baseURL}/courses/${res.locals.course
-                .reference}/settings?_method=PATCH"
+                .reference}/settings/course-settings?_method=PATCH"
               novalidate
               style="${css`
                 display: flex;
@@ -5298,7 +5326,7 @@ export default async function courselore({
     {},
     IsCourseStaffMiddlewareLocals
   >(
-    "/courses/:courseReference/settings",
+    "/courses/:courseReference/settings/course-settings",
     ...isCourseStaffMiddleware,
     (req, res, next) => {
       if (typeof req.body.name !== "string" || req.body.name.trim() === "")
@@ -5321,23 +5349,7 @@ export default async function courselore({
       );
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/settings`
-      );
-    }
-  );
-
-  app.get<
-    { courseReference: string },
-    HTML,
-    {},
-    {},
-    IsEnrolledInCourseMiddlewareLocals
-  >(
-    "/courses/:courseReference/settings",
-    ...isEnrolledInCourseMiddleware,
-    (req, res) => {
-      res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/settings/your-enrollment`
+        `${baseURL}/courses/${res.locals.course.reference}/settings/course-settings`
       );
     }
   );
