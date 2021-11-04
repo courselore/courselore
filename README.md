@@ -28,9 +28,6 @@
 
 ### Polish Existing Features
 
-- Improve security around uploads.
-  - Double check the use of sharp.
-    - Catch exceptions.
 - Notifications.
 - Search:
   - Filters (for example, by conversation type).
