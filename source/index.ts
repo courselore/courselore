@@ -4329,12 +4329,16 @@ export default async function courselore({
         0,
         name.length - ext.length
       )}--avatar${ext}`;
-      await sharp(req.files.avatar.data)
-        .rotate()
-        .resize(/* var(--space--64) */ 256, 256, {
-          position: sharp.strategy.attention,
-        })
-        .toFile(path.join(dataDirectory, `files/${folder}/${nameAvatar}`));
+      try {
+        await sharp(req.files.avatar.data, { limitInputPixels: false })
+          .rotate()
+          .resize(/* var(--space--64) */ 256, 256, {
+            position: sharp.strategy.attention,
+          })
+          .toFile(path.join(dataDirectory, `files/${folder}/${nameAvatar}`));
+      } catch (error) {
+        return next("validation");
+      }
       res.send(`${baseURL}/files/${folder}/${encodeURIComponent(nameAvatar)}`);
     })
   );
