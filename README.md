@@ -30,7 +30,7 @@
 
 - Improve security around uploads.
   - Double check the use of sharp.
-    - https://sharp.pixelplumbing.com/api-constructor / https://sharp.pixelplumbing.com/api-input
+    - Catch exceptions.
 - Notifications.
 - Search:
   - Filters (for example, by conversation type).
