@@ -9671,9 +9671,17 @@ export default async function courselore({
               margin: var(--space--0) var(--space--3);
               overflow-x: auto;
               display: flex;
-              gap: var(--space--1-5);
               & > * {
                 display: flex;
+              }
+              & > * + * {
+                padding-left: var(--space--0-5);
+                border-left: var(--border-width--1) solid
+                  var(--color--gray--medium--200);
+                @media (prefers-color-scheme: dark) {
+                  border-color: var(--color--gray--medium--700);
+                }
+                margin-left: var(--space--0-5);
               }
             `}"
           >
