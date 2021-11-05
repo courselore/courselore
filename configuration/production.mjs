@@ -64,7 +64,7 @@ export default async (
     const app = await courselore({
       dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
       baseURL,
-      administrator: `mailto:${email}`,
+      email,
       sendMail: (() => {
         const transporter = nodemailer.createTransport(
           {
