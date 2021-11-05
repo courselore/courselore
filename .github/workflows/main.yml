@@ -1,5 +1,17 @@
 on: push
 jobs:
+  # test:
+  #   strategy:
+  #     matrix:
+  #       os: [windows, macos, ubuntu]
+  #   runs-on: ${{ matrix.os }}-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-node@v1
+  #       with:
+  #         node-version: 17
+  #     - run: npm install-ci-test
+
   insiders-build:
     strategy:
       matrix:
@@ -33,21 +45,8 @@ jobs:
           name: ${{ matrix.artifact }}
           path: ${{ matrix.artifact }}
 
-  # test:
-  #   strategy:
-  #     matrix:
-  #       os: [windows, macos, ubuntu]
-  #   runs-on: ${{ matrix.os }}-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/setup-node@v1
-  #       with:
-  #         node-version: 17
-  #     - run: npm install-ci-test
-
   deploy:
     if: github.ref == 'refs/heads/main'
-    # FIXME:
     # needs: [insiders-build, test]
     needs: insiders-build
     runs-on: ubuntu-latest
