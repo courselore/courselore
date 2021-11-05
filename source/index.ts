@@ -4176,7 +4176,6 @@ export default async function courselore({
                         hideOnClick: false,
                       });
                       this.upload = async (fileList) => {
-                        this.value = "";
                         const body = new FormData();
                         body.append("_csrf", ${JSON.stringify(
                           req.csrfToken()
@@ -10305,13 +10304,13 @@ export default async function courselore({
                     hideOnClick: false,
                   });
                   this.upload = async (fileList) => {
-                    this.value = "";
                     const body = new FormData();
                     body.append("_csrf", ${JSON.stringify(req.csrfToken())});
                     tippy.hideAll();
                     uploadingIndicator.show();
                     textarea.disabled = true;
                     for (const file of fileList) body.append("attachments", file);
+                    this.value = "";
                     const response = await (await fetch("${baseURL}/markdown-editor/attachments", {
                       method: "POST",
                       body,
