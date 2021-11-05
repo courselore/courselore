@@ -51,14 +51,14 @@ import faker from "faker";
 export default async function courselore({
   dataDirectory,
   baseURL,
-  administrator,
+  administratorEmail,
   sendMail,
   demonstration = process.env.NODE_ENV !== "production",
   liveReload = false,
 }: {
   dataDirectory: string;
   baseURL: string;
-  administrator: string;
+  administratorEmail: string;
   sendMail: (
     mailOptions: nodemailer.SendMailOptions
   ) => Promise<nodemailer.SentMessageInfo>;
@@ -4364,7 +4364,7 @@ export default async function courselore({
         return res
           .status(422)
           .send(
-            `Something went wrong in uploading your avatar. Please report to ${administrator}.`
+            `Something went wrong in uploading your avatar. Please report to ${administratorEmail}.`
           );
       next(err);
     }) as express.ErrorRequestHandler<{}, any, {}, {}, {}>
@@ -15386,7 +15386,9 @@ ${value}</textarea
             <p>
               If you think there should be something here, please contact your
               course staff or the
-              <a href="${administrator}" class="link">system administrator</a>.
+              <a href="mailto:${administratorEmail}" class="link"
+                >system administrator</a
+              >.
             </p>
           `,
         })
@@ -15472,20 +15474,20 @@ ${value}</textarea
                   Please try again.
                 </p>
                 <p>
-                  If the issue persists, please report to
-                  <a href="mailto:issues@courselore.org" class="link"
-                    >issues@courselore.org</a
+                  If the issue persists, please report to the
+                  <a href="mailto:${administratorEmail}" class="link"
+                    >system administrator</a
                   >.
                 </p>
               `
             : html`
                 <p>This is an issue in CourseLore.</p>
                 <a
-                  href="mailto:issues@courselore.org"
+                  href="mailto:${administratorEmail}"
                   class="button button--blue"
                 >
                   <i class="bi bi-envelope"></i>
-                  Report to issues@courselore.org
+                  Report to the System Administrator
                 </a>
               `}
         `,
