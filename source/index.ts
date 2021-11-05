@@ -4035,6 +4035,13 @@ export default async function courselore({
                       height: var(--space--32);
                     }
                   `}"
+                  ondragover="${javascript`
+                    event.preventDefault();
+                  `}"
+                  ondrop="${javascript`
+                    event.preventDefault();
+                    this.querySelector(".avatar-chooser--upload").upload(event.dataTransfer.files);
+                  `}"
                 >
                   <div
                     class="avatar-chooser--empty"
