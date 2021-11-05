@@ -4214,6 +4214,16 @@ export default async function courselore({
                       })();
                     `}"
                   />
+                  <div hidden>
+                    <div
+                      style="${css`
+                        display: flex;
+                        gap: var(--space--2);
+                      `}"
+                    >
+                      $${spinner} Uploading…
+                    </div>
+                  </div>
                   <input
                     type="text"
                     name="avatar"
@@ -10280,13 +10290,13 @@ export default async function courselore({
                 data-skip-is-modified="true"
                 oninteractive="${javascript`
                   const textarea = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
-                  const progressIndicator = tippy(textarea, {
+                  const uploadingIndicator = tippy(textarea, {
                     content: this.nextElementSibling.firstElementChild,
                     trigger: "manual",
                     hideOnClick: false,
                   });
                   this.upload = async (fileList) => {
-                    progressIndicator.show();
+                    uploadingIndicator.show();
                     textarea.disabled = true;
                     const body = new FormData();
                     body.append("_csrf", ${JSON.stringify(req.csrfToken())});
@@ -10296,7 +10306,7 @@ export default async function courselore({
                       body,
                     })).text();
                     textarea.disabled = false;
-                    progressIndicator.hide();
+                    uploadingIndicator.hide();
                     textFieldEdit.wrapSelection(textarea, response, "");
                     textarea.focus();
                   };
