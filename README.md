@@ -29,6 +29,8 @@
 ### Polish Existing Features
 
 - Address TODOs.
+  - Preventing closing.
+  - Firefox spinner.
 - Notifications.
 - Search:
   - Filters (for example, by conversation type).

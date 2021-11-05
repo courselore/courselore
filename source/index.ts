@@ -10279,10 +10279,14 @@ export default async function courselore({
                 hidden
                 data-skip-is-modified="true"
                 oninteractive="${javascript`
+                  const textarea = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                  const progressIndicator = tippy(textarea, {
+                    content: this.nextElementSibling.firstElementChild,
+                    trigger: "manual",
+                  });
                   this.upload = async (fileList) => {
-                    const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
-                    // TODO: Give some visual indication of progress.
-                    element.disabled = true;
+                    progressIndicator.show();
+                    textarea.disabled = true;
                     const body = new FormData();
                     body.append("_csrf", ${JSON.stringify(req.csrfToken())});
                     for (const file of fileList) body.append("attachments", file);
@@ -10290,9 +10294,10 @@ export default async function courselore({
                       method: "POST",
                       body,
                     })).text();
-                    element.disabled = false;
-                    textFieldEdit.wrapSelection(element, response, "");
-                    element.focus();
+                    textarea.disabled = false;
+                    progressIndicator.hide();
+                    textFieldEdit.wrapSelection(textarea, response, "");
+                    textarea.focus();
                   };
                 `}"
                 onchange="${javascript`
@@ -10302,6 +10307,16 @@ export default async function courselore({
                   })();
                 `}"
               />
+              <div hidden>
+                <div
+                  style="${css`
+                    display: flex;
+                    gap: var(--space--2);
+                  `}"
+                >
+                  $${spinner} Uploading…
+                </div>
+              </div>
             </div>
             <div>
               <button
@@ -11415,7 +11430,6 @@ ${value}</textarea
                       oninteractive="${javascript`
                         tippy(this, {
                           content: "Mention",
-                          allowHTML: true,
                           touch: false,
                         });
                       `}"
@@ -11503,7 +11517,6 @@ ${value}</textarea
               javascript`
                 tippy(this, {
                   content: this.closest(".markdown").querySelector(".markdown--references").firstElementChild,
-                  allowHTML: true,
                   touch: false,
                 });
               `
@@ -11533,7 +11546,6 @@ ${value}</textarea
             javascript`
               tippy(this, {
                 content: this.closest(".markdown").querySelector(".markdown--references").firstElementChild,
-                allowHTML: true,
                 touch: false,
               });
             `
