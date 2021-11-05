@@ -29,10 +29,6 @@
 ### Polish Existing Features
 
 - Address TODOs.
-  - System administrator
-    - administrator -> email
-    - `mailto`
-    - @course
 - Notifications.
 - Search:
   - Filters (for example, by conversation type).
