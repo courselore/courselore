@@ -29,8 +29,6 @@
 ### Polish Existing Features
 
 - Address TODOs.
-  - Firefox spinner.
-  - Remove `setTimeout` from upload action.
 - Notifications.
 - Search:
   - Filters (for example, by conversation type).

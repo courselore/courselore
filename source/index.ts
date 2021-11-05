@@ -2527,13 +2527,13 @@ export default async function courselore({
       stroke-width="4"
     >
       <path
-        d="M 2 10, A 8 8, 0, 0, 0, 18 10, A 8 8, 0, 0, 0, 2 10"
+        d="M 2 10 A 8 8 0 0 0 18 10 A 8 8 0 0 0 2 10"
         style="${css`
           opacity: var(--opacity--25);
         `}"
       />
       <path
-        d="M 2 10, A 8 8, 0, 0, 0, 15.5 15.5"
+        d="M 2 10 A 8 8 0 0 0 15.5 15.5"
         style="${css`
           opacity: var(--opacity--75);
         `}"
@@ -11133,8 +11133,6 @@ ${value}</textarea
     "/markdown-editor/attachments",
     ...isSignedInMiddleware,
     asyncHandler(async (req, res, next) => {
-      // FIXME
-      await new Promise((resolve) => setTimeout(resolve, 4000));
       if (req.files?.attachments === undefined) return next("validation");
       const attachments = Array.isArray(req.files.attachments)
         ? req.files.attachments
