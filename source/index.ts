@@ -11266,7 +11266,6 @@ ${value}</textarea
       .use(rehypeKatex, { maxSize: 25, maxExpand: 10, output: "html" })
       .use(rehypeStringify);
 
-    // TODO: Would making this async speed things up in any way?
     return ({
       req,
       res,
