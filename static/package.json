@@ -1,13 +1,13 @@
 {
   "dependencies": {
-    "@leafac/javascript": "^0.0.2",
+    "@leafac/javascript": "^0.1.1",
     "bootstrap-icons": "^1.7.0",
-    "katex": "^0.13.23",
+    "katex": "^0.15.1",
     "morphdom": "^2.6.1",
     "mousetrap": "^1.6.5",
     "scroll-into-view-if-needed": "^2.2.28",
     "text-field-edit": "^3.1.1",
     "textarea-caret": "^3.1.0",
-    "tippy.js": "^6.3.3"
+    "tippy.js": "^6.3.5"
   }
 }
