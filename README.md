@@ -175,6 +175,7 @@
 
 - Using `getConversation()` to enforce permissions may not be a great idea. It limits the number of search results in a weird way, that even leaks a bit of data. Also, it isn’t the most performant thing, probably (see point about n+1 queries). Maybe a better idea would be to `WHERE` the permissions everywhere, or use a database view.
 - Performance:
+  - Do the morphdom diff on the server (this is necessary for correctness as well; see what happens when you’re editing a message and a new message is submitted, causing a refresh).
   - n+1 queries:
     - Cases:
       - `getConversation()`.

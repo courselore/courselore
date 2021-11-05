@@ -466,7 +466,6 @@ export default async function courselore({
 
           $${res?.locals.eventSource
             ? html`
-                <!-- TODO: Improve this such that the diff is done on the server. -->
                 <script src="${baseURL}/node_modules/morphdom/dist/morphdom-umd.min.js"></script>
 
                 <script>
