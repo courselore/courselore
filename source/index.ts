@@ -10546,11 +10546,10 @@ export default async function courselore({
                 this.classList.add("drag");
               `}"
               ondragover="${javascript`
-                event.preventDefault(); // TODO: Firefox seems to require this. Investigate more.
+                event.preventDefault();
               `}"
               ondrop="${javascript`
                 event.preventDefault();
-                // TODO: I read somewhere that some browsers also need ‘event.stopPropagation()’. Investigate.
                 this.classList.remove("drag");
                 this.closest(".markdown-editor").querySelector(".attachments").upload(event.dataTransfer.files);
               `}"
