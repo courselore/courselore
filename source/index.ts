@@ -4165,9 +4165,15 @@ export default async function courselore({
                     accept="image/*"
                     autocomplete="off"
                     hidden
+                    oninteractive="${javascript`
+                      this.uploadingIndicator = tippy(this.closest(".avatar-chooser"), {
+                        content: this.nextElementSibling.firstElementChild,
+                        trigger: "manual",
+                        hideOnClick: false,
+                      });
+                    `}"
                     onchange="${javascript`
                       (async () => {
-                        // TODO: Give some visual indication of progress.
                         // TODO: Work with drag-and-drop.
                         const body = new FormData();
                         body.append("_csrf", ${JSON.stringify(
@@ -4175,10 +4181,13 @@ export default async function courselore({
                         )});
                         body.append("avatar", this.files[0]);
                         this.value = "";
+                        tippy.hideAll();
+                        this.uploadingIndicator.show();
                         const response = await fetch("${baseURL}/settings/profile/avatar", {
                           method: "POST",
                           body,
                         });
+                        this.uploadingIndicator.hide();
                         if (response.status === 413) {
                           const tooltip = tippy(this.closest(".avatar-chooser"), {
                             content: "Avatars must be smaller than 10MB.",
@@ -4318,6 +4327,8 @@ export default async function courselore({
   app.post<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings/profile/avatar",
     asyncHandler(async (req, res, next) => {
+      // REMOVEME
+      await new Promise((resolve) => setTimeout(resolve, 4000));
       if (
         req.files?.avatar === undefined ||
         Array.isArray(req.files.avatar) ||
@@ -10296,10 +10307,11 @@ export default async function courselore({
                     hideOnClick: false,
                   });
                   this.upload = async (fileList) => {
-                    uploadingIndicator.show();
-                    textarea.disabled = true;
                     const body = new FormData();
                     body.append("_csrf", ${JSON.stringify(req.csrfToken())});
+                    tippy.hideAll();
+                    uploadingIndicator.show();
+                    textarea.disabled = true;
                     for (const file of fileList) body.append("attachments", file);
                     const response = await (await fetch("${baseURL}/markdown-editor/attachments", {
                       method: "POST",
@@ -11143,8 +11155,6 @@ ${value}</textarea
     "/markdown-editor/attachments",
     ...isSignedInMiddleware,
     asyncHandler(async (req, res, next) => {
-      // REMOVE
-      await new Promise((resolve) => setTimeout(resolve, 4000));
       if (req.files?.attachments === undefined) return next("validation");
       const attachments = Array.isArray(req.files.attachments)
         ? req.files.attachments
