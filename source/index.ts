@@ -11143,6 +11143,8 @@ ${value}</textarea
     "/markdown-editor/attachments",
     ...isSignedInMiddleware,
     asyncHandler(async (req, res, next) => {
+      // REMOVE
+      await new Promise((resolve) => setTimeout(resolve, 4000));
       if (req.files?.attachments === undefined) return next("validation");
       const attachments = Array.isArray(req.files.attachments)
         ? req.files.attachments

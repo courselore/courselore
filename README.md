@@ -29,6 +29,7 @@
 ### Polish Existing Features
 
 - Address TODOs.
+      await new Promise((resolve) => setTimeout(resolve, 4000));
 - Notifications.
 - Search:
   - Filters (for example, by conversation type).
