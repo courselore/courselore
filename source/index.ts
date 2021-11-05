@@ -4164,44 +4164,35 @@ export default async function courselore({
                     accept="image/*"
                     autocomplete="off"
                     hidden
+                    data-skip-is-modified="true"
                     oninteractive="${javascript`
-                      this.uploadingIndicator = tippy(this.closest(".avatar-chooser"), {
+                      const avatarChooser = this.closest(".avatar-chooser");
+                      const avatar = avatarChooser.querySelector('[name="avatar"]');
+                      const avatarEmpty = avatarChooser.querySelector(".avatar-chooser--empty");
+                      const avatarFilled = avatarChooser.querySelector(".avatar-chooser--filled");
+                      const uploadingIndicator = tippy(avatarChooser, {
                         content: this.nextElementSibling.firstElementChild,
                         trigger: "manual",
                         hideOnClick: false,
                       });
-                    `}"
-                    onchange="${javascript`
-                      (async () => {
-                        // TODO: Work with drag-and-drop.
+                      this.upload = async (fileList) => {
+                        this.value = "";
                         const body = new FormData();
                         body.append("_csrf", ${JSON.stringify(
                           req.csrfToken()
                         )});
-                        body.append("avatar", this.files[0]);
+                        body.append("avatar", fileList[0]);
                         this.value = "";
                         tippy.hideAll();
-                        this.uploadingIndicator.show();
+                        uploadingIndicator.show();
                         const response = await fetch("${baseURL}/settings/profile/avatar", {
                           method: "POST",
                           body,
                         });
-                        this.uploadingIndicator.hide();
-                        if (response.status === 413) {
-                          const tooltip = tippy(this.closest(".avatar-chooser"), {
-                            content: "Avatars must be smaller than 10MB.",
-                            theme: "validation--error",
-                            trigger: "manual",
-                            showOnCreate: true,
-                            onHidden: () => {
-                              tooltip.destroy();
-                            },
-                          });
-                          return;
-                        }
+                        uploadingIndicator.hide();
                         if (!response.ok) {
-                          const tooltip = tippy(this.closest(".avatar-chooser"), {
-                            content: "Something went wrong in uploading your avatar. Please report to administrator@courselore.org.",
+                          const tooltip = tippy(avatarChooser, {
+                            content: await response.text(),
                             theme: "validation--error",
                             trigger: "manual",
                             showOnCreate: true,
@@ -4212,14 +4203,14 @@ export default async function courselore({
                           return;
                         }
                         const avatarURL = await response.text();
-                        const form = this.closest("form");
-                        const avatar = form.querySelector('[name="avatar"]')
                         avatar.value = avatarURL;
-                        form.querySelector(".avatar-chooser--empty").hidden = true;
-                        const avatarFilled = form.querySelector(".avatar-chooser--filled");
+                        avatarEmpty.hidden = true;
                         avatarFilled.hidden = false;
                         avatarFilled.querySelector("img").setAttribute("src", avatarURL);
-                      })();
+                      };
+                    `}"
+                    onchange="${javascript`
+                      this.upload(this.files);
                     `}"
                   />
                   <div hidden>
@@ -4332,7 +4323,8 @@ export default async function courselore({
         !req.files.avatar.mimetype.startsWith("image/")
       )
         return next("validation");
-      if (req.files.avatar.truncated) return res.sendStatus(413);
+      if (req.files.avatar.truncated)
+        return res.status(413).send("Avatars must be smaller than 10MB.");
       const name = filenamify(req.files.avatar.name, { replacement: "-" });
       if (name.trim() === "") return next("validation");
       const folder = cryptoRandomString({
@@ -4360,7 +4352,16 @@ export default async function courselore({
         return next("validation");
       }
       res.send(`${baseURL}/files/${folder}/${encodeURIComponent(nameAvatar)}`);
-    })
+    }),
+    ((err, req, res, next) => {
+      if (err === "validation")
+        return res
+          .status(422)
+          .send(
+            `Something went wrong in uploading your avatar. Please report to ${administrator}.`
+          );
+      next(err);
+    }) as express.ErrorRequestHandler<{}, any, {}, {}, {}>
   );
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
@@ -10304,6 +10305,7 @@ export default async function courselore({
                     hideOnClick: false,
                   });
                   this.upload = async (fileList) => {
+                    this.value = "";
                     const body = new FormData();
                     body.append("_csrf", ${JSON.stringify(req.csrfToken())});
                     tippy.hideAll();
@@ -10321,10 +10323,7 @@ export default async function courselore({
                   };
                 `}"
                 onchange="${javascript`
-                  (async () => {
-                    await this.upload(this.files);
-                    this.value = "";
-                  })();
+                  this.upload(this.files);
                 `}"
               />
               <div hidden>
