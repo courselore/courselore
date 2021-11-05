@@ -4,7 +4,7 @@ export default async (
   courseloreImportMetaURL
 ) => {
   const baseURL = "https://courselore.org";
-  const email = "administrator@courselore.org";
+  const administratorEmail = "administrator@courselore.org";
   if (process.argv[3] === undefined) {
     const url = await courseloreImport("node:url");
     const execa = (await courseloreImport("execa")).default;
@@ -26,7 +26,7 @@ export default async (
         input: caddyfile`
           {
             admin off
-            email ${email}
+            email ${administratorEmail}
           }
 
           ${baseURL} {
@@ -64,7 +64,7 @@ export default async (
     const app = await courselore({
       dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
       baseURL,
-      email,
+      administratorEmail,
       sendMail: (() => {
         const transporter = nodemailer.createTransport(
           {
@@ -74,7 +74,7 @@ export default async (
               pass: secrets.smtp.password,
             },
           },
-          { from: `"CourseLore" <${email}>` }
+          { from: `"CourseLore" <${administratorEmail}>` }
         );
         return async (mailOptions) => await transporter.sendMail(mailOptions);
       })(),

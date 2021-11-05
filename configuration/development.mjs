@@ -4,7 +4,7 @@ export default async (
   courseloreImportMetaURL
 ) => {
   const baseURL = process.env.BASE_URL ?? `https://localhost:5000`;
-  const email = "development@courselore.org";
+  const administratorEmail = "development@courselore.org";
   if (process.argv[3] === undefined) {
     const url = await courseloreImport("node:url");
     const execa = (await courseloreImport("execa")).default;
@@ -54,13 +54,13 @@ export default async (
     const app = await courselore({
       dataDirectory: path.join(process.cwd(), "data"),
       baseURL,
-      email,
+      administratorEmail,
       sendMail: (() => {
         const transporter = nodemailer.createTransport(
           {
             jsonTransport: true,
           },
-          { from: `"CourseLore" <${email}>` }
+          { from: `"CourseLore" <${administratorEmail}>` }
         );
         return async (mailOptions) => {
           console.log(await transporter.sendMail(mailOptions));
