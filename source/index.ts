@@ -4327,8 +4327,6 @@ export default async function courselore({
   app.post<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings/profile/avatar",
     asyncHandler(async (req, res, next) => {
-      // REMOVEME
-      await new Promise((resolve) => setTimeout(resolve, 4000));
       if (
         req.files?.avatar === undefined ||
         Array.isArray(req.files.avatar) ||
