@@ -10283,6 +10283,7 @@ export default async function courselore({
                   const progressIndicator = tippy(textarea, {
                     content: this.nextElementSibling.firstElementChild,
                     trigger: "manual",
+                    hideOnClick: false,
                   });
                   this.upload = async (fileList) => {
                     progressIndicator.show();
@@ -11132,6 +11133,8 @@ ${value}</textarea
     "/markdown-editor/attachments",
     ...isSignedInMiddleware,
     asyncHandler(async (req, res, next) => {
+      // FIXME
+      await new Promise((resolve) => setTimeout(resolve, 4000));
       if (req.files?.attachments === undefined) return next("validation");
       const attachments = Array.isArray(req.files.attachments)
         ? req.files.attachments
