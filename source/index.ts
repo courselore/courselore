@@ -11430,18 +11430,18 @@ ${value}</textarea
                       default:
                         const enrollmentReference = mention.split("--")[0];
                         const enrollment = database.get<{
-                          reference: string;
                           userId: number;
                           userName: string;
                           userAvatar: string | null;
                           userBiography: string | null;
+                          reference: string;
                         }>(
                           sql`
-                            SELECT "enrollments"."reference",
-                                   "users"."id" AS "userId",
+                            SELECT "users"."id" AS "userId",
                                    "users"."name" AS "userName",
                                    "users"."avatar" AS "userAvatar",
-                                   "users"."biography" AS "userBiography"
+                                   "users"."biography" AS "userBiography",
+                                   "enrollments"."reference"
                             FROM "enrollments"
                             JOIN "users" ON "enrollments"."user" = "users"."id"
                             WHERE "enrollments"."course" = ${
