@@ -347,7 +347,20 @@
 <details>
 <summary>2021-11-06</summary>
 
-- Do we want to allow students to `@everyone`?
+- Security:
+  - CSRF.
+  - HTML uploads leading to XSS.
+  - Resize images that are too big (previous we were doing that only for avatars).
+  - Ask for password when updating email.
+- Markdown editor improvements:
+  - Footnotes.
+  - Brought back syntax highlighting.
+  - Visual indication while upload is in progress.
+  - Quoting code.
+- Icons for students/staff.
+- Started updating notifications system to take in account features that have been developed since then, for example, staff-only conversations.
+  - Do we want to allow students to `@everyone`? Yeah, it’s okay.
+- Renamed “other” to “note” and added the “chat” type.
 
 </details>
 
