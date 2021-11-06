@@ -71,9 +71,9 @@ export default async function courselore({
 
   type UserEmailNotifications = typeof userEmailNotificationses[number];
   const userEmailNotificationses = [
-    "none",
-    "staff-announcements-and-mentions",
     "all-messages",
+    "staff-announcements-and-mentions",
+    "none",
   ] as const;
 
   type EnrollmentRole = typeof enrollmentRoles[number];
@@ -4633,15 +4633,15 @@ export default async function courselore({
                     <input
                       type="radio"
                       name="emailNotifications"
-                      value="none"
+                      value="all-messages"
                       required
                       autocomplete="off"
-                      $${res.locals.user.emailNotifications === "none"
+                      $${res.locals.user.emailNotifications === "all-messages"
                         ? html`checked`
                         : html``}
                       class="input--radio"
                     />
-                    None
+                    All messages
                   </label>
                 </div>
                 <div
@@ -4674,15 +4674,15 @@ export default async function courselore({
                     <input
                       type="radio"
                       name="emailNotifications"
-                      value="all-messages"
+                      value="none"
                       required
                       autocomplete="off"
-                      $${res.locals.user.emailNotifications === "all-messages"
+                      $${res.locals.user.emailNotifications === "none"
                         ? html`checked`
                         : html``}
                       class="input--radio"
                     />
-                    All messages
+                    None
                   </label>
                 </div>
               </div>
