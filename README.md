@@ -28,7 +28,6 @@
 
 ### Polish Existing Features
 
-- Address TODOs.
 - Notifications.
 - Search:
   - Filters (for example, by conversation type).
