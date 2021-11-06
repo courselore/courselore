@@ -12233,17 +12233,6 @@ ${value}</textarea
       );
 
       // TODO:
-      // - ‘all-messages’
-      // - ‘staff-announcements-and-mentions’
-      //   - Announcements
-      //   - ‘@mentions’
-      // - Check that user is allowed to see this message (with respect to staffOnly)
-      // - Include author (say Anonymous when necessary)
-      // - Don’t notify the author themselves
-      // - Messages
-      // - NOT EDITS
-      // - Have a queue
-      // - Confirmed emails only
       // sendMail({
       //   to: database
       //     .all<{ email: string }>(

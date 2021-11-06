@@ -29,6 +29,19 @@
 ### Polish Existing Features
 
 - Notifications.
+  - Start with every enrollment (because some people will have configured to receive all notifications, so we can’t just look at people who were `@mentioned`).
+  - Exclude right away:
+    - People who aren’t allowed to see this message (with respect to `staffOnly`).
+    - Unconfirmed emails.
+    - People who configured to not receive messages.
+    - The author of the message.
+    - People who already received a notification for that message (relevant, for example, for edits).
+  - If this is the first message on an announcement, stop here. That’s your list of people to notify.
+  - Else check `@mentions` for people who selected the `staff-announcements-and-mentions` policy:
+    - `@person`
+    - `@everyone`
+    - `@staff`
+    - `@students`
 - Search:
   - Filters (for example, by conversation type).
   - Don’t scroll on search.
@@ -186,7 +199,10 @@
       - Single follow-up query with `IN` operator (but then you end up with a bunch of prepared statements in the cache).
       - Use a temporary table instead of `IN`.
       - Nest first query as a subquery and bundle all the information together, then deduplicate the 1–N relationships in the code.
-- An internal queue to guarantee email delivery.
+- Queue / background jobs:
+  - Right now we’re using Node.js’s event queue as the queue. This is simple, but there are a few issues:
+    - Jobs don’t persist if you stop the server and they haven’t have the chance of completing. This affects email delivery, notifications, and so forth.
+    - If too many jobs are fired at once, there’s no protection in place, and it may exhaust resources.
 - `try.courselore.org` (reference https://moodle.org/demo)
 - Live updates: Try to come up with a solution that doesn’t require you requesting the page again, instead, just send the data in the first place.
 - Rate limiting.
@@ -327,6 +343,13 @@
 
 <details>
 <summary><strong>Meetings</strong></summary>
+
+<details>
+<summary>2021-11-06</summary>
+
+- Do we want to allow students to `@everyone`?
+
+</details>
 
 <details>
 <summary>2021-10-30</summary>
