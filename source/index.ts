@@ -4401,6 +4401,15 @@ export default async function courselore({
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <label class="label">
+                <p class="label--text">Password</p>
+                <input
+                  type="password"
+                  name="currentPassword"
+                  required
+                  class="input--text"
+                />
+              </label>
+              <label class="label">
                 <p class="label--text">Email</p>
                 <input
                   type="email"
@@ -4494,6 +4503,24 @@ export default async function courselore({
     "/settings/update-email-and-password",
     ...isSignedInMiddleware,
     asyncHandler(async (req, res, next) => {
+      if (
+        typeof req.body.currentPassword !== "string" ||
+        req.body.currentPassword.trim() === ""
+      )
+        return next("validation");
+      if (
+        !(await argon2.verify(
+          res.locals.user.password,
+          req.body.currentPassword
+        ))
+      ) {
+        Flash.set(
+          req,
+          res,
+          html`<div class="flash--rose">Incorrect password.</div>`
+        );
+        return res.redirect(`${baseURL}/settings/update-email-and-password`);
+      }
       if (typeof req.body.email === "string") {
         if (req.body.email.match(emailRegExp) === null)
           return next("validation");
@@ -4530,29 +4557,12 @@ export default async function courselore({
         );
       }
 
-      if (
-        typeof req.body.currentPassword === "string" &&
-        typeof req.body.newPassword === "string"
-      ) {
+      if (typeof req.body.newPassword === "string") {
         if (
-          req.body.currentPassword.trim() === "" ||
           req.body.newPassword.trim() === "" ||
           req.body.newPassword.length < 8
         )
           return next("validation");
-        if (
-          !(await argon2.verify(
-            res.locals.user.password,
-            req.body.currentPassword
-          ))
-        ) {
-          Flash.set(
-            req,
-            res,
-            html`<div class="flash--rose">Incorrect current password.</div>`
-          );
-          return res.redirect(`${baseURL}/settings/update-email-and-password`);
-        }
 
         database.run(
           sql`
