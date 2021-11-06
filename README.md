@@ -29,19 +29,19 @@
 ### Polish Existing Features
 
 - Notifications.
-  - Start with every enrollment (because some people will have configured to receive all notifications, so we can’t just look at people who were `@mentioned`).
-  - Exclude right away:
+  - Include (union distinct the sets below):
+    - People who chose to be notified of all messages.
+    - People who chose to be notified of `staff-announcements-and-mentions` and:
+      - This is the first message on an announcement. (or)
+      - The person has been `@mentioned`. (or)
+      - There’s a `@everyone`. (or)
+      - There’s a `@staff` and the person is part of the staff. (or)
+      - There’s a `@students` and the person is a student.
+  - Exclude (from the set above):
     - People who aren’t allowed to see this message (with respect to `staffOnly`).
     - Unconfirmed emails.
-    - People who configured to not receive messages.
     - The author of the message.
     - People who already received a notification for that message (relevant, for example, for edits).
-  - If this is the first message on an announcement, stop here. That’s your list of people to notify.
-  - Else check `@mentions` for people who selected the `staff-announcements-and-mentions` policy:
-    - `@person`
-    - `@everyone`
-    - `@staff`
-    - `@students`
 - Search:
   - Filters (for example, by conversation type).
   - Don’t scroll on search.
