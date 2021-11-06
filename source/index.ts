@@ -104,7 +104,12 @@ export default async function courselore({
   } as const;
 
   type ConversationType = typeof conversationTypes[number];
-  const conversationTypes = ["announcement", "question", "note"] as const;
+  const conversationTypes = [
+    "announcement",
+    "question",
+    "note",
+    "chat",
+  ] as const;
 
   const database = new Database(path.join(dataDirectory, "courselore.db"));
   database.pragma("journal_mode = WAL");
@@ -937,6 +942,7 @@ export default async function courselore({
                 "emerald",
                 "fuchsia",
                 "violet",
+                "cyan",
               ].map(
                 (color) => css`
                   .text--${color} {
@@ -2572,6 +2578,10 @@ export default async function courselore({
       regular: html`<i class="bi bi-sticky"></i>`,
       fill: html`<i class="bi bi-sticky-fill"></i>`,
     },
+    chat: {
+      regular: html`<i class="bi bi-cup"></i>`,
+      fill: html`<i class="bi bi-cup-fill"></i>`,
+    },
   };
 
   const conversationTypeTextColor = {
@@ -2586,6 +2596,10 @@ export default async function courselore({
     note: {
       display: "",
       select: "text--blue",
+    },
+    chat: {
+      display: "text--cyan",
+      select: "text--cyan",
     },
   };
 
