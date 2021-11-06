@@ -15228,7 +15228,13 @@ ${value}</textarea
           ) {
             const type =
               conversationTypes[
-                Math.random() < 0.7 ? 1 : Math.random() < 0.7 ? 0 : 2
+                Math.random() < 0.7
+                  ? 1
+                  : Math.random() < 0.7
+                  ? 0
+                  : Math.random() < 0.7
+                  ? 3
+                  : 2
               ];
             // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
             const title =
