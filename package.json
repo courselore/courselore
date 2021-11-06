@@ -33,7 +33,7 @@
     "@leafac/express-async-handler": "^0.0.1",
     "@leafac/html": "^3.0.0",
     "@leafac/javascript": "^0.1.1",
-    "@leafac/rehype-shiki": "^2.0.1",
+    "@leafac/rehype-shiki": "^2.1.0",
     "@leafac/sqlite": "^1.5.1",
     "@sindresorhus/slugify": "^2.1.0",
     "argon2": "^0.28.2",
