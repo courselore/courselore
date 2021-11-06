@@ -13895,16 +13895,28 @@ ${value}</textarea
                                 this.addEventListener("mouseup", (event) => {
                                   window.setTimeout(() => {
                                     const selection = window.getSelection();
-                                    const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode?.parentElement;
-                                    const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode?.parentElement;
+                                    let anchorElement = selection.anchorNode;
+                                    while (
+                                      (
+                                        anchorElement?.dataset?.position === undefined ||
+                                        anchorElement?.parentElement?.dataset?.position !== undefined
+                                      ) &&
+                                      anchorElement !== null
+                                    ) anchorElement = anchorElement.parentElement;
+                                    let focusElement = selection.focusNode;
+                                    while (
+                                      (
+                                        focusElement?.dataset?.position === undefined ||
+                                        focusElement?.parentElement?.dataset?.position !== undefined
+                                      ) &&
+                                      focusElement !== null
+                                    ) focusElement = focusElement.parentElement;
                                     if (
                                       selection.isCollapsed ||
                                       anchorElement === null ||
                                       focusElement === null ||
                                       !this.contains(anchorElement) ||
-                                      !this.contains(focusElement) ||
-                                      anchorElement.dataset.position === undefined ||
-                                      focusElement.dataset.position === undefined
+                                      !this.contains(focusElement)
                                     ) return;
                                     dropdownMenuTarget.style.top = String(event.layerY) + "px";
                                     dropdownMenuTarget.style.left = String(event.layerX) + "px";
@@ -13927,19 +13939,30 @@ ${value}</textarea
                                   onclick="${javascript`
                                     tippy.hideAll();
                                     const selection = window.getSelection();
-                                    const anchorElement = selection.anchorNode instanceof Element ? selection.anchorNode : selection.anchorNode?.parentElement;
-                                    const focusElement = selection.focusNode instanceof Element ? selection.focusNode : selection.focusNode?.parentElement;
+                                    let anchorElement = selection.anchorNode;
+                                    while (
+                                      (
+                                        anchorElement?.dataset?.position === undefined ||
+                                        anchorElement?.parentElement?.dataset?.position !== undefined
+                                      ) &&
+                                      anchorElement !== null
+                                    ) anchorElement = anchorElement.parentElement;
+                                    let focusElement = selection.focusNode;
+                                    while (
+                                      (
+                                        focusElement?.dataset?.position === undefined ||
+                                        focusElement?.parentElement?.dataset?.position !== undefined
+                                      ) &&
+                                      focusElement !== null
+                                    ) focusElement = focusElement.parentElement;
                                     const contentElement = this.closest(".message--show--content").querySelector(".message--show--content--content");
                                     if (
                                       selection.isCollapsed ||
                                       anchorElement === null ||
                                       focusElement === null ||
                                       !contentElement.contains(anchorElement) ||
-                                      !contentElement.contains(focusElement) ||
-                                      anchorElement.dataset.position === undefined ||
-                                      focusElement.dataset.position === undefined
+                                      !contentElement.contains(focusElement)
                                     ) return;
-                                    // TODO: May have to get ‘closest()’ child of ‘.text’ to prevent some elements (for example, tables) from breaking.
                                     const anchorPosition = JSON.parse(anchorElement.dataset.position);
                                     const focusPosition = JSON.parse(focusElement.dataset.position);
                                     const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
