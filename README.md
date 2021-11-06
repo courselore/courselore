@@ -30,7 +30,7 @@
 
 - Notifications.
   - Include (union distinct the sets below):
-    - People who chose to be notified of all messages.
+    - People who chose to be notified of all messages. (or)
     - People who chose to be notified of `staff-announcements-and-mentions` and:
       - This is the first message on an announcement. (or)
       - The person has been `@mentioned`. (or)
