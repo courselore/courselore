@@ -12265,7 +12265,7 @@ ${value}</textarea
       }>(
         sql`
           SELECT "users"."id" AS "userId",
-                 "users"."email" AS "userEmail"
+                 "users"."email" AS "userEmail",
                  "users"."emailNotifications" AS "userEmailNotifications",
                  "enrollments"."reference",
                  "enrollments"."role"
