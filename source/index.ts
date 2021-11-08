@@ -12171,6 +12171,7 @@ ${value}</textarea
       const conversation = database.get<{
         id: number;
         title: string;
+        type: ConversationType;
         staffOnlyAt: string | null;
       }>(
         sql`
@@ -12203,7 +12204,7 @@ ${value}</textarea
         `
       )!;
       // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
-      const message = database.get<{ id: number }>(
+      const message = database.get<{ id: number; reference: string }>(
         sql`
           SELECT * FROM "messages" WHERE "id" = ${Number(
             database.run(
@@ -12250,20 +12251,52 @@ ${value}</textarea
 
       emitCourseRefresh(res.locals.course.id);
 
-      let enrollmentsToNotify = database.all<{ TODO: "todo" }>(
+      let enrollmentsToNotify = database.all<{
+        userEmailNotifications: UserEmailNotifications;
+        reference: string;
+        role: EnrollmentRole;
+      }>(
         sql`
-          SELECT *
+          SELECT "users"."emailNotifications" as "userEmailNotifications",
+                 "enrollments"."reference",
+                 "enrollments"."role"
           FROM "enrollments"
           JOIN "users" ON "enrollments"."user" = "users"."id" AND
                           "users"."id" != ${res.locals.user.id} AND
                           "users"."emailConfirmedAt" IS NOT NULL AND
                           "users"."emailNotifications" != 'none'
           LEFT JOIN "notificationDeliveries" ON "enrollments"."id" = "notificationDeliveries"."enrollment" AND
-                                                "notificationDeliveries"."message" = ${message.id}
+                                                "notificationDeliveries"."message" = ${
+                                                  message.id
+                                                }
+          $${
+            conversation.staffOnlyAt !== null &&
+            res.locals.enrollment.role !== "staff"
+              ? sql`
+                JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment" AND
+                                   "messages"."conversation" = ${conversation.id}
+              `
+              : sql``
+          }
           WHERE "enrollments"."course" = ${res.locals.course.id} AND
                 "notificationDeliveries"."id" IS NULL
         `
       );
+      if (
+        !(
+          (conversation.type === "announcement" && message.reference === "1") ||
+          processedContent.mentions.has("everyone")
+        )
+      )
+        enrollmentsToNotify = enrollmentsToNotify.filter(
+          (enrollment) =>
+            enrollment.userEmailNotifications === "all-messages" ||
+            (enrollment.role === "staff" &&
+              processedContent.mentions.has("staff")) ||
+            (enrollment.role === "student" &&
+              processedContent.mentions.has("students")) ||
+            processedContent.mentions.has(enrollment.reference)
+        );
 
       // TODO:
       // sendMail({
