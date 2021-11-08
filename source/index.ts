@@ -15044,7 +15044,7 @@ ${value}</textarea
 
           <blockquote>
             $${lodash.truncate(message.contentSearch, {
-              length: 100,
+              length: 1000,
               separator: /\W/,
             })}
           </blockquote>
