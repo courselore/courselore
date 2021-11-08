@@ -196,6 +196,7 @@
       - `getConversation()`.
       - `getMessage()`.
       - Treatment of @mentions in Markdown processor.
+      - Finding which enrollments to notify (not exactly an n+1, but we’re filtering in JavaScript what could maybe filtered in SQL (if we’re willing to use the `IN` operator)).
     - Potential solutions:
       - Single follow-up query with `IN` operator (but then you end up with a bunch of prepared statements in the cache).
       - Use a temporary table instead of `IN`.

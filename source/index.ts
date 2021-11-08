@@ -12170,6 +12170,7 @@ ${value}</textarea
       // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
       const conversation = database.get<{
         id: number;
+        reference: string;
         title: string;
         type: ConversationType;
         staffOnlyAt: string | null;
@@ -12204,7 +12205,11 @@ ${value}</textarea
         `
       )!;
       // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
-      const message = database.get<{ id: number; reference: string }>(
+      const message = database.get<{
+        id: number;
+        reference: string;
+        anonymousAt: string | null;
+      }>(
         sql`
           SELECT * FROM "messages" WHERE "id" = ${Number(
             database.run(
@@ -12252,12 +12257,16 @@ ${value}</textarea
       emitCourseRefresh(res.locals.course.id);
 
       let enrollmentsToNotify = database.all<{
+        userId: number;
+        userEmail: string;
         userEmailNotifications: UserEmailNotifications;
         reference: string;
         role: EnrollmentRole;
       }>(
         sql`
-          SELECT "users"."emailNotifications" as "userEmailNotifications",
+          SELECT "users"."id" AS "userId",
+                 "users"."email" AS "userEmail"
+                 "users"."emailNotifications" AS "userEmailNotifications",
                  "enrollments"."reference",
                  "enrollments"."role"
           FROM "enrollments"
@@ -12298,33 +12307,44 @@ ${value}</textarea
             processedContent.mentions.has(enrollment.reference)
         );
 
-      // TODO:
-      // sendMail({
-      //   to: database
-      //     .all<{ email: string }>(
-      //       sql`
-      //         SELECT "users"."email" AS "email"
-      //         FROM "users"
-      //         JOIN "enrollments" ON "users"."id" = "enrollments"."user" AND
-      //                               "enrollments"."course" = ${res.locals.course.id}
-      //         WHERE "users"."emailNotifications" = 'all-messages'
-      //       `
-      //     )
-      //     .map((user) => user.email)
-      //     .join(", "),
-      //   subject: `${res.locals.course.name} · ${req.body.title}`,
-      //   html: html`
-      //     ${markdownProcessor({ req, res, markdown: req.body.content }).html}
+      for (const enrollment of enrollmentsToNotify)
+        sendMail({
+          to: enrollment.userEmail,
+          subject: `${conversation.title} · ${res.locals.course.name} · CourseLore`,
+          html: html`
+            <p>
+              <a
+                href="${baseURL}/courses/${res.locals.course
+                  .reference}/conversations/${conversation.reference}#message--${message.reference}"
+                >${message.anonymousAt !== null
+                  ? `Anonymous ${
+                      enrollment.role === "staff" ||
+                      enrollment.userId === res.locals.user.id
+                        ? `(${res.locals.user.name})`
+                        : ""
+                    }`
+                  : res.locals.user.name}
+                says</a
+              >:
+            </p>
 
-      //     <hr />
+            <blockquote>$${processedContent.html}</blockquote>
 
-      //     <p>
-      //       <a href="${url}/settings/notifications-preferences"
-      //         >Update Email Preferences</a
-      //       >
-      //     </p>
-      //   `,
-      // });
+            <hr />
+
+            <p>
+              <small
+                >You’re receiving this notification because
+                ${enrollment.userEmailNotifications === "all-messages"
+                  ? "you chose to receive notifications for all messages"
+                  : "you chose to receive notifications for staff announcements and @mentions"}.
+                <a href="${baseURL}/settings/notifications-preferences"
+                  >Change Notifications Preferences</a
+                >.
+              </small>
+            </p>
+          `,
+        });
     }
   );
 
