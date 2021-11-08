@@ -12244,11 +12244,11 @@ ${value}</textarea
           `
         );
 
-      emitCourseRefresh(res.locals.course.id);
-
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.course.nextConversationReference}`
       );
+
+      emitCourseRefresh(res.locals.course.id);
 
       let enrollmentsToNotify = database.all<{ TODO: "todo" }>(
         sql`
@@ -14482,11 +14482,11 @@ ${value}</textarea
             `
           );
 
-      emitCourseRefresh(res.locals.course.id);
-
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
       );
+
+      emitCourseRefresh(res.locals.course.id);
     }
   );
 
@@ -14504,8 +14504,10 @@ ${value}</textarea
       database.run(
         sql`DELETE FROM "conversations" WHERE "id" = ${res.locals.conversation.id}`
       );
-      emitCourseRefresh(res.locals.course.id);
+
       res.redirect(`${baseURL}/courses/${res.locals.course.reference}`);
+
+      emitCourseRefresh(res.locals.course.id);
     }
   );
 
@@ -14575,11 +14577,11 @@ ${value}</textarea
       )!;
       // TODO: Send email notifications.
 
-      emitCourseRefresh(res.locals.course.id);
-
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.conversation.nextMessageReference}`
       );
+
+      emitCourseRefresh(res.locals.course.id);
     }
   );
 
@@ -14667,11 +14669,11 @@ ${value}</textarea
             `
           );
 
-      emitCourseRefresh(res.locals.course.id);
-
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
       );
+
+      emitCourseRefresh(res.locals.course.id);
     }
   );
 
@@ -14691,13 +14693,16 @@ ${value}</textarea
     ...messageExistsMiddleware,
     (req, res, next) => {
       if (res.locals.message.reference === "1") return next("validation");
+
       database.run(
         sql`DELETE FROM "messages" WHERE "id" = ${res.locals.message.id}`
       );
-      emitCourseRefresh(res.locals.course.id);
+
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
       );
+
+      emitCourseRefresh(res.locals.course.id);
     }
   );
 
@@ -14726,11 +14731,11 @@ ${value}</textarea
         sql`INSERT INTO "likes" ("message", "enrollment") VALUES (${res.locals.message.id}, ${res.locals.enrollment.id})`
       );
 
-      emitCourseRefresh(res.locals.course.id);
-
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
       );
+
+      emitCourseRefresh(res.locals.course.id);
     }
   );
 
@@ -14759,11 +14764,11 @@ ${value}</textarea
         `
       );
 
-      emitCourseRefresh(res.locals.course.id);
-
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
       );
+
+      emitCourseRefresh(res.locals.course.id);
     }
   );
 
@@ -14833,11 +14838,11 @@ ${value}</textarea
         sql`INSERT INTO "endorsements" ("message", "enrollment") VALUES (${res.locals.message.id}, ${res.locals.enrollment.id})`
       );
 
-      emitCourseRefresh(res.locals.course.id);
-
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
       );
+
+      emitCourseRefresh(res.locals.course.id);
     }
   );
 
@@ -14864,11 +14869,11 @@ ${value}</textarea
         sql`DELETE FROM "endorsements" WHERE "id" = ${endorsement.id}`
       );
 
-      emitCourseRefresh(res.locals.course.id);
-
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
       );
+
+      emitCourseRefresh(res.locals.course.id);
     }
   );
 
