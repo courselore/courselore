@@ -12279,16 +12279,25 @@ ${value}</textarea
                                                   message.id
                                                 }
           $${
-            conversation.staffOnlyAt !== null &&
-            res.locals.enrollment.role !== "staff"
+            conversation.staffOnlyAt !== null
               ? sql`
-                JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment" AND
-                                   "messages"."conversation" = ${conversation.id}
+                LEFT JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment" AND
+                                        "messages"."conversation" = ${conversation.id}
               `
               : sql``
           }
           WHERE "enrollments"."course" = ${res.locals.course.id} AND
                 "notificationDeliveries"."id" IS NULL
+                $${
+                  conversation.staffOnlyAt !== null
+                    ? sql`
+                      AND (
+                        "enrollments"."role" = 'staff' OR
+                        "messages"."id" IS NOT NULL
+                      )
+                    `
+                    : sql``
+                }
         `
       );
       if (
@@ -12328,19 +12337,17 @@ ${value}</textarea
               >:
             </p>
 
+            <hr />
+
             <blockquote>$${processedContent.html}</blockquote>
 
             <hr />
 
             <p>
-              <small
-                >You’re receiving this notification because
-                ${enrollment.userEmailNotifications === "all-messages"
-                  ? "you chose to receive notifications for all messages"
-                  : "you chose to receive notifications for staff announcements and @mentions"}.
+              <small>
                 <a href="${baseURL}/settings/notifications-preferences"
                   >Change Notifications Preferences</a
-                >.
+                >
               </small>
             </p>
           `,

@@ -28,6 +28,7 @@
 
 ### Polish Existing Features
 
+- `res.locals.user.name`
 - Search:
   - Filters (for example, by conversation type).
   - Don’t scroll on search.
