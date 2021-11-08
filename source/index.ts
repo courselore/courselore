@@ -14519,7 +14519,7 @@ ${value}</textarea
         `
       );
       // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
-      const message = database.get<{ id: number }>(
+      const message = database.get<{ id: number; reference: string }>(
         sql`
           SELECT * FROM "messages" WHERE "id" = ${Number(
             database.run(
@@ -14547,13 +14547,20 @@ ${value}</textarea
           )}
         `
       )!;
-      // TODO: Send email notifications.
 
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.conversation.nextMessageReference}`
       );
 
       emitCourseRefresh(res.locals.course.id);
+
+      sendNotifications(
+        req,
+        res,
+        res.locals.conversation,
+        getMessage(req, res, res.locals.conversation, message.reference)!,
+        processedContent.mentions
+      );
     }
   );
 
@@ -14575,10 +14582,11 @@ ${value}</textarea
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
     ...mayEditMessageMiddleware,
     (req, res, next) => {
+      let processedContent: ReturnType<typeof markdownProcessor>;
       if (typeof req.body.content === "string")
         if (req.body.content.trim() === "") return next("validation");
         else {
-          const processedContent = markdownProcessor({
+          processedContent = markdownProcessor({
             req,
             res,
             markdown: req.body.content,
@@ -14592,7 +14600,6 @@ ${value}</textarea
               WHERE "id" = ${res.locals.message.id}
             `
           );
-          // TODO: Notify people who have been mentioned in this edit.
         }
 
       if (typeof req.body.isAnswer === "string")
@@ -14646,6 +14653,15 @@ ${value}</textarea
       );
 
       emitCourseRefresh(res.locals.course.id);
+
+      if (typeof req.body.content === "string")
+        sendNotifications(
+          req,
+          res,
+          res.locals.conversation,
+          res.locals.message,
+          processedContent!.mentions
+        );
     }
   );
 

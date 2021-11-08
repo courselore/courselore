@@ -28,7 +28,7 @@
 
 ### Polish Existing Features
 
-- `res.locals.user.name`
+- Insert into deliveries
 - Search:
   - Filters (for example, by conversation type).
   - Don’t scroll on search.
