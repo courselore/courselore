@@ -12103,11 +12103,6 @@ ${value}</textarea
     }
   );
 
-  const emitCourseRefresh = (courseId: number): void => {
-    for (const eventDestination of eventDestinations)
-      eventDestination.write(`event: refresh\ndata:\n\n`);
-  };
-
   app.post<
     { courseReference: string },
     HTML,
@@ -15024,6 +15019,11 @@ ${value}</textarea
       );
     }
   );
+
+  const emitCourseRefresh = (courseId: number): void => {
+    for (const eventDestination of eventDestinations)
+      eventDestination.write(`event: refresh\ndata:\n\n`);
+  };
 
   if (demonstration)
     app.post<{}, any, {}, {}, {}>(
