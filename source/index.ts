@@ -15025,6 +15025,114 @@ ${value}</textarea
       eventDestination.write(`event: refresh\ndata:\n\n`);
   };
 
+  const sendNotifications = (
+    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>,
+    res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
+    conversation: NonNullable<ReturnType<typeof getConversation>>,
+    message: NonNullable<ReturnType<typeof getMessage>>,
+    mentions: Set<string>
+  ): void => {
+    let enrollments = database.all<{
+      userId: number;
+      userEmail: string;
+      userEmailNotifications: UserEmailNotifications;
+      reference: string;
+      role: EnrollmentRole;
+    }>(
+      sql`
+        SELECT "users"."id" AS "userId",
+               "users"."email" AS "userEmail",
+               "users"."emailNotifications" AS "userEmailNotifications",
+               "enrollments"."reference",
+               "enrollments"."role"
+        FROM "enrollments"
+        JOIN "users" ON "enrollments"."user" = "users"."id" AND
+                        "users"."id" != ${message.authorEnrollment.user.id} AND
+                        "users"."emailConfirmedAt" IS NOT NULL AND
+                        "users"."emailNotifications" != 'none'
+        LEFT JOIN "notificationDeliveries" ON "enrollments"."id" = "notificationDeliveries"."enrollment" AND
+                                              "notificationDeliveries"."message" = ${
+                                                message.id
+                                              }
+        $${
+          conversation.staffOnlyAt !== null
+            ? sql`
+              LEFT JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment" AND
+                                      "messages"."conversation" = ${conversation.id}
+            `
+            : sql``
+        }
+        WHERE "enrollments"."course" = ${res.locals.course.id} AND
+              "notificationDeliveries"."id" IS NULL
+              $${
+                conversation.staffOnlyAt !== null
+                  ? sql`
+                    AND (
+                      "enrollments"."role" = 'staff' OR
+                      "messages"."id" IS NOT NULL
+                    )
+                  `
+                  : sql``
+              }
+      `
+    );
+    if (
+      !(
+        (conversation.type === "announcement" && message.reference === "1") ||
+        mentions.has("everyone")
+      )
+    )
+      enrollments = enrollments.filter(
+        (enrollment) =>
+          enrollment.userEmailNotifications === "all-messages" ||
+          (enrollment.role === "staff" && mentions.has("staff")) ||
+          (enrollment.role === "student" && mentions.has("students")) ||
+          mentions.has(enrollment.reference)
+      );
+
+    for (const enrollment of enrollments)
+      sendMail({
+        to: enrollment.userEmail,
+        subject: `${conversation.title} · ${res.locals.course.name} · CourseLore`,
+        html: html`
+          <p>
+            <a
+              href="${baseURL}/courses/${res.locals.course
+                .reference}/conversations/${conversation.reference}#message--${message.reference}"
+              >${message.anonymousAt !== null
+                ? `Anonymous ${
+                    enrollment.role === "staff" ||
+                    enrollment.userId === res.locals.user.id
+                      ? `(${conversation.authorEnrollment.user.name})`
+                      : ""
+                  }`
+                : conversation.authorEnrollment.user.name}
+              says</a
+            >:
+          </p>
+
+          <hr />
+
+          <blockquote>
+            $${lodash.truncate(message.contentSearch, {
+              length: 100,
+              separator: /\W/,
+            })}
+          </blockquote>
+
+          <hr />
+
+          <p>
+            <small>
+              <a href="${baseURL}/settings/notifications-preferences"
+                >Change Notifications Preferences</a
+              >
+            </small>
+          </p>
+        `,
+      });
+  };
+
   if (demonstration)
     app.post<{}, any, {}, {}, {}>(
       "/demonstration-data",
