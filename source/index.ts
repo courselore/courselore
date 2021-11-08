@@ -14960,6 +14960,7 @@ ${value}</textarea
     mentions: Set<string>
   ): void => {
     let enrollments = database.all<{
+      id: number;
       userId: number;
       userEmail: string;
       userEmailNotifications: UserEmailNotifications;
@@ -14967,7 +14968,8 @@ ${value}</textarea
       role: EnrollmentRole;
     }>(
       sql`
-        SELECT "users"."id" AS "userId",
+        SELECT "enrollments"."id",
+               "users"."id" AS "userId",
                "users"."email" AS "userEmail",
                "users"."emailNotifications" AS "userEmailNotifications",
                "enrollments"."reference",
@@ -15017,7 +15019,7 @@ ${value}</textarea
           mentions.has(enrollment.reference)
       );
 
-    for (const enrollment of enrollments)
+    for (const enrollment of enrollments) {
       sendMail({
         to: enrollment.userEmail,
         subject: `${conversation.title} · ${res.locals.course.name} · CourseLore`,
@@ -15058,6 +15060,14 @@ ${value}</textarea
           </p>
         `,
       });
+
+      database.run(
+        sql`
+          INSERT INTO "notificationDeliveries" ("message", "enrollment")
+          VALUES (${message.id}, ${enrollment.id})
+        `
+      );
+    }
   };
 
   if (demonstration)
