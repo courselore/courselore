@@ -28,20 +28,6 @@
 
 ### Polish Existing Features
 
-- Notifications.
-  - [x] Start with everyone (because it avoids having to attach more data to the `@mentioned` people, and it avoids having to deduplicate at the end).
-  - [x] Exclude:
-    - [x] The author of the message.
-    - [x] People whose email is unconfirmed.
-    - [x] People who opted to never be notified.
-    - [x] People who already received a notification for that message (relevant, for example, for edits).
-    - [x] People who aren’t allowed to see the conversation because of `staffOnly`.
-  - [x] If this is the first message in an announcement, or if there’s a `@everyone`, stop here. You have your list.
-  - [ ] Otherwise, filter to include only:
-    - [ ] People who are `all-messages` and haven’t been mentioned OR
-    - [ ] The person is staff and `@staff` OR
-    - [ ] The person is student and `@students` OR
-    - [ ] The person has been directly `@mentioned`.
 - Search:
   - Filters (for example, by conversation type).
   - Don’t scroll on search.
