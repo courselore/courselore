@@ -318,7 +318,7 @@ export default async function courselore({
         UNIQUE ("message", "enrollment") ON CONFLICT IGNORE
       );
 
-      CREATE TABLE "sentNotifications" (
+      CREATE TABLE "notificationDeliveries" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
         "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
@@ -12168,7 +12168,11 @@ ${value}</textarea
         `
       );
       // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
-      const conversation = database.get<{ id: number; title: string }>(
+      const conversation = database.get<{
+        id: number;
+        title: string;
+        staffOnlyAt: string | null;
+      }>(
         sql`
           SELECT * FROM "conversations" WHERE "id" = ${Number(
             database.run(
@@ -12244,6 +12248,21 @@ ${value}</textarea
 
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.course.nextConversationReference}`
+      );
+
+      let enrollmentsToNotify = database.all<{ TODO: "todo" }>(
+        sql`
+          SELECT *
+          FROM "enrollments"
+          JOIN "users" ON "enrollments"."user" = "users"."id" AND
+                          "users"."id" != ${res.locals.user.id} AND
+                          "users"."emailConfirmedAt" IS NOT NULL AND
+                          "users"."emailNotifications" != 'none'
+          LEFT JOIN "notificationDeliveries" ON "enrollments"."id" = "notificationDeliveries"."enrollment" AND
+                                                "notificationDeliveries"."message" = ${message.id}
+          WHERE "enrollments"."course" = ${res.locals.course.id} AND
+                "notificationDeliveries"."id" IS NULL
+        `
       );
 
       // TODO:

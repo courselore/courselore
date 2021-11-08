@@ -29,19 +29,19 @@
 ### Polish Existing Features
 
 - Notifications.
-  - Start with everyone (because it avoids having to attach more data to the `@mentioned` people, and it avoids having to deduplicate at the end).
-  - Exclude:
-    - People whose email is unconfirmed.
-    - People who opted to never be notified.
-    - The author of the message.
-    - People who already received a notification for that message (relevant, for example, for edits).
-    - People who aren’t allowed to see the conversation because of `staffOnly`.
-  - If this is the first message in an announcement, or if there’s a `@everyone`, stop here. You have your list.
-  - Otherwise, continue excluding:
-    - People who are `staff-announcements-and-mentions` and haven’t been mentioned:
-      - There’s no `@person` AND
-        - The person is staff and there’s no `@staff` OR
-        - The person is student and there’s no `@students`
+  - [x] Start with everyone (because it avoids having to attach more data to the `@mentioned` people, and it avoids having to deduplicate at the end).
+  - [ ] Exclude:
+    - [x] The author of the message.
+    - [x] People whose email is unconfirmed.
+    - [x] People who opted to never be notified.
+    - [x] People who already received a notification for that message (relevant, for example, for edits).
+    - [ ] People who aren’t allowed to see the conversation because of `staffOnly`.
+  - [ ] If this is the first message in an announcement, or if there’s a `@everyone`, stop here. You have your list.
+  - [ ] Otherwise, continue excluding:
+    - [ ] People who are `staff-announcements-and-mentions` and haven’t been mentioned:
+      - [ ] There’s no `@person` AND
+        - [ ] The person is staff and there’s no `@staff` OR
+        - [ ] The person is student and there’s no `@students`
 - Search:
   - Filters (for example, by conversation type).
   - Don’t scroll on search.
@@ -195,6 +195,7 @@
     - Cases:
       - `getConversation()`.
       - `getMessage()`.
+      - Treatment of @mentions in Markdown processor.
     - Potential solutions:
       - Single follow-up query with `IN` operator (but then you end up with a bunch of prepared statements in the cache).
       - Use a temporary table instead of `IN`.
