@@ -12208,6 +12208,7 @@ ${value}</textarea
       const message = database.get<{
         id: number;
         reference: string;
+        contentSearch: string;
         anonymousAt: string | null;
       }>(
         sql`
@@ -12339,7 +12340,12 @@ ${value}</textarea
 
             <hr />
 
-            <blockquote>$${processedContent.html}</blockquote>
+            <blockquote>
+              $${lodash.truncate(message.contentSearch, {
+                length: 100,
+                separator: /\W/,
+              })}
+            </blockquote>
 
             <hr />
 
