@@ -8370,61 +8370,24 @@ export default async function courselore({
                       <i class="bi bi-x-lg"></i>
                     </a>
                   </div>
-                  <div>
-                    <!-- TODO: Highlight this button if filters are being used. -->
-                    <button
-                      type="button"
-                      class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                      oninteractive="${javascript`
-                        tippy(this, {
-                          content: this.nextElementSibling.firstElementChild,
-                          trigger: "click",
-                          interactive: true,
-                        });
-                      `}"
-                    >
-                      <i class="bi bi-funnel"></i>
-                      Filters
-                    </button>
-                    <div hidden>
-                      <div
-                        class="dropdown--menu"
-                        style="${css`
-                          max-height: var(--space--40);
-                          overflow: auto;
-                        `}"
-                      >
-                        <input
-                          type="checkbox"
-                          class="input--checkbox"
-                          name="hello"
-                          value="banana"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </form>
 
-                <div hidden>
-                  $${res.locals.tags.map((tag) => {
-                    const isTagFilter = tag.id === tagFilter?.id;
-                    return html`
-                      <a
-                        href="?${qs.stringify({
-                          conversationLayoutSidebarOpenOnSmallScreen: "true",
-                          search: req.query.search,
-                          tag: isTagFilter ? undefined : tag.reference,
-                        })}"
-                        class="dropdown--menu--item button ${isTagFilter
-                          ? "button--blue"
-                          : "button--transparent"}"
-                      >
-                        <i class="bi bi-tag"></i>
-                        ${tag.name}
-                      </a>
-                    `;
-                  })}
-                </div>
+                  <!-- TODO: Highlight this button if filters are being used. -->
+                  <button
+                    type="button"
+                    class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                    oninteractive="${javascript`
+                      tippy(this, {
+                        content: this.nextElementSibling.firstElementChild,
+                        trigger: "click",
+                        interactive: true,
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-funnel"></i>
+                    Filters
+                  </button>
+                  <div>HELLO</div>
+                </form>
 
                 $${conversations.length === 0
                   ? html`
