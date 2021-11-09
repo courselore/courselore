@@ -8370,96 +8370,71 @@ export default async function courselore({
                       <i class="bi bi-x-lg"></i>
                     </a>
                   </div>
+                  <div>
+                    <!-- TODO: Highlight this button if filters are being used. -->
+                    <button
+                      type="button"
+                      class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                    >
+                      <i class="bi bi-funnel"></i>
+                      Filters
+                    </button>
+                    <div hidden><div>Hello</div></div>
+                  </div>
                 </form>
 
                 <div hidden>
-                  $${res.locals.tags.length > 0
-                    ? html`
-                        <div
-                          style="${css`
-                            display: flex;
-                            gap: var(--space--3);
-                          `}"
-                        >
-                          <div>
-                            <button
-                              class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                              oninteractive="${javascript`
-                                tippy(this, {
-                                  content: this.nextElementSibling.firstElementChild,
-                                  trigger: "click",
-                                  interactive: true,
-                                });
-                              `}"
-                            >
-                              $${tagFilter === undefined
-                                ? html`
-                                    <i class="bi bi-tag"></i>
-                                    Filter by Tag
-                                  `
-                                : html`
-                                    <i class="bi bi-tag-fill"></i>
-                                    Filtering by
-                                    <i class="bi bi-tag"></i>
-                                    ${tagFilter.name}
-                                  `}
-                            </button>
-                            <div hidden>
-                              <div
-                                class="dropdown--menu"
-                                style="${css`
-                                  max-height: var(--space--40);
-                                  overflow: auto;
-                                `}"
-                              >
-                                $${res.locals.tags.map((tag) => {
-                                  const isTagFilter = tag.id === tagFilter?.id;
-                                  return html`
-                                    <a
-                                      href="?${qs.stringify({
-                                        conversationLayoutSidebarOpenOnSmallScreen:
-                                          "true",
-                                        search: req.query.search,
-                                        tag: isTagFilter
-                                          ? undefined
-                                          : tag.reference,
-                                      })}"
-                                      class="dropdown--menu--item button ${isTagFilter
-                                        ? "button--blue"
-                                        : "button--transparent"}"
-                                    >
-                                      <i class="bi bi-tag"></i>
-                                      ${tag.name}
-                                    </a>
-                                  `;
-                                })}
-                              </div>
-                            </div>
-                          </div>
-                          $${tagFilter === undefined
-                            ? html``
-                            : html`
-                                <a
-                                  href="?${qs.stringify({
-                                    conversationLayoutSidebarOpenOnSmallScreen:
-                                      "true",
-                                    search: req.query.search,
-                                    tag: undefined,
-                                  })}"
-                                  class="button button--tight button--tight--inline button--transparent"
-                                  oninteractive="${javascript`
-                                    tippy(this, {
-                                      content: "Remove Filter",
-                                      touch: false,
-                                    });
-                                  `}"
-                                >
-                                  <i class="bi bi-x-lg"></i>
-                                </a>
-                              `}
-                        </div>
-                      `
-                    : html``}
+                  <button
+                    class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                    oninteractive="${javascript`
+                      tippy(this, {
+                        content: this.nextElementSibling.firstElementChild,
+                        trigger: "click",
+                        interactive: true,
+                      });
+                    `}"
+                  >
+                    $${tagFilter === undefined
+                      ? html`
+                          <i class="bi bi-tag"></i>
+                          Filter by Tag
+                        `
+                      : html`
+                          <i class="bi bi-tag-fill"></i>
+                          Filtering by
+                          <i class="bi bi-tag"></i>
+                          ${tagFilter.name}
+                        `}
+                  </button>
+                  <div hidden>
+                    <div
+                      class="dropdown--menu"
+                      style="${css`
+                        max-height: var(--space--40);
+                        overflow: auto;
+                      `}"
+                    >
+                      $${res.locals.tags.map((tag) => {
+                        const isTagFilter = tag.id === tagFilter?.id;
+                        return html`
+                          <a
+                            href="?${qs.stringify({
+                              conversationLayoutSidebarOpenOnSmallScreen:
+                                "true",
+                              search: req.query.search,
+                              tag: isTagFilter ? undefined : tag.reference,
+                            })}"
+                            class="dropdown--menu--item button ${isTagFilter
+                              ? "button--blue"
+                              : "button--transparent"}"
+                          >
+                            <i class="bi bi-tag"></i>
+                            ${tag.name}
+                          </a>
+                        `;
+                      })}
+                    </div>
+                  </div>
                 </div>
 
                 $${conversations.length === 0
