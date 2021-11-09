@@ -8211,6 +8211,7 @@ export default async function courselore({
                     justify-content: center;
                   `}"
                 >
+                  <!-- TODO: Remove conversationLayoutSidebarOpenOnSmallScreen -->
                   <a
                     href="${baseURL}/courses/${res.locals.course
                       .reference}/conversations/new?${qs.stringify(req.query)}"
