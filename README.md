@@ -28,13 +28,11 @@
 
 ### Polish Existing Features
 
-- Revisit explanation of pinned conversations.
 - Search:
   - Filters (for example, by conversation type).
   - Don’t scroll on search.
   - `EXPLAIN QUERY PLAN`.
   - Limit.
-  - Search for author only includes author of first message. (How should we present search results otherwise?) (Wouldn’t including every message result in too many messages?)
   - Include `<person> says`:
     - Search results.
     - Tooltip for #references.
