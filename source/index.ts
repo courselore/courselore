@@ -8554,8 +8554,7 @@ export default async function courselore({
                             autocomplete="off"
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onchange="${javascript`
-                              const element = this.closest("form").querySelector('[name="filters[isPinned]"][value="false"]');
-                              if (this.checked && element.checked) element.click();
+                              if (this.checked) this.closest("form").querySelector('[name="filters[isPinned]"][value="false"]').checked = false;
                             `}"
                           />
                           <span>
@@ -8577,8 +8576,7 @@ export default async function courselore({
                             autocomplete="off"
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onchange="${javascript`
-                              const element = this.closest("form").querySelector('[name="filters[isPinned]"][value="true"]');
-                              if (this.checked && element.checked) element.click();
+                              if (this.checked) this.closest("form").querySelector('[name="filters[isPinned]"][value="true"]').checked = false;
                             `}"
                           />
                           <span>
