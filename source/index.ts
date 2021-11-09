@@ -8396,7 +8396,15 @@ export default async function courselore({
                       </span>
                     </label>
                   </div>
-                  <div hidden class="filters">
+                  <div
+                    hidden
+                    class="filters"
+                    style="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--2);
+                    `}"
+                  >
                     <div class="label">
                       <p class="label--text">Type</p>
                       <div
