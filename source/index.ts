@@ -8372,20 +8372,22 @@ export default async function courselore({
                   </div>
 
                   <!-- TODO: Highlight this button if filters are being used. -->
-                  <button
-                    type="button"
-                    class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                    oninteractive="${javascript`
-                      tippy(this, {
-                        content: this.nextElementSibling.firstElementChild,
-                        trigger: "click",
-                        interactive: true,
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-funnel"></i>
-                    Filters
-                  </button>
+                  <div>
+                    <button
+                      type="button"
+                      class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                      oninteractive="${javascript`
+                        tippy(this, {
+                          content: this.nextElementSibling.firstElementChild,
+                          trigger: "click",
+                          interactive: true,
+                        });
+                      `}"
+                    >
+                      <i class="bi bi-funnel"></i>
+                      Filters
+                    </button>
+                  </div>
                   <div>HELLO</div>
                 </form>
 
