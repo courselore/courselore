@@ -4796,7 +4796,7 @@ export default async function courselore({
     { courseReference: string },
     any,
     {},
-    { search?: string; tag?: string; [otherQueryParameters: string]: unknown },
+    {},
     IsEnrolledInCourseMiddlewareLocals
   >[] = [
     ...isSignedInMiddleware,
@@ -4877,10 +4877,7 @@ export default async function courselore({
     { courseReference: string },
     HTML,
     {},
-    {
-      search?: string;
-      tag?: string;
-    },
+    {},
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference",
@@ -11785,10 +11782,7 @@ ${value}</textarea
     { courseReference: string },
     HTML,
     {},
-    {
-      search?: string;
-      tag?: string;
-    },
+    {},
     IsEnrolledInCourseMiddlewareLocals & EventSourceMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/new",
@@ -12497,7 +12491,6 @@ ${value}</textarea
     {},
     {
       search?: string;
-      tag?: string;
     },
     IsConversationAccessibleMiddlewareLocals & EventSourceMiddlewareLocals
   >(
