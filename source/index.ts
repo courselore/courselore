@@ -7293,6 +7293,8 @@ export default async function courselore({
                                   <a
                                     href="${baseURL}/courses/${res.locals.course
                                       .reference}?${qs.stringify({
+                                      conversationLayoutSidebarOpenOnSmallScreen:
+                                        "true",
                                       filters: {
                                         tagsReferences: [tag.reference],
                                       },
