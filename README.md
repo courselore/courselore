@@ -29,7 +29,6 @@
 ### Polish Existing Features
 
 - Search:
-  - `TODO: conversationLayoutSidebarOpenOnSmallScreen`
   - Show “Clear Search & Filters” conditionally.
   - Show/hide & check/uncheck filters.
   - Update “See conversations with this tag”.
