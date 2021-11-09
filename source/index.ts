@@ -4191,7 +4191,6 @@ export default async function courselore({
                     type="file"
                     class="avatar-chooser--upload"
                     accept="image/*"
-                    autocomplete="off"
                     hidden
                     data-skip-is-modified="true"
                     oninteractive="${javascript`
@@ -4649,7 +4648,6 @@ export default async function courselore({
                       name="emailNotifications"
                       value="all-messages"
                       required
-                      autocomplete="off"
                       $${res.locals.user.emailNotifications === "all-messages"
                         ? html`checked`
                         : html``}
@@ -4669,7 +4667,6 @@ export default async function courselore({
                       name="emailNotifications"
                       value="staff-announcements-and-mentions"
                       required
-                      autocomplete="off"
                       $${res.locals.user.emailNotifications ===
                       "staff-announcements-and-mentions"
                         ? html`checked`
@@ -4690,7 +4687,6 @@ export default async function courselore({
                       name="emailNotifications"
                       value="none"
                       required
-                      autocomplete="off"
                       $${res.locals.user.emailNotifications === "none"
                         ? html`checked`
                         : html``}
@@ -5509,7 +5505,6 @@ export default async function courselore({
                       name="type"
                       value="link"
                       required
-                      autocomplete="off"
                       class="visually-hidden input--radio-or-checkbox--multilabel"
                       onchange="${javascript`
                         const emails = this.closest("form").querySelector(".emails");
@@ -5535,7 +5530,6 @@ export default async function courselore({
                       name="type"
                       value="email"
                       required
-                      autocomplete="off"
                       class="visually-hidden input--radio-or-checkbox--multilabel"
                       onchange="${javascript`
                         const emails = this.closest("form").querySelector(".emails");
@@ -5649,7 +5643,6 @@ export default async function courselore({
                             name="role"
                             value="${role}"
                             required
-                            autocomplete="off"
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                           />
                           <span>
@@ -5678,7 +5671,6 @@ export default async function courselore({
                   >
                     <input
                       type="checkbox"
-                      autocomplete="off"
                       class="visually-hidden input--radio-or-checkbox--multilabel"
                       onchange="${javascript`
                         const expiresAt = this.closest("form").querySelector(".expires-at");
@@ -7695,7 +7687,6 @@ export default async function courselore({
                         name="accentColor"
                         value="${accentColor}"
                         required
-                        autocomplete="off"
                         $${accentColor === res.locals.enrollment.accentColor
                           ? html`checked`
                           : html``}
@@ -8553,7 +8544,6 @@ export default async function courselore({
                             type="checkbox"
                             name="filters[isPinned]"
                             value="true"
-                            autocomplete="off"
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onchange="${javascript`
                               if (this.checked) this.closest("form").querySelector('[name="filters[isPinned]"][value="false"]').checked = false;
@@ -8575,7 +8565,6 @@ export default async function courselore({
                             type="checkbox"
                             name="filters[isPinned]"
                             value="false"
-                            autocomplete="off"
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onchange="${javascript`
                               if (this.checked) this.closest("form").querySelector('[name="filters[isPinned]"][value="true"]').checked = false;
@@ -8610,7 +8599,6 @@ export default async function courselore({
                             type="checkbox"
                             name="filters[isStaffOnly]"
                             value="true"
-                            autocomplete="off"
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onchange="${javascript`
                               if (this.checked) this.closest("form").querySelector('[name="filters[isStaffOnly]"][value="false"]').checked = false;
@@ -8632,7 +8620,6 @@ export default async function courselore({
                             type="checkbox"
                             name="filters[isStaffOnly]"
                             value="false"
-                            autocomplete="off"
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onchange="${javascript`
                               if (this.checked) this.closest("form").querySelector('[name="filters[isStaffOnly]"][value="true"]').checked = false;
@@ -9784,7 +9771,6 @@ export default async function courselore({
           <input
             type="radio"
             name="markdown-editor--mode"
-            autocomplete="off"
             checked
             data-skip-is-modified="true"
             class="markdown-editor--button--write visually-hidden"
@@ -9803,7 +9789,6 @@ export default async function courselore({
           <input
             type="radio"
             name="markdown-editor--mode"
-            autocomplete="off"
             data-skip-is-modified="true"
             class="markdown-editor--button--preview visually-hidden"
             onclick="${javascript`
@@ -12094,7 +12079,6 @@ ${value}</textarea
                               <input
                                 type="checkbox"
                                 name="isPinned"
-                                autocomplete="off"
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                               />
                               <span
@@ -12144,7 +12128,6 @@ ${value}</textarea
                         <input
                           type="checkbox"
                           name="isStaffOnly"
-                          autocomplete="off"
                           class="visually-hidden input--radio-or-checkbox--multilabel"
                           onchange="${javascript`
                             const anonymity = this.closest("form").querySelector(".anonymity");
@@ -12202,7 +12185,6 @@ ${value}</textarea
                               <input
                                 type="checkbox"
                                 name="isAnonymous"
-                                autocomplete="off"
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                               />
                               <span
@@ -14415,7 +14397,6 @@ ${value}</textarea
                             <input
                               type="checkbox"
                               name="isAnswer"
-                              autocomplete="off"
                               $${res.locals.enrollment.role === "staff"
                                 ? `checked`
                                 : ``}
@@ -14471,7 +14452,6 @@ ${value}</textarea
                             <input
                               type="checkbox"
                               name="isAnonymous"
-                              autocomplete="off"
                               class="visually-hidden input--radio-or-checkbox--multilabel"
                             />
                             <span
