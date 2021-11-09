@@ -8570,6 +8570,8 @@ export default async function courselore({
                   </div>
                 </form>
 
+                <hr class="separator" />
+
                 $${conversations.length === 0
                   ? html`
                       <div
