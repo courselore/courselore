@@ -8396,6 +8396,7 @@ export default async function courselore({
                       </span>
                     </label>
                   </div>
+
                   <div
                     hidden
                     class="filters"
@@ -8520,6 +8521,7 @@ export default async function courselore({
                             </div>
                           </div>
                         `}
+
                     <div class="label">
                       <div class="label--text">
                         Pin
@@ -8586,6 +8588,63 @@ export default async function courselore({
                           <span class="text--amber">
                             <i class="bi bi-pin-angle-fill"></i>
                             Unpinned
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+
+                    <div class="label">
+                      <p class="label--text">Visibility</p>
+                      <div
+                        style="${css`
+                          display: flex;
+                          flex-wrap: wrap;
+                          column-gap: var(--space--6);
+                          row-gap: var(--space--2);
+                        `}"
+                      >
+                        <label
+                          class="button button--tight button--tight--inline button--transparent"
+                        >
+                          <input
+                            type="checkbox"
+                            name="filters[isStaffOnly]"
+                            value="true"
+                            autocomplete="off"
+                            class="visually-hidden input--radio-or-checkbox--multilabel"
+                            onchange="${javascript`
+                              if (this.checked) this.closest("form").querySelector('[name="filters[isStaffOnly]"][value="false"]').checked = false;
+                            `}"
+                          />
+                          <span>
+                            <i class="bi bi-eye"></i>
+                            Visible by Everyone
+                          </span>
+                          <span class="text--pink">
+                            <i class="bi bi-eye-fill"></i>
+                            Visible by Everyone
+                          </span>
+                        </label>
+                        <label
+                          class="button button--tight button--tight--inline button--transparent"
+                        >
+                          <input
+                            type="checkbox"
+                            name="filters[isStaffOnly]"
+                            value="false"
+                            autocomplete="off"
+                            class="visually-hidden input--radio-or-checkbox--multilabel"
+                            onchange="${javascript`
+                              if (this.checked) this.closest("form").querySelector('[name="filters[isStaffOnly]"][value="true"]').checked = false;
+                            `}"
+                          />
+                          <span>
+                            <i class="bi bi-eye-slash"></i>
+                            Visible by Staff Only
+                          </span>
+                          <span class="text--pink">
+                            <i class="bi bi-eye-slash-fill"></i>
+                            Visible by Staff Only
                           </span>
                         </label>
                       </div>
