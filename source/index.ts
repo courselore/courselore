@@ -4878,7 +4878,6 @@ export default async function courselore({
     HTML,
     {},
     {
-      conversationLayoutSidebarOpenOnSmallScreen?: "true";
       search?: string;
       tag?: string;
     },
@@ -11787,7 +11786,6 @@ ${value}</textarea
     HTML,
     {},
     {
-      conversationLayoutSidebarOpenOnSmallScreen?: "true";
       search?: string;
       tag?: string;
     },
@@ -12498,7 +12496,6 @@ ${value}</textarea
     HTML,
     {},
     {
-      conversationLayoutSidebarOpenOnSmallScreen?: "true";
       search?: string;
       tag?: string;
     },

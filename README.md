@@ -31,6 +31,8 @@
 - Search:
   - `conversationLayoutSidebarOpenOnSmallScreen`
     - on start new conversation too
+  - `search?:`
+  - `tag?:`
   - Show “Clear Search & Filters” conditionally.
   - Show/hide & check/uncheck filters.
   - Update “See conversations with this tag”.
