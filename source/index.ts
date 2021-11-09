@@ -8371,19 +8371,30 @@ export default async function courselore({
                     </a>
                   </div>
 
-                  <!-- TODO: Highlight this button if filters are being used. -->
-                  <div>
-                    <button
-                      type="button"
-                      class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                      onclick="${javascript`
-                        const element = this.closest("form").querySelector(".filters");
-                        element.hidden = !element.hidden;
-                      `}"
+                  <div
+                    style="${css`
+                      display: flex;
+                    `}"
+                  >
+                    <label
+                      class="button button--tight button--tight--inline button--transparent"
                     >
-                      <i class="bi bi-funnel"></i>
-                      Filters
-                    </button>
+                      <input
+                        type="checkbox"
+                        class="visually-hidden input--radio-or-checkbox--multilabel"
+                        onchange="${javascript`
+                          this.closest("form").querySelector(".filters").hidden = !this.checked;
+                        `}"
+                      />
+                      <span>
+                        <i class="bi bi-funnel"></i>
+                        Filters
+                      </span>
+                      <span class="text--blue">
+                        <i class="bi bi-funnel-fill"></i>
+                        Filters
+                      </span>
+                    </label>
                   </div>
                   <div hidden class="filters">
                     <div class="label">
