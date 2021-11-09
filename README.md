@@ -28,7 +28,8 @@
 
 ### Polish Existing Features
 
-- Search:
+- Search & Filters:
+  - Continue from `TODO`.
   - Show “Clear Search & Filters” conditionally.
   - Show/hide & check/uncheck filters.
   - Test “See conversations with this tag”.
