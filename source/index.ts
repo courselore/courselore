@@ -8211,10 +8211,13 @@ export default async function courselore({
                     justify-content: center;
                   `}"
                 >
-                  <!-- TODO: Remove conversationLayoutSidebarOpenOnSmallScreen -->
                   <a
                     href="${baseURL}/courses/${res.locals.course
-                      .reference}/conversations/new?${qs.stringify(req.query)}"
+                      .reference}/conversations/new?${qs.stringify(
+                      lodash.omit(req.query, [
+                        "conversationLayoutSidebarOpenOnSmallScreen",
+                      ])
+                    )}"
                     class="button button--transparent"
                   >
                     <i class="bi bi-chat-left-text"></i>
@@ -8625,8 +8628,9 @@ export default async function courselore({
                             <a
                               href="${baseURL}/courses/${res.locals.course
                                 .reference}/conversations/${conversation.reference}?${qs.stringify(
-                                // TODO: Remove conversationLayoutSidebarOpenOnSmallScreen
-                                req.query
+                                lodash.omit(req.query, [
+                                  "conversationLayoutSidebarOpenOnSmallScreen",
+                                ])
                               )}${conversation.messagesSearchResultMessage !==
                               undefined
                                 ? `#message--${conversation.messagesSearchResultMessage.reference}`
