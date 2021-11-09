@@ -8270,7 +8270,6 @@ export default async function courselore({
                     >
                       <i class="bi bi-search"></i>
                     </button>
-                    <!-- TODO: Show this conditionally. -->
                     <a
                       href="?${qs.stringify({
                         conversationLayoutSidebarOpenOnSmallScreen: "true",
