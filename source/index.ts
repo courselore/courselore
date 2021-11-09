@@ -8436,6 +8436,68 @@ export default async function courselore({
                         )}
                       </div>
                     </div>
+
+                    $${res.locals.tags.length === 0
+                      ? html``
+                      : html`
+                          <div class="label">
+                            <div class="label--text">Tags</div>
+                            <div
+                              style="${css`
+                                display: flex;
+                                flex-wrap: wrap;
+                                column-gap: var(--space--6);
+                                row-gap: var(--space--2);
+                              `}"
+                            >
+                              $${res.locals.tags.map(
+                                (tag) => html`
+                                  <div
+                                    style="${css`
+                                      display: flex;
+                                      gap: var(--space--2);
+                                    `}"
+                                  >
+                                    <label
+                                      class="button button--tight button--tight--inline button--transparent"
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        name="filters[tagsReferences][]"
+                                        value="${tag.reference}"
+                                        class="visually-hidden input--radio-or-checkbox--multilabel"
+                                      />
+                                      <span>
+                                        <i class="bi bi-tag"></i>
+                                        ${tag.name}
+                                      </span>
+                                      <span class="text--teal">
+                                        <i class="bi bi-tag-fill"></i>
+                                        ${tag.name}
+                                      </span>
+                                    </label>
+                                    $${tag.staffOnlyAt !== null
+                                      ? html`
+                                          <button
+                                            type="button"
+                                            class="button button--tight button--tight--inline button--transparent text--pink"
+                                            oninteractive="${javascript`
+                                                tippy(this, {
+                                                  content: "This tag is visible by staff only.",
+                                                  trigger: "click",
+                                                });
+                                              `}"
+                                          >
+                                            <i class="bi bi-eye-slash-fill"></i>
+                                          </button>
+                                        `
+                                      : html``}
+                                  </div>
+                                `
+                              )}
+                            </div>
+                          </div>
+                        `}
                   </div>
                 </form>
 
