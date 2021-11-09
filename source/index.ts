@@ -8388,7 +8388,11 @@ export default async function courselore({
                       Filters
                     </button>
                   </div>
-                  <div>HELLO</div>
+                  <div>
+                    <div class="label">
+                      <p class="label--text">Type</p>
+                    </div>
+                  </div>
                 </form>
 
                 $${conversations.length === 0
