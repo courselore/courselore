@@ -2974,11 +2974,7 @@ export default async function courselore({
         body: html`
           <form
             method="POST"
-            action="${baseURL}/sign-in?${qs.stringify({
-              redirect: req.query.redirect,
-              name: req.query.name,
-              email: req.query.email,
-            })}"
+            action="${baseURL}/sign-in?${qs.stringify(req.query)}"
             novalidate
             style="${css`
               display: flex;
@@ -3025,11 +3021,7 @@ export default async function courselore({
             <p>
               Don’t have an account?
               <a
-                href="${baseURL}/sign-up?${qs.stringify({
-                  redirect: req.query.redirect,
-                  name: req.query.name,
-                  email: req.query.email,
-                })}"
+                href="${baseURL}/sign-up?${qs.stringify(req.query)}"
                 class="link"
                 >Sign up</a
               >.
@@ -3037,11 +3029,7 @@ export default async function courselore({
             <p>
               Forgot your password?
               <a
-                href="${baseURL}/reset-password?${qs.stringify({
-                  redirect: req.query.redirect,
-                  name: req.query.name,
-                  email: req.query.email,
-                })}"
+                href="${baseURL}/reset-password?${qs.stringify(req.query)}"
                 class="link"
                 >Reset password</a
               >.
@@ -3081,13 +3069,7 @@ export default async function courselore({
           res,
           html`<div class="flash--rose">Incorrect email & password.</div>`
         );
-        return res.redirect(
-          `${baseURL}/sign-in?${qs.stringify({
-            redirect: req.query.redirect,
-            name: req.query.name,
-            email: req.query.email,
-          })}`
-        );
+        return res.redirect(`${baseURL}/sign-in?${qs.stringify(req.query)}`);
       }
       Session.open(req, res, user.id);
       res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
@@ -3154,11 +3136,7 @@ export default async function courselore({
         body: html`
           <form
             method="POST"
-            action="${baseURL}/reset-password?${qs.stringify({
-              redirect: req.query.redirect,
-              name: req.query.name,
-              email: req.query.email,
-            })}"
+            action="${baseURL}/reset-password?${qs.stringify(req.query)}"
             novalidate
             style="${css`
               display: flex;
@@ -3195,11 +3173,7 @@ export default async function courselore({
             <p>
               Don’t have an account?
               <a
-                href="${baseURL}/sign-up?${qs.stringify({
-                  redirect: req.query.redirect,
-                  name: req.query.name,
-                  email: req.query.email,
-                })}"
+                href="${baseURL}/sign-up?${qs.stringify(req.query)}"
                 class="link"
                 >Sign up</a
               >.
@@ -3207,11 +3181,7 @@ export default async function courselore({
             <p>
               Remember your password?
               <a
-                href="${baseURL}/sign-in?${qs.stringify({
-                  redirect: req.query.redirect,
-                  name: req.query.name,
-                  email: req.query.email,
-                })}"
+                href="${baseURL}/sign-in?${qs.stringify(req.query)}"
                 class="link"
                 >Sign in</a
               >.
@@ -3245,21 +3215,13 @@ export default async function courselore({
         html`<div class="flash--rose">Email not found.</div>`
       );
       return res.redirect(
-        `${baseURL}/reset-password?${qs.stringify({
-          redirect: req.query.redirect,
-          name: req.query.name,
-          email: req.query.email,
-        })}`
+        `${baseURL}/reset-password?${qs.stringify(req.query)}`
       );
     }
 
     const link = `${baseURL}/reset-password/${PasswordReset.create(
       user.id
-    )}?${qs.stringify({
-      redirect: req.query.redirect,
-      name: req.query.name,
-      email: req.query.email,
-    })}`;
+    )}?${qs.stringify(req.query)}`;
     sendMail({
       to: user.email,
       subject: "CourseLore · Password Reset Link",
@@ -3292,11 +3254,7 @@ export default async function courselore({
           </p>
           <form
             method="POST"
-            action="${baseURL}/reset-password?${qs.stringify({
-              redirect: req.query.redirect,
-              name: req.query.name,
-              email: req.query.email,
-            })}"
+            action="${baseURL}/reset-password?${qs.stringify(req.query)}"
           >
             <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
             <input type="hidden" name="email" value="${req.body.email}" />
@@ -3333,11 +3291,7 @@ export default async function courselore({
           `
         );
         return res.redirect(
-          `${baseURL}/reset-password?${qs.stringify({
-            redirect: req.query.redirect,
-            name: req.query.name,
-            email: req.query.email,
-          })}`
+          `${baseURL}/reset-password?${qs.stringify(req.query)}`
         );
       }
       res.send(
@@ -3354,11 +3308,7 @@ export default async function courselore({
               method="POST"
               action="${baseURL}/reset-password/${PasswordReset.create(
                 userId
-              )}?${qs.stringify({
-                redirect: req.query.redirect,
-                name: req.query.name,
-                email: req.query.email,
-              })}"
+              )}?${qs.stringify(req.query)}"
               novalidate
               style="${css`
                 display: flex;
@@ -3431,11 +3381,7 @@ export default async function courselore({
           `
         );
         return res.redirect(
-          `${baseURL}/reset-password?${qs.stringify({
-            redirect: req.query.redirect,
-            name: req.query.name,
-            email: req.query.email,
-          })}`
+          `${baseURL}/reset-password?${qs.stringify(req.query)}`
         );
       }
 
@@ -3478,11 +3424,7 @@ export default async function courselore({
         body: html`
           <form
             method="POST"
-            action="${baseURL}/sign-up?${qs.stringify({
-              redirect: req.query.redirect,
-              name: req.query.name,
-              email: req.query.email,
-            })}"
+            action="${baseURL}/sign-up?${qs.stringify(req.query)}"
             novalidate
             style="${css`
               display: flex;
@@ -3552,11 +3494,7 @@ export default async function courselore({
             <p>
               Already have an account account?
               <a
-                href="${baseURL}/sign-in?${qs.stringify({
-                  redirect: req.query.redirect,
-                  name: req.query.name,
-                  email: req.query.email,
-                })}"
+                href="${baseURL}/sign-in?${qs.stringify(req.query)}"
                 class="link"
                 >Sign in</a
               >.
@@ -3564,11 +3502,7 @@ export default async function courselore({
             <p>
               Forgot your password?
               <a
-                href="${baseURL}/reset-password?${qs.stringify({
-                  redirect: req.query.redirect,
-                  name: req.query.name,
-                  email: req.query.email,
-                })}"
+                href="${baseURL}/reset-password?${qs.stringify(req.query)}"
                 class="link"
                 >Reset password</a
               >.
@@ -3654,13 +3588,7 @@ export default async function courselore({
           res,
           html`<div class="flash--rose">Email already taken.</div>`
         );
-        return res.redirect(
-          `${baseURL}/sign-in?${qs.stringify({
-            redirect: req.query.redirect,
-            name: req.query.name,
-            email: req.query.email,
-          })}`
-        );
+        return res.redirect(`${baseURL}/sign-in?${qs.stringify(req.query)}`);
       }
       // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
       const user = database.get<{ id: number; email: string; name: string }>(
@@ -7373,7 +7301,9 @@ export default async function courselore({
                                   <a
                                     href="${baseURL}/courses/${res.locals.course
                                       .reference}?${qs.stringify({
-                                      tag: tag.reference,
+                                      filters: {
+                                        tagsReferences: [tag.reference],
+                                      },
                                     })}"
                                     class="button button--tight button--tight--inline button--transparent"
                                     oninteractive="${javascript`
@@ -8291,10 +8221,7 @@ export default async function courselore({
                 >
                   <a
                     href="${baseURL}/courses/${res.locals.course
-                      .reference}/conversations/new?${qs.stringify({
-                      search: req.query.search,
-                      tag: req.query.tag,
-                    })}"
+                      .reference}/conversations/new?${qs.stringify(req.query)}"
                     class="button button--transparent"
                   >
                     <i class="bi bi-chat-left-text"></i>
@@ -8705,10 +8632,8 @@ export default async function courselore({
                             <a
                               href="${baseURL}/courses/${res.locals.course
                                 .reference}/conversations/${conversation.reference}?${qs.stringify(
-                                {
-                                  search: req.query.search,
-                                  tag: req.query.tag,
-                                }
+                                // TODO: Remove conversationLayoutSidebarOpenOnSmallScreen
+                                req.query
                               )}${conversation.messagesSearchResultMessage !==
                               undefined
                                 ? `#message--${conversation.messagesSearchResultMessage.reference}`
