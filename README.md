@@ -29,9 +29,9 @@
 ### Polish Existing Features
 
 - Search:
-  - Update “See conversations with this tag”.
   - Show “Clear Search & Filters” conditionally.
   - Show/hide & check/uncheck filters.
+  - Test “See conversations with this tag”.
   - Don’t scroll on search.
   - `EXPLAIN QUERY PLAN`.
   - Limit.
