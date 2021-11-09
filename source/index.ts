@@ -8376,19 +8376,16 @@ export default async function courselore({
                     <button
                       type="button"
                       class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                      oninteractive="${javascript`
-                        tippy(this, {
-                          content: this.nextElementSibling.firstElementChild,
-                          trigger: "click",
-                          interactive: true,
-                        });
+                      onclick="${javascript`
+                        const element = this.closest("form").querySelector(".filters");
+                        element.hidden = !element.hidden;
                       `}"
                     >
                       <i class="bi bi-funnel"></i>
                       Filters
                     </button>
                   </div>
-                  <div>
+                  <div hidden class="filters">
                     <div class="label">
                       <p class="label--text">Type</p>
                     </div>
