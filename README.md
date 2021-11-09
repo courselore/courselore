@@ -28,6 +28,7 @@
 
 ### Polish Existing Features
 
+- Revisit explanation of pinned conversations.
 - Search:
   - Filters (for example, by conversation type).
   - Don’t scroll on search.

@@ -8449,7 +8449,21 @@ export default async function courselore({
                       ? html``
                       : html`
                           <div class="label">
-                            <div class="label--text">Tags</div>
+                            <div class="label--text">
+                              Tags
+                              <button
+                                type="button"
+                                class="button button--tight button--tight--inline button--transparent"
+                                oninteractive="${javascript`
+                                  tippy(this, {
+                                    content: "Tags help to organize conversations.",
+                                    trigger: "click",
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-info-circle"></i>
+                              </button>
+                            </div>
                             <div
                               style="${css`
                                 display: flex;
@@ -8506,6 +8520,78 @@ export default async function courselore({
                             </div>
                           </div>
                         `}
+                    <div class="label">
+                      <div class="label--text">
+                        Pin
+                        <button
+                          type="button"
+                          class="button button--tight button--tight--inline button--transparent"
+                          oninteractive="${javascript`
+                            tippy(this, {
+                              content: "Pinned conversations are listed first.",
+                              trigger: "click",
+                            });
+                          `}"
+                        >
+                          <i class="bi bi-info-circle"></i>
+                        </button>
+                      </div>
+                      <div
+                        style="${css`
+                          display: flex;
+                          flex-wrap: wrap;
+                          column-gap: var(--space--6);
+                          row-gap: var(--space--2);
+                        `}"
+                      >
+                        <label
+                          class="button button--tight button--tight--inline button--transparent"
+                        >
+                          <input
+                            type="checkbox"
+                            name="filters[isPinned]"
+                            value="true"
+                            autocomplete="off"
+                            class="visually-hidden input--radio-or-checkbox--multilabel"
+                            onchange="${javascript`
+                              const element = this.closest("form").querySelector('[name="filters[isPinned]"][value="false"]');
+                              if (this.checked && element.checked) element.click();
+                            `}"
+                          />
+                          <span>
+                            <i class="bi bi-pin"></i>
+                            Pinned
+                          </span>
+                          <span class="text--amber">
+                            <i class="bi bi-pin-fill"></i>
+                            Pinned
+                          </span>
+                        </label>
+                        <label
+                          class="button button--tight button--tight--inline button--transparent"
+                        >
+                          <input
+                            type="checkbox"
+                            name="filters[isPinned]"
+                            value="false"
+                            autocomplete="off"
+                            class="visually-hidden input--radio-or-checkbox--multilabel"
+                            onchange="${javascript`
+                              const element = this.closest("form").querySelector('[name="filters[isPinned]"][value="true"]');
+                              if (this.checked && element.checked) element.click();
+                            `}"
+                          />
+                          <span>
+                            <i class="bi bi-pin-angle"></i>
+                            Unpinned
+                          </span>
+                          <span class="text--amber">
+                            <i class="bi bi-pin-angle-fill"></i>
+                            Unpinned
+                          </span>
+                        </label>
+                      </div>
+                    </div>
                   </div>
                 </form>
 
