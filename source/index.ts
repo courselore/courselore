@@ -7927,7 +7927,12 @@ export default async function courselore({
       {
         conversationLayoutSidebarOpenOnSmallScreen?: "true";
         search?: string;
-        tag?: string;
+        filters?: {
+          type?: ConversationType[];
+          tagsReferences?: string;
+          isPinned?: "true" | "false";
+          isStaffOnly?: "true" | "false";
+        };
       },
       IsEnrolledInCourseMiddlewareLocals &
         Partial<IsConversationAccessibleMiddlewareLocals> &
@@ -7948,10 +7953,12 @@ export default async function courselore({
         ? sanitizeSearch(req.query.search)
         : undefined;
 
-    const tagFilter =
-      typeof req.query.tag === "string"
-        ? res.locals.tags.find((tag) => tag.reference === req.query.tag)
-        : undefined;
+    // TODO:
+    // const tagFilter =
+    //   typeof req.query.tag === "string"
+    //     ? res.locals.tags.find((tag) => tag.reference === req.query.tag)
+    //     : undefined;
+    const tagFilter: any = undefined;
 
     const conversations = database
       .all<{
@@ -8331,7 +8338,7 @@ export default async function courselore({
                           row-gap: var(--space--2);
                         `}"
                       >
-                        $${res.locals.conversationTypes.map(
+                        $${conversationTypes.map(
                           (conversationType) => html`
                             <label
                               class="button button--tight button--tight--inline button--transparent"

@@ -29,6 +29,7 @@
 ### Polish Existing Features
 
 - Search:
+  - `<hr>` below filters?
   - Show “Clear Search & Filters” conditionally.
   - Show/hide & check/uncheck filters.
   - Test “See conversations with this tag”.
