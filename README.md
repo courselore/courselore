@@ -28,7 +28,6 @@
 
 ### Polish Existing Features
 
-- Clean CSRF tokens where they aren’t necessary (forms with `GET`).
 - Search:
   - Filters (for example, by conversation type).
   - Don’t scroll on search.
