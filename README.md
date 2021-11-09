@@ -29,7 +29,8 @@
 ### Polish Existing Features
 
 - Search:
-  - Filters (for example, by conversation type).
+  - Show “Clear Search & Filters” conditionally.
+  - Show/hide & check/uncheck filters.
   - Don’t scroll on search.
   - `EXPLAIN QUERY PLAN`.
   - Limit.
