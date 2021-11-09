@@ -2955,96 +2955,94 @@ export default async function courselore({
     }
   );
 
-  app.get<
-    {},
-    HTML,
-    {},
-    { redirect?: string; name?: string; email?: string },
-    IsSignedOutMiddlewareLocals
-  >("/sign-in", ...isSignedOutMiddleware, (req, res) => {
-    res.send(
-      boxLayout({
-        req,
-        res,
-        head: html`
-          <title>
-            Sign in · CourseLore · Communication Platform for Education
-          </title>
-        `,
-        body: html`
-          <form
-            method="POST"
-            action="${baseURL}/sign-in?${qs.stringify(req.query)}"
-            novalidate
-            style="${css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--4);
-            `}"
-          >
-            <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-            <label class="label">
-              <p class="label--text">Email</p>
-              <input
-                type="email"
-                name="email"
-                placeholder="you@educational-institution.edu"
-                value="${req.query.email ?? ""}"
-                required
-                autofocus
-                class="input--text"
-                data-skip-is-modified="true"
-              />
-            </label>
-            <label class="label">
-              <p class="label--text">Password</p>
-              <input
-                type="password"
-                name="password"
-                required
-                class="input--text"
-                data-skip-is-modified="true"
-              />
-            </label>
-            <button class="button button--blue">
-              <i class="bi bi-box-arrow-in-right"></i>
-              Sign in
-            </button>
-          </form>
-          <div
-            style="${css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--2);
-            `}"
-          >
-            <p>
-              Don’t have an account?
-              <a
-                href="${baseURL}/sign-up?${qs.stringify(req.query)}"
-                class="link"
-                >Sign up</a
-              >.
-            </p>
-            <p>
-              Forgot your password?
-              <a
-                href="${baseURL}/reset-password?${qs.stringify(req.query)}"
-                class="link"
-                >Reset password</a
-              >.
-            </p>
-          </div>
-        `,
-      })
-    );
-  });
+  app.get<{}, HTML, {}, { email?: string }, IsSignedOutMiddlewareLocals>(
+    "/sign-in",
+    ...isSignedOutMiddleware,
+    (req, res) => {
+      res.send(
+        boxLayout({
+          req,
+          res,
+          head: html`
+            <title>
+              Sign in · CourseLore · Communication Platform for Education
+            </title>
+          `,
+          body: html`
+            <form
+              method="POST"
+              action="${baseURL}/sign-in?${qs.stringify(req.query)}"
+              novalidate
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `}"
+            >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+              <label class="label">
+                <p class="label--text">Email</p>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="you@educational-institution.edu"
+                  value="${req.query.email ?? ""}"
+                  required
+                  autofocus
+                  class="input--text"
+                  data-skip-is-modified="true"
+                />
+              </label>
+              <label class="label">
+                <p class="label--text">Password</p>
+                <input
+                  type="password"
+                  name="password"
+                  required
+                  class="input--text"
+                  data-skip-is-modified="true"
+                />
+              </label>
+              <button class="button button--blue">
+                <i class="bi bi-box-arrow-in-right"></i>
+                Sign in
+              </button>
+            </form>
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+              `}"
+            >
+              <p>
+                Don’t have an account?
+                <a
+                  href="${baseURL}/sign-up?${qs.stringify(req.query)}"
+                  class="link"
+                  >Sign up</a
+                >.
+              </p>
+              <p>
+                Forgot your password?
+                <a
+                  href="${baseURL}/reset-password?${qs.stringify(req.query)}"
+                  class="link"
+                  >Reset password</a
+                >.
+              </p>
+            </div>
+          `,
+        })
+      );
+    }
+  );
 
   app.post<
     {},
     HTML,
     { email?: string; password?: string },
-    { redirect?: string; name?: string; email?: string },
+    { redirect?: string },
     IsSignedOutMiddlewareLocals
   >(
     "/sign-in",
@@ -3117,86 +3115,84 @@ export default async function courselore({
     },
   };
 
-  app.get<
-    {},
-    HTML,
-    {},
-    { redirect?: string; name?: string; email?: string },
-    IsSignedOutMiddlewareLocals
-  >("/reset-password", ...isSignedOutMiddleware, (req, res) => {
-    res.send(
-      boxLayout({
-        req,
-        res,
-        head: html`
-          <title>
-            Reset Password · CourseLore · Communication Platform for Education
-          </title>
-        `,
-        body: html`
-          <form
-            method="POST"
-            action="${baseURL}/reset-password?${qs.stringify(req.query)}"
-            novalidate
-            style="${css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--4);
-            `}"
-          >
-            <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-            <label class="label">
-              <p class="label--text">Email</p>
-              <input
-                type="email"
-                name="email"
-                placeholder="you@educational-institution.edu"
-                value="${req.query.email ?? ""}"
-                required
-                autofocus
-                class="input--text"
-                data-skip-is-modified="true"
-              />
-            </label>
-            <button class="button button--blue">
-              <i class="bi bi-key"></i>
-              Reset Password
-            </button>
-          </form>
-          <div
-            style="${css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--2);
-            `}"
-          >
-            <p>
-              Don’t have an account?
-              <a
-                href="${baseURL}/sign-up?${qs.stringify(req.query)}"
-                class="link"
-                >Sign up</a
-              >.
-            </p>
-            <p>
-              Remember your password?
-              <a
-                href="${baseURL}/sign-in?${qs.stringify(req.query)}"
-                class="link"
-                >Sign in</a
-              >.
-            </p>
-          </div>
-        `,
-      })
-    );
-  });
+  app.get<{}, HTML, {}, { email?: string }, IsSignedOutMiddlewareLocals>(
+    "/reset-password",
+    ...isSignedOutMiddleware,
+    (req, res) => {
+      res.send(
+        boxLayout({
+          req,
+          res,
+          head: html`
+            <title>
+              Reset Password · CourseLore · Communication Platform for Education
+            </title>
+          `,
+          body: html`
+            <form
+              method="POST"
+              action="${baseURL}/reset-password?${qs.stringify(req.query)}"
+              novalidate
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `}"
+            >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+              <label class="label">
+                <p class="label--text">Email</p>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="you@educational-institution.edu"
+                  value="${req.query.email ?? ""}"
+                  required
+                  autofocus
+                  class="input--text"
+                  data-skip-is-modified="true"
+                />
+              </label>
+              <button class="button button--blue">
+                <i class="bi bi-key"></i>
+                Reset Password
+              </button>
+            </form>
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+              `}"
+            >
+              <p>
+                Don’t have an account?
+                <a
+                  href="${baseURL}/sign-up?${qs.stringify(req.query)}"
+                  class="link"
+                  >Sign up</a
+                >.
+              </p>
+              <p>
+                Remember your password?
+                <a
+                  href="${baseURL}/sign-in?${qs.stringify(req.query)}"
+                  class="link"
+                  >Sign in</a
+                >.
+              </p>
+            </div>
+          `,
+        })
+      );
+    }
+  );
 
   app.post<
     {},
     HTML,
     { email?: string; resend?: "true" },
-    { redirect?: string; name?: string; email?: string },
+    {},
     IsSignedOutMiddlewareLocals
   >("/reset-password", ...isSignedOutMiddleware, (req, res, next) => {
     if (
@@ -3273,7 +3269,7 @@ export default async function courselore({
     { passwordResetNonce: string },
     HTML,
     {},
-    { redirect?: string; name?: string; email?: string },
+    {},
     IsSignedOutMiddlewareLocals
   >(
     "/reset-password/:passwordResetNonce",
@@ -3356,7 +3352,7 @@ export default async function courselore({
     { passwordResetNonce: string },
     HTML,
     { password?: string },
-    { redirect?: string; name?: string; email?: string },
+    { redirect?: string },
     IsSignedOutMiddlewareLocals
   >(
     "/reset-password/:passwordResetNonce",
@@ -3409,7 +3405,7 @@ export default async function courselore({
     {},
     HTML,
     {},
-    { redirect?: string; name?: string; email?: string },
+    { name?: string; email?: string },
     IsSignedOutMiddlewareLocals
   >("/sign-up", ...isSignedOutMiddleware, (req, res) => {
     res.send(
@@ -3558,7 +3554,7 @@ export default async function courselore({
     {},
     HTML,
     { name?: string; email?: string; password?: string },
-    { redirect?: string; name?: string; email?: string },
+    { redirect?: string },
     IsSignedOutMiddlewareLocals
   >(
     "/sign-up",
