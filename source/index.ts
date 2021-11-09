@@ -8386,55 +8386,44 @@ export default async function courselore({
                       <i class="bi bi-funnel"></i>
                       Filters
                     </button>
-                    <div hidden><div>Hello</div></div>
+                    <div hidden>
+                      <div
+                        class="dropdown--menu"
+                        style="${css`
+                          max-height: var(--space--40);
+                          overflow: auto;
+                        `}"
+                      >
+                        <input
+                          type="checkbox"
+                          class="input--checkbox"
+                          name="hello"
+                          value="banana"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </form>
 
                 <div hidden>
-                  <button
-                    class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                  >
-                    $${tagFilter === undefined
-                      ? html`
-                          <i class="bi bi-tag"></i>
-                          Filter by Tag
-                        `
-                      : html`
-                          <i class="bi bi-tag-fill"></i>
-                          Filtering by
-                          <i class="bi bi-tag"></i>
-                          ${tagFilter.name}
-                        `}
-                  </button>
-                  <div hidden>
-                    <div
-                      class="dropdown--menu"
-                      style="${css`
-                        max-height: var(--space--40);
-                        overflow: auto;
-                      `}"
-                    >
-                      $${res.locals.tags.map((tag) => {
-                        const isTagFilter = tag.id === tagFilter?.id;
-                        return html`
-                          <a
-                            href="?${qs.stringify({
-                              conversationLayoutSidebarOpenOnSmallScreen:
-                                "true",
-                              search: req.query.search,
-                              tag: isTagFilter ? undefined : tag.reference,
-                            })}"
-                            class="dropdown--menu--item button ${isTagFilter
-                              ? "button--blue"
-                              : "button--transparent"}"
-                          >
-                            <i class="bi bi-tag"></i>
-                            ${tag.name}
-                          </a>
-                        `;
-                      })}
-                    </div>
-                  </div>
+                  $${res.locals.tags.map((tag) => {
+                    const isTagFilter = tag.id === tagFilter?.id;
+                    return html`
+                      <a
+                        href="?${qs.stringify({
+                          conversationLayoutSidebarOpenOnSmallScreen: "true",
+                          search: req.query.search,
+                          tag: isTagFilter ? undefined : tag.reference,
+                        })}"
+                        class="dropdown--menu--item button ${isTagFilter
+                          ? "button--blue"
+                          : "button--transparent"}"
+                      >
+                        <i class="bi bi-tag"></i>
+                        ${tag.name}
+                      </a>
+                    `;
+                  })}
                 </div>
 
                 $${conversations.length === 0
