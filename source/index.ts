@@ -8313,7 +8313,9 @@ export default async function courselore({
 
                 <hr class="separator" />
 
-                <div
+                <form
+                  novalidate
+                  data-skip-is-modified="true"
                   style="${css`
                     font-size: var(--font-size--xs);
                     line-height: var(--line-height--xs);
@@ -8322,8 +8324,12 @@ export default async function courselore({
                     gap: var(--space--2);
                   `}"
                 >
-                  <form
-                    novalidate
+                  <input
+                    type="hidden"
+                    name="conversationLayoutSidebarOpenOnSmallScreen"
+                    value="true"
+                  />
+                  <div
                     style="${css`
                       display: flex;
                       gap: var(--space--2);
@@ -8331,54 +8337,12 @@ export default async function courselore({
                     `}"
                   >
                     <input
-                      type="hidden"
-                      name="_csrf"
-                      value="${req.csrfToken()}"
-                    />
-                    <input
-                      type="hidden"
-                      name="conversationLayoutSidebarOpenOnSmallScreen"
-                      value="true"
-                    />
-                    $${req.query.tag !== undefined
-                      ? html`
-                          <input
-                            type="hidden"
-                            name="tag"
-                            value="${req.query.tag}"
-                          />
-                        `
-                      : html``}
-                    <input
                       type="text"
                       name="search"
                       value="${req.query.search ?? ""}"
                       placeholder="Search…"
-                      required
                       class="input--text"
-                      data-skip-is-modified="true"
                     />
-                    $${req.query.search !== undefined
-                      ? html`
-                          <a
-                            href="?${qs.stringify({
-                              conversationLayoutSidebarOpenOnSmallScreen:
-                                "true",
-                              search: undefined,
-                              tag: req.query.tag,
-                            })}"
-                            class="button button--tight button--tight--inline button--transparent"
-                            oninteractive="${javascript`
-                              tippy(this, {
-                                content: "Remove Search",
-                                touch: false,
-                              });
-                            `}"
-                          >
-                            <i class="bi bi-x-lg"></i>
-                          </a>
-                        `
-                      : html``}
                     <button
                       class="button button--tight button--tight--inline button--transparent"
                       oninteractive="${javascript`
@@ -8390,8 +8354,25 @@ export default async function courselore({
                     >
                       <i class="bi bi-search"></i>
                     </button>
-                  </form>
+                    <!-- TODO: Show this conditionally. -->
+                    <a
+                      href="?${qs.stringify({
+                        conversationLayoutSidebarOpenOnSmallScreen: "true",
+                      })}"
+                      class="button button--tight button--tight--inline button--transparent"
+                      oninteractive="${javascript`
+                        tippy(this, {
+                          content: "Clear Search & Filters",
+                          touch: false,
+                        });
+                      `}"
+                    >
+                      <i class="bi bi-x-lg"></i>
+                    </a>
+                  </div>
+                </form>
 
+                <div hidden>
                   $${res.locals.tags.length > 0
                     ? html`
                         <div
