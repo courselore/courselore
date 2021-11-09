@@ -8375,6 +8375,13 @@ export default async function courselore({
                     <button
                       type="button"
                       class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                      oninteractive="${javascript`
+                        tippy(this, {
+                          content: this.nextElementSibling.firstElementChild,
+                          trigger: "click",
+                          interactive: true,
+                        });
+                      `}"
                     >
                       <i class="bi bi-funnel"></i>
                       Filters
@@ -8386,13 +8393,6 @@ export default async function courselore({
                 <div hidden>
                   <button
                     class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                    oninteractive="${javascript`
-                      tippy(this, {
-                        content: this.nextElementSibling.firstElementChild,
-                        trigger: "click",
-                        interactive: true,
-                      });
-                    `}"
                   >
                     $${tagFilter === undefined
                       ? html`
