@@ -31,6 +31,7 @@
 - Search:
   - Show “Clear Search & Filters” conditionally.
   - Show/hide & check/uncheck filters.
+  - Update “See conversations with this tag”.
   - Don’t scroll on search.
   - `EXPLAIN QUERY PLAN`.
   - Limit.
