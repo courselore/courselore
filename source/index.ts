@@ -8388,6 +8388,42 @@ export default async function courselore({
                   <div hidden class="filters">
                     <div class="label">
                       <p class="label--text">Type</p>
+                      <div
+                        style="${css`
+                          display: flex;
+                          flex-wrap: wrap;
+                          column-gap: var(--space--6);
+                          row-gap: var(--space--2);
+                        `}"
+                      >
+                        $${res.locals.conversationTypes.map(
+                          (conversationType) => html`
+                            <label
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="filters[type][]"
+                                value="${conversationType}"
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
+                              />
+                              <span>
+                                $${conversationTypeIcon[conversationType]
+                                  .regular}
+                                $${lodash.capitalize(conversationType)}
+                              </span>
+                              <span
+                                class="${conversationTypeTextColor[
+                                  conversationType
+                                ].select}"
+                              >
+                                $${conversationTypeIcon[conversationType].fill}
+                                $${lodash.capitalize(conversationType)}
+                              </span>
+                            </label>
+                          `
+                        )}
+                      </div>
                     </div>
                   </div>
                 </form>
