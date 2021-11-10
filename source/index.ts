@@ -8337,20 +8337,26 @@ export default async function courselore({
                     >
                       <i class="bi bi-search"></i>
                     </button>
-                    <a
-                      href="?${qs.stringify({
-                        conversationLayoutSidebarOpenOnSmallScreen: "true",
-                      })}"
-                      class="button button--tight button--tight--inline button--transparent"
-                      oninteractive="${javascript`
-                        tippy(this, {
-                          content: "Clear Search & Filters",
-                          touch: false,
-                        });
-                      `}"
-                    >
-                      <i class="bi bi-x-lg"></i>
-                    </a>
+                    $${req.query.search !== undefined ||
+                    req.query.filters !== undefined
+                      ? html`
+                          <a
+                            href="?${qs.stringify({
+                              conversationLayoutSidebarOpenOnSmallScreen:
+                                "true",
+                            })}"
+                            class="button button--tight button--tight--inline button--transparent"
+                            oninteractive="${javascript`
+                              tippy(this, {
+                                content: "Clear Search & Filters",
+                                touch: false,
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-x-lg"></i>
+                          </a>
+                        `
+                      : html``}
                   </div>
 
                   <div
@@ -8364,6 +8370,9 @@ export default async function courselore({
                       <input
                         type="checkbox"
                         class="visually-hidden input--radio-or-checkbox--multilabel"
+                        $${req.query.filters === undefined
+                          ? html``
+                          : html`checked`}
                         onchange="${javascript`
                           this.closest("form").querySelector(".filters").hidden = !this.checked;
                         `}"
@@ -8380,7 +8389,7 @@ export default async function courselore({
                   </div>
 
                   <div
-                    hidden
+                    $${req.query.filters === undefined ? html`hidden` : html``}
                     class="filters"
                     style="${css`
                       display: flex;
