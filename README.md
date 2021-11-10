@@ -28,6 +28,7 @@
 
 ### Polish Existing Features
 
+- Fix hang on filtering.
 - Search & Filters:
   - Don’t scroll on search.
 - Test interface with weird data: Long text, long words, too many tags, and so forth.
