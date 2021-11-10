@@ -7929,7 +7929,7 @@ export default async function courselore({
         search?: string;
         filters?: {
           types?: ConversationType[];
-          tagsReferences?: string;
+          tagsReferences?: string[];
           isPinned?: "true" | "false";
           isStaffOnly?: "true" | "false";
         };
@@ -7953,11 +7953,39 @@ export default async function courselore({
         ? sanitizeSearch(req.query.search)
         : undefined;
 
-    // TODO:
-    // const tagFilter =
-    //   typeof req.query.tag === "string"
-    //     ? res.locals.tags.find((tag) => tag.reference === req.query.tag)
-    //     : undefined;
+    const filters: {
+      types?: ConversationType[];
+      tagsReferences?: string[];
+      isPinned?: "true" | "false";
+      isStaffOnly?: "true" | "false";
+    } = {};
+    if (typeof req.query.filters === "object") {
+      if (Array.isArray(req.query.filters.types)) {
+        const types = req.query.filters.types.filter((type) =>
+          conversationTypes.includes(type)
+        );
+        if (types.length > 0) filters.types = types;
+      }
+      if (Array.isArray(req.query.filters.tagsReferences)) {
+        const tagsReferences = req.query.filters.tagsReferences.filter(
+          (tagReference) =>
+            res.locals.tags.find((tag) => tagReference === tag.reference) !==
+            undefined
+        );
+        if (tagsReferences.length > 0) filters.tagsReferences = tagsReferences;
+      }
+      if (
+        typeof req.query.filters.isPinned === "string" &&
+        ["true", "false"].includes(req.query.filters.isPinned)
+      )
+        filters.isPinned = req.query.filters.isPinned;
+      if (
+        typeof req.query.filters.isStaffOnly === "string" &&
+        ["true", "false"].includes(req.query.filters.isStaffOnly)
+      )
+        filters.isStaffOnly = req.query.filters.isStaffOnly;
+    }
+
     const tagFilter: any = undefined;
 
     const conversations = database
