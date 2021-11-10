@@ -29,10 +29,6 @@
 ### Polish Existing Features
 
 - Search & Filters:
-  - Tags don’t seem to be working.
-  - Show “Clear Search & Filters” conditionally.
-  - Show/hide & check/uncheck filters.
-  - Test “See conversations with this tag”.
   - Don’t scroll on search.
   - `EXPLAIN QUERY PLAN`.
   - Limit.
