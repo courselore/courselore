@@ -31,7 +31,6 @@
 - Search & Filters:
   - Don’t scroll on search.
   - `EXPLAIN QUERY PLAN`.
-  - Limit.
 - Test interface with weird data: Long text, long words, too many tags, and so forth.
 - Come up with a better term than “Demonstration”, which may imply a paid product.
 
@@ -125,6 +124,12 @@
 - Polls.
 - Lightbox modal for resized images.
 - Add support for videos: Sanitization, dimensions, and so forth.
+
+### Pagination
+
+- List of conversations on the left.
+- Messages in a conversation.
+- Course Settings · Enrollments.
 
 ### File Management
 
