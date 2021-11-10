@@ -8630,8 +8630,6 @@ export default async function courselore({
                   </div>
                 </form>
 
-                <hr class="separator" />
-
                 $${conversations.length === 0
                   ? html`
                       <div
@@ -8648,14 +8646,16 @@ export default async function courselore({
                       </div>
                     `
                   : html`
-                      $${req.query.search === undefined &&
-                      // TODO: Object.keys(filters).length === 0 &&
+                      $${search === undefined &&
+                      Object.keys(filters).length === 0 &&
                       conversations.some(
                         (conversation) =>
                           conversation.readingsCount <
                           conversation.messagesCount
                       )
                         ? html`
+                            <hr class="separator" />
+
                             <form
                               method="POST"
                               action="${baseURL}/courses/${res.locals.course
