@@ -8068,8 +8068,9 @@ export default async function courselore({
             filters.tagsReferences === undefined
               ? sql``
               : sql`
-                  JOIN "taggings" ON "conversations"."id" = "taggings"."conversation" AND
-                                     "taggings"."tag" IN ${filters.tagsReferences}
+                  JOIN "taggings" ON "conversations"."id" = "taggings"."conversation"
+                  JOIN "tags" ON "taggings"."tag" = "tags"."id" AND
+                                 "tags"."reference" IN ${filters.tagsReferences}
                 `
           }
           WHERE "conversations"."course" = ${res.locals.course.id}
