@@ -29,6 +29,7 @@
 ### Polish Existing Features
 
 - Search & Filters:
+  - Disable filters fields when unchecking the “Filters” button.
   - Show “Clear Search & Filters” conditionally.
   - Show/hide & check/uncheck filters.
   - Test “See conversations with this tag”.

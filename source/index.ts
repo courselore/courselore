@@ -8598,10 +8598,10 @@ export default async function courselore({
                           <input
                             type="checkbox"
                             name="filters[isStaffOnly]"
-                            value="true"
+                            value="false"
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onchange="${javascript`
-                              if (this.checked) this.closest("form").querySelector('[name="filters[isStaffOnly]"][value="false"]').checked = false;
+                              if (this.checked) this.closest("form").querySelector('[name="filters[isStaffOnly]"][value="true"]').checked = false;
                             `}"
                           />
                           <span>
@@ -8619,10 +8619,10 @@ export default async function courselore({
                           <input
                             type="checkbox"
                             name="filters[isStaffOnly]"
-                            value="false"
+                            value="true"
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onchange="${javascript`
-                              if (this.checked) this.closest("form").querySelector('[name="filters[isStaffOnly]"][value="true"]').checked = false;
+                              if (this.checked) this.closest("form").querySelector('[name="filters[isStaffOnly]"][value="false"]').checked = false;
                             `}"
                           />
                           <span>
