@@ -34,7 +34,7 @@
     "@leafac/html": "^3.0.0",
     "@leafac/javascript": "^0.1.2",
     "@leafac/rehype-shiki": "^2.1.0",
-    "@leafac/sqlite": "^1.5.1",
+    "@leafac/sqlite": "^2.0.0",
     "@sindresorhus/slugify": "^2.1.0",
     "argon2": "^0.28.2",
     "cookie-parser": "^1.4.5",
