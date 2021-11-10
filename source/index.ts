@@ -8415,6 +8415,11 @@ export default async function courselore({
                               <input
                                 type="checkbox"
                                 name="filters[types][]"
+                                $${req.query.filters?.types?.includes(
+                                  conversationType
+                                )
+                                  ? html`checked`
+                                  : html``}
                                 value="${conversationType}"
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                               />
