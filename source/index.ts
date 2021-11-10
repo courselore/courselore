@@ -8374,7 +8374,10 @@ export default async function courselore({
                           ? html``
                           : html`checked`}
                         onchange="${javascript`
-                          this.closest("form").querySelector(".filters").hidden = !this.checked;
+                          const filters = this.closest("form").querySelector(".filters");
+                          filters.hidden = !this.checked;
+                          for (const element of filters.querySelectorAll("*"))
+                            if (element.disabled !== null) element.disabled = !this.checked;
                         `}"
                       />
                       <span>
