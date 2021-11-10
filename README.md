@@ -29,7 +29,6 @@
 ### Polish Existing Features
 
 - Search & Filters:
-  - Disable filters fields when unchecking the “Filters” button.
   - Tags don’t seem to be working.
   - Show “Clear Search & Filters” conditionally.
   - Show/hide & check/uncheck filters.
