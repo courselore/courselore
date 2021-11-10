@@ -8646,8 +8646,8 @@ export default async function courselore({
                       </div>
                     `
                   : html`
-                      $${search === undefined &&
-                      Object.keys(filters).length === 0 &&
+                      $${req.query.search === undefined &&
+                      req.query.filters === undefined &&
                       conversations.some(
                         (conversation) =>
                           conversation.readingsCount <
