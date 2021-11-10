@@ -7961,17 +7961,26 @@ export default async function courselore({
     } = {};
     if (typeof req.query.filters === "object") {
       if (Array.isArray(req.query.filters.types)) {
-        const types = req.query.filters.types.filter((type) =>
-          conversationTypes.includes(type)
-        );
+        const types = [
+          ...new Set(
+            req.query.filters.types.filter((type) =>
+              conversationTypes.includes(type)
+            )
+          ),
+        ];
         if (types.length > 0) filters.types = types;
       }
       if (Array.isArray(req.query.filters.tagsReferences)) {
-        const tagsReferences = req.query.filters.tagsReferences.filter(
-          (tagReference) =>
-            res.locals.tags.find((tag) => tagReference === tag.reference) !==
-            undefined
-        );
+        const tagsReferences = [
+          ...new Set(
+            req.query.filters.tagsReferences.filter(
+              (tagReference) =>
+                res.locals.tags.find(
+                  (tag) => tagReference === tag.reference
+                ) !== undefined
+            )
+          ),
+        ];
         if (tagsReferences.length > 0) filters.tagsReferences = tagsReferences;
       }
       if (
@@ -7985,8 +7994,6 @@ export default async function courselore({
       )
         filters.isStaffOnly = req.query.filters.isStaffOnly;
     }
-
-    const tagFilter: any = undefined;
 
     const conversations = database
       .all<{
@@ -8058,11 +8065,11 @@ export default async function courselore({
               `
           }
           $${
-            tagFilter === undefined
+            filters.tagsReferences === undefined
               ? sql``
               : sql`
                   JOIN "taggings" ON "conversations"."id" = "taggings"."conversation" AND
-                                     "taggings"."tag" = ${tagFilter.id}
+                                     "taggings"."tag" IN ${filters.tagsReferences}
                 `
           }
           WHERE "conversations"."course" = ${res.locals.course.id}
@@ -8075,6 +8082,31 @@ export default async function courselore({
                   "messagesSearchResult"."rank" IS NOT NULL OR
                   "usersNameSearchIndexResult"."rank" IS NOT NULL
                 )
+              `
+          }
+          $${
+            filters.types === undefined
+              ? sql``
+              : sql`
+                AND "conversations"."types" IN ${filters.types}
+              `
+          }
+          $${
+            filters.isPinned === undefined
+              ? sql``
+              : sql`
+                AND "conversations"."pinnedAt" IS $${
+                  filters.isPinned === "true" ? sql`NOT` : sql``
+                } NULL
+              `
+          }
+          $${
+            filters.isStaffOnly === undefined
+              ? sql``
+              : sql`
+                AND "conversations"."staffOnlyAt" IS $${
+                  filters.isStaffOnly === "true" ? sql`NOT` : sql``
+                } NULL
               `
           }
           GROUP BY "conversations"."id"
