@@ -30,7 +30,6 @@
 
 - Search & Filters:
   - Don’t scroll on search.
-  - `EXPLAIN QUERY PLAN`.
 - Test interface with weird data: Long text, long words, too many tags, and so forth.
 - Come up with a better term than “Demonstration”, which may imply a paid product.
 
@@ -177,6 +176,7 @@
   - Render views asynchronously.
   - Pre-render reusable CSS (for example, the design system) and move it out of every HTML.
   - Pre-render Markdown.
+  - Look for more database indices that may be necessary.
   - n+1 queries:
     - Cases:
       - `getConversation()`.
