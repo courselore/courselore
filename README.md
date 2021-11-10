@@ -29,7 +29,7 @@
 ### Polish Existing Features
 
 - Search & Filters:
-  - Continue from `TODO`.
+  - Address `TODO`.
   - Show “Clear Search & Filters” conditionally.
   - Show/hide & check/uncheck filters.
   - Test “See conversations with this tag”.

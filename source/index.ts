@@ -8088,7 +8088,7 @@ export default async function courselore({
             filters.types === undefined
               ? sql``
               : sql`
-                AND "conversations"."types" IN ${filters.types}
+                AND "conversations"."type" IN ${filters.types}
               `
           }
           $${
@@ -8649,7 +8649,7 @@ export default async function courselore({
                     `
                   : html`
                       $${req.query.search === undefined &&
-                      tagFilter === undefined &&
+                      // TODO: Object.keys(filters).length === 0 &&
                       conversations.some(
                         (conversation) =>
                           conversation.readingsCount <
