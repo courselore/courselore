@@ -8666,6 +8666,8 @@ export default async function courselore({
 
                 $${conversations.length === 0
                   ? html`
+                      <hr class="separator" />
+
                       <div
                         style="${css`
                           display: flex;
