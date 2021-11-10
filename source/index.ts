@@ -8415,12 +8415,12 @@ export default async function courselore({
                               <input
                                 type="checkbox"
                                 name="filters[types][]"
+                                value="${conversationType}"
                                 $${req.query.filters?.types?.includes(
                                   conversationType
                                 )
                                   ? html`checked`
                                   : html``}
-                                value="${conversationType}"
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                               />
                               <span>
@@ -8484,6 +8484,11 @@ export default async function courselore({
                                         type="checkbox"
                                         name="filters[tagsReferences][]"
                                         value="${tag.reference}"
+                                        $${req.query.filters?.tagsReferences?.includes(
+                                          tag.reference
+                                        )
+                                          ? html`checked`
+                                          : html``}
                                         class="visually-hidden input--radio-or-checkbox--multilabel"
                                       />
                                       <span>
@@ -8549,6 +8554,9 @@ export default async function courselore({
                             type="checkbox"
                             name="filters[isPinned]"
                             value="true"
+                            $${req.query.filters?.isPinned === "true"
+                              ? html`checked`
+                              : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onchange="${javascript`
                               if (this.checked) this.closest("form").querySelector('[name="filters[isPinned]"][value="false"]').checked = false;
@@ -8570,6 +8578,9 @@ export default async function courselore({
                             type="checkbox"
                             name="filters[isPinned]"
                             value="false"
+                            $${req.query.filters?.isPinned === "false"
+                              ? html`checked`
+                              : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onchange="${javascript`
                               if (this.checked) this.closest("form").querySelector('[name="filters[isPinned]"][value="true"]').checked = false;
@@ -8604,6 +8615,9 @@ export default async function courselore({
                             type="checkbox"
                             name="filters[isStaffOnly]"
                             value="false"
+                            $${req.query.filters?.isStaffOnly === "false"
+                              ? html`checked`
+                              : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onchange="${javascript`
                               if (this.checked) this.closest("form").querySelector('[name="filters[isStaffOnly]"][value="true"]').checked = false;
@@ -8625,6 +8639,9 @@ export default async function courselore({
                             type="checkbox"
                             name="filters[isStaffOnly]"
                             value="true"
+                            $${req.query.filters?.isStaffOnly === "true"
+                              ? html`checked`
+                              : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onchange="${javascript`
                               if (this.checked) this.closest("form").querySelector('[name="filters[isStaffOnly]"][value="false"]').checked = false;
