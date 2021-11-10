@@ -29,7 +29,6 @@
 ### Polish Existing Features
 
 - Search & Filters:
-  - Address `TODO`.
   - Pass along in qs only the filters that matter?
   - Show “Clear Search & Filters” conditionally.
   - Show/hide & check/uncheck filters.
