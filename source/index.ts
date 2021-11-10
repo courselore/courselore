@@ -7928,7 +7928,7 @@ export default async function courselore({
         conversationLayoutSidebarOpenOnSmallScreen?: "true";
         search?: string;
         filters?: {
-          type?: ConversationType[];
+          types?: ConversationType[];
           tagsReferences?: string;
           isPinned?: "true" | "false";
           isStaffOnly?: "true" | "false";
@@ -8345,7 +8345,7 @@ export default async function courselore({
                             >
                               <input
                                 type="checkbox"
-                                name="filters[type][]"
+                                name="filters[types][]"
                                 value="${conversationType}"
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                               />
