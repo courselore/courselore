@@ -2579,8 +2579,8 @@ export default async function courselore({
       fill: html`<i class="bi bi-sticky-fill"></i>`,
     },
     chat: {
-      regular: html`<i class="bi bi-cup"></i>`,
-      fill: html`<i class="bi bi-cup-fill"></i>`,
+      regular: html`<i class="bi bi-lightning"></i>`,
+      fill: html`<i class="bi bi-lightning-fill"></i>`,
     },
   };
 
