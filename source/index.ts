@@ -7173,7 +7173,7 @@ export default async function courselore({
                                     });
                                   `}"
                                 >
-                                  <i class="bi bi-eye-slash-fill"></i>
+                                  <i class="bi bi-mortarboard-fill"></i>
                                   Visible by Staff Only
                                 </span>
                               </label>
@@ -7421,7 +7421,7 @@ export default async function courselore({
                                   });
                                 `}"
                               >
-                                <i class="bi bi-eye-slash-fill"></i>
+                                <i class="bi bi-mortarboard-fill"></i>
                                 Visible by Staff Only
                               </span>
                             </label>
@@ -8523,7 +8523,9 @@ export default async function courselore({
                                               });
                                             `}"
                                           >
-                                            <i class="bi bi-eye-slash-fill"></i>
+                                            <i
+                                              class="bi bi-mortarboard-fill"
+                                            ></i>
                                           </span>
                                         `
                                       : html``}
@@ -8659,11 +8661,11 @@ export default async function courselore({
                             `}"
                           />
                           <span>
-                            <i class="bi bi-eye-slash"></i>
+                            <i class="bi bi-mortarboard"></i>
                             Visible by Staff Only
                           </span>
                           <span class="text--pink">
-                            <i class="bi bi-eye-slash-fill"></i>
+                            <i class="bi bi-mortarboard-fill"></i>
                             Visible by Staff Only
                           </span>
                         </label>
@@ -9010,7 +9012,7 @@ export default async function courselore({
                                   });
                                 `}"
                               >
-                                <i class="bi bi-eye-slash-fill"></i>
+                                <i class="bi bi-mortarboard-fill"></i>
                               </span>
                             `
                           : html``}
@@ -9041,7 +9043,7 @@ export default async function courselore({
             if (conversation.staffOnlyAt !== null)
               content.push(html`
                 <div class="text--pink">
-                  <i class="bi bi-eye-slash-fill"></i>
+                  <i class="bi bi-mortarboard-fill"></i>
                   Visible by Staff Only
                 </div>
               `);
@@ -12075,7 +12077,7 @@ ${value}</textarea
                                           });
                                         `}"
                                       >
-                                        <i class="bi bi-eye-slash-fill"></i>
+                                        <i class="bi bi-mortarboard-fill"></i>
                                       </span>
                                     `
                                   : html``}
@@ -12205,7 +12207,7 @@ ${value}</textarea
                             });
                           `}"
                         >
-                          <i class="bi bi-eye-slash-fill"></i>
+                          <i class="bi bi-mortarboard-fill"></i>
                           Visible by Staff Only
                         </span>
                       </label>
@@ -13025,7 +13027,7 @@ ${value}</textarea
                                               `}"
                                             >
                                               <i
-                                                class="bi bi-eye-slash-fill"
+                                                class="bi bi-mortarboard-fill"
                                               ></i>
                                             </span>
                                           `
@@ -13093,7 +13095,7 @@ ${value}</textarea
                                                     `}"
                                                   >
                                                     <i
-                                                      class="bi bi-eye-slash-fill"
+                                                      class="bi bi-mortarboard-fill"
                                                     ></i>
                                                   </span>
                                                 `
@@ -13178,7 +13180,7 @@ ${value}</textarea
                                                             `}"
                                                           >
                                                             <i
-                                                              class="bi bi-eye-slash-fill"
+                                                              class="bi bi-mortarboard-fill"
                                                             ></i>
                                                           </span>
                                                         `
@@ -13311,7 +13313,7 @@ ${value}</textarea
                               Visible by Everyone
                             `
                           : html`
-                              <i class="bi bi-eye-slash-fill"></i>
+                              <i class="bi bi-mortarboard-fill"></i>
                               Visible by Staff Only
                             `}
                       </button>
@@ -13356,7 +13358,7 @@ ${value}</textarea
                                   </strong>
                                 </p>
                                 <button class="button button--rose">
-                                  <i class="bi bi-eye-slash"></i>
+                                  <i class="bi bi-mortarboard"></i>
                                   Set as Visible by Staff Only
                                 </button>
                               `
@@ -13398,7 +13400,7 @@ ${value}</textarea
                           gap: var(--space--1);
                         `}"
                       >
-                        <i class="bi bi-eye-slash-fill"></i>
+                        <i class="bi bi-mortarboard-fill"></i>
                         Visible by Staff Only
                       </div>
                     `);
