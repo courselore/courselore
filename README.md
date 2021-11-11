@@ -26,10 +26,17 @@
 <details>
 <summary><strong>Backlog</strong></summary>
 
+### Fixes
+
+- Move “this tag is visible by staff only” out of buttons.
+- Fix search involving private tags.
+- Is search by author taking in account anonymity?
+  - #references widget.
+  - Regular search.
+- Change icon of staff-only to mortarboard.
+
 ### Chat
 
-- Change icon of staff-only to mortarboard.
-- Is search taking in account private tags?
 - Tags aren’t required.
 - The first post is a chatroom description
 - Layout changes:
