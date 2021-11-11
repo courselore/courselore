@@ -12989,22 +12989,29 @@ ${value}</textarea
                           ? html`
                               $${res.locals.conversation.taggings.length === 1
                                 ? html`
-                                    <button
-                                      class="button button--tight button--tight--inline button--tight-gap text--teal disabled"
+                                    <div
                                       style="${css`
-                                        text-align: left;
-                                      `}"
-                                      oninteractive="${javascript`
-                                        tippy(this, {
-                                          content: "You may not remove this tag because a conversation must have at least one tag.",
-                                          theme: "rose",
-                                          touch: false,
-                                        });
+                                        display: flex;
+                                        gap: var(--space--2);
                                       `}"
                                     >
-                                      <i class="bi bi-tag-fill"></i>
-                                      ${res.locals.conversation.taggings[0].tag
-                                        .name}
+                                      <button
+                                        class="button button--tight button--tight--inline button--tight-gap text--teal disabled"
+                                        style="${css`
+                                          text-align: left;
+                                        `}"
+                                        oninteractive="${javascript`
+                                          tippy(this, {
+                                            content: "You may not remove this tag because a conversation must have at least one tag.",
+                                            theme: "rose",
+                                            touch: false,
+                                          });
+                                        `}"
+                                      >
+                                        <i class="bi bi-tag-fill"></i>
+                                        ${res.locals.conversation.taggings[0]
+                                          .tag.name}
+                                      </button>
                                       $${res.locals.conversation.taggings[0].tag
                                         .staffOnlyAt !== null
                                         ? html`
@@ -13023,7 +13030,7 @@ ${value}</textarea
                                             </span>
                                           `
                                         : html``}
-                                    </button>
+                                    </div>
                                   `
                                 : html`
                                     <div
@@ -13043,6 +13050,10 @@ ${value}</textarea
                                               .reference}/conversations/${res
                                               .locals.conversation
                                               .reference}/taggings?_method=DELETE"
+                                            style="${css`
+                                              display: flex;
+                                              gap: var(--space--2);
+                                            `}"
                                           >
                                             <input
                                               type="hidden"
@@ -13069,25 +13080,24 @@ ${value}</textarea
                                             >
                                               <i class="bi bi-tag-fill"></i>
                                               ${tagging.tag.name}
-                                              $${tagging.tag.staffOnlyAt !==
-                                              null
-                                                ? html`
-                                                    <span
-                                                      class="text--pink"
-                                                      oninteractive="${javascript`
-                                                        tippy(this, {
-                                                          content: "This tag is visible by staff only.",
-                                                          touch: false,
-                                                        });
-                                                      `}"
-                                                    >
-                                                      <i
-                                                        class="bi bi-eye-slash-fill"
-                                                      ></i>
-                                                    </span>
-                                                  `
-                                                : html``}
                                             </button>
+                                            $${tagging.tag.staffOnlyAt !== null
+                                              ? html`
+                                                  <span
+                                                    class="text--pink"
+                                                    oninteractive="${javascript`
+                                                      tippy(this, {
+                                                        content: "This tag is visible by staff only.",
+                                                        touch: false,
+                                                      });
+                                                    `}"
+                                                  >
+                                                    <i
+                                                      class="bi bi-eye-slash-fill"
+                                                    ></i>
+                                                  </span>
+                                                `
+                                              : html``}
                                           </form>
                                         `
                                       )}
