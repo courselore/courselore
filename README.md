@@ -28,10 +28,10 @@
 
 ### Fixes
 
-- Fix search involving private tags.
 - Is search by author taking in account anonymity?
   - #references widget.
   - Regular search.
+- Fix search involving private tags.
 - Change icon of staff-only to mortarboard.
 
 ### Chat
