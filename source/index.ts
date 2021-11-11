@@ -13005,6 +13005,24 @@ ${value}</textarea
                                       <i class="bi bi-tag-fill"></i>
                                       ${res.locals.conversation.taggings[0].tag
                                         .name}
+                                      $${res.locals.conversation.taggings[0].tag
+                                        .staffOnlyAt !== null
+                                        ? html`
+                                            <span
+                                              class="text--pink"
+                                              oninteractive="${javascript`
+                                                tippy(this, {
+                                                  content: "This tag is visible by staff only.",
+                                                  touch: false,
+                                                });
+                                              `}"
+                                            >
+                                              <i
+                                                class="bi bi-eye-slash-fill"
+                                              ></i>
+                                            </span>
+                                          `
+                                        : html``}
                                     </button>
                                   `
                                 : html`
@@ -13051,6 +13069,24 @@ ${value}</textarea
                                             >
                                               <i class="bi bi-tag-fill"></i>
                                               ${tagging.tag.name}
+                                              $${tagging.tag.staffOnlyAt !==
+                                              null
+                                                ? html`
+                                                    <span
+                                                      class="text--pink"
+                                                      oninteractive="${javascript`
+                                                        tippy(this, {
+                                                          content: "This tag is visible by staff only.",
+                                                          touch: false,
+                                                        });
+                                                      `}"
+                                                    >
+                                                      <i
+                                                        class="bi bi-eye-slash-fill"
+                                                      ></i>
+                                                    </span>
+                                                  `
+                                                : html``}
                                             </button>
                                           </form>
                                         `
@@ -13120,6 +13156,23 @@ ${value}</textarea
                                                       class="bi bi-tag-fill"
                                                     ></i>
                                                     ${tag.name}
+                                                    $${tag.staffOnlyAt !== null
+                                                      ? html`
+                                                          <span
+                                                            class="text--pink"
+                                                            oninteractive="${javascript`
+                                                              tippy(this, {
+                                                                content: "This tag is visible by staff only.",
+                                                                touch: false,
+                                                              });
+                                                            `}"
+                                                          >
+                                                            <i
+                                                              class="bi bi-eye-slash-fill"
+                                                            ></i>
+                                                          </span>
+                                                        `
+                                                      : html``}
                                                   </button>
                                                 </form>
                                               `

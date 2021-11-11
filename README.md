@@ -30,6 +30,13 @@
 
 - “This tag is visible by staff only” when showing tags in conversation page.
 - Change icon of staff-only to mortarboard.
+- Is search taking in account private tags?
+- Is the display of tags taking in account private tags?
+  - Sidebar.
+  - New conversation.
+  - A conversation.
+  - Tags picker in conversation.
+  - What if you’re a student, you’re the author of a conversation, and the conversation has been tagged by a staff member with a private tag.
 - Tags aren’t required.
 - The first post is a chatroom description
 - Layout changes:
