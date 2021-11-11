@@ -28,6 +28,8 @@
 
 ### Chat
 
+- “This tag is visible by staff only” when showing tags in conversation page.
+- Change icon of staff-only to mortarboard.
 - Tags aren’t required.
 - The first post is a chatroom description
 - Layout changes:

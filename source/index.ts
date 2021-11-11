@@ -8514,18 +8514,17 @@ export default async function courselore({
                                     </label>
                                     $${tag.staffOnlyAt !== null
                                       ? html`
-                                          <button
-                                            type="button"
-                                            class="button button--tight button--tight--inline button--transparent text--pink"
+                                          <span
+                                            class="text--pink"
                                             oninteractive="${javascript`
-                                                tippy(this, {
-                                                  content: "This tag is visible by staff only.",
-                                                  trigger: "click",
-                                                });
-                                              `}"
+                                              tippy(this, {
+                                                content: "This tag is visible by staff only.",
+                                                touch: false,
+                                              });
+                                            `}"
                                           >
                                             <i class="bi bi-eye-slash-fill"></i>
-                                          </button>
+                                          </span>
                                         `
                                       : html``}
                                   </div>
@@ -9000,6 +8999,21 @@ export default async function courselore({
                       <div class="text--teal">
                         <i class="bi bi-tag-fill"></i>
                         ${tagging.tag.name}
+                        $${tagging.tag.staffOnlyAt !== null
+                          ? html`
+                              <span
+                                class="text--pink"
+                                oninteractive="${javascript`
+                                  tippy(this, {
+                                    content: "This tag is visible by staff only.",
+                                    touch: false,
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-eye-slash-fill"></i>
+                              </span>
+                            `
+                          : html``}
                       </div>
                     `
                   )}
@@ -12052,18 +12066,17 @@ ${value}</textarea
                                 </label>
                                 $${tag.staffOnlyAt !== null
                                   ? html`
-                                      <button
-                                        type="button"
-                                        class="button button--tight button--tight--inline button--transparent text--pink"
+                                      <span
+                                        class="text--pink"
                                         oninteractive="${javascript`
-                                            tippy(this, {
-                                              content: "This tag is visible by staff only.",
-                                              trigger: "click",
-                                            });
-                                          `}"
+                                          tippy(this, {
+                                            content: "This tag is visible by staff only.",
+                                            touch: false,
+                                          });
+                                        `}"
                                       >
                                         <i class="bi bi-eye-slash-fill"></i>
-                                      </button>
+                                      </span>
                                     `
                                   : html``}
                               </div>
