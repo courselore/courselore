@@ -28,7 +28,6 @@
 
 ### Fixes
 
-- Fix search involving private tags.
 - Change icon of staff-only to mortarboard.
 
 ### Chat
