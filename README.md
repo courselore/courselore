@@ -28,6 +28,7 @@
 
 ### Chat
 
+- Move type to before title in sidebar.
 - Tags aren’t required.
 - The first post is a chatroom description
 - Layout changes:
