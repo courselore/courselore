@@ -77,6 +77,7 @@
 - Modify the order of tags.
 - Different states: Open vs archived.
 - Assign questions to CAs.
+- Scroll the conversations list to the current conversation doesn’t work on mobile.
 
 ### Advanced Access Control
 

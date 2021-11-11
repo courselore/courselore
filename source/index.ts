@@ -7933,6 +7933,7 @@ export default async function courselore({
           isPinned?: "true" | "false";
           isStaffOnly?: "true" | "false";
         };
+        scrollToConversation?: "false";
       },
       IsEnrolledInCourseMiddlewareLocals &
         Partial<IsConversationAccessibleMiddlewareLocals> &
@@ -8313,6 +8314,11 @@ export default async function courselore({
                     name="conversationLayoutSidebarOpenOnSmallScreen"
                     value="true"
                   />
+                  <input
+                    type="hidden"
+                    name="scrollToConversation"
+                    value="false"
+                  />
                   <div
                     style="${css`
                       display: flex;
@@ -8345,6 +8351,7 @@ export default async function courselore({
                             href="?${qs.stringify({
                               conversationLayoutSidebarOpenOnSmallScreen:
                                 "true",
+                              scrollToConversation: "false",
                             })}"
                             class="button button--tight button--tight--inline button--transparent"
                             oninteractive="${javascript`
@@ -8737,6 +8744,7 @@ export default async function courselore({
                                 .reference}/conversations/${conversation.reference}?${qs.stringify(
                                 lodash.omit(req.query, [
                                   "conversationLayoutSidebarOpenOnSmallScreen",
+                                  "scrollToConversation",
                                 ])
                               )}${conversation.messagesSearchResultMessage !==
                               undefined
@@ -8764,7 +8772,8 @@ export default async function courselore({
                                     `
                                   : css``}
                               `}"
-                              $${isSelected
+                              $${isSelected &&
+                              req.query.scrollToConversation !== "false"
                                 ? html`
                                     oninteractive="${javascript`
                                       this.scrollIntoView({ block: "center" });
