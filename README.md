@@ -26,10 +26,6 @@
 <details>
 <summary><strong>Backlog</strong></summary>
 
-### Fixes
-
-- Change icon of staff-only to mortarboard.
-
 ### Chat
 
 - Tags aren’t required.
