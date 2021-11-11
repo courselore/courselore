@@ -14452,6 +14452,56 @@ ${value}</textarea
               `}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+
+              $${res.locals.conversation.type === "question"
+                ? html`
+                    <div class="label">
+                      <p class="label--text">Type</p>
+                      <div
+                        style="${css`
+                          display: flex;
+                        `}"
+                      >
+                        <label
+                          class="button button--tight button--tight--inline button--transparent"
+                        >
+                          <input
+                            type="checkbox"
+                            name="isAnswer"
+                            $${res.locals.enrollment.role === "staff"
+                              ? `checked`
+                              : ``}
+                            class="visually-hidden input--radio-or-checkbox--multilabel"
+                          />
+                          <span
+                            oninteractive="${javascript`
+                              tippy(this, {
+                                content: "Set as Answer",
+                                touch: false,
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-patch-check"></i>
+                            Not an Answer
+                          </span>
+                          <span
+                            class="text--emerald"
+                            oninteractive="${javascript`
+                              tippy(this, {
+                                content: "Set as Not an Answer",
+                                touch: false,
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-patch-check-fill"></i>
+                            Answer
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                  `
+                : html``}
+
               <div
                 class="new-message"
                 oninteractive="${javascript`
@@ -14487,127 +14537,65 @@ ${value}</textarea
                 $${markdownEditor({ req, res })}
               </div>
 
-              <div
-                style="${css`
-                  display: flex;
-                  flex-wrap: wrap;
-                  column-gap: var(--space--8);
-                  row-gap: var(--space--4);
-                `}"
-              >
-                $${res.locals.conversation.type === "question"
-                  ? html`
+              $${res.locals.enrollment.role === "staff" ||
+              res.locals.conversation.staffOnlyAt !== null
+                ? html``
+                : html`
+                    <div
+                      class="label"
+                      style="${css`
+                        width: var(--space--56);
+                      `}"
+                    >
+                      <p class="label--text">Anonymity</p>
                       <div
-                        class="label"
                         style="${css`
-                          width: var(--space--32);
+                          display: flex;
                         `}"
                       >
-                        <p class="label--text">Type</p>
-                        <div
-                          style="${css`
-                            display: flex;
-                          `}"
+                        <label
+                          class="button button--tight button--tight--inline button--transparent"
                         >
-                          <label
-                            class="button button--tight button--tight--inline button--transparent"
+                          <input
+                            type="checkbox"
+                            name="isAnonymous"
+                            class="visually-hidden input--radio-or-checkbox--multilabel"
+                          />
+                          <span
+                            oninteractive="${javascript`
+                              tippy(this, {
+                                content: "Set as Anonymous to Other Students",
+                                touch: false,
+                              });
+                            `}"
                           >
-                            <input
-                              type="checkbox"
-                              name="isAnswer"
-                              $${res.locals.enrollment.role === "staff"
-                                ? `checked`
-                                : ``}
-                              class="visually-hidden input--radio-or-checkbox--multilabel"
-                            />
-                            <span
-                              oninteractive="${javascript`
-                                tippy(this, {
-                                  content: "Set as Answer",
-                                  touch: false,
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-patch-check"></i>
-                              Not an Answer
-                            </span>
-                            <span
-                              class="text--emerald"
-                              oninteractive="${javascript`
-                                tippy(this, {
-                                  content: "Set as Not an Answer",
-                                  touch: false,
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-patch-check-fill"></i>
-                              Answer
-                            </span>
-                          </label>
-                        </div>
-                      </div>
-                    `
-                  : html``}
-                $${res.locals.enrollment.role === "staff" ||
-                res.locals.conversation.staffOnlyAt !== null
-                  ? html``
-                  : html`
-                      <div
-                        class="label"
-                        style="${css`
-                          width: var(--space--56);
-                        `}"
-                      >
-                        <p class="label--text">Anonymity</p>
-                        <div
-                          style="${css`
-                            display: flex;
-                          `}"
-                        >
-                          <label
-                            class="button button--tight button--tight--inline button--transparent"
+                            $${res.locals.user.avatar === null
+                              ? html`<i class="bi bi-person-circle"></i>`
+                              : html`
+                                  <img
+                                    src="${res.locals.user.avatar}"
+                                    alt="${res.locals.user.name}"
+                                    class="avatar avatar--sm avatar--vertical-align"
+                                  />
+                                `}
+                            Signed by ${res.locals.user.name}
+                          </span>
+                          <span
+                            class="text--violet"
+                            oninteractive="${javascript`
+                              tippy(this, {
+                                content: "Set as Signed by ${res.locals.user.name}",
+                                touch: false,
+                              });
+                            `}"
                           >
-                            <input
-                              type="checkbox"
-                              name="isAnonymous"
-                              class="visually-hidden input--radio-or-checkbox--multilabel"
-                            />
-                            <span
-                              oninteractive="${javascript`
-                                tippy(this, {
-                                  content: "Set as Anonymous to Other Students",
-                                  touch: false,
-                                });
-                              `}"
-                            >
-                              $${res.locals.user.avatar === null
-                                ? html`<i class="bi bi-person-circle"></i>`
-                                : html`
-                                    <img
-                                      src="${res.locals.user.avatar}"
-                                      alt="${res.locals.user.name}"
-                                      class="avatar avatar--sm avatar--vertical-align"
-                                    />
-                                  `}
-                              Signed by ${res.locals.user.name}
-                            </span>
-                            <span
-                              class="text--violet"
-                              oninteractive="${javascript`
-                                tippy(this, {
-                                  content: "Set as Signed by ${res.locals.user.name}",
-                                  touch: false,
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-sunglasses"></i>
-                              Anonymous to Other Students
-                            </span>
-                          </label>
-                        </div>
+                            <i class="bi bi-sunglasses"></i>
+                            Anonymous to Other Students
+                          </span>
+                        </label>
                       </div>
-                    `}
-              </div>
+                    </div>
+                  `}
 
               <div>
                 <button
