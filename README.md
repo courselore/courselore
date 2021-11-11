@@ -28,8 +28,6 @@
 
 ### Polish Existing Features
 
-- Search & Filters:
-  - Don’t scroll on search.
 - Test interface with weird data: Long text, long words, too many tags, and so forth.
 - Come up with a better term than “Demonstration”, which may imply a paid product.
 
