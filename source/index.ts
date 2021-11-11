@@ -15874,23 +15874,24 @@ ${value}</textarea
     searchResult: string,
     searchPhrases: string | string[] | undefined,
     { prefix = false }: { prefix?: boolean } = {}
-  ): HTML =>
-    searchPhrases === undefined
-      ? searchResult
-      : searchResult.replace(
-          new RegExp(
-            `(?<!\\w)(?:${(typeof searchPhrases === "string"
-              ? splitSearchPhrases(searchPhrases)
-              : searchPhrases
-            )
-              .map((searchPhrase) => escapeStringRegexp(searchPhrase))
-              .join("|")})${prefix ? "" : "(?!\\w)"}`,
-            "gi"
-          ),
-          (searchPhrase) => html`<mark class="mark">$${searchPhrase}</mark>`
-        );
+  ): HTML => {
+    if (searchPhrases === undefined) return searchResult;
+    if (typeof searchPhrases === "string")
+      searchPhrases = splitSearchPhrases(searchPhrases);
+    if (searchPhrases.length === 0) return searchResult;
+    return searchResult.replace(
+      new RegExp(
+        `(?<!\\w)(?:${searchPhrases
+          .map((searchPhrase) => escapeStringRegexp(searchPhrase))
+          .join("|")})${prefix ? "" : "(?!\\w)"}`,
+        "gi"
+      ),
+      (searchPhrase) => html`<mark class="mark">$${searchPhrase}</mark>`
+    );
+  };
 
-  const splitSearchPhrases = (search: string): string[] => search.split(/\s+/);
+  const splitSearchPhrases = (search: string): string[] =>
+    search.split(/\s+/).filter((searchPhrase) => searchPhrase.trim() !== "");
 
   return app;
 }
