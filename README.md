@@ -28,7 +28,7 @@
 
 ### Polish Existing Features
 
-- Fix hang on filtering.
+- Fix hang when filtering on a specific conversation.
 - Search & Filters:
   - Don’t scroll on search.
 - Test interface with weird data: Long text, long words, too many tags, and so forth.
