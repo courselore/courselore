@@ -217,10 +217,10 @@ export default async function courselore({
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
+        "type" TEXT NOT NULL,
         "title" TEXT NOT NULL,
         "titleSearch" TEXT NOT NULL,
         "nextMessageReference" INTEGER NOT NULL,
-        "type" TEXT NOT NULL,
         "pinnedAt" TEXT NULL,
         "staffOnlyAt" TEXT NULL,
         UNIQUE ("course", "reference")
@@ -242,6 +242,7 @@ export default async function courselore({
       CREATE TRIGGER "conversationsReferenceIndexDelete" AFTER DELETE ON "conversations" BEGIN
         INSERT INTO "conversationsReferenceIndex" ("conversationsReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
       END;
+      CREATE INDEX "conversationsTypeIndex" ON "conversations" ("type");
       CREATE VIRTUAL TABLE "conversationsTitleSearchIndex" USING fts5(
         content = "conversations",
         content_rowid = "id",
@@ -258,7 +259,6 @@ export default async function courselore({
       CREATE TRIGGER "conversationsTitleSearchIndexDelete" AFTER DELETE ON "conversations" BEGIN
         INSERT INTO "conversationsTitleSearchIndex" ("conversationsTitleSearchIndex", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
       END;
-      CREATE INDEX "conversationsTypeIndex" ON "conversations" ("type");
       CREATE INDEX "conversationsPinnedAtIndex" ON "conversations" ("pinnedAt");
       CREATE INDEX "conversationsStaffOnlyAtIndex" ON "conversations" ("staffOnlyAt");
 
@@ -9304,20 +9304,20 @@ export default async function courselore({
     const conversation = database.get<{
       id: number;
       reference: string;
+      type: ConversationType;
       title: string;
       titleSearch: string;
       nextMessageReference: number;
-      type: ConversationType;
       pinnedAt: string | null;
       staffOnlyAt: string | null;
     }>(
       sql`
         SELECT "conversations"."id",
                "conversations"."reference",
+               "conversations"."type",
                "conversations"."title",
                "conversations"."titleSearch",
                "conversations"."nextMessageReference",
-               "conversations"."type",
                "conversations"."pinnedAt",
                "conversations"."staffOnlyAt"
         FROM "conversations"
@@ -9475,10 +9475,10 @@ export default async function courselore({
     return {
       id: conversation.id,
       reference: conversation.reference,
+      type: conversation.type,
       title: conversation.title,
       titleSearch: conversation.titleSearch,
       nextMessageReference: conversation.nextMessageReference,
-      type: conversation.type,
       pinnedAt: conversation.pinnedAt,
       staffOnlyAt: conversation.staffOnlyAt,
       createdAt: originalMessage.createdAt,
@@ -12365,20 +12365,20 @@ ${value}</textarea
                 INSERT INTO "conversations" (
                   "course",
                   "reference",
+                  "type",
                   "title",
                   "titleSearch",
                   "nextMessageReference",
-                  "type",
                   "pinnedAt",
                   "staffOnlyAt"
                 )
                 VALUES (
                   ${res.locals.course.id},
                   ${String(res.locals.course.nextConversationReference)},
+                  ${req.body.type},
                   ${req.body.title},
                   ${html`${req.body.title}`},
                   ${2},
-                  ${req.body.type},
                   ${req.body.isPinned ? new Date().toISOString() : null},
                   ${req.body.isStaffOnly ? new Date().toISOString() : null}
                 )
@@ -15577,20 +15577,20 @@ ${value}</textarea
                       INSERT INTO "conversations" (
                         "course",
                         "reference",
+                        "type",
                         "title",
                         "titleSearch",
                         "nextMessageReference",
-                        "type",
                         "pinnedAt",
                         "staffOnlyAt"
                       )
                       VALUES (
                         ${course.id},
                         ${String(conversationReference)},
+                        ${type},
                         ${title},
                         ${html`${title}`},
                         ${lodash.random(2, 13)},
-                        ${type},
                         ${
                           Math.random() < 0.15 ? new Date().toISOString() : null
                         },
