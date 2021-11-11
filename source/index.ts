@@ -6715,6 +6715,7 @@ export default async function courselore({
                         display: flex;
                         flex-direction: column;
                         gap: var(--space--2);
+                        min-width: var(--space--0);
                       `}"
                     >
                       <div
@@ -12977,6 +12978,9 @@ ${value}</textarea
                                 ? html`
                                     <button
                                       class="button button--tight button--tight--inline button--tight-gap text--teal disabled"
+                                      style="${css`
+                                        text-align: left;
+                                      `}"
                                       oninteractive="${javascript`
                                         tippy(this, {
                                           content: "You may not remove this tag because a conversation must have at least one tag.",
@@ -13021,6 +13025,9 @@ ${value}</textarea
                                             />
                                             <button
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal"
+                                              style="${css`
+                                                text-align: left;
+                                              `}"
                                               oninteractive="${javascript`
                                                 tippy(this, {
                                                   content: "Remove Tag",
