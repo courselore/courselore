@@ -12252,13 +12252,13 @@ ${value}</textarea
                                         class="avatar avatar--sm avatar--vertical-align"
                                       />
                                     `}
-                                Identified to Other Students
+                                Signed by ${res.locals.user.name}
                               </span>
                               <span
                                 class="text--violet"
                                 oninteractive="${javascript`
                                   tippy(this, {
-                                    content: "Set as Identified to Other Students",
+                                    content: "Set as Signed by ${res.locals.user.name}",
                                     touch: false,
                                   });
                                 `}"
@@ -13727,7 +13727,8 @@ ${value}</textarea
                                                 class="dropdown--menu--item button button--transparent text--violet"
                                               >
                                                 <i class="bi bi-sunglasses"></i>
-                                                Go Anonymous to Other Students
+                                                Set as Anonymous to Other
+                                                Students
                                               </button>
                                             `
                                           : html`
@@ -13755,8 +13756,8 @@ ${value}</textarea
                                                         class="avatar avatar--sm avatar--vertical-align"
                                                       />
                                                     `}
-                                                Identify Yourself to Other
-                                                Students
+                                                Set as Signed by
+                                                ${res.locals.user.name}
                                               </button>
                                             `}
                                       </form>
@@ -14586,13 +14587,13 @@ ${value}</textarea
                                       class="avatar avatar--sm avatar--vertical-align"
                                     />
                                   `}
-                              Identified to Other Students
+                              Signed by ${res.locals.user.name}
                             </span>
                             <span
                               class="text--violet"
                               oninteractive="${javascript`
                                 tippy(this, {
-                                  content: "Set as Identified to Other Students",
+                                  content: "Set as Signed by ${res.locals.user.name}",
                                   touch: false,
                                 });
                               `}"
