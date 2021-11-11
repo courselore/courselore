@@ -26,10 +26,6 @@
 <details>
 <summary><strong>Backlog</strong></summary>
 
-### Polish Existing Features
-
-- Come up with a better term than “Demonstration”, which may imply a paid product.
-
 ### Chat
 
 - Tags aren’t required.
