@@ -11943,19 +11943,6 @@ ${value}</textarea
                 `}"
               >
                 <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-                <div class="label">
-                  <p class="label--text">Title</p>
-                  <input
-                    type="text"
-                    name="title"
-                    required
-                    autocomplete="off"
-                    autofocus
-                    class="input--text"
-                  />
-                </div>
-
-                $${markdownEditor({ req, res })}
 
                 <div class="label">
                   <p class="label--text">Type</p>
@@ -11996,6 +11983,19 @@ ${value}</textarea
                   </div>
                 </div>
 
+                <div class="label">
+                  <p class="label--text">Title</p>
+                  <input
+                    type="text"
+                    name="title"
+                    required
+                    autocomplete="off"
+                    autofocus
+                    class="input--text"
+                  />
+                </div>
+
+                $${markdownEditor({ req, res })}
                 $${res.locals.tags.length === 0
                   ? html``
                   : html`
