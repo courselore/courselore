@@ -28,7 +28,6 @@
 
 ### Fixes
 
-- Move “this tag is visible by staff only” out of buttons.
 - Fix search involving private tags.
 - Is search by author taking in account anonymity?
   - #references widget.
