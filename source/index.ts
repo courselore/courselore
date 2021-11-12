@@ -8902,19 +8902,17 @@ export default async function courselore({
         </div>
         $${conversation.pinnedAt !== null
           ? html`
-              <div>
-                <div
-                  class="text--amber"
-                  oninteractive="${javascript`
-                    tippy(this, {
-                      content: "Pinned conversations are listed first.",
-                      touch: false,
-                    });
-                  `}"
-                >
-                  <i class="bi bi-pin-fill"></i>
-                  Pinned
-                </div>
+              <div
+                class="text--amber"
+                oninteractive="${javascript`
+                  tippy(this, {
+                    content: "Pinned conversations are listed first.",
+                    touch: false,
+                  });
+                `}"
+              >
+                <i class="bi bi-pin-fill"></i>
+                Pinned
               </div>
             `
           : html``}
@@ -8941,9 +8939,6 @@ export default async function courselore({
         style="${css`
           font-size: var(--font-size--xs);
           line-height: var(--line-height--xs);
-          display: flex;
-          flex-direction: column;
-          gap: var(--space--1);
         `}"
       >
         <div class="secondary">
