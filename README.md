@@ -28,14 +28,7 @@
 
 ### Chat
 
-- Move to top
-  - Items
-    - isAnswer
-    - isAnonymous
-    - ***
-    - endorsements
-  - Locations
-    - New conversation
+- New conversation.
 - Test the app all around.
 - Tags aren’t required.
 - The first post is a chatroom description
