@@ -12234,12 +12234,12 @@ ${value}</textarea
     { courseReference: string },
     HTML,
     {
-      title?: string;
-      content?: string;
       type?: ConversationType;
-      tagsReferences?: string[];
       isPinned?: boolean;
       isStaffOnly?: boolean;
+      title?: string;
+      content?: string;
+      tagsReferences?: string[];
       isAnonymous?: boolean;
     },
     {},
@@ -12250,12 +12250,13 @@ ${value}</textarea
     (req, res, next) => {
       req.body.tagsReferences ??= [];
       if (
+        typeof req.body.type !== "string" ||
+        !res.locals.conversationTypes.includes(req.body.type) ||
+        (req.body.isPinned && res.locals.enrollment.role !== "staff") ||
         typeof req.body.title !== "string" ||
         req.body.title.trim() === "" ||
         typeof req.body.content !== "string" ||
         req.body.content.trim() === "" ||
-        typeof req.body.type !== "string" ||
-        !res.locals.conversationTypes.includes(req.body.type) ||
         !Array.isArray(req.body.tagsReferences) ||
         (res.locals.tags.length > 0 &&
           (req.body.tagsReferences.length === 0 ||
@@ -12268,7 +12269,6 @@ ${value}</textarea
                   (existingTag) => tagReference === existingTag.reference
                 )
             ))) ||
-        (req.body.isPinned && res.locals.enrollment.role !== "staff") ||
         ((res.locals.enrollment.role === "staff" || req.body.isStaffOnly) &&
           req.body.isAnonymous)
       )
@@ -14650,7 +14650,7 @@ ${value}</textarea
   app.delete<
     { courseReference: string; conversationReference: string },
     HTML,
-    { title?: string },
+    {},
     {},
     IsCourseStaffMiddlewareLocals & IsConversationAccessibleMiddlewareLocals
   >(
@@ -14692,16 +14692,16 @@ ${value}</textarea
 
       database.run(
         sql`
-            INSERT INTO "taggings" ("conversation", "tag")
-            VALUES (
-              ${res.locals.conversation.id},
-              ${
-                res.locals.tags.find(
-                  (tag) => req.body.reference === tag.reference
-                )!.id
-              }
-            )
-          `
+          INSERT INTO "taggings" ("conversation", "tag")
+          VALUES (
+            ${res.locals.conversation.id},
+            ${
+              res.locals.tags.find(
+                (tag) => req.body.reference === tag.reference
+              )!.id
+            }
+          )
+        `
       );
 
       res.redirect(
@@ -14753,7 +14753,7 @@ ${value}</textarea
   app.post<
     { courseReference: string; conversationReference: string },
     HTML,
-    { content?: string; isAnswer?: boolean; isAnonymous?: boolean },
+    { isAnswer?: boolean; content?: string; isAnonymous?: boolean },
     {},
     IsConversationAccessibleMiddlewareLocals
   >(
@@ -14761,9 +14761,9 @@ ${value}</textarea
     ...isConversationAccessibleMiddleware,
     (req, res, next) => {
       if (
+        (req.body.isAnswer && res.locals.conversation.type !== "question") ||
         typeof req.body.content !== "string" ||
         req.body.content.trim() === "" ||
-        (req.body.isAnswer && res.locals.conversation.type !== "question") ||
         ((res.locals.enrollment.role === "staff" ||
           res.locals.conversation.staffOnlyAt !== null) &&
           req.body.isAnonymous)
@@ -14849,6 +14849,28 @@ ${value}</textarea
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
     ...mayEditMessageMiddleware,
     (req, res, next) => {
+      if (typeof req.body.isAnswer === "string")
+        if (
+          !["true", "false"].includes(req.body.isAnswer) ||
+          res.locals.message.reference === "1" ||
+          res.locals.conversation.type !== "question" ||
+          (req.body.isAnswer === "true" &&
+            res.locals.message.answerAt !== null) ||
+          (req.body.isAnswer === "false" &&
+            res.locals.message.answerAt === null)
+        )
+          return next("validation");
+        else
+          database.run(
+            sql`
+              UPDATE "messages"
+              SET "answerAt" = ${
+                req.body.isAnswer === "true" ? new Date().toISOString() : null
+              }
+              WHERE "id" = ${res.locals.message.id}
+            `
+          );
+
       if (typeof req.body.isAnonymous === "string")
         if (
           !["true", "false"].includes(req.body.isAnonymous) ||
@@ -14868,28 +14890,6 @@ ${value}</textarea
                 req.body.isAnonymous === "true"
                   ? new Date().toISOString()
                   : null
-              }
-              WHERE "id" = ${res.locals.message.id}
-            `
-          );
-
-      if (typeof req.body.isAnswer === "string")
-        if (
-          !["true", "false"].includes(req.body.isAnswer) ||
-          res.locals.message.reference === "1" ||
-          res.locals.conversation.type !== "question" ||
-          (req.body.isAnswer === "true" &&
-            res.locals.message.answerAt !== null) ||
-          (req.body.isAnswer === "false" &&
-            res.locals.message.answerAt === null)
-        )
-          return next("validation");
-        else
-          database.run(
-            sql`
-              UPDATE "messages"
-              SET "answerAt" = ${
-                req.body.isAnswer === "true" ? new Date().toISOString() : null
               }
               WHERE "id" = ${res.locals.message.id}
             `
