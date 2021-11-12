@@ -40,10 +40,10 @@
     - ***
     - endorsements
   - Locations
-    - New conversation
     - Conversation page
       - Messages display
       - New message
+    - New conversation
 - Tags aren’t required.
 - The first post is a chatroom description
 - Layout changes:
