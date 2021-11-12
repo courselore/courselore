@@ -8762,7 +8762,7 @@ export default async function courselore({
                                 width: calc(
                                   var(--space--2) + 100% + var(--space--2)
                                 );
-                                padding: var(--space--2);
+                                padding: var(--space--4) var(--space--2);
                                 margin-left: var(--space---2);
                                 position: relative;
                                 align-items: center;
@@ -8880,7 +8880,13 @@ export default async function courselore({
       message?: ReturnType<typeof getMessage>;
     }
   ): HTML => html`
-    <div>
+    <div
+      style="${css`
+        display: flex;
+        flex-direction: column;
+        gap: var(--space--1);
+      `}"
+    >
       <div
         style="${css`
           font-size: var(--font-size--xs);
@@ -8936,204 +8942,169 @@ export default async function courselore({
           : html`${conversation.title}`}
       </h3>
       <div
+        class="secondary"
         style="${css`
           font-size: var(--font-size--xs);
           line-height: var(--line-height--xs);
         `}"
       >
-        <div class="secondary">
-          <div>
-            #${conversation.reference} created
-            <time
-              oninteractive="${javascript`
-                leafac.relativizeDateTimeElement(this);
-              `}"
-            >
-              ${conversation.createdAt}
-            </time>
-            by
-            $${conversation.anonymousAt === null
-              ? html`
-                  $${conversation.authorEnrollment.user.avatar === null
-                    ? html` <i class="bi bi-person-circle"></i> `
-                    : html`
-                        <img
-                          src="${conversation.authorEnrollment.user.avatar}"
-                          alt="${conversation.authorEnrollment.user.name}"
-                          class="avatar avatar--xs avatar--vertical-align"
-                        />
-                      `}
-                  ${conversation.authorEnrollment.user.name}
-                `
-              : html`
-                  <span
-                    class="text--violet"
-                    oninteractive="${javascript`
-                      tippy(this, {
-                        content: "Anonymous to other students.",
-                        touch: false,
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-sunglasses"></i>
-                    Anonymous
-                  </span>
-                `}
-            $${conversation.anonymousAt !== null &&
-            (res.locals.enrollment.role === "staff" ||
-              conversation.authorEnrollment.id === res.locals.enrollment.id)
-              ? html`
-                  ($${conversation.authorEnrollment.user.avatar === null
-                    ? html`<i class="bi bi-person-circle"></i>`
-                    : html`<img
+        <div>
+          #${conversation.reference} created
+          <time
+            oninteractive="${javascript`
+              leafac.relativizeDateTimeElement(this);
+            `}"
+          >
+            ${conversation.createdAt}
+          </time>
+          by
+          $${conversation.anonymousAt === null
+            ? html`
+                $${conversation.authorEnrollment.user.avatar === null
+                  ? html` <i class="bi bi-person-circle"></i> `
+                  : html`
+                      <img
                         src="${conversation.authorEnrollment.user.avatar}"
                         alt="${conversation.authorEnrollment.user.name}"
                         class="avatar avatar--xs avatar--vertical-align"
-                      />`}
-                  ${conversation.authorEnrollment.user.name})
-                `
-              : html``}
-          </div>
-          $${conversation.updatedAt !== null
+                      />
+                    `}
+                ${conversation.authorEnrollment.user.name}
+              `
+            : html`
+                <span
+                  class="text--violet"
+                  oninteractive="${javascript`
+                    tippy(this, {
+                      content: "Anonymous to other students.",
+                      touch: false,
+                    });
+                  `}"
+                >
+                  <i class="bi bi-sunglasses"></i>
+                  Anonymous
+                </span>
+              `}
+          $${conversation.anonymousAt !== null &&
+          (res.locals.enrollment.role === "staff" ||
+            conversation.authorEnrollment.id === res.locals.enrollment.id)
             ? html`
-                <div>
-                  and last updated
-                  <time
-                    oninteractive="${javascript`
-                      leafac.relativizeDateTimeElement(this);
-                    `}"
-                  >
-                    ${conversation.updatedAt}
-                  </time>
-                </div>
+                ($${conversation.authorEnrollment.user.avatar === null
+                  ? html`<i class="bi bi-person-circle"></i>`
+                  : html`<img
+                      src="${conversation.authorEnrollment.user.avatar}"
+                      alt="${conversation.authorEnrollment.user.name}"
+                      class="avatar avatar--xs avatar--vertical-align"
+                    />`}
+                ${conversation.authorEnrollment.user.name})
               `
             : html``}
         </div>
-        $${conversation.taggings.length === 0
-          ? html``
-          : html`
-              <div
-                style="${css`
-                  display: flex;
-                  flex-wrap: wrap;
-                  column-gap: var(--space--4);
-                  row-gap: var(--space--0-5);
-
-                  & > * {
-                    display: flex;
-                    gap: var(--space--1);
-                  }
-                `}"
-              >
-                $${conversation.taggings.map(
-                  (tagging) => html`
-                    <div class="text--teal">
-                      <i class="bi bi-tag-fill"></i>
-                      ${tagging.tag.name}
-                      $${tagging.tag.staffOnlyAt !== null
-                        ? html`
-                            <span
-                              class="text--pink"
-                              oninteractive="${javascript`
-                                tippy(this, {
-                                  content: "This tag is visible by staff only.",
-                                  touch: false,
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-mortarboard-fill"></i>
-                            </span>
-                          `
-                        : html``}
-                    </div>
-                  `
-                )}
-              </div>
-            `}
-        $${typeof conversation.messageAuthorUserNameSearchResultHighlight ===
-          "string" &&
-        conversation.messageAuthorUserNameSearchResultMessage !== undefined
+        $${conversation.updatedAt !== null
           ? html`
               <div>
-                <div>
-                  $${conversation.messageAuthorUserNameSearchResultMessage
-                    .authorEnrollment.user.avatar === null
-                    ? html`<i class="bi bi-person-circle"></i>`
-                    : html`
-                        <img
-                          src="${conversation
-                            .messageAuthorUserNameSearchResultMessage
-                            .authorEnrollment.user.avatar}"
-                          alt="${conversation
-                            .messageAuthorUserNameSearchResultMessage
-                            .authorEnrollment.user.name}"
-                          class="avatar avatar--xs avatar--vertical-align"
-                        />
-                      `}
-                  $${conversation.messageAuthorUserNameSearchResultHighlight}
-                </div>
-                <div>
-                  $${lodash.truncate(
-                    conversation.messageAuthorUserNameSearchResultMessage
-                      .contentSearch,
-                    {
-                      length: 100,
-                      separator: /\W/,
-                    }
-                  )}
-                </div>
+                and last updated
+                <time
+                  oninteractive="${javascript`
+                    leafac.relativizeDateTimeElement(this);
+                  `}"
+                >
+                  ${conversation.updatedAt}
+                </time>
               </div>
             `
-          : typeof conversation.messageContentSearchResultSnippet ===
-              "string" &&
-            conversation.messageContentSearchResultMessage !== undefined
-          ? html`
+          : html``}
+      </div>
+      $${conversation.taggings.length === 0
+        ? html``
+        : html`
+            <div
+              style="${css`
+                font-size: var(--font-size--xs);
+                line-height: var(--line-height--xs);
+                display: flex;
+                flex-wrap: wrap;
+                column-gap: var(--space--4);
+                row-gap: var(--space--0-5);
+
+                & > * {
+                  display: flex;
+                  gap: var(--space--1);
+                }
+              `}"
+            >
+              $${conversation.taggings.map(
+                (tagging) => html`
+                  <div class="text--teal">
+                    <i class="bi bi-tag-fill"></i>
+                    ${tagging.tag.name}
+                    $${tagging.tag.staffOnlyAt !== null
+                      ? html`
+                          <span
+                            class="text--pink"
+                            oninteractive="${javascript`
+                              tippy(this, {
+                                content: "This tag is visible by staff only.",
+                                touch: false,
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-mortarboard-fill"></i>
+                          </span>
+                        `
+                      : html``}
+                  </div>
+                `
+              )}
+            </div>
+          `}
+      $${typeof conversation.messageAuthorUserNameSearchResultHighlight ===
+        "string" &&
+      conversation.messageAuthorUserNameSearchResultMessage !== undefined
+        ? html`
+            <div>
               <div>
-                <div>
-                  $${conversation.messageContentSearchResultMessage
-                    .anonymousAt === null
-                    ? html`
-                        $${conversation.messageContentSearchResultMessage
-                          .authorEnrollment.user.avatar === null
-                          ? html`<i class="bi bi-person-circle"></i>`
-                          : html`
-                              <img
-                                src="${conversation
-                                  .messageContentSearchResultMessage
-                                  .authorEnrollment.user.avatar}"
-                                alt="${conversation
-                                  .messageContentSearchResultMessage
-                                  .authorEnrollment.user.name}"
-                                class="avatar avatar--xs avatar--vertical-align"
-                              />
-                            `}
-                        ${conversation.messageContentSearchResultMessage
-                          .authorEnrollment.user.name}
-                      `
-                    : html`
-                        <span
-                          class="text--violet"
-                          oninteractive="${javascript`
-                            tippy(this, {
-                              content: "Anonymous to other students.",
-                              touch: false,
-                            });
-                          `}"
-                        >
-                          <i class="bi bi-sunglasses"></i>
-                          Anonymous
-                        </span>
-                      `}
-                  $${conversation.messageContentSearchResultMessage
-                    .anonymousAt !== null &&
-                  (res.locals.enrollment.role === "staff" ||
-                    conversation.messageContentSearchResultMessage
-                      .authorEnrollment.id === res.locals.enrollment.id)
-                    ? html`
-                        ($${conversation.messageContentSearchResultMessage
-                          .authorEnrollment.user.avatar === null
-                          ? html`<i class="bi bi-person-circle"></i>`
-                          : html`<img
+                $${conversation.messageAuthorUserNameSearchResultMessage
+                  .authorEnrollment.user.avatar === null
+                  ? html`<i class="bi bi-person-circle"></i>`
+                  : html`
+                      <img
+                        src="${conversation
+                          .messageAuthorUserNameSearchResultMessage
+                          .authorEnrollment.user.avatar}"
+                        alt="${conversation
+                          .messageAuthorUserNameSearchResultMessage
+                          .authorEnrollment.user.name}"
+                        class="avatar avatar--xs avatar--vertical-align"
+                      />
+                    `}
+                $${conversation.messageAuthorUserNameSearchResultHighlight}
+              </div>
+              <div>
+                $${lodash.truncate(
+                  conversation.messageAuthorUserNameSearchResultMessage
+                    .contentSearch,
+                  {
+                    length: 100,
+                    separator: /\W/,
+                  }
+                )}
+              </div>
+            </div>
+          `
+        : typeof conversation.messageContentSearchResultSnippet === "string" &&
+          conversation.messageContentSearchResultMessage !== undefined
+        ? html`
+            <div>
+              <div>
+                $${conversation.messageContentSearchResultMessage
+                  .anonymousAt === null
+                  ? html`
+                      $${conversation.messageContentSearchResultMessage
+                        .authorEnrollment.user.avatar === null
+                        ? html`<i class="bi bi-person-circle"></i>`
+                        : html`
+                            <img
                               src="${conversation
                                 .messageContentSearchResultMessage
                                 .authorEnrollment.user.avatar}"
@@ -9141,78 +9112,113 @@ export default async function courselore({
                                 .messageContentSearchResultMessage
                                 .authorEnrollment.user.name}"
                               class="avatar avatar--xs avatar--vertical-align"
-                            />`}
-                        ${conversation.messageContentSearchResultMessage
-                          .authorEnrollment.user.name})
-                      `
-                    : html``}
-                </div>
-                <div>$${conversation.messageContentSearchResultSnippet}</div>
+                            />
+                          `}
+                      ${conversation.messageContentSearchResultMessage
+                        .authorEnrollment.user.name}
+                    `
+                  : html`
+                      <span
+                        class="text--violet"
+                        oninteractive="${javascript`
+                          tippy(this, {
+                            content: "Anonymous to other students.",
+                            touch: false,
+                          });
+                        `}"
+                      >
+                        <i class="bi bi-sunglasses"></i>
+                        Anonymous
+                      </span>
+                    `}
+                $${conversation.messageContentSearchResultMessage
+                  .anonymousAt !== null &&
+                (res.locals.enrollment.role === "staff" ||
+                  conversation.messageContentSearchResultMessage
+                    .authorEnrollment.id === res.locals.enrollment.id)
+                  ? html`
+                      ($${conversation.messageContentSearchResultMessage
+                        .authorEnrollment.user.avatar === null
+                        ? html`<i class="bi bi-person-circle"></i>`
+                        : html`<img
+                            src="${conversation
+                              .messageContentSearchResultMessage
+                              .authorEnrollment.user.avatar}"
+                            alt="${conversation
+                              .messageContentSearchResultMessage
+                              .authorEnrollment.user.name}"
+                            class="avatar avatar--xs avatar--vertical-align"
+                          />`}
+                      ${conversation.messageContentSearchResultMessage
+                        .authorEnrollment.user.name})
+                    `
+                  : html``}
               </div>
-            `
-          : conversation.message !== undefined
-          ? html`
-              <div>
-                <div class="secondary">
-                  $${conversation.message.anonymousAt === null
-                    ? html`
-                        $${conversation.message.authorEnrollment.user.avatar ===
-                        null
-                          ? html`<i class="bi bi-person-circle"></i>`
-                          : html`
-                              <img
-                                src="${conversation.message.authorEnrollment
-                                  .user.avatar}"
-                                alt="${conversation.message.authorEnrollment
-                                  .user.name}"
-                                class="avatar avatar--xs avatar--vertical-align"
-                              />
-                            `}
-                        ${conversation.message.authorEnrollment.user.name}
-                      `
-                    : html`
-                        <span
-                          class="text--violet"
-                          oninteractive="${javascript`
-                            tippy(this, {
-                              content: "Anonymous to other students.",
-                              touch: false,
-                            });
-                          `}"
-                        >
-                          <i class="bi bi-sunglasses"></i>
-                          Anonymous
-                        </span>
-                      `}
-                  $${conversation.message.anonymousAt !== null &&
-                  (res.locals.enrollment.role === "staff" ||
-                    conversation.message.authorEnrollment.id ===
-                      res.locals.enrollment.id)
-                    ? html`
-                        ($${conversation.message.authorEnrollment.user
-                          .avatar === null
-                          ? html`<i class="bi bi-person-circle"></i>`
-                          : html`<img
+              <div>$${conversation.messageContentSearchResultSnippet}</div>
+            </div>
+          `
+        : conversation.message !== undefined
+        ? html`
+            <div>
+              <div class="secondary">
+                $${conversation.message.anonymousAt === null
+                  ? html`
+                      $${conversation.message.authorEnrollment.user.avatar ===
+                      null
+                        ? html`<i class="bi bi-person-circle"></i>`
+                        : html`
+                            <img
                               src="${conversation.message.authorEnrollment.user
                                 .avatar}"
                               alt="${conversation.message.authorEnrollment.user
                                 .name}"
                               class="avatar avatar--xs avatar--vertical-align"
-                            />`}
-                        ${conversation.message.authorEnrollment.user.name})
-                      `
-                    : html``}
-                </div>
-                <div>
-                  $${lodash.truncate(conversation.message.contentSearch, {
-                    length: 100,
-                    separator: /\W/,
-                  })}
-                </div>
+                            />
+                          `}
+                      ${conversation.message.authorEnrollment.user.name}
+                    `
+                  : html`
+                      <span
+                        class="text--violet"
+                        oninteractive="${javascript`
+                          tippy(this, {
+                            content: "Anonymous to other students.",
+                            touch: false,
+                          });
+                        `}"
+                      >
+                        <i class="bi bi-sunglasses"></i>
+                        Anonymous
+                      </span>
+                    `}
+                $${conversation.message.anonymousAt !== null &&
+                (res.locals.enrollment.role === "staff" ||
+                  conversation.message.authorEnrollment.id ===
+                    res.locals.enrollment.id)
+                  ? html`
+                      ($${conversation.message.authorEnrollment.user.avatar ===
+                      null
+                        ? html`<i class="bi bi-person-circle"></i>`
+                        : html`<img
+                            src="${conversation.message.authorEnrollment.user
+                              .avatar}"
+                            alt="${conversation.message.authorEnrollment.user
+                              .name}"
+                            class="avatar avatar--xs avatar--vertical-align"
+                          />`}
+                      ${conversation.message.authorEnrollment.user.name})
+                    `
+                  : html``}
               </div>
-            `
-          : html``}
-      </div>
+              <div>
+                $${lodash.truncate(conversation.message.contentSearch, {
+                  length: 100,
+                  separator: /\W/,
+                })}
+              </div>
+            </div>
+          `
+        : html``}
     </div>
   `;
 
