@@ -29,8 +29,9 @@
 ### Chat
 
 - don’t let first message be special
-  - "conversations"
-  - "messages"
+  - Search by author should look into conversation author
+    - Main search
+    - #references widget
   - Let student go anonymous in conversation creation
   - Test conversation without messages
 - Move to top
@@ -84,7 +85,6 @@
   - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by staff).
   - Let original question asker approve an answer.
-  - Have Search Filters for unanswered questions, answered questions, and so forth.
 - More sophisticated tag system: dependencies between tags, actions triggered by tags, and so forth.
 - Modify the order of tags.
 - Different states: Open vs archived.
@@ -120,6 +120,8 @@
 ### Search
 
 - Search in all courses you’re taking (for example, search for `deadline extension`) (see how GitHub does it).
+- Filters for unanswered questions, answered questions, and so forth.
+- Filter by date.
 
 ### Markdown Editor
 
