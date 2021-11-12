@@ -13694,6 +13694,7 @@ ${value}</textarea
                                           margin-left: var(--space---4);
                                         }
                                         position: absolute;
+                                        transition-property: var(--transition-property--base);
                                       `}"
                                       oninteractive="${javascript`
                                         tippy(this, {
@@ -13703,7 +13704,8 @@ ${value}</textarea
                                         window.setTimeout(() => { this.click(); }, 2000);
                                       `}"
                                       onclick="${javascript`
-                                        this.remove();
+                                        this.style.opacity = 0;
+                                        window.setTimeout(() => { this.remove(); }, 500);
                                       `}"
                                     ></button>
                                   `
