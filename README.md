@@ -30,8 +30,6 @@
 
 - Move to top
   - Items
-    - isPinned
-    - isStaffOnly
     - isAnswer
     - isAnonymous
     - ***
