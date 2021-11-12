@@ -12873,6 +12873,7 @@ ${value}</textarea
                     `
                   : html``}
               </div>
+
               <div class="title">
                 <div
                   class="title--show"
@@ -13093,250 +13094,225 @@ ${value}</textarea
                   : html``}
               </div>
 
-              <div
-                style="${css`
-                  font-size: var(--font-size--xs);
-                  line-height: var(--line-height--xs);
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--1);
-                  & > * {
-                    display: flex;
-                    flex-wrap: wrap;
-                    column-gap: var(--space--8);
-                    row-gap: var(--space--1);
-                  }
-                `}"
-              >
-                <div>
-                  $${res.locals.tags.length === 0
-                    ? html``
-                    : html`
-                        $${mayEditConversation(req, res)
-                          ? html`
-                              $${res.locals.conversation.taggings.length === 1
-                                ? html`
-                                    <div
+              $${res.locals.tags.length === 0
+                ? html``
+                : html`
+                    <div
+                      style="${css`
+                        font-size: var(--font-size--xs);
+                        line-height: var(--line-height--xs);
+                        display: flex;
+                        flex-wrap: wrap;
+                        column-gap: var(--space--8);
+                        row-gap: var(--space--1);
+
+                        & > * {
+                          display: flex;
+                          gap: var(--space--1);
+                        }
+                      `}"
+                    >
+                      $${mayEditConversation(req, res)
+                        ? html`
+                            $${res.locals.conversation.taggings.length === 1
+                              ? html`
+                                  <div>
+                                    <button
+                                      class="button button--tight button--tight--inline button--tight-gap text--teal disabled"
                                       style="${css`
-                                        display: flex;
-                                        gap: var(--space--2);
+                                        text-align: left;
+                                      `}"
+                                      oninteractive="${javascript`
+                                        tippy(this, {
+                                          content: "You may not remove this tag because a conversation must have at least one tag.",
+                                          theme: "rose",
+                                          touch: false,
+                                        });
                                       `}"
                                     >
-                                      <button
-                                        class="button button--tight button--tight--inline button--tight-gap text--teal disabled"
-                                        style="${css`
-                                          text-align: left;
-                                        `}"
-                                        oninteractive="${javascript`
-                                          tippy(this, {
-                                            content: "You may not remove this tag because a conversation must have at least one tag.",
-                                            theme: "rose",
-                                            touch: false,
-                                          });
-                                        `}"
-                                      >
-                                        <i class="bi bi-tag-fill"></i>
-                                        ${res.locals.conversation.taggings[0]
-                                          .tag.name}
-                                      </button>
-                                      $${res.locals.conversation.taggings[0].tag
-                                        .staffOnlyAt !== null
-                                        ? html`
-                                            <span
-                                              class="text--pink"
-                                              oninteractive="${javascript`
-                                                tippy(this, {
-                                                  content: "This tag is visible by staff only.",
-                                                  touch: false,
-                                                });
-                                              `}"
-                                            >
-                                              <i
-                                                class="bi bi-mortarboard-fill"
-                                              ></i>
-                                            </span>
-                                          `
-                                        : html``}
-                                    </div>
-                                  `
-                                : html`
-                                    <div
-                                      style="${css`
-                                        display: flex;
-                                        flex-wrap: wrap;
-                                        column-gap: var(--space--8);
-                                        row-gap: var(--space--1);
-                                      `}"
-                                    >
-                                      $${res.locals.conversation.taggings.map(
-                                        (tagging) => html`
-                                          <form
-                                            method="POST"
-                                            action="${baseURL}/courses/${res
-                                              .locals.course
-                                              .reference}/conversations/${res
-                                              .locals.conversation
-                                              .reference}/taggings?_method=DELETE"
-                                            style="${css`
-                                              display: flex;
-                                              gap: var(--space--2);
+                                      <i class="bi bi-tag-fill"></i>
+                                      ${res.locals.conversation.taggings[0].tag
+                                        .name}
+                                    </button>
+                                    $${res.locals.conversation.taggings[0].tag
+                                      .staffOnlyAt !== null
+                                      ? html`
+                                          <span
+                                            class="text--pink"
+                                            oninteractive="${javascript`
+                                              tippy(this, {
+                                                content: "This tag is visible by staff only.",
+                                                touch: false,
+                                              });
                                             `}"
                                           >
-                                            <input
-                                              type="hidden"
-                                              name="_csrf"
-                                              value="${req.csrfToken()}"
-                                            />
-                                            <input
-                                              type="hidden"
-                                              name="reference"
-                                              value="${tagging.tag.reference}"
-                                            />
-                                            <button
-                                              class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal"
-                                              style="${css`
-                                                text-align: left;
-                                              `}"
-                                              oninteractive="${javascript`
-                                                tippy(this, {
-                                                  content: "Remove Tag",
-                                                  theme: "rose",
-                                                  touch: false,
-                                                });
-                                              `}"
-                                            >
-                                              <i class="bi bi-tag-fill"></i>
-                                              ${tagging.tag.name}
-                                            </button>
-                                            $${tagging.tag.staffOnlyAt !== null
-                                              ? html`
-                                                  <span
-                                                    class="text--pink"
-                                                    oninteractive="${javascript`
-                                                      tippy(this, {
-                                                        content: "This tag is visible by staff only.",
-                                                        touch: false,
-                                                      });
-                                                    `}"
-                                                  >
-                                                    <i
-                                                      class="bi bi-mortarboard-fill"
-                                                    ></i>
-                                                  </span>
-                                                `
-                                              : html``}
-                                          </form>
+                                            <i
+                                              class="bi bi-mortarboard-fill"
+                                            ></i>
+                                          </span>
                                         `
-                                      )}
-                                    </div>
-                                  `}
-                              $${res.locals.tags.length >
-                              res.locals.conversation.taggings.length
-                                ? html`
-                                    <div>
-                                      <button
-                                        class="button button--tight button--tight--inline button--transparent text--teal"
-                                        oninteractive="${javascript`
-                                          tippy(this, {
-                                            content: "Add Tag",
-                                            touch: false,
-                                          });
-                                          tippy(this, {
-                                            content: this.nextElementSibling.firstElementChild,
-                                            trigger: "click",
-                                            interactive: true,
-                                          });
+                                      : html``}
+                                  </div>
+                                `
+                              : html`
+                                  $${res.locals.conversation.taggings.map(
+                                    (tagging) => html`
+                                      <form
+                                        method="POST"
+                                        action="${baseURL}/courses/${res.locals
+                                          .course.reference}/conversations/${res
+                                          .locals.conversation
+                                          .reference}/taggings?_method=DELETE"
+                                        style="${css`
+                                          display: flex;
+                                          gap: var(--space--2);
                                         `}"
                                       >
-                                        <i class="bi bi-tags-fill"></i>
-                                      </button>
-                                      <div hidden>
-                                        <div
-                                          class="dropdown--menu"
+                                        <input
+                                          type="hidden"
+                                          name="_csrf"
+                                          value="${req.csrfToken()}"
+                                        />
+                                        <input
+                                          type="hidden"
+                                          name="reference"
+                                          value="${tagging.tag.reference}"
+                                        />
+                                        <button
+                                          class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal"
                                           style="${css`
-                                            max-height: var(--space--40);
-                                            overflow: auto;
+                                            text-align: left;
+                                          `}"
+                                          oninteractive="${javascript`
+                                            tippy(this, {
+                                              content: "Remove Tag",
+                                              theme: "rose",
+                                              touch: false,
+                                            });
                                           `}"
                                         >
-                                          $${res.locals.tags
-                                            .filter(
-                                              (tag) =>
-                                                !res.locals.conversation.taggings.some(
-                                                  (tagging) =>
-                                                    tagging.tag.id === tag.id
-                                                )
-                                            )
-                                            .map(
-                                              (tag) => html`
-                                                <form
-                                                  method="POST"
-                                                  action="${baseURL}/courses/${res
-                                                    .locals.course
-                                                    .reference}/conversations/${res
-                                                    .locals.conversation
-                                                    .reference}/taggings"
+                                          <i class="bi bi-tag-fill"></i>
+                                          ${tagging.tag.name}
+                                        </button>
+                                        $${tagging.tag.staffOnlyAt !== null
+                                          ? html`
+                                              <span
+                                                class="text--pink"
+                                                oninteractive="${javascript`
+                                                  tippy(this, {
+                                                    content: "This tag is visible by staff only.",
+                                                    touch: false,
+                                                  });
+                                                `}"
+                                              >
+                                                <i
+                                                  class="bi bi-mortarboard-fill"
+                                                ></i>
+                                              </span>
+                                            `
+                                          : html``}
+                                      </form>
+                                    `
+                                  )}
+                                `}
+                            $${res.locals.tags.length >
+                            res.locals.conversation.taggings.length
+                              ? html`
+                                  <div>
+                                    <button
+                                      class="button button--tight button--tight--inline button--transparent text--teal"
+                                      oninteractive="${javascript`
+                                        tippy(this, {
+                                          content: "Add Tag",
+                                          touch: false,
+                                        });
+                                        tippy(this, {
+                                          content: this.nextElementSibling.firstElementChild,
+                                          trigger: "click",
+                                          interactive: true,
+                                        });
+                                      `}"
+                                    >
+                                      <i class="bi bi-tags-fill"></i>
+                                    </button>
+                                    <div hidden>
+                                      <div
+                                        class="dropdown--menu"
+                                        style="${css`
+                                          max-height: var(--space--40);
+                                          overflow: auto;
+                                        `}"
+                                      >
+                                        $${res.locals.tags
+                                          .filter(
+                                            (tag) =>
+                                              !res.locals.conversation.taggings.some(
+                                                (tagging) =>
+                                                  tagging.tag.id === tag.id
+                                              )
+                                          )
+                                          .map(
+                                            (tag) => html`
+                                              <form
+                                                method="POST"
+                                                action="${baseURL}/courses/${res
+                                                  .locals.course
+                                                  .reference}/conversations/${res
+                                                  .locals.conversation
+                                                  .reference}/taggings"
+                                              >
+                                                <input
+                                                  type="hidden"
+                                                  name="_csrf"
+                                                  value="${req.csrfToken()}"
+                                                />
+                                                <input
+                                                  type="hidden"
+                                                  name="reference"
+                                                  value="${tag.reference}"
+                                                />
+                                                <button
+                                                  class="dropdown--menu--item button button--transparent text--teal"
                                                 >
-                                                  <input
-                                                    type="hidden"
-                                                    name="_csrf"
-                                                    value="${req.csrfToken()}"
-                                                  />
-                                                  <input
-                                                    type="hidden"
-                                                    name="reference"
-                                                    value="${tag.reference}"
-                                                  />
-                                                  <button
-                                                    class="dropdown--menu--item button button--transparent text--teal"
-                                                  >
-                                                    <i
-                                                      class="bi bi-tag-fill"
-                                                    ></i>
-                                                    ${tag.name}
-                                                    $${tag.staffOnlyAt !== null
-                                                      ? html`
-                                                          <span
-                                                            class="text--pink"
-                                                            oninteractive="${javascript`
-                                                              tippy(this, {
-                                                                content: "This tag is visible by staff only.",
-                                                                touch: false,
-                                                              });
-                                                            `}"
-                                                          >
-                                                            <i
-                                                              class="bi bi-mortarboard-fill"
-                                                            ></i>
-                                                          </span>
-                                                        `
-                                                      : html``}
-                                                  </button>
-                                                </form>
-                                              `
-                                            )}
-                                        </div>
+                                                  <i class="bi bi-tag-fill"></i>
+                                                  ${tag.name}
+                                                  $${tag.staffOnlyAt !== null
+                                                    ? html`
+                                                        <span
+                                                          class="text--pink"
+                                                          oninteractive="${javascript`
+                                                            tippy(this, {
+                                                              content: "This tag is visible by staff only.",
+                                                              touch: false,
+                                                            });
+                                                          `}"
+                                                        >
+                                                          <i
+                                                            class="bi bi-mortarboard-fill"
+                                                          ></i>
+                                                        </span>
+                                                      `
+                                                    : html``}
+                                                </button>
+                                              </form>
+                                            `
+                                          )}
                                       </div>
                                     </div>
-                                  `
-                                : html``}
+                                  </div>
+                                `
+                              : html``}
+                          `
+                        : res.locals.conversation.taggings.map(
+                            (tagging) => html`
+                              <div class="text--teal">
+                                <i class="bi bi-tag-fill"></i>
+                                ${tagging.tag.name}
+                              </div>
                             `
-                          : res.locals.conversation.taggings.map(
-                              (tagging) => html`
-                                <div
-                                  class="text--teal"
-                                  style="${css`
-                                    display: flex;
-                                    gap: var(--space--1);
-                                  `}"
-                                >
-                                  <i class="bi bi-tag-fill"></i>
-                                  ${tagging.tag.name}
-                                </div>
-                              `
-                            )}
-                      `}
-                </div>
-              </div>
+                          )}
+                    </div>
+                  `}
             </div>
 
             $${messages.length === 0
