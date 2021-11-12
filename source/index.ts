@@ -13344,7 +13344,8 @@ ${value}</textarea
             </div>
 
             $${(() => {
-              let shouldScrollIntoView = messages[0].reading !== null;
+              let shouldScrollIntoView =
+                messages.length > 0 && messages[0].reading !== null;
               return messages.map(
                 (message) => html`
                   <div
@@ -15600,7 +15601,7 @@ ${value}</textarea
                     sql`
                       INSERT INTO "conversations" (
                         "createdAt",
-                        "udatedAt",
+                        "updatedAt",
                         "course",
                         "reference",
                         "authorEnrollment",
