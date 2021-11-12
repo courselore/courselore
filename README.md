@@ -30,10 +30,8 @@
 
 - Move to top
   - Items
-    - pinnedAt
-      - isPinned
-    - staffOnlyAt
-      - isStaffOnly
+    - isPinned
+    - isStaffOnly
     - answerAt
       - isAnswer
     - anonymousAt

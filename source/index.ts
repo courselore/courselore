@@ -12363,9 +12363,9 @@ ${value}</textarea
       const conversation = database.get<{
         id: number;
         reference: string;
-        title: string;
         type: ConversationType;
         staffOnlyAt: string | null;
+        title: string;
       }>(
         sql`
           SELECT * FROM "conversations" WHERE "id" = ${Number(
