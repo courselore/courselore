@@ -8454,88 +8454,6 @@ export default async function courselore({
                       </div>
                     </div>
 
-                    $${res.locals.tags.length === 0
-                      ? html``
-                      : html`
-                          <div class="label">
-                            <div class="label--text">
-                              Tags
-                              <button
-                                type="button"
-                                class="button button--tight button--tight--inline button--transparent"
-                                oninteractive="${javascript`
-                                  tippy(this, {
-                                    content: "Tags help to organize conversations.",
-                                    trigger: "click",
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-info-circle"></i>
-                              </button>
-                            </div>
-                            <div
-                              style="${css`
-                                display: flex;
-                                flex-wrap: wrap;
-                                column-gap: var(--space--6);
-                                row-gap: var(--space--2);
-                              `}"
-                            >
-                              $${res.locals.tags.map(
-                                (tag) => html`
-                                  <div
-                                    style="${css`
-                                      display: flex;
-                                      gap: var(--space--2);
-                                    `}"
-                                  >
-                                    <label
-                                      class="button button--tight button--tight--inline button--transparent"
-                                    >
-                                      <input
-                                        type="checkbox"
-                                        name="filters[tagsReferences][]"
-                                        value="${tag.reference}"
-                                        $${req.query.filters?.tagsReferences?.includes(
-                                          tag.reference
-                                        )
-                                          ? html`checked`
-                                          : html``}
-                                        class="visually-hidden input--radio-or-checkbox--multilabel"
-                                      />
-                                      <span>
-                                        <i class="bi bi-tag"></i>
-                                        ${tag.name}
-                                      </span>
-                                      <span class="text--teal">
-                                        <i class="bi bi-tag-fill"></i>
-                                        ${tag.name}
-                                      </span>
-                                    </label>
-                                    $${tag.staffOnlyAt !== null
-                                      ? html`
-                                          <span
-                                            class="text--pink"
-                                            oninteractive="${javascript`
-                                              tippy(this, {
-                                                content: "This tag is visible by staff only.",
-                                                touch: false,
-                                              });
-                                            `}"
-                                          >
-                                            <i
-                                              class="bi bi-mortarboard-fill"
-                                            ></i>
-                                          </span>
-                                        `
-                                      : html``}
-                                  </div>
-                                `
-                              )}
-                            </div>
-                          </div>
-                        `}
-
                     <div class="label">
                       <div class="label--text">
                         Pin
@@ -8671,6 +8589,88 @@ export default async function courselore({
                         </label>
                       </div>
                     </div>
+
+                    $${res.locals.tags.length === 0
+                      ? html``
+                      : html`
+                          <div class="label">
+                            <div class="label--text">
+                              Tags
+                              <button
+                                type="button"
+                                class="button button--tight button--tight--inline button--transparent"
+                                oninteractive="${javascript`
+                                  tippy(this, {
+                                    content: "Tags help to organize conversations.",
+                                    trigger: "click",
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-info-circle"></i>
+                              </button>
+                            </div>
+                            <div
+                              style="${css`
+                                display: flex;
+                                flex-wrap: wrap;
+                                column-gap: var(--space--6);
+                                row-gap: var(--space--2);
+                              `}"
+                            >
+                              $${res.locals.tags.map(
+                                (tag) => html`
+                                  <div
+                                    style="${css`
+                                      display: flex;
+                                      gap: var(--space--2);
+                                    `}"
+                                  >
+                                    <label
+                                      class="button button--tight button--tight--inline button--transparent"
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        name="filters[tagsReferences][]"
+                                        value="${tag.reference}"
+                                        $${req.query.filters?.tagsReferences?.includes(
+                                          tag.reference
+                                        )
+                                          ? html`checked`
+                                          : html``}
+                                        class="visually-hidden input--radio-or-checkbox--multilabel"
+                                      />
+                                      <span>
+                                        <i class="bi bi-tag"></i>
+                                        ${tag.name}
+                                      </span>
+                                      <span class="text--teal">
+                                        <i class="bi bi-tag-fill"></i>
+                                        ${tag.name}
+                                      </span>
+                                    </label>
+                                    $${tag.staffOnlyAt !== null
+                                      ? html`
+                                          <span
+                                            class="text--pink"
+                                            oninteractive="${javascript`
+                                              tippy(this, {
+                                                content: "This tag is visible by staff only.",
+                                                touch: false,
+                                              });
+                                            `}"
+                                          >
+                                            <i
+                                              class="bi bi-mortarboard-fill"
+                                            ></i>
+                                          </span>
+                                        `
+                                      : html``}
+                                  </div>
+                                `
+                              )}
+                            </div>
+                          </div>
+                        `}
                   </div>
                 </form>
 
