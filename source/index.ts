@@ -14632,7 +14632,8 @@ ${value}</textarea
           database.run(
             sql`
               UPDATE "conversations"
-              SET "title" = ${req.body.title},
+              SET "updatedAt" = ${new Date().toISOString()},
+                  "title" = ${req.body.title},
                   "titleSearch" = ${html`${req.body.title}`}
               WHERE "id" = ${res.locals.conversation.id}
             `
@@ -14778,9 +14779,10 @@ ${value}</textarea
       database.run(
         sql`
           UPDATE "conversations"
-          SET "nextMessageReference" = ${
-            res.locals.conversation.nextMessageReference + 1
-          }
+          SET "updatedAt" = ${new Date().toISOString()},
+              "nextMessageReference" = ${
+                res.locals.conversation.nextMessageReference + 1
+              }
           WHERE "id" = ${res.locals.conversation.id}
         `
       );
@@ -14910,6 +14912,13 @@ ${value}</textarea
                   "contentSearch" = ${processedContent.text},
                   "updatedAt" = ${new Date().toISOString()}
               WHERE "id" = ${res.locals.message.id}
+            `
+          );
+          database.run(
+            sql`
+              UPDATE "conversations"
+              SET "updatedAt" = ${new Date().toISOString()}
+              WHERE "id" = ${res.locals.conversation.id}
             `
           );
         }
