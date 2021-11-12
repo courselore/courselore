@@ -10854,14 +10854,14 @@ ${value}</textarea
       const users = database.all<{
         name: string;
         avatar: string | null;
-        usersNameSearchHighlight: string;
+        usersNameSearchResultHighlight: string;
         enrollmentReference: string;
         enrollmentRole: EnrollmentRole;
       }>(
         sql`
           SELECT "users"."name" AS "name",
                  "users"."avatar" AS "avatar",
-                 highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "usersNameSearchHighlight",
+                 highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "usersNameSearchResultHighlight",
                  "enrollments"."reference" AS "enrollmentReference",
                  "enrollments"."role" AS "enrollmentRole"
           FROM "users"
@@ -10906,7 +10906,7 @@ ${value}</textarea
                           />
                         `}
                     <span>
-                      $${user.usersNameSearchHighlight}
+                      $${user.usersNameSearchResultHighlight}
                       <span
                         class="secondary"
                         oninteractive="${javascript`
@@ -11097,11 +11097,11 @@ ${value}</textarea
         ...database
           .all<{
             reference: string;
-            conversationsTitleSearchHighlight: string;
+            conversationsTitleSearchResultHighlight: string;
           }>(
             sql`
               SELECT "conversations"."reference",
-                     highlight("conversationsTitleSearchIndex", 0, '<mark class="mark">', '</mark>') AS "conversationsTitleSearchHighlight"
+                     highlight("conversationsTitleSearchIndex", 0, '<mark class="mark">', '</mark>') AS "conversationsTitleSearchResultHighlight"
               FROM "conversations"
               JOIN "conversationsTitleSearchIndex" ON "conversations"."id" = "conversationsTitleSearchIndex"."rowid" AND
                                                       "conversationsTitleSearchIndex" MATCH ${sanitizeSearch(
@@ -11136,7 +11136,7 @@ ${value}</textarea
                           #${conversation.reference}
                         </span>
                         <span class="strong">
-                          $${conversationRow.conversationsTitleSearchHighlight}
+                          $${conversationRow.conversationsTitleSearchResultHighlight}
                         </span>
                       </span>
                     </button>
@@ -11150,12 +11150,12 @@ ${value}</textarea
           .all<{
             messageReference: string;
             conversationReference: string;
-            usersNameSearchHighlight: string;
+            messagesAuthorUserNameSearchResultHighlight: string;
           }>(
             sql`
               SELECT "messages"."reference" AS "messageReference",
                      "conversations"."reference" AS "conversationReference",
-                     highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "usersNameSearchHighlight"
+                     highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "messagesAuthorUserNameSearchResultHighlight"
               FROM "messages"
               JOIN "enrollments" ON "messages"."authorEnrollment" = "enrollments"."id"
               JOIN "usersNameSearchIndex" ON "enrollments"."user" = "usersNameSearchIndex"."rowid" AND
@@ -11225,7 +11225,7 @@ ${value}</textarea
                                     class="avatar avatar--sm avatar--vertical-align"
                                   />
                                 `}
-                            $${messageRow.usersNameSearchHighlight}
+                            $${messageRow.messagesAuthorUserNameSearchResultHighlight}
                           </div>
                           <div>
                             $${lodash.truncate(message.contentSearch, {
@@ -11246,12 +11246,12 @@ ${value}</textarea
           .all<{
             messageReference: string;
             conversationReference: string;
-            messageContentSearchSnippet: string;
+            messagesContentSearchResultSnippet: string;
           }>(
             sql`
               SELECT "messages"."reference" AS "messageReference",
                      "conversations"."reference" AS "conversationReference",
-                     snippet("messagesContentSearchIndex", 0, '<mark class="mark">', '</mark>', '…', 16) AS "messageContentSearchSnippet"
+                     snippet("messagesContentSearchIndex", 0, '<mark class="mark">', '</mark>', '…', 16) AS "messagesContentSearchResultSnippet"
               FROM "messages"
               JOIN "messagesContentSearchIndex" ON "messages"."id" = "messagesContentSearchIndex"."rowid" AND
                                                    "messagesContentSearchIndex" MATCH ${sanitizeSearch(
@@ -11299,7 +11299,7 @@ ${value}</textarea
                           <span class="strong">${conversation.title}</span>
                         </div>
                         <div class="secondary">
-                          $${messageRow.messageContentSearchSnippet}
+                          $${messageRow.messagesContentSearchResultSnippet}
                         </div>
                       </div>
                     </button>
