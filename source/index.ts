@@ -9071,33 +9071,6 @@ export default async function courselore({
               <i class="bi bi-chat-left-text"></i>
               ${conversation.messagesCount}
             </div>
-            $${conversation.endorsements.length === 0
-              ? html``
-              : html`
-                  <div
-                    class="text--lime"
-                    oninteractive="${javascript`
-                      tippy(this, {
-                        content: ${JSON.stringify(
-                          `Answers Endorsed by ${
-                            /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                              Intl as any
-                            ).ListFormat("en").format(
-                              conversation.endorsements.map(
-                                (endorsement) =>
-                                  endorsement.enrollment.user.name
-                              )
-                            )
-                          }`
-                        )},
-                        touch: false,
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-award"></i>
-                    ${conversation.endorsements.length}
-                  </div>
-                `}
             $${conversation.likesCount === 0
               ? html``
               : html`
