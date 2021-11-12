@@ -28,8 +28,6 @@
 
 ### Chat
 
-- don’t let first message be special
-  - Let student go anonymous in conversation creation
 - Move to top
   - Items
     - isPinned

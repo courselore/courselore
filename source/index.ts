@@ -14917,7 +14917,7 @@ ${value}</textarea
             res.locals.message.anonymousAt === null)
         )
           return next("validation");
-        else
+        else {
           database.run(
             sql`
               UPDATE "messages"
@@ -14929,6 +14929,19 @@ ${value}</textarea
               WHERE "id" = ${res.locals.message.id}
             `
           );
+          if (res.locals.message.reference === "1")
+            database.run(
+              sql`
+                UPDATE "conversations"
+                SET "anonymousAt" = ${
+                  req.body.isAnonymous === "true"
+                    ? new Date().toISOString()
+                    : null
+                }
+                WHERE "id" = ${res.locals.conversation.id}
+              `
+            );
+        }
 
       let processedContent: ReturnType<typeof markdownProcessor>;
       if (typeof req.body.content === "string")
