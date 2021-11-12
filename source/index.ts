@@ -11150,73 +11150,6 @@ ${value}</textarea
           .all<{
             messageReference: string;
             conversationReference: string;
-            messageContentSearchSnippet: string;
-          }>(
-            sql`
-              SELECT "messages"."reference" AS "messageReference",
-                     "conversations"."reference" AS "conversationReference",
-                     snippet("messagesContentSearchIndex", 0, '<mark class="mark">', '</mark>', '…', 16) AS "messageContentSearchSnippet"
-              FROM "messages"
-              JOIN "messagesContentSearchIndex" ON "messages"."id" = "messagesContentSearchIndex"."rowid" AND
-                                                   "messagesContentSearchIndex" MATCH ${sanitizeSearch(
-                                                     req.query.search,
-                                                     { prefix: true }
-                                                   )}
-              JOIN "conversations" ON "messages"."conversation" = "conversations"."id" AND
-                                      "conversations"."course" = ${
-                                        res.locals.course.id
-                                      }
-              ORDER BY "messagesContentSearchIndex"."rank" ASC,
-                       "messages"."id" DESC
-              LIMIT 5
-            `
-          )
-          .flatMap((messageRow) => {
-            const conversation = getConversation(
-              req,
-              res,
-              messageRow.conversationReference
-            );
-            if (conversation === undefined) return [];
-            const message = getMessage(
-              req,
-              res,
-              conversation,
-              messageRow.messageReference
-            );
-            return message === undefined
-              ? []
-              : [
-                  html`
-                    <button
-                      type="button"
-                      class="dropdown--menu--item button button--transparent"
-                      onclick="${javascript`
-                        this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
-                      `}"
-                    >
-                      <div>
-                        <div>
-                          <span class="secondary">
-                            #${conversation.reference}/${message.reference}
-                          </span>
-                          <span class="strong">${conversation.title}</span>
-                        </div>
-                        <div class="secondary">
-                          $${messageRow.messageContentSearchSnippet}
-                        </div>
-                      </div>
-                    </button>
-                  `,
-                ];
-          })
-      );
-
-      results.push(
-        ...database
-          .all<{
-            messageReference: string;
-            conversationReference: string;
             usersNameSearchHighlight: string;
           }>(
             sql`
@@ -11300,6 +11233,73 @@ ${value}</textarea
                               separator: /\W/,
                             })}
                           </div>
+                        </div>
+                      </div>
+                    </button>
+                  `,
+                ];
+          })
+      );
+
+      results.push(
+        ...database
+          .all<{
+            messageReference: string;
+            conversationReference: string;
+            messageContentSearchSnippet: string;
+          }>(
+            sql`
+              SELECT "messages"."reference" AS "messageReference",
+                     "conversations"."reference" AS "conversationReference",
+                     snippet("messagesContentSearchIndex", 0, '<mark class="mark">', '</mark>', '…', 16) AS "messageContentSearchSnippet"
+              FROM "messages"
+              JOIN "messagesContentSearchIndex" ON "messages"."id" = "messagesContentSearchIndex"."rowid" AND
+                                                   "messagesContentSearchIndex" MATCH ${sanitizeSearch(
+                                                     req.query.search,
+                                                     { prefix: true }
+                                                   )}
+              JOIN "conversations" ON "messages"."conversation" = "conversations"."id" AND
+                                      "conversations"."course" = ${
+                                        res.locals.course.id
+                                      }
+              ORDER BY "messagesContentSearchIndex"."rank" ASC,
+                       "messages"."id" DESC
+              LIMIT 5
+            `
+          )
+          .flatMap((messageRow) => {
+            const conversation = getConversation(
+              req,
+              res,
+              messageRow.conversationReference
+            );
+            if (conversation === undefined) return [];
+            const message = getMessage(
+              req,
+              res,
+              conversation,
+              messageRow.messageReference
+            );
+            return message === undefined
+              ? []
+              : [
+                  html`
+                    <button
+                      type="button"
+                      class="dropdown--menu--item button button--transparent"
+                      onclick="${javascript`
+                        this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
+                      `}"
+                    >
+                      <div>
+                        <div>
+                          <span class="secondary">
+                            #${conversation.reference}/${message.reference}
+                          </span>
+                          <span class="strong">${conversation.title}</span>
+                        </div>
+                        <div class="secondary">
+                          $${messageRow.messageContentSearchSnippet}
                         </div>
                       </div>
                     </button>
