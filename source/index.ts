@@ -12688,6 +12688,190 @@ ${value}</textarea
                         $${lodash.capitalize(res.locals.conversation.type)}
                       </div>
                     `}
+                $${res.locals.enrollment.role === "staff"
+                  ? html`
+                      <form
+                        method="POST"
+                        action="${baseURL}/courses/${res.locals.course
+                          .reference}/conversations/${res.locals.conversation
+                          .reference}?_method=PATCH"
+                      >
+                        <input
+                          type="hidden"
+                          name="_csrf"
+                          value="${req.csrfToken()}"
+                        />
+                        $${res.locals.conversation.pinnedAt === null
+                          ? html`
+                              <input
+                                type="hidden"
+                                name="isPinned"
+                                value="true"
+                              />
+                              <button
+                                class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                                oninteractive="${javascript`
+                                  tippy(this, {
+                                    content: "Pin",
+                                    touch: false,
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-pin-angle"></i>
+                                Unpinned
+                              </button>
+                            `
+                          : html`
+                              <input
+                                type="hidden"
+                                name="isPinned"
+                                value="false"
+                              />
+                              <button
+                                class="button button--tight button--tight--inline button--tight-gap button--transparent text--amber"
+                                oninteractive="${javascript`
+                                  tippy(this, {
+                                    content: "Unpin",
+                                    touch: false,
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-pin-fill"></i>
+                                Pinned
+                              </button>
+                            `}
+                      </form>
+                    `
+                  : res.locals.conversation.pinnedAt !== null
+                  ? html`
+                      <div class="text--amber">
+                        <i class="bi bi-pin-fill"></i>
+                        Pinned
+                      </div>
+                    `
+                  : html``}
+                $${res.locals.enrollment.role === "staff"
+                  ? html`
+                      <button
+                        class="button button--tight button--tight--inline button--tight-gap button--transparent ${res
+                          .locals.conversation.staffOnlyAt === null
+                          ? ""
+                          : "text--pink"}"
+                        oninteractive="${javascript`
+                          tippy(this, {
+                            content: "Set as ${
+                              res.locals.conversation.staffOnlyAt === null
+                                ? "Visible by Staff Only"
+                                : "Visible by Everyone"
+                            }",
+                            touch: false,
+                          });
+                          tippy(this, {
+                            content: this.nextElementSibling.firstElementChild,
+                            theme: "rose",
+                            trigger: "click",
+                            interactive: true,
+                          });
+                        `}"
+                      >
+                        $${res.locals.conversation.staffOnlyAt === null
+                          ? html`
+                              <i class="bi bi-eye"></i>
+                              Visible by Everyone
+                            `
+                          : html`
+                              <i class="bi bi-mortarboard-fill"></i>
+                              Visible by Staff Only
+                            `}
+                      </button>
+                      <div hidden>
+                        <form
+                          method="POST"
+                          action="${baseURL}/courses/${res.locals.course
+                            .reference}/conversations/${res.locals.conversation
+                            .reference}?_method=PATCH"
+                          style="${css`
+                            padding: var(--space--2);
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--4);
+                          `}"
+                        >
+                          <input
+                            type="hidden"
+                            name="_csrf"
+                            value="${req.csrfToken()}"
+                          />
+                          $${res.locals.conversation.staffOnlyAt === null
+                            ? html`
+                                <input
+                                  type="hidden"
+                                  name="isStaffOnly"
+                                  value="true"
+                                />
+                                <p>
+                                  Are you sure you want to set this conversation
+                                  as Visible by Staff Only?
+                                </p>
+                                <p>
+                                  <strong
+                                    style="${css`
+                                      font-weight: var(--font-weight--bold);
+                                    `}"
+                                  >
+                                    Students who already participated in the
+                                    conversation will continue to have access to
+                                    it.
+                                  </strong>
+                                </p>
+                                <button class="button button--rose">
+                                  <i class="bi bi-mortarboard"></i>
+                                  Set as Visible by Staff Only
+                                </button>
+                              `
+                            : html`
+                                <input
+                                  type="hidden"
+                                  name="isStaffOnly"
+                                  value="false"
+                                />
+                                <p>
+                                  Are you sure you want to set this conversation
+                                  as Visible by Everyone?
+                                </p>
+                                <p>
+                                  <strong
+                                    style="${css`
+                                      font-weight: var(--font-weight--bold);
+                                    `}"
+                                  >
+                                    Ensure that people involved in the
+                                    conversation consent to having their
+                                    messages visible by everyone.
+                                  </strong>
+                                </p>
+                                <button class="button button--rose">
+                                  <i class="bi bi-eye"></i>
+                                  Set as Visible by Everyone
+                                </button>
+                              `}
+                        </form>
+                      </div>
+                    `
+                  : res.locals.conversation.staffOnlyAt !== null
+                  ? html`
+                      <div
+                        class="text--pink"
+                        style="${css`
+                          display: flex;
+                          gap: var(--space--1);
+                        `}"
+                      >
+                        <i class="bi bi-mortarboard-fill"></i>
+                        Visible by Staff Only
+                      </div>
+                    `
+                  : html``}
               </div>
               <div class="title">
                 <div
@@ -13152,204 +13336,6 @@ ${value}</textarea
                             )}
                       `}
                 </div>
-
-                $${(() => {
-                  const content: HTML[] = [];
-
-                  if (res.locals.enrollment.role === "staff")
-                    content.push(html`
-                      <form
-                        method="POST"
-                        action="${baseURL}/courses/${res.locals.course
-                          .reference}/conversations/${res.locals.conversation
-                          .reference}?_method=PATCH"
-                      >
-                        <input
-                          type="hidden"
-                          name="_csrf"
-                          value="${req.csrfToken()}"
-                        />
-                        $${res.locals.conversation.pinnedAt === null
-                          ? html`
-                              <input
-                                type="hidden"
-                                name="isPinned"
-                                value="true"
-                              />
-                              <button
-                                class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                oninteractive="${javascript`
-                                  tippy(this, {
-                                    content: "Pin",
-                                    touch: false,
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-pin-angle"></i>
-                                Unpinned
-                              </button>
-                            `
-                          : html`
-                              <input
-                                type="hidden"
-                                name="isPinned"
-                                value="false"
-                              />
-                              <button
-                                class="button button--tight button--tight--inline button--tight-gap button--transparent text--amber"
-                                oninteractive="${javascript`
-                                  tippy(this, {
-                                    content: "Unpin",
-                                    touch: false,
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-pin-fill"></i>
-                                Pinned
-                              </button>
-                            `}
-                      </form>
-                    `);
-                  else if (res.locals.conversation.pinnedAt !== null)
-                    content.push(html`
-                      <div
-                        class="text--amber"
-                        style="${css`
-                          display: flex;
-                          gap: var(--space--1);
-                        `}"
-                      >
-                        <i class="bi bi-pin-fill"></i>
-                        Pinned
-                      </div>
-                    `);
-
-                  if (res.locals.enrollment.role === "staff")
-                    content.push(html`
-                      <button
-                        class="button button--tight button--tight--inline button--tight-gap button--transparent ${res
-                          .locals.conversation.staffOnlyAt === null
-                          ? ""
-                          : "text--pink"}"
-                        oninteractive="${javascript`
-                          tippy(this, {
-                            content: "Set as ${
-                              res.locals.conversation.staffOnlyAt === null
-                                ? "Visible by Staff Only"
-                                : "Visible by Everyone"
-                            }",
-                            touch: false,
-                          });
-                          tippy(this, {
-                            content: this.nextElementSibling.firstElementChild,
-                            theme: "rose",
-                            trigger: "click",
-                            interactive: true,
-                          });
-                        `}"
-                      >
-                        $${res.locals.conversation.staffOnlyAt === null
-                          ? html`
-                              <i class="bi bi-eye"></i>
-                              Visible by Everyone
-                            `
-                          : html`
-                              <i class="bi bi-mortarboard-fill"></i>
-                              Visible by Staff Only
-                            `}
-                      </button>
-                      <div hidden>
-                        <form
-                          method="POST"
-                          action="${baseURL}/courses/${res.locals.course
-                            .reference}/conversations/${res.locals.conversation
-                            .reference}?_method=PATCH"
-                          style="${css`
-                            padding: var(--space--2);
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--4);
-                          `}"
-                        >
-                          <input
-                            type="hidden"
-                            name="_csrf"
-                            value="${req.csrfToken()}"
-                          />
-                          $${res.locals.conversation.staffOnlyAt === null
-                            ? html`
-                                <input
-                                  type="hidden"
-                                  name="isStaffOnly"
-                                  value="true"
-                                />
-                                <p>
-                                  Are you sure you want to set this conversation
-                                  as Visible by Staff Only?
-                                </p>
-                                <p>
-                                  <strong
-                                    style="${css`
-                                      font-weight: var(--font-weight--bold);
-                                    `}"
-                                  >
-                                    Students who already participated in the
-                                    conversation will continue to have access to
-                                    it.
-                                  </strong>
-                                </p>
-                                <button class="button button--rose">
-                                  <i class="bi bi-mortarboard"></i>
-                                  Set as Visible by Staff Only
-                                </button>
-                              `
-                            : html`
-                                <input
-                                  type="hidden"
-                                  name="isStaffOnly"
-                                  value="false"
-                                />
-                                <p>
-                                  Are you sure you want to set this conversation
-                                  as Visible by Everyone?
-                                </p>
-                                <p>
-                                  <strong
-                                    style="${css`
-                                      font-weight: var(--font-weight--bold);
-                                    `}"
-                                  >
-                                    Ensure that people involved in the
-                                    conversation consent to having their
-                                    messages visible by everyone.
-                                  </strong>
-                                </p>
-                                <button class="button button--rose">
-                                  <i class="bi bi-eye"></i>
-                                  Set as Visible by Everyone
-                                </button>
-                              `}
-                        </form>
-                      </div>
-                    `);
-                  else if (res.locals.conversation.staffOnlyAt !== null)
-                    content.push(html`
-                      <div
-                        class="text--pink"
-                        style="${css`
-                          display: flex;
-                          gap: var(--space--1);
-                        `}"
-                      >
-                        <i class="bi bi-mortarboard-fill"></i>
-                        Visible by Staff Only
-                      </div>
-                    `);
-
-                  return content.length === 0
-                    ? html``
-                    : html`<div>$${content}</div>`;
-                })()}
               </div>
             </div>
 
