@@ -13401,8 +13401,8 @@ ${value}</textarea
                                 shouldScrollIntoView = false;
                                 return html`
                                   oninteractive="${javascript`
-                                if (window.location.hash === "") this.scrollIntoView();
-                              `}"
+                                    if (window.location.hash === "") this.scrollIntoView();
+                                  `}"
                                 `;
                               })()
                             : html``}
@@ -13423,15 +13423,15 @@ ${value}</textarea
                                     }
                                   `}"
                                   oninteractive="${javascript`
-                                tippy(this, {
-                                  content: "Unread Message",
-                                  touch: false,
-                                });
-                                window.setTimeout(() => { this.click(); }, 2000);
-                              `}"
+                                    tippy(this, {
+                                      content: "Unread Message",
+                                      touch: false,
+                                    });
+                                    window.setTimeout(() => { this.click(); }, 2000);
+                                  `}"
                                   onclick="${javascript`
-                                this.remove();
-                              `}"
+                                    this.remove();
+                                  `}"
                                 ></button>
                               `
                             : html``}
@@ -13504,11 +13504,11 @@ ${value}</textarea
                                             }
                                           `}"
                                           oninteractive="${javascript`
-                                        tippy(this, {
-                                          content: "Anonymous to other students.",
-                                          touch: false,
-                                        });
-                                      `}"
+                                            tippy(this, {
+                                              content: "Anonymous to other students.",
+                                              touch: false,
+                                            });
+                                          `}"
                                         >
                                           <i class="bi bi-sunglasses"></i>
                                         </div>
@@ -13526,11 +13526,11 @@ ${value}</textarea
                                           <span
                                             class="text--violet"
                                             oninteractive="${javascript`
-                                          tippy(this, {
-                                            content: "Anonymous to other students.",
-                                            touch: false,
-                                          });
-                                        `}"
+                                              tippy(this, {
+                                                content: "Anonymous to other students.",
+                                                touch: false,
+                                              });
+                                            `}"
                                           >
                                             Anonymous
                                           </span>
@@ -13564,8 +13564,8 @@ ${value}</textarea
                                     said
                                     <time
                                       oninteractive="${javascript`
-                                    leafac.relativizeDateTimeElement(this);
-                                  `}"
+                                        leafac.relativizeDateTimeElement(this);
+                                      `}"
                                     >
                                       ${message.createdAt}
                                     </time>
@@ -13574,8 +13574,8 @@ ${value}</textarea
                                           and last edited
                                           <time
                                             oninteractive="${javascript`
-                                          leafac.relativizeDateTimeElement(this);
-                                        `}"
+                                              leafac.relativizeDateTimeElement(this);
+                                            `}"
                                           >
                                             ${message.updatedAt}
                                           </time>
@@ -13589,24 +13589,24 @@ ${value}</textarea
                                         display: inline-flex;
                                       `}"
                                       oninteractive="${javascript`
-                                    tippy(this, {
-                                      content: "Copy Message Permanent Link to Clipboard",
-                                      touch: false,
-                                    });
-                                    this.copied = tippy(this, {
-                                      content: "Copied Message Permanent Link to Clipboard",
-                                      theme: "green",
-                                      trigger: "manual",
-                                    });
-                                  `}"
+                                        tippy(this, {
+                                          content: "Copy Message Permanent Link to Clipboard",
+                                          touch: false,
+                                        });
+                                        this.copied = tippy(this, {
+                                          content: "Copied Message Permanent Link to Clipboard",
+                                          theme: "green",
+                                          trigger: "manual",
+                                        });
+                                      `}"
                                       onclick="${javascript`
-                                    (async () => {
-                                      await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${message.reference}");
-                                      this.copied.show();
-                                      await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                                      this.copied.hide();
-                                    })();
-                                  `}"
+                                        (async () => {
+                                          await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${message.reference}");
+                                          this.copied.show();
+                                          await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                                          this.copied.hide();
+                                        })();
+                                      `}"
                                     >
                                       #${res.locals.conversation
                                         .reference}/${message.reference}
@@ -13630,16 +13630,16 @@ ${value}</textarea
                                         <button
                                           class="button button--tight button--tight--inline button--transparent"
                                           oninteractive="${javascript`
-                                        tippy(this, {
-                                          content: "Update Anonymity",
-                                          touch: false,
-                                        });
-                                        tippy(this, {
-                                          content: this.nextElementSibling.firstElementChild,
-                                          trigger: "click",
-                                          interactive: true,
-                                        });
-                                      `}"
+                                            tippy(this, {
+                                              content: "Update Anonymity",
+                                              touch: false,
+                                            });
+                                            tippy(this, {
+                                              content: this.nextElementSibling.firstElementChild,
+                                              trigger: "click",
+                                              interactive: true,
+                                            });
+                                          `}"
                                         >
                                           <i class="bi bi-sunglasses"></i>
                                         </button>
@@ -13715,18 +13715,18 @@ ${value}</textarea
                                         <button
                                           class="button button--tight button--tight--inline button--transparent"
                                           oninteractive="${javascript`
-                                        tippy(this, {
-                                          content: "Remove Message",
-                                          theme: "rose",
-                                          touch: false,
-                                        });
-                                        tippy(this, {
-                                          content: this.nextElementSibling.firstElementChild,
-                                          theme: "rose",
-                                          trigger: "click",
-                                          interactive: true,
-                                        });
-                                      `}"
+                                            tippy(this, {
+                                              content: "Remove Message",
+                                              theme: "rose",
+                                              touch: false,
+                                            });
+                                            tippy(this, {
+                                              content: this.nextElementSibling.firstElementChild,
+                                              theme: "rose",
+                                              trigger: "click",
+                                              interactive: true,
+                                            });
+                                          `}"
                                         >
                                           <i class="bi bi-trash"></i>
                                         </button>
@@ -13779,15 +13779,15 @@ ${value}</textarea
                                       <button
                                         class="button button--tight button--tight--inline button--transparent"
                                         oninteractive="${javascript`
-                                        tippy(this, {
-                                          content: "Edit Message",
-                                          touch: false,
-                                        });
-                                      `}"
+                                            tippy(this, {
+                                              content: "Edit Message",
+                                              touch: false,
+                                            });
+                                          `}"
                                         onclick="${javascript`
-                                      this.closest(".message").querySelector(".message--show").hidden = true;
-                                      this.closest(".message").querySelector(".message--edit").hidden = false;
-                                    `}"
+                                          this.closest(".message").querySelector(".message--show").hidden = true;
+                                          this.closest(".message").querySelector(".message--edit").hidden = false;
+                                        `}"
                                       >
                                         <i class="bi bi-pencil"></i>
                                       </button>
@@ -13797,31 +13797,31 @@ ${value}</textarea
                                 <button
                                   class="button button--tight button--tight--inline button--transparent"
                                   oninteractive="${javascript`
-                                tippy(this, {
-                                  content: "Reply",
-                                  touch: false,
-                                });
-                              `}"
+                                    tippy(this, {
+                                      content: "Reply",
+                                      touch: false,
+                                    });
+                                  `}"
                                   onclick="${javascript`
-                                const content = JSON.parse(this.closest("[data-content]").dataset.content);
-                                const newMessage = document.querySelector(".new-message");
-                                newMessage.querySelector(".markdown-editor--button--write").click();
-                                const element = newMessage.querySelector(".markdown-editor--write--textarea");
-                                textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
-                                  message.anonymousAt === null
-                                    ? `${
-                                        message.authorEnrollment.reference
-                                      }--${slugify(
-                                        message.authorEnrollment.user.name
-                                      )}`
-                                    : `anonymous`
-                                }" + " · #" + ${JSON.stringify(
+                                    const content = JSON.parse(this.closest("[data-content]").dataset.content);
+                                    const newMessage = document.querySelector(".new-message");
+                                    newMessage.querySelector(".markdown-editor--button--write").click();
+                                    const element = newMessage.querySelector(".markdown-editor--write--textarea");
+                                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
+                                      message.anonymousAt === null
+                                        ? `${
+                                            message.authorEnrollment.reference
+                                          }--${slugify(
+                                            message.authorEnrollment.user.name
+                                          )}`
+                                        : `anonymous`
+                                    }" + " · #" + ${JSON.stringify(
                                     res.locals.conversation.reference
                                   )} + "/" + ${JSON.stringify(
                                     message.reference
                                   )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n", "");
-                                element.focus();
-                                `}"
+                                    element.focus();
+                                    `}"
                                 >
                                   <i class="bi bi-reply"></i>
                                 </button>
@@ -13867,11 +13867,11 @@ ${value}</textarea
                                             <button
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                               oninteractive="${javascript`
-                                            tippy(this, {
-                                              content: "Set as Answer",
-                                              touch: false,
-                                            });
-                                          `}"
+                                                tippy(this, {
+                                                  content: "Set as Answer",
+                                                  touch: false,
+                                                });
+                                              `}"
                                             >
                                               <i class="bi bi-patch-check"></i>
                                               Not an Answer
@@ -13886,11 +13886,11 @@ ${value}</textarea
                                             <button
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
                                               oninteractive="${javascript`
-                                              tippy(this, {
-                                                content: "Set as Not an Answer",
-                                                touch: false,
-                                              });
-                                            `}"
+                                                  tippy(this, {
+                                                    content: "Set as Not an Answer",
+                                                    touch: false,
+                                                  });
+                                                `}"
                                             >
                                               <i
                                                 class="bi bi-patch-check-fill"
@@ -13950,40 +13950,45 @@ ${value}</textarea
                                             <button
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--blue"
                                               oninteractive="${javascript`
-                                            tippy(this, {
-                                              content: ${JSON.stringify(
-                                                `Remove Endorsement${
-                                                  message.endorsements.length >
-                                                  1
-                                                    ? ` (Also endorsed by ${
-                                                        /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                                          Intl as any
-                                                        ).ListFormat(
-                                                          "en"
-                                                        ).format(
-                                                          message.endorsements
-                                                            .filter(
-                                                              (endorsement) =>
-                                                                endorsement
-                                                                  .enrollment
-                                                                  .id !==
-                                                                res.locals
-                                                                  .enrollment.id
+                                                tippy(this, {
+                                                  content: ${JSON.stringify(
+                                                    `Remove Endorsement${
+                                                      message.endorsements
+                                                        .length > 1
+                                                        ? ` (Also endorsed by ${
+                                                            /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                              Intl as any
+                                                            ).ListFormat(
+                                                              "en"
+                                                            ).format(
+                                                              message.endorsements
+                                                                .filter(
+                                                                  (
+                                                                    endorsement
+                                                                  ) =>
+                                                                    endorsement
+                                                                      .enrollment
+                                                                      .id !==
+                                                                    res.locals
+                                                                      .enrollment
+                                                                      .id
+                                                                )
+                                                                .map(
+                                                                  (
+                                                                    endorsement
+                                                                  ) =>
+                                                                    endorsement
+                                                                      .enrollment
+                                                                      .user.name
+                                                                )
                                                             )
-                                                            .map(
-                                                              (endorsement) =>
-                                                                endorsement
-                                                                  .enrollment
-                                                                  .user.name
-                                                            )
-                                                        )
-                                                      })`
-                                                    : ``
-                                                }`
-                                              )},
-                                              touch: false,
-                                            });
-                                          `}"
+                                                          })`
+                                                        : ``
+                                                    }`
+                                                  )},
+                                                  touch: false,
+                                                });
+                                              `}"
                                             >
                                               <i class="bi bi-award-fill"></i>
                                               ${message.endorsements.length}
@@ -14007,26 +14012,26 @@ ${value}</textarea
                                                 ? html``
                                                 : html`
                                                     oninteractive="${javascript`
-                                                  tippy(this, {
-                                                    content: ${JSON.stringify(
-                                                      `Endorse (Already endorsed by ${
-                                                        /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                                          Intl as any
-                                                        ).ListFormat(
-                                                          "en"
-                                                        ).format(
-                                                          message.endorsements.map(
-                                                            (endorsement) =>
-                                                              endorsement
-                                                                .enrollment.user
-                                                                .name
-                                                          )
-                                                        )
-                                                      })`
-                                                    )},
-                                                    touch: false,
-                                                  });
-                                                `}"
+                                                      tippy(this, {
+                                                        content: ${JSON.stringify(
+                                                          `Endorse (Already endorsed by ${
+                                                            /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                              Intl as any
+                                                            ).ListFormat(
+                                                              "en"
+                                                            ).format(
+                                                              message.endorsements.map(
+                                                                (endorsement) =>
+                                                                  endorsement
+                                                                    .enrollment
+                                                                    .user.name
+                                                              )
+                                                            )
+                                                          })`
+                                                        )},
+                                                        touch: false,
+                                                      });
+                                                    `}"
                                                   `}
                                             >
                                               <i class="bi bi-award"></i>
@@ -14036,12 +14041,12 @@ ${value}</textarea
                                                 : `${
                                                     message.endorsements.length
                                                   }
-                                              Staff Endorsement${
-                                                message.endorsements.length ===
-                                                1
-                                                  ? ""
-                                                  : "s"
-                                              }`}
+                                                  Staff Endorsement${
+                                                    message.endorsements
+                                                      .length === 1
+                                                      ? ""
+                                                      : "s"
+                                                  }`}
                                             </button>
                                           `}
                                     </form>
@@ -14057,22 +14062,23 @@ ${value}</textarea
                                         gap: var(--space--1);
                                       `}"
                                       oninteractive="${javascript`
-                                    tippy(this, {
-                                      content: ${JSON.stringify(
-                                        `Endorsed by ${
-                                          /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                            Intl as any
-                                          ).ListFormat("en").format(
-                                            message.endorsements.map(
-                                              (endorsement) =>
-                                                endorsement.enrollment.user.name
-                                            )
-                                          )
-                                        }`
-                                      )},
-                                      touch: false,
-                                    });
-                                  `}"
+                                        tippy(this, {
+                                          content: ${JSON.stringify(
+                                            `Endorsed by ${
+                                              /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                Intl as any
+                                              ).ListFormat("en").format(
+                                                message.endorsements.map(
+                                                  (endorsement) =>
+                                                    endorsement.enrollment.user
+                                                      .name
+                                                )
+                                              )
+                                            }`
+                                          )},
+                                          touch: false,
+                                        });
+                                      `}"
                                     >
                                       <i class="bi bi-award"></i>
                                       ${message.endorsements.length} Staff
@@ -14118,45 +14124,45 @@ ${value}</textarea
                                 <div
                                   class="message--show--content--content"
                                   oninteractive="${javascript`
-                                const dropdownMenuTarget = this.closest(".message--show--content").querySelector(".message--show--content--dropdown-menu-target");
-                                const dropdownMenu = tippy(dropdownMenuTarget, {
-                                  content: this.nextElementSibling.firstElementChild,
-                                  trigger: "manual",
-                                  interactive: true,
-                                  touch: false,
-                                });
-                                this.addEventListener("mouseup", (event) => {
-                                  window.setTimeout(() => {
-                                    const selection = window.getSelection();
-                                    let anchorElement = selection.anchorNode;
-                                    while (
-                                      (
-                                        anchorElement?.dataset?.position === undefined ||
-                                        anchorElement?.parentElement?.dataset?.position !== undefined
-                                      ) &&
-                                      anchorElement !== null
-                                    ) anchorElement = anchorElement.parentElement;
-                                    let focusElement = selection.focusNode;
-                                    while (
-                                      (
-                                        focusElement?.dataset?.position === undefined ||
-                                        focusElement?.parentElement?.dataset?.position !== undefined
-                                      ) &&
-                                      focusElement !== null
-                                    ) focusElement = focusElement.parentElement;
-                                    if (
-                                      selection.isCollapsed ||
-                                      anchorElement === null ||
-                                      focusElement === null ||
-                                      !this.contains(anchorElement) ||
-                                      !this.contains(focusElement)
-                                    ) return;
-                                    dropdownMenuTarget.style.top = String(event.layerY) + "px";
-                                    dropdownMenuTarget.style.left = String(event.layerX) + "px";
-                                    dropdownMenu.show();
-                                  }, 0);
-                                });
-                              `}"
+                                    const dropdownMenuTarget = this.closest(".message--show--content").querySelector(".message--show--content--dropdown-menu-target");
+                                    const dropdownMenu = tippy(dropdownMenuTarget, {
+                                      content: this.nextElementSibling.firstElementChild,
+                                      trigger: "manual",
+                                      interactive: true,
+                                      touch: false,
+                                    });
+                                    this.addEventListener("mouseup", (event) => {
+                                      window.setTimeout(() => {
+                                        const selection = window.getSelection();
+                                        let anchorElement = selection.anchorNode;
+                                        while (
+                                          (
+                                            anchorElement?.dataset?.position === undefined ||
+                                            anchorElement?.parentElement?.dataset?.position !== undefined
+                                          ) &&
+                                          anchorElement !== null
+                                        ) anchorElement = anchorElement.parentElement;
+                                        let focusElement = selection.focusNode;
+                                        while (
+                                          (
+                                            focusElement?.dataset?.position === undefined ||
+                                            focusElement?.parentElement?.dataset?.position !== undefined
+                                          ) &&
+                                          focusElement !== null
+                                        ) focusElement = focusElement.parentElement;
+                                        if (
+                                          selection.isCollapsed ||
+                                          anchorElement === null ||
+                                          focusElement === null ||
+                                          !this.contains(anchorElement) ||
+                                          !this.contains(focusElement)
+                                        ) return;
+                                        dropdownMenuTarget.style.top = String(event.layerY) + "px";
+                                        dropdownMenuTarget.style.left = String(event.layerX) + "px";
+                                        dropdownMenu.show();
+                                      }, 0);
+                                    });
+                                  `}"
                                 >
                                   $${markdownProcessor({
                                     req,
@@ -14170,55 +14176,57 @@ ${value}</textarea
                                     <button
                                       class="dropdown--menu--item button button--transparent"
                                       onclick="${javascript`
-                                    tippy.hideAll();
-                                    const selection = window.getSelection();
-                                    let anchorElement = selection.anchorNode;
-                                    while (
-                                      (
-                                        anchorElement?.dataset?.position === undefined ||
-                                        anchorElement?.parentElement?.dataset?.position !== undefined
-                                      ) &&
-                                      anchorElement !== null
-                                    ) anchorElement = anchorElement.parentElement;
-                                    let focusElement = selection.focusNode;
-                                    while (
-                                      (
-                                        focusElement?.dataset?.position === undefined ||
-                                        focusElement?.parentElement?.dataset?.position !== undefined
-                                      ) &&
-                                      focusElement !== null
-                                    ) focusElement = focusElement.parentElement;
-                                    const contentElement = this.closest(".message--show--content").querySelector(".message--show--content--content");
-                                    if (
-                                      selection.isCollapsed ||
-                                      anchorElement === null ||
-                                      focusElement === null ||
-                                      !contentElement.contains(anchorElement) ||
-                                      !contentElement.contains(focusElement)
-                                    ) return;
-                                    const anchorPosition = JSON.parse(anchorElement.dataset.position);
-                                    const focusPosition = JSON.parse(focusElement.dataset.position);
-                                    const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
-                                    const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
-                                    const content = JSON.parse(anchorElement.closest("[data-content]").dataset.content);
-                                    const newMessage = document.querySelector(".new-message");
-                                    newMessage.querySelector(".markdown-editor--button--write").click();
-                                    const element = newMessage.querySelector(".markdown-editor--write--textarea");
-                                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
-                                      message.anonymousAt === null
-                                        ? `${
-                                            message.authorEnrollment.reference
-                                          }--${slugify(
-                                            message.authorEnrollment.user.name
-                                          )}`
-                                        : `anonymous`
-                                    }" + " · #" + ${JSON.stringify(
+                                        tippy.hideAll();
+                                        const selection = window.getSelection();
+                                        let anchorElement = selection.anchorNode;
+                                        while (
+                                          (
+                                            anchorElement?.dataset?.position === undefined ||
+                                            anchorElement?.parentElement?.dataset?.position !== undefined
+                                          ) &&
+                                          anchorElement !== null
+                                        ) anchorElement = anchorElement.parentElement;
+                                        let focusElement = selection.focusNode;
+                                        while (
+                                          (
+                                            focusElement?.dataset?.position === undefined ||
+                                            focusElement?.parentElement?.dataset?.position !== undefined
+                                          ) &&
+                                          focusElement !== null
+                                        ) focusElement = focusElement.parentElement;
+                                        const contentElement = this.closest(".message--show--content").querySelector(".message--show--content--content");
+                                        if (
+                                          selection.isCollapsed ||
+                                          anchorElement === null ||
+                                          focusElement === null ||
+                                          !contentElement.contains(anchorElement) ||
+                                          !contentElement.contains(focusElement)
+                                        ) return;
+                                        const anchorPosition = JSON.parse(anchorElement.dataset.position);
+                                        const focusPosition = JSON.parse(focusElement.dataset.position);
+                                        const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
+                                        const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
+                                        const content = JSON.parse(anchorElement.closest("[data-content]").dataset.content);
+                                        const newMessage = document.querySelector(".new-message");
+                                        newMessage.querySelector(".markdown-editor--button--write").click();
+                                        const element = newMessage.querySelector(".markdown-editor--write--textarea");
+                                        textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
+                                          message.anonymousAt === null
+                                            ? `${
+                                                message.authorEnrollment
+                                                  .reference
+                                              }--${slugify(
+                                                message.authorEnrollment.user
+                                                  .name
+                                              )}`
+                                            : `anonymous`
+                                        }" + " · #" + ${JSON.stringify(
                                         res.locals.conversation.reference
                                       )} + "/" + ${JSON.stringify(
                                         message.reference
                                       )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n", "");
-                                    element.focus();
-                                  `}"
+                                        element.focus();
+                                      `}"
                                     >
                                       <i class="bi bi-chat-left-quote"></i>
                                       Quote
@@ -14255,12 +14263,12 @@ ${value}</textarea
                                         ? "?_method=DELETE"
                                         : ""}"
                                       onsubmit="${javascript`
-                                    event.preventDefault();
-                                    fetch(this.action, {
-                                      method: this.method,
-                                      body: new URLSearchParams(new FormData(this)),
-                                    });
-                                  `}"
+                                        event.preventDefault();
+                                        fetch(this.action, {
+                                          method: this.method,
+                                          body: new URLSearchParams(new FormData(this)),
+                                        });
+                                      `}"
                                     >
                                       <input
                                         type="hidden"
@@ -14275,13 +14283,15 @@ ${value}</textarea
                                           ? html``
                                           : html`
                                               oninteractive="${javascript`
-                                            tippy(this, {
-                                              content: ${JSON.stringify(
-                                                isLiked ? "Remove Like" : "Like"
-                                              )},
-                                              touch: false,
-                                            });
-                                          `}"
+                                                tippy(this, {
+                                                  content: ${JSON.stringify(
+                                                    isLiked
+                                                      ? "Remove Like"
+                                                      : "Like"
+                                                  )},
+                                                  touch: false,
+                                                });
+                                              `}"
                                             `}
                                       >
                                         $${isLiked
@@ -14346,24 +14356,24 @@ ${value}</textarea
                                       <button
                                         class="button button--blue"
                                         oninteractive="${javascript`
-                                      Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
-                                      tippy(this, {
-                                        content: ${JSON.stringify(html`
-                                          <span class="keyboard-shortcut">
-                                            Ctrl+Enter or
-                                            <span
-                                              class="keyboard-shortcut--cluster"
-                                              ><i class="bi bi-command"></i
-                                              ><i
-                                                class="bi bi-arrow-return-left"
-                                              ></i
-                                            ></span>
-                                          </span>
-                                        `)},
-                                        touch: false,
-                                        allowHTML: true,
-                                      });
-                                    `}"
+                                          Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
+                                          tippy(this, {
+                                            content: ${JSON.stringify(html`
+                                              <span class="keyboard-shortcut">
+                                                Ctrl+Enter or
+                                                <span
+                                                  class="keyboard-shortcut--cluster"
+                                                  ><i class="bi bi-command"></i
+                                                  ><i
+                                                    class="bi bi-arrow-return-left"
+                                                  ></i
+                                                ></span>
+                                              </span>
+                                            `)},
+                                            touch: false,
+                                            allowHTML: true,
+                                          });
+                                        `}"
                                       >
                                         <i class="bi bi-pencil"></i>
                                         Update Message
@@ -14372,9 +14382,9 @@ ${value}</textarea
                                         type="reset"
                                         class="button button--transparent"
                                         onclick="${javascript`
-                                      this.closest(".message").querySelector(".message--show").hidden = false;
-                                      this.closest(".message").querySelector(".message--edit").hidden = true;
-                                  `}"
+                                          this.closest(".message").querySelector(".message--show").hidden = false;
+                                          this.closest(".message").querySelector(".message--edit").hidden = true;
+                                        `}"
                                       >
                                         <i class="bi bi-x-lg"></i>
                                         Cancel
