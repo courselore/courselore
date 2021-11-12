@@ -9013,87 +9013,47 @@ export default async function courselore({
               `
             : html``}
         </div>
-        <div
-          style="${css`
-            display: flex;
-            flex-direction: column;
-            gap: var(--space--0-5);
-            & > * {
-              display: flex;
-              flex-wrap: wrap;
-              column-gap: var(--space--4);
-              row-gap: var(--space--0-5);
+        $${conversation.taggings.length === 0
+          ? html``
+          : html`
+              <div
+                style="${css`
+                  display: flex;
+                  flex-wrap: wrap;
+                  column-gap: var(--space--4);
+                  row-gap: var(--space--0-5);
 
-              & > * {
-                display: flex;
-                gap: var(--space--1);
-              }
-            }
-          `}"
-        >
-          $${conversation.taggings.length === 0
-            ? html``
-            : html`
-                <div>
-                  $${conversation.taggings.map(
-                    (tagging) => html`
-                      <div class="text--teal">
-                        <i class="bi bi-tag-fill"></i>
-                        ${tagging.tag.name}
-                        $${tagging.tag.staffOnlyAt !== null
-                          ? html`
-                              <span
-                                class="text--pink"
-                                oninteractive="${javascript`
-                                  tippy(this, {
-                                    content: "This tag is visible by staff only.",
-                                    touch: false,
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-mortarboard-fill"></i>
-                              </span>
-                            `
-                          : html``}
-                      </div>
-                    `
-                  )}
-                </div>
-              `}
-
-          <div>
-            <div
-              oninteractive="${javascript`
-                tippy(this, {
-                  content: "${conversation.messagesCount} Message${
-                conversation.messagesCount === 1 ? "" : "s"
-              }",
-                  touch: false,
-                });
-              `}"
-            >
-              <i class="bi bi-chat-left-text"></i>
-              ${conversation.messagesCount}
-            </div>
-            $${conversation.likesCount === 0
-              ? html``
-              : html`
-                  <div
-                    oninteractive="${javascript`
-                      tippy(this, {
-                        content: "${conversation.likesCount} Like${
-                      conversation.likesCount === 1 ? "" : "s"
-                    }",
-                        touch: false,
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-hand-thumbs-up"></i>
-                    ${conversation.likesCount}
-                  </div>
-                `}
-          </div>
-        </div>
+                  & > * {
+                    display: flex;
+                    gap: var(--space--1);
+                  }
+                `}"
+              >
+                $${conversation.taggings.map(
+                  (tagging) => html`
+                    <div class="text--teal">
+                      <i class="bi bi-tag-fill"></i>
+                      ${tagging.tag.name}
+                      $${tagging.tag.staffOnlyAt !== null
+                        ? html`
+                            <span
+                              class="text--pink"
+                              oninteractive="${javascript`
+                                tippy(this, {
+                                  content: "This tag is visible by staff only.",
+                                  touch: false,
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-mortarboard-fill"></i>
+                            </span>
+                          `
+                        : html``}
+                    </div>
+                  `
+                )}
+              </div>
+            `}
         $${typeof conversation.messagesSearchResultSnippet === "string" &&
         conversation.messagesSearchResultMessage !== undefined
           ? html`
@@ -9312,7 +9272,6 @@ export default async function courselore({
               }
             | NoLongerEnrolledEnrollment;
         }[];
-        likesCount: number;
       }
     | undefined => {
     const conversation = database.get<{
@@ -9457,14 +9416,6 @@ export default async function courselore({
           )
         : [];
 
-    const likesCount = database.get<{ likesCount: number }>(
-      sql`
-        SELECT COUNT(*) AS "likesCount"
-        FROM "likes"
-        WHERE "message" = ${originalMessage.id}
-      `
-    )!.likesCount;
-
     return {
       id: conversation.id,
       createdAt: conversation.createdAt,
@@ -9531,7 +9482,6 @@ export default async function courselore({
               }
             : noLongerEnrolledEnrollment,
       })),
-      likesCount,
     };
   };
 
