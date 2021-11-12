@@ -9567,10 +9567,10 @@ export default async function courselore({
         updatedAt: string | null;
         reference: string;
         authorEnrollment: IsConversationAccessibleMiddlewareLocals["conversation"]["authorEnrollment"];
-        content: string;
-        contentSearch: string;
         answerAt: string | null;
         anonymousAt: string | null;
+        content: string;
+        contentSearch: string;
         reading: { id: number } | null;
         endorsements: IsConversationAccessibleMiddlewareLocals["conversation"]["endorsements"];
         likes: {
@@ -9592,10 +9592,10 @@ export default async function courselore({
       authorUserBiography: string | null;
       authorEnrollmentReference: EnrollmentRole | null;
       authorEnrollmentRole: EnrollmentRole | null;
-      content: string;
-      contentSearch: string;
       answerAt: string | null;
       anonymousAt: string | null;
+      content: string;
+      contentSearch: string;
       readingId: number | null;
     }>(
       sql`
@@ -9611,10 +9611,10 @@ export default async function courselore({
                "authorUser"."biography" AS "authorUserBiography",
                "authorEnrollment"."reference" AS "authorEnrollmentReference",
                "authorEnrollment"."role" AS "authorEnrollmentRole",
-               "messages"."content",
-               "messages"."contentSearch",
                "messages"."answerAt",
                "messages"."anonymousAt",
+               "messages"."content",
+               "messages"."contentSearch",
                "readings"."id" AS "readingId"
         FROM "messages"
         LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
@@ -9711,10 +9711,10 @@ export default async function courselore({
               role: message.authorEnrollmentRole,
             }
           : noLongerEnrolledEnrollment,
-      content: message.content,
-      contentSearch: message.contentSearch,
       answerAt: message.answerAt,
       anonymousAt: message.anonymousAt,
+      content: message.content,
+      contentSearch: message.contentSearch,
       reading: message.readingId === null ? null : { id: message.readingId },
       endorsements: endorsements.map((endorsement) => ({
         id: endorsement.id,
@@ -14779,19 +14779,19 @@ ${value}</textarea
                   "conversation",
                   "reference",
                   "authorEnrollment",
-                  "content",
-                  "contentSearch",
                   "answerAt",
-                  "anonymousAt"
+                  "anonymousAt",
+                  "content",
+                  "contentSearch"
                 )
                 VALUES (
                   ${res.locals.conversation.id},
                   ${String(res.locals.conversation.nextMessageReference)},
                   ${res.locals.enrollment.id},
-                  ${req.body.content},
-                  ${processedContent.text},
                   ${req.body.isAnswer ? new Date().toISOString() : null},
-                  ${req.body.isAnonymous ? new Date().toISOString() : null}
+                  ${req.body.isAnonymous ? new Date().toISOString() : null},
+                  ${req.body.content},
+                  ${processedContent.text}
                 )
               `
             ).lastInsertRowid
@@ -14823,9 +14823,9 @@ ${value}</textarea
     },
     any,
     {
-      content?: string;
       isAnswer?: "true" | "false";
       isAnonymous?: "true" | "false";
+      content?: string;
     },
     {},
     MayEditMessageMiddlewareLocals
@@ -14833,26 +14833,6 @@ ${value}</textarea
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
     ...mayEditMessageMiddleware,
     (req, res, next) => {
-      let processedContent: ReturnType<typeof markdownProcessor>;
-      if (typeof req.body.content === "string")
-        if (req.body.content.trim() === "") return next("validation");
-        else {
-          processedContent = markdownProcessor({
-            req,
-            res,
-            markdown: req.body.content,
-          });
-          database.run(
-            sql`
-              UPDATE "messages"
-              SET "content" = ${req.body.content},
-                  "contentSearch" = ${processedContent.text},
-                  "updatedAt" = ${new Date().toISOString()}
-              WHERE "id" = ${res.locals.message.id}
-            `
-          );
-        }
-
       if (typeof req.body.isAnswer === "string")
         if (
           !["true", "false"].includes(req.body.isAnswer) ||
@@ -14898,6 +14878,26 @@ ${value}</textarea
               WHERE "id" = ${res.locals.message.id}
             `
           );
+
+      let processedContent: ReturnType<typeof markdownProcessor>;
+      if (typeof req.body.content === "string")
+        if (req.body.content.trim() === "") return next("validation");
+        else {
+          processedContent = markdownProcessor({
+            req,
+            res,
+            markdown: req.body.content,
+          });
+          database.run(
+            sql`
+              UPDATE "messages"
+              SET "content" = ${req.body.content},
+                  "contentSearch" = ${processedContent.text},
+                  "updatedAt" = ${new Date().toISOString()}
+              WHERE "id" = ${res.locals.message.id}
+            `
+          );
+        }
 
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
@@ -15710,10 +15710,10 @@ ${value}</textarea
                           "conversation",
                           "reference",
                           "authorEnrollment",
-                          "content",
-                          "contentSearch",
                           "answerAt",
-                          "anonymousAt"
+                          "anonymousAt",
+                          "content",
+                          "contentSearch"
                         )
                         VALUES (
                           ${messageCreatedAt},
@@ -15734,8 +15734,6 @@ ${value}</textarea
                           ${conversation.id},
                           ${String(messageReference)},
                           ${lodash.sample(enrollments)!.id},
-                          ${content},
-                          ${processedContent.text},
                           ${
                             Math.random() < 0.5
                               ? new Date().toISOString()
@@ -15745,7 +15743,9 @@ ${value}</textarea
                             Math.random() < 0.25
                               ? new Date().toISOString()
                               : null
-                          }
+                          },
+                          ${content},
+                          ${processedContent.text}
                         )
                       `
                     ).lastInsertRowid

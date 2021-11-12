@@ -32,8 +32,7 @@
   - Items
     - isPinned
     - isStaffOnly
-    - answerAt
-      - isAnswer
+    - isAnswer
     - anonymousAt
       - isAnonymous
     - ***
