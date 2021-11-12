@@ -44,6 +44,7 @@
       - Messages display
       - New message
     - New conversation
+- Test the app all around.
 - Tags aren’t required.
 - The first post is a chatroom description
 - Layout changes:
