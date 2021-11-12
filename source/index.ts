@@ -8961,7 +8961,7 @@ export default async function courselore({
           $${conversation.anonymousAt === null
             ? html`
                 $${conversation.authorEnrollment.user.avatar === null
-                  ? html` <i class="bi bi-person-circle"></i> `
+                  ? html`<i class="bi bi-person-circle"></i>`
                   : html`
                       <img
                         src="${conversation.authorEnrollment.user.avatar}"
@@ -13571,7 +13571,7 @@ ${value}</textarea
                                     </time>
                                     $${message.updatedAt !== null
                                       ? html`
-                                          and last edited
+                                          and last updated
                                           <time
                                             oninteractive="${javascript`
                                               leafac.relativizeDateTimeElement(this);
