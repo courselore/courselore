@@ -33,8 +33,7 @@
     - isPinned
     - isStaffOnly
     - isAnswer
-    - anonymousAt
-      - isAnonymous
+    - isAnonymous
     - ***
     - endorsements
   - Locations

@@ -12400,8 +12400,8 @@ ${value}</textarea
       const message = database.get<{
         id: number;
         reference: string;
-        contentSearch: string;
         anonymousAt: string | null;
+        contentSearch: string;
       }>(
         sql`
           SELECT * FROM "messages" WHERE "id" = ${Number(
@@ -12411,17 +12411,17 @@ ${value}</textarea
                   "conversation",
                   "reference",
                   "authorEnrollment",
+                  "anonymousAt",
                   "content",
-                  "contentSearch",
-                  "anonymousAt"
+                  "contentSearch"
                 )
                 VALUES (
                   ${conversation.id},
                   ${"1"},
                   ${res.locals.enrollment.id},
+                  ${req.body.isAnonymous ? new Date().toISOString() : null},
                   ${req.body.content},
-                  ${processedContent.text},
-                  ${req.body.isAnonymous ? new Date().toISOString() : null}
+                  ${processedContent.text}
                 )
               `
             ).lastInsertRowid
