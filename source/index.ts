@@ -8881,6 +8881,52 @@ export default async function courselore({
     }
   ): HTML => html`
     <div>
+      <div
+        style="${css`
+          font-size: var(--font-size--xs);
+          line-height: var(--line-height--xs);
+          display: flex;
+          flex-wrap: wrap;
+          column-gap: var(--space--4);
+          row-gap: var(--space--0-5);
+
+          & > * {
+            display: flex;
+            gap: var(--space--1);
+          }
+        `}"
+      >
+        <div class="${conversationTypeTextColor[conversation.type].display}">
+          $${conversationTypeIcon[conversation.type].fill}
+          ${lodash.capitalize(conversation.type)}
+        </div>
+        $${conversation.pinnedAt !== null
+          ? html`
+              <div>
+                <div
+                  class="text--amber"
+                  oninteractive="${javascript`
+                    tippy(this, {
+                      content: "Pinned conversations are listed first.",
+                      touch: false,
+                    });
+                  `}"
+                >
+                  <i class="bi bi-pin-fill"></i>
+                  Pinned
+                </div>
+              </div>
+            `
+          : html``}
+        $${conversation.staffOnlyAt !== null
+          ? html`
+              <div class="text--pink">
+                <i class="bi bi-mortarboard-fill"></i>
+                Visible by Staff Only
+              </div>
+            `
+          : html``}
+      </div>
       <h3
         style="${css`
           font-weight: var(--font-weight--bold);
@@ -8986,16 +9032,10 @@ export default async function courselore({
             }
           `}"
         >
-          <div>
-            <div
-              class="${conversationTypeTextColor[conversation.type].display}"
-            >
-              $${conversationTypeIcon[conversation.type].fill}
-              ${lodash.capitalize(conversation.type)}
-            </div>
-            $${conversation.taggings.length === 0
-              ? html``
-              : html`
+          $${conversation.taggings.length === 0
+            ? html``
+            : html`
+                <div>
                   $${conversation.taggings.map(
                     (tagging) => html`
                       <div class="text--teal">
@@ -9019,41 +9059,22 @@ export default async function courselore({
                       </div>
                     `
                   )}
-                `}
-          </div>
-          $${(() => {
-            const content: HTML[] = [];
-            if (conversation.pinnedAt !== null)
-              content.push(html`
-                <div>
-                  <div
-                    class="text--amber"
-                    oninteractive="${javascript`
-                      tippy(this, {
-                        content: "Pinned conversations are listed first.",
-                        touch: false,
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-pin-fill"></i>
-                    Pinned
-                  </div>
                 </div>
-              `);
-            if (conversation.staffOnlyAt !== null)
-              content.push(html`
-                <div class="text--pink">
-                  <i class="bi bi-mortarboard-fill"></i>
-                  Visible by Staff Only
-                </div>
-              `);
-            return content.length === 0 ? html`` : html`<div>$${content}</div>`;
-          })()}
+              `}
+
           <div>
-            <div>
+            <div
+              oninteractive="${javascript`
+                tippy(this, {
+                  content: "${conversation.messagesCount} Message${
+                conversation.messagesCount === 1 ? "" : "s"
+              }",
+                  touch: false,
+                });
+              `}"
+            >
               <i class="bi bi-chat-left-text"></i>
               ${conversation.messagesCount}
-              Message${conversation.messagesCount === 1 ? "" : "s"}
             </div>
             $${conversation.endorsements.length === 0
               ? html``
@@ -9079,19 +9100,24 @@ export default async function courselore({
                     `}"
                   >
                     <i class="bi bi-award"></i>
-                    ${conversation.endorsements.length} Staff
-                    Endorsement${conversation.endorsements.length === 1
-                      ? ""
-                      : "s"}
+                    ${conversation.endorsements.length}
                   </div>
                 `}
             $${conversation.likesCount === 0
               ? html``
               : html`
-                  <div>
+                  <div
+                    oninteractive="${javascript`
+                      tippy(this, {
+                        content: "${conversation.likesCount} Like${
+                      conversation.likesCount === 1 ? "" : "s"
+                    }",
+                        touch: false,
+                      });
+                    `}"
+                  >
                     <i class="bi bi-hand-thumbs-up"></i>
                     ${conversation.likesCount}
-                    Like${conversation.likesCount === 1 ? "" : "s"}
                   </div>
                 `}
           </div>
