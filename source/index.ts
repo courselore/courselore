@@ -12375,21 +12375,21 @@ ${value}</textarea
                   "course",
                   "reference",
                   "type",
+                  "pinnedAt",
+                  "staffOnlyAt",
                   "title",
                   "titleSearch",
-                  "nextMessageReference",
-                  "pinnedAt",
-                  "staffOnlyAt"
+                  "nextMessageReference"
                 )
                 VALUES (
                   ${res.locals.course.id},
                   ${String(res.locals.course.nextConversationReference)},
                   ${req.body.type},
+                  ${req.body.isPinned ? new Date().toISOString() : null},
+                  ${req.body.isStaffOnly ? new Date().toISOString() : null},
                   ${req.body.title},
                   ${html`${req.body.title}`},
-                  ${2},
-                  ${req.body.isPinned ? new Date().toISOString() : null},
-                  ${req.body.isStaffOnly ? new Date().toISOString() : null}
+                  ${2}
                 )
               `
             ).lastInsertRowid
@@ -14626,10 +14626,10 @@ ${value}</textarea
     { courseReference: string; conversationReference: string },
     HTML,
     {
-      title?: string;
       type?: ConversationType;
       isPinned?: "true" | "false";
       isStaffOnly?: "true" | "false";
+      title?: string;
     },
     {},
     MayEditConversationMiddlewareLocals
@@ -14637,18 +14637,6 @@ ${value}</textarea
     "/courses/:courseReference/conversations/:conversationReference",
     ...mayEditConversationMiddleware,
     (req, res, next) => {
-      if (typeof req.body.title === "string")
-        if (req.body.title.trim() === "") return next("validation");
-        else
-          database.run(
-            sql`
-              UPDATE "conversations"
-              SET "title" = ${req.body.title},
-                  "titleSearch" = ${html`${req.body.title}`}
-              WHERE "id" = ${res.locals.conversation.id}
-            `
-          );
-
       if (typeof req.body.type === "string")
         if (!res.locals.conversationTypes.includes(req.body.type))
           return next("validation");
@@ -14701,6 +14689,18 @@ ${value}</textarea
                   ? new Date().toISOString()
                   : null
               }
+              WHERE "id" = ${res.locals.conversation.id}
+            `
+          );
+
+      if (typeof req.body.title === "string")
+        if (req.body.title.trim() === "") return next("validation");
+        else
+          database.run(
+            sql`
+              UPDATE "conversations"
+              SET "title" = ${req.body.title},
+                  "titleSearch" = ${html`${req.body.title}`}
               WHERE "id" = ${res.locals.conversation.id}
             `
           );
@@ -15639,25 +15639,25 @@ ${value}</textarea
                         "course",
                         "reference",
                         "type",
+                        "pinnedAt",
+                        "staffOnlyAt",
                         "title",
                         "titleSearch",
-                        "nextMessageReference",
-                        "pinnedAt",
-                        "staffOnlyAt"
+                        "nextMessageReference"
                       )
                       VALUES (
                         ${course.id},
                         ${String(conversationReference)},
                         ${type},
-                        ${title},
-                        ${html`${title}`},
-                        ${lodash.random(2, 13)},
                         ${
                           Math.random() < 0.15 ? new Date().toISOString() : null
                         },
                         ${
                           Math.random() < 0.25 ? new Date().toISOString() : null
-                        }
+                        },
+                        ${title},
+                        ${html`${title}`},
+                        ${lodash.random(2, 13)}
                       )
                     `
                   ).lastInsertRowid
