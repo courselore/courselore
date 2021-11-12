@@ -30,7 +30,6 @@
 
 - don’t let first message be special
   - Search by author should look into conversation author
-    - Main search
     - #references widget
   - Let student go anonymous in conversation creation
   - Test conversation without messages
