@@ -83,6 +83,7 @@
   - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by staff).
   - Let original question asker approve an answer.
+  - Have Search Filters for unanswered questions, answered questions, and so forth.
 - More sophisticated tag system: dependencies between tags, actions triggered by tags, and so forth.
 - Modify the order of tags.
 - Different states: Open vs archived.
