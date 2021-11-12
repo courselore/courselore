@@ -15543,6 +15543,25 @@ ${value}</textarea
             conversationReference < course.nextConversationReference;
             conversationReference++
           ) {
+            const conversationCreatedAt =
+              conversationCreatedAts[conversationReference - 1];
+            const nextMessageReference = lodash.random(2, 13);
+            const messageCreatedAts = [conversationCreatedAt];
+            for (
+              let messageReference = 1;
+              messageReference < nextMessageReference;
+              messageReference++
+            )
+              messageCreatedAts.push(
+                new Date(
+                  Math.min(
+                    Date.now(),
+                    new Date(
+                      messageCreatedAts[messageCreatedAts.length - 1]
+                    ).getTime() + lodash.random(12 * 60 * 60 * 1000)
+                  )
+                ).toISOString()
+              );
             const type =
               conversationTypes[
                 Math.random() < 0.7
@@ -15562,13 +15581,14 @@ ${value}</textarea
               authorEnrollment: number | null;
               anonymousAt: string | null;
               title: string;
-              nextMessageReference: number;
             }>(
               sql`
                 SELECT * FROM "conversations" WHERE "id" = ${Number(
                   database.run(
                     sql`
                       INSERT INTO "conversations" (
+                        "createdAt",
+                        "udatedAt",
                         "course",
                         "reference",
                         "authorEnrollment",
@@ -15581,6 +15601,8 @@ ${value}</textarea
                         "nextMessageReference"
                       )
                       VALUES (
+                        ${conversationCreatedAt},
+                        ${messageCreatedAts[messageCreatedAts.length - 1]},
                         ${course.id},
                         ${String(conversationReference)},
                         ${lodash.sample(enrollments)!.id},
@@ -15596,7 +15618,7 @@ ${value}</textarea
                         },
                         ${title},
                         ${html`${title}`},
-                        ${lodash.random(2, 13)}
+                        ${nextMessageReference}
                       )
                     `
                   ).lastInsertRowid
@@ -15614,20 +15636,12 @@ ${value}</textarea
               `
             );
 
-            let messageCreatedAt =
-              conversationCreatedAts[conversationReference - 1];
             for (
               let messageReference = 1;
-              messageReference < conversation.nextMessageReference;
+              messageReference < nextMessageReference;
               messageReference++
             ) {
-              messageCreatedAt = new Date(
-                Math.min(
-                  Date.now(),
-                  new Date(messageCreatedAt).getTime() +
-                    lodash.random(12 * 60 * 60 * 1000)
-                )
-              ).toISOString();
+              const messageCreatedAt = messageCreatedAts[messageReference - 1];
               const content = faker.lorem.paragraphs(
                 lodash.random(1, 6),
                 "\n\n"

@@ -29,6 +29,10 @@
 ### Chat
 
 - don’t let first message be special
+  - Update the updatedAt in conversation
+    - update title 14635
+    - new messages
+    - update messages
   - "conversations"
   - "messages"
   - Let student go anonymous in conversation creation
