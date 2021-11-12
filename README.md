@@ -29,8 +29,11 @@
 ### Chat
 
 - don’t let first message be special
-  - dont store conversation author and other metadata in first message
-
+  - anonymous near author
+  - getMessage
+  - "1"
+  - "conversations"
+  - "messages"
 - Move to top
   - Items
     - isPinned

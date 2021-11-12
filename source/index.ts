@@ -226,8 +226,12 @@ export default async function courselore({
 
       CREATE TABLE "conversations" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "updatedAt" TEXT NULL,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
+        "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+        "anonymousAt" TEXT NULL,
         "type" TEXT NOT NULL,
         "pinnedAt" TEXT NULL,
         "staffOnlyAt" TEXT NULL,
@@ -290,8 +294,8 @@ export default async function courselore({
         "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
         "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
-        "answerAt" TEXT NULL,
         "anonymousAt" TEXT NULL,
+        "answerAt" TEXT NULL,
         "content" TEXT NOT NULL,
         "contentSearch" TEXT NOT NULL,
         UNIQUE ("conversation", "reference")
@@ -9256,14 +9260,9 @@ export default async function courselore({
   ):
     | {
         id: number;
-        reference: string;
-        type: ConversationType;
-        pinnedAt: string | null;
-        staffOnlyAt: string | null;
-        title: string;
-        titleSearch: string;
-        nextMessageReference: number;
         createdAt: string;
+        updatedAt: string | null;
+        reference: string;
         authorEnrollment:
           | {
               id: number;
@@ -9279,7 +9278,12 @@ export default async function courselore({
             }
           | NoLongerEnrolledEnrollment;
         anonymousAt: string | null;
-        updatedAt: string | null;
+        type: ConversationType;
+        pinnedAt: string | null;
+        staffOnlyAt: string | null;
+        title: string;
+        titleSearch: string;
+        nextMessageReference: number;
         taggings: {
           id: number;
           tag: {
@@ -9313,7 +9317,18 @@ export default async function courselore({
     | undefined => {
     const conversation = database.get<{
       id: number;
+      createdAt: string;
+      updatedAt: string | null;
       reference: string;
+      authorEnrollmentId: number | null;
+      authorUserId: number | null;
+      authorUserEmail: string | null;
+      authorUserName: string | null;
+      authorUserAvatar: string | null;
+      authorUserBiography: string | null;
+      authorEnrollmentReference: string | null;
+      authorEnrollmentRole: EnrollmentRole | null;
+      anonymousAt: string | null;
       type: ConversationType;
       pinnedAt: string | null;
       staffOnlyAt: string | null;
@@ -9567,8 +9582,8 @@ export default async function courselore({
         updatedAt: string | null;
         reference: string;
         authorEnrollment: IsConversationAccessibleMiddlewareLocals["conversation"]["authorEnrollment"];
-        answerAt: string | null;
         anonymousAt: string | null;
+        answerAt: string | null;
         content: string;
         contentSearch: string;
         reading: { id: number } | null;
@@ -9592,8 +9607,8 @@ export default async function courselore({
       authorUserBiography: string | null;
       authorEnrollmentReference: EnrollmentRole | null;
       authorEnrollmentRole: EnrollmentRole | null;
-      answerAt: string | null;
       anonymousAt: string | null;
+      answerAt: string | null;
       content: string;
       contentSearch: string;
       readingId: number | null;
@@ -9611,8 +9626,8 @@ export default async function courselore({
                "authorUser"."biography" AS "authorUserBiography",
                "authorEnrollment"."reference" AS "authorEnrollmentReference",
                "authorEnrollment"."role" AS "authorEnrollmentRole",
-               "messages"."answerAt",
                "messages"."anonymousAt",
+               "messages"."answerAt",
                "messages"."content",
                "messages"."contentSearch",
                "readings"."id" AS "readingId"
@@ -9711,8 +9726,8 @@ export default async function courselore({
               role: message.authorEnrollmentRole,
             }
           : noLongerEnrolledEnrollment,
-      answerAt: message.answerAt,
       anonymousAt: message.anonymousAt,
+      answerAt: message.answerAt,
       content: message.content,
       contentSearch: message.contentSearch,
       reading: message.readingId === null ? null : { id: message.readingId },
@@ -14861,8 +14876,8 @@ ${value}</textarea
                   "conversation",
                   "reference",
                   "authorEnrollment",
-                  "answerAt",
                   "anonymousAt",
+                  "answerAt",
                   "content",
                   "contentSearch"
                 )
@@ -14870,8 +14885,8 @@ ${value}</textarea
                   ${res.locals.conversation.id},
                   ${String(res.locals.conversation.nextMessageReference)},
                   ${res.locals.enrollment.id},
-                  ${req.body.isAnswer ? new Date().toISOString() : null},
                   ${req.body.isAnonymous ? new Date().toISOString() : null},
+                  ${req.body.isAnswer ? new Date().toISOString() : null},
                   ${req.body.content},
                   ${processedContent.text}
                 )
@@ -14915,28 +14930,6 @@ ${value}</textarea
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
     ...mayEditMessageMiddleware,
     (req, res, next) => {
-      if (typeof req.body.isAnswer === "string")
-        if (
-          !["true", "false"].includes(req.body.isAnswer) ||
-          res.locals.message.reference === "1" ||
-          res.locals.conversation.type !== "question" ||
-          (req.body.isAnswer === "true" &&
-            res.locals.message.answerAt !== null) ||
-          (req.body.isAnswer === "false" &&
-            res.locals.message.answerAt === null)
-        )
-          return next("validation");
-        else
-          database.run(
-            sql`
-              UPDATE "messages"
-              SET "answerAt" = ${
-                req.body.isAnswer === "true" ? new Date().toISOString() : null
-              }
-              WHERE "id" = ${res.locals.message.id}
-            `
-          );
-
       if (typeof req.body.isAnonymous === "string")
         if (
           !["true", "false"].includes(req.body.isAnonymous) ||
@@ -14956,6 +14949,28 @@ ${value}</textarea
                 req.body.isAnonymous === "true"
                   ? new Date().toISOString()
                   : null
+              }
+              WHERE "id" = ${res.locals.message.id}
+            `
+          );
+
+      if (typeof req.body.isAnswer === "string")
+        if (
+          !["true", "false"].includes(req.body.isAnswer) ||
+          res.locals.message.reference === "1" ||
+          res.locals.conversation.type !== "question" ||
+          (req.body.isAnswer === "true" &&
+            res.locals.message.answerAt !== null) ||
+          (req.body.isAnswer === "false" &&
+            res.locals.message.answerAt === null)
+        )
+          return next("validation");
+        else
+          database.run(
+            sql`
+              UPDATE "messages"
+              SET "answerAt" = ${
+                req.body.isAnswer === "true" ? new Date().toISOString() : null
               }
               WHERE "id" = ${res.locals.message.id}
             `
@@ -15710,8 +15725,8 @@ ${value}</textarea
                           "conversation",
                           "reference",
                           "authorEnrollment",
-                          "answerAt",
                           "anonymousAt",
+                          "answerAt",
                           "content",
                           "contentSearch"
                         )
@@ -15740,7 +15755,7 @@ ${value}</textarea
                               : null
                           },
                           ${
-                            Math.random() < 0.25
+                            Math.random() < 0.5
                               ? new Date().toISOString()
                               : null
                           },
