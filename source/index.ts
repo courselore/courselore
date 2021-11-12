@@ -13568,7 +13568,7 @@ ${value}</textarea
                                             value="true"
                                           />
                                           <button
-                                            class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                                            class="button button--tight button--tight--inline button--tight-gap button--transparent text--lime"
                                             $${message.endorsements.length === 0
                                               ? html``
                                               : html`
@@ -13611,10 +13611,12 @@ ${value}</textarea
                                 `);
                               } else if (
                                 res.locals.conversation.type === "question" &&
+                                message.authorEnrollment.role !== "staff" &&
                                 message.endorsements.length > 0
                               )
                                 content.push(html`
                                   <div
+                                    class="text--lime"
                                     oninteractive="${javascript`
                                       tippy(this, {
                                         content: ${JSON.stringify(
