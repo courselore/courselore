@@ -12599,7 +12599,13 @@ ${value}</textarea
             </title>
           `,
           body: html`
-            <div>
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+              `}"
+            >
               <div
                 style="${css`
                   font-size: var(--font-size--xs);
