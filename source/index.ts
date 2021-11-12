@@ -13344,8 +13344,27 @@ ${value}</textarea
             </div>
 
             $${(() => {
-              let shouldScrollIntoView =
-                messages.length > 0 && messages[0].reading !== null;
+              if (messages.length === 0)
+                return html`
+                  <div
+                    style="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--4);
+                      align-items: center;
+                    `}"
+                  >
+                    <div class="decorative-icon">
+                      <i class="bi bi-chat-left-text"></i>
+                    </div>
+                    <p class="secondary">
+                      All messages in this conversation have been deleted.
+                    </p>
+                  </div>
+
+                  <hr class="separator" />
+                `;
+              let shouldScrollIntoView = messages[0].reading !== null;
               return messages.map(
                 (message) => html`
                   <div
