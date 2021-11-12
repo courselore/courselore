@@ -9257,14 +9257,13 @@ export default async function courselore({
     | {
         id: number;
         reference: string;
-        title: string;
-        titleSearch: string;
-        nextMessageReference: number;
         type: ConversationType;
         pinnedAt: string | null;
         staffOnlyAt: string | null;
+        title: string;
+        titleSearch: string;
+        nextMessageReference: number;
         createdAt: string;
-        anonymousAt: string | null;
         authorEnrollment:
           | {
               id: number;
@@ -9279,6 +9278,7 @@ export default async function courselore({
               role: EnrollmentRole;
             }
           | NoLongerEnrolledEnrollment;
+        anonymousAt: string | null;
         updatedAt: string | null;
         messagesCount: number;
         readingsCount: number;
@@ -9315,21 +9315,21 @@ export default async function courselore({
       id: number;
       reference: string;
       type: ConversationType;
+      pinnedAt: string | null;
+      staffOnlyAt: string | null;
       title: string;
       titleSearch: string;
       nextMessageReference: number;
-      pinnedAt: string | null;
-      staffOnlyAt: string | null;
     }>(
       sql`
         SELECT "conversations"."id",
                "conversations"."reference",
                "conversations"."type",
+               "conversations"."pinnedAt",
+               "conversations"."staffOnlyAt",
                "conversations"."title",
                "conversations"."titleSearch",
-               "conversations"."nextMessageReference",
-               "conversations"."pinnedAt",
-               "conversations"."staffOnlyAt"
+               "conversations"."nextMessageReference"
         FROM "conversations"
         $${
           res.locals.enrollment.role !== "staff"
@@ -9358,7 +9358,6 @@ export default async function courselore({
     const originalMessage = database.get<{
       id: number;
       createdAt: string;
-      anonymousAt: string | null;
       authorEnrollmentId: number | null;
       authorUserId: number | null;
       authorUserEmail: string | null;
@@ -9367,11 +9366,11 @@ export default async function courselore({
       authorUserBiography: string | null;
       authorEnrollmentReference: string | null;
       authorEnrollmentRole: EnrollmentRole | null;
+      anonymousAt: string | null;
     }>(
       sql`
         SELECT "messages"."id",
                "messages"."createdAt",
-               "messages"."anonymousAt",
                "authorEnrollment"."id" AS "authorEnrollmentId",
                "authorUser"."id" AS "authorUserId",
                "authorUser"."email" AS "authorUserEmail",
@@ -9379,7 +9378,8 @@ export default async function courselore({
                "authorUser"."avatar" AS "authorUserAvatar",
                "authorUser"."biography" AS "authorUserBiography",
                "authorEnrollment"."reference" AS "authorEnrollmentReference",
-               "authorEnrollment"."role" AS "authorEnrollmentRole"
+               "authorEnrollment"."role" AS "authorEnrollmentRole",
+               "messages"."anonymousAt"
         FROM "messages"
         LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
         LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
@@ -9486,13 +9486,12 @@ export default async function courselore({
       id: conversation.id,
       reference: conversation.reference,
       type: conversation.type,
+      pinnedAt: conversation.pinnedAt,
+      staffOnlyAt: conversation.staffOnlyAt,
       title: conversation.title,
       titleSearch: conversation.titleSearch,
       nextMessageReference: conversation.nextMessageReference,
-      pinnedAt: conversation.pinnedAt,
-      staffOnlyAt: conversation.staffOnlyAt,
       createdAt: originalMessage.createdAt,
-      anonymousAt: originalMessage.anonymousAt,
       authorEnrollment:
         originalMessage.authorEnrollmentId !== null &&
         originalMessage.authorUserId !== null &&
@@ -9513,6 +9512,7 @@ export default async function courselore({
               role: originalMessage.authorEnrollmentRole,
             }
           : noLongerEnrolledEnrollment,
+      anonymousAt: originalMessage.anonymousAt,
       updatedAt:
         mostRecentlyUpdatedMessage.updatedAt === originalMessage.createdAt
           ? null
