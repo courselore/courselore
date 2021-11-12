@@ -9338,7 +9338,18 @@ export default async function courselore({
     }>(
       sql`
         SELECT "conversations"."id",
+               "conversations"."createdAt",
+               "conversations"."updatedAt",
                "conversations"."reference",
+               "authorEnrollment"."id" AS "authorEnrollmentId",
+               "authorUser"."id" AS "authorUserId",
+               "authorUser"."email" AS "authorUserEmail",
+               "authorUser"."name" AS "authorUserName",
+               "authorUser"."avatar" AS "authorUserAvatar",
+               "authorUser"."biography" AS "authorUserBiography",
+               "authorEnrollment"."reference" AS "authorEnrollmentReference",
+               "authorEnrollment"."role" AS "authorEnrollmentRole",
+               "conversations"."anonymousAt",
                "conversations"."type",
                "conversations"."pinnedAt",
                "conversations"."staffOnlyAt",
@@ -9346,6 +9357,8 @@ export default async function courselore({
                "conversations"."titleSearch",
                "conversations"."nextMessageReference"
         FROM "conversations"
+        LEFT JOIN "enrollments" AS "authorEnrollment" ON "conversations"."authorEnrollment" = "authorEnrollment"."id"
+        LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
         $${
           res.locals.enrollment.role !== "staff"
             ? sql`
@@ -9369,51 +9382,6 @@ export default async function courselore({
       `
     );
     if (conversation === undefined) return undefined;
-
-    const originalMessage = database.get<{
-      id: number;
-      createdAt: string;
-      authorEnrollmentId: number | null;
-      authorUserId: number | null;
-      authorUserEmail: string | null;
-      authorUserName: string | null;
-      authorUserAvatar: string | null;
-      authorUserBiography: string | null;
-      authorEnrollmentReference: string | null;
-      authorEnrollmentRole: EnrollmentRole | null;
-      anonymousAt: string | null;
-    }>(
-      sql`
-        SELECT "messages"."id",
-               "messages"."createdAt",
-               "authorEnrollment"."id" AS "authorEnrollmentId",
-               "authorUser"."id" AS "authorUserId",
-               "authorUser"."email" AS "authorUserEmail",
-               "authorUser"."name" AS "authorUserName",
-               "authorUser"."avatar" AS "authorUserAvatar",
-               "authorUser"."biography" AS "authorUserBiography",
-               "authorEnrollment"."reference" AS "authorEnrollmentReference",
-               "authorEnrollment"."role" AS "authorEnrollmentRole",
-               "messages"."anonymousAt"
-        FROM "messages"
-        LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
-        LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
-        WHERE "messages"."conversation" = ${conversation.id} AND
-              "messages"."reference" = ${"1"}
-      `
-    )!;
-
-    const mostRecentlyUpdatedMessage = database.get<{
-      updatedAt: string;
-    }>(
-      sql`
-        SELECT coalesce("messages"."updatedAt", "messages"."createdAt") AS "updatedAt"
-        FROM "messages"
-        WHERE "messages"."conversation" = ${conversation.id}
-        ORDER BY datetime(coalesce("messages"."updatedAt", "messages"."createdAt")) DESC
-        LIMIT 1
-      `
-    )!;
 
     const taggings = database.all<{
       id: number;
@@ -9499,39 +9467,36 @@ export default async function courselore({
 
     return {
       id: conversation.id,
+      createdAt: conversation.createdAt,
+      updatedAt: conversation.updatedAt,
       reference: conversation.reference,
+      authorEnrollment:
+        conversation.authorEnrollmentId !== null &&
+        conversation.authorUserId !== null &&
+        conversation.authorUserEmail !== null &&
+        conversation.authorUserName !== null &&
+        conversation.authorEnrollmentReference !== null &&
+        conversation.authorEnrollmentRole !== null
+          ? {
+              id: conversation.authorEnrollmentId,
+              user: {
+                id: conversation.authorUserId,
+                email: conversation.authorUserEmail,
+                name: conversation.authorUserName,
+                avatar: conversation.authorUserAvatar,
+                biography: conversation.authorUserBiography,
+              },
+              reference: conversation.authorEnrollmentReference,
+              role: conversation.authorEnrollmentRole,
+            }
+          : noLongerEnrolledEnrollment,
+      anonymousAt: conversation.anonymousAt,
       type: conversation.type,
       pinnedAt: conversation.pinnedAt,
       staffOnlyAt: conversation.staffOnlyAt,
       title: conversation.title,
       titleSearch: conversation.titleSearch,
       nextMessageReference: conversation.nextMessageReference,
-      createdAt: originalMessage.createdAt,
-      authorEnrollment:
-        originalMessage.authorEnrollmentId !== null &&
-        originalMessage.authorUserId !== null &&
-        originalMessage.authorUserEmail !== null &&
-        originalMessage.authorUserName !== null &&
-        originalMessage.authorEnrollmentReference !== null &&
-        originalMessage.authorEnrollmentRole !== null
-          ? {
-              id: originalMessage.authorEnrollmentId,
-              user: {
-                id: originalMessage.authorUserId,
-                email: originalMessage.authorUserEmail,
-                name: originalMessage.authorUserName,
-                avatar: originalMessage.authorUserAvatar,
-                biography: originalMessage.authorUserBiography,
-              },
-              reference: originalMessage.authorEnrollmentReference,
-              role: originalMessage.authorEnrollmentRole,
-            }
-          : noLongerEnrolledEnrollment,
-      anonymousAt: originalMessage.anonymousAt,
-      updatedAt:
-        mostRecentlyUpdatedMessage.updatedAt === originalMessage.createdAt
-          ? null
-          : mostRecentlyUpdatedMessage.updatedAt,
       taggings: taggings.map((tagging) => ({
         id: tagging.id,
         tag: {

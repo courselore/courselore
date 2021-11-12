@@ -29,7 +29,7 @@
 ### Chat
 
 - don’t let first message be special
-  - getMessage
+  - getConversation
   - "1"
   - "conversations"
   - "messages"
