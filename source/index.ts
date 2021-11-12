@@ -13479,13 +13479,7 @@ ${value}</textarea
                                 message.answerAt !== null
                               )
                                 content.push(html`
-                                  <div
-                                    class="text--emerald"
-                                    style="${css`
-                                      display: flex;
-                                      gap: var(--space--1);
-                                    `}"
-                                  >
+                                  <div class="text--emerald">
                                     <i class="bi bi-patch-check-fill"></i>
                                     Answer
                                   </div>
@@ -13621,10 +13615,6 @@ ${value}</textarea
                               )
                                 content.push(html`
                                   <div
-                                    style="${css`
-                                      display: flex;
-                                      gap: var(--space--1);
-                                    `}"
                                     oninteractive="${javascript`
                                       tippy(this, {
                                         content: ${JSON.stringify(
@@ -13664,6 +13654,11 @@ ${value}</textarea
                                         flex-wrap: wrap;
                                         column-gap: var(--space--8);
                                         row-gap: var(--space--1);
+
+                                        & > * {
+                                          display: flex;
+                                          gap: var(--space--1);
+                                        }
                                       `}"
                                     >
                                       $${content}
@@ -13694,7 +13689,9 @@ ${value}</textarea
                                           margin-left: var(--space---4);
                                         }
                                         position: absolute;
-                                        transition-property: var(--transition-property--base);
+                                        transition-property: var(
+                                          --transition-property--base
+                                        );
                                       `}"
                                       oninteractive="${javascript`
                                         tippy(this, {

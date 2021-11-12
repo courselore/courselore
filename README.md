@@ -35,9 +35,6 @@
     - ***
     - endorsements
   - Locations
-    - Conversation page
-      - Messages display
-      - New message
     - New conversation
 - Test the app all around.
 - Tags aren’t required.
