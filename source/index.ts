@@ -13443,399 +13443,7 @@ ${value}</textarea
                               min-width: var(--space--0);
                             `}"
                           >
-                            <div
-                              style="${css`
-                                display: flex;
-                                gap: var(--space--4);
-                                align-items: baseline;
-                              `}"
-                            >
-                              <div
-                                style="${css`
-                                  flex: 1;
-                                  display: flex;
-                                  gap: var(--space--2);
-                                  align-items: baseline;
-                                `}"
-                              >
-                                <div
-                                  style="${css`
-                                    position: relative;
-                                    bottom: var(--space---1-5);
-                                  `}"
-                                >
-                                  $${message.anonymousAt === null
-                                    ? html`
-                                        $${message.authorEnrollment.user
-                                          .avatar === null
-                                          ? html`
-                                              <div
-                                                style="${css`
-                                                  font-size: var(
-                                                    --font-size--2xl
-                                                  );
-                                                  & > *::before {
-                                                    vertical-align: baseline;
-                                                  }
-                                                `}"
-                                              >
-                                                <i
-                                                  class="bi bi-person-circle"
-                                                ></i>
-                                              </div>
-                                            `
-                                          : html`
-                                              <img
-                                                src="${message.authorEnrollment
-                                                  .user.avatar}"
-                                                alt="${message.authorEnrollment
-                                                  .user.name}"
-                                                class="avatar avatar--2xl"
-                                              />
-                                            `}
-                                      `
-                                    : html`
-                                        <div
-                                          class="text--violet"
-                                          style="${css`
-                                            font-size: var(--font-size--2xl);
-                                            & > *::before {
-                                              vertical-align: baseline;
-                                            }
-                                          `}"
-                                          oninteractive="${javascript`
-                                            tippy(this, {
-                                              content: "Anonymous to other students.",
-                                              touch: false,
-                                            });
-                                          `}"
-                                        >
-                                          <i class="bi bi-sunglasses"></i>
-                                        </div>
-                                      `}
-                                </div>
-                                <h3>
-                                  <span class="strong">
-                                    $${message.anonymousAt === null
-                                      ? highlightSearchResult(
-                                          html`${message.authorEnrollment.user
-                                            .name}`,
-                                          req.query.search
-                                        )
-                                      : html`
-                                          <span
-                                            class="text--violet"
-                                            oninteractive="${javascript`
-                                              tippy(this, {
-                                                content: "Anonymous to other students.",
-                                                touch: false,
-                                              });
-                                            `}"
-                                          >
-                                            Anonymous
-                                          </span>
-                                        `}
-                                  </span>
-                                  <span class="secondary">
-                                    $${message.anonymousAt !== null &&
-                                    (res.locals.enrollment.role === "staff" ||
-                                      message.authorEnrollment.id ===
-                                        res.locals.enrollment.id)
-                                      ? html`
-                                          ($${message.authorEnrollment.user
-                                            .avatar === null
-                                            ? html`<i
-                                                class="bi bi-person-circle"
-                                              ></i>`
-                                            : html`<img
-                                                src="${message.authorEnrollment
-                                                  .user.avatar}"
-                                                alt="${message.authorEnrollment
-                                                  .user.name}"
-                                                class="avatar avatar--xs avatar--vertical-align"
-                                              />`}
-                                          $${highlightSearchResult(
-                                            html`${message.authorEnrollment.user
-                                              .name}`,
-                                            req.query.search
-                                          )})
-                                        `
-                                      : html``}
-                                    said
-                                    <time
-                                      oninteractive="${javascript`
-                                        leafac.relativizeDateTimeElement(this);
-                                      `}"
-                                    >
-                                      ${message.createdAt}
-                                    </time>
-                                    $${message.updatedAt !== null
-                                      ? html`
-                                          and last updated
-                                          <time
-                                            oninteractive="${javascript`
-                                              leafac.relativizeDateTimeElement(this);
-                                            `}"
-                                          >
-                                            ${message.updatedAt}
-                                          </time>
-                                        `
-                                      : html``}
-                                    <button
-                                      class="button button--tight button--tight--inline button--transparent"
-                                      style="${css`
-                                        font-size: var(--font-size--xs);
-                                        line-height: var(--line-height--xs);
-                                        display: inline-flex;
-                                      `}"
-                                      oninteractive="${javascript`
-                                        tippy(this, {
-                                          content: "Copy Message Permanent Link to Clipboard",
-                                          touch: false,
-                                        });
-                                        this.copied = tippy(this, {
-                                          content: "Copied Message Permanent Link to Clipboard",
-                                          theme: "green",
-                                          trigger: "manual",
-                                        });
-                                      `}"
-                                      onclick="${javascript`
-                                        (async () => {
-                                          await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${message.reference}");
-                                          this.copied.show();
-                                          await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                                          this.copied.hide();
-                                        })();
-                                      `}"
-                                    >
-                                      #${res.locals.conversation
-                                        .reference}/${message.reference}
-                                    </button>
-                                  </span>
-                                </h3>
-                              </div>
-
-                              <div
-                                style="${css`
-                                  display: flex;
-                                  gap: var(--space--2);
-                                `}"
-                              >
-                                $${message.authorEnrollment.id ===
-                                  res.locals.enrollment.id &&
-                                res.locals.enrollment.role === "student" &&
-                                res.locals.conversation.staffOnlyAt === null
-                                  ? html`
-                                      <div>
-                                        <button
-                                          class="button button--tight button--tight--inline button--transparent"
-                                          oninteractive="${javascript`
-                                            tippy(this, {
-                                              content: "Update Anonymity",
-                                              touch: false,
-                                            });
-                                            tippy(this, {
-                                              content: this.nextElementSibling.firstElementChild,
-                                              trigger: "click",
-                                              interactive: true,
-                                            });
-                                          `}"
-                                        >
-                                          <i class="bi bi-sunglasses"></i>
-                                        </button>
-                                        <div hidden>
-                                          <form
-                                            method="POST"
-                                            action="${baseURL}/courses/${res
-                                              .locals.course
-                                              .reference}/conversations/${res
-                                              .locals.conversation
-                                              .reference}/messages/${message.reference}?_method=PATCH"
-                                            class="dropdown--menu"
-                                          >
-                                            <input
-                                              type="hidden"
-                                              name="_csrf"
-                                              value="${req.csrfToken()}"
-                                            />
-                                            $${message.anonymousAt === null
-                                              ? html`
-                                                  <input
-                                                    type="hidden"
-                                                    name="isAnonymous"
-                                                    value="true"
-                                                  />
-                                                  <button
-                                                    class="dropdown--menu--item button button--transparent text--violet"
-                                                  >
-                                                    <i
-                                                      class="bi bi-sunglasses"
-                                                    ></i>
-                                                    Set as Anonymous to Other
-                                                    Students
-                                                  </button>
-                                                `
-                                              : html`
-                                                  <input
-                                                    type="hidden"
-                                                    name="isAnonymous"
-                                                    value="false"
-                                                  />
-                                                  <button
-                                                    class="dropdown--menu--item button button--transparent"
-                                                  >
-                                                    $${res.locals.user
-                                                      .avatar === null
-                                                      ? html`
-                                                          <i
-                                                            class="bi bi-person-circle"
-                                                          ></i>
-                                                        `
-                                                      : html`
-                                                          <img
-                                                            src="${res.locals
-                                                              .user.avatar}"
-                                                            alt="${res.locals
-                                                              .user.name}"
-                                                            class="avatar avatar--sm avatar--vertical-align"
-                                                          />
-                                                        `}
-                                                    Set as Signed by
-                                                    ${res.locals.user.name}
-                                                  </button>
-                                                `}
-                                          </form>
-                                        </div>
-                                      </div>
-                                    `
-                                  : html``}
-                                $${res.locals.enrollment.role === "staff"
-                                  ? html`
-                                      <div>
-                                        <button
-                                          class="button button--tight button--tight--inline button--transparent"
-                                          oninteractive="${javascript`
-                                            tippy(this, {
-                                              content: "Remove Message",
-                                              theme: "rose",
-                                              touch: false,
-                                            });
-                                            tippy(this, {
-                                              content: this.nextElementSibling.firstElementChild,
-                                              theme: "rose",
-                                              trigger: "click",
-                                              interactive: true,
-                                            });
-                                          `}"
-                                        >
-                                          <i class="bi bi-trash"></i>
-                                        </button>
-                                        <div hidden>
-                                          <form
-                                            method="POST"
-                                            action="${baseURL}/courses/${res
-                                              .locals.course
-                                              .reference}/conversations/${res
-                                              .locals.conversation
-                                              .reference}/messages/${message.reference}?_method=DELETE"
-                                            style="${css`
-                                              padding: var(--space--2);
-                                              display: flex;
-                                              flex-direction: column;
-                                              gap: var(--space--4);
-                                            `}"
-                                          >
-                                            <input
-                                              type="hidden"
-                                              name="_csrf"
-                                              value="${req.csrfToken()}"
-                                            />
-                                            <p>
-                                              Are you sure you want to remove
-                                              this message?
-                                            </p>
-                                            <p>
-                                              <strong
-                                                style="${css`
-                                                  font-weight: var(
-                                                    --font-weight--bold
-                                                  );
-                                                `}"
-                                              >
-                                                You may not undo this action!
-                                              </strong>
-                                            </p>
-                                            <button class="button button--rose">
-                                              <i class="bi bi-trash"></i>
-                                              Remove Message
-                                            </button>
-                                          </form>
-                                        </div>
-                                      </div>
-                                    `
-                                  : html``}
-                                $${mayEditMessage(req, res, message)
-                                  ? html`
-                                      <button
-                                        class="button button--tight button--tight--inline button--transparent"
-                                        oninteractive="${javascript`
-                                            tippy(this, {
-                                              content: "Edit Message",
-                                              touch: false,
-                                            });
-                                          `}"
-                                        onclick="${javascript`
-                                          this.closest(".message").querySelector(".message--show").hidden = true;
-                                          this.closest(".message").querySelector(".message--edit").hidden = false;
-                                        `}"
-                                      >
-                                        <i class="bi bi-pencil"></i>
-                                      </button>
-                                    `
-                                  : html``}
-
-                                <button
-                                  class="button button--tight button--tight--inline button--transparent"
-                                  oninteractive="${javascript`
-                                    tippy(this, {
-                                      content: "Reply",
-                                      touch: false,
-                                    });
-                                  `}"
-                                  onclick="${javascript`
-                                    const content = JSON.parse(this.closest("[data-content]").dataset.content);
-                                    const newMessage = document.querySelector(".new-message");
-                                    newMessage.querySelector(".markdown-editor--button--write").click();
-                                    const element = newMessage.querySelector(".markdown-editor--write--textarea");
-                                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
-                                      message.anonymousAt === null
-                                        ? `${
-                                            message.authorEnrollment.reference
-                                          }--${slugify(
-                                            message.authorEnrollment.user.name
-                                          )}`
-                                        : `anonymous`
-                                    }" + " · #" + ${JSON.stringify(
-                                    res.locals.conversation.reference
-                                  )} + "/" + ${JSON.stringify(
-                                    message.reference
-                                  )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n", "");
-                                    element.focus();
-                                    `}"
-                                >
-                                  <i class="bi bi-reply"></i>
-                                </button>
-                              </div>
-                            </div>
-
-                            <div
-                              class="message--show"
-                              style="${css`
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--4);
-                              `}"
-                            >
+                            <div>
                               $${(() => {
                                 const content: HTML[] = [];
 
@@ -14107,6 +13715,406 @@ ${value}</textarea
                                     `;
                               })()}
 
+                              <div
+                                style="${css`
+                                  display: flex;
+                                  gap: var(--space--4);
+                                  align-items: baseline;
+                                `}"
+                              >
+                                <div
+                                  style="${css`
+                                    flex: 1;
+                                    display: flex;
+                                    gap: var(--space--2);
+                                    align-items: baseline;
+                                  `}"
+                                >
+                                  <div
+                                    style="${css`
+                                      position: relative;
+                                      bottom: var(--space---1-5);
+                                    `}"
+                                  >
+                                    $${message.anonymousAt === null
+                                      ? html`
+                                          $${message.authorEnrollment.user
+                                            .avatar === null
+                                            ? html`
+                                                <div
+                                                  style="${css`
+                                                    font-size: var(
+                                                      --font-size--2xl
+                                                    );
+                                                    & > *::before {
+                                                      vertical-align: baseline;
+                                                    }
+                                                  `}"
+                                                >
+                                                  <i
+                                                    class="bi bi-person-circle"
+                                                  ></i>
+                                                </div>
+                                              `
+                                            : html`
+                                                <img
+                                                  src="${message
+                                                    .authorEnrollment.user
+                                                    .avatar}"
+                                                  alt="${message
+                                                    .authorEnrollment.user
+                                                    .name}"
+                                                  class="avatar avatar--2xl"
+                                                />
+                                              `}
+                                        `
+                                      : html`
+                                          <div
+                                            class="text--violet"
+                                            style="${css`
+                                              font-size: var(--font-size--2xl);
+                                              & > *::before {
+                                                vertical-align: baseline;
+                                              }
+                                            `}"
+                                            oninteractive="${javascript`
+                                              tippy(this, {
+                                                content: "Anonymous to other students.",
+                                                touch: false,
+                                              });
+                                            `}"
+                                          >
+                                            <i class="bi bi-sunglasses"></i>
+                                          </div>
+                                        `}
+                                  </div>
+                                  <h3>
+                                    <span class="strong">
+                                      $${message.anonymousAt === null
+                                        ? highlightSearchResult(
+                                            html`${message.authorEnrollment.user
+                                              .name}`,
+                                            req.query.search
+                                          )
+                                        : html`
+                                            <span
+                                              class="text--violet"
+                                              oninteractive="${javascript`
+                                                tippy(this, {
+                                                  content: "Anonymous to other students.",
+                                                  touch: false,
+                                                });
+                                              `}"
+                                            >
+                                              Anonymous
+                                            </span>
+                                          `}
+                                    </span>
+                                    <span class="secondary">
+                                      $${message.anonymousAt !== null &&
+                                      (res.locals.enrollment.role === "staff" ||
+                                        message.authorEnrollment.id ===
+                                          res.locals.enrollment.id)
+                                        ? html`
+                                            ($${message.authorEnrollment.user
+                                              .avatar === null
+                                              ? html`<i
+                                                  class="bi bi-person-circle"
+                                                ></i>`
+                                              : html`<img
+                                                  src="${message
+                                                    .authorEnrollment.user
+                                                    .avatar}"
+                                                  alt="${message
+                                                    .authorEnrollment.user
+                                                    .name}"
+                                                  class="avatar avatar--xs avatar--vertical-align"
+                                                />`}
+                                            $${highlightSearchResult(
+                                              html`${message.authorEnrollment
+                                                .user.name}`,
+                                              req.query.search
+                                            )})
+                                          `
+                                        : html``}
+                                      said
+                                      <time
+                                        oninteractive="${javascript`
+                                          leafac.relativizeDateTimeElement(this);
+                                        `}"
+                                      >
+                                        ${message.createdAt}
+                                      </time>
+                                      $${message.updatedAt !== null
+                                        ? html`
+                                            and last updated
+                                            <time
+                                              oninteractive="${javascript`
+                                                leafac.relativizeDateTimeElement(this);
+                                              `}"
+                                            >
+                                              ${message.updatedAt}
+                                            </time>
+                                          `
+                                        : html``}
+                                      <button
+                                        class="button button--tight button--tight--inline button--transparent"
+                                        style="${css`
+                                          font-size: var(--font-size--xs);
+                                          line-height: var(--line-height--xs);
+                                          display: inline-flex;
+                                        `}"
+                                        oninteractive="${javascript`
+                                          tippy(this, {
+                                            content: "Copy Message Permanent Link to Clipboard",
+                                            touch: false,
+                                          });
+                                          this.copied = tippy(this, {
+                                            content: "Copied Message Permanent Link to Clipboard",
+                                            theme: "green",
+                                            trigger: "manual",
+                                          });
+                                        `}"
+                                        onclick="${javascript`
+                                          (async () => {
+                                            await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${message.reference}");
+                                            this.copied.show();
+                                            await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                                            this.copied.hide();
+                                          })();
+                                        `}"
+                                      >
+                                        #${res.locals.conversation
+                                          .reference}/${message.reference}
+                                      </button>
+                                    </span>
+                                  </h3>
+                                </div>
+
+                                <div
+                                  style="${css`
+                                    display: flex;
+                                    gap: var(--space--2);
+                                  `}"
+                                >
+                                  $${message.authorEnrollment.id ===
+                                    res.locals.enrollment.id &&
+                                  res.locals.enrollment.role === "student" &&
+                                  res.locals.conversation.staffOnlyAt === null
+                                    ? html`
+                                        <div>
+                                          <button
+                                            class="button button--tight button--tight--inline button--transparent"
+                                            oninteractive="${javascript`
+                                              tippy(this, {
+                                                content: "Update Anonymity",
+                                                touch: false,
+                                              });
+                                              tippy(this, {
+                                                content: this.nextElementSibling.firstElementChild,
+                                                trigger: "click",
+                                                interactive: true,
+                                              });
+                                            `}"
+                                          >
+                                            <i class="bi bi-sunglasses"></i>
+                                          </button>
+                                          <div hidden>
+                                            <form
+                                              method="POST"
+                                              action="${baseURL}/courses/${res
+                                                .locals.course
+                                                .reference}/conversations/${res
+                                                .locals.conversation
+                                                .reference}/messages/${message.reference}?_method=PATCH"
+                                              class="dropdown--menu"
+                                            >
+                                              <input
+                                                type="hidden"
+                                                name="_csrf"
+                                                value="${req.csrfToken()}"
+                                              />
+                                              $${message.anonymousAt === null
+                                                ? html`
+                                                    <input
+                                                      type="hidden"
+                                                      name="isAnonymous"
+                                                      value="true"
+                                                    />
+                                                    <button
+                                                      class="dropdown--menu--item button button--transparent text--violet"
+                                                    >
+                                                      <i
+                                                        class="bi bi-sunglasses"
+                                                      ></i>
+                                                      Set as Anonymous to Other
+                                                      Students
+                                                    </button>
+                                                  `
+                                                : html`
+                                                    <input
+                                                      type="hidden"
+                                                      name="isAnonymous"
+                                                      value="false"
+                                                    />
+                                                    <button
+                                                      class="dropdown--menu--item button button--transparent"
+                                                    >
+                                                      $${res.locals.user
+                                                        .avatar === null
+                                                        ? html`
+                                                            <i
+                                                              class="bi bi-person-circle"
+                                                            ></i>
+                                                          `
+                                                        : html`
+                                                            <img
+                                                              src="${res.locals
+                                                                .user.avatar}"
+                                                              alt="${res.locals
+                                                                .user.name}"
+                                                              class="avatar avatar--sm avatar--vertical-align"
+                                                            />
+                                                          `}
+                                                      Set as Signed by
+                                                      ${res.locals.user.name}
+                                                    </button>
+                                                  `}
+                                            </form>
+                                          </div>
+                                        </div>
+                                      `
+                                    : html``}
+                                  $${res.locals.enrollment.role === "staff"
+                                    ? html`
+                                        <div>
+                                          <button
+                                            class="button button--tight button--tight--inline button--transparent"
+                                            oninteractive="${javascript`
+                                              tippy(this, {
+                                                content: "Remove Message",
+                                                theme: "rose",
+                                                touch: false,
+                                              });
+                                              tippy(this, {
+                                                content: this.nextElementSibling.firstElementChild,
+                                                theme: "rose",
+                                                trigger: "click",
+                                                interactive: true,
+                                              });
+                                            `}"
+                                          >
+                                            <i class="bi bi-trash"></i>
+                                          </button>
+                                          <div hidden>
+                                            <form
+                                              method="POST"
+                                              action="${baseURL}/courses/${res
+                                                .locals.course
+                                                .reference}/conversations/${res
+                                                .locals.conversation
+                                                .reference}/messages/${message.reference}?_method=DELETE"
+                                              style="${css`
+                                                padding: var(--space--2);
+                                                display: flex;
+                                                flex-direction: column;
+                                                gap: var(--space--4);
+                                              `}"
+                                            >
+                                              <input
+                                                type="hidden"
+                                                name="_csrf"
+                                                value="${req.csrfToken()}"
+                                              />
+                                              <p>
+                                                Are you sure you want to remove
+                                                this message?
+                                              </p>
+                                              <p>
+                                                <strong
+                                                  style="${css`
+                                                    font-weight: var(
+                                                      --font-weight--bold
+                                                    );
+                                                  `}"
+                                                >
+                                                  You may not undo this action!
+                                                </strong>
+                                              </p>
+                                              <button
+                                                class="button button--rose"
+                                              >
+                                                <i class="bi bi-trash"></i>
+                                                Remove Message
+                                              </button>
+                                            </form>
+                                          </div>
+                                        </div>
+                                      `
+                                    : html``}
+                                  $${mayEditMessage(req, res, message)
+                                    ? html`
+                                        <button
+                                          class="button button--tight button--tight--inline button--transparent"
+                                          oninteractive="${javascript`
+                                              tippy(this, {
+                                                content: "Edit Message",
+                                                touch: false,
+                                              });
+                                            `}"
+                                          onclick="${javascript`
+                                            this.closest(".message").querySelector(".message--show").hidden = true;
+                                            this.closest(".message").querySelector(".message--edit").hidden = false;
+                                          `}"
+                                        >
+                                          <i class="bi bi-pencil"></i>
+                                        </button>
+                                      `
+                                    : html``}
+
+                                  <button
+                                    class="button button--tight button--tight--inline button--transparent"
+                                    oninteractive="${javascript`
+                                      tippy(this, {
+                                        content: "Reply",
+                                        touch: false,
+                                      });
+                                    `}"
+                                    onclick="${javascript`
+                                      const content = JSON.parse(this.closest("[data-content]").dataset.content);
+                                      const newMessage = document.querySelector(".new-message");
+                                      newMessage.querySelector(".markdown-editor--button--write").click();
+                                      const element = newMessage.querySelector(".markdown-editor--write--textarea");
+                                      textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
+                                        message.anonymousAt === null
+                                          ? `${
+                                              message.authorEnrollment.reference
+                                            }--${slugify(
+                                              message.authorEnrollment.user.name
+                                            )}`
+                                          : `anonymous`
+                                      }" + " · #" + ${JSON.stringify(
+                                      res.locals.conversation.reference
+                                    )} + "/" + ${JSON.stringify(
+                                      message.reference
+                                    )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n", "");
+                                      element.focus();
+                                      `}"
+                                  >
+                                    <i class="bi bi-reply"></i>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div
+                              class="message--show"
+                              style="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--4);
+                              `}"
+                            >
                               <div
                                 class="message--show--content"
                                 style="${css`
