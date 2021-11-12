@@ -8004,11 +8004,11 @@ export default async function courselore({
     const conversations = database
       .all<{
         reference: string;
-        conversationsTitleSearchIndexResultHighlight: string | null;
+        conversationsTitleSearchResultHighlight: string | null;
         messagesContentSearchResultMessageReference: string | null;
         messagesContentSearchResultSnippet: string | null;
-        usersNameSearchIndexResultMessageReference: string | null;
-        usersNameSearchIndexResultHighlight: string | null;
+        usersNameSearchResultMessageReference: string | null;
+        usersNameSearchResultHighlight: string | null;
       }>(
         sql`
           SELECT "conversations"."reference"
@@ -8017,11 +8017,11 @@ export default async function courselore({
                       ? sql``
                       : sql`
                           ,
-                          "conversationsTitleSearchIndexResult"."highlight" AS "conversationsTitleSearchIndexResultHighlight",
+                          "conversationsTitleSearchResult"."highlight" AS "conversationsTitleSearchResultHighlight",
                           "messagesContentSearchResult"."messageReference" AS "messagesContentSearchResultMessageReference",
                           "messagesContentSearchResult"."snippet" AS "messagesContentSearchResultSnippet",
-                          "usersNameSearchIndexResult"."messageReference" AS "usersNameSearchIndexResultMessageReference",
-                          "usersNameSearchIndexResult"."highlight" AS "usersNameSearchIndexResultHighlight"
+                          "usersNameSearchResult"."messageReference" AS "usersNameSearchResultMessageReference",
+                          "usersNameSearchResult"."highlight" AS "usersNameSearchResultHighlight"
                         `
                   }
           FROM "conversations"
@@ -8035,7 +8035,7 @@ export default async function courselore({
                          highlight("conversationsTitleSearchIndex", 0, '<mark class="mark">', '</mark>') AS "highlight"
                   FROM "conversationsTitleSearchIndex"
                   WHERE "conversationsTitleSearchIndex" MATCH ${search}
-                ) AS "conversationsTitleSearchIndexResult" ON "conversations"."id" = "conversationsTitleSearchIndexResult"."rowid"
+                ) AS "conversationsTitleSearchResult" ON "conversations"."id" = "conversationsTitleSearchResult"."rowid"
 
                 LEFT JOIN (
                   SELECT "messages"."reference" AS "messageReference",
@@ -8067,7 +8067,7 @@ export default async function courselore({
                                            `
                                      }
                   WHERE "usersNameSearchIndex" MATCH ${search}
-                ) AS "usersNameSearchIndexResult" ON "conversations"."id" = "usersNameSearchIndexResult"."conversationId"
+                ) AS "usersNameSearchResult" ON "conversations"."id" = "usersNameSearchResult"."conversationId"
               `
           }
           $${
@@ -8085,9 +8085,9 @@ export default async function courselore({
               ? sql``
               : sql`
                 AND (
-                  "conversationsTitleSearchIndexResult"."rank" IS NOT NULL OR
+                  "conversationsTitleSearchResult"."rank" IS NOT NULL OR
                   "messagesContentSearchResult"."rank" IS NOT NULL OR
-                  "usersNameSearchIndexResult"."rank" IS NOT NULL
+                  "usersNameSearchResult"."rank" IS NOT NULL
                 )
               `
           }
@@ -8123,9 +8123,9 @@ export default async function courselore({
                         ? sql``
                         : sql`
                           min(
-                            coalesce("conversationsTitleSearchIndexResult"."rank", 0),
+                            coalesce("conversationsTitleSearchResult"."rank", 0),
                             coalesce("messagesContentSearchResult"."rank", 0),
-                            coalesce("usersNameSearchIndexResult"."rank", 0)
+                            coalesce("usersNameSearchResult"."rank", 0)
                           ) ASC,
                         `
                     }
@@ -8161,29 +8161,29 @@ export default async function courselore({
             return {
               ...conversation,
               messagesContentSearchResultMessage: message,
-              usersNameSearchIndexResultMessage: undefined,
+              usersNameSearchResultMessage: undefined,
             };
         } else if (
-          conversation.usersNameSearchIndexResultMessageReference !== null &&
-          conversation.usersNameSearchIndexResultHighlight !== null
+          conversation.usersNameSearchResultMessageReference !== null &&
+          conversation.usersNameSearchResultHighlight !== null
         ) {
           const message = getMessage(
             req,
             res,
             conversation,
-            conversation.usersNameSearchIndexResultMessageReference
+            conversation.usersNameSearchResultMessageReference
           );
           if (message !== undefined)
             return {
               ...conversation,
               messagesContentSearchResultMessage: undefined,
-              usersNameSearchIndexResultMessage: message,
+              usersNameSearchResultMessage: message,
             };
         }
         return {
           ...conversation,
           messagesContentSearchResultMessage: undefined,
-          usersNameSearchIndexResultMessage: undefined,
+          usersNameSearchResultMessage: undefined,
         };
       });
 
@@ -8755,9 +8755,9 @@ export default async function courselore({
                               )}${conversation.messagesContentSearchResultMessage !==
                               undefined
                                 ? `#message--${conversation.messagesContentSearchResultMessage.reference}`
-                                : ""}${conversation.usersNameSearchIndexResultMessage !==
+                                : ""}${conversation.usersNameSearchResultMessage !==
                               undefined
-                                ? `#message--${conversation.usersNameSearchIndexResultMessage.reference}`
+                                ? `#message--${conversation.usersNameSearchResultMessage.reference}`
                                 : ""}"
                               class="button ${isSelected
                                 ? "button--blue"
@@ -8876,11 +8876,11 @@ export default async function courselore({
     req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>,
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
     conversation: NonNullable<ReturnType<typeof getConversation>> & {
-      conversationsTitleSearchIndexResultHighlight?: string | null;
+      conversationsTitleSearchResultHighlight?: string | null;
       messagesContentSearchResultSnippet?: string | null;
       messagesContentSearchResultMessage?: ReturnType<typeof getMessage>;
-      usersNameSearchIndexResultHighlight?: string | null;
-      usersNameSearchIndexResultMessage?: ReturnType<typeof getMessage>;
+      usersNameSearchResultHighlight?: string | null;
+      usersNameSearchResultMessage?: ReturnType<typeof getMessage>;
       message?: ReturnType<typeof getMessage>;
     }
   ): HTML => html`
@@ -8934,9 +8934,9 @@ export default async function courselore({
           font-weight: var(--font-weight--bold);
         `}"
       >
-        $${typeof conversation.conversationsTitleSearchIndexResultHighlight ===
+        $${typeof conversation.conversationsTitleSearchResultHighlight ===
         "string"
-          ? conversation.conversationsTitleSearchIndexResultHighlight
+          ? conversation.conversationsTitleSearchResultHighlight
           : html`${conversation.title}`}
       </h3>
       <div
@@ -9120,29 +9120,29 @@ export default async function courselore({
                 <div>$${conversation.messagesContentSearchResultSnippet}</div>
               </div>
             `
-          : typeof conversation.usersNameSearchIndexResultHighlight ===
+          : typeof conversation.usersNameSearchResultHighlight ===
               "string" &&
-            conversation.usersNameSearchIndexResultMessage !== undefined
+            conversation.usersNameSearchResultMessage !== undefined
           ? html`
               <div>
                 <div>
-                  $${conversation.usersNameSearchIndexResultMessage
+                  $${conversation.usersNameSearchResultMessage
                     .authorEnrollment.user.avatar === null
                     ? html`<i class="bi bi-person-circle"></i>`
                     : html`
                         <img
-                          src="${conversation.usersNameSearchIndexResultMessage
+                          src="${conversation.usersNameSearchResultMessage
                             .authorEnrollment.user.avatar}"
-                          alt="${conversation.usersNameSearchIndexResultMessage
+                          alt="${conversation.usersNameSearchResultMessage
                             .authorEnrollment.user.name}"
                           class="avatar avatar--xs avatar--vertical-align"
                         />
                       `}
-                  $${conversation.usersNameSearchIndexResultHighlight}
+                  $${conversation.usersNameSearchResultHighlight}
                 </div>
                 <div>
                   $${lodash.truncate(
-                    conversation.usersNameSearchIndexResultMessage
+                    conversation.usersNameSearchResultMessage
                       .contentSearch,
                     {
                       length: 100,
