@@ -29,9 +29,9 @@
 ### Chat
 
 - don’t let first message be special
-  - Let student go anonymous in conversation creation
   - "conversations"
   - "messages"
+  - Let student go anonymous in conversation creation
   - Test conversation without messages
 - Move to top
   - Items
