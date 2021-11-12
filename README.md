@@ -28,7 +28,18 @@
 
 ### Chat
 
-- Move type to before title in sidebar.
+- Move to top
+  - Items
+    - isAnswer
+    - answerAt
+    - endorsements
+    - pins
+    - visible by staff only
+  - Locations
+    - New conversation
+    - Conversation page
+      - Messages display
+      - New message
 - Tags aren’t required.
 - The first post is a chatroom description
 - Layout changes:

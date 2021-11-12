@@ -9084,7 +9084,7 @@ export default async function courselore({
                     oninteractive="${javascript`
                       tippy(this, {
                         content: ${JSON.stringify(
-                          `Endorsed by ${
+                          `Answers Endorsed by ${
                             /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
                               Intl as any
                             ).ListFormat("en").format(
