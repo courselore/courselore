@@ -12600,6 +12600,95 @@ ${value}</textarea
           `,
           body: html`
             <div>
+              <div
+                style="${css`
+                  font-size: var(--font-size--xs);
+                  line-height: var(--line-height--xs);
+                  display: flex;
+                  flex-wrap: wrap;
+                  column-gap: var(--space--8);
+                  row-gap: var(--space--1);
+
+                  & > * {
+                    display: flex;
+                    gap: var(--space--1);
+                  }
+                `}"
+              >
+                $${mayEditConversation(req, res)
+                  ? html`
+                      <div>
+                        <button
+                          class="button button--tight button--tight--inline button--tight-gap button--transparent ${conversationTypeTextColor[
+                            res.locals.conversation.type
+                          ].display}"
+                          oninteractive="${javascript`
+                            tippy(this, {
+                              content: "Update Conversation Type",
+                              touch: false,
+                            });
+                            tippy(this, {
+                              content: this.nextElementSibling.firstElementChild,
+                              trigger: "click",
+                              interactive: true,
+                            });
+                          `}"
+                        >
+                          $${conversationTypeIcon[res.locals.conversation.type]
+                            .fill}
+                          $${lodash.capitalize(res.locals.conversation.type)}
+                        </button>
+                        <div hidden>
+                          <div class="dropdown--menu">
+                            $${res.locals.conversationTypes.map(
+                              (conversationType) => html`
+                                <form
+                                  method="POST"
+                                  action="${baseURL}/courses/${res.locals.course
+                                    .reference}/conversations/${res.locals
+                                    .conversation.reference}?_method=PATCH"
+                                >
+                                  <input
+                                    type="hidden"
+                                    name="_csrf"
+                                    value="${req.csrfToken()}"
+                                  />
+                                  <input
+                                    type="hidden"
+                                    name="type"
+                                    value="${conversationType}"
+                                  />
+                                  <button
+                                    class="dropdown--menu--item button ${conversationType ===
+                                    res.locals.conversation.type
+                                      ? "button--blue"
+                                      : "button--transparent"} ${conversationTypeTextColor[
+                                      conversationType
+                                    ].display}"
+                                  >
+                                    $${conversationTypeIcon[conversationType]
+                                      .fill}
+                                    $${lodash.capitalize(conversationType)}
+                                  </button>
+                                </form>
+                              `
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    `
+                  : html`
+                      <div
+                        class="${conversationTypeTextColor[
+                          res.locals.conversation.type
+                        ].display}"
+                      >
+                        $${conversationTypeIcon[res.locals.conversation.type]
+                          .fill}
+                        $${lodash.capitalize(res.locals.conversation.type)}
+                      </div>
+                    `}
+              </div>
               <div class="title">
                 <div
                   class="title--show"
@@ -12836,85 +12925,6 @@ ${value}</textarea
                 `}"
               >
                 <div>
-                  $${mayEditConversation(req, res)
-                    ? html`
-                        <div>
-                          <button
-                            class="button button--tight button--tight--inline button--tight-gap button--transparent ${conversationTypeTextColor[
-                              res.locals.conversation.type
-                            ].display}"
-                            oninteractive="${javascript`
-                              tippy(this, {
-                                content: "Update Conversation Type",
-                                touch: false,
-                              });
-                              tippy(this, {
-                                content: this.nextElementSibling.firstElementChild,
-                                trigger: "click",
-                                interactive: true,
-                              });
-                            `}"
-                          >
-                            $${conversationTypeIcon[
-                              res.locals.conversation.type
-                            ].fill}
-                            $${lodash.capitalize(res.locals.conversation.type)}
-                          </button>
-                          <div hidden>
-                            <div class="dropdown--menu">
-                              $${res.locals.conversationTypes.map(
-                                (conversationType) => html`
-                                  <form
-                                    method="POST"
-                                    action="${baseURL}/courses/${res.locals
-                                      .course.reference}/conversations/${res
-                                      .locals.conversation
-                                      .reference}?_method=PATCH"
-                                  >
-                                    <input
-                                      type="hidden"
-                                      name="_csrf"
-                                      value="${req.csrfToken()}"
-                                    />
-                                    <input
-                                      type="hidden"
-                                      name="type"
-                                      value="${conversationType}"
-                                    />
-                                    <button
-                                      class="dropdown--menu--item button ${conversationType ===
-                                      res.locals.conversation.type
-                                        ? "button--blue"
-                                        : "button--transparent"} ${conversationTypeTextColor[
-                                        conversationType
-                                      ].display}"
-                                    >
-                                      $${conversationTypeIcon[conversationType]
-                                        .fill}
-                                      $${lodash.capitalize(conversationType)}
-                                    </button>
-                                  </form>
-                                `
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      `
-                    : html`
-                        <div
-                          class="${conversationTypeTextColor[
-                            res.locals.conversation.type
-                          ].display}"
-                          style="${css`
-                            display: flex;
-                            gap: var(--space--1);
-                          `}"
-                        >
-                          $${conversationTypeIcon[res.locals.conversation.type]
-                            .fill}
-                          $${lodash.capitalize(res.locals.conversation.type)}
-                        </div>
-                      `}
                   $${res.locals.tags.length === 0
                     ? html``
                     : html`
