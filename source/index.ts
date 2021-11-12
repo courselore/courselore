@@ -13676,8 +13676,38 @@ ${value}</textarea
                                 display: flex;
                                 gap: var(--space--4);
                                 align-items: baseline;
+                                position: relative;
                               `}"
                             >
+                              $${message.reading === null
+                                ? html`
+                                    <button
+                                      class="button button--tight button--tight--inline button--blue"
+                                      style="${css`
+                                        width: var(--space--2);
+                                        height: var(--space--2);
+                                        margin-top: var(--space--4);
+                                        @media (max-width: 629px) {
+                                          margin-left: var(--space---3);
+                                        }
+                                        @media (min-width: 630px) {
+                                          margin-left: var(--space---4);
+                                        }
+                                        position: absolute;
+                                      `}"
+                                      oninteractive="${javascript`
+                                        tippy(this, {
+                                          content: "Unread Message",
+                                          touch: false,
+                                        });
+                                        window.setTimeout(() => { this.click(); }, 2000);
+                                      `}"
+                                      onclick="${javascript`
+                                        this.remove();
+                                      `}"
+                                    ></button>
+                                  `
+                                : html``}
                               <div
                                 style="${css`
                                   flex: 1;
