@@ -29,7 +29,6 @@
 ### Chat
 
 - don’t let first message be special
-  - anonymous near author
   - getMessage
   - "1"
   - "conversations"
