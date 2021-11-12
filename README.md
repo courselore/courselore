@@ -28,6 +28,9 @@
 
 ### Chat
 
+- don’t let first message be special
+  - dont store conversation author and other metadata in first message
+
 - Move to top
   - Items
     - isPinned

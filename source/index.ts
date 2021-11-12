@@ -213,6 +213,17 @@ export default async function courselore({
       CREATE INDEX "enrollmentsUserIndex" ON "enrollments" ("user");
       CREATE INDEX "enrollmentsCourseIndex" ON "enrollments" ("course");
 
+      CREATE TABLE "tags" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+        "reference" TEXT NOT NULL,
+        "name" TEXT NOT NULL,
+        "staffOnlyAt" TEXT NULL,
+        UNIQUE ("course", "reference")
+      );
+      CREATE INDEX "tagsCourseIndex" ON "tags" ("course");
+
       CREATE TABLE "conversations" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
@@ -261,6 +272,16 @@ export default async function courselore({
       CREATE TRIGGER "conversationsTitleSearchIndexDelete" AFTER DELETE ON "conversations" BEGIN
         INSERT INTO "conversationsTitleSearchIndex" ("conversationsTitleSearchIndex", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
       END;
+
+      CREATE TABLE "taggings" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
+        "tag" INTEGER NOT NULL REFERENCES "tags" ON DELETE CASCADE,
+        UNIQUE ("conversation", "tag")
+      );
+      CREATE INDEX "taggingsConversationIndex" ON "taggings" ("conversation");
+      CREATE INDEX "taggingsTagIndex" ON "taggings" ("tag");
 
       CREATE TABLE "messages" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -343,27 +364,6 @@ export default async function courselore({
         UNIQUE ("message", "enrollment")
       );
       CREATE INDEX "likesMessageIndex" ON "likes" ("message");
-
-      CREATE TABLE "tags" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-        "reference" TEXT NOT NULL,
-        "name" TEXT NOT NULL,
-        "staffOnlyAt" TEXT NULL,
-        UNIQUE ("course", "reference")
-      );
-      CREATE INDEX "tagsCourseIndex" ON "tags" ("course");
-
-      CREATE TABLE "taggings" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
-        "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
-        "tag" INTEGER NOT NULL REFERENCES "tags" ON DELETE CASCADE,
-        UNIQUE ("conversation", "tag")
-      );
-      CREATE INDEX "taggingsConversationIndex" ON "taggings" ("conversation");
-      CREATE INDEX "taggingsTagIndex" ON "taggings" ("tag");
     `
   );
   setTimeout(function deleteExpiredData() {
@@ -9280,6 +9280,15 @@ export default async function courselore({
           | NoLongerEnrolledEnrollment;
         anonymousAt: string | null;
         updatedAt: string | null;
+        taggings: {
+          id: number;
+          tag: {
+            id: number;
+            reference: string;
+            name: string;
+            staffOnlyAt: string | null;
+          };
+        }[];
         messagesCount: number;
         readingsCount: number;
         endorsements: {
@@ -9300,15 +9309,6 @@ export default async function courselore({
             | NoLongerEnrolledEnrollment;
         }[];
         likesCount: number;
-        taggings: {
-          id: number;
-          tag: {
-            id: number;
-            reference: string;
-            name: string;
-            staffOnlyAt: string | null;
-          };
-        }[];
       }
     | undefined => {
     const conversation = database.get<{
@@ -9400,6 +9400,31 @@ export default async function courselore({
       `
     )!;
 
+    const taggings = database.all<{
+      id: number;
+      tagId: number;
+      tagReference: string;
+      tagName: string;
+      tagStaffOnlyAt: string | null;
+    }>(
+      sql`
+        SELECT "taggings"."id",
+                "tags"."id" AS "tagId",
+                "tags"."reference" AS "tagReference",
+                "tags"."name" AS "tagName",
+                "tags"."staffOnlyAt" AS "tagStaffOnlyAt"
+        FROM "taggings"
+        JOIN "tags" ON "taggings"."tag" = "tags"."id"
+        $${
+          res.locals.enrollment.role === "student"
+            ? sql`AND "tags"."staffOnlyAt" IS NULL`
+            : sql``
+        }
+        WHERE "taggings"."conversation" = ${conversation.id}
+        ORDER BY "tags"."id" ASC
+      `
+    );
+
     const messagesCount = database.get<{
       messagesCount: number;
     }>(
@@ -9457,31 +9482,6 @@ export default async function courselore({
       `
     )!.likesCount;
 
-    const taggings = database.all<{
-      id: number;
-      tagId: number;
-      tagReference: string;
-      tagName: string;
-      tagStaffOnlyAt: string | null;
-    }>(
-      sql`
-        SELECT "taggings"."id",
-                "tags"."id" AS "tagId",
-                "tags"."reference" AS "tagReference",
-                "tags"."name" AS "tagName",
-                "tags"."staffOnlyAt" AS "tagStaffOnlyAt"
-        FROM "taggings"
-        JOIN "tags" ON "taggings"."tag" = "tags"."id"
-        $${
-          res.locals.enrollment.role === "student"
-            ? sql`AND "tags"."staffOnlyAt" IS NULL`
-            : sql``
-        }
-        WHERE "taggings"."conversation" = ${conversation.id}
-        ORDER BY "tags"."id" ASC
-      `
-    );
-
     return {
       id: conversation.id,
       reference: conversation.reference,
@@ -9517,6 +9517,15 @@ export default async function courselore({
         mostRecentlyUpdatedMessage.updatedAt === originalMessage.createdAt
           ? null
           : mostRecentlyUpdatedMessage.updatedAt,
+      taggings: taggings.map((tagging) => ({
+        id: tagging.id,
+        tag: {
+          id: tagging.tagId,
+          reference: tagging.tagReference,
+          name: tagging.tagName,
+          staffOnlyAt: tagging.tagStaffOnlyAt,
+        },
+      })),
       messagesCount,
       readingsCount,
       endorsements: endorsements.map((endorsement) => ({
@@ -9543,15 +9552,6 @@ export default async function courselore({
             : noLongerEnrolledEnrollment,
       })),
       likesCount,
-      taggings: taggings.map((tagging) => ({
-        id: tagging.id,
-        tag: {
-          id: tagging.tagId,
-          reference: tagging.tagReference,
-          name: tagging.tagName,
-          staffOnlyAt: tagging.tagStaffOnlyAt,
-        },
-      })),
     };
   };
 
@@ -12396,6 +12396,20 @@ ${value}</textarea
           )}
         `
       )!;
+      for (const tagReference of req.body.tagsReferences)
+        database.run(
+          sql`
+            INSERT INTO "taggings" ("conversation", "tag")
+            VALUES (
+              ${conversation.id},
+              ${
+                res.locals.tags.find(
+                  (existingTag) => existingTag.reference === tagReference
+                )!.id
+              }
+            )
+          `
+        );
       // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
       const message = database.get<{
         id: number;
@@ -12428,20 +12442,6 @@ ${value}</textarea
           )}
         `
       )!;
-      for (const tagReference of req.body.tagsReferences)
-        database.run(
-          sql`
-            INSERT INTO "taggings" ("conversation", "tag")
-            VALUES (
-              ${conversation.id},
-              ${
-                res.locals.tags.find(
-                  (existingTag) => existingTag.reference === tagReference
-                )!.id
-              }
-            )
-          `
-        );
 
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.course.nextConversationReference}`
@@ -14735,6 +14735,88 @@ ${value}</textarea
   );
 
   app.post<
+    {
+      courseReference: string;
+      conversationReference: string;
+    },
+    any,
+    { reference?: string },
+    {},
+    MayEditConversationMiddlewareLocals
+  >(
+    "/courses/:courseReference/conversations/:conversationReference/taggings",
+    ...mayEditConversationMiddleware,
+    (req, res, next) => {
+      if (
+        typeof req.body.reference !== "string" ||
+        !res.locals.tags.some((tag) => req.body.reference === tag.reference) ||
+        res.locals.conversation.taggings.some(
+          (tagging) => req.body.reference === tagging.tag.reference
+        )
+      )
+        return next("validation");
+
+      database.run(
+        sql`
+            INSERT INTO "taggings" ("conversation", "tag")
+            VALUES (
+              ${res.locals.conversation.id},
+              ${
+                res.locals.tags.find(
+                  (tag) => req.body.reference === tag.reference
+                )!.id
+              }
+            )
+          `
+      );
+
+      res.redirect(
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
+      );
+    }
+  );
+
+  app.delete<
+    {
+      courseReference: string;
+      conversationReference: string;
+    },
+    any,
+    { reference?: string },
+    {},
+    MayEditConversationMiddlewareLocals
+  >(
+    "/courses/:courseReference/conversations/:conversationReference/taggings",
+    ...mayEditConversationMiddleware,
+    (req, res, next) => {
+      if (
+        res.locals.conversation.taggings.length === 1 ||
+        typeof req.body.reference !== "string" ||
+        !res.locals.conversation.taggings.some(
+          (tagging) => req.body.reference === tagging.tag.reference
+        )
+      )
+        return next("validation");
+
+      database.run(
+        sql`
+          DELETE FROM "taggings"
+          WHERE "conversation" = ${res.locals.conversation.id} AND
+                "tag" = ${
+                  res.locals.tags.find(
+                    (tag) => req.body.reference === tag.reference
+                  )!.id
+                }
+        `
+      );
+
+      res.redirect(
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
+      );
+    }
+  );
+
+  app.post<
     { courseReference: string; conversationReference: string },
     HTML,
     { content?: string; isAnswer?: boolean; isAnonymous?: boolean },
@@ -15113,88 +15195,6 @@ ${value}</textarea
       );
 
       emitCourseRefresh(res.locals.course.id);
-    }
-  );
-
-  app.post<
-    {
-      courseReference: string;
-      conversationReference: string;
-    },
-    any,
-    { reference?: string },
-    {},
-    MayEditConversationMiddlewareLocals
-  >(
-    "/courses/:courseReference/conversations/:conversationReference/taggings",
-    ...mayEditConversationMiddleware,
-    (req, res, next) => {
-      if (
-        typeof req.body.reference !== "string" ||
-        !res.locals.tags.some((tag) => req.body.reference === tag.reference) ||
-        res.locals.conversation.taggings.some(
-          (tagging) => req.body.reference === tagging.tag.reference
-        )
-      )
-        return next("validation");
-
-      database.run(
-        sql`
-            INSERT INTO "taggings" ("conversation", "tag")
-            VALUES (
-              ${res.locals.conversation.id},
-              ${
-                res.locals.tags.find(
-                  (tag) => req.body.reference === tag.reference
-                )!.id
-              }
-            )
-          `
-      );
-
-      res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
-      );
-    }
-  );
-
-  app.delete<
-    {
-      courseReference: string;
-      conversationReference: string;
-    },
-    any,
-    { reference?: string },
-    {},
-    MayEditConversationMiddlewareLocals
-  >(
-    "/courses/:courseReference/conversations/:conversationReference/taggings",
-    ...mayEditConversationMiddleware,
-    (req, res, next) => {
-      if (
-        res.locals.conversation.taggings.length === 1 ||
-        typeof req.body.reference !== "string" ||
-        !res.locals.conversation.taggings.some(
-          (tagging) => req.body.reference === tagging.tag.reference
-        )
-      )
-        return next("validation");
-
-      database.run(
-        sql`
-          DELETE FROM "taggings"
-          WHERE "conversation" = ${res.locals.conversation.id} AND
-                "tag" = ${
-                  res.locals.tags.find(
-                    (tag) => req.body.reference === tag.reference
-                  )!.id
-                }
-        `
-      );
-
-      res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
-      );
     }
   );
 
