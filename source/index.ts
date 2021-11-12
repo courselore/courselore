@@ -13695,8 +13695,7 @@ ${value}</textarea
                                   </div>
                                 `
                               : html``}
-                            $${res.locals.enrollment.role === "staff" &&
-                            message.reference !== "1"
+                            $${res.locals.enrollment.role === "staff"
                               ? html`
                                   <div>
                                     <button
@@ -14947,8 +14946,6 @@ ${value}</textarea
     ...isCourseStaffMiddleware,
     ...messageExistsMiddleware,
     (req, res, next) => {
-      if (res.locals.message.reference === "1") return next("validation");
-
       database.run(
         sql`DELETE FROM "messages" WHERE "id" = ${res.locals.message.id}`
       );

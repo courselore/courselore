@@ -29,10 +29,10 @@
 ### Chat
 
 - don’t let first message be special
-  - "1"
   - Let student go anonymous in conversation creation
   - "conversations"
   - "messages"
+  - Test conversation without messages
 - Move to top
   - Items
     - isPinned
