@@ -8005,8 +8005,8 @@ export default async function courselore({
       .all<{
         reference: string;
         conversationsTitleSearchIndexResultHighlight: string | null;
-        messagesSearchResultMessageReference: string | null;
-        messagesSearchResultSnippet: string | null;
+        messagesContentSearchResultMessageReference: string | null;
+        messagesContentSearchResultSnippet: string | null;
         usersNameSearchIndexResultMessageReference: string | null;
         usersNameSearchIndexResultHighlight: string | null;
       }>(
@@ -8018,8 +8018,8 @@ export default async function courselore({
                       : sql`
                           ,
                           "conversationsTitleSearchIndexResult"."highlight" AS "conversationsTitleSearchIndexResultHighlight",
-                          "messagesSearchResult"."messageReference" AS "messagesSearchResultMessageReference",
-                          "messagesSearchResult"."snippet" AS "messagesSearchResultSnippet",
+                          "messagesContentSearchResult"."messageReference" AS "messagesContentSearchResultMessageReference",
+                          "messagesContentSearchResult"."snippet" AS "messagesContentSearchResultSnippet",
                           "usersNameSearchIndexResult"."messageReference" AS "usersNameSearchIndexResultMessageReference",
                           "usersNameSearchIndexResult"."highlight" AS "usersNameSearchIndexResultHighlight"
                         `
@@ -8045,7 +8045,7 @@ export default async function courselore({
                   FROM "messagesContentSearchIndex"
                   JOIN "messages" ON "messagesContentSearchIndex"."rowid" = "messages"."id"
                   WHERE "messagesContentSearchIndex" MATCH ${search}
-                ) AS "messagesSearchResult" ON "conversations"."id" = "messagesSearchResult"."conversationId"
+                ) AS "messagesContentSearchResult" ON "conversations"."id" = "messagesContentSearchResult"."conversationId"
 
                 LEFT JOIN (
                   SELECT "messages"."reference" AS  "messageReference",
@@ -8086,7 +8086,7 @@ export default async function courselore({
               : sql`
                 AND (
                   "conversationsTitleSearchIndexResult"."rank" IS NOT NULL OR
-                  "messagesSearchResult"."rank" IS NOT NULL OR
+                  "messagesContentSearchResult"."rank" IS NOT NULL OR
                   "usersNameSearchIndexResult"."rank" IS NOT NULL
                 )
               `
@@ -8124,7 +8124,7 @@ export default async function courselore({
                         : sql`
                           min(
                             coalesce("conversationsTitleSearchIndexResult"."rank", 0),
-                            coalesce("messagesSearchResult"."rank", 0),
+                            coalesce("messagesContentSearchResult"."rank", 0),
                             coalesce("usersNameSearchIndexResult"."rank", 0)
                           ) ASC,
                         `
@@ -8148,19 +8148,19 @@ export default async function courselore({
       })
       .map((conversation) => {
         if (
-          conversation.messagesSearchResultMessageReference !== null &&
-          conversation.messagesSearchResultSnippet !== null
+          conversation.messagesContentSearchResultMessageReference !== null &&
+          conversation.messagesContentSearchResultSnippet !== null
         ) {
           const message = getMessage(
             req,
             res,
             conversation,
-            conversation.messagesSearchResultMessageReference
+            conversation.messagesContentSearchResultMessageReference
           );
           if (message !== undefined)
             return {
               ...conversation,
-              messagesSearchResultMessage: message,
+              messagesContentSearchResultMessage: message,
               usersNameSearchIndexResultMessage: undefined,
             };
         } else if (
@@ -8176,13 +8176,13 @@ export default async function courselore({
           if (message !== undefined)
             return {
               ...conversation,
-              messagesSearchResultMessage: undefined,
+              messagesContentSearchResultMessage: undefined,
               usersNameSearchIndexResultMessage: message,
             };
         }
         return {
           ...conversation,
-          messagesSearchResultMessage: undefined,
+          messagesContentSearchResultMessage: undefined,
           usersNameSearchIndexResultMessage: undefined,
         };
       });
@@ -8752,9 +8752,9 @@ export default async function courselore({
                                   "conversationLayoutSidebarOpenOnSmallScreen",
                                   "scrollToConversation",
                                 ])
-                              )}${conversation.messagesSearchResultMessage !==
+                              )}${conversation.messagesContentSearchResultMessage !==
                               undefined
-                                ? `#message--${conversation.messagesSearchResultMessage.reference}`
+                                ? `#message--${conversation.messagesContentSearchResultMessage.reference}`
                                 : ""}${conversation.usersNameSearchIndexResultMessage !==
                               undefined
                                 ? `#message--${conversation.usersNameSearchIndexResultMessage.reference}`
@@ -8877,8 +8877,8 @@ export default async function courselore({
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
     conversation: NonNullable<ReturnType<typeof getConversation>> & {
       conversationsTitleSearchIndexResultHighlight?: string | null;
-      messagesSearchResultSnippet?: string | null;
-      messagesSearchResultMessage?: ReturnType<typeof getMessage>;
+      messagesContentSearchResultSnippet?: string | null;
+      messagesContentSearchResultMessage?: ReturnType<typeof getMessage>;
       usersNameSearchIndexResultHighlight?: string | null;
       usersNameSearchIndexResultMessage?: ReturnType<typeof getMessage>;
       message?: ReturnType<typeof getMessage>;
@@ -9054,27 +9054,30 @@ export default async function courselore({
                 )}
               </div>
             `}
-        $${typeof conversation.messagesSearchResultSnippet === "string" &&
-        conversation.messagesSearchResultMessage !== undefined
+        $${typeof conversation.messagesContentSearchResultSnippet ===
+          "string" &&
+        conversation.messagesContentSearchResultMessage !== undefined
           ? html`
               <div>
                 <div>
-                  $${conversation.messagesSearchResultMessage.anonymousAt ===
-                  null
+                  $${conversation.messagesContentSearchResultMessage
+                    .anonymousAt === null
                     ? html`
-                        $${conversation.messagesSearchResultMessage
+                        $${conversation.messagesContentSearchResultMessage
                           .authorEnrollment.user.avatar === null
                           ? html`<i class="bi bi-person-circle"></i>`
                           : html`
                               <img
-                                src="${conversation.messagesSearchResultMessage
+                                src="${conversation
+                                  .messagesContentSearchResultMessage
                                   .authorEnrollment.user.avatar}"
-                                alt="${conversation.messagesSearchResultMessage
+                                alt="${conversation
+                                  .messagesContentSearchResultMessage
                                   .authorEnrollment.user.name}"
                                 class="avatar avatar--xs avatar--vertical-align"
                               />
                             `}
-                        ${conversation.messagesSearchResultMessage
+                        ${conversation.messagesContentSearchResultMessage
                           .authorEnrollment.user.name}
                       `
                     : html`
@@ -9091,28 +9094,30 @@ export default async function courselore({
                           Anonymous
                         </span>
                       `}
-                  $${conversation.messagesSearchResultMessage.anonymousAt !==
-                    null &&
+                  $${conversation.messagesContentSearchResultMessage
+                    .anonymousAt !== null &&
                   (res.locals.enrollment.role === "staff" ||
-                    conversation.messagesSearchResultMessage.authorEnrollment
-                      .id === res.locals.enrollment.id)
+                    conversation.messagesContentSearchResultMessage
+                      .authorEnrollment.id === res.locals.enrollment.id)
                     ? html`
-                        ($${conversation.messagesSearchResultMessage
+                        ($${conversation.messagesContentSearchResultMessage
                           .authorEnrollment.user.avatar === null
                           ? html`<i class="bi bi-person-circle"></i>`
                           : html`<img
-                              src="${conversation.messagesSearchResultMessage
+                              src="${conversation
+                                .messagesContentSearchResultMessage
                                 .authorEnrollment.user.avatar}"
-                              alt="${conversation.messagesSearchResultMessage
+                              alt="${conversation
+                                .messagesContentSearchResultMessage
                                 .authorEnrollment.user.name}"
                               class="avatar avatar--xs avatar--vertical-align"
                             />`}
-                        ${conversation.messagesSearchResultMessage
+                        ${conversation.messagesContentSearchResultMessage
                           .authorEnrollment.user.name})
                       `
                     : html``}
                 </div>
-                <div>$${conversation.messagesSearchResultSnippet}</div>
+                <div>$${conversation.messagesContentSearchResultSnippet}</div>
               </div>
             `
           : typeof conversation.usersNameSearchIndexResultHighlight ===
