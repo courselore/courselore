@@ -29,8 +29,9 @@
 ### Chat
 
 - don’t let first message be special
-  - getConversation
+  - Reorder parameters in POST/PATCH methods
   - "1"
+  - Let student go anonymous in conversation creation
   - "conversations"
   - "messages"
 - Move to top

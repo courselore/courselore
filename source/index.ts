@@ -12304,6 +12304,8 @@ ${value}</textarea
                 INSERT INTO "conversations" (
                   "course",
                   "reference",
+                  "authorEnrollment",
+                  "anonymousAt",
                   "type",
                   "pinnedAt",
                   "staffOnlyAt",
@@ -12314,6 +12316,8 @@ ${value}</textarea
                 VALUES (
                   ${res.locals.course.id},
                   ${String(res.locals.course.nextConversationReference)},
+                  ${res.locals.enrollment.id},
+                  ${req.body.isAnonymous ? new Date().toISOString() : null},
                   ${req.body.type},
                   ${req.body.isPinned ? new Date().toISOString() : null},
                   ${req.body.isStaffOnly ? new Date().toISOString() : null},
@@ -15558,6 +15562,8 @@ ${value}</textarea
               (type === "question" ? "?" : "");
             const conversation = database.get<{
               id: number;
+              authorEnrollment: number | null;
+              anonymousAt: string | null;
               title: string;
               nextMessageReference: number;
             }>(
@@ -15568,6 +15574,8 @@ ${value}</textarea
                       INSERT INTO "conversations" (
                         "course",
                         "reference",
+                        "authorEnrollment",
+                        "anonymousAt",      
                         "type",
                         "pinnedAt",
                         "staffOnlyAt",
@@ -15578,6 +15586,10 @@ ${value}</textarea
                       VALUES (
                         ${course.id},
                         ${String(conversationReference)},
+                        ${lodash.sample(enrollments)!.id},
+                        ${
+                          Math.random() < 0.5 ? new Date().toISOString() : null
+                        },
                         ${type},
                         ${
                           Math.random() < 0.15 ? new Date().toISOString() : null
@@ -15663,9 +15675,15 @@ ${value}</textarea
                           },
                           ${conversation.id},
                           ${String(messageReference)},
-                          ${lodash.sample(enrollments)!.id},
                           ${
-                            Math.random() < 0.5
+                            messageReference === 1
+                              ? conversation.authorEnrollment
+                              : lodash.sample(enrollments)!.id
+                          },
+                          ${
+                            messageReference === 1
+                              ? conversation.anonymousAt
+                              : Math.random() < 0.5
                               ? new Date().toISOString()
                               : null
                           },
