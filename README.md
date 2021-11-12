@@ -30,11 +30,16 @@
 
 - Move to top
   - Items
-    - isAnswer
+    - pinnedAt
+      - isPinned
+    - staffOnlyAt
+      - isStaffOnly
     - answerAt
+      - isAnswer
+    - anonymousAt
+      - isAnonymous
+    - ***
     - endorsements
-    - pins
-    - visible by staff only
   - Locations
     - New conversation
     - Conversation page
