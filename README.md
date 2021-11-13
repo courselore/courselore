@@ -331,6 +331,19 @@
 <summary><strong>Meetings</strong></summary>
 
 <details>
+<summary>2021-11-13</summary>
+
+- Chat:
+  - Duplicate author information (including anonymity) into conversation, instead of relying on first message.
+  - Chats may be created without tags & first message.
+- Tested the interface with weird data, for example, names that are too long, and fixed layout issues.
+- Icons changed (for example, staff-only) and moved around.
+- Finished the notifications system.
+- Filters.
+
+</details>
+
+<details>
 <summary>2021-11-06</summary>
 
 - Security:
