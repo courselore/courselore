@@ -11915,7 +11915,8 @@ ${value}</textarea
                             required
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onchange="${javascript`
-                              for (const element of this.closest("form").querySelectorAll('[name="tagsReferences[]"]'))
+                              const form = this.closest("form");
+                              for (const element of [...form.querySelectorAll('[name="tagsReferences[]"]'), form.querySelector('[name="content"]')])
                                 element.required = ${JSON.stringify(
                                   conversationType !== "chat"
                                 )};
@@ -12359,7 +12360,10 @@ ${value}</textarea
         );
 
       let sendNotificationsIfNecessary = () => {};
-      if (typeof req.body.content === "string") {
+      if (
+        typeof req.body.content === "string" &&
+        req.body.content.trim() !== ""
+      ) {
         const processedContent = markdownProcessor({
           req,
           res,
