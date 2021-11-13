@@ -29,9 +29,9 @@
 ### Chat
 
 - New conversation.
+  - Tags aren’t required.
+  - The first post is a chatroom description
 - Test the app all around.
-- Tags aren’t required.
-- The first post is a chatroom description
 - Layout changes:
   - Fixed header on top & textarea on bottom.
   - Load from the bottom.
