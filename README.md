@@ -29,7 +29,6 @@
 ### Chat
 
 - New conversation.
-  - Tags aren’t required.
   - The first post is a chatroom description
 - Test the app all around.
 - Layout changes:
