@@ -11932,94 +11932,6 @@ ${value}</textarea
                   </div>
                 </div>
 
-                <div class="label">
-                  <p class="label--text">Title</p>
-                  <input
-                    type="text"
-                    name="title"
-                    required
-                    autocomplete="off"
-                    autofocus
-                    class="input--text"
-                  />
-                </div>
-
-                $${markdownEditor({ req, res })}
-                $${res.locals.tags.length === 0
-                  ? html``
-                  : html`
-                      <div class="label">
-                        <div class="label--text">
-                          Tags
-                          <button
-                            type="button"
-                            class="button button--tight button--tight--inline button--transparent"
-                            oninteractive="${javascript`
-                              tippy(this, {
-                                content: "Tags help to organize conversations. You must select at least one tag.",
-                                trigger: "click",
-                              });
-                            `}"
-                          >
-                            <i class="bi bi-info-circle"></i>
-                          </button>
-                        </div>
-                        <div
-                          style="${css`
-                            display: flex;
-                            flex-wrap: wrap;
-                            column-gap: var(--space--8);
-                            row-gap: var(--space--2);
-                          `}"
-                        >
-                          $${res.locals.tags.map(
-                            (tag) => html`
-                              <div
-                                style="${css`
-                                  display: flex;
-                                  gap: var(--space--2);
-                                `}"
-                              >
-                                <label
-                                  class="button button--tight button--tight--inline button--transparent"
-                                >
-                                  <input
-                                    type="checkbox"
-                                    name="tagsReferences[]"
-                                    value="${tag.reference}"
-                                    required
-                                    class="visually-hidden input--radio-or-checkbox--multilabel"
-                                  />
-                                  <span>
-                                    <i class="bi bi-tag"></i>
-                                    ${tag.name}
-                                  </span>
-                                  <span class="text--teal">
-                                    <i class="bi bi-tag-fill"></i>
-                                    ${tag.name}
-                                  </span>
-                                </label>
-                                $${tag.staffOnlyAt !== null
-                                  ? html`
-                                      <span
-                                        class="text--pink"
-                                        oninteractive="${javascript`
-                                          tippy(this, {
-                                            content: "This tag is visible by staff only.",
-                                            touch: false,
-                                          });
-                                        `}"
-                                      >
-                                        <i class="bi bi-mortarboard-fill"></i>
-                                      </span>
-                                    `
-                                  : html``}
-                              </div>
-                            `
-                          )}
-                        </div>
-                      </div>
-                    `}
                 <div
                   style="${css`
                     display: flex;
@@ -12042,11 +11954,11 @@ ${value}</textarea
                               type="button"
                               class="button button--tight button--tight--inline button--transparent"
                               oninteractive="${javascript`
-                              tippy(this, {
-                                content: "Pinned conversations are listed first.",
-                                trigger: "click",
-                              });
-                            `}"
+                                tippy(this, {
+                                  content: "Pinned conversations are listed first.",
+                                  trigger: "click",
+                                });
+                              `}"
                             >
                               <i class="bi bi-info-circle"></i>
                             </button>
@@ -12146,66 +12058,154 @@ ${value}</textarea
                       </label>
                     </div>
                   </div>
+                </div>
 
-                  $${res.locals.enrollment.role === "staff"
-                    ? html``
-                    : html`
-                        <div
-                          class="anonymity label"
-                          style="${css`
-                            width: var(--space--56);
-                          `}"
-                        >
-                          <p class="label--text">Anonymity</p>
-                          <div
-                            style="${css`
-                              display: flex;
+                <div class="label">
+                  <p class="label--text">Title</p>
+                  <input
+                    type="text"
+                    name="title"
+                    required
+                    autocomplete="off"
+                    autofocus
+                    class="input--text"
+                  />
+                </div>
+
+                $${markdownEditor({ req, res })}
+                $${res.locals.tags.length === 0
+                  ? html``
+                  : html`
+                      <div class="label">
+                        <div class="label--text">
+                          Tags
+                          <button
+                            type="button"
+                            class="button button--tight button--tight--inline button--transparent"
+                            oninteractive="${javascript`
+                              tippy(this, {
+                                content: "Tags help to organize conversations. You must select at least one tag.",
+                                trigger: "click",
+                              });
                             `}"
                           >
-                            <label
-                              class="button button--tight button--tight--inline button--transparent"
-                            >
-                              <input
-                                type="checkbox"
-                                name="isAnonymous"
-                                class="visually-hidden input--radio-or-checkbox--multilabel"
-                              />
-                              <span
-                                oninteractive="${javascript`
-                                  tippy(this, {
-                                    content: "Set as Anonymous to Other Students",
-                                    touch: false,
-                                  });
-                                `}"
-                              >
-                                $${res.locals.user.avatar === null
-                                  ? html`<i class="bi bi-person-circle"></i>`
-                                  : html`
-                                      <img
-                                        src="${res.locals.user.avatar}"
-                                        alt="${res.locals.user.name}"
-                                        class="avatar avatar--sm avatar--vertical-align"
-                                      />
-                                    `}
-                                Signed by ${res.locals.user.name}
-                              </span>
-                              <span
-                                class="text--violet"
-                                oninteractive="${javascript`
-                                  tippy(this, {
-                                    content: "Set as Signed by ${res.locals.user.name}",
-                                    touch: false,
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-sunglasses"></i>
-                                Anonymous to Other Students
-                              </span>
-                            </label>
-                          </div>
+                            <i class="bi bi-info-circle"></i>
+                          </button>
                         </div>
-                      `}
-                </div>
+                        <div
+                          style="${css`
+                            display: flex;
+                            flex-wrap: wrap;
+                            column-gap: var(--space--8);
+                            row-gap: var(--space--2);
+                          `}"
+                        >
+                          $${res.locals.tags.map(
+                            (tag) => html`
+                              <div
+                                style="${css`
+                                  display: flex;
+                                  gap: var(--space--2);
+                                `}"
+                              >
+                                <label
+                                  class="button button--tight button--tight--inline button--transparent"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    name="tagsReferences[]"
+                                    value="${tag.reference}"
+                                    required
+                                    class="visually-hidden input--radio-or-checkbox--multilabel"
+                                  />
+                                  <span>
+                                    <i class="bi bi-tag"></i>
+                                    ${tag.name}
+                                  </span>
+                                  <span class="text--teal">
+                                    <i class="bi bi-tag-fill"></i>
+                                    ${tag.name}
+                                  </span>
+                                </label>
+                                $${tag.staffOnlyAt !== null
+                                  ? html`
+                                      <span
+                                        class="text--pink"
+                                        oninteractive="${javascript`
+                                          tippy(this, {
+                                            content: "This tag is visible by staff only.",
+                                            touch: false,
+                                          });
+                                        `}"
+                                      >
+                                        <i class="bi bi-mortarboard-fill"></i>
+                                      </span>
+                                    `
+                                  : html``}
+                              </div>
+                            `
+                          )}
+                        </div>
+                      </div>
+                    `}
+                $${res.locals.enrollment.role === "staff"
+                  ? html``
+                  : html`
+                      <div
+                        class="anonymity label"
+                        style="${css`
+                          width: var(--space--56);
+                        `}"
+                      >
+                        <p class="label--text">Anonymity</p>
+                        <div
+                          style="${css`
+                            display: flex;
+                          `}"
+                        >
+                          <label
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <input
+                              type="checkbox"
+                              name="isAnonymous"
+                              class="visually-hidden input--radio-or-checkbox--multilabel"
+                            />
+                            <span
+                              oninteractive="${javascript`
+                                tippy(this, {
+                                  content: "Set as Anonymous to Other Students",
+                                  touch: false,
+                                });
+                              `}"
+                            >
+                              $${res.locals.user.avatar === null
+                                ? html`<i class="bi bi-person-circle"></i>`
+                                : html`
+                                    <img
+                                      src="${res.locals.user.avatar}"
+                                      alt="${res.locals.user.name}"
+                                      class="avatar avatar--sm avatar--vertical-align"
+                                    />
+                                  `}
+                              Signed by ${res.locals.user.name}
+                            </span>
+                            <span
+                              class="text--violet"
+                              oninteractive="${javascript`
+                                tippy(this, {
+                                  content: "Set as Signed by ${res.locals.user.name}",
+                                  touch: false,
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-sunglasses"></i>
+                              Anonymous to Other Students
+                            </span>
+                          </label>
+                        </div>
+                      </div>
+                    `}
 
                 <div>
                   <button
