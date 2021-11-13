@@ -13362,7 +13362,9 @@ ${value}</textarea
                       <i class="bi bi-chat-left-text"></i>
                     </div>
                     <p class="secondary">
-                      All messages in this conversation have been deleted.
+                      ${res.locals.conversation.type === "chat"
+                        ? "Start the chat by sending the first message!"
+                        : "All messages in this conversation have been deleted."}
                     </p>
                   </div>
 
