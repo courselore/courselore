@@ -11914,6 +11914,12 @@ ${value}</textarea
                             value="${conversationType}"
                             required
                             class="visually-hidden input--radio-or-checkbox--multilabel"
+                            onchange="${javascript`
+                              for (const element of this.closest("form").querySelectorAll('[name="tagsReferences[]"]'))
+                                element.required = ${JSON.stringify(
+                                  conversationType !== "chat"
+                                )};
+                            `}"
                           />
                           <span>
                             $${conversationTypeIcon[conversationType].regular}
