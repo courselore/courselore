@@ -12084,7 +12084,7 @@ ${value}</textarea
                             class="button button--tight button--tight--inline button--transparent"
                             oninteractive="${javascript`
                               tippy(this, {
-                                content: "Tags help to organize conversations. You must select at least one tag.",
+                                content: "Tags help to organize conversations.",
                                 trigger: "click",
                               });
                             `}"
