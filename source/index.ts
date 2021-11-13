@@ -12270,11 +12270,15 @@ ${value}</textarea
         (req.body.isPinned && res.locals.enrollment.role !== "staff") ||
         typeof req.body.title !== "string" ||
         req.body.title.trim() === "" ||
-        typeof req.body.content !== "string" ||
-        req.body.content.trim() === "" ||
+        (req.body.type !== "chat" &&
+          (typeof req.body.content !== "string" ||
+            req.body.content.trim() === "")) ||
+        (req.body.type === "chat" &&
+          req.body.content !== undefined &&
+          typeof req.body.content !== "string") ||
         !Array.isArray(req.body.tagsReferences) ||
         (res.locals.tags.length > 0 &&
-          (req.body.tagsReferences.length === 0 ||
+          ((req.body.type !== "chat" && req.body.tagsReferences.length === 0) ||
             new Set(req.body.tagsReferences).size <
               req.body.tagsReferences.length ||
             req.body.tagsReferences.some(
@@ -12288,12 +12292,6 @@ ${value}</textarea
           req.body.isAnonymous)
       )
         return next("validation");
-
-      const processedContent = markdownProcessor({
-        req,
-        res,
-        markdown: req.body.content,
-      });
 
       database.run(
         sql`
@@ -12359,38 +12357,62 @@ ${value}</textarea
             )
           `
         );
-      // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
-      const message = database.get<{
-        id: number;
-        reference: string;
-        anonymousAt: string | null;
-        contentSearch: string;
-      }>(
-        sql`
-          SELECT * FROM "messages" WHERE "id" = ${Number(
-            database.run(
-              sql`
-                INSERT INTO "messages" (
-                  "conversation",
-                  "reference",
-                  "authorEnrollment",
-                  "anonymousAt",
-                  "content",
-                  "contentSearch"
-                )
-                VALUES (
-                  ${conversation.id},
-                  ${"1"},
-                  ${res.locals.enrollment.id},
-                  ${req.body.isAnonymous ? new Date().toISOString() : null},
-                  ${req.body.content},
-                  ${processedContent.text}
-                )
-              `
-            ).lastInsertRowid
-          )}
-        `
-      )!;
+
+      let sendNotificationsIfNecessary = () => {};
+      if (typeof req.body.content === "string") {
+        const processedContent = markdownProcessor({
+          req,
+          res,
+          markdown: req.body.content,
+        });
+        // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
+        const message = database.get<{
+          id: number;
+          reference: string;
+          anonymousAt: string | null;
+          contentSearch: string;
+        }>(
+          sql`
+            SELECT * FROM "messages" WHERE "id" = ${Number(
+              database.run(
+                sql`
+                  INSERT INTO "messages" (
+                    "conversation",
+                    "reference",
+                    "authorEnrollment",
+                    "anonymousAt",
+                    "content",
+                    "contentSearch"
+                  )
+                  VALUES (
+                    ${conversation.id},
+                    ${"1"},
+                    ${res.locals.enrollment.id},
+                    ${req.body.isAnonymous ? new Date().toISOString() : null},
+                    ${req.body.content},
+                    ${processedContent.text}
+                  )
+                `
+              ).lastInsertRowid
+            )}
+          `
+        )!;
+
+        sendNotificationsIfNecessary = () => {
+          const completeConversation = getConversation(
+            req,
+            res,
+            conversation.reference
+          )!;
+          sendNotifications(
+            req,
+            res,
+            completeConversation,
+            getMessage(req, res, completeConversation, message.reference)!,
+            processedContent.mentions
+          );
+        };
+      }
 
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.course.nextConversationReference}`
@@ -12398,18 +12420,7 @@ ${value}</textarea
 
       emitCourseRefresh(res.locals.course.id);
 
-      const completeConversation = getConversation(
-        req,
-        res,
-        conversation.reference
-      )!;
-      sendNotifications(
-        req,
-        res,
-        completeConversation,
-        getMessage(req, res, completeConversation, message.reference)!,
-        processedContent.mentions
-      );
+      sendNotificationsIfNecessary();
     }
   );
 
