@@ -12630,204 +12630,460 @@ ${value}</textarea
               style="${css`
                 display: flex;
                 flex-direction: column;
-                gap: var(--space--1);
+                gap: var(--space--4);
               `}"
             >
               <div
                 style="${css`
-                  font-size: var(--font-size--xs);
-                  line-height: var(--line-height--xs);
                   display: flex;
-                  flex-wrap: wrap;
-                  column-gap: var(--space--8);
-                  row-gap: var(--space--1);
-
-                  & > * {
-                    display: flex;
-                    gap: var(--space--1);
-                  }
+                  flex-direction: column;
+                  gap: var(--space--1);
                 `}"
               >
-                $${mayEditConversation(req, res)
-                  ? html`
-                      <div>
-                        <button
-                          class="button button--tight button--tight--inline button--tight-gap button--transparent ${conversationTypeTextColor[
+                <div
+                  style="${css`
+                    font-size: var(--font-size--xs);
+                    line-height: var(--line-height--xs);
+                    display: flex;
+                    flex-wrap: wrap;
+                    column-gap: var(--space--8);
+                    row-gap: var(--space--1);
+
+                    & > * {
+                      display: flex;
+                      gap: var(--space--1);
+                    }
+                  `}"
+                >
+                  $${mayEditConversation(req, res)
+                    ? html`
+                        <div>
+                          <button
+                            class="button button--tight button--tight--inline button--tight-gap button--transparent ${conversationTypeTextColor[
+                              res.locals.conversation.type
+                            ].display}"
+                            oninteractive="${javascript`
+                              tippy(this, {
+                                content: "Update Conversation Type",
+                                touch: false,
+                              });
+                              tippy(this, {
+                                content: this.nextElementSibling.firstElementChild,
+                                trigger: "click",
+                                interactive: true,
+                              });
+                            `}"
+                          >
+                            $${conversationTypeIcon[
+                              res.locals.conversation.type
+                            ].fill}
+                            $${lodash.capitalize(res.locals.conversation.type)}
+                          </button>
+                          <div hidden>
+                            <div class="dropdown--menu">
+                              $${res.locals.conversationTypes.map(
+                                (conversationType) => html`
+                                  <form
+                                    method="POST"
+                                    action="${baseURL}/courses/${res.locals
+                                      .course.reference}/conversations/${res
+                                      .locals.conversation
+                                      .reference}?_method=PATCH"
+                                  >
+                                    <input
+                                      type="hidden"
+                                      name="_csrf"
+                                      value="${req.csrfToken()}"
+                                    />
+                                    <input
+                                      type="hidden"
+                                      name="type"
+                                      value="${conversationType}"
+                                    />
+                                    <button
+                                      class="dropdown--menu--item button ${conversationType ===
+                                      res.locals.conversation.type
+                                        ? "button--blue"
+                                        : "button--transparent"} ${conversationTypeTextColor[
+                                        conversationType
+                                      ].display}"
+                                    >
+                                      $${conversationTypeIcon[conversationType]
+                                        .fill}
+                                      $${lodash.capitalize(conversationType)}
+                                    </button>
+                                  </form>
+                                `
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      `
+                    : html`
+                        <div
+                          class="${conversationTypeTextColor[
                             res.locals.conversation.type
                           ].display}"
-                          oninteractive="${javascript`
-                            tippy(this, {
-                              content: "Update Conversation Type",
-                              touch: false,
-                            });
-                            tippy(this, {
-                              content: this.nextElementSibling.firstElementChild,
-                              trigger: "click",
-                              interactive: true,
-                            });
-                          `}"
                         >
                           $${conversationTypeIcon[res.locals.conversation.type]
                             .fill}
                           $${lodash.capitalize(res.locals.conversation.type)}
-                        </button>
-                        <div hidden>
-                          <div class="dropdown--menu">
-                            $${res.locals.conversationTypes.map(
-                              (conversationType) => html`
-                                <form
-                                  method="POST"
-                                  action="${baseURL}/courses/${res.locals.course
-                                    .reference}/conversations/${res.locals
-                                    .conversation.reference}?_method=PATCH"
-                                >
-                                  <input
-                                    type="hidden"
-                                    name="_csrf"
-                                    value="${req.csrfToken()}"
-                                  />
-                                  <input
-                                    type="hidden"
-                                    name="type"
-                                    value="${conversationType}"
-                                  />
-                                  <button
-                                    class="dropdown--menu--item button ${conversationType ===
-                                    res.locals.conversation.type
-                                      ? "button--blue"
-                                      : "button--transparent"} ${conversationTypeTextColor[
-                                      conversationType
-                                    ].display}"
-                                  >
-                                    $${conversationTypeIcon[conversationType]
-                                      .fill}
-                                    $${lodash.capitalize(conversationType)}
-                                  </button>
-                                </form>
-                              `
-                            )}
-                          </div>
                         </div>
-                      </div>
-                    `
-                  : html`
-                      <div
-                        class="${conversationTypeTextColor[
-                          res.locals.conversation.type
-                        ].display}"
-                      >
-                        $${conversationTypeIcon[res.locals.conversation.type]
-                          .fill}
-                        $${lodash.capitalize(res.locals.conversation.type)}
-                      </div>
-                    `}
-                $${res.locals.enrollment.role === "staff"
-                  ? html`
-                      <form
-                        method="POST"
-                        action="${baseURL}/courses/${res.locals.course
-                          .reference}/conversations/${res.locals.conversation
-                          .reference}?_method=PATCH"
-                      >
-                        <input
-                          type="hidden"
-                          name="_csrf"
-                          value="${req.csrfToken()}"
-                        />
-                        $${res.locals.conversation.pinnedAt === null
-                          ? html`
-                              <input
-                                type="hidden"
-                                name="isPinned"
-                                value="true"
-                              />
-                              <button
-                                class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                oninteractive="${javascript`
-                                  tippy(this, {
-                                    content: "Pin",
-                                    touch: false,
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-pin-angle"></i>
-                                Unpinned
-                              </button>
-                            `
-                          : html`
-                              <input
-                                type="hidden"
-                                name="isPinned"
-                                value="false"
-                              />
-                              <button
-                                class="button button--tight button--tight--inline button--tight-gap button--transparent text--amber"
-                                oninteractive="${javascript`
-                                  tippy(this, {
-                                    content: "Unpin",
-                                    touch: false,
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-pin-fill"></i>
-                                Pinned
-                              </button>
-                            `}
-                      </form>
-                    `
-                  : res.locals.conversation.pinnedAt !== null
-                  ? html`
-                      <div class="text--amber">
-                        <i class="bi bi-pin-fill"></i>
-                        Pinned
-                      </div>
-                    `
-                  : html``}
-                $${res.locals.enrollment.role === "staff"
-                  ? html`
-                      <button
-                        class="button button--tight button--tight--inline button--tight-gap button--transparent ${res
-                          .locals.conversation.staffOnlyAt === null
-                          ? ""
-                          : "text--pink"}"
-                        oninteractive="${javascript`
-                          tippy(this, {
-                            content: "Set as ${
-                              res.locals.conversation.staffOnlyAt === null
-                                ? "Visible by Staff Only"
-                                : "Visible by Everyone"
-                            }",
-                            touch: false,
-                          });
-                          tippy(this, {
-                            content: this.nextElementSibling.firstElementChild,
-                            theme: "rose",
-                            trigger: "click",
-                            interactive: true,
-                          });
-                        `}"
-                      >
-                        $${res.locals.conversation.staffOnlyAt === null
-                          ? html`
-                              <i class="bi bi-eye"></i>
-                              Visible by Everyone
-                            `
-                          : html`
-                              <i class="bi bi-mortarboard-fill"></i>
-                              Visible by Staff Only
-                            `}
-                      </button>
-                      <div hidden>
+                      `}
+                  $${res.locals.enrollment.role === "staff"
+                    ? html`
                         <form
                           method="POST"
                           action="${baseURL}/courses/${res.locals.course
                             .reference}/conversations/${res.locals.conversation
                             .reference}?_method=PATCH"
+                        >
+                          <input
+                            type="hidden"
+                            name="_csrf"
+                            value="${req.csrfToken()}"
+                          />
+                          $${res.locals.conversation.pinnedAt === null
+                            ? html`
+                                <input
+                                  type="hidden"
+                                  name="isPinned"
+                                  value="true"
+                                />
+                                <button
+                                  class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                                  oninteractive="${javascript`
+                                    tippy(this, {
+                                      content: "Pin",
+                                      touch: false,
+                                    });
+                                  `}"
+                                >
+                                  <i class="bi bi-pin-angle"></i>
+                                  Unpinned
+                                </button>
+                              `
+                            : html`
+                                <input
+                                  type="hidden"
+                                  name="isPinned"
+                                  value="false"
+                                />
+                                <button
+                                  class="button button--tight button--tight--inline button--tight-gap button--transparent text--amber"
+                                  oninteractive="${javascript`
+                                    tippy(this, {
+                                      content: "Unpin",
+                                      touch: false,
+                                    });
+                                  `}"
+                                >
+                                  <i class="bi bi-pin-fill"></i>
+                                  Pinned
+                                </button>
+                              `}
+                        </form>
+                      `
+                    : res.locals.conversation.pinnedAt !== null
+                    ? html`
+                        <div class="text--amber">
+                          <i class="bi bi-pin-fill"></i>
+                          Pinned
+                        </div>
+                      `
+                    : html``}
+                  $${res.locals.enrollment.role === "staff"
+                    ? html`
+                        <button
+                          class="button button--tight button--tight--inline button--tight-gap button--transparent ${res
+                            .locals.conversation.staffOnlyAt === null
+                            ? ""
+                            : "text--pink"}"
+                          oninteractive="${javascript`
+                            tippy(this, {
+                              content: "Set as ${
+                                res.locals.conversation.staffOnlyAt === null
+                                  ? "Visible by Staff Only"
+                                  : "Visible by Everyone"
+                              }",
+                              touch: false,
+                            });
+                            tippy(this, {
+                              content: this.nextElementSibling.firstElementChild,
+                              theme: "rose",
+                              trigger: "click",
+                              interactive: true,
+                            });
+                          `}"
+                        >
+                          $${res.locals.conversation.staffOnlyAt === null
+                            ? html`
+                                <i class="bi bi-eye"></i>
+                                Visible by Everyone
+                              `
+                            : html`
+                                <i class="bi bi-mortarboard-fill"></i>
+                                Visible by Staff Only
+                              `}
+                        </button>
+                        <div hidden>
+                          <form
+                            method="POST"
+                            action="${baseURL}/courses/${res.locals.course
+                              .reference}/conversations/${res.locals
+                              .conversation.reference}?_method=PATCH"
+                            style="${css`
+                              padding: var(--space--2);
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--4);
+                            `}"
+                          >
+                            <input
+                              type="hidden"
+                              name="_csrf"
+                              value="${req.csrfToken()}"
+                            />
+                            $${res.locals.conversation.staffOnlyAt === null
+                              ? html`
+                                  <input
+                                    type="hidden"
+                                    name="isStaffOnly"
+                                    value="true"
+                                  />
+                                  <p>
+                                    Are you sure you want to set this
+                                    conversation as Visible by Staff Only?
+                                  </p>
+                                  <p>
+                                    <strong
+                                      style="${css`
+                                        font-weight: var(--font-weight--bold);
+                                      `}"
+                                    >
+                                      Students who already participated in the
+                                      conversation will continue to have access
+                                      to it.
+                                    </strong>
+                                  </p>
+                                  <button class="button button--rose">
+                                    <i class="bi bi-mortarboard"></i>
+                                    Set as Visible by Staff Only
+                                  </button>
+                                `
+                              : html`
+                                  <input
+                                    type="hidden"
+                                    name="isStaffOnly"
+                                    value="false"
+                                  />
+                                  <p>
+                                    Are you sure you want to set this
+                                    conversation as Visible by Everyone?
+                                  </p>
+                                  <p>
+                                    <strong
+                                      style="${css`
+                                        font-weight: var(--font-weight--bold);
+                                      `}"
+                                    >
+                                      Ensure that people involved in the
+                                      conversation consent to having their
+                                      messages visible by everyone.
+                                    </strong>
+                                  </p>
+                                  <button class="button button--rose">
+                                    <i class="bi bi-eye"></i>
+                                    Set as Visible by Everyone
+                                  </button>
+                                `}
+                          </form>
+                        </div>
+                      `
+                    : res.locals.conversation.staffOnlyAt !== null
+                    ? html`
+                        <div
+                          class="text--pink"
                           style="${css`
-                            padding: var(--space--2);
                             display: flex;
-                            flex-direction: column;
+                            gap: var(--space--1);
+                          `}"
+                        >
+                          <i class="bi bi-mortarboard-fill"></i>
+                          Visible by Staff Only
+                        </div>
+                      `
+                    : html``}
+                </div>
+
+                <div class="title">
+                  <div
+                    class="title--show"
+                    style="${css`
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: baseline;
+                      gap: var(--space--4);
+                    `}"
+                  >
+                    <h2>
+                      <span
+                        class="strong"
+                        style="${css`
+                          font-size: var(--font-size--lg);
+                          line-height: var(--line-height--lg);
+                        `}"
+                      >
+                        $${highlightSearchResult(
+                          html`${res.locals.conversation.title}`,
+                          req.query.search
+                        )}
+                      </span>
+
+                      <button
+                        class="button button--tight button--transparent secondary"
+                        style="${css`
+                          font-size: var(--font-size--xs);
+                          line-height: var(--line-height--xs);
+                          display: inline-flex;
+                        `}"
+                        oninteractive="${javascript`
+                          tippy(this, {
+                            content: "Copy Conversation Permanent Link to Clipboard",
+                            touch: false,
+                          });
+                          this.copied = tippy(this, {
+                            content: "Copied Conversation Permanent Link to Clipboard",
+                            theme: "green",
+                            trigger: "manual",
+                          });
+                        `}"
+                        onclick="${javascript`
+                          (async () => {
+                            await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
+                            this.copied.show();
+                            await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                            this.copied.hide();
+                          })();
+                        `}"
+                      >
+                        #${res.locals.conversation.reference}
+                      </button>
+                    </h2>
+
+                    $${(() => {
+                      const content: HTML[] = [];
+
+                      if (res.locals.enrollment.role === "staff")
+                        content.push(html`
+                          <div>
+                            <button
+                              class="button button--tight button--tight--inline button--transparent"
+                              oninteractive="${javascript`
+                                tippy(this, {
+                                  content: "Remove Conversation",
+                                  theme: "rose",
+                                  touch: false,
+                                });
+                                tippy(this, {
+                                  content: this.nextElementSibling.firstElementChild,
+                                  theme: "rose",
+                                  trigger: "click",
+                                  interactive: true,
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-trash"></i>
+                            </button>
+                            <div hidden>
+                              <form
+                                method="POST"
+                                action="${baseURL}/courses/${res.locals.course
+                                  .reference}/conversations/${res.locals
+                                  .conversation.reference}?_method=DELETE"
+                                style="${css`
+                                  padding: var(--space--2);
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--4);
+                                `}"
+                              >
+                                <input
+                                  type="hidden"
+                                  name="_csrf"
+                                  value="${req.csrfToken()}"
+                                />
+                                <p>
+                                  Are you sure you want to remove this
+                                  conversation?
+                                </p>
+                                <p>
+                                  <strong
+                                    style="${css`
+                                      font-weight: var(--font-weight--bold);
+                                    `}"
+                                  >
+                                    You may not undo this action!
+                                  </strong>
+                                </p>
+                                <button class="button button--rose">
+                                  <i class="bi bi-trash"></i>
+                                  Remove Conversation
+                                </button>
+                              </form>
+                            </div>
+                          </div>
+                        `);
+
+                      if (mayEditConversation(req, res))
+                        content.push(html`
+                          <button
+                            class="button button--tight button--tight--inline button--transparent"
+                            oninteractive="${javascript`
+                              tippy(this, {
+                                content: "Edit Title",
+                                touch: false,
+                              });
+                            `}"
+                            onclick="${javascript`
+                              this.closest(".title").querySelector(".title--show").hidden = true;
+                              this.closest(".title").querySelector(".title--edit").hidden = false;
+                            `}"
+                          >
+                            <i class="bi bi-pencil"></i>
+                          </button>
+                        `);
+
+                      return content.length === 0
+                        ? html``
+                        : html`
+                            <div
+                              style="${css`
+                                display: flex;
+                                gap: var(--space--2);
+                              `}"
+                            >
+                              $${content}
+                            </div>
+                          `;
+                    })()}
+                  </div>
+
+                  $${mayEditConversation(req, res)
+                    ? html`
+                        <form
+                          method="POST"
+                          action="${baseURL}/courses/${res.locals.course
+                            .reference}/conversations/${res.locals.conversation
+                            .reference}?_method=PATCH"
+                          novalidate
+                          hidden
+                          class="title--edit"
+                          style="${css`
+                            margin-bottom: var(--space--2);
+                            display: flex;
                             gap: var(--space--4);
+                            align-items: center;
                           `}"
                         >
                           <input
@@ -12835,370 +13091,1248 @@ ${value}</textarea
                             name="_csrf"
                             value="${req.csrfToken()}"
                           />
-                          $${res.locals.conversation.staffOnlyAt === null
-                            ? html`
-                                <input
-                                  type="hidden"
-                                  name="isStaffOnly"
-                                  value="true"
-                                />
-                                <p>
-                                  Are you sure you want to set this conversation
-                                  as Visible by Staff Only?
-                                </p>
-                                <p>
-                                  <strong
-                                    style="${css`
-                                      font-weight: var(--font-weight--bold);
-                                    `}"
-                                  >
-                                    Students who already participated in the
-                                    conversation will continue to have access to
-                                    it.
-                                  </strong>
-                                </p>
-                                <button class="button button--rose">
-                                  <i class="bi bi-mortarboard"></i>
-                                  Set as Visible by Staff Only
-                                </button>
-                              `
-                            : html`
-                                <input
-                                  type="hidden"
-                                  name="isStaffOnly"
-                                  value="false"
-                                />
-                                <p>
-                                  Are you sure you want to set this conversation
-                                  as Visible by Everyone?
-                                </p>
-                                <p>
-                                  <strong
-                                    style="${css`
-                                      font-weight: var(--font-weight--bold);
-                                    `}"
-                                  >
-                                    Ensure that people involved in the
-                                    conversation consent to having their
-                                    messages visible by everyone.
-                                  </strong>
-                                </p>
-                                <button class="button button--rose">
-                                  <i class="bi bi-eye"></i>
-                                  Set as Visible by Everyone
-                                </button>
-                              `}
-                        </form>
-                      </div>
-                    `
-                  : res.locals.conversation.staffOnlyAt !== null
-                  ? html`
-                      <div
-                        class="text--pink"
-                        style="${css`
-                          display: flex;
-                          gap: var(--space--1);
-                        `}"
-                      >
-                        <i class="bi bi-mortarboard-fill"></i>
-                        Visible by Staff Only
-                      </div>
-                    `
-                  : html``}
-              </div>
-
-              <div class="title">
-                <div
-                  class="title--show"
-                  style="${css`
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: baseline;
-                    gap: var(--space--4);
-                  `}"
-                >
-                  <h2>
-                    <span
-                      class="strong"
-                      style="${css`
-                        font-size: var(--font-size--lg);
-                        line-height: var(--line-height--lg);
-                      `}"
-                    >
-                      $${highlightSearchResult(
-                        html`${res.locals.conversation.title}`,
-                        req.query.search
-                      )}
-                    </span>
-
-                    <button
-                      class="button button--tight button--transparent secondary"
-                      style="${css`
-                        font-size: var(--font-size--xs);
-                        line-height: var(--line-height--xs);
-                        display: inline-flex;
-                      `}"
-                      oninteractive="${javascript`
-                        tippy(this, {
-                          content: "Copy Conversation Permanent Link to Clipboard",
-                          touch: false,
-                        });
-                        this.copied = tippy(this, {
-                          content: "Copied Conversation Permanent Link to Clipboard",
-                          theme: "green",
-                          trigger: "manual",
-                        });
-                      `}"
-                      onclick="${javascript`
-                        (async () => {
-                          await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
-                          this.copied.show();
-                          await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                          this.copied.hide();
-                        })();
-                      `}"
-                    >
-                      #${res.locals.conversation.reference}
-                    </button>
-                  </h2>
-
-                  $${(() => {
-                    const content: HTML[] = [];
-
-                    if (res.locals.enrollment.role === "staff")
-                      content.push(html`
-                        <div>
+                          <input
+                            type="text"
+                            name="title"
+                            value="${res.locals.conversation.title}"
+                            required
+                            autocomplete="off"
+                            class="input--text"
+                          />
                           <button
-                            class="button button--tight button--tight--inline button--transparent"
+                            class="button button--tight button--tight--inline button--transparent text--green"
+                            style="${css`
+                              flex: 1;
+                            `}"
                             oninteractive="${javascript`
                               tippy(this, {
-                                content: "Remove Conversation",
+                                content: "Update Title",
+                                theme: "green",
+                                touch: false,
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-check-lg"></i>
+                          </button>
+                          <button
+                            type="reset"
+                            class="button button--tight button--tight--inline button--transparent text--rose"
+                            oninteractive="${javascript`
+                              tippy(this, {
+                                content: "Cancel",
                                 theme: "rose",
                                 touch: false,
                               });
-                              tippy(this, {
-                                content: this.nextElementSibling.firstElementChild,
-                                theme: "rose",
-                                trigger: "click",
-                                interactive: true,
-                              });
+                            `}"
+                            onclick="${javascript`
+                              this.closest(".title").querySelector(".title--show").hidden = false;
+                              this.closest(".title").querySelector(".title--edit").hidden = true;
                             `}"
                           >
-                            <i class="bi bi-trash"></i>
+                            <i class="bi bi-x-lg"></i>
                           </button>
-                          <div hidden>
-                            <form
-                              method="POST"
-                              action="${baseURL}/courses/${res.locals.course
-                                .reference}/conversations/${res.locals
-                                .conversation.reference}?_method=DELETE"
-                              style="${css`
-                                padding: var(--space--2);
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--4);
-                              `}"
-                            >
-                              <input
-                                type="hidden"
-                                name="_csrf"
-                                value="${req.csrfToken()}"
-                              />
-                              <p>
-                                Are you sure you want to remove this
-                                conversation?
-                              </p>
-                              <p>
-                                <strong
-                                  style="${css`
-                                    font-weight: var(--font-weight--bold);
-                                  `}"
-                                >
-                                  You may not undo this action!
-                                </strong>
-                              </p>
-                              <button class="button button--rose">
-                                <i class="bi bi-trash"></i>
-                                Remove Conversation
-                              </button>
-                            </form>
-                          </div>
-                        </div>
-                      `);
-
-                    if (mayEditConversation(req, res))
-                      content.push(html`
-                        <button
-                          class="button button--tight button--tight--inline button--transparent"
-                          oninteractive="${javascript`
-                            tippy(this, {
-                              content: "Edit Title",
-                              touch: false,
-                            });
-                          `}"
-                          onclick="${javascript`
-                            this.closest(".title").querySelector(".title--show").hidden = true;
-                            this.closest(".title").querySelector(".title--edit").hidden = false;
-                          `}"
-                        >
-                          <i class="bi bi-pencil"></i>
-                        </button>
-                      `);
-
-                    return content.length === 0
-                      ? html``
-                      : html`
-                          <div
-                            style="${css`
-                              display: flex;
-                              gap: var(--space--2);
-                            `}"
-                          >
-                            $${content}
-                          </div>
-                        `;
-                  })()}
+                        </form>
+                      `
+                    : html``}
                 </div>
 
-                $${mayEditConversation(req, res)
-                  ? html`
-                      <form
-                        method="POST"
-                        action="${baseURL}/courses/${res.locals.course
-                          .reference}/conversations/${res.locals.conversation
-                          .reference}?_method=PATCH"
-                        novalidate
-                        hidden
-                        class="title--edit"
+                $${res.locals.tags.length === 0
+                  ? html``
+                  : html`
+                      <div
                         style="${css`
-                          margin-bottom: var(--space--2);
+                          font-size: var(--font-size--xs);
+                          line-height: var(--line-height--xs);
                           display: flex;
-                          gap: var(--space--4);
-                          align-items: center;
+                          flex-wrap: wrap;
+                          column-gap: var(--space--8);
+                          row-gap: var(--space--1);
+
+                          & > * {
+                            display: flex;
+                            gap: var(--space--1);
+                          }
                         `}"
                       >
-                        <input
-                          type="hidden"
-                          name="_csrf"
-                          value="${req.csrfToken()}"
-                        />
-                        <input
-                          type="text"
-                          name="title"
-                          value="${res.locals.conversation.title}"
-                          required
-                          autocomplete="off"
-                          class="input--text"
-                        />
-                        <button
-                          class="button button--tight button--tight--inline button--transparent text--green"
-                          style="${css`
-                            flex: 1;
-                          `}"
-                          oninteractive="${javascript`
-                            tippy(this, {
-                              content: "Update Title",
-                              theme: "green",
-                              touch: false,
-                            });
-                          `}"
-                        >
-                          <i class="bi bi-check-lg"></i>
-                        </button>
-                        <button
-                          type="reset"
-                          class="button button--tight button--tight--inline button--transparent text--rose"
-                          oninteractive="${javascript`
-                            tippy(this, {
-                              content: "Cancel",
-                              theme: "rose",
-                              touch: false,
-                            });
-                          `}"
-                          onclick="${javascript`
-                            this.closest(".title").querySelector(".title--show").hidden = false;
-                            this.closest(".title").querySelector(".title--edit").hidden = true;
-                          `}"
-                        >
-                          <i class="bi bi-x-lg"></i>
-                        </button>
-                      </form>
-                    `
-                  : html``}
-              </div>
-
-              $${res.locals.tags.length === 0
-                ? html``
-                : html`
-                    <div
-                      style="${css`
-                        font-size: var(--font-size--xs);
-                        line-height: var(--line-height--xs);
-                        display: flex;
-                        flex-wrap: wrap;
-                        column-gap: var(--space--8);
-                        row-gap: var(--space--1);
-
-                        & > * {
-                          display: flex;
-                          gap: var(--space--1);
-                        }
-                      `}"
-                    >
-                      $${mayEditConversation(req, res)
-                        ? html`
-                            $${res.locals.conversation.taggings.length === 1
-                              ? html`
-                                  <div>
-                                    <button
-                                      class="button button--tight button--tight--inline button--tight-gap text--teal disabled"
-                                      style="${css`
-                                        text-align: left;
-                                      `}"
-                                      oninteractive="${javascript`
-                                        tippy(this, {
-                                          content: "You may not remove this tag because a conversation must have at least one tag.",
-                                          theme: "rose",
-                                          touch: false,
-                                        });
-                                      `}"
-                                    >
-                                      <i class="bi bi-tag-fill"></i>
-                                      ${res.locals.conversation.taggings[0].tag
-                                        .name}
-                                    </button>
-                                    $${res.locals.conversation.taggings[0].tag
-                                      .staffOnlyAt !== null
-                                      ? html`
-                                          <span
-                                            class="text--pink"
+                        $${mayEditConversation(req, res)
+                          ? html`
+                              $${res.locals.conversation.taggings.length === 1
+                                ? html`
+                                    <div>
+                                      <button
+                                        class="button button--tight button--tight--inline button--tight-gap text--teal disabled"
+                                        style="${css`
+                                          text-align: left;
+                                        `}"
+                                        oninteractive="${javascript`
+                                          tippy(this, {
+                                            content: "You may not remove this tag because a conversation must have at least one tag.",
+                                            theme: "rose",
+                                            touch: false,
+                                          });
+                                        `}"
+                                      >
+                                        <i class="bi bi-tag-fill"></i>
+                                        ${res.locals.conversation.taggings[0]
+                                          .tag.name}
+                                      </button>
+                                      $${res.locals.conversation.taggings[0].tag
+                                        .staffOnlyAt !== null
+                                        ? html`
+                                            <span
+                                              class="text--pink"
+                                              oninteractive="${javascript`
+                                                tippy(this, {
+                                                  content: "This tag is visible by staff only.",
+                                                  touch: false,
+                                                });
+                                              `}"
+                                            >
+                                              <i
+                                                class="bi bi-mortarboard-fill"
+                                              ></i>
+                                            </span>
+                                          `
+                                        : html``}
+                                    </div>
+                                  `
+                                : html`
+                                    $${res.locals.conversation.taggings.map(
+                                      (tagging) => html`
+                                        <form
+                                          method="POST"
+                                          action="${baseURL}/courses/${res
+                                            .locals.course
+                                            .reference}/conversations/${res
+                                            .locals.conversation
+                                            .reference}/taggings?_method=DELETE"
+                                          style="${css`
+                                            display: flex;
+                                            gap: var(--space--2);
+                                          `}"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="_csrf"
+                                            value="${req.csrfToken()}"
+                                          />
+                                          <input
+                                            type="hidden"
+                                            name="reference"
+                                            value="${tagging.tag.reference}"
+                                          />
+                                          <button
+                                            class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal"
+                                            style="${css`
+                                              text-align: left;
+                                            `}"
                                             oninteractive="${javascript`
                                               tippy(this, {
-                                                content: "This tag is visible by staff only.",
+                                                content: "Remove Tag",
+                                                theme: "rose",
                                                 touch: false,
                                               });
                                             `}"
                                           >
-                                            <i
-                                              class="bi bi-mortarboard-fill"
-                                            ></i>
-                                          </span>
-                                        `
-                                      : html``}
-                                  </div>
-                                `
-                              : html`
-                                  $${res.locals.conversation.taggings.map(
-                                    (tagging) => html`
+                                            <i class="bi bi-tag-fill"></i>
+                                            ${tagging.tag.name}
+                                          </button>
+                                          $${tagging.tag.staffOnlyAt !== null
+                                            ? html`
+                                                <span
+                                                  class="text--pink"
+                                                  oninteractive="${javascript`
+                                                    tippy(this, {
+                                                      content: "This tag is visible by staff only.",
+                                                      touch: false,
+                                                    });
+                                                  `}"
+                                                >
+                                                  <i
+                                                    class="bi bi-mortarboard-fill"
+                                                  ></i>
+                                                </span>
+                                              `
+                                            : html``}
+                                        </form>
+                                      `
+                                    )}
+                                  `}
+                              $${res.locals.tags.length >
+                              res.locals.conversation.taggings.length
+                                ? html`
+                                    <div>
+                                      <button
+                                        class="button button--tight button--tight--inline button--transparent text--teal"
+                                        oninteractive="${javascript`
+                                          tippy(this, {
+                                            content: "Add Tag",
+                                            touch: false,
+                                          });
+                                          tippy(this, {
+                                            content: this.nextElementSibling.firstElementChild,
+                                            trigger: "click",
+                                            interactive: true,
+                                          });
+                                        `}"
+                                      >
+                                        <i class="bi bi-tags-fill"></i>
+                                      </button>
+                                      <div hidden>
+                                        <div
+                                          class="dropdown--menu"
+                                          style="${css`
+                                            max-height: var(--space--40);
+                                            overflow: auto;
+                                          `}"
+                                        >
+                                          $${res.locals.tags
+                                            .filter(
+                                              (tag) =>
+                                                !res.locals.conversation.taggings.some(
+                                                  (tagging) =>
+                                                    tagging.tag.id === tag.id
+                                                )
+                                            )
+                                            .map(
+                                              (tag) => html`
+                                                <form
+                                                  method="POST"
+                                                  action="${baseURL}/courses/${res
+                                                    .locals.course
+                                                    .reference}/conversations/${res
+                                                    .locals.conversation
+                                                    .reference}/taggings"
+                                                >
+                                                  <input
+                                                    type="hidden"
+                                                    name="_csrf"
+                                                    value="${req.csrfToken()}"
+                                                  />
+                                                  <input
+                                                    type="hidden"
+                                                    name="reference"
+                                                    value="${tag.reference}"
+                                                  />
+                                                  <button
+                                                    class="dropdown--menu--item button button--transparent text--teal"
+                                                  >
+                                                    <i
+                                                      class="bi bi-tag-fill"
+                                                    ></i>
+                                                    ${tag.name}
+                                                    $${tag.staffOnlyAt !== null
+                                                      ? html`
+                                                          <span
+                                                            class="text--pink"
+                                                            oninteractive="${javascript`
+                                                              tippy(this, {
+                                                                content: "This tag is visible by staff only.",
+                                                                touch: false,
+                                                              });
+                                                            `}"
+                                                          >
+                                                            <i
+                                                              class="bi bi-mortarboard-fill"
+                                                            ></i>
+                                                          </span>
+                                                        `
+                                                      : html``}
+                                                  </button>
+                                                </form>
+                                              `
+                                            )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  `
+                                : html``}
+                            `
+                          : res.locals.conversation.taggings.map(
+                              (tagging) => html`
+                                <div class="text--teal">
+                                  <i class="bi bi-tag-fill"></i>
+                                  ${tagging.tag.name}
+                                </div>
+                              `
+                            )}
+                      </div>
+                    `}
+              </div>
+
+              <div
+                style="${css`
+                  flex: 1;
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
+                $${messages.length === 0
+                  ? html`
+                      <div
+                        style="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--4);
+                          align-items: center;
+                        `}"
+                      >
+                        <div class="decorative-icon">
+                          <i class="bi bi-chat-left-text"></i>
+                        </div>
+                        <p class="secondary">
+                          ${res.locals.conversation.type === "chat"
+                            ? "Start the chat by sending the first message!"
+                            : "All messages in this conversation have been deleted."}
+                        </p>
+                      </div>
+
+                      <hr class="separator" />
+                    `
+                  : (() => {
+                      let shouldScrollIntoView = messages[0].reading !== null;
+                      return messages.map(
+                        (message) => html`
+                          <div
+                            style="${css`
+                              padding-bottom: var(--space--1);
+                              border-bottom: var(--border-width--4) solid
+                                var(--color--gray--medium--200);
+                              @media (prefers-color-scheme: dark) {
+                                border-color: var(--color--gray--medium--700);
+                              }
+                            `}"
+                          >
+                            <div
+                              id="message--${message.reference}"
+                              data-content="${JSON.stringify(message.content)}"
+                              class="message"
+                              style="${css`
+                                padding-bottom: var(--space--1);
+                                border-radius: var(--border-radius--lg);
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--2);
+                                min-width: var(--space--0);
+
+                                --color--message--highlight-background-on-target: var(
+                                  --color--amber--200
+                                );
+                                @media (prefers-color-scheme: dark) {
+                                  --color--message--highlight-background-on-target: var(
+                                    --color--amber--900
+                                  );
+                                }
+                                @keyframes message--highlight-background-on-target {
+                                  from {
+                                    background-color: var(
+                                      --color--message--highlight-background-on-target
+                                    );
+                                  }
+                                  to {
+                                    background-color: transparent;
+                                  }
+                                }
+                                &:target {
+                                  animation: message--highlight-background-on-target
+                                    var(--transition-duration--1000)
+                                    var(--transition-timing-function--in-out);
+                                }
+                              `}"
+                              $${shouldScrollIntoView &&
+                              message.reading === null
+                                ? (() => {
+                                    shouldScrollIntoView = false;
+                                    return html`
+                                      oninteractive="${javascript`
+                                        if (window.location.hash === "") this.scrollIntoView();
+                                      `}"
+                                    `;
+                                  })()
+                                : html``}
+                            >
+                              <div>
+                                $${(() => {
+                                  const content: HTML[] = [];
+
+                                  if (
+                                    mayEditMessage(req, res, message) &&
+                                    message.reference !== "1" &&
+                                    res.locals.conversation.type === "question"
+                                  )
+                                    content.push(html`
                                       <form
                                         method="POST"
                                         action="${baseURL}/courses/${res.locals
                                           .course.reference}/conversations/${res
                                           .locals.conversation
-                                          .reference}/taggings?_method=DELETE"
-                                        style="${css`
-                                          display: flex;
-                                          gap: var(--space--2);
+                                          .reference}/messages/${message.reference}?_method=PATCH"
+                                      >
+                                        <input
+                                          type="hidden"
+                                          name="_csrf"
+                                          value="${req.csrfToken()}"
+                                        />
+                                        $${message.answerAt === null
+                                          ? html`
+                                              <input
+                                                type="hidden"
+                                                name="isAnswer"
+                                                value="true"
+                                              />
+                                              <button
+                                                class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                                                oninteractive="${javascript`
+                                                  tippy(this, {
+                                                    content: "Set as Answer",
+                                                    touch: false,
+                                                  });
+                                                `}"
+                                              >
+                                                <i
+                                                  class="bi bi-patch-check"
+                                                ></i>
+                                                Not an Answer
+                                              </button>
+                                            `
+                                          : html`
+                                              <input
+                                                type="hidden"
+                                                name="isAnswer"
+                                                value="false"
+                                              />
+                                              <button
+                                                class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
+                                                oninteractive="${javascript`
+                                                    tippy(this, {
+                                                      content: "Set as Not an Answer",
+                                                      touch: false,
+                                                    });
+                                                  `}"
+                                              >
+                                                <i
+                                                  class="bi bi-patch-check-fill"
+                                                ></i>
+                                                Answer
+                                              </button>
+                                            `}
+                                      </form>
+                                    `);
+                                  else if (
+                                    message.reference !== "1" &&
+                                    res.locals.conversation.type ===
+                                      "question" &&
+                                    message.answerAt !== null
+                                  )
+                                    content.push(html`
+                                      <div class="text--emerald">
+                                        <i class="bi bi-patch-check-fill"></i>
+                                        Answer
+                                      </div>
+                                    `);
+
+                                  if (mayEndorseMessage(req, res, message)) {
+                                    const isEndorsed =
+                                      message.endorsements.some(
+                                        (endorsement) =>
+                                          endorsement.enrollment.id ===
+                                          res.locals.enrollment.id
+                                      );
+
+                                    content.push(html`
+                                      <form
+                                        method="POST"
+                                        action="${baseURL}/courses/${res.locals
+                                          .course.reference}/conversations/${res
+                                          .locals.conversation
+                                          .reference}/messages/${message.reference}/endorsements${isEndorsed
+                                          ? "?_method=DELETE"
+                                          : ""}"
+                                      >
+                                        <input
+                                          type="hidden"
+                                          name="_csrf"
+                                          value="${req.csrfToken()}"
+                                        />
+                                        $${isEndorsed
+                                          ? html`
+                                              <input
+                                                type="hidden"
+                                                name="isEndorsed"
+                                                value="false"
+                                              />
+                                              <button
+                                                class="button button--tight button--tight--inline button--tight-gap button--transparent text--blue"
+                                                oninteractive="${javascript`
+                                                  tippy(this, {
+                                                    content: ${JSON.stringify(
+                                                      `Remove Endorsement${
+                                                        message.endorsements
+                                                          .length > 1
+                                                          ? ` (Also endorsed by ${
+                                                              /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                                Intl as any
+                                                              ).ListFormat(
+                                                                "en"
+                                                              ).format(
+                                                                message.endorsements
+                                                                  .filter(
+                                                                    (
+                                                                      endorsement
+                                                                    ) =>
+                                                                      endorsement
+                                                                        .enrollment
+                                                                        .id !==
+                                                                      res.locals
+                                                                        .enrollment
+                                                                        .id
+                                                                  )
+                                                                  .map(
+                                                                    (
+                                                                      endorsement
+                                                                    ) =>
+                                                                      endorsement
+                                                                        .enrollment
+                                                                        .user
+                                                                        .name
+                                                                  )
+                                                              )
+                                                            })`
+                                                          : ``
+                                                      }`
+                                                    )},
+                                                    touch: false,
+                                                  });
+                                                `}"
+                                              >
+                                                <i class="bi bi-award-fill"></i>
+                                                ${message.endorsements.length}
+                                                Staff
+                                                Endorsement${message
+                                                  .endorsements.length === 1
+                                                  ? ""
+                                                  : "s"}
+                                              </button>
+                                            `
+                                          : html`
+                                              <input
+                                                type="hidden"
+                                                name="isEndorsed"
+                                                value="true"
+                                              />
+                                              <button
+                                                class="button button--tight button--tight--inline button--tight-gap button--transparent text--lime"
+                                                $${message.endorsements
+                                                  .length === 0
+                                                  ? html``
+                                                  : html`
+                                                      oninteractive="${javascript`
+                                                        tippy(this, {
+                                                          content: ${JSON.stringify(
+                                                            `Endorse (Already endorsed by ${
+                                                              /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                                Intl as any
+                                                              ).ListFormat(
+                                                                "en"
+                                                              ).format(
+                                                                message.endorsements.map(
+                                                                  (
+                                                                    endorsement
+                                                                  ) =>
+                                                                    endorsement
+                                                                      .enrollment
+                                                                      .user.name
+                                                                )
+                                                              )
+                                                            })`
+                                                          )},
+                                                          touch: false,
+                                                        });
+                                                      `}"
+                                                    `}
+                                              >
+                                                <i class="bi bi-award"></i>
+                                                ${message.endorsements
+                                                  .length === 0
+                                                  ? `Endorse`
+                                                  : `${
+                                                      message.endorsements
+                                                        .length
+                                                    }
+                                                    Staff Endorsement${
+                                                      message.endorsements
+                                                        .length === 1
+                                                        ? ""
+                                                        : "s"
+                                                    }`}
+                                              </button>
+                                            `}
+                                      </form>
+                                    `);
+                                  } else if (
+                                    res.locals.conversation.type ===
+                                      "question" &&
+                                    message.authorEnrollment.role !== "staff" &&
+                                    message.endorsements.length > 0
+                                  )
+                                    content.push(html`
+                                      <div
+                                        class="text--lime"
+                                        oninteractive="${javascript`
+                                          tippy(this, {
+                                            content: ${JSON.stringify(
+                                              `Endorsed by ${
+                                                /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                  Intl as any
+                                                ).ListFormat("en").format(
+                                                  message.endorsements.map(
+                                                    (endorsement) =>
+                                                      endorsement.enrollment
+                                                        .user.name
+                                                  )
+                                                )
+                                              }`
+                                            )},
+                                            touch: false,
+                                          });
+                                        `}"
+                                      >
+                                        <i class="bi bi-award"></i>
+                                        ${message.endorsements.length} Staff
+                                        Endorsement${message.endorsements
+                                          .length === 1
+                                          ? ""
+                                          : "s"}
+                                      </div>
+                                    `);
+
+                                  return content.length === 0
+                                    ? html``
+                                    : html`
+                                        <div
+                                          style="${css`
+                                            font-size: var(--font-size--xs);
+                                            line-height: var(--line-height--xs);
+                                            display: flex;
+                                            flex-wrap: wrap;
+                                            column-gap: var(--space--8);
+                                            row-gap: var(--space--1);
+
+                                            & > * {
+                                              display: flex;
+                                              gap: var(--space--1);
+                                            }
+                                          `}"
+                                        >
+                                          $${content}
+                                        </div>
+                                      `;
+                                })()}
+
+                                <div
+                                  style="${css`
+                                    display: flex;
+                                    gap: var(--space--4);
+                                    align-items: baseline;
+                                    position: relative;
+                                  `}"
+                                >
+                                  $${message.reading === null
+                                    ? html`
+                                        <button
+                                          class="button button--tight button--tight--inline button--blue"
+                                          style="${css`
+                                            width: var(--space--2);
+                                            height: var(--space--2);
+                                            margin-top: var(--space--4);
+                                            @media (max-width: 629px) {
+                                              margin-left: var(--space---3);
+                                            }
+                                            @media (min-width: 630px) {
+                                              margin-left: var(--space---4);
+                                            }
+                                            position: absolute;
+                                            transition-property: var(
+                                              --transition-property--base
+                                            );
+                                          `}"
+                                          oninteractive="${javascript`
+                                            tippy(this, {
+                                              content: "Unread Message",
+                                              touch: false,
+                                            });
+                                            window.setTimeout(() => { this.click(); }, 2000);
+                                          `}"
+                                          onclick="${javascript`
+                                            this.style.opacity = 0;
+                                            window.setTimeout(() => { this.remove(); }, 500);
+                                          `}"
+                                        ></button>
+                                      `
+                                    : html``}
+                                  <div
+                                    style="${css`
+                                      flex: 1;
+                                      display: flex;
+                                      gap: var(--space--2);
+                                      align-items: baseline;
+                                    `}"
+                                  >
+                                    <div
+                                      style="${css`
+                                        position: relative;
+                                        bottom: var(--space---1-5);
+                                      `}"
+                                    >
+                                      $${message.anonymousAt === null
+                                        ? html`
+                                            $${message.authorEnrollment.user
+                                              .avatar === null
+                                              ? html`
+                                                  <div
+                                                    style="${css`
+                                                      font-size: var(
+                                                        --font-size--2xl
+                                                      );
+                                                      & > *::before {
+                                                        vertical-align: baseline;
+                                                      }
+                                                    `}"
+                                                  >
+                                                    <i
+                                                      class="bi bi-person-circle"
+                                                    ></i>
+                                                  </div>
+                                                `
+                                              : html`
+                                                  <img
+                                                    src="${message
+                                                      .authorEnrollment.user
+                                                      .avatar}"
+                                                    alt="${message
+                                                      .authorEnrollment.user
+                                                      .name}"
+                                                    class="avatar avatar--2xl"
+                                                  />
+                                                `}
+                                          `
+                                        : html`
+                                            <div
+                                              class="text--violet"
+                                              style="${css`
+                                                font-size: var(
+                                                  --font-size--2xl
+                                                );
+                                                & > *::before {
+                                                  vertical-align: baseline;
+                                                }
+                                              `}"
+                                              oninteractive="${javascript`
+                                                tippy(this, {
+                                                  content: "Anonymous to other students.",
+                                                  touch: false,
+                                                });
+                                              `}"
+                                            >
+                                              <i class="bi bi-sunglasses"></i>
+                                            </div>
+                                          `}
+                                    </div>
+                                    <h3>
+                                      <span class="strong">
+                                        $${message.anonymousAt === null
+                                          ? highlightSearchResult(
+                                              html`${message.authorEnrollment
+                                                .user.name}`,
+                                              req.query.search
+                                            )
+                                          : html`
+                                              <span
+                                                class="text--violet"
+                                                oninteractive="${javascript`
+                                                  tippy(this, {
+                                                    content: "Anonymous to other students.",
+                                                    touch: false,
+                                                  });
+                                                `}"
+                                              >
+                                                Anonymous
+                                              </span>
+                                            `}
+                                      </span>
+                                      <span class="secondary">
+                                        $${message.anonymousAt !== null &&
+                                        (res.locals.enrollment.role ===
+                                          "staff" ||
+                                          message.authorEnrollment.id ===
+                                            res.locals.enrollment.id)
+                                          ? html`
+                                              ($${message.authorEnrollment.user
+                                                .avatar === null
+                                                ? html`<i
+                                                    class="bi bi-person-circle"
+                                                  ></i>`
+                                                : html`<img
+                                                    src="${message
+                                                      .authorEnrollment.user
+                                                      .avatar}"
+                                                    alt="${message
+                                                      .authorEnrollment.user
+                                                      .name}"
+                                                    class="avatar avatar--xs avatar--vertical-align"
+                                                  />`}
+                                              $${highlightSearchResult(
+                                                html`${message.authorEnrollment
+                                                  .user.name}`,
+                                                req.query.search
+                                              )})
+                                            `
+                                          : html``}
+                                        said
+                                        <time
+                                          oninteractive="${javascript`
+                                            leafac.relativizeDateTimeElement(this);
+                                          `}"
+                                        >
+                                          ${message.createdAt}
+                                        </time>
+                                        $${message.updatedAt !== null
+                                          ? html`
+                                              and last updated
+                                              <time
+                                                oninteractive="${javascript`
+                                                  leafac.relativizeDateTimeElement(this);
+                                                `}"
+                                              >
+                                                ${message.updatedAt}
+                                              </time>
+                                            `
+                                          : html``}
+                                        <button
+                                          class="button button--tight button--tight--inline button--transparent"
+                                          style="${css`
+                                            font-size: var(--font-size--xs);
+                                            line-height: var(--line-height--xs);
+                                            display: inline-flex;
+                                          `}"
+                                          oninteractive="${javascript`
+                                            tippy(this, {
+                                              content: "Copy Message Permanent Link to Clipboard",
+                                              touch: false,
+                                            });
+                                            this.copied = tippy(this, {
+                                              content: "Copied Message Permanent Link to Clipboard",
+                                              theme: "green",
+                                              trigger: "manual",
+                                            });
+                                          `}"
+                                          onclick="${javascript`
+                                            (async () => {
+                                              await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${message.reference}");
+                                              this.copied.show();
+                                              await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                                              this.copied.hide();
+                                            })();
+                                          `}"
+                                        >
+                                          #${res.locals.conversation
+                                            .reference}/${message.reference}
+                                        </button>
+                                      </span>
+                                    </h3>
+                                  </div>
+
+                                  <div
+                                    style="${css`
+                                      display: flex;
+                                      gap: var(--space--2);
+                                    `}"
+                                  >
+                                    $${message.authorEnrollment.id ===
+                                      res.locals.enrollment.id &&
+                                    res.locals.enrollment.role === "student" &&
+                                    res.locals.conversation.staffOnlyAt === null
+                                      ? html`
+                                          <div>
+                                            <button
+                                              class="button button--tight button--tight--inline button--transparent"
+                                              oninteractive="${javascript`
+                                                tippy(this, {
+                                                  content: "Update Anonymity",
+                                                  touch: false,
+                                                });
+                                                tippy(this, {
+                                                  content: this.nextElementSibling.firstElementChild,
+                                                  trigger: "click",
+                                                  interactive: true,
+                                                });
+                                              `}"
+                                            >
+                                              <i class="bi bi-sunglasses"></i>
+                                            </button>
+                                            <div hidden>
+                                              <form
+                                                method="POST"
+                                                action="${baseURL}/courses/${res
+                                                  .locals.course
+                                                  .reference}/conversations/${res
+                                                  .locals.conversation
+                                                  .reference}/messages/${message.reference}?_method=PATCH"
+                                                class="dropdown--menu"
+                                              >
+                                                <input
+                                                  type="hidden"
+                                                  name="_csrf"
+                                                  value="${req.csrfToken()}"
+                                                />
+                                                $${message.anonymousAt === null
+                                                  ? html`
+                                                      <input
+                                                        type="hidden"
+                                                        name="isAnonymous"
+                                                        value="true"
+                                                      />
+                                                      <button
+                                                        class="dropdown--menu--item button button--transparent text--violet"
+                                                      >
+                                                        <i
+                                                          class="bi bi-sunglasses"
+                                                        ></i>
+                                                        Set as Anonymous to
+                                                        Other Students
+                                                      </button>
+                                                    `
+                                                  : html`
+                                                      <input
+                                                        type="hidden"
+                                                        name="isAnonymous"
+                                                        value="false"
+                                                      />
+                                                      <button
+                                                        class="dropdown--menu--item button button--transparent"
+                                                      >
+                                                        $${res.locals.user
+                                                          .avatar === null
+                                                          ? html`
+                                                              <i
+                                                                class="bi bi-person-circle"
+                                                              ></i>
+                                                            `
+                                                          : html`
+                                                              <img
+                                                                src="${res
+                                                                  .locals.user
+                                                                  .avatar}"
+                                                                alt="${res
+                                                                  .locals.user
+                                                                  .name}"
+                                                                class="avatar avatar--sm avatar--vertical-align"
+                                                              />
+                                                            `}
+                                                        Set as Signed by
+                                                        ${res.locals.user.name}
+                                                      </button>
+                                                    `}
+                                              </form>
+                                            </div>
+                                          </div>
+                                        `
+                                      : html``}
+                                    $${res.locals.enrollment.role === "staff"
+                                      ? html`
+                                          <div>
+                                            <button
+                                              class="button button--tight button--tight--inline button--transparent"
+                                              oninteractive="${javascript`
+                                                tippy(this, {
+                                                  content: "Remove Message",
+                                                  theme: "rose",
+                                                  touch: false,
+                                                });
+                                                tippy(this, {
+                                                  content: this.nextElementSibling.firstElementChild,
+                                                  theme: "rose",
+                                                  trigger: "click",
+                                                  interactive: true,
+                                                });
+                                              `}"
+                                            >
+                                              <i class="bi bi-trash"></i>
+                                            </button>
+                                            <div hidden>
+                                              <form
+                                                method="POST"
+                                                action="${baseURL}/courses/${res
+                                                  .locals.course
+                                                  .reference}/conversations/${res
+                                                  .locals.conversation
+                                                  .reference}/messages/${message.reference}?_method=DELETE"
+                                                style="${css`
+                                                  padding: var(--space--2);
+                                                  display: flex;
+                                                  flex-direction: column;
+                                                  gap: var(--space--4);
+                                                `}"
+                                              >
+                                                <input
+                                                  type="hidden"
+                                                  name="_csrf"
+                                                  value="${req.csrfToken()}"
+                                                />
+                                                <p>
+                                                  Are you sure you want to
+                                                  remove this message?
+                                                </p>
+                                                <p>
+                                                  <strong
+                                                    style="${css`
+                                                      font-weight: var(
+                                                        --font-weight--bold
+                                                      );
+                                                    `}"
+                                                  >
+                                                    You may not undo this
+                                                    action!
+                                                  </strong>
+                                                </p>
+                                                <button
+                                                  class="button button--rose"
+                                                >
+                                                  <i class="bi bi-trash"></i>
+                                                  Remove Message
+                                                </button>
+                                              </form>
+                                            </div>
+                                          </div>
+                                        `
+                                      : html``}
+                                    $${mayEditMessage(req, res, message)
+                                      ? html`
+                                          <button
+                                            class="button button--tight button--tight--inline button--transparent"
+                                            oninteractive="${javascript`
+                                                tippy(this, {
+                                                  content: "Edit Message",
+                                                  touch: false,
+                                                });
+                                              `}"
+                                            onclick="${javascript`
+                                              this.closest(".message").querySelector(".message--show").hidden = true;
+                                              this.closest(".message").querySelector(".message--edit").hidden = false;
+                                            `}"
+                                          >
+                                            <i class="bi bi-pencil"></i>
+                                          </button>
+                                        `
+                                      : html``}
+
+                                    <button
+                                      class="button button--tight button--tight--inline button--transparent"
+                                      oninteractive="${javascript`
+                                        tippy(this, {
+                                          content: "Reply",
+                                          touch: false,
+                                        });
+                                      `}"
+                                      onclick="${javascript`
+                                        const content = JSON.parse(this.closest("[data-content]").dataset.content);
+                                        const newMessage = document.querySelector(".new-message");
+                                        newMessage.querySelector(".markdown-editor--button--write").click();
+                                        const element = newMessage.querySelector(".markdown-editor--write--textarea");
+                                        textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
+                                          message.anonymousAt === null
+                                            ? `${
+                                                message.authorEnrollment
+                                                  .reference
+                                              }--${slugify(
+                                                message.authorEnrollment.user
+                                                  .name
+                                              )}`
+                                            : `anonymous`
+                                        }" + " · #" + ${JSON.stringify(
+                                        res.locals.conversation.reference
+                                      )} + "/" + ${JSON.stringify(
+                                        message.reference
+                                      )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n", "");
+                                        element.focus();
+                                        `}"
+                                    >
+                                      <i class="bi bi-reply"></i>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div
+                                class="message--show"
+                                style="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--4);
+                                `}"
+                              >
+                                <div
+                                  class="message--show--content"
+                                  style="${css`
+                                    position: relative;
+                                  `}"
+                                >
+                                  <div
+                                    class="message--show--content--dropdown-menu-target"
+                                    style="${css`
+                                      width: var(--space--0);
+                                      height: var(--line-height--sm);
+                                      position: absolute;
+                                    `}"
+                                  ></div>
+                                  <div
+                                    class="message--show--content--content"
+                                    oninteractive="${javascript`
+                                      const dropdownMenuTarget = this.closest(".message--show--content").querySelector(".message--show--content--dropdown-menu-target");
+                                      const dropdownMenu = tippy(dropdownMenuTarget, {
+                                        content: this.nextElementSibling.firstElementChild,
+                                        trigger: "manual",
+                                        interactive: true,
+                                        touch: false,
+                                      });
+                                      this.addEventListener("mouseup", (event) => {
+                                        window.setTimeout(() => {
+                                          const selection = window.getSelection();
+                                          let anchorElement = selection.anchorNode;
+                                          while (
+                                            (
+                                              anchorElement?.dataset?.position === undefined ||
+                                              anchorElement?.parentElement?.dataset?.position !== undefined
+                                            ) &&
+                                            anchorElement !== null
+                                          ) anchorElement = anchorElement.parentElement;
+                                          let focusElement = selection.focusNode;
+                                          while (
+                                            (
+                                              focusElement?.dataset?.position === undefined ||
+                                              focusElement?.parentElement?.dataset?.position !== undefined
+                                            ) &&
+                                            focusElement !== null
+                                          ) focusElement = focusElement.parentElement;
+                                          if (
+                                            selection.isCollapsed ||
+                                            anchorElement === null ||
+                                            focusElement === null ||
+                                            !this.contains(anchorElement) ||
+                                            !this.contains(focusElement)
+                                          ) return;
+                                          dropdownMenuTarget.style.top = String(event.layerY) + "px";
+                                          dropdownMenuTarget.style.left = String(event.layerX) + "px";
+                                          dropdownMenu.show();
+                                        }, 0);
+                                      });
+                                    `}"
+                                  >
+                                    $${markdownProcessor({
+                                      req,
+                                      res,
+                                      markdown: message.content,
+                                      search: req.query.search,
+                                    }).html}
+                                  </div>
+                                  <div hidden>
+                                    <div class="dropdown--menu">
+                                      <button
+                                        class="dropdown--menu--item button button--transparent"
+                                        onclick="${javascript`
+                                          tippy.hideAll();
+                                          const selection = window.getSelection();
+                                          let anchorElement = selection.anchorNode;
+                                          while (
+                                            (
+                                              anchorElement?.dataset?.position === undefined ||
+                                              anchorElement?.parentElement?.dataset?.position !== undefined
+                                            ) &&
+                                            anchorElement !== null
+                                          ) anchorElement = anchorElement.parentElement;
+                                          let focusElement = selection.focusNode;
+                                          while (
+                                            (
+                                              focusElement?.dataset?.position === undefined ||
+                                              focusElement?.parentElement?.dataset?.position !== undefined
+                                            ) &&
+                                            focusElement !== null
+                                          ) focusElement = focusElement.parentElement;
+                                          const contentElement = this.closest(".message--show--content").querySelector(".message--show--content--content");
+                                          if (
+                                            selection.isCollapsed ||
+                                            anchorElement === null ||
+                                            focusElement === null ||
+                                            !contentElement.contains(anchorElement) ||
+                                            !contentElement.contains(focusElement)
+                                          ) return;
+                                          const anchorPosition = JSON.parse(anchorElement.dataset.position);
+                                          const focusPosition = JSON.parse(focusElement.dataset.position);
+                                          const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
+                                          const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
+                                          const content = JSON.parse(anchorElement.closest("[data-content]").dataset.content);
+                                          const newMessage = document.querySelector(".new-message");
+                                          newMessage.querySelector(".markdown-editor--button--write").click();
+                                          const element = newMessage.querySelector(".markdown-editor--write--textarea");
+                                          textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
+                                            message.anonymousAt === null
+                                              ? `${
+                                                  message.authorEnrollment
+                                                    .reference
+                                                }--${slugify(
+                                                  message.authorEnrollment.user
+                                                    .name
+                                                )}`
+                                              : `anonymous`
+                                          }" + " · #" + ${JSON.stringify(
+                                          res.locals.conversation.reference
+                                        )} + "/" + ${JSON.stringify(
+                                          message.reference
+                                        )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n", "");
+                                          element.focus();
+                                        `}"
+                                      >
+                                        <i class="bi bi-chat-left-quote"></i>
+                                        Quote
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div
+                                  style="${css`
+                                    font-size: var(--font-size--xs);
+                                    line-height: var(--line-height--xs);
+                                    display: flex;
+                                    flex-wrap: wrap;
+                                    column-gap: var(--space--8);
+                                    row-gap: var(--space--1);
+                                  `}"
+                                >
+                                  $${(() => {
+                                    const isLiked = message.likes.some(
+                                      (like) =>
+                                        like.enrollment.id ===
+                                        res.locals.enrollment.id
+                                    );
+                                    const likesCount = message.likes.length;
+
+                                    return html`
+                                      <form
+                                        method="POST"
+                                        action="${baseURL}/courses/${res.locals
+                                          .course.reference}/conversations/${res
+                                          .locals.conversation
+                                          .reference}/messages/${message.reference}/likes${isLiked
+                                          ? "?_method=DELETE"
+                                          : ""}"
+                                        onsubmit="${javascript`
+                                          event.preventDefault();
+                                          fetch(this.action, {
+                                            method: this.method,
+                                            body: new URLSearchParams(new FormData(this)),
+                                          });
                                         `}"
                                       >
                                         <input
@@ -13206,1392 +14340,319 @@ ${value}</textarea
                                           name="_csrf"
                                           value="${req.csrfToken()}"
                                         />
-                                        <input
-                                          type="hidden"
-                                          name="reference"
-                                          value="${tagging.tag.reference}"
-                                        />
                                         <button
-                                          class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal"
-                                          style="${css`
-                                            text-align: left;
-                                          `}"
-                                          oninteractive="${javascript`
-                                            tippy(this, {
-                                              content: "Remove Tag",
-                                              theme: "rose",
-                                              touch: false,
-                                            });
-                                          `}"
-                                        >
-                                          <i class="bi bi-tag-fill"></i>
-                                          ${tagging.tag.name}
-                                        </button>
-                                        $${tagging.tag.staffOnlyAt !== null
-                                          ? html`
-                                              <span
-                                                class="text--pink"
+                                          class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
+                                            ? "text--blue"
+                                            : ""}"
+                                          $${likesCount === 0
+                                            ? html``
+                                            : html`
                                                 oninteractive="${javascript`
                                                   tippy(this, {
-                                                    content: "This tag is visible by staff only.",
+                                                    content: ${JSON.stringify(
+                                                      isLiked
+                                                        ? "Remove Like"
+                                                        : "Like"
+                                                    )},
                                                     touch: false,
                                                   });
                                                 `}"
-                                              >
+                                              `}
+                                        >
+                                          $${isLiked
+                                            ? html`
                                                 <i
-                                                  class="bi bi-mortarboard-fill"
+                                                  class="bi bi-hand-thumbs-up-fill"
                                                 ></i>
-                                              </span>
-                                            `
-                                          : html``}
+                                              `
+                                            : html`<i
+                                                class="bi bi-hand-thumbs-up"
+                                              ></i>`}
+                                          $${likesCount === 0
+                                            ? html`Like`
+                                            : html`
+                                                ${likesCount}
+                                                Like${likesCount === 1
+                                                  ? ""
+                                                  : "s"}
+                                              `}
+                                        </button>
                                       </form>
-                                    `
-                                  )}
-                                `}
-                            $${res.locals.tags.length >
-                            res.locals.conversation.taggings.length
-                              ? html`
-                                  <div>
-                                    <button
-                                      class="button button--tight button--tight--inline button--transparent text--teal"
-                                      oninteractive="${javascript`
-                                        tippy(this, {
-                                          content: "Add Tag",
-                                          touch: false,
-                                        });
-                                        tippy(this, {
-                                          content: this.nextElementSibling.firstElementChild,
-                                          trigger: "click",
-                                          interactive: true,
-                                        });
+                                    `;
+                                  })()}
+                                </div>
+                              </div>
+
+                              $${mayEditMessage(req, res, message)
+                                ? html`
+                                    <form
+                                      method="POST"
+                                      action="${baseURL}/courses/${res.locals
+                                        .course.reference}/conversations/${res
+                                        .locals.conversation
+                                        .reference}/messages/${message.reference}?_method=PATCH"
+                                      novalidate
+                                      hidden
+                                      class="message--edit"
+                                      style="${css`
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--space--2);
                                       `}"
                                     >
-                                      <i class="bi bi-tags-fill"></i>
-                                    </button>
-                                    <div hidden>
+                                      <input
+                                        type="hidden"
+                                        name="_csrf"
+                                        value="${req.csrfToken()}"
+                                      />
+                                      $${markdownEditor({
+                                        req,
+                                        res,
+                                        value: message.content,
+                                      })}
+
                                       <div
-                                        class="dropdown--menu"
                                         style="${css`
-                                          max-height: var(--space--40);
-                                          overflow: auto;
+                                          display: flex;
+                                          gap: var(--space--2);
+                                          @media (max-width: 400px) {
+                                            flex-direction: column;
+                                          }
                                         `}"
                                       >
-                                        $${res.locals.tags
-                                          .filter(
-                                            (tag) =>
-                                              !res.locals.conversation.taggings.some(
-                                                (tagging) =>
-                                                  tagging.tag.id === tag.id
-                                              )
-                                          )
-                                          .map(
-                                            (tag) => html`
-                                              <form
-                                                method="POST"
-                                                action="${baseURL}/courses/${res
-                                                  .locals.course
-                                                  .reference}/conversations/${res
-                                                  .locals.conversation
-                                                  .reference}/taggings"
-                                              >
-                                                <input
-                                                  type="hidden"
-                                                  name="_csrf"
-                                                  value="${req.csrfToken()}"
-                                                />
-                                                <input
-                                                  type="hidden"
-                                                  name="reference"
-                                                  value="${tag.reference}"
-                                                />
-                                                <button
-                                                  class="dropdown--menu--item button button--transparent text--teal"
-                                                >
-                                                  <i class="bi bi-tag-fill"></i>
-                                                  ${tag.name}
-                                                  $${tag.staffOnlyAt !== null
-                                                    ? html`
-                                                        <span
-                                                          class="text--pink"
-                                                          oninteractive="${javascript`
-                                                            tippy(this, {
-                                                              content: "This tag is visible by staff only.",
-                                                              touch: false,
-                                                            });
-                                                          `}"
-                                                        >
-                                                          <i
-                                                            class="bi bi-mortarboard-fill"
-                                                          ></i>
-                                                        </span>
-                                                      `
-                                                    : html``}
-                                                </button>
-                                              </form>
-                                            `
-                                          )}
+                                        <button
+                                          class="button button--blue"
+                                          oninteractive="${javascript`
+                                            Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
+                                            tippy(this, {
+                                              content: ${JSON.stringify(html`
+                                                <span class="keyboard-shortcut">
+                                                  Ctrl+Enter or
+                                                  <span
+                                                    class="keyboard-shortcut--cluster"
+                                                    ><i
+                                                      class="bi bi-command"
+                                                    ></i
+                                                    ><i
+                                                      class="bi bi-arrow-return-left"
+                                                    ></i
+                                                  ></span>
+                                                </span>
+                                              `)},
+                                              touch: false,
+                                              allowHTML: true,
+                                            });
+                                          `}"
+                                        >
+                                          <i class="bi bi-pencil"></i>
+                                          Update Message
+                                        </button>
+                                        <button
+                                          type="reset"
+                                          class="button button--transparent"
+                                          onclick="${javascript`
+                                            this.closest(".message").querySelector(".message--show").hidden = false;
+                                            this.closest(".message").querySelector(".message--edit").hidden = true;
+                                          `}"
+                                        >
+                                          <i class="bi bi-x-lg"></i>
+                                          Cancel
+                                        </button>
                                       </div>
-                                    </div>
-                                  </div>
-                                `
-                              : html``}
-                          `
-                        : res.locals.conversation.taggings.map(
-                            (tagging) => html`
-                              <div class="text--teal">
-                                <i class="bi bi-tag-fill"></i>
-                                ${tagging.tag.name}
-                              </div>
-                            `
-                          )}
-                    </div>
-                  `}
-            </div>
-
-            $${messages.length === 0
-              ? html`
-                  <div
-                    style="${css`
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--space--4);
-                      align-items: center;
-                    `}"
-                  >
-                    <div class="decorative-icon">
-                      <i class="bi bi-chat-left-text"></i>
-                    </div>
-                    <p class="secondary">
-                      ${res.locals.conversation.type === "chat"
-                        ? "Start the chat by sending the first message!"
-                        : "All messages in this conversation have been deleted."}
-                    </p>
-                  </div>
-
-                  <hr class="separator" />
-                `
-              : (() => {
-                  let shouldScrollIntoView = messages[0].reading !== null;
-                  return messages.map(
-                    (message) => html`
-                      <div
-                        style="${css`
-                          padding-bottom: var(--space--1);
-                          border-bottom: var(--border-width--4) solid
-                            var(--color--gray--medium--200);
-                          @media (prefers-color-scheme: dark) {
-                            border-color: var(--color--gray--medium--700);
-                          }
-                        `}"
-                      >
-                        <div
-                          id="message--${message.reference}"
-                          data-content="${JSON.stringify(message.content)}"
-                          class="message"
-                          style="${css`
-                            padding-bottom: var(--space--1);
-                            border-radius: var(--border-radius--lg);
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--2);
-                            min-width: var(--space--0);
-
-                            --color--message--highlight-background-on-target: var(
-                              --color--amber--200
-                            );
-                            @media (prefers-color-scheme: dark) {
-                              --color--message--highlight-background-on-target: var(
-                                --color--amber--900
-                              );
-                            }
-                            @keyframes message--highlight-background-on-target {
-                              from {
-                                background-color: var(
-                                  --color--message--highlight-background-on-target
-                                );
-                              }
-                              to {
-                                background-color: transparent;
-                              }
-                            }
-                            &:target {
-                              animation: message--highlight-background-on-target
-                                var(--transition-duration--1000)
-                                var(--transition-timing-function--in-out);
-                            }
-                          `}"
-                          $${shouldScrollIntoView && message.reading === null
-                            ? (() => {
-                                shouldScrollIntoView = false;
-                                return html`
-                                  oninteractive="${javascript`
-                                    if (window.location.hash === "") this.scrollIntoView();
-                                  `}"
-                                `;
-                              })()
-                            : html``}
-                        >
-                          <div>
-                            $${(() => {
-                              const content: HTML[] = [];
-
-                              if (
-                                mayEditMessage(req, res, message) &&
-                                message.reference !== "1" &&
-                                res.locals.conversation.type === "question"
-                              )
-                                content.push(html`
-                                  <form
-                                    method="POST"
-                                    action="${baseURL}/courses/${res.locals
-                                      .course.reference}/conversations/${res
-                                      .locals.conversation
-                                      .reference}/messages/${message.reference}?_method=PATCH"
-                                  >
-                                    <input
-                                      type="hidden"
-                                      name="_csrf"
-                                      value="${req.csrfToken()}"
-                                    />
-                                    $${message.answerAt === null
-                                      ? html`
-                                          <input
-                                            type="hidden"
-                                            name="isAnswer"
-                                            value="true"
-                                          />
-                                          <button
-                                            class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                            oninteractive="${javascript`
-                                              tippy(this, {
-                                                content: "Set as Answer",
-                                                touch: false,
-                                              });
-                                            `}"
-                                          >
-                                            <i class="bi bi-patch-check"></i>
-                                            Not an Answer
-                                          </button>
-                                        `
-                                      : html`
-                                          <input
-                                            type="hidden"
-                                            name="isAnswer"
-                                            value="false"
-                                          />
-                                          <button
-                                            class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
-                                            oninteractive="${javascript`
-                                                tippy(this, {
-                                                  content: "Set as Not an Answer",
-                                                  touch: false,
-                                                });
-                                              `}"
-                                          >
-                                            <i
-                                              class="bi bi-patch-check-fill"
-                                            ></i>
-                                            Answer
-                                          </button>
-                                        `}
-                                  </form>
-                                `);
-                              else if (
-                                message.reference !== "1" &&
-                                res.locals.conversation.type === "question" &&
-                                message.answerAt !== null
-                              )
-                                content.push(html`
-                                  <div class="text--emerald">
-                                    <i class="bi bi-patch-check-fill"></i>
-                                    Answer
-                                  </div>
-                                `);
-
-                              if (mayEndorseMessage(req, res, message)) {
-                                const isEndorsed = message.endorsements.some(
-                                  (endorsement) =>
-                                    endorsement.enrollment.id ===
-                                    res.locals.enrollment.id
-                                );
-
-                                content.push(html`
-                                  <form
-                                    method="POST"
-                                    action="${baseURL}/courses/${res.locals
-                                      .course.reference}/conversations/${res
-                                      .locals.conversation
-                                      .reference}/messages/${message.reference}/endorsements${isEndorsed
-                                      ? "?_method=DELETE"
-                                      : ""}"
-                                  >
-                                    <input
-                                      type="hidden"
-                                      name="_csrf"
-                                      value="${req.csrfToken()}"
-                                    />
-                                    $${isEndorsed
-                                      ? html`
-                                          <input
-                                            type="hidden"
-                                            name="isEndorsed"
-                                            value="false"
-                                          />
-                                          <button
-                                            class="button button--tight button--tight--inline button--tight-gap button--transparent text--blue"
-                                            oninteractive="${javascript`
-                                              tippy(this, {
-                                                content: ${JSON.stringify(
-                                                  `Remove Endorsement${
-                                                    message.endorsements
-                                                      .length > 1
-                                                      ? ` (Also endorsed by ${
-                                                          /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                                            Intl as any
-                                                          ).ListFormat(
-                                                            "en"
-                                                          ).format(
-                                                            message.endorsements
-                                                              .filter(
-                                                                (endorsement) =>
-                                                                  endorsement
-                                                                    .enrollment
-                                                                    .id !==
-                                                                  res.locals
-                                                                    .enrollment
-                                                                    .id
-                                                              )
-                                                              .map(
-                                                                (endorsement) =>
-                                                                  endorsement
-                                                                    .enrollment
-                                                                    .user.name
-                                                              )
-                                                          )
-                                                        })`
-                                                      : ``
-                                                  }`
-                                                )},
-                                                touch: false,
-                                              });
-                                            `}"
-                                          >
-                                            <i class="bi bi-award-fill"></i>
-                                            ${message.endorsements.length} Staff
-                                            Endorsement${message.endorsements
-                                              .length === 1
-                                              ? ""
-                                              : "s"}
-                                          </button>
-                                        `
-                                      : html`
-                                          <input
-                                            type="hidden"
-                                            name="isEndorsed"
-                                            value="true"
-                                          />
-                                          <button
-                                            class="button button--tight button--tight--inline button--tight-gap button--transparent text--lime"
-                                            $${message.endorsements.length === 0
-                                              ? html``
-                                              : html`
-                                                  oninteractive="${javascript`
-                                                    tippy(this, {
-                                                      content: ${JSON.stringify(
-                                                        `Endorse (Already endorsed by ${
-                                                          /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                                            Intl as any
-                                                          ).ListFormat(
-                                                            "en"
-                                                          ).format(
-                                                            message.endorsements.map(
-                                                              (endorsement) =>
-                                                                endorsement
-                                                                  .enrollment
-                                                                  .user.name
-                                                            )
-                                                          )
-                                                        })`
-                                                      )},
-                                                      touch: false,
-                                                    });
-                                                  `}"
-                                                `}
-                                          >
-                                            <i class="bi bi-award"></i>
-                                            ${message.endorsements.length === 0
-                                              ? `Endorse`
-                                              : `${message.endorsements.length}
-                                                Staff Endorsement${
-                                                  message.endorsements
-                                                    .length === 1
-                                                    ? ""
-                                                    : "s"
-                                                }`}
-                                          </button>
-                                        `}
-                                  </form>
-                                `);
-                              } else if (
-                                res.locals.conversation.type === "question" &&
-                                message.authorEnrollment.role !== "staff" &&
-                                message.endorsements.length > 0
-                              )
-                                content.push(html`
-                                  <div
-                                    class="text--lime"
-                                    oninteractive="${javascript`
-                                      tippy(this, {
-                                        content: ${JSON.stringify(
-                                          `Endorsed by ${
-                                            /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                              Intl as any
-                                            ).ListFormat("en").format(
-                                              message.endorsements.map(
-                                                (endorsement) =>
-                                                  endorsement.enrollment.user
-                                                    .name
-                                              )
-                                            )
-                                          }`
-                                        )},
-                                        touch: false,
-                                      });
-                                    `}"
-                                  >
-                                    <i class="bi bi-award"></i>
-                                    ${message.endorsements.length} Staff
-                                    Endorsement${message.endorsements.length ===
-                                    1
-                                      ? ""
-                                      : "s"}
-                                  </div>
-                                `);
-
-                              return content.length === 0
-                                ? html``
-                                : html`
-                                    <div
-                                      style="${css`
-                                        font-size: var(--font-size--xs);
-                                        line-height: var(--line-height--xs);
-                                        display: flex;
-                                        flex-wrap: wrap;
-                                        column-gap: var(--space--8);
-                                        row-gap: var(--space--1);
-
-                                        & > * {
-                                          display: flex;
-                                          gap: var(--space--1);
-                                        }
-                                      `}"
-                                    >
-                                      $${content}
-                                    </div>
-                                  `;
-                            })()}
-
-                            <div
-                              style="${css`
-                                display: flex;
-                                gap: var(--space--4);
-                                align-items: baseline;
-                                position: relative;
-                              `}"
-                            >
-                              $${message.reading === null
-                                ? html`
-                                    <button
-                                      class="button button--tight button--tight--inline button--blue"
-                                      style="${css`
-                                        width: var(--space--2);
-                                        height: var(--space--2);
-                                        margin-top: var(--space--4);
-                                        @media (max-width: 629px) {
-                                          margin-left: var(--space---3);
-                                        }
-                                        @media (min-width: 630px) {
-                                          margin-left: var(--space---4);
-                                        }
-                                        position: absolute;
-                                        transition-property: var(
-                                          --transition-property--base
-                                        );
-                                      `}"
-                                      oninteractive="${javascript`
-                                        tippy(this, {
-                                          content: "Unread Message",
-                                          touch: false,
-                                        });
-                                        window.setTimeout(() => { this.click(); }, 2000);
-                                      `}"
-                                      onclick="${javascript`
-                                        this.style.opacity = 0;
-                                        window.setTimeout(() => { this.remove(); }, 500);
-                                      `}"
-                                    ></button>
+                                    </form>
                                   `
                                 : html``}
-                              <div
-                                style="${css`
-                                  flex: 1;
-                                  display: flex;
-                                  gap: var(--space--2);
-                                  align-items: baseline;
-                                `}"
-                              >
-                                <div
-                                  style="${css`
-                                    position: relative;
-                                    bottom: var(--space---1-5);
-                                  `}"
-                                >
-                                  $${message.anonymousAt === null
-                                    ? html`
-                                        $${message.authorEnrollment.user
-                                          .avatar === null
-                                          ? html`
-                                              <div
-                                                style="${css`
-                                                  font-size: var(
-                                                    --font-size--2xl
-                                                  );
-                                                  & > *::before {
-                                                    vertical-align: baseline;
-                                                  }
-                                                `}"
-                                              >
-                                                <i
-                                                  class="bi bi-person-circle"
-                                                ></i>
-                                              </div>
-                                            `
-                                          : html`
-                                              <img
-                                                src="${message.authorEnrollment
-                                                  .user.avatar}"
-                                                alt="${message.authorEnrollment
-                                                  .user.name}"
-                                                class="avatar avatar--2xl"
-                                              />
-                                            `}
-                                      `
-                                    : html`
-                                        <div
-                                          class="text--violet"
-                                          style="${css`
-                                            font-size: var(--font-size--2xl);
-                                            & > *::before {
-                                              vertical-align: baseline;
-                                            }
-                                          `}"
-                                          oninteractive="${javascript`
-                                            tippy(this, {
-                                              content: "Anonymous to other students.",
-                                              touch: false,
-                                            });
-                                          `}"
-                                        >
-                                          <i class="bi bi-sunglasses"></i>
-                                        </div>
-                                      `}
-                                </div>
-                                <h3>
-                                  <span class="strong">
-                                    $${message.anonymousAt === null
-                                      ? highlightSearchResult(
-                                          html`${message.authorEnrollment.user
-                                            .name}`,
-                                          req.query.search
-                                        )
-                                      : html`
-                                          <span
-                                            class="text--violet"
-                                            oninteractive="${javascript`
-                                              tippy(this, {
-                                                content: "Anonymous to other students.",
-                                                touch: false,
-                                              });
-                                            `}"
-                                          >
-                                            Anonymous
-                                          </span>
-                                        `}
-                                  </span>
-                                  <span class="secondary">
-                                    $${message.anonymousAt !== null &&
-                                    (res.locals.enrollment.role === "staff" ||
-                                      message.authorEnrollment.id ===
-                                        res.locals.enrollment.id)
-                                      ? html`
-                                          ($${message.authorEnrollment.user
-                                            .avatar === null
-                                            ? html`<i
-                                                class="bi bi-person-circle"
-                                              ></i>`
-                                            : html`<img
-                                                src="${message.authorEnrollment
-                                                  .user.avatar}"
-                                                alt="${message.authorEnrollment
-                                                  .user.name}"
-                                                class="avatar avatar--xs avatar--vertical-align"
-                                              />`}
-                                          $${highlightSearchResult(
-                                            html`${message.authorEnrollment.user
-                                              .name}`,
-                                            req.query.search
-                                          )})
-                                        `
-                                      : html``}
-                                    said
-                                    <time
-                                      oninteractive="${javascript`
-                                        leafac.relativizeDateTimeElement(this);
-                                      `}"
-                                    >
-                                      ${message.createdAt}
-                                    </time>
-                                    $${message.updatedAt !== null
-                                      ? html`
-                                          and last updated
-                                          <time
-                                            oninteractive="${javascript`
-                                              leafac.relativizeDateTimeElement(this);
-                                            `}"
-                                          >
-                                            ${message.updatedAt}
-                                          </time>
-                                        `
-                                      : html``}
-                                    <button
-                                      class="button button--tight button--tight--inline button--transparent"
-                                      style="${css`
-                                        font-size: var(--font-size--xs);
-                                        line-height: var(--line-height--xs);
-                                        display: inline-flex;
-                                      `}"
-                                      oninteractive="${javascript`
-                                        tippy(this, {
-                                          content: "Copy Message Permanent Link to Clipboard",
-                                          touch: false,
-                                        });
-                                        this.copied = tippy(this, {
-                                          content: "Copied Message Permanent Link to Clipboard",
-                                          theme: "green",
-                                          trigger: "manual",
-                                        });
-                                      `}"
-                                      onclick="${javascript`
-                                        (async () => {
-                                          await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${message.reference}");
-                                          this.copied.show();
-                                          await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                                          this.copied.hide();
-                                        })();
-                                      `}"
-                                    >
-                                      #${res.locals.conversation
-                                        .reference}/${message.reference}
-                                    </button>
-                                  </span>
-                                </h3>
-                              </div>
-
-                              <div
-                                style="${css`
-                                  display: flex;
-                                  gap: var(--space--2);
-                                `}"
-                              >
-                                $${message.authorEnrollment.id ===
-                                  res.locals.enrollment.id &&
-                                res.locals.enrollment.role === "student" &&
-                                res.locals.conversation.staffOnlyAt === null
-                                  ? html`
-                                      <div>
-                                        <button
-                                          class="button button--tight button--tight--inline button--transparent"
-                                          oninteractive="${javascript`
-                                            tippy(this, {
-                                              content: "Update Anonymity",
-                                              touch: false,
-                                            });
-                                            tippy(this, {
-                                              content: this.nextElementSibling.firstElementChild,
-                                              trigger: "click",
-                                              interactive: true,
-                                            });
-                                          `}"
-                                        >
-                                          <i class="bi bi-sunglasses"></i>
-                                        </button>
-                                        <div hidden>
-                                          <form
-                                            method="POST"
-                                            action="${baseURL}/courses/${res
-                                              .locals.course
-                                              .reference}/conversations/${res
-                                              .locals.conversation
-                                              .reference}/messages/${message.reference}?_method=PATCH"
-                                            class="dropdown--menu"
-                                          >
-                                            <input
-                                              type="hidden"
-                                              name="_csrf"
-                                              value="${req.csrfToken()}"
-                                            />
-                                            $${message.anonymousAt === null
-                                              ? html`
-                                                  <input
-                                                    type="hidden"
-                                                    name="isAnonymous"
-                                                    value="true"
-                                                  />
-                                                  <button
-                                                    class="dropdown--menu--item button button--transparent text--violet"
-                                                  >
-                                                    <i
-                                                      class="bi bi-sunglasses"
-                                                    ></i>
-                                                    Set as Anonymous to Other
-                                                    Students
-                                                  </button>
-                                                `
-                                              : html`
-                                                  <input
-                                                    type="hidden"
-                                                    name="isAnonymous"
-                                                    value="false"
-                                                  />
-                                                  <button
-                                                    class="dropdown--menu--item button button--transparent"
-                                                  >
-                                                    $${res.locals.user
-                                                      .avatar === null
-                                                      ? html`
-                                                          <i
-                                                            class="bi bi-person-circle"
-                                                          ></i>
-                                                        `
-                                                      : html`
-                                                          <img
-                                                            src="${res.locals
-                                                              .user.avatar}"
-                                                            alt="${res.locals
-                                                              .user.name}"
-                                                            class="avatar avatar--sm avatar--vertical-align"
-                                                          />
-                                                        `}
-                                                    Set as Signed by
-                                                    ${res.locals.user.name}
-                                                  </button>
-                                                `}
-                                          </form>
-                                        </div>
-                                      </div>
-                                    `
-                                  : html``}
-                                $${res.locals.enrollment.role === "staff"
-                                  ? html`
-                                      <div>
-                                        <button
-                                          class="button button--tight button--tight--inline button--transparent"
-                                          oninteractive="${javascript`
-                                            tippy(this, {
-                                              content: "Remove Message",
-                                              theme: "rose",
-                                              touch: false,
-                                            });
-                                            tippy(this, {
-                                              content: this.nextElementSibling.firstElementChild,
-                                              theme: "rose",
-                                              trigger: "click",
-                                              interactive: true,
-                                            });
-                                          `}"
-                                        >
-                                          <i class="bi bi-trash"></i>
-                                        </button>
-                                        <div hidden>
-                                          <form
-                                            method="POST"
-                                            action="${baseURL}/courses/${res
-                                              .locals.course
-                                              .reference}/conversations/${res
-                                              .locals.conversation
-                                              .reference}/messages/${message.reference}?_method=DELETE"
-                                            style="${css`
-                                              padding: var(--space--2);
-                                              display: flex;
-                                              flex-direction: column;
-                                              gap: var(--space--4);
-                                            `}"
-                                          >
-                                            <input
-                                              type="hidden"
-                                              name="_csrf"
-                                              value="${req.csrfToken()}"
-                                            />
-                                            <p>
-                                              Are you sure you want to remove
-                                              this message?
-                                            </p>
-                                            <p>
-                                              <strong
-                                                style="${css`
-                                                  font-weight: var(
-                                                    --font-weight--bold
-                                                  );
-                                                `}"
-                                              >
-                                                You may not undo this action!
-                                              </strong>
-                                            </p>
-                                            <button class="button button--rose">
-                                              <i class="bi bi-trash"></i>
-                                              Remove Message
-                                            </button>
-                                          </form>
-                                        </div>
-                                      </div>
-                                    `
-                                  : html``}
-                                $${mayEditMessage(req, res, message)
-                                  ? html`
-                                      <button
-                                        class="button button--tight button--tight--inline button--transparent"
-                                        oninteractive="${javascript`
-                                            tippy(this, {
-                                              content: "Edit Message",
-                                              touch: false,
-                                            });
-                                          `}"
-                                        onclick="${javascript`
-                                          this.closest(".message").querySelector(".message--show").hidden = true;
-                                          this.closest(".message").querySelector(".message--edit").hidden = false;
-                                        `}"
-                                      >
-                                        <i class="bi bi-pencil"></i>
-                                      </button>
-                                    `
-                                  : html``}
-
-                                <button
-                                  class="button button--tight button--tight--inline button--transparent"
-                                  oninteractive="${javascript`
-                                    tippy(this, {
-                                      content: "Reply",
-                                      touch: false,
-                                    });
-                                  `}"
-                                  onclick="${javascript`
-                                    const content = JSON.parse(this.closest("[data-content]").dataset.content);
-                                    const newMessage = document.querySelector(".new-message");
-                                    newMessage.querySelector(".markdown-editor--button--write").click();
-                                    const element = newMessage.querySelector(".markdown-editor--write--textarea");
-                                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
-                                      message.anonymousAt === null
-                                        ? `${
-                                            message.authorEnrollment.reference
-                                          }--${slugify(
-                                            message.authorEnrollment.user.name
-                                          )}`
-                                        : `anonymous`
-                                    }" + " · #" + ${JSON.stringify(
-                                    res.locals.conversation.reference
-                                  )} + "/" + ${JSON.stringify(
-                                    message.reference
-                                  )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n", "");
-                                    element.focus();
-                                    `}"
-                                >
-                                  <i class="bi bi-reply"></i>
-                                </button>
-                              </div>
                             </div>
                           </div>
+                        `
+                      );
+                    })()}
+              </div>
 
-                          <div
-                            class="message--show"
-                            style="${css`
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--space--4);
-                            `}"
+              <form
+                method="POST"
+                action="${baseURL}/courses/${res.locals.course
+                  .reference}/conversations/${res.locals.conversation
+                  .reference}/messages"
+                novalidate
+                style="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
+                <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+
+                $${res.locals.conversation.type === "question"
+                  ? html`
+                      <div class="label">
+                        <p class="label--text">Type</p>
+                        <div
+                          style="${css`
+                            display: flex;
+                          `}"
+                        >
+                          <label
+                            class="button button--tight button--tight--inline button--transparent"
                           >
-                            <div
-                              class="message--show--content"
-                              style="${css`
-                                position: relative;
+                            <input
+                              type="checkbox"
+                              name="isAnswer"
+                              $${res.locals.enrollment.role === "staff"
+                                ? `checked`
+                                : ``}
+                              class="visually-hidden input--radio-or-checkbox--multilabel"
+                            />
+                            <span
+                              oninteractive="${javascript`
+                                tippy(this, {
+                                  content: "Set as Answer",
+                                  touch: false,
+                                });
                               `}"
                             >
-                              <div
-                                class="message--show--content--dropdown-menu-target"
-                                style="${css`
-                                  width: var(--space--0);
-                                  height: var(--line-height--sm);
-                                  position: absolute;
-                                `}"
-                              ></div>
-                              <div
-                                class="message--show--content--content"
-                                oninteractive="${javascript`
-                                  const dropdownMenuTarget = this.closest(".message--show--content").querySelector(".message--show--content--dropdown-menu-target");
-                                  const dropdownMenu = tippy(dropdownMenuTarget, {
-                                    content: this.nextElementSibling.firstElementChild,
-                                    trigger: "manual",
-                                    interactive: true,
-                                    touch: false,
-                                  });
-                                  this.addEventListener("mouseup", (event) => {
-                                    window.setTimeout(() => {
-                                      const selection = window.getSelection();
-                                      let anchorElement = selection.anchorNode;
-                                      while (
-                                        (
-                                          anchorElement?.dataset?.position === undefined ||
-                                          anchorElement?.parentElement?.dataset?.position !== undefined
-                                        ) &&
-                                        anchorElement !== null
-                                      ) anchorElement = anchorElement.parentElement;
-                                      let focusElement = selection.focusNode;
-                                      while (
-                                        (
-                                          focusElement?.dataset?.position === undefined ||
-                                          focusElement?.parentElement?.dataset?.position !== undefined
-                                        ) &&
-                                        focusElement !== null
-                                      ) focusElement = focusElement.parentElement;
-                                      if (
-                                        selection.isCollapsed ||
-                                        anchorElement === null ||
-                                        focusElement === null ||
-                                        !this.contains(anchorElement) ||
-                                        !this.contains(focusElement)
-                                      ) return;
-                                      dropdownMenuTarget.style.top = String(event.layerY) + "px";
-                                      dropdownMenuTarget.style.left = String(event.layerX) + "px";
-                                      dropdownMenu.show();
-                                    }, 0);
-                                  });
-                                `}"
-                              >
-                                $${markdownProcessor({
-                                  req,
-                                  res,
-                                  markdown: message.content,
-                                  search: req.query.search,
-                                }).html}
-                              </div>
-                              <div hidden>
-                                <div class="dropdown--menu">
-                                  <button
-                                    class="dropdown--menu--item button button--transparent"
-                                    onclick="${javascript`
-                                      tippy.hideAll();
-                                      const selection = window.getSelection();
-                                      let anchorElement = selection.anchorNode;
-                                      while (
-                                        (
-                                          anchorElement?.dataset?.position === undefined ||
-                                          anchorElement?.parentElement?.dataset?.position !== undefined
-                                        ) &&
-                                        anchorElement !== null
-                                      ) anchorElement = anchorElement.parentElement;
-                                      let focusElement = selection.focusNode;
-                                      while (
-                                        (
-                                          focusElement?.dataset?.position === undefined ||
-                                          focusElement?.parentElement?.dataset?.position !== undefined
-                                        ) &&
-                                        focusElement !== null
-                                      ) focusElement = focusElement.parentElement;
-                                      const contentElement = this.closest(".message--show--content").querySelector(".message--show--content--content");
-                                      if (
-                                        selection.isCollapsed ||
-                                        anchorElement === null ||
-                                        focusElement === null ||
-                                        !contentElement.contains(anchorElement) ||
-                                        !contentElement.contains(focusElement)
-                                      ) return;
-                                      const anchorPosition = JSON.parse(anchorElement.dataset.position);
-                                      const focusPosition = JSON.parse(focusElement.dataset.position);
-                                      const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
-                                      const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
-                                      const content = JSON.parse(anchorElement.closest("[data-content]").dataset.content);
-                                      const newMessage = document.querySelector(".new-message");
-                                      newMessage.querySelector(".markdown-editor--button--write").click();
-                                      const element = newMessage.querySelector(".markdown-editor--write--textarea");
-                                      textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
-                                        message.anonymousAt === null
-                                          ? `${
-                                              message.authorEnrollment.reference
-                                            }--${slugify(
-                                              message.authorEnrollment.user.name
-                                            )}`
-                                          : `anonymous`
-                                      }" + " · #" + ${JSON.stringify(
-                                      res.locals.conversation.reference
-                                    )} + "/" + ${JSON.stringify(
-                                      message.reference
-                                    )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n", "");
-                                      element.focus();
-                                    `}"
-                                  >
-                                    <i class="bi bi-chat-left-quote"></i>
-                                    Quote
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div
-                              style="${css`
-                                font-size: var(--font-size--xs);
-                                line-height: var(--line-height--xs);
-                                display: flex;
-                                flex-wrap: wrap;
-                                column-gap: var(--space--8);
-                                row-gap: var(--space--1);
+                              <i class="bi bi-patch-check"></i>
+                              Not an Answer
+                            </span>
+                            <span
+                              class="text--emerald"
+                              oninteractive="${javascript`
+                                tippy(this, {
+                                  content: "Set as Not an Answer",
+                                  touch: false,
+                                });
                               `}"
                             >
-                              $${(() => {
-                                const isLiked = message.likes.some(
-                                  (like) =>
-                                    like.enrollment.id ===
-                                    res.locals.enrollment.id
-                                );
-                                const likesCount = message.likes.length;
-
-                                return html`
-                                  <form
-                                    method="POST"
-                                    action="${baseURL}/courses/${res.locals
-                                      .course.reference}/conversations/${res
-                                      .locals.conversation
-                                      .reference}/messages/${message.reference}/likes${isLiked
-                                      ? "?_method=DELETE"
-                                      : ""}"
-                                    onsubmit="${javascript`
-                                      event.preventDefault();
-                                      fetch(this.action, {
-                                        method: this.method,
-                                        body: new URLSearchParams(new FormData(this)),
-                                      });
-                                    `}"
-                                  >
-                                    <input
-                                      type="hidden"
-                                      name="_csrf"
-                                      value="${req.csrfToken()}"
-                                    />
-                                    <button
-                                      class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
-                                        ? "text--blue"
-                                        : ""}"
-                                      $${likesCount === 0
-                                        ? html``
-                                        : html`
-                                            oninteractive="${javascript`
-                                              tippy(this, {
-                                                content: ${JSON.stringify(
-                                                  isLiked
-                                                    ? "Remove Like"
-                                                    : "Like"
-                                                )},
-                                                touch: false,
-                                              });
-                                            `}"
-                                          `}
-                                    >
-                                      $${isLiked
-                                        ? html`
-                                            <i
-                                              class="bi bi-hand-thumbs-up-fill"
-                                            ></i>
-                                          `
-                                        : html`<i
-                                            class="bi bi-hand-thumbs-up"
-                                          ></i>`}
-                                      $${likesCount === 0
-                                        ? html`Like`
-                                        : html`
-                                            ${likesCount}
-                                            Like${likesCount === 1 ? "" : "s"}
-                                          `}
-                                    </button>
-                                  </form>
-                                `;
-                              })()}
-                            </div>
-                          </div>
-
-                          $${mayEditMessage(req, res, message)
-                            ? html`
-                                <form
-                                  method="POST"
-                                  action="${baseURL}/courses/${res.locals.course
-                                    .reference}/conversations/${res.locals
-                                    .conversation
-                                    .reference}/messages/${message.reference}?_method=PATCH"
-                                  novalidate
-                                  hidden
-                                  class="message--edit"
-                                  style="${css`
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--space--2);
-                                  `}"
-                                >
-                                  <input
-                                    type="hidden"
-                                    name="_csrf"
-                                    value="${req.csrfToken()}"
-                                  />
-                                  $${markdownEditor({
-                                    req,
-                                    res,
-                                    value: message.content,
-                                  })}
-
-                                  <div
-                                    style="${css`
-                                      display: flex;
-                                      gap: var(--space--2);
-                                      @media (max-width: 400px) {
-                                        flex-direction: column;
-                                      }
-                                    `}"
-                                  >
-                                    <button
-                                      class="button button--blue"
-                                      oninteractive="${javascript`
-                                        Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
-                                        tippy(this, {
-                                          content: ${JSON.stringify(html`
-                                            <span class="keyboard-shortcut">
-                                              Ctrl+Enter or
-                                              <span
-                                                class="keyboard-shortcut--cluster"
-                                                ><i class="bi bi-command"></i
-                                                ><i
-                                                  class="bi bi-arrow-return-left"
-                                                ></i
-                                              ></span>
-                                            </span>
-                                          `)},
-                                          touch: false,
-                                          allowHTML: true,
-                                        });
-                                      `}"
-                                    >
-                                      <i class="bi bi-pencil"></i>
-                                      Update Message
-                                    </button>
-                                    <button
-                                      type="reset"
-                                      class="button button--transparent"
-                                      onclick="${javascript`
-                                        this.closest(".message").querySelector(".message--show").hidden = false;
-                                        this.closest(".message").querySelector(".message--edit").hidden = true;
-                                      `}"
-                                    >
-                                      <i class="bi bi-x-lg"></i>
-                                      Cancel
-                                    </button>
-                                  </div>
-                                </form>
-                              `
-                            : html``}
+                              <i class="bi bi-patch-check-fill"></i>
+                              Answer
+                            </span>
+                          </label>
                         </div>
                       </div>
                     `
-                  );
-                })()}
+                  : html``}
 
-            <form
-              method="POST"
-              action="${baseURL}/courses/${res.locals.course
-                .reference}/conversations/${res.locals.conversation
-                .reference}/messages"
-              novalidate
-              style="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-              `}"
-            >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-
-              $${res.locals.conversation.type === "question"
-                ? html`
-                    <div class="label">
-                      <p class="label--text">Type</p>
-                      <div
-                        style="${css`
-                          display: flex;
-                        `}"
-                      >
-                        <label
-                          class="button button--tight button--tight--inline button--transparent"
-                        >
-                          <input
-                            type="checkbox"
-                            name="isAnswer"
-                            $${res.locals.enrollment.role === "staff"
-                              ? `checked`
-                              : ``}
-                            class="visually-hidden input--radio-or-checkbox--multilabel"
-                          />
-                          <span
-                            oninteractive="${javascript`
-                              tippy(this, {
-                                content: "Set as Answer",
-                                touch: false,
-                              });
-                            `}"
-                          >
-                            <i class="bi bi-patch-check"></i>
-                            Not an Answer
-                          </span>
-                          <span
-                            class="text--emerald"
-                            oninteractive="${javascript`
-                              tippy(this, {
-                                content: "Set as Not an Answer",
-                                touch: false,
-                              });
-                            `}"
-                          >
-                            <i class="bi bi-patch-check-fill"></i>
-                            Answer
-                          </span>
-                        </label>
-                      </div>
-                    </div>
-                  `
-                : html``}
-
-              <div
-                class="new-message"
-                oninteractive="${javascript`
-                  const content = this.querySelector(".markdown-editor--write--textarea");
-                  content.defaultValue =
-                    JSON.parse(
-                      localStorage.getItem("conversationsContentsInProgress") ?? "{}"
-                    )[window.location.pathname] ?? "";
-                  content.dataset.skipIsModified = "true";
-                  content.addEventListener("input", () => {
-                    const conversationsContentsInProgress = JSON.parse(
-                      localStorage.getItem("conversationsContentsInProgress") ?? "{}"
-                    );
-                    conversationsContentsInProgress[window.location.pathname] =
-                      content.value;
-                    localStorage.setItem(
-                      "conversationsContentsInProgress",
-                      JSON.stringify(conversationsContentsInProgress)
-                    );
-                  });
-                  content.closest("form").addEventListener("submit", () => {
-                    const conversationsContentsInProgress = JSON.parse(
-                      localStorage.getItem("conversationsContentsInProgress") ?? "{}"
-                    );
-                    delete conversationsContentsInProgress[window.location.pathname];
-                    localStorage.setItem(
-                      "conversationsContentsInProgress",
-                      JSON.stringify(conversationsContentsInProgress)
-                    );
-                  });
-                `}"
-              >
-                $${markdownEditor({ req, res })}
-              </div>
-
-              $${res.locals.enrollment.role === "staff" ||
-              res.locals.conversation.staffOnlyAt !== null
-                ? html``
-                : html`
-                    <div
-                      class="label"
-                      style="${css`
-                        width: var(--space--56);
-                      `}"
-                    >
-                      <p class="label--text">Anonymity</p>
-                      <div
-                        style="${css`
-                          display: flex;
-                        `}"
-                      >
-                        <label
-                          class="button button--tight button--tight--inline button--transparent"
-                        >
-                          <input
-                            type="checkbox"
-                            name="isAnonymous"
-                            class="visually-hidden input--radio-or-checkbox--multilabel"
-                          />
-                          <span
-                            oninteractive="${javascript`
-                              tippy(this, {
-                                content: "Set as Anonymous to Other Students",
-                                touch: false,
-                              });
-                            `}"
-                          >
-                            $${res.locals.user.avatar === null
-                              ? html`<i class="bi bi-person-circle"></i>`
-                              : html`
-                                  <img
-                                    src="${res.locals.user.avatar}"
-                                    alt="${res.locals.user.name}"
-                                    class="avatar avatar--sm avatar--vertical-align"
-                                  />
-                                `}
-                            Signed by ${res.locals.user.name}
-                          </span>
-                          <span
-                            class="text--violet"
-                            oninteractive="${javascript`
-                              tippy(this, {
-                                content: "Set as Signed by ${res.locals.user.name}",
-                                touch: false,
-                              });
-                            `}"
-                          >
-                            <i class="bi bi-sunglasses"></i>
-                            Anonymous to Other Students
-                          </span>
-                        </label>
-                      </div>
-                    </div>
-                  `}
-
-              <div>
-                <button
-                  class="button button--full-width-on-small-screen button--blue"
+                <div
+                  class="new-message"
                   oninteractive="${javascript`
-                      Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
-                      tippy(this, {
-                        content: ${JSON.stringify(html`
-                          <span class="keyboard-shortcut">
-                            Ctrl+Enter or
-                            <span class="keyboard-shortcut--cluster"
-                              ><i class="bi bi-command"></i
-                              ><i class="bi bi-arrow-return-left"></i
-                            ></span>
-                          </span>
-                        `)},
-                        touch: false,
-                        allowHTML: true,
-                      });
-                    `}"
+                    const content = this.querySelector(".markdown-editor--write--textarea");
+                    content.defaultValue =
+                      JSON.parse(
+                        localStorage.getItem("conversationsContentsInProgress") ?? "{}"
+                      )[window.location.pathname] ?? "";
+                    content.dataset.skipIsModified = "true";
+                    content.addEventListener("input", () => {
+                      const conversationsContentsInProgress = JSON.parse(
+                        localStorage.getItem("conversationsContentsInProgress") ?? "{}"
+                      );
+                      conversationsContentsInProgress[window.location.pathname] =
+                        content.value;
+                      localStorage.setItem(
+                        "conversationsContentsInProgress",
+                        JSON.stringify(conversationsContentsInProgress)
+                      );
+                    });
+                    content.closest("form").addEventListener("submit", () => {
+                      const conversationsContentsInProgress = JSON.parse(
+                        localStorage.getItem("conversationsContentsInProgress") ?? "{}"
+                      );
+                      delete conversationsContentsInProgress[window.location.pathname];
+                      localStorage.setItem(
+                        "conversationsContentsInProgress",
+                        JSON.stringify(conversationsContentsInProgress)
+                      );
+                    });
+                  `}"
                 >
-                  <i class="bi bi-send"></i>
-                  Send Message
-                </button>
-              </div>
-            </form>
+                  $${markdownEditor({ req, res })}
+                </div>
+
+                $${res.locals.enrollment.role === "staff" ||
+                res.locals.conversation.staffOnlyAt !== null
+                  ? html``
+                  : html`
+                      <div
+                        class="label"
+                        style="${css`
+                          width: var(--space--56);
+                        `}"
+                      >
+                        <p class="label--text">Anonymity</p>
+                        <div
+                          style="${css`
+                            display: flex;
+                          `}"
+                        >
+                          <label
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <input
+                              type="checkbox"
+                              name="isAnonymous"
+                              class="visually-hidden input--radio-or-checkbox--multilabel"
+                            />
+                            <span
+                              oninteractive="${javascript`
+                                tippy(this, {
+                                  content: "Set as Anonymous to Other Students",
+                                  touch: false,
+                                });
+                              `}"
+                            >
+                              $${res.locals.user.avatar === null
+                                ? html`<i class="bi bi-person-circle"></i>`
+                                : html`
+                                    <img
+                                      src="${res.locals.user.avatar}"
+                                      alt="${res.locals.user.name}"
+                                      class="avatar avatar--sm avatar--vertical-align"
+                                    />
+                                  `}
+                              Signed by ${res.locals.user.name}
+                            </span>
+                            <span
+                              class="text--violet"
+                              oninteractive="${javascript`
+                                tippy(this, {
+                                  content: "Set as Signed by ${res.locals.user.name}",
+                                  touch: false,
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-sunglasses"></i>
+                              Anonymous to Other Students
+                            </span>
+                          </label>
+                        </div>
+                      </div>
+                    `}
+
+                <div>
+                  <button
+                    class="button button--full-width-on-small-screen button--blue"
+                    oninteractive="${javascript`
+                        Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
+                        tippy(this, {
+                          content: ${JSON.stringify(html`
+                            <span class="keyboard-shortcut">
+                              Ctrl+Enter or
+                              <span class="keyboard-shortcut--cluster"
+                                ><i class="bi bi-command"></i
+                                ><i class="bi bi-arrow-return-left"></i
+                              ></span>
+                            </span>
+                          `)},
+                          touch: false,
+                          allowHTML: true,
+                        });
+                      `}"
+                  >
+                    <i class="bi bi-send"></i>
+                    Send Message
+                  </button>
+                </div>
+              </form>
+            </div>
           `,
         })
       );
