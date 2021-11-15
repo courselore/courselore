@@ -13103,6 +13103,18 @@ ${value}</textarea
                               style="${css`
                                 display: flex;
                                 gap: var(--space--2);
+                                transition-property: var(
+                                  --transition-property--opacity
+                                );
+                                transition-duration: var(
+                                  --transition-duration--150
+                                );
+                                transition-timing-function: var(
+                                  --transition-timing-function--in-out
+                                );
+                                :not(:hover) > * > * > & {
+                                  opacity: 0;
+                                }
                               `}"
                             >
                               $${content}
@@ -14024,6 +14036,18 @@ ${value}</textarea
                                     style="${css`
                                       display: flex;
                                       gap: var(--space--2);
+                                      transition-property: var(
+                                        --transition-property--opacity
+                                      );
+                                      transition-duration: var(
+                                        --transition-duration--150
+                                      );
+                                      transition-timing-function: var(
+                                        --transition-timing-function--in-out
+                                      );
+                                      :not(:hover) > * > * > & {
+                                        opacity: 0;
+                                      }
                                     `}"
                                   >
                                     $${message.authorEnrollment.id ===
