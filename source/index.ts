@@ -14616,6 +14616,10 @@ ${value}</textarea
                     & > * {
                       grid-area: 1 / 1;
                     }
+
+                    textarea {
+                      padding-right: var(--space--8);
+                    }
                   `}"
                   oninteractive="${javascript`
                     const content = this.querySelector(".markdown-editor--write--textarea");
