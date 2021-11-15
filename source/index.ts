@@ -9710,6 +9710,7 @@ export default async function courselore({
     name = "content",
     value = "",
     required = true,
+    lightweight = false,
   }: {
     req: express.Request<
       {},
@@ -9722,6 +9723,7 @@ export default async function courselore({
     name?: string;
     value?: string;
     required?: boolean;
+    lightweight?: boolean;
   }): HTML => html`
     <div class="markdown-editor">
       <div
@@ -14449,6 +14451,9 @@ ${value}</textarea
                                         req,
                                         res,
                                         value: message.content,
+                                        lightweight:
+                                          res.locals.conversation.type ===
+                                          "chat",
                                       })}
 
                                       <div
