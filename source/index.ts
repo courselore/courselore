@@ -12634,7 +12634,7 @@ ${value}</textarea
             >
               <div
                 style="${css`
-                  padding-bottom: var(--space--1);
+                  padding-bottom: var(--space--2);
                   border-bottom: var(--border-width--1) solid
                     var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
