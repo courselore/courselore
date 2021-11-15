@@ -30,7 +30,6 @@
 
 - New conversation.
   - The first post is a chatroom description
-- Test the app all around.
 - Layout changes:
   - Fixed header on top & textarea on bottom.
   - Load from the bottom.
