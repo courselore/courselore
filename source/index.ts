@@ -14673,7 +14673,14 @@ ${value}</textarea
                             });
                           `}"
                         >
-                          <i class="bi bi-send"></i>
+                          <i
+                            class="bi bi-send"
+                            style="${css`
+                              position: relative;
+                              top: var(--space--px);
+                              right: var(--space--px);
+                            `}"
+                          ></i>
                         </button>
                       `
                     : html``}
