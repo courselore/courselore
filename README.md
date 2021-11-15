@@ -29,8 +29,9 @@
 ### Chat
 
 - Layout changes:
-  - More lightweight textarea on bottom.
-  - More lightweight design for messages.
+  - More compact textarea on bottom.
+  - More compact design for messages.
+  - More compact design for header.
 - Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
 - Bookmarks / flags / saved items. These are personal, for example, for something you have to follow up on.
 - Show who’s online.
