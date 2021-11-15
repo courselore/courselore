@@ -12432,6 +12432,12 @@ ${value}</textarea
             )}
           `
         )!;
+        database.run(
+          sql`
+            INSERT INTO "readings" ("message", "enrollment")
+            VALUES (${message.id}, ${res.locals.enrollment.id})
+          `
+        );
 
         sendNotificationsIfNecessary = () => {
           const completeConversation = getConversation(
@@ -15054,6 +15060,12 @@ ${value}</textarea
           )}
         `
       )!;
+      database.run(
+        sql`
+          INSERT INTO "readings" ("message", "enrollment")
+          VALUES (${message.id}, ${res.locals.enrollment.id})
+        `
+      );
 
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.conversation.nextMessageReference}`
