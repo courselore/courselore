@@ -976,6 +976,31 @@ export default async function courselore({
                 }
               }
 
+              .details {
+                padding: var(--space--2) var(--space--4);
+                background-color: var(--color--gray--medium--200);
+                @media (prefers-color-scheme: dark) {
+                  background-color: var(--color--gray--medium--700);
+                }
+                border-radius: var(--border-radius--xl);
+                summary {
+                  cursor: pointer;
+                  &::before {
+                    content: "\\f275";
+                    font-family: bootstrap-icons !important;
+                    font-size: var(--font-size--xs);
+                    line-height: var(--line-height--xs);
+                    margin-right: var(--space--2);
+                  }
+                }
+                &[open] > summary {
+                  margin-bottom: var(--space--4);
+                  &::before {
+                    content: "\\f273";
+                  }
+                }
+              }
+
               .avatar {
                 border-radius: var(--border-radius--circle);
                 @media (prefers-color-scheme: dark) {
@@ -6948,6 +6973,21 @@ export default async function courselore({
                               `}
                         </div>
                       </div>
+
+                      $${enrollment.userBiography !== null
+                        ? html`
+                            <details class="details">
+                              <summary>Biography</summary>
+                              <div>
+                                $${markdownProcessor({
+                                  req,
+                                  res,
+                                  markdown: enrollment.userBiography,
+                                }).html}
+                              </div>
+                            </details>
+                          `
+                        : html``}
                     </div>
                   </div>
                 `;
