@@ -12630,7 +12630,6 @@ ${value}</textarea
               style="${css`
                 display: flex;
                 flex-direction: column;
-                gap: var(--space--4);
               `}"
             >
               <div
@@ -13402,6 +13401,7 @@ ${value}</textarea
                   ? html`
                       <div
                         style="${css`
+                          margin-top: var(--space--4);
                           display: flex;
                           flex-direction: column;
                           gap: var(--space--4);
