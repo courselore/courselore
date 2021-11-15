@@ -12635,6 +12635,12 @@ ${value}</textarea
             >
               <div
                 style="${css`
+                  padding-bottom: var(--space--1);
+                  border-bottom: var(--border-width--1) solid
+                    var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    border-color: var(--color--gray--medium--700);
+                  }
                   display: flex;
                   flex-direction: column;
                   gap: var(--space--1);
@@ -13411,8 +13417,6 @@ ${value}</textarea
                             : "All messages in this conversation have been deleted."}
                         </p>
                       </div>
-
-                      <hr class="separator" />
                     `
                   : (() => {
                       let shouldScrollIntoView = messages[0].reading !== null;
@@ -13421,10 +13425,12 @@ ${value}</textarea
                           <div
                             style="${css`
                               padding-bottom: var(--space--1);
-                              border-bottom: var(--border-width--4) solid
-                                var(--color--gray--medium--200);
-                              @media (prefers-color-scheme: dark) {
-                                border-color: var(--color--gray--medium--700);
+                              &:not(:last-child) {
+                                border-bottom: var(--border-width--4) solid
+                                  var(--color--gray--medium--200);
+                                @media (prefers-color-scheme: dark) {
+                                  border-color: var(--color--gray--medium--700);
+                                }
                               }
                             `}"
                           >
@@ -14500,6 +14506,12 @@ ${value}</textarea
                   .reference}/messages"
                 novalidate
                 style="${css`
+                  padding-top: var(--space--2);
+                  border-top: var(--border-width--4) solid
+                    var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    border-color: var(--color--gray--medium--700);
+                  }
                   display: flex;
                   flex-direction: column;
                   gap: var(--space--4);
