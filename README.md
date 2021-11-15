@@ -29,6 +29,7 @@
 ### Chat
 
 - Layout changes:
+  - Deal with anonymity setting in footer.
   - More compact design for messages.
   - More compact design for header.
 - Don’t reload on sending message.

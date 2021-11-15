@@ -14587,6 +14587,17 @@ ${value}</textarea
                   flex-direction: column;
                   gap: var(--space--4);
                 `}"
+                $${res.locals.conversation.type === "chat"
+                  ? html`
+                      onsubmit="${javascript`
+                        event.preventDefault();
+                        fetch(this.action, {
+                          method: this.method,
+                          body: new URLSearchParams(new FormData(this)),
+                        });
+                      `}"
+                    `
+                  : html``}
               >
                 <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
 
