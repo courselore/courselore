@@ -14796,21 +14796,21 @@ ${value}</textarea
                   <button
                     class="button button--full-width-on-small-screen button--blue"
                     oninteractive="${javascript`
-                        Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
-                        tippy(this, {
-                          content: ${JSON.stringify(html`
-                            <span class="keyboard-shortcut">
-                              Ctrl+Enter or
-                              <span class="keyboard-shortcut--cluster"
-                                ><i class="bi bi-command"></i
-                                ><i class="bi bi-arrow-return-left"></i
-                              ></span>
-                            </span>
-                          `)},
-                          touch: false,
-                          allowHTML: true,
-                        });
-                      `}"
+                      Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
+                      tippy(this, {
+                        content: ${JSON.stringify(html`
+                          <span class="keyboard-shortcut">
+                            Ctrl+Enter or
+                            <span class="keyboard-shortcut--cluster"
+                              ><i class="bi bi-command"></i
+                              ><i class="bi bi-arrow-return-left"></i
+                            ></span>
+                          </span>
+                        `)},
+                        touch: false,
+                        allowHTML: true,
+                      });
+                    `}"
                   >
                     <i class="bi bi-send"></i>
                     Send Message
