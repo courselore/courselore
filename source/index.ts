@@ -9710,7 +9710,7 @@ export default async function courselore({
     name = "content",
     value = "",
     required = true,
-    lightweight = false,
+    compact = false,
   }: {
     req: express.Request<
       {},
@@ -9723,7 +9723,7 @@ export default async function courselore({
     name?: string;
     value?: string;
     required?: boolean;
-    lightweight?: boolean;
+    compact?: boolean;
   }): HTML => html`
     <div class="markdown-editor">
       <div
@@ -9755,6 +9755,12 @@ export default async function courselore({
               background-color: var(--color--gray--medium--700);
             }
           }
+
+          ${compact
+            ? css`
+                display: none;
+              `
+            : css``}
         `}"
       >
         <label>
@@ -9837,7 +9843,13 @@ export default async function courselore({
           <span
             class="button button--transparent"
             oninteractive="${javascript`
-              Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+p", () => { this.click(); return false; });
+            ${
+              compact
+                ? javascript``
+                : javascript`
+                    Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+p", () => { this.click(); return false; });
+                  `
+            }
               tippy(this, {
                 content: ${JSON.stringify(html`
                   <span class="keyboard-shortcut">
@@ -9886,6 +9898,12 @@ export default async function courselore({
                 }
                 margin-left: var(--space--0-5);
               }
+
+              ${compact
+                ? css`
+                    display: none;
+                  `
+                : css``}
             `}"
           >
             <div>
@@ -10579,7 +10597,14 @@ export default async function courselore({
               $${required ? html`required` : html``}
               class="markdown-editor--write--textarea input--text input--text--textarea"
               style="${css`
-                height: var(--space--20);
+                ${compact
+                  ? css`
+                      height: var(--space--14);
+                    `
+                  : css`
+                      height: var(--space--20);
+                    `}
+
                 transition-property: var(--transition-property--all);
                 transition-duration: var(--transition-duration--150);
                 transition-timing-function: var(
@@ -10721,9 +10746,13 @@ export default async function courselore({
                     `}"
                   `
                 : html``}
-              onfocus="${javascript`
-                this.style.height = "var(--space--52)";
-              `}"
+              ${compact
+                ? html``
+                : html`
+                    onfocus="${javascript`
+                      this.style.height = "var(--space--52)";
+                    `}"
+                  `}
               ondragenter="${javascript`
                 this.classList.add("drag");
               `}"
@@ -14451,9 +14480,6 @@ ${value}</textarea
                                         req,
                                         res,
                                         value: message.content,
-                                        lightweight:
-                                          res.locals.conversation.type ===
-                                          "chat",
                                       })}
 
                                       <div
@@ -14615,7 +14641,11 @@ ${value}</textarea
                     });
                   `}"
                 >
-                  $${markdownEditor({ req, res })}
+                  $${markdownEditor({
+                    req,
+                    res,
+                    compact: res.locals.conversation.type === "chat",
+                  })}
                 </div>
 
                 $${res.locals.enrollment.role === "staff" ||
