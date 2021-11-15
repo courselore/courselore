@@ -13369,6 +13369,9 @@ ${value}</textarea
                   ${res.locals.conversation.type === "chat"
                     ? css`
                         overflow: auto;
+                        width: calc(var(--space--4) + 100% + var(--space--4));
+                        padding: var(--space--0) var(--space--4);
+                        margin-left: var(--space---4);
 
                         @at-root {
                           .conversation--layout--main.conversation--layout--main.conversation--layout--main.conversation--layout--main.conversation--layout--main.conversation--layout--main.conversation--layout--main.conversation--layout--main.conversation--layout--main.conversation--layout--main {
