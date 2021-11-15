@@ -14708,7 +14708,15 @@ ${value}</textarea
                       </div>
                     `}
 
-                <div>
+                <div
+                  style="${css`
+                    ${res.locals.conversation.type === "chat"
+                      ? css`
+                          display: none;
+                        `
+                      : css``}
+                  `}"
+                >
                   <button
                     class="button button--full-width-on-small-screen button--blue"
                     oninteractive="${javascript`
