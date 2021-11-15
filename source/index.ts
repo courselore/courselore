@@ -14617,9 +14617,13 @@ ${value}</textarea
                       grid-area: 1 / 1;
                     }
 
-                    textarea {
-                      padding-right: var(--space--8);
-                    }
+                    ${res.locals.conversation.type === "chat"
+                      ? css`
+                          textarea {
+                            padding-right: var(--space--8);
+                          }
+                        `
+                      : css``}
                   `}"
                   oninteractive="${javascript`
                     const content = this.querySelector(".markdown-editor--write--textarea");
