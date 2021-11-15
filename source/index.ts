@@ -13396,6 +13396,15 @@ ${value}</textarea
                       `
                     : css``}
                 `}"
+                $${res.locals.conversation.type === "chat" &&
+                messages[0].reading !== null
+                  ? html`
+                      oninteractive="${javascript`
+                        if (this.querySelector('[data-scroll-into-view="true"]') === null)
+                          this.scrollTop = this.scrollHeight;
+                      `}"
+                    `
+                  : html``}
               >
                 $${messages.length === 0
                   ? html`
@@ -13475,6 +13484,7 @@ ${value}</textarea
                                 ? (() => {
                                     shouldScrollIntoView = false;
                                     return html`
+                                      data-scroll-into-view="true"
                                       oninteractive="${javascript`
                                         if (window.location.hash === "") this.scrollIntoView();
                                       `}"
