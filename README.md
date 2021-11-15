@@ -28,8 +28,6 @@
 
 ### Chat
 
-- Coffee mug.
-- Water cooler.
 - New conversation.
   - The first post is a chatroom description
 - Test the app all around.
