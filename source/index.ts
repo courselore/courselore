@@ -14611,6 +14611,12 @@ ${value}</textarea
 
                 <div
                   class="new-message"
+                  style="${css`
+                    display: grid;
+                    & > * {
+                      grid-area: 1 / 1;
+                    }
+                  `}"
                   oninteractive="${javascript`
                     const content = this.querySelector(".markdown-editor--write--textarea");
                     content.defaultValue =
@@ -14646,6 +14652,31 @@ ${value}</textarea
                     res,
                     compact: res.locals.conversation.type === "chat",
                   })}
+                  $${res.locals.conversation.type === "chat"
+                    ? html`
+                        <button
+                          class="button button--blue"
+                          style="${css`
+                            position: relative;
+                            place-self: end;
+                            width: var(--font-size--2xl);
+                            height: var(--font-size--2xl);
+                            padding: var(--space--0);
+                            border-radius: var(--border-radius--circle);
+                            margin: var(--space--1);
+                            align-items: center;
+                          `}"
+                          oninteractive="${javascript`
+                            tippy(this, {
+                              content: "Send Message",
+                              touch: false,
+                            });
+                          `}"
+                        >
+                          <i class="bi bi-send"></i>
+                        </button>
+                      `
+                    : html``}
                 </div>
 
                 $${res.locals.enrollment.role === "staff" ||
