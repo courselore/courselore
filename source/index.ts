@@ -13366,6 +13366,27 @@ ${value}</textarea
                   display: flex;
                   flex-direction: column;
                   gap: var(--space--4);
+                  ${res.locals.conversation.type === "chat"
+                    ? css`
+                        overflow: auto;
+
+                        @at-root {
+                          .conversation--layout--main.conversation--layout--main.conversation--layout--main.conversation--layout--main.conversation--layout--main.conversation--layout--main.conversation--layout--main.conversation--layout--main.conversation--layout--main.conversation--layout--main {
+                            & > * {
+                              height: calc(
+                                var(--space---4) + 100% + var(--space---4)
+                              );
+                              & > * {
+                                height: 100%;
+                                & > * {
+                                  height: 100%;
+                                }
+                              }
+                            }
+                          }
+                        }
+                      `
+                    : css``}
                 `}"
               >
                 $${messages.length === 0
