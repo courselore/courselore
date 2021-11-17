@@ -28,6 +28,12 @@
 
 ### Chat
 
+- Fix flash of top of messages.
+- Paginate messages.
+- Currently typing.
+- Separate by date.
+- Highlight message under cursor.
+- Group together messages sent in quick succession.
 - Layout changes:
   - Deal with anonymity setting in footer.
   - More compact design for messages.
