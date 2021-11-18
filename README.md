@@ -28,6 +28,10 @@
 
 ### Chat
 
+- More course information.
+  - Image.
+  - Number.
+  - Term.
 - Fix flash of top of messages.
 - Paginate messages.
 - Currently typing.
@@ -76,6 +80,7 @@
 - Different states: Open vs archived.
 - Assign questions to CAs.
 - Scroll the conversations list to the current conversation doesn’t work on mobile.
+- Save drafts of conversations you’re creating.
 
 ### Advanced Access Control
 
@@ -160,6 +165,7 @@
 
 ### Statistics
 
+- Gamification: A reputation system with badges.
 - How many questions & how fast they were answered.
 - Student engagement for courses in which participation is graded.
 
