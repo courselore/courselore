@@ -28,7 +28,6 @@
 
 ### Chat
 
-- `display: none;`.
 - Layout changes:
   - Deal with anonymity setting in footer.
   - More compact design for header.
