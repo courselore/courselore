@@ -8988,72 +8988,56 @@ export default async function courselore({
           line-height: var(--line-height--xs);
         `}"
       >
-        <div>
-          #${conversation.reference} created
-          <time
-            oninteractive="${javascript`
-              leafac.relativizeDateTimeElement(this);
-            `}"
-          >
-            ${conversation.createdAt}
-          </time>
-          by
-          $${conversation.anonymousAt === null
-            ? html`
-                $${conversation.authorEnrollment.user.avatar === null
-                  ? html`<i class="bi bi-person-circle"></i>`
-                  : html`
-                      <img
-                        src="${conversation.authorEnrollment.user.avatar}"
-                        alt="${conversation.authorEnrollment.user.name}"
-                        class="avatar avatar--xs avatar--vertical-align"
-                      />
-                    `}
-                ${conversation.authorEnrollment.user.name}
-              `
-            : html`
-                <span
-                  class="text--violet"
-                  oninteractive="${javascript`
-                    tippy(this, {
-                      content: "Anonymous to other students.",
-                      touch: false,
-                    });
-                  `}"
-                >
-                  <i class="bi bi-sunglasses"></i>
-                  Anonymous
-                </span>
-              `}
-          $${conversation.anonymousAt !== null &&
-          (res.locals.enrollment.role === "staff" ||
-            conversation.authorEnrollment.id === res.locals.enrollment.id)
-            ? html`
-                ($${conversation.authorEnrollment.user.avatar === null
-                  ? html`<i class="bi bi-person-circle"></i>`
-                  : html`<img
+        #${conversation.reference} ·
+        $${conversation.anonymousAt === null
+          ? html`
+              $${conversation.authorEnrollment.user.avatar === null
+                ? html`<i class="bi bi-person-circle"></i>`
+                : html`
+                    <img
                       src="${conversation.authorEnrollment.user.avatar}"
                       alt="${conversation.authorEnrollment.user.name}"
                       class="avatar avatar--xs avatar--vertical-align"
-                    />`}
-                ${conversation.authorEnrollment.user.name})
-              `
-            : html``}
-        </div>
-        $${conversation.updatedAt !== null
+                    />
+                  `}
+              ${conversation.authorEnrollment.user.name}
+            `
+          : html`
+              <span
+                class="text--violet"
+                oninteractive="${javascript`
+                  tippy(this, {
+                    content: "Anonymous to other students.",
+                    touch: false,
+                  });
+                `}"
+              >
+                <i class="bi bi-sunglasses"></i>
+                Anonymous
+              </span>
+            `}
+        $${conversation.anonymousAt !== null &&
+        (res.locals.enrollment.role === "staff" ||
+          conversation.authorEnrollment.id === res.locals.enrollment.id)
           ? html`
-              <div>
-                and last updated
-                <time
-                  oninteractive="${javascript`
-                    leafac.relativizeDateTimeElement(this);
-                  `}"
-                >
-                  ${conversation.updatedAt}
-                </time>
-              </div>
+              ($${conversation.authorEnrollment.user.avatar === null
+                ? html`<i class="bi bi-person-circle"></i>`
+                : html`<img
+                    src="${conversation.authorEnrollment.user.avatar}"
+                    alt="${conversation.authorEnrollment.user.name}"
+                    class="avatar avatar--xs avatar--vertical-align"
+                  />`}
+              ${conversation.authorEnrollment.user.name})
             `
           : html``}
+        ·
+        <time
+          oninteractive="${javascript`
+              leafac.relativizeDateTimeElement(this);
+            `}"
+        >
+          ${conversation.createdAt}
+        </time>
       </div>
       $${conversation.taggings.length === 0
         ? html``
