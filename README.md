@@ -28,6 +28,7 @@
 
 ### Chat
 
+- Fix scrolling in chat only being possible in small column containing conversation.
 - Test scrolling behavior:
   - Permanent link to message.
   - With unread.
