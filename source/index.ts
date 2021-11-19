@@ -14043,7 +14043,7 @@ ${value}</textarea
                                               )})
                                             `
                                           : html``}
-                                        said
+                                        ·
                                         <time
                                           oninteractive="${javascript`
                                             leafac.relativizeDateTimeElement(this);
@@ -14053,16 +14053,17 @@ ${value}</textarea
                                         </time>
                                         $${message.updatedAt !== null
                                           ? html`
-                                              and last updated
+                                              (updated
                                               <time
                                                 oninteractive="${javascript`
-                                                  leafac.relativizeDateTimeElement(this);
+                                                  leafac.relativizeDateTimeElement(this, { preposition: "on" });
                                                 `}"
                                               >
-                                                ${message.updatedAt}
-                                              </time>
+                                                ${message.updatedAt} </time
+                                              >)
                                             `
                                           : html``}
+                                        ·
                                         <button
                                           class="button button--tight button--tight--inline button--transparent"
                                           style="${css`
