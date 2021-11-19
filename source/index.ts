@@ -8802,7 +8802,7 @@ export default async function courselore({
                                 width: calc(
                                   var(--space--2) + 100% + var(--space--2)
                                 );
-                                padding: var(--space--4) var(--space--2);
+                                padding: var(--space--3) var(--space--2);
                                 margin-left: var(--space---2);
                                 position: relative;
                                 align-items: center;
