@@ -13492,12 +13492,9 @@ ${value}</textarea
 
               <div
                 style="${css`
-                  flex: 1;
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
                   ${res.locals.conversation.type === "chat"
                     ? css`
+                        flex: 1;
                         width: calc(var(--space--4) + 100% + var(--space--4));
                         padding: var(--space--0) var(--space--4);
                         margin-left: var(--space---4);
