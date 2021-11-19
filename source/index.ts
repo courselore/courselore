@@ -13211,9 +13211,8 @@ ${value}</textarea
                           hidden
                           class="title--edit"
                           style="${css`
-                            margin-bottom: var(--space--2);
                             display: flex;
-                            gap: var(--space--4);
+                            gap: var(--space--2);
                             align-items: center;
                           `}"
                         >
