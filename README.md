@@ -28,10 +28,18 @@
 
 ### Chat
 
+- Test scrolling behavior:
+  - Permanent link to message.
+  - With unread.
+    - Conversation.
+    - Chat.
+  - Without unread.
+    - Conversation.
+    - Chat.
 - Layout changes:
-  - Deal with anonymity setting in footer.
-  - More compact design for header.
+  - More compact design for header on mobile.
   - More compact design for messages.
+  - Deal with anonymity setting in footer.
 - Fix flash of top of messages.
 - Paginate messages.
 - Currently typing.
