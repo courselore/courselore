@@ -9089,20 +9089,61 @@ export default async function courselore({
             <div>
               <div>
                 $${conversation.messageAuthorUserNameSearchResultMessage
-                  .authorEnrollment.user.avatar === null
-                  ? html`<i class="bi bi-person-circle"></i>`
+                  .anonymousAt === null
+                  ? html`
+                      $${conversation.messageAuthorUserNameSearchResultMessage
+                        .authorEnrollment.user.avatar === null
+                        ? html`<i class="bi bi-person-circle"></i>`
+                        : html`
+                            <img
+                              src="${conversation
+                                .messageAuthorUserNameSearchResultMessage
+                                .authorEnrollment.user.avatar}"
+                              alt="${conversation
+                                .messageAuthorUserNameSearchResultMessage
+                                .authorEnrollment.user.name}"
+                              class="avatar avatar--xs avatar--vertical-align"
+                            />
+                          `}
+                      $${conversation.messageAuthorUserNameSearchResultHighlight}
+                    `
                   : html`
-                      <img
-                        src="${conversation
-                          .messageAuthorUserNameSearchResultMessage
-                          .authorEnrollment.user.avatar}"
-                        alt="${conversation
-                          .messageAuthorUserNameSearchResultMessage
-                          .authorEnrollment.user.name}"
-                        class="avatar avatar--xs avatar--vertical-align"
-                      />
+                      <span
+                        class="text--violet"
+                        oninteractive="${javascript`
+                        tippy(this, {
+                          content: "Anonymous to other students.",
+                          touch: false,
+                        });
+                      `}"
+                      >
+                        <i class="bi bi-sunglasses"></i>
+                        Anonymous
+                      </span>
                     `}
-                $${conversation.messageAuthorUserNameSearchResultHighlight}
+                $${conversation.messageAuthorUserNameSearchResultMessage
+                  .anonymousAt !== null &&
+                (res.locals.enrollment.role === "staff" ||
+                  conversation.messageAuthorUserNameSearchResultMessage
+                    .authorEnrollment.id === res.locals.enrollment.id)
+                  ? html`
+                      ($${conversation.messageAuthorUserNameSearchResultMessage
+                        .authorEnrollment.user.avatar === null
+                        ? html`<i class="bi bi-person-circle"></i>`
+                        : html`
+                            <img
+                              src="${conversation
+                                .messageAuthorUserNameSearchResultMessage
+                                .authorEnrollment.user.avatar}"
+                              alt="${conversation
+                                .messageAuthorUserNameSearchResultMessage
+                                .authorEnrollment.user.name}"
+                              class="avatar avatar--xs avatar--vertical-align"
+                            />
+                          `}
+                      $${conversation.messageAuthorUserNameSearchResultHighlight})
+                    `
+                  : html``}
               </div>
               <div>
                 $${lodash.truncate(
