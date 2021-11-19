@@ -13534,6 +13534,7 @@ ${value}</textarea
                         : css``}
                     `}"
                     oninteractive="${javascript`
+                      this.hidden = false;
                       ${
                         res.locals.conversation.type === "chat" &&
                         unreadMessageToScrollTo === undefined
@@ -13542,7 +13543,6 @@ ${value}</textarea
                           `
                           : javascript``
                       }
-                      this.hidden = false;
                     `}"
                   >
                     $${messages.length === 0
