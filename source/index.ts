@@ -9792,6 +9792,7 @@ export default async function courselore({
   }): HTML => html`
     <div class="markdown-editor">
       <div
+        $${compact ? html`hidden` : html``}
         style="${css`
           display: flex;
           gap: var(--space--1);
@@ -9820,12 +9821,6 @@ export default async function courselore({
               background-color: var(--color--gray--medium--700);
             }
           }
-
-          ${compact
-            ? css`
-                display: none;
-              `
-            : css``}
         `}"
       >
         <label>
@@ -9946,6 +9941,7 @@ export default async function courselore({
       >
         <div class="markdown-editor--write">
           <div
+            $${compact ? html`hidden` : html``}
             style="${css`
               padding: var(--space--1) var(--space--0);
               margin: var(--space--0) var(--space--3);
@@ -9963,12 +9959,6 @@ export default async function courselore({
                 }
                 margin-left: var(--space--0-5);
               }
-
-              ${compact
-                ? css`
-                    display: none;
-                  `
-                : css``}
             `}"
           >
             <div>
@@ -14862,13 +14852,9 @@ ${value}</textarea
                     `}
 
                 <div
-                  style="${css`
-                    ${res.locals.conversation.type === "chat"
-                      ? css`
-                          display: none;
-                        `
-                      : css``}
-                  `}"
+                  $${res.locals.conversation.type === "chat"
+                    ? html`hidden`
+                    : html``}
                 >
                   <button
                     class="button button--full-width-on-small-screen button--blue"
