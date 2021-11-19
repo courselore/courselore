@@ -12725,7 +12725,6 @@ ${value}</textarea
               `}"
             >
               <div
-                class="header"
                 style="${css`
                   padding-bottom: var(--space--2);
                   border-bottom: var(--border-width--1) solid
@@ -13089,25 +13088,6 @@ ${value}</textarea
                         </div>
                       `);
 
-                    if (mayEditConversation(req, res))
-                      content.push(html`
-                        <button
-                          class="button button--tight button--tight--inline button--transparent"
-                          oninteractive="${javascript`
-                            tippy(this, {
-                              content: "Edit Title",
-                              touch: false,
-                            });
-                          `}"
-                          onclick="${javascript`
-                            this.closest(".header").querySelector(".title--show").hidden = true;
-                            this.closest(".header").querySelector(".title--edit").hidden = false;
-                          `}"
-                        >
-                          <i class="bi bi-pencil"></i>
-                        </button>
-                      `);
-
                     return content.length === 0
                       ? html``
                       : html`
@@ -13135,116 +13115,158 @@ ${value}</textarea
                   })()}
                 </div>
 
-                <h2 class="title--show">
-                  <span
-                    class="strong"
-                    style="${css`
-                      font-size: var(--font-size--lg);
-                      line-height: var(--line-height--lg);
-                    `}"
-                  >
-                    $${highlightSearchResult(
-                      html`${res.locals.conversation.title}`,
-                      req.query.search
-                    )}
-                  </span>
+                <div class="title">
+                  <h2 class="title--show">
+                    <span
+                      class="strong"
+                      style="${css`
+                        font-size: var(--font-size--lg);
+                        line-height: var(--line-height--lg);
+                      `}"
+                    >
+                      $${highlightSearchResult(
+                        html`${res.locals.conversation.title}`,
+                        req.query.search
+                      )}
+                    </span>
 
-                  <button
-                    class="button button--tight button--transparent secondary"
-                    style="${css`
-                      font-size: var(--font-size--xs);
-                      line-height: var(--line-height--xs);
-                      display: inline-flex;
-                    `}"
-                    oninteractive="${javascript`
-                      tippy(this, {
-                        content: "Copy Conversation Permanent Link to Clipboard",
-                        touch: false,
-                      });
-                      this.copied = tippy(this, {
-                        content: "Copied Conversation Permanent Link to Clipboard",
-                        theme: "green",
-                        trigger: "manual",
-                      });
-                    `}"
-                    onclick="${javascript`
-                      (async () => {
-                        await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
-                        this.copied.show();
-                        await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                        this.copied.hide();
-                      })();
-                    `}"
-                  >
-                    #${res.locals.conversation.reference}
-                  </button>
-                </h2>
-
-                $${mayEditConversation(req, res)
-                  ? html`
-                      <form
-                        method="POST"
-                        action="${baseURL}/courses/${res.locals.course
-                          .reference}/conversations/${res.locals.conversation
-                          .reference}?_method=PATCH"
-                        novalidate
-                        hidden
-                        class="title--edit"
-                        style="${css`
-                          margin-bottom: var(--space--2);
-                          display: flex;
-                          gap: var(--space--4);
-                          align-items: center;
+                    <span
+                      class="secondary"
+                      style="${css`
+                        font-size: var(--font-size--xs);
+                        line-height: var(--line-height--xs);
+                        display: inline-flex;
+                        gap: var(--space--2);
+                      `}"
+                    >
+                      <button
+                        class="button button--tight button--tight--inline button--transparent"
+                        oninteractive="${javascript`
+                          tippy(this, {
+                            content: "Copy Conversation Permanent Link to Clipboard",
+                            touch: false,
+                          });
+                          this.copied = tippy(this, {
+                            content: "Copied Conversation Permanent Link to Clipboard",
+                            theme: "green",
+                            trigger: "manual",
+                          });
+                        `}"
+                        onclick="${javascript`
+                          (async () => {
+                            await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
+                            this.copied.show();
+                            await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                            this.copied.hide();
+                          })();
                         `}"
                       >
-                        <input
-                          type="hidden"
-                          name="_csrf"
-                          value="${req.csrfToken()}"
-                        />
-                        <input
-                          type="text"
-                          name="title"
-                          value="${res.locals.conversation.title}"
-                          required
-                          autocomplete="off"
-                          class="input--text"
-                        />
-                        <button
-                          class="button button--tight button--tight--inline button--transparent text--green"
+                        #${res.locals.conversation.reference}
+                      </button>
+
+                      $${mayEditConversation(req, res)
+                        ? html`
+                            <button
+                              class="button button--tight button--tight--inline button--transparent"
+                              style="${css`
+                                transition-property: var(
+                                  --transition-property--opacity
+                                );
+                                transition-duration: var(
+                                  --transition-duration--150
+                                );
+                                transition-timing-function: var(
+                                  --transition-timing-function--in-out
+                                );
+                                :not(:hover) > * > * > * > & {
+                                  opacity: 0;
+                                }
+                              `}"
+                              oninteractive="${javascript`
+                                tippy(this, {
+                                  content: "Edit Title",
+                                  touch: false,
+                                });
+                              `}"
+                              onclick="${javascript`
+                                this.closest(".title").querySelector(".title--show").hidden = true;
+                                this.closest(".title").querySelector(".title--edit").hidden = false;
+                              `}"
+                            >
+                              <i class="bi bi-pencil"></i>
+                            </button>
+                          `
+                        : html``}
+                    </span>
+                  </h2>
+
+                  $${mayEditConversation(req, res)
+                    ? html`
+                        <form
+                          method="POST"
+                          action="${baseURL}/courses/${res.locals.course
+                            .reference}/conversations/${res.locals.conversation
+                            .reference}?_method=PATCH"
+                          novalidate
+                          hidden
+                          class="title--edit"
                           style="${css`
-                            flex: 1;
-                          `}"
-                          oninteractive="${javascript`
-                            tippy(this, {
-                              content: "Update Title",
-                              theme: "green",
-                              touch: false,
-                            });
+                            margin-bottom: var(--space--2);
+                            display: flex;
+                            gap: var(--space--4);
+                            align-items: center;
                           `}"
                         >
-                          <i class="bi bi-check-lg"></i>
-                        </button>
-                        <button
-                          type="reset"
-                          class="button button--tight button--tight--inline button--transparent text--rose"
-                          oninteractive="${javascript`
-                            tippy(this, {
-                              content: "Cancel",
-                              theme: "rose",
-                              touch: false,
-                            });
-                          `}"
-                          onclick="${javascript`
-                            this.closest(".header").querySelector(".title--show").hidden = false;
-                            this.closest(".header").querySelector(".title--edit").hidden = true;
-                          `}"
-                        >
-                          <i class="bi bi-x-lg"></i>
-                        </button>
-                      </form>
-                    `
-                  : html``}
+                          <input
+                            type="hidden"
+                            name="_csrf"
+                            value="${req.csrfToken()}"
+                          />
+                          <input
+                            type="text"
+                            name="title"
+                            value="${res.locals.conversation.title}"
+                            required
+                            autocomplete="off"
+                            class="input--text"
+                          />
+                          <button
+                            class="button button--tight button--tight--inline button--transparent text--green"
+                            style="${css`
+                              flex: 1;
+                            `}"
+                            oninteractive="${javascript`
+                              tippy(this, {
+                                content: "Update Title",
+                                theme: "green",
+                                touch: false,
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-check-lg"></i>
+                          </button>
+                          <button
+                            type="reset"
+                            class="button button--tight button--tight--inline button--transparent text--rose"
+                            oninteractive="${javascript`
+                              tippy(this, {
+                                content: "Cancel",
+                                theme: "rose",
+                                touch: false,
+                              });
+                            `}"
+                            onclick="${javascript`
+                              this.closest(".title").querySelector(".title--show").hidden = false;
+                              this.closest(".title").querySelector(".title--edit").hidden = true;
+                            `}"
+                          >
+                            <i class="bi bi-x-lg"></i>
+                          </button>
+                        </form>
+                      `
+                    : html``}
+                </div>
+
                 $${res.locals.tags.length === 0
                   ? html``
                   : html`
