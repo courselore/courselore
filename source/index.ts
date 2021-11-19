@@ -13518,15 +13518,17 @@ ${value}</textarea
                       `
                     : css``}
                 `}"
-                $${res.locals.conversation.type === "chat" &&
-                messages[0].reading !== null
-                  ? html`
-                      oninteractive="${javascript`
-                        if (this.querySelector('[data-scroll-into-view="true"]') === null)
-                          this.scrollTop = this.scrollHeight;
-                      `}"
-                    `
-                  : html``}
+                oninteractive="${javascript`
+                    ${
+                      res.locals.conversation.type === "chat" &&
+                      messages[0].reading !== null
+                        ? javascript`
+                          if (this.querySelector('[data-scroll-into-view="true"]') === null)
+                            this.scrollTop = this.scrollHeight;
+                        `
+                        : javascript``
+                    }
+                `}"
               >
                 $${messages.length === 0
                   ? html`
