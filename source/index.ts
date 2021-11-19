@@ -15893,7 +15893,18 @@ ${value}</textarea
           ) {
             const conversationCreatedAt =
               conversationCreatedAts[conversationReference - 1];
-            const nextMessageReference = lodash.random(2, 13);
+            const type =
+              conversationTypes[
+                Math.random() < 0.7
+                  ? 1
+                  : Math.random() < 0.7
+                  ? 0
+                  : Math.random() < 0.7
+                  ? 3
+                  : 2
+              ];
+            const nextMessageReference =
+              type === "chat" ? lodash.random(50, 100) : lodash.random(2, 13);
             const messageCreatedAts = [conversationCreatedAt];
             for (
               let messageReference = 1;
@@ -15910,16 +15921,6 @@ ${value}</textarea
                   )
                 ).toISOString()
               );
-            const type =
-              conversationTypes[
-                Math.random() < 0.7
-                  ? 1
-                  : Math.random() < 0.7
-                  ? 0
-                  : Math.random() < 0.7
-                  ? 3
-                  : 2
-              ];
             // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
             const title =
               lodash.capitalize(faker.lorem.words(lodash.random(1, 10))) +
