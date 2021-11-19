@@ -28,15 +28,10 @@
 
 ### Chat
 
-- More course information.
-  - Image.
-  - Number.
-  - Term.
 - Fix flash of top of messages.
 - Paginate messages.
 - Currently typing.
 - Separate by date.
-- Highlight message under cursor.
 - Group together messages sent in quick succession.
 - Layout changes:
   - Deal with anonymity setting in footer.
@@ -58,6 +53,9 @@
 
 ### Courses
 
+- More information:
+  - Number.
+  - Term.
 - Different course states, for example, archived.
 - Remove course entirely.
 - Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
