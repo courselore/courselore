@@ -16056,10 +16056,10 @@ ${value}</textarea
               messageReference++
             ) {
               const messageCreatedAt = messageCreatedAts[messageReference - 1];
-              const content = faker.lorem.paragraphs(
-                lodash.random(1, 6),
-                "\n\n"
-              );
+              const content =
+                type === "chat" && Math.random() < 0.9
+                  ? faker.lorem.sentences(lodash.random(1, 2))
+                  : faker.lorem.paragraphs(lodash.random(1, 6), "\n\n");
               const processedContent = markdownProcessor({
                 req,
                 res,
