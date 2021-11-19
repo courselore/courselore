@@ -15925,9 +15925,9 @@ ${value}</textarea
               conversationCreatedAts[conversationReference - 1];
             const type =
               conversationTypes[
-                Math.random() < 0.7
+                Math.random() < 0.5
                   ? 1
-                  : Math.random() < 0.7
+                  : Math.random() < 0.5
                   ? 0
                   : Math.random() < 0.7
                   ? 3
