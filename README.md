@@ -28,15 +28,15 @@
 
 ### Chat
 
+- Layout changes:
+  - Deal with anonymity setting in footer.
+  - More compact design for header.
+  - More compact design for messages.
 - Fix flash of top of messages.
 - Paginate messages.
 - Currently typing.
 - Separate by date.
 - Group together messages sent in quick succession.
-- Layout changes:
-  - Deal with anonymity setting in footer.
-  - More compact design for messages.
-  - More compact design for header.
 - Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
 - Bookmarks / flags / saved items. These are personal, for example, for something you have to follow up on.
 - Show who’s online.
