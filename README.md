@@ -28,15 +28,29 @@
 
 ### Chat
 
+- Regular conversation
+  - Permanent link
+    - Don’t scroll
+  - No messages
+    - Don’t scroll
+  - All unread messages
+    - Don’t scroll
+  - Some unread messages
+    - Scroll to first unread message
+  - No unread messages
+    - Don’t scroll
+- Chat
+  - Permanent link
+    - Don’t scroll
+  - No messages
+    - Don’t scroll
+  - All unread messages
+    - Scroll to bottom
+  - Some unread messages
+    - Scroll to first unread message
+  - No unread messages
+    - Scroll to bottom
 - Fix scrolling in chat only being possible in small column containing conversation.
-- Test scrolling behavior:
-  - Permanent link to message.
-  - With unread.
-    - Conversation.
-    - Chat.
-  - Without unread.
-    - Conversation.
-    - Chat.
 - Layout changes:
   - More compact design for header on mobile.
   - More compact design for messages.
