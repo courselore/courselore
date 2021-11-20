@@ -14237,7 +14237,7 @@ ${value}</textarea
                                         transition-timing-function: var(
                                           --transition-timing-function--in-out
                                         );
-                                        :not(:hover) > * > * > & {
+                                        .message:not(:hover) & {
                                           opacity: 0;
                                         }
                                       `}"
