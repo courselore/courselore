@@ -12748,6 +12748,9 @@ ${value}</textarea
                               display: none;
                             }
                           }
+                          @media (min-height: 700px) {
+                            display: none;
+                          }
                         `}"
                       >
                         <h2
