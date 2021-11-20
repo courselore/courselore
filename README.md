@@ -28,11 +28,11 @@
 
 ### Chat
 
-- Fix scrolling in chat only being possible in small column containing conversation.
 - Layout changes:
   - More compact design for header on mobile.
   - More compact design for messages.
   - Deal with anonymity setting in footer.
+- Fix scrolling in chat only being possible in small column containing conversation.
 - Paginate messages.
 - Currently typing.
 - Separate by date.
