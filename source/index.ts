@@ -13572,8 +13572,8 @@ ${value}</textarea
                           <button
                             class="button button--tight button--tight--inline button--transparent"
                             onclick="${javascript`
-                            this.closest(".header").classList.remove("full");
-                          `}"
+                              this.closest(".header").classList.remove("full");
+                            `}"
                           >
                             <i class="bi bi-chevron-bar-contract"></i>
                           </button>
