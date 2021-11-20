@@ -13890,25 +13890,30 @@ ${value}</textarea
 
                           return html`
                             <div
+                              id="message--${message.reference}"
+                              data-content="${JSON.stringify(message.content)}"
+                              class="message"
                               style="${css`
-                                padding-bottom: var(--space--1);
-                                &:not(:last-child) {
-                                  border-bottom: var(--border-width--4) solid
-                                    var(--color--gray--medium--200);
-                                  @media (prefers-color-scheme: dark) {
-                                    border-color: var(
-                                      --color--gray--medium--700
-                                    );
-                                  }
+                                padding: var(--space--2) var(--space--0);
+                                border-bottom: var(--border-width--4) solid
+                                  var(--color--gray--medium--200);
+                                @media (prefers-color-scheme: dark) {
+                                  border-color: var(--color--gray--medium--700);
                                 }
+                              `}"
+                              oninteractive="${javascript`
+                                ${
+                                  shouldScrollToFirstUnreadMessage &&
+                                  message === firstUnreadMessage
+                                    ? javascript`
+                                        if (window.location.hash === "") this.scrollIntoView();
+                                      `
+                                    : javascript``
+                                }
+                                
                               `}"
                             >
                               <div
-                                id="message--${message.reference}"
-                                data-content="${JSON.stringify(
-                                  message.content
-                                )}"
-                                class="message"
                                 style="${css`
                                   padding-bottom: var(--space--1);
                                   border-radius: var(--border-radius--lg);
@@ -13935,22 +13940,11 @@ ${value}</textarea
                                       background-color: transparent;
                                     }
                                   }
-                                  &:target {
+                                  :target > & {
                                     animation: message--highlight-background-on-target
                                       var(--transition-duration--1000)
                                       var(--transition-timing-function--in-out);
                                   }
-                                `}"
-                                oninteractive="${javascript`
-                                  ${
-                                    shouldScrollToFirstUnreadMessage &&
-                                    message === firstUnreadMessage
-                                      ? javascript`
-                                          if (window.location.hash === "") this.scrollIntoView();
-                                        `
-                                      : javascript``
-                                  }
-                                  
                                 `}"
                               >
                                 <div>
