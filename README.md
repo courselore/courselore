@@ -29,7 +29,6 @@
 ### Chat
 
 - Layout changes:
-  - Deal with anonymity setting in footer.
   - More compact design for messages.
     - `opacity:`
 - Fix scrolling in chat only being possible in small column containing conversation.
