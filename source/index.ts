@@ -12737,12 +12737,10 @@ ${value}</textarea
               >
                 $${res.locals.conversation.type === "chat"
                   ? html`
-                      <div
-                        class="header--compact"
+                      <button
+                        class="header--compact button button--tight button--tight--inline button--transparent strong"
                         style="${css`
-                          display: flex;
-                          gap: var(--space--2);
-                          align-items: center;
+                          max-width: 100%;
                           @media (max-height: 699px) {
                             .header.full & {
                               display: none;
@@ -12752,12 +12750,12 @@ ${value}</textarea
                             display: none;
                           }
                         `}"
+                        onclick="${javascript`
+                          this.closest(".header").classList.add("full");
+                        `}"
                       >
-                        <h2
-                          class="title--show strong"
+                        <span
                           style="${css`
-                            font-size: var(--font-size--lg);
-                            line-height: var(--line-height--lg);
                             flex: 1;
                             white-space: nowrap;
                             overflow: hidden;
@@ -12768,16 +12766,9 @@ ${value}</textarea
                             html`${res.locals.conversation.title}`,
                             req.query.search
                           )}
-                        </h2>
-                        <button
-                          class="button button--tight button--tight--inline button--transparent"
-                          onclick="${javascript`
-                            this.closest(".header").classList.add("full");
-                          `}"
-                        >
-                          <i class="bi bi-chevron-bar-expand"></i>
-                        </button>
-                      </div>
+                        </span>
+                        <i class="bi bi-chevron-bar-expand"></i>
+                      </button>
                     `
                   : html``}
 
