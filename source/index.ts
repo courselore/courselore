@@ -14785,7 +14785,13 @@ ${value}</textarea
                   }
                   display: flex;
                   flex-direction: column;
-                  gap: var(--space--4);
+                  ${res.locals.conversation.type === "chat"
+                    ? css`
+                        gap: var(--space--2);
+                      `
+                    : css`
+                        gap: var(--space--4);
+                      `}
                 `}"
                 $${res.locals.conversation.type === "chat"
                   ? html`
@@ -14939,13 +14945,10 @@ ${value}</textarea
                 res.locals.conversation.staffOnlyAt !== null
                   ? html``
                   : html`
-                      <div
-                        class="label"
-                        style="${css`
-                          width: var(--space--56);
-                        `}"
-                      >
-                        <p class="label--text">Anonymity</p>
+                      <div class="label">
+                        $${res.locals.conversation.type === "chat"
+                          ? html``
+                          : html` <p class="label--text">Anonymity</p> `}
                         <div
                           style="${css`
                             display: flex;
