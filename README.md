@@ -33,7 +33,6 @@
   - More compact design for header on mobile.
   - More compact design for messages.
   - Deal with anonymity setting in footer.
-- Fix flash of top of messages.
 - Paginate messages.
 - Currently typing.
 - Separate by date.
