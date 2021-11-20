@@ -13551,24 +13551,19 @@ ${value}</textarea
                       `}
                   $${res.locals.conversation.type === "chat"
                     ? html`
-                        <div
+                        <button
+                          class="button button--tight button--tight--inline button--transparent"
                           style="${css`
-                            display: flex;
-                            justify-content: center;
                             @media (min-height: 700px) {
                               display: none;
                             }
                           `}"
+                          onclick="${javascript`
+                            this.closest(".header").classList.remove("full");
+                          `}"
                         >
-                          <button
-                            class="button button--tight button--tight--inline button--transparent"
-                            onclick="${javascript`
-                              this.closest(".header").classList.remove("full");
-                            `}"
-                          >
-                            <i class="bi bi-chevron-bar-contract"></i>
-                          </button>
-                        </div>
+                          <i class="bi bi-chevron-bar-contract"></i>
+                        </button>
                       `
                     : html``}
                 </div>
