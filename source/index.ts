@@ -12735,13 +12735,64 @@ ${value}</textarea
                   }
                 `}"
               >
-                <div class="header--compact" style="${css``}"></div>
+                $${res.locals.conversation.type === "chat"
+                  ? html`
+                      <div
+                        class="header--compact"
+                        style="${css`
+                          display: flex;
+                          gap: var(--space--2);
+                          align-items: center;
+                          @media (max-height: 699px) {
+                            .header.full & {
+                              display: none;
+                            }
+                          }
+                        `}"
+                      >
+                        <h2
+                          class="title--show strong"
+                          style="${css`
+                            font-size: var(--font-size--lg);
+                            line-height: var(--line-height--lg);
+                            flex: 1;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                          `}"
+                        >
+                          $${highlightSearchResult(
+                            html`${res.locals.conversation.title}`,
+                            req.query.search
+                          )}
+                        </h2>
+                        <button
+                          class="button button--tight button--tight--inline button--transparent"
+                          onclick="${javascript`
+                            this.closest(".header").classList.add("full");
+                          `}"
+                        >
+                          <i class="bi bi-chevron-bar-expand"></i>
+                        </button>
+                      </div>
+                    `
+                  : html``}
+
                 <div
                   class="header--full"
                   style="${css`
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--1);
+                    ${res.locals.conversation.type === "chat"
+                      ? css`
+                          @media (max-height: 699px) {
+                            .header:not(.full) & {
+                              display: none;
+                            }
+                          }
+                        `
+                      : css``}
                   `}"
                 >
                   <div
@@ -13504,6 +13555,28 @@ ${value}</textarea
                               )}
                         </div>
                       `}
+                  $${res.locals.conversation.type === "chat"
+                    ? html`
+                        <div
+                          style="${css`
+                            display: flex;
+                            justify-content: center;
+                            @media (min-height: 700px) {
+                              display: none;
+                            }
+                          `}"
+                        >
+                          <button
+                            class="button button--tight button--tight--inline button--transparent"
+                            onclick="${javascript`
+                            this.closest(".header").classList.remove("full");
+                          `}"
+                          >
+                            <i class="bi bi-chevron-bar-contract"></i>
+                          </button>
+                        </div>
+                      `
+                    : html``}
                 </div>
               </div>
 
