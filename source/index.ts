@@ -13152,7 +13152,10 @@ ${value}</textarea
                         ? html``
                         : html`
                             <div
+                              class="secondary"
                               style="${css`
+                                font-size: var(--font-size--xs);
+                                line-height: var(--line-height--xs);
                                 display: flex;
                                 gap: var(--space--2);
                                 transition-property: var(
@@ -13227,8 +13230,10 @@ ${value}</textarea
                         $${mayEditConversation(req, res)
                           ? html`
                               <button
-                                class="button button--tight button--tight--inline button--transparent"
+                                class="button button--tight button--tight--inline button--transparent secondary"
                                 style="${css`
+                                  font-size: var(--font-size--xs);
+                                  line-height: var(--line-height--xs);
                                   transition-property: var(
                                     --transition-property--opacity
                                   );
@@ -13656,7 +13661,10 @@ ${value}</textarea
                       : messages.map((message) => {
                           let menu = html`
                             <div
+                              class="secondary"
                               style="${css`
+                                font-size: var(--font-size--xs);
+                                line-height: var(--line-height--xs);
                                 display: flex;
                                 gap: var(--space--2);
                                 transition-property: var(
