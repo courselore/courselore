@@ -33,6 +33,7 @@
   - More compact design for messages.
     - `opacity:`
 - Fix scrolling in chat only being possible in small column containing conversation.
+- Move snippet to remember a field value (textarea on conversations page) into @leafac/javascript.
 - Paginate messages.
 - Currently typing.
 - Separate by date.
