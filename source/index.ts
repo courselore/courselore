@@ -13491,19 +13491,22 @@ ${value}</textarea
               </div>
 
               $${(() => {
-                const unreadMessageToScrollTo =
-                  messages.length === 0 || messages[0].reading === null
-                    ? undefined
-                    : messages
-                        .slice(1)
-                        .find((message) => message.reading === null);
+                const firstUnreadMessage = messages.find(
+                  (message) => message.reading === null
+                );
+                const shouldScrollToFirstUnreadMessage =
+                  firstUnreadMessage !== undefined &&
+                  firstUnreadMessage !== messages[0];
+                const shouldScrollToBottom =
+                  !shouldScrollToFirstUnreadMessage &&
+                  res.locals.conversation.type === "chat" &&
+                  messages.length > 0;
+                const shouldScroll =
+                  shouldScrollToFirstUnreadMessage || shouldScrollToBottom;
 
                 return html`
                   <div
-                    $${res.locals.conversation.type === "chat" ||
-                    unreadMessageToScrollTo !== undefined
-                      ? html`hidden`
-                      : html``}
+                    $${shouldScroll ? html`hidden` : html``}
                     style="${css`
                       ${res.locals.conversation.type === "chat"
                         ? css`
@@ -13534,13 +13537,18 @@ ${value}</textarea
                         : css``}
                     `}"
                     oninteractive="${javascript`
-                      this.hidden = false;
                       ${
-                        res.locals.conversation.type === "chat" &&
-                        unreadMessageToScrollTo === undefined
+                        shouldScroll
                           ? javascript`
-                            if (window.location.hash === "") this.scrollTop = this.scrollHeight;
-                          `
+                              this.hidden = false;
+                              ${
+                                shouldScrollToBottom
+                                  ? javascript`
+                                      if (window.location.hash === "") this.scrollTop = this.scrollHeight;
+                                    `
+                                  : javascript``
+                              }
+                            `
                           : javascript``
                       }
                     `}"
@@ -13620,13 +13628,17 @@ ${value}</textarea
                                       var(--transition-timing-function--in-out);
                                   }
                                 `}"
-                                $${message === unreadMessageToScrollTo
-                                  ? html`
-                                      oninteractive="${javascript`
-                                        if (window.location.hash === "") this.scrollIntoView();
-                                      `}"
-                                    `
-                                  : html``}
+                                oninteractive="${javascript`
+                                  ${
+                                    shouldScrollToFirstUnreadMessage &&
+                                    message === firstUnreadMessage
+                                      ? javascript`
+                                          if (window.location.hash === "") this.scrollIntoView();
+                                        `
+                                      : javascript``
+                                  }
+                                  
+                                `}"
                               >
                                 <div>
                                   $${(() => {
