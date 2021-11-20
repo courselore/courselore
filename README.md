@@ -39,6 +39,7 @@
 - Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
 - Bookmarks / flags / saved items. These are personal, for example, for something you have to follow up on.
 - Show who’s online.
+  - Last visited at a certain time.
 
 ### Users
 
@@ -335,6 +336,26 @@
 
 <details>
 <summary><strong>Meetings</strong></summary>
+
+<details>
+<summary>2021-11-20</summary>
+
+- Chat:
+  - https://github.com/twbs/icons/issues/1101
+  - More compact layout (specially on mobile)
+  - Don’t reload on send
+  - Scroll to the bottom
+  - Hide secondary buttons
+- Market & design investigation: Slack, Discord, and Campuswire
+  - Ideas to borrow
+    - Draft conversations
+  - Things I think we’re doing better:
+    - Not pushing apps
+    - Responsive design
+    - Search
+  - https://medium.com/campuswire/introducing-campuswire-courses-and-some-thoughts-on-monetization-157d5fa02e8f
+
+</details>
 
 <details>
 <summary>2021-11-13</summary>
