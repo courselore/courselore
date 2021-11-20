@@ -30,8 +30,8 @@
 
 - Layout changes:
   - More compact design for header on mobile.
-    - `opacity:`
   - More compact design for messages.
+    - `opacity:`
   - Deal with anonymity setting in footer.
 - Fix scrolling in chat only being possible in small column containing conversation.
 - Paginate messages.

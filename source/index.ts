@@ -13119,7 +13119,7 @@ ${value}</textarea
                                 transition-timing-function: var(
                                   --transition-timing-function--in-out
                                 );
-                                :not(:hover) > * > & {
+                                .header:not(:hover) & {
                                   opacity: 0;
                                 }
                               `}"
@@ -13193,7 +13193,7 @@ ${value}</textarea
                                   transition-timing-function: var(
                                     --transition-timing-function--in-out
                                   );
-                                  :not(:hover) > * > * > * > & {
+                                  .header:not(:hover) & {
                                     opacity: 0;
                                   }
                                 `}"
