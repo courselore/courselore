@@ -14208,29 +14208,37 @@ ${value}</textarea
                                         </div>
                                       `);
 
-                                    return content.length === 0
-                                      ? html``
-                                      : html`
-                                          <div
-                                            style="${css`
-                                              font-size: var(--font-size--xs);
-                                              line-height: var(
-                                                --line-height--xs
-                                              );
-                                              display: flex;
-                                              flex-wrap: wrap;
-                                              column-gap: var(--space--8);
-                                              row-gap: var(--space--1);
+                                    if (content.length === 0) return ``;
+                                    const wrappedContent = html`
+                                      <div
+                                        style="${css`
+                                          font-size: var(--font-size--xs);
+                                          line-height: var(--line-height--xs);
+                                          display: flex;
+                                          gap: var(--space--4);
+                                        `}"
+                                      >
+                                        <div
+                                          style="${css`
+                                            flex: 1;
+                                            display: flex;
+                                            flex-wrap: wrap;
+                                            column-gap: var(--space--8);
+                                            row-gap: var(--space--1);
 
-                                              & > * {
-                                                display: flex;
-                                                gap: var(--space--1);
-                                              }
-                                            `}"
-                                          >
-                                            $${content}
-                                          </div>
-                                        `;
+                                            & > * {
+                                              display: flex;
+                                              gap: var(--space--1);
+                                            }
+                                          `}"
+                                        >
+                                          $${content}
+                                        </div>
+                                        $${menu}
+                                      </div>
+                                    `;
+                                    menu = html``;
+                                    return wrappedContent;
                                   })()}
 
                                   <div

@@ -28,6 +28,7 @@
 
 ### Chat
 
+- opacity 0 -> gray & xs
 - Layout changes:
   - More compact design for messages.
 - Fix scrolling in chat only being possible in small column containing conversation.
