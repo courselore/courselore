@@ -14777,6 +14777,12 @@ ${value}</textarea
                   .reference}/messages"
                 novalidate
                 style="${css`
+                  padding-top: var(--space--2);
+                  border-top: var(--border-width--1) solid
+                    var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    border-color: var(--color--gray--medium--700);
+                  }
                   display: flex;
                   flex-direction: column;
                   gap: var(--space--4);
