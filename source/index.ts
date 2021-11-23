@@ -15795,7 +15795,7 @@ ${value}</textarea
                     ${name},
                     ${html`${name}`},
                     ${`${baseURL}/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`},
-                    ${casual.sentences(casual.integer(5, 7))},
+                    ${casual.sentences(lodash.random(5, 7))},
                     ${"none"}
                   )
                 `
@@ -15840,7 +15840,7 @@ ${value}</textarea
                           ? `${baseURL}/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
                           : null
                       },
-                      ${casual.sentences(casual.integer(5, 7))},
+                      ${casual.sentences(lodash.random(5, 7))},
                       ${"none"}
                     )
                   `
@@ -16088,7 +16088,7 @@ ${value}</textarea
               );
             // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
             const title = `${lodash.capitalize(
-              casual.words(casual.integer(3, 9))
+              casual.words(lodash.random(3, 9))
             )}${type === "question" ? "?" : ""}`;
             const conversation = database.get<{
               id: number;
@@ -16158,9 +16158,9 @@ ${value}</textarea
               const messageCreatedAt = messageCreatedAts[messageReference - 1];
               const content =
                 type === "chat" && Math.random() < 0.9
-                  ? casual.sentences(casual.integer(1, 2))
-                  : [...new Array(casual.integer(1, 6))]
-                      .map((_) => casual.sentence)
+                  ? casual.sentences(lodash.random(1, 2))
+                  : [...new Array(lodash.random(1, 6))]
+                      .map((_) => casual.sentences(lodash.random(1, 6)))
                       .join("\n\n");
               const processedContent = markdownProcessor({
                 req,
