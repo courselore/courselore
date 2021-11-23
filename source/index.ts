@@ -15768,7 +15768,7 @@ ${value}</textarea
       asyncHandler(async (req, res) => {
         const password = await argon2.hash("courselore", argon2Options);
         const name = casual.full_name;
-        const avatarIndices = lodash.shuffle([...new Array(250)].keys());
+        const avatarIndices = lodash.shuffle([...new Array(250).keys()]);
         // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
         const demonstrationUser = database.get<{ id: number; name: string }>(
           sql`
