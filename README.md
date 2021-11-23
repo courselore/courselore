@@ -43,6 +43,9 @@
 
 ### Users
 
+- Identicons
+  - https://github.com/stewartlord/identicon.js/
+  - https://jdenticon.com/
 - Make a little popup that displays basic user information, for example, the biography, when you hover over a name/mention.
 - Gravatar as a fallback to avatar.
 - Multiple emails.
