@@ -46,7 +46,7 @@ import slugify from "@sindresorhus/slugify";
 import filenamify from "filenamify";
 import escapeStringRegexp from "escape-string-regexp";
 import QRCode from "qrcode";
-import faker from "faker";
+import casual from "casual";
 
 export default async function courselore({
   dataDirectory,
@@ -15767,8 +15767,8 @@ ${value}</textarea
       "/demonstration-data",
       asyncHandler(async (req, res) => {
         const password = await argon2.hash("courselore", argon2Options);
-        const card = faker.helpers.contextualCard();
-        const name = `${card.name} ${faker.name.lastName()}`;
+        const name = casual.full_name;
+        const avatarIndices = lodash.shuffle([...new Array(250)].keys());
         // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
         const demonstrationUser = database.get<{ id: number; name: string }>(
           sql`
@@ -15786,16 +15786,16 @@ ${value}</textarea
                     "emailNotifications"
                   )
                   VALUES (
-                    ${`${card.username.toLowerCase()}--${cryptoRandomString({
-                      length: 10,
+                    ${`${slugify(name)}--${cryptoRandomString({
+                      length: 5,
                       type: "numeric",
                     })}@courselore.org`},
                     ${password},
                     ${new Date().toISOString()},
                     ${name},
                     ${html`${name}`},
-                    ${card.avatar},
-                    ${faker.lorem.paragraph()},
+                    ${`${baseURL}/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`},
+                    ${casual.sentences(casual.integer(5, 7))},
                     ${"none"}
                   )
                 `
@@ -15805,8 +15805,7 @@ ${value}</textarea
         )!;
 
         const users = lodash.times(150, () => {
-          const card = faker.helpers.contextualCard();
-          const name = `${card.name} ${faker.name.lastName()}`;
+          const name = casual.full_name;
           // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
           return database.get<{
             id: number;
@@ -15828,16 +15827,20 @@ ${value}</textarea
                       "emailNotifications"
                     )
                     VALUES (
-                      ${`${card.username}--${cryptoRandomString({
-                        length: 10,
+                      ${`${slugify(name)}--${cryptoRandomString({
+                        length: 5,
                         type: "numeric",
                       })}@courselore.org`},
                       ${password},
                       ${new Date().toISOString()},
                       ${name},
                       ${html`${name}`},
-                      ${Math.random() < 0.6 ? card.avatar : null},
-                      ${Math.random() < 0.3 ? faker.lorem.paragraph() : null},
+                      ${
+                        Math.random() < 0.6
+                          ? `${baseURL}/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
+                          : null
+                      },
+                      ${casual.sentences(casual.integer(5, 7))},
                       ${"none"}
                     )
                   `
@@ -16084,9 +16087,9 @@ ${value}</textarea
                 ).toISOString()
               );
             // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
-            const title =
-              lodash.capitalize(faker.lorem.words(lodash.random(1, 10))) +
-              (type === "question" ? "?" : "");
+            const title = `${lodash.capitalize(
+              casual.words(casual.integer(3, 9))
+            )}${type === "question" ? "?" : ""}`;
             const conversation = database.get<{
               id: number;
               authorEnrollment: number | null;
@@ -16155,8 +16158,10 @@ ${value}</textarea
               const messageCreatedAt = messageCreatedAts[messageReference - 1];
               const content =
                 type === "chat" && Math.random() < 0.9
-                  ? faker.lorem.sentences(lodash.random(1, 2))
-                  : faker.lorem.paragraphs(lodash.random(1, 6), "\n\n");
+                  ? casual.sentences(casual.integer(1, 2))
+                  : [...new Array(casual.integer(1, 6))]
+                      .map((_) => casual.sentence)
+                      .join("\n\n");
               const processedContent = markdownProcessor({
                 req,
                 res,
