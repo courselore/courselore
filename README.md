@@ -28,9 +28,9 @@
 
 ### Chat
 
+- Fix scrolling in chat only being possible in small column containing conversation.
 - Layout changes:
   - More compact design for messages.
-- Fix scrolling in chat only being possible in small column containing conversation.
 - Move snippet to remember a field value (textarea on conversations page) into @leafac/javascript.
 - Paginate messages.
 - Currently typing.
