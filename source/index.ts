@@ -3249,7 +3249,7 @@ export default async function courselore({
     )}?${qs.stringify(req.query)}`;
     sendMail({
       to: user.email,
-      subject: "CourseLore · Password Reset Link",
+      subject: "CourseLore · Password Reset Link",
       html: html`
         <p><a href="${link}">${link}</a></p>
         <p>
@@ -8988,7 +8988,6 @@ export default async function courselore({
           line-height: var(--line-height--xs);
         `}"
       >
-        #${conversation.reference} ·
         $${conversation.anonymousAt === null
           ? html`
               $${conversation.authorEnrollment.user.avatar === null
@@ -9038,6 +9037,7 @@ export default async function courselore({
         >
           ${conversation.createdAt}
         </time>
+        · #${conversation.reference}
       </div>
       $${conversation.taggings.length === 0
         ? html``
@@ -15714,7 +15714,7 @@ ${value}</textarea
     for (const enrollment of enrollments) {
       sendMail({
         to: enrollment.userEmail,
-        subject: `${conversation.title} · ${res.locals.course.name} · CourseLore`,
+        subject: `${conversation.title} · ${res.locals.course.name} · CourseLore`,
         html: html`
           <p>
             <a
