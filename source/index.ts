@@ -9032,8 +9032,8 @@ export default async function courselore({
         ·
         <time
           oninteractive="${javascript`
-              leafac.relativizeDateTimeElement(this);
-            `}"
+            leafac.relativizeDateTimeElement(this, { capitalize: true });
+          `}"
         >
           ${conversation.createdAt}
         </time>
@@ -14406,14 +14406,14 @@ ${value}</textarea
                                           ·
                                           <time
                                             oninteractive="${javascript`
-                                              leafac.relativizeDateTimeElement(this);
+                                              leafac.relativizeDateTimeElement(this, { capitalize: true });
                                             `}"
                                           >
                                             ${message.createdAt}
                                           </time>
                                           $${message.updatedAt !== null
                                             ? html`
-                                                (updated
+                                                (Updated
                                                 <time
                                                   oninteractive="${javascript`
                                                     leafac.relativizeDateTimeElement(this, { preposition: "on" });
