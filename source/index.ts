@@ -8261,30 +8261,7 @@ export default async function courselore({
             width: 100%;
             height: 100%;
             display: flex;
-            & > * {
-              overflow: auto;
-              & > * {
-                margin: var(--space--4);
-                & > * {
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                }
-              }
-            }
             @media (max-width: 899px) {
-              & > * {
-                flex: 1;
-                & > * {
-                  display: flex;
-                  justify-content: center;
-                  & > * {
-                    flex: 1;
-                    min-width: var(--width--0);
-                    max-width: var(--width--prose);
-                  }
-                }
-              }
               & > .hidden-on-small-screen {
                 display: none;
               }
@@ -8301,6 +8278,10 @@ export default async function courselore({
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--800);
               }
+              overflow: auto;
+              @media (max-width: 899px) {
+                flex: 1;
+              }
               @media (min-width: 900px) {
                 width: var(--width--sm);
                 border-right: var(--border-width--1) solid
@@ -8311,10 +8292,25 @@ export default async function courselore({
               }
             `}"
           >
-            <div>
+            <div
+              style="${css`
+                margin: var(--space--4);
+                @media (max-width: 899px) {
+                  display: flex;
+                  justify-content: center;
+                }
+              `}"
+            >
               <div
                 style="${css`
+                  display: flex;
+                  flex-direction: column;
                   gap: var(--space--2);
+                  @media (max-width: 899px) {
+                    flex: 1;
+                    min-width: var(--width--0);
+                    max-width: var(--width--prose);
+                  }
                 `}"
               >
                 <div
@@ -8885,14 +8881,34 @@ export default async function courselore({
               ? "hidden-on-small-screen"
               : ""}"
             style="${css`
+              overflow: auto;
+              @media (max-width: 899px) {
+                flex: 1;
+              }
               @media (min-width: 900px) {
                 flex: 1;
               }
             `}"
           >
-            <div>
+            <div
+              style="${css`
+                margin: var(--space--4);
+                @media (max-width: 899px) {
+                  display: flex;
+                  justify-content: center;
+                }
+              `}"
+            >
               <div
                 style="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                  @media (max-width: 899px) {
+                    flex: 1;
+                    min-width: var(--width--0);
+                    max-width: var(--width--prose);
+                  }
                   @media (min-width: 900px) {
                     max-width: var(--width--prose);
                     margin-left: var(--space--4);
