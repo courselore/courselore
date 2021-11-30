@@ -9800,7 +9800,12 @@ export default async function courselore({
     required?: boolean;
     compact?: boolean;
   }): HTML => html`
-    <div class="markdown-editor">
+    <div
+      class="markdown-editor"
+      style="${css`
+        min-width: var(--space--0);
+      `}"
+    >
       <div
         $${compact ? html`hidden` : html``}
         style="${css`
