@@ -12738,6 +12738,7 @@ ${value}</textarea
               CourseLore
             </title>
           `,
+          mainWithMaxWidth: res.locals.conversation.type !== "chat",
           body: html`
             <div
               style="${css`
