@@ -8308,7 +8308,6 @@ export default async function courselore({
                   gap: var(--space--2);
                   @media (max-width: 899px) {
                     flex: 1;
-                    min-width: var(--width--0);
                     max-width: var(--width--prose);
                   }
                 `}"
