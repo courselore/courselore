@@ -4970,8 +4970,8 @@ export default async function courselore({
           req,
           res,
           head: html`<title>${res.locals.course.name} · CourseLore</title>`,
-          body: html`<p class="secondary">No conversation selected.</p>`,
           onlyConversationLayoutSidebarOnSmallScreen: true,
+          body: html`<p class="secondary">No conversation selected.</p>`,
         })
       );
     }
@@ -7962,9 +7962,9 @@ export default async function courselore({
     req,
     res,
     head,
-    body,
     onlyConversationLayoutSidebarOnSmallScreen = false,
     mainWithMaxWidth = true,
+    body,
   }: {
     req: express.Request<
       { courseReference: string; conversationReference?: string },
@@ -7992,9 +7992,9 @@ export default async function courselore({
         Partial<EventSourceMiddlewareLocals>
     >;
     head: HTML;
-    body: HTML;
     onlyConversationLayoutSidebarOnSmallScreen?: boolean;
     mainWithMaxWidth?: boolean;
+    body: HTML;
   }): HTML => {
     const search =
       typeof req.query.search === "string" && req.query.search.trim() !== ""
