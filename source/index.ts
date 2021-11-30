@@ -7964,6 +7964,7 @@ export default async function courselore({
     head,
     body,
     onlyConversationLayoutSidebarOnSmallScreen = false,
+    mainWithMaxWidth = true,
   }: {
     req: express.Request<
       { courseReference: string; conversationReference?: string },
@@ -7993,6 +7994,7 @@ export default async function courselore({
     head: HTML;
     body: HTML;
     onlyConversationLayoutSidebarOnSmallScreen?: boolean;
+    mainWithMaxWidth?: boolean;
   }): HTML => {
     const search =
       typeof req.query.search === "string" && req.query.search.trim() !== ""
@@ -8897,20 +8899,24 @@ export default async function courselore({
                 }
               `}"
             >
-              <div
-                style="${css`
-                  min-width: var(--width--0);
-                  max-width: var(--width--prose);
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                  @media (max-width: 899px) {
-                    flex: 1;
-                  }
-                `}"
-              >
-                $${body}
-              </div>
+              $${mainWithMaxWidth
+                ? html`
+                    <div
+                      style="${css`
+                        min-width: var(--width--0);
+                        max-width: var(--width--prose);
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--4);
+                        @media (max-width: 899px) {
+                          flex: 1;
+                        }
+                      `}"
+                    >
+                      $${body}
+                    </div>
+                  `
+                : body}
             </div>
           </div>
         </div>
