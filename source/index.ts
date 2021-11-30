@@ -9981,6 +9981,45 @@ export default async function courselore({
                 type="button"
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
+                  tippy(this, {
+                    content: "Help",
+                    touch: false,
+                  });
+                  tippy(this, {
+                    content: this.nextElementSibling.firstElementChild,
+                    trigger: "click",
+                    interactive: true,
+                  });
+                `}"
+              >
+                <i class="bi bi-info-circle"></i>
+              </button>
+              <div hidden>
+                <div>
+                  <p>
+                    You may style text with
+                    <a
+                      href="https://guides.github.com/features/mastering-markdown/"
+                      target="_blank"
+                      class="link"
+                      >GitHub Flavored Markdown</a
+                    >
+                    and include mathematical formulas with
+                    <a
+                      href="https://katex.org/docs/supported.html"
+                      target="_blank"
+                      class="link"
+                      >LaTeX</a
+                    >.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div>
+              <button
+                type="button"
+                class="button button--tight button--transparent"
+                oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+1", () => { this.click(); return false; });
                   tippy(this, {
                     content: ${JSON.stringify(html`
@@ -10606,45 +10645,6 @@ export default async function courselore({
                   `}"
                 >
                   $${spinner} Uploading…
-                </div>
-              </div>
-            </div>
-            <div>
-              <button
-                type="button"
-                class="button button--tight button--transparent"
-                oninteractive="${javascript`
-                  tippy(this, {
-                    content: "Help",
-                    touch: false,
-                  });
-                  tippy(this, {
-                    content: this.nextElementSibling.firstElementChild,
-                    trigger: "click",
-                    interactive: true,
-                  });
-                `}"
-              >
-                <i class="bi bi-info-circle"></i>
-              </button>
-              <div hidden>
-                <div>
-                  <p>
-                    You may style text with
-                    <a
-                      href="https://guides.github.com/features/mastering-markdown/"
-                      target="_blank"
-                      class="link"
-                      >GitHub Flavored Markdown</a
-                    >
-                    and include mathematical formulas with
-                    <a
-                      href="https://katex.org/docs/supported.html"
-                      target="_blank"
-                      class="link"
-                      >LaTeX</a
-                    >.
-                  </p>
                 </div>
               </div>
             </div>
