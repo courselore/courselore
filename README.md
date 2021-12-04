@@ -30,6 +30,12 @@
 
 - Layout changes:
   - Make line separating header extend all the way.
+  ```css
+  margin: var(--space--4);
+  @media (min-width: 900px) {
+    margin-left: var(--space--8);
+  }
+  ```
   - Non-chat textarea missing padding top.
   - More compact design for messages.
   - Small screen horizontal scroll.

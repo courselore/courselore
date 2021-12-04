@@ -12782,8 +12782,20 @@ ${value}</textarea
               <div
                 class="header"
                 style="${css`
+                  padding-bottom: var(--space--2);
+                  border-bottom: var(--border-width--1) solid
+                    var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    border-color: var(--color--gray--medium--700);
+                  }
                   ${res.locals.conversation.type === "chat"
                     ? css`
+                        padding-top: var(--space--4);
+                        padding-right: var(--space--4);
+                        padding-left: var(--space--4);
+                        @media (min-width: 900px) {
+                          padding-left: var(--space--8);
+                        }
                         display: flex;
                         @media (max-width: 899px) {
                           justify-content: center;
@@ -12794,12 +12806,6 @@ ${value}</textarea
               >
                 <div
                   style="${css`
-                    padding-bottom: var(--space--2);
-                    border-bottom: var(--border-width--1) solid
-                      var(--color--gray--medium--200);
-                    @media (prefers-color-scheme: dark) {
-                      border-color: var(--color--gray--medium--700);
-                    }
                     ${res.locals.conversation.type === "chat"
                       ? css`
                           flex: 1;
@@ -12819,6 +12825,7 @@ ${value}</textarea
                           class="header--compact button button--tight button--tight--inline button--transparent strong"
                           style="${css`
                             max-width: calc(100% + var(--space--2));
+                            margin-top: var(--space---2);
                             @media (max-height: 699px) {
                               .header.full & {
                                 display: none;
