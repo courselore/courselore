@@ -8914,20 +8914,21 @@ export default async function courselore({
           >
             <div
               style="${css`
-                margin: var(--space--4);
                 @media (max-width: 899px) {
                   display: flex;
                   justify-content: center;
-                }
-                @media (min-width: 900px) {
-                  margin-left: var(--space--8);
                 }
                 ${mainIsAScrollingPane
                   ? css`
                       height: calc(var(--space---4) + 100% + var(--space---4));
                       display: flex;
                     `
-                  : css``}
+                  : css`
+                      margin: var(--space--4);
+                      @media (min-width: 900px) {
+                        margin-left: var(--space--8);
+                      }
+                    `}
               `}"
             >
               $${mainIsAScrollingPane
