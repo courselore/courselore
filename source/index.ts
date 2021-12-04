@@ -7963,7 +7963,7 @@ export default async function courselore({
     res,
     head,
     onlyConversationLayoutSidebarOnSmallScreen = false,
-    mainWithMaxWidth = true,
+    mainIsAScrollingPane = true,
     body,
   }: {
     req: express.Request<
@@ -7993,7 +7993,7 @@ export default async function courselore({
     >;
     head: HTML;
     onlyConversationLayoutSidebarOnSmallScreen?: boolean;
-    mainWithMaxWidth?: boolean;
+    mainIsAScrollingPane?: boolean;
     body: HTML;
   }): HTML => {
     const search =
@@ -8898,14 +8898,15 @@ export default async function courselore({
                 @media (min-width: 900px) {
                   margin-left: var(--space--8);
                 }
-                ${mainWithMaxWidth
+                ${mainIsAScrollingPane
                   ? css``
                   : css`
-                      height: calc(100% + var(--space---8));
+                      height: calc(var(--space---4) + 100% + var(--space---4));
+                      display: flex;
                     `}
               `}"
             >
-              $${mainWithMaxWidth
+              $${mainIsAScrollingPane
                 ? html`
                     <div
                       style="${css`
@@ -12744,7 +12745,7 @@ ${value}</textarea
               CourseLore
             </title>
           `,
-          mainWithMaxWidth: res.locals.conversation.type !== "chat",
+          mainIsAScrollingPane: res.locals.conversation.type !== "chat",
           body: html`
             <div
               style="${css`
