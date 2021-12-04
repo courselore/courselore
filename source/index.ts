@@ -12762,6 +12762,10 @@ ${value}</textarea
               >
                 <div
                   style="${css`
+                    display: flex;
+                    & > * {
+                      flex: 1;
+                    }
                     padding-bottom: var(--space--2);
                     border-bottom: var(--border-width--1) solid
                       var(--color--gray--medium--200);
@@ -12782,7 +12786,7 @@ ${value}</textarea
                         <button
                           class="header--compact button button--tight button--tight--inline button--transparent strong"
                           style="${css`
-                            max-width: 100%;
+                            max-width: calc(100% + var(--space--2));
                             @media (max-height: 699px) {
                               .header.full & {
                                 display: none;
@@ -12799,6 +12803,7 @@ ${value}</textarea
                           <span
                             style="${css`
                               flex: 1;
+                              text-align: left;
                               white-space: nowrap;
                               overflow: hidden;
                               text-overflow: ellipsis;
