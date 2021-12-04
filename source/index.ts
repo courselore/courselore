@@ -12827,17 +12827,10 @@ ${value}</textarea
                           style="${css`
                             max-width: calc(100% + var(--space--2));
                             margin-top: var(--space---2);
-                            @media (max-height: 699px) {
-                              .header.full & {
-                                display: none;
-                              }
-                            }
-                            @media (min-height: 700px) {
-                              display: none;
-                            }
                           `}"
                           onclick="${javascript`
-                            this.closest(".header").classList.add("full");
+                            this.closest(".header").querySelector(".header--compact").hidden = true;
+                            this.closest(".header").querySelector(".header--full").hidden = false;
                           `}"
                         >
                           <span
@@ -12860,20 +12853,14 @@ ${value}</textarea
                     : html``}
 
                   <div
+                    $${res.locals.conversation.type === "chat"
+                      ? html`hidden`
+                      : html``}
                     class="header--full"
                     style="${css`
                       display: flex;
                       flex-direction: column;
                       gap: var(--space--1);
-                      ${res.locals.conversation.type === "chat"
-                        ? css`
-                            @media (max-height: 699px) {
-                              .header:not(.full) & {
-                                display: none;
-                              }
-                            }
-                          `
-                        : css``}
                     `}"
                   >
                     <div
@@ -13651,13 +13638,9 @@ ${value}</textarea
                       ? html`
                           <button
                             class="button button--tight button--tight--inline button--transparent"
-                            style="${css`
-                              @media (min-height: 700px) {
-                                display: none;
-                              }
-                            `}"
                             onclick="${javascript`
-                              this.closest(".header").classList.remove("full");
+                            this.closest(".header").querySelector(".header--full").hidden = true;
+                              this.closest(".header").querySelector(".header--compact").hidden = false;
                             `}"
                           >
                             <i class="bi bi-chevron-bar-contract"></i>
