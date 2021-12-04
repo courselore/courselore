@@ -12762,10 +12762,6 @@ ${value}</textarea
               >
                 <div
                   style="${css`
-                    display: flex;
-                    & > * {
-                      flex: 1;
-                    }
                     padding-bottom: var(--space--2);
                     border-bottom: var(--border-width--1) solid
                       var(--color--gray--medium--200);
@@ -12777,6 +12773,10 @@ ${value}</textarea
                           flex: 1;
                           min-width: var(--width--0);
                           max-width: var(--width--prose);
+                          display: flex;
+                          & > * {
+                            flex: 1;
+                          }
                         `
                       : css``}
                   `}"
