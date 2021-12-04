@@ -8877,6 +8877,7 @@ export default async function courselore({
               </div>
             </div>
           </div>
+
           <div
             class="conversation--layout--main ${onlyConversationLayoutSidebarOnSmallScreen ||
             req.query.conversationLayoutSidebarOpenOnSmallScreen === "true"
@@ -8897,6 +8898,11 @@ export default async function courselore({
                 @media (min-width: 900px) {
                   margin-left: var(--space--8);
                 }
+                ${mainWithMaxWidth
+                  ? css``
+                  : css`
+                      height: calc(100% + var(--space---8));
+                    `}
               `}"
             >
               $${mainWithMaxWidth
