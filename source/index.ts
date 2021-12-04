@@ -13665,30 +13665,6 @@ ${value}</textarea
                               flex: 1;
                               min-width: var(--width--0);
                               max-width: var(--width--prose);
-                              /*
-                              width: calc(
-                                var(--space--4) + 100% + var(--space--4)
-                              );
-                              padding: var(--space--0) var(--space--4);
-                              margin-left: var(--space---4);
-                              overflow: auto;
-
-                              @at-root {
-                                .conversation--layout--main.conversation--layout--main.conversation--layout--main.conversation--layout--main.conversation--layout--main.conversation--layout--main.conversation--layout--main.conversation--layout--main.conversation--layout--main.conversation--layout--main {
-                                  & > * {
-                                    height: calc(
-                                      var(--space---4) + 100% + var(--space---4)
-                                    );
-                                    & > * {
-                                      height: 100%;
-                                      & > * {
-                                        height: 100%;
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                              */
                             `
                           : css``}
                       `}"
