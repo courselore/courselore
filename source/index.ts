@@ -7963,7 +7963,7 @@ export default async function courselore({
     res,
     head,
     onlyConversationLayoutSidebarOnSmallScreen = false,
-    mainIsAScrollingPane = true,
+    mainIsAScrollingPane = false,
     body,
   }: {
     req: express.Request<
@@ -8899,15 +8899,16 @@ export default async function courselore({
                   margin-left: var(--space--8);
                 }
                 ${mainIsAScrollingPane
-                  ? css``
-                  : css`
+                  ? css`
                       height: calc(var(--space---4) + 100% + var(--space---4));
                       display: flex;
-                    `}
+                    `
+                  : css``}
               `}"
             >
               $${mainIsAScrollingPane
-                ? html`
+                ? body
+                : html`
                     <div
                       style="${css`
                         min-width: var(--width--0);
@@ -8922,8 +8923,7 @@ export default async function courselore({
                     >
                       $${body}
                     </div>
-                  `
-                : body}
+                  `}
             </div>
           </div>
         </div>
@@ -12745,7 +12745,7 @@ ${value}</textarea
               CourseLore
             </title>
           `,
-          mainIsAScrollingPane: res.locals.conversation.type !== "chat",
+          mainIsAScrollingPane: res.locals.conversation.type === "chat",
           body: html`
             <div
               style="${css`
