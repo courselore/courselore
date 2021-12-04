@@ -13652,6 +13652,11 @@ ${value}</textarea
                 return html`
                   <div
                     style="${css`
+                      ${shouldScroll
+                        ? css`
+                            visibility: hidden;
+                          `
+                        : css``}
                       ${res.locals.conversation.type === "chat"
                         ? css`
                             flex: 1;
@@ -13663,9 +13668,24 @@ ${value}</textarea
                           `
                         : css``}
                     `}"
+                    oninteractive="${javascript`
+                      ${
+                        shouldScroll
+                          ? javascript`
+                              this.style.visibility = "visible";
+                              ${
+                                shouldScrollToBottom
+                                  ? javascript`
+                                      if (window.location.hash === "") this.scrollTop = this.scrollHeight;
+                                    `
+                                  : javascript``
+                              }
+                            `
+                          : javascript``
+                      }
+                    `}"
                   >
                     <div
-                      $${shouldScroll ? html`hidden` : html``}
                       style="${css`
                         ${res.locals.conversation.type === "chat"
                           ? css`
@@ -13674,22 +13694,6 @@ ${value}</textarea
                               max-width: var(--width--prose);
                             `
                           : css``}
-                      `}"
-                      oninteractive="${javascript`
-                        ${
-                          shouldScroll
-                            ? javascript`
-                                this.hidden = false;
-                                ${
-                                  shouldScrollToBottom
-                                    ? javascript`
-                                        if (window.location.hash === "") this.scrollTop = this.scrollHeight;
-                                      `
-                                    : javascript``
-                                }
-                              `
-                            : javascript``
-                        }
                       `}"
                     >
                       $${messages.length === 0
