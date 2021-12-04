@@ -442,6 +442,28 @@ export default async function courselore({
             content="Communication Platform for Education"
           />
 
+          $${["public-sans", "jetbrains-mono"].flatMap((family) =>
+            [
+              "100",
+              "200",
+              "300",
+              "400",
+              "500",
+              "600",
+              "700",
+              "800",
+              "900",
+            ].flatMap((weight) =>
+              ["", "-italic"].map(
+                (style) => html`
+                  <link
+                    rel="stylesheet"
+                    href="${baseURL}/node_modules/@fontsource/${family}/${weight}${style}.css"
+                  />
+                `
+              )
+            )
+          )}
           <link
             rel="stylesheet"
             href="${baseURL}/node_modules/bootstrap-icons/font/bootstrap-icons.css"
@@ -522,7 +544,7 @@ export default async function courselore({
         </head>
         <body
           style="${css`
-            font-family: var(--font-family--sans-serif);
+            font-family: "Public Sans", var(--font-family--sans-serif);
             font-size: var(--font-size--sm);
             line-height: var(--line-height--sm);
             color: var(--color--gray--medium--700);
@@ -970,7 +992,8 @@ export default async function courselore({
 
               .pre {
                 code {
-                  font-family: var(--font-family--monospace);
+                  font-family: "JetBrains Mono", var(--font-family--monospace);
+                  font-variant-ligatures: none;
                   font-size: var(--font-size--xs);
                   line-height: var(--line-height--xs);
                 }
@@ -1313,7 +1336,8 @@ export default async function courselore({
                 tt,
                 kbd,
                 samp {
-                  font-family: var(--font-family--monospace);
+                  font-family: "JetBrains Mono", var(--font-family--monospace);
+                  font-variant-ligatures: none;
                 }
 
                 del {
