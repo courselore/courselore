@@ -12777,6 +12777,7 @@ ${value}</textarea
                 flex: 1;
                 display: flex;
                 flex-direction: column;
+                min-width: var(--space--0);
               `}"
             >
               <div
