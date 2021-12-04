@@ -28,6 +28,9 @@
 
 ### Chat
 
+- Change font?
+- Remove padding on top of text area.
+- Make line separating header extend all the way.
 - Layout changes:
   - More compact design for messages.
 - Move snippet to remember a field value (textarea on conversations page) into @leafac/javascript.
