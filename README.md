@@ -28,11 +28,12 @@
 
 ### Chat
 
-- Change font?
-- Remove padding on top of text area.
-- Make line separating header extend all the way.
 - Layout changes:
   - More compact design for messages.
+  - Remove padding on top of text area.
+  - Make line separating header extend all the way.
+  - Change font?
+  - Small screen horizontal scroll.
 - Move snippet to remember a field value (textarea on conversations page) into @leafac/javascript.
 - Paginate messages.
 - Currently typing.
