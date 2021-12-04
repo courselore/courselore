@@ -30,6 +30,7 @@
 
 - Layout changes:
   - Change font?
+  - Gray out stuff in selected message on sidebar.
   - More compact design for messages.
   - Remove padding on top of text area.
   - Make line separating header extend all the way.
