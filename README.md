@@ -29,9 +29,9 @@
 ### Chat
 
 - Layout changes:
+  - Small screen horizontal scroll.
   - More compact design for messages.
   - Non-chat textarea missing padding top.
-  - Small screen horizontal scroll.
 - Move snippet to remember a field value (textarea on conversations page) into @leafac/javascript.
 - Paginate messages.
 - Currently typing.
