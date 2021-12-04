@@ -873,9 +873,9 @@ export default async function courselore({
                       }
                       .secondary,
                       [class^="text--"] {
-                        color: var(--color--${color}--50);
+                        color: var(--color--${color}--100);
                         @media (prefers-color-scheme: dark) {
-                          color: var(--color--${color}--100);
+                          color: var(--color--${color}--200);
                         }
                       }
                     }
