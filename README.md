@@ -29,9 +29,8 @@
 ### Chat
 
 - Layout changes:
-  - Remove padding on top of text area.
-    - Non-chat version missing space.
   - Make line separating header extend all the way.
+  - Non-chat textarea missing padding top.
   - More compact design for messages.
   - Small screen horizontal scroll.
   - Messages area cutting on the left.
