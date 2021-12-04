@@ -29,17 +29,9 @@
 ### Chat
 
 - Layout changes:
-  - Make line separating header extend all the way.
-  ```css
-  margin: var(--space--4);
-  @media (min-width: 900px) {
-    margin-left: var(--space--8);
-  }
-  ```
-  - Non-chat textarea missing padding top.
   - More compact design for messages.
+  - Non-chat textarea missing padding top.
   - Small screen horizontal scroll.
-  - Messages area cutting on the left.
 - Move snippet to remember a field value (textarea on conversations page) into @leafac/javascript.
 - Paginate messages.
 - Currently typing.
