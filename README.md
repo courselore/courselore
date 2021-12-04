@@ -29,9 +29,9 @@
 ### Chat
 
 - Layout changes:
-  - More compact design for messages.
   - Remove padding on top of text area.
   - Make line separating header extend all the way.
+  - More compact design for messages.
   - Small screen horizontal scroll.
 - Move snippet to remember a field value (textarea on conversations page) into @leafac/javascript.
 - Paginate messages.
