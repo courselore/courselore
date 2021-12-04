@@ -8920,7 +8920,7 @@ export default async function courselore({
                 }
                 ${mainIsAScrollingPane
                   ? css`
-                      height: calc(var(--space---4) + 100% + var(--space---4));
+                      height: 100%;
                       display: flex;
                     `
                   : css`
@@ -14895,6 +14895,12 @@ ${value}</textarea
                 style="${css`
                   ${res.locals.conversation.type === "chat"
                     ? css`
+                        padding-right: var(--space--4);
+                        padding-bottom: var(--space--4);
+                        padding-left: var(--space--4);
+                        @media (min-width: 900px) {
+                          padding-left: var(--space--8);
+                        }
                         display: flex;
                         @media (max-width: 899px) {
                           justify-content: center;
