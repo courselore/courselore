@@ -13956,13 +13956,17 @@ ${value}</textarea
                                 class="message"
                                 style="${css`
                                   padding: var(--space--2) var(--space--0);
-                                  border-bottom: var(--border-width--4) solid
-                                    var(--color--gray--medium--200);
-                                  @media (prefers-color-scheme: dark) {
-                                    border-color: var(
-                                      --color--gray--medium--700
-                                    );
-                                  }
+                                  ${res.locals.conversation.type === "chat"
+                                    ? css``
+                                    : css`
+                                        border-bottom: var(--border-width--4)
+                                          solid var(--color--gray--medium--200);
+                                        @media (prefers-color-scheme: dark) {
+                                          border-color: var(
+                                            --color--gray--medium--700
+                                          );
+                                        }
+                                      `}
                                 `}"
                                 oninteractive="${javascript`
                                   ${
