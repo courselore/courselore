@@ -14501,59 +14501,83 @@ ${value}</textarea
                                                   )})
                                                 `
                                               : html``}
-                                            ·
-                                            <time
-                                              oninteractive="${javascript`
-                                                leafac.relativizeDateTimeElement(this, { capitalize: true });
-                                              `}"
-                                            >
-                                              ${message.createdAt}
-                                            </time>
-                                            $${message.updatedAt !== null
-                                              ? html`
-                                                  (Updated
-                                                  <time
-                                                    oninteractive="${javascript`
-                                                      leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                                                    `}"
-                                                  >
-                                                    ${message.updatedAt} </time
-                                                  >)
-                                                `
-                                              : html``}
-                                            ·
-                                            <button
-                                              class="button button--tight button--tight--inline button--transparent"
+                                            <span
                                               style="${css`
-                                                font-size: var(--font-size--xs);
-                                                line-height: var(
-                                                  --line-height--xs
-                                                );
-                                                display: inline-flex;
-                                              `}"
-                                              oninteractive="${javascript`
-                                                tippy(this, {
-                                                  content: "Copy Message Permanent Link to Clipboard",
-                                                  touch: false,
-                                                });
-                                                this.copied = tippy(this, {
-                                                  content: "Copied Message Permanent Link to Clipboard",
-                                                  theme: "green",
-                                                  trigger: "manual",
-                                                });
-                                              `}"
-                                              onclick="${javascript`
-                                                (async () => {
-                                                  await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${message.reference}");
-                                                  this.copied.show();
-                                                  await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                                                  this.copied.hide();
-                                                })();
+                                                ${res.locals.conversation
+                                                  .type === "chat"
+                                                  ? css`
+                                                      transition-property: var(
+                                                        --transition-property--opacity
+                                                      );
+                                                      transition-duration: var(
+                                                        --transition-duration--150
+                                                      );
+                                                      transition-timing-function: var(
+                                                        --transition-timing-function--in-out
+                                                      );
+                                                      .message:not(:hover) & {
+                                                        opacity: 0;
+                                                      }
+                                                    `
+                                                  : css``}
                                               `}"
                                             >
-                                              #${res.locals.conversation
-                                                .reference}/${message.reference}
-                                            </button>
+                                              ·
+                                              <time
+                                                oninteractive="${javascript`
+                                                  leafac.relativizeDateTimeElement(this, { capitalize: true });
+                                                `}"
+                                              >
+                                                ${message.createdAt}
+                                              </time>
+                                              $${message.updatedAt !== null
+                                                ? html`
+                                                    (Updated
+                                                    <time
+                                                      oninteractive="${javascript`
+                                                        leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                      `}"
+                                                    >
+                                                      ${message.updatedAt} </time
+                                                    >)
+                                                  `
+                                                : html``}
+                                              ·
+                                              <button
+                                                class="button button--tight button--tight--inline button--transparent"
+                                                style="${css`
+                                                  font-size: var(
+                                                    --font-size--xs
+                                                  );
+                                                  line-height: var(
+                                                    --line-height--xs
+                                                  );
+                                                  display: inline-flex;
+                                                `}"
+                                                oninteractive="${javascript`
+                                                  tippy(this, {
+                                                    content: "Copy Message Permanent Link to Clipboard",
+                                                    touch: false,
+                                                  });
+                                                  this.copied = tippy(this, {
+                                                    content: "Copied Message Permanent Link to Clipboard",
+                                                    theme: "green",
+                                                    trigger: "manual",
+                                                  });
+                                                `}"
+                                                onclick="${javascript`
+                                                  (async () => {
+                                                    await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${message.reference}");
+                                                    this.copied.show();
+                                                    await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                                                    this.copied.hide();
+                                                  })();
+                                                `}"
+                                              >
+                                                #${res.locals.conversation
+                                                  .reference}/${message.reference}
+                                              </button>
+                                            </span>
                                           </span>
                                         </h3>
                                       </div>
