@@ -14725,6 +14725,12 @@ ${value}</textarea
                                     </div>
 
                                     <div
+                                      $${
+                                        /* FIXME */ res.locals.conversation
+                                          .type === "chat"
+                                          ? html`hidden`
+                                          : html``
+                                      }
                                       style="${css`
                                         font-size: var(--font-size--xs);
                                         line-height: var(--line-height--xs);
