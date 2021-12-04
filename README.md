@@ -30,9 +30,11 @@
 
 - Layout changes:
   - Remove padding on top of text area.
+    - Non-chat version missing space.
   - Make line separating header extend all the way.
   - More compact design for messages.
   - Small screen horizontal scroll.
+  - Messages area cutting on the left.
 - Move snippet to remember a field value (textarea on conversations page) into @leafac/javascript.
 - Paginate messages.
 - Currently typing.
