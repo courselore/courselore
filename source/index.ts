@@ -13721,7 +13721,7 @@ ${value}</textarea
                         ? html`
                             <div
                               style="${css`
-                                margin-top: var(--space--4);
+                                padding: var(--space--4) var(--space--0);
                                 display: flex;
                                 flex-direction: column;
                                 gap: var(--space--4);
