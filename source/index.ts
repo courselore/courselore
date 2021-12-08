@@ -13976,7 +13976,6 @@ ${value}</textarea
                                 )}"
                                 class="message"
                                 style="${css`
-                                  padding: var(--space--2) var(--space--0);
                                   ${res.locals.conversation.type === "chat"
                                     ? css``
                                     : css`
@@ -14003,8 +14002,9 @@ ${value}</textarea
                               >
                                 <div
                                   style="${css`
-                                    padding-bottom: var(--space--1);
+                                    padding: var(--space--2);
                                     border-radius: var(--border-radius--lg);
+                                    margin: var(--space--0) var(--space---2);
                                     display: flex;
                                     flex-direction: column;
                                     gap: var(--space--2);
