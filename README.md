@@ -28,10 +28,16 @@
 
 ### Chat
 
+- Pagination
+  - Messages in conversation.
+  - Conversations on sidebar.
 - Layout changes:
   - More compact design for messages.
     - Reveal likes on chats.
   - Non-chat textarea missing padding top.
+- Test with thousands of messages.
+- Scroll on new message.
+  - Latency compensation.
 - Move snippet to remember a field value (textarea on conversations page) into @leafac/javascript.
 - Paginate messages.
 - Currently typing.
@@ -41,6 +47,13 @@
 - Bookmarks / flags / saved items. These are personal, for example, for something you have to follow up on.
 - Show who’s online.
   - Last visited at a certain time.
+- A course about courselore. For collecting feedback.
+  - Put invitation link on the page somewhere.
+- Lightbox for images & code blocks (click for more & full screen).
+- “Truncate” long messages in chat.
+- Button to choose whether to wrap lines.
+- Mobile app is more important than chat.
+  - PWA to begin with: https://checkvist.com/auth/mobile
 
 ### Users
 
@@ -341,6 +354,28 @@
 
 <details>
 <summary><strong>Meetings</strong></summary>
+
+<details>
+<summary>2021-12-08</summary>
+
+- Created https://github.com/leafac/fake-avatars to replace Faker.
+- Fixed scrolling of chat window.
+- Cleaned up the layout of chats.
+- Pagination
+  - Messages in conversation.
+  - Conversations on sidebar.
+- Test with thousands of messages.
+- Scroll on new message.
+  - Latency compensation.
+- A course about courselore. For collecting feedback.
+  - Put invitation link on the page somewhere.
+- Lightbox for images & code blocks (click for more & full screen).
+- “Truncate” long messages in chat.
+- Button to choose whether to wrap lines.
+- Mobile app is more important than chat.
+  - PWA to begin with: https://checkvist.com/auth/mobile
+
+</details>
 
 <details>
 <summary>2021-11-20</summary>
