@@ -31,7 +31,6 @@
 - Layout changes:
   - More compact design for messages.
     - Reveal likes on chats.
-  - Non-chat textarea missing padding top.
 - Move snippet to remember a field value (textarea on conversations page) into @leafac/javascript.
 - Scroll on new message.
 - Latency compensation when sending message.

@@ -14004,7 +14004,8 @@ ${value}</textarea
                                   style="${css`
                                     padding: var(--space--2);
                                     border-radius: var(--border-radius--lg);
-                                    margin: var(--space--0) var(--space---2);
+                                    margin: var(--space--0) var(--space---2)
+                                      var(--space--2);
                                     display: flex;
                                     flex-direction: column;
                                     gap: var(--space--2);
@@ -14925,7 +14926,9 @@ ${value}</textarea
                           justify-content: center;
                         }
                       `
-                    : css``}
+                    : css`
+                        padding-top: var(--space--4);
+                      `}
                 `}"
                 $${res.locals.conversation.type === "chat"
                   ? html`
