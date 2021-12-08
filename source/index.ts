@@ -15102,7 +15102,7 @@ ${value}</textarea
                         <div class="label">
                           $${res.locals.conversation.type === "chat"
                             ? html``
-                            : html` <p class="label--text">Anonymity</p> `}
+                            : html`<p class="label--text">Anonymity</p>`}
                           <div
                             style="${css`
                               display: flex;
