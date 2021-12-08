@@ -32,17 +32,19 @@
   - More compact design for messages.
     - Reveal likes on chats.
   - Non-chat textarea missing padding top.
-- Scroll on new message.
-  - Latency compensation.
 - Move snippet to remember a field value (textarea on conversations page) into @leafac/javascript.
-- Currently typing.
-- Separate by date.
-- Group together messages sent in quick succession.
-- Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
-- Bookmarks / flags / saved items. These are personal, for example, for something you have to follow up on.
-- Show who’s online.
-  - Last visited at a certain time.
-- “Truncate” long messages in chat.
+- Scroll on new message.
+- Latency compensation when sending message.
+- Messages display:
+  - Separate by date.
+  - Group together messages sent in quick succession.
+  - “Truncate” long messages.
+- Extra real-time features:
+  - Currently typing.
+  - Show who’s online (last visited at a certain time).
+- Extra messages features:
+  - Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
+  - Bookmarks / flags / saved items. These are personal, for example, for something you have to follow up on.
 
 ### Performance
 
