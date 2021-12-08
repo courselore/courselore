@@ -28,18 +28,13 @@
 
 ### Chat
 
-- Pagination
-  - Messages in conversation.
-  - Conversations on sidebar.
 - Layout changes:
   - More compact design for messages.
     - Reveal likes on chats.
   - Non-chat textarea missing padding top.
-- Test with thousands of messages.
 - Scroll on new message.
   - Latency compensation.
 - Move snippet to remember a field value (textarea on conversations page) into @leafac/javascript.
-- Paginate messages.
 - Currently typing.
 - Separate by date.
 - Group together messages sent in quick succession.
@@ -47,13 +42,20 @@
 - Bookmarks / flags / saved items. These are personal, for example, for something you have to follow up on.
 - Show who’s online.
   - Last visited at a certain time.
-- A course about courselore. For collecting feedback.
-  - Put invitation link on the page somewhere.
-- Lightbox for images & code blocks (click for more & full screen).
 - “Truncate” long messages in chat.
-- Button to choose whether to wrap lines.
-- Mobile app is more important than chat.
-  - PWA to begin with: https://checkvist.com/auth/mobile
+
+### Performance
+
+- Pagination.
+  - Messages in conversation.
+  - Conversations on sidebar.
+- Test with thousands of messages.
+
+### Release
+
+- A course about CourseLore for collecting feedback.
+  - Put invitation link on the page somewhere.
+- Create separate staging & production versions.
 
 ### Users
 
@@ -144,6 +146,7 @@
 - Reference on more features ideas: <https://github.com/gjtorikian/html-pipeline>
 - Polls.
 - Lightbox modal for resized images.
+- Lightbox for code blocks (“click for more”, full screen, and selective wrap or not long lines).
 - Add support for videos: Sanitization, dimensions, and so forth.
 
 ### Pagination
@@ -262,6 +265,7 @@
 ### Mobile & Desktop Applications
 
 - Can we get away with not having mobile & desktop applications? How much does it hinder our ability to do things like notifications?
+  - PWA to begin with: https://checkvist.com/auth/mobile
 - Desktop: Electron.
 - Mobile:
   - https://capacitorjs.com/
