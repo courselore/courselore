@@ -14532,14 +14532,14 @@ ${value}</textarea
                                               </time>
                                               $${message.updatedAt !== null
                                                 ? html`
-                                                    (Updated
+                                                    · Updated
                                                     <time
                                                       oninteractive="${javascript`
                                                         leafac.relativizeDateTimeElement(this, { preposition: "on" });
                                                       `}"
                                                     >
-                                                      ${message.updatedAt} </time
-                                                    >)
+                                                      ${message.updatedAt}
+                                                    </time>
                                                   `
                                                 : html``}
                                               ·
