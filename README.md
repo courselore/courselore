@@ -48,6 +48,7 @@
 
 ### Performance
 
+- Cache Markdown parsing.
 - Pagination.
   - Messages in conversation.
   - Conversations on sidebar.
