@@ -14004,11 +14004,24 @@ ${value}</textarea
                                   style="${css`
                                     padding: var(--space--2);
                                     border-radius: var(--border-radius--lg);
-                                    margin: var(--space--0) var(--space---2)
-                                      var(--space--2);
+                                    ${res.locals.conversation.type === "chat"
+                                      ? css`
+                                          margin: var(--space--0)
+                                            var(--space---2);
+                                        `
+                                      : css`
+                                          margin: var(--space--0)
+                                            var(--space---2) var(--space--2);
+                                        `}
                                     display: flex;
                                     flex-direction: column;
-                                    gap: var(--space--2);
+                                    ${res.locals.conversation.type === "chat"
+                                      ? css`
+                                          gap: var(--space--1);
+                                        `
+                                      : css`
+                                          gap: var(--space--2);
+                                        `}
                                     min-width: var(--space--0);
 
                                     --color--message--highlight-background-on-target: var(
