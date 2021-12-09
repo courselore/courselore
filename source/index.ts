@@ -16259,6 +16259,7 @@ ${value}</textarea
               id: number;
               authorEnrollment: number | null;
               anonymousAt: string | null;
+              type: ConversationType;
               title: string;
             }>(
               sql`
@@ -16406,7 +16407,9 @@ ${value}</textarea
 
               for (const enrollment of lodash.sampleSize(
                 enrollments,
-                Math.random() < 0.5 ? 0 : lodash.random(5)
+                Math.random() < (conversation.type === "chat" ? 0.9 : 0.5)
+                  ? 0
+                  : lodash.random(5)
               ))
                 database.run(
                   sql`
