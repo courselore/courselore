@@ -7,7 +7,7 @@ export default async (
   const administratorEmail = "administrator@courselore.org";
   if (process.argv[3] === undefined) {
     const url = await courseloreImport("node:url");
-    const execa = (await courseloreImport("execa")).default;
+    const execa = (await courseloreImport("execa")).execa;
     const caddyfile = (await courseloreImport("dedent")).default;
     const subprocesses = [
       execa(
