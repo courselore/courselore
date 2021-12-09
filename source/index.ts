@@ -3024,7 +3024,9 @@ export default async function courselore({
           body: html`
             <form
               method="POST"
-              action="${baseURL}/sign-in?${qs.stringify(req.query)}"
+              action="${baseURL}/sign-in${qs.stringify(req.query, {
+                addQueryPrefix: true,
+              })}"
               novalidate
               style="${css`
                 display: flex;
@@ -3071,7 +3073,9 @@ export default async function courselore({
               <p>
                 Don’t have an account?
                 <a
-                  href="${baseURL}/sign-up?${qs.stringify(req.query)}"
+                  href="${baseURL}/sign-up${qs.stringify(req.query, {
+                    addQueryPrefix: true,
+                  })}"
                   class="link"
                   >Sign up</a
                 >.
@@ -3079,7 +3083,9 @@ export default async function courselore({
               <p>
                 Forgot your password?
                 <a
-                  href="${baseURL}/reset-password?${qs.stringify(req.query)}"
+                  href="${baseURL}/reset-password${qs.stringify(req.query, {
+                    addQueryPrefix: true,
+                  })}"
                   class="link"
                   >Reset password</a
                 >.
@@ -3120,7 +3126,11 @@ export default async function courselore({
           res,
           html`<div class="flash--rose">Incorrect email & password.</div>`
         );
-        return res.redirect(`${baseURL}/sign-in?${qs.stringify(req.query)}`);
+        return res.redirect(
+          `${baseURL}/sign-in${qs.stringify(req.query, {
+            addQueryPrefix: true,
+          })}`
+        );
       }
       Session.open(req, res, user.id);
       res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
@@ -3184,7 +3194,9 @@ export default async function courselore({
           body: html`
             <form
               method="POST"
-              action="${baseURL}/reset-password?${qs.stringify(req.query)}"
+              action="${baseURL}/reset-password${qs.stringify(req.query, {
+                addQueryPrefix: true,
+              })}"
               novalidate
               style="${css`
                 display: flex;
@@ -3221,7 +3233,9 @@ export default async function courselore({
               <p>
                 Don’t have an account?
                 <a
-                  href="${baseURL}/sign-up?${qs.stringify(req.query)}"
+                  href="${baseURL}/sign-up${qs.stringify(req.query, {
+                    addQueryPrefix: true,
+                  })}"
                   class="link"
                   >Sign up</a
                 >.
@@ -3229,7 +3243,9 @@ export default async function courselore({
               <p>
                 Remember your password?
                 <a
-                  href="${baseURL}/sign-in?${qs.stringify(req.query)}"
+                  href="${baseURL}/sign-in${qs.stringify(req.query, {
+                    addQueryPrefix: true,
+                  })}"
                   class="link"
                   >Sign in</a
                 >.
@@ -3264,13 +3280,15 @@ export default async function courselore({
         html`<div class="flash--rose">Email not found.</div>`
       );
       return res.redirect(
-        `${baseURL}/reset-password?${qs.stringify(req.query)}`
+        `${baseURL}/reset-password${qs.stringify(req.query, {
+          addQueryPrefix: true,
+        })}`
       );
     }
 
     const link = `${baseURL}/reset-password/${PasswordReset.create(
       user.id
-    )}?${qs.stringify(req.query)}`;
+    )}${qs.stringify(req.query, { addQueryPrefix: true })}`;
     sendMail({
       to: user.email,
       subject: "CourseLore · Password Reset Link",
@@ -3303,7 +3321,9 @@ export default async function courselore({
           </p>
           <form
             method="POST"
-            action="${baseURL}/reset-password?${qs.stringify(req.query)}"
+            action="${baseURL}/reset-password${qs.stringify(req.query, {
+              addQueryPrefix: true,
+            })}"
           >
             <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
             <input type="hidden" name="email" value="${req.body.email}" />
@@ -3340,7 +3360,9 @@ export default async function courselore({
           `
         );
         return res.redirect(
-          `${baseURL}/reset-password?${qs.stringify(req.query)}`
+          `${baseURL}/reset-password${qs.stringify(req.query, {
+            addQueryPrefix: true,
+          })}`
         );
       }
       res.send(
@@ -3357,7 +3379,7 @@ export default async function courselore({
               method="POST"
               action="${baseURL}/reset-password/${PasswordReset.create(
                 userId
-              )}?${qs.stringify(req.query)}"
+              )}${qs.stringify(req.query, { addQueryPrefix: true })}"
               novalidate
               style="${css`
                 display: flex;
@@ -3430,7 +3452,9 @@ export default async function courselore({
           `
         );
         return res.redirect(
-          `${baseURL}/reset-password?${qs.stringify(req.query)}`
+          `${baseURL}/reset-password${qs.stringify(req.query, {
+            addQueryPrefix: true,
+          })}`
         );
       }
 
@@ -3473,7 +3497,9 @@ export default async function courselore({
         body: html`
           <form
             method="POST"
-            action="${baseURL}/sign-up?${qs.stringify(req.query)}"
+            action="${baseURL}/sign-up${qs.stringify(req.query, {
+              addQueryPrefix: true,
+            })}"
             novalidate
             style="${css`
               display: flex;
@@ -3543,7 +3569,9 @@ export default async function courselore({
             <p>
               Already have an account account?
               <a
-                href="${baseURL}/sign-in?${qs.stringify(req.query)}"
+                href="${baseURL}/sign-in${qs.stringify(req.query, {
+                  addQueryPrefix: true,
+                })}"
                 class="link"
                 >Sign in</a
               >.
@@ -3551,7 +3579,9 @@ export default async function courselore({
             <p>
               Forgot your password?
               <a
-                href="${baseURL}/reset-password?${qs.stringify(req.query)}"
+                href="${baseURL}/reset-password${qs.stringify(req.query, {
+                  addQueryPrefix: true,
+                })}"
                 class="link"
                 >Reset password</a
               >.
@@ -3637,7 +3667,11 @@ export default async function courselore({
           res,
           html`<div class="flash--rose">Email already taken.</div>`
         );
-        return res.redirect(`${baseURL}/sign-in?${qs.stringify(req.query)}`);
+        return res.redirect(
+          `${baseURL}/sign-in${qs.stringify(req.query, {
+            addQueryPrefix: true,
+          })}`
+        );
       }
       // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
       const user = database.get<{ id: number; email: string; name: string }>(
@@ -7361,13 +7395,16 @@ export default async function courselore({
                               ? html`
                                   <a
                                     href="${baseURL}/courses/${res.locals.course
-                                      .reference}?${qs.stringify({
-                                      conversationLayoutSidebarOpenOnSmallScreen:
-                                        "true",
-                                      filters: {
-                                        tagsReferences: [tag.reference],
+                                      .reference}${qs.stringify(
+                                      {
+                                        conversationLayoutSidebarOpenOnSmallScreen:
+                                          "true",
+                                        filters: {
+                                          tagsReferences: [tag.reference],
+                                        },
                                       },
-                                    })}"
+                                      { addQueryPrefix: true }
+                                    )}"
                                     class="button button--tight button--tight--inline button--transparent"
                                     oninteractive="${javascript`
                                       tippy(this, {
@@ -7938,38 +7975,44 @@ export default async function courselore({
               `}"
             >
               <a
-                href="${baseURL}/sign-up?${qs.stringify({
-                  redirect: req.originalUrl,
-                  ...(res.locals.invitation.email === null
-                    ? {}
-                    : {
-                        email: res.locals.invitation.email,
-                      }),
-                  ...(res.locals.invitation.name === null
-                    ? {}
-                    : {
-                        name: res.locals.invitation.name,
-                      }),
-                })}"
+                href="${baseURL}/sign-up${qs.stringify(
+                  {
+                    redirect: req.originalUrl,
+                    ...(res.locals.invitation.email === null
+                      ? {}
+                      : {
+                          email: res.locals.invitation.email,
+                        }),
+                    ...(res.locals.invitation.name === null
+                      ? {}
+                      : {
+                          name: res.locals.invitation.name,
+                        }),
+                  },
+                  { addQueryPrefix: true }
+                )}"
                 class="button button--blue"
               >
                 <i class="bi bi-person-plus"></i>
                 Sign up
               </a>
               <a
-                href="${baseURL}/sign-in?${qs.stringify({
-                  redirect: req.originalUrl,
-                  ...(res.locals.invitation.email === null
-                    ? {}
-                    : {
-                        email: res.locals.invitation.email,
-                      }),
-                  ...(res.locals.invitation.name === null
-                    ? {}
-                    : {
-                        name: res.locals.invitation.name,
-                      }),
-                })}"
+                href="${baseURL}/sign-in${qs.stringify(
+                  {
+                    redirect: req.originalUrl,
+                    ...(res.locals.invitation.email === null
+                      ? {}
+                      : {
+                          email: res.locals.invitation.email,
+                        }),
+                    ...(res.locals.invitation.name === null
+                      ? {}
+                      : {
+                          name: res.locals.invitation.name,
+                        }),
+                  },
+                  { addQueryPrefix: true }
+                )}"
                 class="button button--transparent"
               >
                 <i class="bi bi-box-arrow-in-right"></i>
@@ -8347,10 +8390,11 @@ export default async function courselore({
                 >
                   <a
                     href="${baseURL}/courses/${res.locals.course
-                      .reference}/conversations/new?${qs.stringify(
+                      .reference}/conversations/new${qs.stringify(
                       lodash.omit(req.query, [
                         "conversationLayoutSidebarOpenOnSmallScreen",
-                      ])
+                      ]),
+                      { addQueryPrefix: true }
                     )}"
                     class="button button--transparent"
                   >
@@ -8411,11 +8455,14 @@ export default async function courselore({
                     req.query.filters !== undefined
                       ? html`
                           <a
-                            href="?${qs.stringify({
-                              conversationLayoutSidebarOpenOnSmallScreen:
-                                "true",
-                              scrollToConversation: "false",
-                            })}"
+                            href="${qs.stringify(
+                              {
+                                conversationLayoutSidebarOpenOnSmallScreen:
+                                  "true",
+                                scrollToConversation: "false",
+                              },
+                              { addQueryPrefix: true }
+                            )}"
                             class="button button--tight button--tight--inline button--transparent"
                             oninteractive="${javascript`
                               tippy(this, {
@@ -8805,11 +8852,12 @@ export default async function courselore({
                             />
                             <a
                               href="${baseURL}/courses/${res.locals.course
-                                .reference}/conversations/${conversation.reference}?${qs.stringify(
+                                .reference}/conversations/${conversation.reference}${qs.stringify(
                                 lodash.omit(req.query, [
                                   "conversationLayoutSidebarOpenOnSmallScreen",
                                   "scrollToConversation",
-                                ])
+                                ]),
+                                { addQueryPrefix: true }
                               )}${conversation.messageAuthorUserNameSearchResultMessage !==
                               undefined
                                 ? `#message--${conversation.messageAuthorUserNameSearchResultMessage.reference}`
@@ -16512,18 +16560,24 @@ ${value}</textarea
               `}"
             >
               <a
-                href="${baseURL}/sign-up?${qs.stringify({
-                  redirect: req.originalUrl,
-                })}"
+                href="${baseURL}/sign-up${qs.stringify(
+                  {
+                    redirect: req.originalUrl,
+                  },
+                  { addQueryPrefix: true }
+                )}"
                 class="button button--blue"
               >
                 <i class="bi bi-person-plus"></i>
                 Sign up
               </a>
               <a
-                href="${baseURL}/sign-in?${qs.stringify({
-                  redirect: req.originalUrl,
-                })}"
+                href="${baseURL}/sign-in${qs.stringify(
+                  {
+                    redirect: req.originalUrl,
+                  },
+                  { addQueryPrefix: true }
+                )}"
                 class="button button--transparent"
               >
                 <i class="bi bi-box-arrow-in-right"></i>
