@@ -14725,94 +14725,104 @@ ${value}</textarea
                                       </div>
                                     </div>
 
-                                    <div
-                                      $${
-                                        /* FIXME */ res.locals.conversation
-                                          .type === "chat"
-                                          ? html`hidden`
-                                          : html``
-                                      }
-                                      style="${css`
-                                        font-size: var(--font-size--xs);
-                                        line-height: var(--line-height--xs);
-                                        display: flex;
-                                        flex-wrap: wrap;
-                                        column-gap: var(--space--8);
-                                        row-gap: var(--space--1);
-                                      `}"
-                                    >
-                                      $${(() => {
-                                        const isLiked = message.likes.some(
-                                          (like) =>
-                                            like.enrollment.id ===
-                                            res.locals.enrollment.id
-                                        );
-                                        const likesCount = message.likes.length;
+                                    $${(() => {
+                                      const content: HTML[] = [];
 
-                                        return html`
-                                          <form
-                                            method="POST"
-                                            action="${baseURL}/courses/${res
-                                              .locals.course
-                                              .reference}/conversations/${res
-                                              .locals.conversation
-                                              .reference}/messages/${message.reference}/likes${isLiked
-                                              ? "?_method=DELETE"
-                                              : ""}"
-                                            onsubmit="${javascript`
-                                              event.preventDefault();
-                                              fetch(this.action, {
-                                                method: this.method,
-                                                body: new URLSearchParams(new FormData(this)),
-                                              });
-                                            `}"
-                                          >
-                                            <input
-                                              type="hidden"
-                                              name="_csrf"
-                                              value="${req.csrfToken()}"
-                                            />
-                                            <button
-                                              class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
-                                                ? "text--blue"
+                                      const isLiked = message.likes.some(
+                                        (like) =>
+                                          like.enrollment.id ===
+                                          res.locals.enrollment.id
+                                      );
+                                      const likesCount = message.likes.length;
+                                      if (
+                                        res.locals.conversation.type !==
+                                          "chat" ||
+                                        likesCount > 0
+                                      )
+                                        content.push(
+                                          html`
+                                            <form
+                                              method="POST"
+                                              action="${baseURL}/courses/${res
+                                                .locals.course
+                                                .reference}/conversations/${res
+                                                .locals.conversation
+                                                .reference}/messages/${message.reference}/likes${isLiked
+                                                ? "?_method=DELETE"
                                                 : ""}"
-                                              $${likesCount === 0
-                                                ? html``
-                                                : html`
-                                                    oninteractive="${javascript`
-                                                      tippy(this, {
-                                                        content: ${JSON.stringify(
-                                                          isLiked
-                                                            ? "Remove Like"
-                                                            : "Like"
-                                                        )},
-                                                        touch: false,
-                                                      });
-                                                    `}"
-                                                  `}
+                                              onsubmit="${javascript`
+                                                event.preventDefault();
+                                                fetch(this.action, {
+                                                  method: this.method,
+                                                  body: new URLSearchParams(new FormData(this)),
+                                                });
+                                              `}"
                                             >
-                                              $${isLiked
-                                                ? html`
-                                                    <i
-                                                      class="bi bi-hand-thumbs-up-fill"
-                                                    ></i>
-                                                  `
-                                                : html`<i
-                                                    class="bi bi-hand-thumbs-up"
-                                                  ></i>`}
-                                              $${likesCount === 0
-                                                ? html`Like`
-                                                : html`
-                                                    ${likesCount}
-                                                    Like${likesCount === 1
-                                                      ? ""
-                                                      : "s"}
-                                                  `}
-                                            </button>
-                                          </form>
-                                        `;
-                                      })()}
-                                    </div>
+                                              <input
+                                                type="hidden"
+                                                name="_csrf"
+                                                value="${req.csrfToken()}"
+                                              />
+                                              <button
+                                                class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
+                                                  ? "text--blue"
+                                                  : ""}"
+                                                $${likesCount === 0
+                                                  ? html``
+                                                  : html`
+                                                      oninteractive="${javascript`
+                                                        tippy(this, {
+                                                          content: ${JSON.stringify(
+                                                            isLiked
+                                                              ? "Remove Like"
+                                                              : "Like"
+                                                          )},
+                                                          touch: false,
+                                                        });
+                                                      `}"
+                                                    `}
+                                              >
+                                                $${isLiked
+                                                  ? html`
+                                                      <i
+                                                        class="bi bi-hand-thumbs-up-fill"
+                                                      ></i>
+                                                    `
+                                                  : html`<i
+                                                      class="bi bi-hand-thumbs-up"
+                                                    ></i>`}
+                                                $${likesCount === 0
+                                                  ? html`Like`
+                                                  : html`
+                                                      ${likesCount}
+                                                      Like${likesCount === 1
+                                                        ? ""
+                                                        : "s"}
+                                                    `}
+                                              </button>
+                                            </form>
+                                          `
+                                        );
+
+                                      return content.length === 0
+                                        ? html``
+                                        : html`
+                                            <div
+                                              style="${css`
+                                                font-size: var(--font-size--xs);
+                                                line-height: var(
+                                                  --line-height--xs
+                                                );
+                                                display: flex;
+                                                flex-wrap: wrap;
+                                                column-gap: var(--space--8);
+                                                row-gap: var(--space--1);
+                                              `}"
+                                            >
+                                              $${content}
+                                            </div>
+                                          `;
+                                    })()}
                                   </div>
 
                                   $${mayEditMessage(req, res, message)
