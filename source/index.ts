@@ -14637,9 +14637,9 @@ ${value}</textarea
                                                       .name}`,
                                                     req.query.search
                                                   )})
-                                                  ·
                                                 `
                                               : html``}
+                                            ·
                                             <time
                                               oninteractive="${javascript`
                                                 leafac.relativizeDateTimeElement(this, { capitalize: true });
