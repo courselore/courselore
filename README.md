@@ -30,8 +30,6 @@
 
 - Layout changes:
   - More compact design for messages.
-    - Remove `?` from URL when using `qs` package.
-      - 8414: Empty link
     - Reveal likes on chats.
     - Information that hides itself should have limited height (scroll horizontally, have a button to show/hide, or something like that).
 - Move snippet to remember a field value (textarea on conversations page) into @leafac/javascript.
