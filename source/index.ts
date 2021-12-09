@@ -13809,6 +13809,42 @@ ${value}</textarea
                                   }
                                 `}"
                               >
+                                $${res.locals.conversation.type === "chat" &&
+                                message.likes.length === 0
+                                  ? html`
+                                      <form
+                                        method="POST"
+                                        action="${baseURL}/courses/${res.locals
+                                          .course.reference}/conversations/${res
+                                          .locals.conversation
+                                          .reference}/messages/${message.reference}/likes"
+                                        onsubmit="${javascript`
+                                          event.preventDefault();
+                                          fetch(this.action, {
+                                            method: this.method,
+                                            body: new URLSearchParams(new FormData(this)),
+                                          });
+                                        `}"
+                                      >
+                                        <input
+                                          type="hidden"
+                                          name="_csrf"
+                                          value="${req.csrfToken()}"
+                                        />
+                                        <button
+                                          class="button button--tight button--tight--inline button--transparent"
+                                          oninteractive="${javascript`
+                                            tippy(this, {
+                                              content: "Like",
+                                              touch: false,
+                                            });
+                                          `}"
+                                        >
+                                          <i class="bi bi-hand-thumbs-up"></i>
+                                        </button>
+                                      </form>
+                                    `
+                                  : html``}
                                 $${message.authorEnrollment.id ===
                                   res.locals.enrollment.id &&
                                 res.locals.enrollment.role === "student" &&

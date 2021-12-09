@@ -30,7 +30,6 @@
 
 - Layout changes:
   - More compact design for messages.
-    - Reveal likes on chats.
     - Information that hides itself should have limited height (scroll horizontally, have a button to show/hide, or something like that).
 - Move snippet to remember a field value (textarea on conversations page) into @leafac/javascript.
 - Scroll on new message.
