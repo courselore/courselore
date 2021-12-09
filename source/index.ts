@@ -14003,16 +14003,13 @@ ${value}</textarea
                                 <div
                                   style="${css`
                                     padding: var(--space--2);
-                                    border-radius: var(--border-radius--lg);
                                     ${res.locals.conversation.type === "chat"
-                                      ? css`
-                                          margin: var(--space--0)
-                                            var(--space---2);
-                                        `
+                                      ? css``
                                       : css`
-                                          margin: var(--space--0)
-                                            var(--space---2) var(--space--2);
+                                          padding-bottom: var(--space--4);
                                         `}
+                                    border-radius: var(--border-radius--lg);
+                                    margin: var(--space--0) var(--space---2);
                                     display: flex;
                                     flex-direction: column;
                                     ${res.locals.conversation.type === "chat"
