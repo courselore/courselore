@@ -13293,7 +13293,7 @@ ${value}</textarea
                                     --transition-timing-function--in-out
                                   );
                                   .header:not(:hover) & {
-                                    opacity: 0;
+                                    opacity: var(--opacity--0);
                                   }
                                 `}"
                               >
@@ -13369,7 +13369,7 @@ ${value}</textarea
                                       --transition-timing-function--in-out
                                     );
                                     .header:not(:hover) & {
-                                      opacity: 0;
+                                      opacity: var(--opacity--0);
                                     }
                                   `}"
                                   oninteractive="${javascript`
@@ -13805,7 +13805,7 @@ ${value}</textarea
                                     --transition-timing-function--in-out
                                   );
                                   .message:not(:hover) & {
-                                    opacity: 0;
+                                    opacity: var(--opacity--0);
                                   }
                                 `}"
                               >
@@ -14611,7 +14611,9 @@ ${value}</textarea
                                                         --transition-timing-function--in-out
                                                       );
                                                       .message:not(:hover) & {
-                                                        opacity: 0;
+                                                        opacity: var(
+                                                          --opacity--0
+                                                        );
                                                       }
                                                     `
                                                   : css``}
