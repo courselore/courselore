@@ -29,6 +29,7 @@
 ### Chat
 
 - Layout changes:
+  - Highlight message under cursor.
   - Scrolling with `#message--<identifier>` doesn’t work?
 - Move snippet to remember a field value (textarea on conversations page) into @leafac/javascript.
 - Scroll on new message.

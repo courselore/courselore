@@ -13335,6 +13335,18 @@ ${value}</textarea
                             line-height: var(--line-height--xs);
                             display: inline-flex;
                             gap: var(--space--2);
+                            transition-property: var(
+                              --transition-property--opacity
+                            );
+                            transition-duration: var(
+                              --transition-duration--150
+                            );
+                            transition-timing-function: var(
+                              --transition-timing-function--in-out
+                            );
+                            .header:not(:hover) & {
+                              opacity: var(--opacity--0);
+                            }
                           `}"
                         >
                           <button
@@ -13366,22 +13378,6 @@ ${value}</textarea
                             ? html`
                                 <button
                                   class="button button--tight button--tight--inline button--transparent secondary"
-                                  style="${css`
-                                    font-size: var(--font-size--xs);
-                                    line-height: var(--line-height--xs);
-                                    transition-property: var(
-                                      --transition-property--opacity
-                                    );
-                                    transition-duration: var(
-                                      --transition-duration--150
-                                    );
-                                    transition-timing-function: var(
-                                      --transition-timing-function--in-out
-                                    );
-                                    .header:not(:hover) & {
-                                      opacity: var(--opacity--0);
-                                    }
-                                  `}"
                                   oninteractive="${javascript`
                                     tippy(this, {
                                       content: "Edit Title",
