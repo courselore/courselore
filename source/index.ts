@@ -9133,7 +9133,17 @@ export default async function courselore({
         >
           ${conversation.createdAt}
         </time>
-        · #${conversation.reference}
+        ·
+        <span
+          oninteractive="${javascript`
+            tippy(this, {
+              content: "Conversation Reference",
+              touch: false,
+            });
+          `}"
+        >
+          #${conversation.reference}
+        </span>
       </div>
       $${conversation.taggings.length === 0
         ? html``
@@ -14049,6 +14059,35 @@ ${value}</textarea
                                 >
                                   <i class="bi bi-reply"></i>
                                 </button>
+
+                                <button
+                                  class="button button--tight button--tight--inline button--transparent"
+                                  style="${css`
+                                    display: inline-flex;
+                                  `}"
+                                  oninteractive="${javascript`
+                                    tippy(this, {
+                                      content: "Copy Message Permanent Link to Clipboard",
+                                      touch: false,
+                                    });
+                                    this.copied = tippy(this, {
+                                      content: "Copied Message Permanent Link to Clipboard",
+                                      theme: "green",
+                                      trigger: "manual",
+                                    });
+                                  `}"
+                                  onclick="${javascript`
+                                    (async () => {
+                                      await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${message.reference}");
+                                      this.copied.show();
+                                      await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                                      this.copied.hide();
+                                    })();
+                                  `}"
+                                >
+                                  #${res.locals.conversation
+                                    .reference}/${message.reference}
+                                </button>
                               </div>
                             `;
 
@@ -14602,9 +14641,9 @@ ${value}</textarea
                                                       .name}`,
                                                     req.query.search
                                                   )})
+                                                  ·
                                                 `
                                               : html``}
-                                            ·
                                             <time
                                               oninteractive="${javascript`
                                                 leafac.relativizeDateTimeElement(this, { capitalize: true });
@@ -14624,35 +14663,6 @@ ${value}</textarea
                                                   </time>
                                                 `
                                               : html``}
-                                            ·
-                                            <button
-                                              class="button button--tight button--tight--inline button--transparent"
-                                              style="${css`
-                                                display: inline-flex;
-                                              `}"
-                                              oninteractive="${javascript`
-                                                tippy(this, {
-                                                  content: "Copy Message Permanent Link to Clipboard",
-                                                  touch: false,
-                                                });
-                                                this.copied = tippy(this, {
-                                                  content: "Copied Message Permanent Link to Clipboard",
-                                                  theme: "green",
-                                                  trigger: "manual",
-                                                });
-                                              `}"
-                                              onclick="${javascript`
-                                                (async () => {
-                                                  await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${message.reference}");
-                                                  this.copied.show();
-                                                  await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                                                  this.copied.hide();
-                                                })();
-                                              `}"
-                                            >
-                                              #${res.locals.conversation
-                                                .reference}/${message.reference}
-                                            </button>
                                           </span>
                                         </h3>
                                       </div>
