@@ -30,6 +30,7 @@
 
 - Messages display:
   - Fix flash of unstyled content with relative datetimes.
+  - Extract relativizeDate
   - Group together messages sent in quick succession.
     - Turn buttons into popper.
     - What to do with dates?
