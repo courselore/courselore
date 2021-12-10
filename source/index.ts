@@ -5738,7 +5738,7 @@ export default async function courselore({
                   disabled
                   class="input--text"
                   oninteractive="${javascript`
-                    leafac.formatDateTimeInput(this);
+                    leafac.localizeDateTimeInput(this);
                     (this.validators ??= []).push(() => {
                       if (new Date(this.value).getTime() <= Date.now())
                         return "Must be in the future.";
@@ -6131,7 +6131,7 @@ export default async function courselore({
                                           autocomplete="off"
                                           class="input--text"
                                           oninteractive="${javascript`
-                                            leafac.formatDateTimeInput(this);
+                                            leafac.localizeDateTimeInput(this);
                                             (this.validators ??= []).push(() => {
                                               if (new Date(this.value).getTime() <= Date.now())
                                                 return "Must be in the future.";
@@ -14115,12 +14115,12 @@ ${value}</textarea
                                         oninteractive="${javascript`
                                           const element = this;
                                           const datetime = element.getAttribute("datetime");
-                                          const date = leafac.formatDate(datetime);
+                                          const date = leafac.localizeDate(datetime);
                                           (function update() {
-                                            const today = leafac.formatDate(new Date().toISOString());
+                                            const today = leafac.localizeDate(new Date().toISOString());
                                             const yesterdayDate = new Date();
                                             yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-                                            const yesterday = leafac.formatDate(yesterdayDate.toISOString());
+                                            const yesterday = leafac.localizeDate(yesterdayDate.toISOString());
                                             element.textContent =
                                               date === today ? "Today" :
                                               date === yesterday ? "Yesterday" :
