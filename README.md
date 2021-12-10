@@ -29,7 +29,7 @@
 ### Chat
 
 - Messages display:
-  - Separate by date.
+  - Fix flash of unstyled content with relative datetimes.
   - Group together messages sent in quick succession.
     - Turn buttons into popper.
     - What to do with dates?

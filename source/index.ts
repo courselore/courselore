@@ -14088,6 +14088,59 @@ ${value}</textarea
                             `;
 
                             return html`
+                              $${res.locals.conversation.type === "chat"
+                                ? html`
+                                    <div
+                                      hidden
+                                      class="date-separator secondary"
+                                      style="${css`
+                                        font-size: var(--font-size--xs);
+                                        line-height: var(--line-height--xs);
+                                        margin-top: var(--space--2);
+                                        display: flex;
+                                        gap: var(--space--4);
+                                        align-items: center;
+                                      `}"
+                                    >
+                                      <hr
+                                        class="separator"
+                                        style="${css`
+                                          flex: 1;
+                                        `}"
+                                      />
+                                      <time
+                                        datetime="${new Date(
+                                          message.createdAt
+                                        ).toISOString()}"
+                                        oninteractive="${javascript`
+                                          const datetime = this.getAttribute("datetime");
+                                          const date = leafac.formatDate(datetime);
+                                          const today = leafac.formatDate(new Date().toISOString());
+                                          const yesterdayDate = new Date();
+                                          yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+                                          const yesterday = leafac.formatDate(yesterdayDate.toISOString());
+                                          this.textContent =
+                                            date === today ? "Today" :
+                                            date === yesterday ? "Yesterday" :
+                                            date + " · " + new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(new Date(datetime));
+                                          const dateSeparator = this.closest(".date-separator");
+                                          let previousDateSeparator = dateSeparator;
+                                          do {
+                                            previousDateSeparator = previousDateSeparator.previousElementSibling;
+                                          } while (previousDateSeparator !== null && !previousDateSeparator.matches(".date-separator"));
+                                          dateSeparator.hidden = previousDateSeparator !== null && dateSeparator.textContent === previousDateSeparator.textContent;
+                                        `}"
+                                      ></time>
+                                      <hr
+                                        class="separator"
+                                        style="${css`
+                                          flex: 1;
+                                        `}"
+                                      />
+                                    </div>
+                                  `
+                                : html``}
+
                               <div
                                 id="message--${message.reference}"
                                 data-content="${JSON.stringify(
