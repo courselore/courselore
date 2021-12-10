@@ -15120,33 +15120,7 @@ ${value}</textarea
                         : css``}
                     `}"
                     oninteractive="${javascript`
-                      const content = this.querySelector(".markdown-editor--write--textarea");
-                      content.defaultValue =
-                        JSON.parse(
-                          localStorage.getItem("conversationsContentsInProgress") ?? "{}"
-                        )[window.location.pathname] ?? "";
-                      content.dataset.skipIsModified = "true";
-                      content.addEventListener("input", () => {
-                        const conversationsContentsInProgress = JSON.parse(
-                          localStorage.getItem("conversationsContentsInProgress") ?? "{}"
-                        );
-                        conversationsContentsInProgress[window.location.pathname] =
-                          content.value;
-                        localStorage.setItem(
-                          "conversationsContentsInProgress",
-                          JSON.stringify(conversationsContentsInProgress)
-                        );
-                      });
-                      content.closest("form").addEventListener("submit", () => {
-                        const conversationsContentsInProgress = JSON.parse(
-                          localStorage.getItem("conversationsContentsInProgress") ?? "{}"
-                        );
-                        delete conversationsContentsInProgress[window.location.pathname];
-                        localStorage.setItem(
-                          "conversationsContentsInProgress",
-                          JSON.stringify(conversationsContentsInProgress)
-                        );
-                      });
+                      leafac.saveFormInputValue(this.querySelector(".markdown-editor--write--textarea"), "new-message");
                     `}"
                   >
                     $${markdownEditor({
