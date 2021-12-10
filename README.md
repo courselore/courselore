@@ -28,12 +28,12 @@
 
 ### Chat
 
-- Latency compensation when sending message.
 - Messages display:
   - Group together messages sent in quick succession.
   - Separate by date.
   - “Truncate” long messages.
 - Scroll on new message.
+- Latency compensation when sending message.
 - Extra real-time features:
   - Show who’s online (last visited at a certain time).
   - Currently typing.
