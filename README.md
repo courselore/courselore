@@ -29,8 +29,10 @@
 ### Chat
 
 - Messages display:
-  - Group together messages sent in quick succession.
   - Separate by date.
+  - Group together messages sent in quick succession.
+    - Turn buttons into popper.
+    - What to do with dates?
   - “Truncate” long messages.
 - Scroll on new message.
 - Latency compensation when sending message.
