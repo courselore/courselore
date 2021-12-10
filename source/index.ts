@@ -14113,22 +14113,26 @@ ${value}</textarea
                                           message.createdAt
                                         ).toISOString()}"
                                         oninteractive="${javascript`
-                                          const datetime = this.getAttribute("datetime");
+                                          const element = this;
+                                          const datetime = element.getAttribute("datetime");
                                           const date = leafac.formatDate(datetime);
-                                          const today = leafac.formatDate(new Date().toISOString());
-                                          const yesterdayDate = new Date();
-                                          yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-                                          const yesterday = leafac.formatDate(yesterdayDate.toISOString());
-                                          this.textContent =
-                                            date === today ? "Today" :
-                                            date === yesterday ? "Yesterday" :
-                                            date + " · " + new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(new Date(datetime));
-                                          const dateSeparator = this.closest(".date-separator");
-                                          let previousDateSeparator = dateSeparator;
-                                          do {
-                                            previousDateSeparator = previousDateSeparator.previousElementSibling;
-                                          } while (previousDateSeparator !== null && !previousDateSeparator.matches(".date-separator"));
-                                          dateSeparator.hidden = previousDateSeparator !== null && dateSeparator.textContent === previousDateSeparator.textContent;
+                                          (function update() {
+                                            const today = leafac.formatDate(new Date().toISOString());
+                                            const yesterdayDate = new Date();
+                                            yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+                                            const yesterday = leafac.formatDate(yesterdayDate.toISOString());
+                                            element.textContent =
+                                              date === today ? "Today" :
+                                              date === yesterday ? "Yesterday" :
+                                              date + " · " + new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(new Date(datetime));
+                                            const dateSeparator = element.closest(".date-separator");
+                                            let previousDateSeparator = dateSeparator;
+                                            do {
+                                              previousDateSeparator = previousDateSeparator.previousElementSibling;
+                                            } while (previousDateSeparator !== null && !previousDateSeparator.matches(".date-separator"));
+                                            dateSeparator.hidden = previousDateSeparator !== null && dateSeparator.textContent === previousDateSeparator.textContent;
+                                            window.setTimeout(update, 60 * 1000);
+                                          })();
                                         `}"
                                       ></time>
                                       <hr
