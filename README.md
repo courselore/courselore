@@ -35,10 +35,10 @@
   - “Truncate” long messages.
 - Scroll on new message.
 - Latency compensation when sending message.
-- Extra real-time features:
+- Real-time features:
   - Show who’s online (last visited at a certain time).
   - Currently typing.
-- Extra messages features:
+- Messages features:
   - Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
   - Bookmarks / flags / saved items. These are personal, for example, for something you have to follow up on.
 
