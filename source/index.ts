@@ -14114,22 +14114,12 @@ ${value}</textarea
                                         ).toISOString()}"
                                         oninteractive="${javascript`
                                           const element = this;
-                                          const datetime = element.getAttribute("datetime");
-                                          const date = leafac.localizeDate(datetime);
+                                          leafac.relativizeDateElement(element);
                                           (function update() {
-                                            const today = leafac.localizeDate(new Date().toISOString());
-                                            const yesterdayDate = new Date();
-                                            yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-                                            const yesterday = leafac.localizeDate(yesterdayDate.toISOString());
-                                            element.textContent =
-                                              date === today ? "Today" :
-                                              date === yesterday ? "Yesterday" :
-                                              date + " · " + new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(new Date(datetime));
                                             const dateSeparator = element.closest(".date-separator");
                                             let previousDateSeparator = dateSeparator;
-                                            do {
-                                              previousDateSeparator = previousDateSeparator.previousElementSibling;
-                                            } while (previousDateSeparator !== null && !previousDateSeparator.matches(".date-separator"));
+                                            do previousDateSeparator = previousDateSeparator.previousElementSibling;
+                                            while (previousDateSeparator !== null && !previousDateSeparator.matches(".date-separator"));
                                             dateSeparator.hidden = previousDateSeparator !== null && dateSeparator.textContent === previousDateSeparator.textContent;
                                             window.setTimeout(update, 60 * 1000);
                                           })();
