@@ -6218,13 +6218,13 @@ export default async function courselore({
                                             <div>
                                               Used
                                               <time
+                                                datetime="${new Date(
+                                                  invitation.usedAt!
+                                                ).toISOString()}"
                                                 oninteractive="${javascript`
                                                   leafac.relativizeDateTimeElement(this);
                                                 `}"
                                               >
-                                                ${new Date(
-                                                  invitation.usedAt!
-                                                ).toISOString()}
                                               </time>
                                             </div>
                                           </div>
@@ -6266,13 +6266,13 @@ export default async function courselore({
                                                 <span>
                                                   Expired
                                                   <time
+                                                    datetime="${new Date(
+                                                      invitation.expiresAt!
+                                                    ).toISOString()}"
                                                     oninteractive="${javascript`
                                                       leafac.relativizeDateTimeElement(this);
                                                     `}"
                                                   >
-                                                    ${new Date(
-                                                      invitation.expiresAt!
-                                                    ).toISOString()}
                                                   </time>
                                                 </span>
                                               </h3>
@@ -6359,13 +6359,13 @@ export default async function courselore({
                                                 <span>
                                                   Expires
                                                   <time
+                                                    datetime="${new Date(
+                                                      invitation.expiresAt
+                                                    ).toISOString()}"
                                                     oninteractive="${javascript`
                                                       leafac.relativizeDateTimeElement(this);
                                                     `}"
                                                   >
-                                                    ${new Date(
-                                                      invitation.expiresAt
-                                                    ).toISOString()}
                                                   </time>
                                                 </span>
                                               </h3>
@@ -9127,11 +9127,11 @@ export default async function courselore({
           : html``}
         ·
         <time
+          datetime="${new Date(conversation.createdAt).toISOString()}"
           oninteractive="${javascript`
             leafac.relativizeDateTimeElement(this, { capitalize: true });
           `}"
         >
-          ${conversation.createdAt}
         </time>
         ·
         <span
@@ -14698,21 +14698,25 @@ ${value}</textarea
                                               : html``}
                                             ·
                                             <time
+                                              datetime="${new Date(
+                                                message.createdAt
+                                              ).toISOString()}"
                                               oninteractive="${javascript`
                                                 leafac.relativizeDateTimeElement(this, { capitalize: true });
                                               `}"
                                             >
-                                              ${message.createdAt}
                                             </time>
                                             $${message.updatedAt !== null
                                               ? html`
                                                   · Updated
                                                   <time
+                                                    datetime="${new Date(
+                                                      message.updatedAt
+                                                    ).toISOString()}"
                                                     oninteractive="${javascript`
                                                       leafac.relativizeDateTimeElement(this);
                                                     `}"
                                                   >
-                                                    ${message.updatedAt}
                                                   </time>
                                                 `
                                               : html``}
