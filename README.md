@@ -28,7 +28,6 @@
 
 ### Chat
 
-- Move snippet to remember a field value (textarea on conversations page) into @leafac/javascript.
 - Latency compensation when sending message.
 - Messages display:
   - Group together messages sent in quick succession.
