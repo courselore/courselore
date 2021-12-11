@@ -15064,6 +15064,9 @@ ${value}</textarea
                                                 req,
                                                 res,
                                                 value: message.content,
+                                                compact:
+                                                  res.locals.conversation
+                                                    .type === "chat",
                                               })}
 
                                               <div
