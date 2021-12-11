@@ -15644,6 +15644,13 @@ ${value}</textarea
             WHERE "id" = ${mostRecentMessage.id}
           `
         );
+        database.run(
+          sql`
+            DELETE FROM "readings"
+            WHERE "message" = ${mostRecentMessage.id} AND
+                  "enrollment" != ${res.locals.enrollment.id}
+          `
+        );
       } else {
         const processedContent = markdownProcessor({
           req,
