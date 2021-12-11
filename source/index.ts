@@ -2906,6 +2906,14 @@ export default async function courselore({
         `
       )!;
 
+      database.run(
+        sql`
+          UPDATE "users"
+          SET "lastSeenOnline" = ${new Date().toISOString()}
+          WHERE "id" = ${res.locals.user.id}
+        `
+      );
+
       res.locals.invitations = database
         .all<{
           id: number;
