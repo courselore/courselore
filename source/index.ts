@@ -15615,57 +15615,96 @@ ${value}</textarea
       )
         return next("validation");
 
-      const processedContent = markdownProcessor({
+      const mostRecentMessage = getMessage(
         req,
         res,
-        markdown: req.body.content,
-      });
+        res.locals.conversation,
+        String(res.locals.conversation.nextMessageReference - 1)
+      );
+      const shouldAppendToMostRecentMessage =
+        res.locals.conversation.type === "chat" &&
+        mostRecentMessage !== undefined &&
+        res.locals.enrollment.id === mostRecentMessage.authorEnrollment.id &&
+        new Date().getTime() - new Date(mostRecentMessage.createdAt).getTime() <
+          5 * 60 * 1000;
 
-      database.run(
-        sql`
-          UPDATE "conversations"
-          SET "updatedAt" = ${new Date().toISOString()},
-              "nextMessageReference" = ${
-                res.locals.conversation.nextMessageReference + 1
-              }
-          WHERE "id" = ${res.locals.conversation.id}
-        `
-      );
-      // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
-      const message = database.get<{ id: number; reference: string }>(
-        sql`
-          SELECT * FROM "messages" WHERE "id" = ${Number(
-            database.run(
-              sql`
-                INSERT INTO "messages" (
-                  "conversation",
-                  "reference",
-                  "authorEnrollment",
-                  "anonymousAt",
-                  "answerAt",
-                  "content",
-                  "contentSearch"
-                )
-                VALUES (
-                  ${res.locals.conversation.id},
-                  ${String(res.locals.conversation.nextMessageReference)},
-                  ${res.locals.enrollment.id},
-                  ${req.body.isAnonymous ? new Date().toISOString() : null},
-                  ${req.body.isAnswer ? new Date().toISOString() : null},
-                  ${req.body.content},
-                  ${processedContent.text}
-                )
-              `
-            ).lastInsertRowid
-          )}
-        `
-      )!;
-      database.run(
-        sql`
-          INSERT INTO "readings" ("message", "enrollment")
-          VALUES (${message.id}, ${res.locals.enrollment.id})
-        `
-      );
+      let notify = () => {};
+      if (shouldAppendToMostRecentMessage) {
+        const content = `${mostRecentMessage.content}\n\n${req.body.content}`;
+        const processedContent = markdownProcessor({
+          req,
+          res,
+          markdown: content,
+        });
+        database.run(
+          sql`
+            UPDATE "messages"
+            SET "content" = ${content},
+                "contentSearch" = ${processedContent.text}
+            WHERE "id" = ${mostRecentMessage.id}
+          `
+        );
+      } else {
+        const processedContent = markdownProcessor({
+          req,
+          res,
+          markdown: req.body.content,
+        });
+        database.run(
+          sql`
+            UPDATE "conversations"
+            SET "updatedAt" = ${new Date().toISOString()},
+                "nextMessageReference" = ${
+                  res.locals.conversation.nextMessageReference + 1
+                }
+            WHERE "id" = ${res.locals.conversation.id}
+          `
+        );
+        // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
+        const message = database.get<{ id: number; reference: string }>(
+          sql`
+            SELECT * FROM "messages" WHERE "id" = ${Number(
+              database.run(
+                sql`
+                  INSERT INTO "messages" (
+                    "conversation",
+                    "reference",
+                    "authorEnrollment",
+                    "anonymousAt",
+                    "answerAt",
+                    "content",
+                    "contentSearch"
+                  )
+                  VALUES (
+                    ${res.locals.conversation.id},
+                    ${String(res.locals.conversation.nextMessageReference)},
+                    ${res.locals.enrollment.id},
+                    ${req.body.isAnonymous ? new Date().toISOString() : null},
+                    ${req.body.isAnswer ? new Date().toISOString() : null},
+                    ${req.body.content},
+                    ${processedContent.text}
+                  )
+                `
+              ).lastInsertRowid
+            )}
+          `
+        )!;
+        database.run(
+          sql`
+            INSERT INTO "readings" ("message", "enrollment")
+            VALUES (${message.id}, ${res.locals.enrollment.id})
+          `
+        );
+        notify = () => {
+          sendNotifications(
+            req,
+            res,
+            res.locals.conversation,
+            getMessage(req, res, res.locals.conversation, message.reference)!,
+            processedContent.mentions
+          );
+        };
+      }
 
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.conversation.nextMessageReference}`
@@ -15673,13 +15712,7 @@ ${value}</textarea
 
       emitCourseRefresh(res.locals.course.id);
 
-      sendNotifications(
-        req,
-        res,
-        res.locals.conversation,
-        getMessage(req, res, res.locals.conversation, message.reference)!,
-        processedContent.mentions
-      );
+      notify();
     }
   );
 
