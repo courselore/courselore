@@ -14116,7 +14116,7 @@ ${value}</textarea
                                           style="${css`
                                             font-size: var(--font-size--xs);
                                             line-height: var(--line-height--xs);
-                                            margin-top: var(--space--2);
+                                            margin: var(--space--2) var(--space--0);
                                             display: flex;
                                             gap: var(--space--4);
                                             align-items: center;
