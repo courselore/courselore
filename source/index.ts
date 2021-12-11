@@ -16297,7 +16297,10 @@ ${value}</textarea
                     )
                     VALUES (
                       ${new Date(
-                        Date.now() - lodash.random(0, 5 * 60 * 60 * 1000)
+                        Date.now() -
+                          (Math.random() < 0.5
+                            ? 0
+                            : lodash.random(0, 5 * 60 * 60 * 1000))
                       ).toISOString()},
                       ${`${slugify(name)}--${cryptoRandomString({
                         length: 5,
