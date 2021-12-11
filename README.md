@@ -29,7 +29,6 @@
 ### Chat
 
 - Messages display:
-  - Fix edit Markdown editor background color.
   - “Truncate” long messages.
 - Scroll on new message.
 - Latency compensation when sending message.
