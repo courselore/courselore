@@ -29,8 +29,7 @@
 ### Chat
 
 - Messages display:
-  - Group together messages sent in quick succession.
-    - Fix edit Markdown editor background color.
+  - Fix edit Markdown editor background color.
   - “Truncate” long messages.
 - Scroll on new message.
 - Latency compensation when sending message.
