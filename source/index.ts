@@ -13219,98 +13219,113 @@ ${value}</textarea
                           : html``}
                       </div>
 
-                      $${(() => {
-                        const content: HTML[] = [];
-
-                        if (res.locals.enrollment.role === "staff")
-                          content.push(html`
-                            <div>
-                              <button
-                                class="button button--tight button--tight--inline button--transparent"
-                                oninteractive="${javascript`
-                                  tippy(this, {
-                                    content: "Remove Conversation",
-                                    theme: "rose",
-                                    touch: false,
-                                  });
-                                  tippy(this, {
-                                    content: this.nextElementSibling.firstElementChild,
-                                    theme: "rose",
-                                    trigger: "click",
-                                    interactive: true,
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-trash"></i>
-                              </button>
-                              <div hidden>
-                                <form
-                                  method="POST"
-                                  action="${baseURL}/courses/${res.locals.course
-                                    .reference}/conversations/${res.locals
-                                    .conversation.reference}?_method=DELETE"
-                                  style="${css`
-                                    padding: var(--space--2);
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--space--4);
+                      <div
+                        class="secondary"
+                        style="${css`
+                          font-size: var(--font-size--xs);
+                          line-height: var(--line-height--xs);
+                          display: flex;
+                          gap: var(--space--2);
+                          transition-property: var(
+                            --transition-property--opacity
+                          );
+                          transition-duration: var(--transition-duration--150);
+                          transition-timing-function: var(
+                            --transition-timing-function--in-out
+                          );
+                          .conversation--header:not(:hover) & {
+                            opacity: var(--opacity--0);
+                          }
+                        `}"
+                      >
+                        $${res.locals.enrollment.role === "staff"
+                          ? html`
+                              <div>
+                                <button
+                                  class="button button--tight button--tight--inline button--transparent"
+                                  oninteractive="${javascript`
+                                    tippy(this, {
+                                      content: "Remove Conversation",
+                                      theme: "rose",
+                                      touch: false,
+                                    });
+                                    tippy(this, {
+                                      content: this.nextElementSibling.firstElementChild,
+                                      theme: "rose",
+                                      trigger: "click",
+                                      interactive: true,
+                                    });
                                   `}"
                                 >
-                                  <input
-                                    type="hidden"
-                                    name="_csrf"
-                                    value="${req.csrfToken()}"
-                                  />
-                                  <p>
-                                    Are you sure you want to remove this
-                                    conversation?
-                                  </p>
-                                  <p>
-                                    <strong
-                                      style="${css`
-                                        font-weight: var(--font-weight--bold);
-                                      `}"
-                                    >
-                                      You may not undo this action!
-                                    </strong>
-                                  </p>
-                                  <button class="button button--rose">
-                                    <i class="bi bi-trash"></i>
-                                    Remove Conversation
-                                  </button>
-                                </form>
+                                  <i class="bi bi-trash"></i>
+                                </button>
+                                <div hidden>
+                                  <form
+                                    method="POST"
+                                    action="${baseURL}/courses/${res.locals
+                                      .course.reference}/conversations/${res
+                                      .locals.conversation
+                                      .reference}?_method=DELETE"
+                                    style="${css`
+                                      padding: var(--space--2);
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--space--4);
+                                    `}"
+                                  >
+                                    <input
+                                      type="hidden"
+                                      name="_csrf"
+                                      value="${req.csrfToken()}"
+                                    />
+                                    <p>
+                                      Are you sure you want to remove this
+                                      conversation?
+                                    </p>
+                                    <p>
+                                      <strong
+                                        style="${css`
+                                          font-weight: var(--font-weight--bold);
+                                        `}"
+                                      >
+                                        You may not undo this action!
+                                      </strong>
+                                    </p>
+                                    <button class="button button--rose">
+                                      <i class="bi bi-trash"></i>
+                                      Remove Conversation
+                                    </button>
+                                  </form>
+                                </div>
                               </div>
-                            </div>
-                          `);
+                            `
+                          : html``}
 
-                        return content.length === 0
-                          ? html``
-                          : html`
-                              <div
-                                class="secondary"
-                                style="${css`
-                                  font-size: var(--font-size--xs);
-                                  line-height: var(--line-height--xs);
-                                  display: flex;
-                                  gap: var(--space--2);
-                                  transition-property: var(
-                                    --transition-property--opacity
-                                  );
-                                  transition-duration: var(
-                                    --transition-duration--150
-                                  );
-                                  transition-timing-function: var(
-                                    --transition-timing-function--in-out
-                                  );
-                                  .conversation--header:not(:hover) & {
-                                    opacity: var(--opacity--0);
-                                  }
-                                `}"
-                              >
-                                $${content}
-                              </div>
-                            `;
-                      })()}
+                        <button
+                          class="button button--tight button--tight--inline button--transparent"
+                          oninteractive="${javascript`
+                            tippy(this, {
+                              content: "Copy Conversation Permanent Link to Clipboard",
+                              touch: false,
+                            });
+                            this.copied = tippy(this, {
+                              content: "Copied Conversation Permanent Link to Clipboard",
+                              theme: "green",
+                              trigger: "manual",
+                            });
+                          `}"
+                          onclick="${javascript`
+                            (async () => {
+                              await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
+                              this.copied.show();
+                              await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                              this.copied.hide();
+                            })();
+                          `}"
+                        >
+                          #${res.locals.conversation.reference}
+                        </button>
+                      </div>
                     </div>
 
                     <div class="title">
@@ -13328,72 +13343,42 @@ ${value}</textarea
                           )}
                         </span>
 
-                        <span
-                          class="secondary"
-                          style="${css`
-                            font-size: var(--font-size--xs);
-                            line-height: var(--line-height--xs);
-                            display: inline-flex;
-                            gap: var(--space--2);
-                            transition-property: var(
-                              --transition-property--opacity
-                            );
-                            transition-duration: var(
-                              --transition-duration--150
-                            );
-                            transition-timing-function: var(
-                              --transition-timing-function--in-out
-                            );
-                            .conversation--header:not(:hover) & {
-                              opacity: var(--opacity--0);
-                            }
-                          `}"
-                        >
-                          <button
-                            class="button button--tight button--tight--inline button--transparent"
-                            oninteractive="${javascript`
-                              tippy(this, {
-                                content: "Copy Conversation Permanent Link to Clipboard",
-                                touch: false,
-                              });
-                              this.copied = tippy(this, {
-                                content: "Copied Conversation Permanent Link to Clipboard",
-                                theme: "green",
-                                trigger: "manual",
-                              });
-                            `}"
-                            onclick="${javascript`
-                              (async () => {
-                                await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
-                                this.copied.show();
-                                await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                                this.copied.hide();
-                              })();
-                            `}"
-                          >
-                            #${res.locals.conversation.reference}
-                          </button>
-
-                          $${mayEditConversation(req, res)
-                            ? html`
-                                <button
-                                  class="button button--tight button--tight--inline button--transparent secondary"
-                                  oninteractive="${javascript`
-                                    tippy(this, {
-                                      content: "Edit Title",
-                                      touch: false,
-                                    });
-                                  `}"
-                                  onclick="${javascript`
-                                    this.closest(".title").querySelector(".title--show").hidden = true;
-                                    this.closest(".title").querySelector(".title--edit").hidden = false;
-                                  `}"
-                                >
-                                  <i class="bi bi-pencil"></i>
-                                </button>
-                              `
-                            : html``}
-                        </span>
+                        $${mayEditConversation(req, res)
+                          ? html`
+                              <button
+                                class="button button--tight button--tight--inline button--transparent secondary"
+                                style="${css`
+                                  font-size: var(--font-size--xs);
+                                  line-height: var(--line-height--xs);
+                                  display: inline-flex;
+                                  transition-property: var(
+                                    --transition-property--opacity
+                                  );
+                                  transition-duration: var(
+                                    --transition-duration--150
+                                  );
+                                  transition-timing-function: var(
+                                    --transition-timing-function--in-out
+                                  );
+                                  .conversation--header:not(:hover) & {
+                                    opacity: var(--opacity--0);
+                                  }
+                                `}"
+                                oninteractive="${javascript`
+                                  tippy(this, {
+                                    content: "Edit Title",
+                                    touch: false,
+                                  });
+                                `}"
+                                onclick="${javascript`
+                                  this.closest(".title").querySelector(".title--show").hidden = true;
+                                  this.closest(".title").querySelector(".title--edit").hidden = false;
+                                `}"
+                              >
+                                <i class="bi bi-pencil"></i>
+                              </button>
+                            `
+                          : html``}
                       </h2>
 
                       $${mayEditConversation(req, res)
