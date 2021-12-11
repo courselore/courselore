@@ -6233,10 +6233,9 @@ export default async function courselore({
                                                   invitation.usedAt!
                                                 ).toISOString()}"
                                                 oninteractive="${javascript`
-                                                  leafac.relativizeDateTimeElement(this);
+                                                  leafac.relativizeDateTimeElement(this, { preposition: "on" });
                                                 `}"
-                                              >
-                                              </time>
+                                              ></time>
                                             </div>
                                           </div>
                                         </div>
@@ -6281,10 +6280,9 @@ export default async function courselore({
                                                       invitation.expiresAt!
                                                     ).toISOString()}"
                                                     oninteractive="${javascript`
-                                                      leafac.relativizeDateTimeElement(this);
+                                                      leafac.relativizeDateTimeElement(this, { preposition: "on" });
                                                     `}"
-                                                  >
-                                                  </time>
+                                                  ></time>
                                                 </span>
                                               </h3>
                                               $${updateExpirationForm}
@@ -6374,10 +6372,9 @@ export default async function courselore({
                                                       invitation.expiresAt
                                                     ).toISOString()}"
                                                     oninteractive="${javascript`
-                                                      leafac.relativizeDateTimeElement(this);
+                                                      leafac.relativizeDateTimeElement(this, { preposition: "on" });
                                                     `}"
-                                                  >
-                                                  </time>
+                                                  ></time>
                                                 </span>
                                               </h3>
                                               <hr class="dropdown--separator" />
@@ -6732,6 +6729,7 @@ export default async function courselore({
       const enrollments = database.all<{
         id: number;
         userId: number;
+        userLastSeenOnlineAt: string;
         userEmail: string;
         userName: string;
         userAvatar: string | null;
@@ -6742,6 +6740,7 @@ export default async function courselore({
         sql`
           SELECT "enrollments"."id",
                  "users"."id" AS "userId",
+                 "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
                  "users"."email" AS "userEmail",
                  "users"."name" AS "userName",
                  "users"."avatar" AS "userAvatar",
@@ -7041,6 +7040,24 @@ export default async function courselore({
                                 </div>
                               `}
                         </div>
+                      </div>
+
+                      <div
+                        class="secondary"
+                        style="${css`
+                          font-size: var(--font-size--xs);
+                          line-height: var(--line-height--xs);
+                        `}"
+                      >
+                        Last seen online
+                        <time
+                          datetime="${new Date(
+                            enrollment.userLastSeenOnlineAt
+                          ).toISOString()}"
+                          oninteractive="${javascript`
+                            leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                          `}"
+                        ></time>
                       </div>
 
                       $${enrollment.userBiography !== null
@@ -9142,8 +9159,7 @@ export default async function courselore({
           oninteractive="${javascript`
             leafac.relativizeDateTimeElement(this, { capitalize: true });
           `}"
-        >
-        </time>
+        ></time>
         ·
         <span
           oninteractive="${javascript`
@@ -14765,8 +14781,7 @@ ${value}</textarea
                                                   oninteractive="${javascript`
                                                     leafac.relativizeDateTimeElement(this, { capitalize: true });
                                                   `}"
-                                                >
-                                                </time>
+                                                ></time>
                                                 $${message.updatedAt !== null
                                                   ? html`
                                                       · Updated
@@ -14775,10 +14790,9 @@ ${value}</textarea
                                                           message.updatedAt
                                                         ).toISOString()}"
                                                         oninteractive="${javascript`
-                                                          leafac.relativizeDateTimeElement(this);
+                                                          leafac.relativizeDateTimeElement(this, { preposition: "on" });
                                                         `}"
-                                                      >
-                                                      </time>
+                                                      ></time>
                                                     `
                                                   : html``}
                                               </span>

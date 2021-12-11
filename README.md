@@ -28,6 +28,7 @@
 
 ### Chat
 
+- “Used” in the future.
 - Show who’s online (last visited at a certain time).
 - Messages display:
   - “Truncate” long messages.
