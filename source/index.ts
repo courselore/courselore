@@ -15249,8 +15249,18 @@ ${value}</textarea
                             `}"
                             oninteractive="${javascript`
                               tippy(this, {
-                                content: "Send Message",
+                                content: ${JSON.stringify(html`
+                                  Send Message
+                                  <span class="keyboard-shortcut">
+                                    Ctrl+Enter or
+                                    <span class="keyboard-shortcut--cluster"
+                                      ><i class="bi bi-command"></i
+                                      ><i class="bi bi-arrow-return-left"></i
+                                    ></span>
+                                  </span>
+                                `)},
                                 touch: false,
+                                allowHTML: true,
                               });
                             `}"
                           >
