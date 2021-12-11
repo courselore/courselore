@@ -13807,6 +13807,12 @@ ${value}</textarea
                                   messageIndex === 0
                                     ? undefined
                                     : messages[messageIndex - 1];
+                                const shouldSkipHeader =
+                                  res.locals.conversation.type === "chat" &&
+                                  previousMessage !== undefined &&
+                                  message.authorEnrollment.id !== null &&
+                                  message.authorEnrollment.id ===
+                                    previousMessage.authorEnrollment.id;
 
                                 let menu = html`
                                   <div
@@ -14197,8 +14203,13 @@ ${value}</textarea
                                   >
                                     <div
                                       style="${css`
-                                        ${res.locals.conversation.type ===
-                                        "chat"
+                                        ${shouldSkipHeader
+                                          ? css`
+                                              padding: var(--space--2)
+                                                var(--space--2) var(--space--2);
+                                            `
+                                          : res.locals.conversation.type ===
+                                            "chat"
                                           ? css`
                                               padding: var(--space--0)
                                                 var(--space--2) var(--space--2);
@@ -14273,12 +14284,7 @@ ${value}</textarea
                                           : css``}
                                       `}"
                                     >
-                                      $${res.locals.conversation.type ===
-                                        "chat" &&
-                                      previousMessage !== undefined &&
-                                      message.authorEnrollment.id !== null &&
-                                      message.authorEnrollment.id ===
-                                        previousMessage.authorEnrollment.id
+                                      $${shouldSkipHeader
                                         ? html``
                                         : html`
                                             <div>
