@@ -126,6 +126,7 @@ export default async function courselore({
       CREATE TABLE "users" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "lastSeenOnlineAt" TEXT NOT NULL,
         "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
         "password" TEXT NOT NULL,
         "emailConfirmedAt" TEXT NULL,
@@ -3680,6 +3681,7 @@ export default async function courselore({
             database.run(
               sql`
                 INSERT INTO "users" (
+                  "lastSeenOnlineAt",
                   "email",
                   "password",
                   "emailConfirmedAt",
@@ -3688,6 +3690,7 @@ export default async function courselore({
                   "emailNotifications"
                 )
                 VALUES (
+                  ${new Date().toISOString()},
                   ${req.body.email},
                   ${await argon2.hash(req.body.password, argon2Options)},
                   ${null},
@@ -16167,6 +16170,7 @@ ${value}</textarea
               database.run(
                 sql`
                   INSERT INTO "users" (
+                    "lastSeenOnlineAt",
                     "email",
                     "password",
                     "emailConfirmedAt",
@@ -16177,6 +16181,9 @@ ${value}</textarea
                     "emailNotifications"
                   )
                   VALUES (
+                    ${new Date(
+                      Date.now() - lodash.random(0, 5 * 60 * 60 * 1000)
+                    ).toISOString()},
                     ${`${slugify(name)}--${cryptoRandomString({
                       length: 5,
                       type: "numeric",
@@ -16208,6 +16215,7 @@ ${value}</textarea
                 database.run(
                   sql`
                     INSERT INTO "users" (
+                      "lastSeenOnlineAt",
                       "email",
                       "password",
                       "emailConfirmedAt",
@@ -16218,6 +16226,9 @@ ${value}</textarea
                       "emailNotifications"
                     )
                     VALUES (
+                      ${new Date(
+                        Date.now() - lodash.random(0, 5 * 60 * 60 * 1000)
+                      ).toISOString()},
                       ${`${slugify(name)}--${cryptoRandomString({
                         length: 5,
                         type: "numeric",
