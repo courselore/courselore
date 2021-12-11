@@ -359,7 +359,17 @@
 <summary><strong>Meetings</strong></summary>
 
 <details>
-<summary>2021-12-08</summary>
+<summary>2021-12-11</summary>
+
+- Finished presentation of chat messages.
+- Added a date separator between chat messages.
+- Group together messages sent in quick succession.
+- Started online indicators.
+
+</details>
+
+<details>
+<summary>2021-12-04</summary>
 
 - Created https://github.com/leafac/fake-avatars to replace Faker.
 - Fixed scrolling of chat window.
