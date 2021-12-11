@@ -14191,12 +14191,15 @@ ${value}</textarea
                                   >
                                     <div
                                       style="${css`
-                                        padding: var(--space--2);
                                         ${res.locals.conversation.type ===
                                         "chat"
-                                          ? css``
+                                          ? css`
+                                              padding: var(--space--0)
+                                                var(--space--2) var(--space--2);
+                                            `
                                           : css`
-                                              padding-bottom: var(--space--4);
+                                              padding: var(--space--2)
+                                                var(--space--2) var(--space--4);
                                             `}
                                         border-radius: var(--border-radius--lg);
                                         margin: var(--space--0) var(--space---2);
@@ -14237,6 +14240,31 @@ ${value}</textarea
                                               --transition-timing-function--in-out
                                             );
                                         }
+
+                                        ${res.locals.conversation.type ===
+                                        "chat"
+                                          ? css`
+                                              transition-property: var(
+                                                --transition-property--colors
+                                              );
+                                              transition-duration: var(
+                                                --transition-duration--150
+                                              );
+                                              transition-timing-function: var(
+                                                --transition-timing-function--in-out
+                                              );
+                                              &:hover {
+                                                background-color: var(
+                                                  --color--gray--medium--100
+                                                );
+                                                @media (prefers-color-scheme: dark) {
+                                                  background-color: var(
+                                                    --color--gray--medium--800
+                                                  );
+                                                }
+                                              }
+                                            `
+                                          : css``}
                                       `}"
                                     >
                                       <div>
