@@ -12839,7 +12839,7 @@ ${value}</textarea
               `}"
             >
               <div
-                class="header"
+                class="conversation--header"
                 style="${css`
                   padding-bottom: var(--space--2);
                   border-bottom: var(--border-width--1) solid
@@ -12881,14 +12881,14 @@ ${value}</textarea
                   $${res.locals.conversation.type === "chat"
                     ? html`
                         <button
-                          class="header--compact button button--tight button--tight--inline button--transparent strong"
+                          class="conversation--header--compact button button--tight button--tight--inline button--transparent strong"
                           style="${css`
                             max-width: calc(100% + var(--space--2));
                             margin-top: var(--space---2);
                           `}"
                           onclick="${javascript`
-                            this.closest(".header").querySelector(".header--compact").hidden = true;
-                            this.closest(".header").querySelector(".header--full").hidden = false;
+                            this.closest(".conversation--header").querySelector(".conversation--header--compact").hidden = true;
+                            this.closest(".conversation--header").querySelector(".conversation--header--full").hidden = false;
                           `}"
                         >
                           <span
@@ -12914,7 +12914,7 @@ ${value}</textarea
                     $${res.locals.conversation.type === "chat"
                       ? html`hidden`
                       : html``}
-                    class="header--full"
+                    class="conversation--header--full"
                     style="${css`
                       display: flex;
                       flex-direction: column;
@@ -13302,7 +13302,7 @@ ${value}</textarea
                                   transition-timing-function: var(
                                     --transition-timing-function--in-out
                                   );
-                                  .header:not(:hover) & {
+                                  .conversation--header:not(:hover) & {
                                     opacity: var(--opacity--0);
                                   }
                                 `}"
@@ -13344,7 +13344,7 @@ ${value}</textarea
                             transition-timing-function: var(
                               --transition-timing-function--in-out
                             );
-                            .header:not(:hover) & {
+                            .conversation--header:not(:hover) & {
                               opacity: var(--opacity--0);
                             }
                           `}"
@@ -13693,8 +13693,8 @@ ${value}</textarea
                           <button
                             class="button button--tight button--tight--inline button--transparent"
                             onclick="${javascript`
-                            this.closest(".header").querySelector(".header--full").hidden = true;
-                              this.closest(".header").querySelector(".header--compact").hidden = false;
+                              this.closest(".conversation--header").querySelector(".conversation--header--full").hidden = true;
+                              this.closest(".conversation--header").querySelector(".conversation--header--compact").hidden = false;
                             `}"
                           >
                             <i class="bi bi-chevron-bar-contract"></i>
@@ -13802,7 +13802,12 @@ ${value}</textarea
                                   : css``}
                               `}"
                             >
-                              $${messages.map((message) => {
+                              $${messages.map((message, messageIndex) => {
+                                const previousMessage =
+                                  messageIndex === 0
+                                    ? undefined
+                                    : messages[messageIndex - 1];
+
                                 let menu = html`
                                   <div
                                     class="secondary"
@@ -14116,7 +14121,8 @@ ${value}</textarea
                                           style="${css`
                                             font-size: var(--font-size--xs);
                                             line-height: var(--line-height--xs);
-                                            margin: var(--space--2) var(--space--0);
+                                            margin: var(--space--2)
+                                              var(--space--0);
                                             display: flex;
                                             gap: var(--space--4);
                                             align-items: center;
