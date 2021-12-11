@@ -16355,8 +16355,10 @@ ${value}</textarea
                       : new Date(
                           (expiresAt === null
                             ? Date.now()
-                            : new Date(expiresAt).getTime()) -
-                            lodash.random(20 * 24 * 60 * 60 * 1000)
+                            : Math.min(
+                                Date.now(),
+                                new Date(expiresAt).getTime()
+                              )) - lodash.random(20 * 24 * 60 * 60 * 1000)
                         ).toISOString()
                   },
                   ${course.id},
