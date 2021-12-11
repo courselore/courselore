@@ -8888,7 +8888,7 @@ export default async function courselore({
                               req.query.scrollToConversation !== "false"
                                 ? html`
                                     oninteractive="${javascript`
-                                      this.scrollIntoView({ block: "center" });
+                                      window.setTimeout(() => { this.scrollIntoView({ block: "center" }); }, 0);
                                     `}"
                                   `
                                 : html``}
@@ -13751,7 +13751,7 @@ ${value}</textarea
                               ${
                                 shouldScrollToBottom
                                   ? javascript`
-                                      if (window.location.hash === "") this.scrollTop = this.scrollHeight;
+                                      if (window.location.hash === "") window.setTimeout(() => { this.scrollTop = this.scrollHeight; }, 0);
                                     `
                                   : javascript``
                               }
@@ -14159,7 +14159,7 @@ ${value}</textarea
                                     shouldScrollToFirstUnreadMessage &&
                                     message === firstUnreadMessage
                                       ? javascript`
-                                          if (window.location.hash === "") this.scrollIntoView();
+                                          if (window.location.hash === "") window.setTimeout(() => { this.scrollIntoView(); }, 0);
                                         `
                                       : javascript``
                                   }
