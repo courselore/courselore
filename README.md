@@ -29,6 +29,10 @@
 ### Chat
 
 - Show who’s online (last visited at a certain time).
+  - Fade in and out.
+  - Add to conversations page:
+    - conversationPartial.
+    - Messages.
 - Messages display:
   - “Truncate” long messages.
 - Scroll on new message.
