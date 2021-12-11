@@ -2909,7 +2909,7 @@ export default async function courselore({
       database.run(
         sql`
           UPDATE "users"
-          SET "lastSeenOnline" = ${new Date().toISOString()}
+          SET "lastSeenOnlineAt" = ${new Date().toISOString()}
           WHERE "id" = ${res.locals.user.id}
         `
       );
