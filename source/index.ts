@@ -13802,23 +13802,7 @@ ${value}</textarea
                                   : css``}
                               `}"
                             >
-                              $${messages.map((message, messageIndex) => {
-                                const previousMessage =
-                                  messageIndex === 0
-                                    ? undefined
-                                    : messages[messageIndex - 1];
-                                const shouldSkipHeader =
-                                  res.locals.conversation.type === "chat" &&
-                                  previousMessage !== undefined &&
-                                  message.authorEnrollment.id !== null &&
-                                  message.authorEnrollment.id ===
-                                    previousMessage.authorEnrollment.id &&
-                                  new Date(message.createdAt).getTime() -
-                                    new Date(
-                                      previousMessage.createdAt
-                                    ).getTime() <
-                                    5 * 60 * 1000;
-
+                              $${messages.map((message) => {
                                 let menu = html`
                                   <div
                                     class="secondary"
@@ -14208,13 +14192,8 @@ ${value}</textarea
                                   >
                                     <div
                                       style="${css`
-                                        ${shouldSkipHeader
-                                          ? css`
-                                              padding: var(--space--2)
-                                                var(--space--2) var(--space--2);
-                                            `
-                                          : res.locals.conversation.type ===
-                                            "chat"
+                                        ${res.locals.conversation.type ===
+                                        "chat"
                                           ? css`
                                               padding: var(--space--0)
                                                 var(--space--2) var(--space--2);
@@ -14289,458 +14268,384 @@ ${value}</textarea
                                           : css``}
                                       `}"
                                     >
-                                      $${shouldSkipHeader
-                                        ? html``
-                                        : html`
-                                            <div>
-                                              $${(() => {
-                                                const content: HTML[] = [];
+                                      <div>
+                                        $${(() => {
+                                          const content: HTML[] = [];
 
-                                                if (
-                                                  mayEditMessage(
-                                                    req,
-                                                    res,
-                                                    message
-                                                  ) &&
-                                                  message.reference !== "1" &&
-                                                  res.locals.conversation
-                                                    .type === "question"
-                                                )
-                                                  content.push(html`
-                                                    <form
-                                                      method="POST"
-                                                      action="${baseURL}/courses/${res
-                                                        .locals.course
-                                                        .reference}/conversations/${res
-                                                        .locals.conversation
-                                                        .reference}/messages/${message.reference}?_method=PATCH"
-                                                    >
+                                          if (
+                                            mayEditMessage(req, res, message) &&
+                                            message.reference !== "1" &&
+                                            res.locals.conversation.type ===
+                                              "question"
+                                          )
+                                            content.push(html`
+                                              <form
+                                                method="POST"
+                                                action="${baseURL}/courses/${res
+                                                  .locals.course
+                                                  .reference}/conversations/${res
+                                                  .locals.conversation
+                                                  .reference}/messages/${message.reference}?_method=PATCH"
+                                              >
+                                                <input
+                                                  type="hidden"
+                                                  name="_csrf"
+                                                  value="${req.csrfToken()}"
+                                                />
+                                                $${message.answerAt === null
+                                                  ? html`
                                                       <input
                                                         type="hidden"
-                                                        name="_csrf"
-                                                        value="${req.csrfToken()}"
+                                                        name="isAnswer"
+                                                        value="true"
                                                       />
-                                                      $${message.answerAt ===
-                                                      null
-                                                        ? html`
-                                                            <input
-                                                              type="hidden"
-                                                              name="isAnswer"
-                                                              value="true"
-                                                            />
-                                                            <button
-                                                              class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                                              oninteractive="${javascript`
-                                                              tippy(this, {
-                                                                content: "Set as Answer",
-                                                                touch: false,
-                                                              });
-                                                            `}"
-                                                            >
-                                                              <i
-                                                                class="bi bi-patch-check"
-                                                              ></i>
-                                                              Not an Answer
-                                                            </button>
-                                                          `
-                                                        : html`
-                                                            <input
-                                                              type="hidden"
-                                                              name="isAnswer"
-                                                              value="false"
-                                                            />
-                                                            <button
-                                                              class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
-                                                              oninteractive="${javascript`
-                                                                tippy(this, {
-                                                                  content: "Set as Not an Answer",
-                                                                  touch: false,
-                                                                });
-                                                              `}"
-                                                            >
-                                                              <i
-                                                                class="bi bi-patch-check-fill"
-                                                              ></i>
-                                                              Answer
-                                                            </button>
-                                                          `}
-                                                    </form>
-                                                  `);
-                                                else if (
-                                                  message.reference !== "1" &&
-                                                  res.locals.conversation
-                                                    .type === "question" &&
-                                                  message.answerAt !== null
-                                                )
-                                                  content.push(html`
-                                                    <div class="text--emerald">
-                                                      <i
-                                                        class="bi bi-patch-check-fill"
-                                                      ></i>
-                                                      Answer
-                                                    </div>
-                                                  `);
-
-                                                if (
-                                                  mayEndorseMessage(
-                                                    req,
-                                                    res,
-                                                    message
-                                                  )
-                                                ) {
-                                                  const isEndorsed =
-                                                    message.endorsements.some(
-                                                      (endorsement) =>
-                                                        endorsement.enrollment
-                                                          .id ===
-                                                        res.locals.enrollment.id
-                                                    );
-
-                                                  content.push(html`
-                                                    <form
-                                                      method="POST"
-                                                      action="${baseURL}/courses/${res
-                                                        .locals.course
-                                                        .reference}/conversations/${res
-                                                        .locals.conversation
-                                                        .reference}/messages/${message.reference}/endorsements${isEndorsed
-                                                        ? "?_method=DELETE"
-                                                        : ""}"
-                                                    >
+                                                      <button
+                                                        class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                                                        oninteractive="${javascript`
+                                                          tippy(this, {
+                                                            content: "Set as Answer",
+                                                            touch: false,
+                                                          });
+                                                        `}"
+                                                      >
+                                                        <i
+                                                          class="bi bi-patch-check"
+                                                        ></i>
+                                                        Not an Answer
+                                                      </button>
+                                                    `
+                                                  : html`
                                                       <input
                                                         type="hidden"
-                                                        name="_csrf"
-                                                        value="${req.csrfToken()}"
+                                                        name="isAnswer"
+                                                        value="false"
                                                       />
-                                                      $${isEndorsed
-                                                        ? html`
-                                                            <input
-                                                              type="hidden"
-                                                              name="isEndorsed"
-                                                              value="false"
-                                                            />
-                                                            <button
-                                                              class="button button--tight button--tight--inline button--tight-gap button--transparent text--blue"
+                                                      <button
+                                                        class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
+                                                        oninteractive="${javascript`
+                                                          tippy(this, {
+                                                            content: "Set as Not an Answer",
+                                                            touch: false,
+                                                          });
+                                                        `}"
+                                                      >
+                                                        <i
+                                                          class="bi bi-patch-check-fill"
+                                                        ></i>
+                                                        Answer
+                                                      </button>
+                                                    `}
+                                              </form>
+                                            `);
+                                          else if (
+                                            message.reference !== "1" &&
+                                            res.locals.conversation.type ===
+                                              "question" &&
+                                            message.answerAt !== null
+                                          )
+                                            content.push(html`
+                                              <div class="text--emerald">
+                                                <i
+                                                  class="bi bi-patch-check-fill"
+                                                ></i>
+                                                Answer
+                                              </div>
+                                            `);
+
+                                          if (
+                                            mayEndorseMessage(req, res, message)
+                                          ) {
+                                            const isEndorsed =
+                                              message.endorsements.some(
+                                                (endorsement) =>
+                                                  endorsement.enrollment.id ===
+                                                  res.locals.enrollment.id
+                                              );
+
+                                            content.push(html`
+                                              <form
+                                                method="POST"
+                                                action="${baseURL}/courses/${res
+                                                  .locals.course
+                                                  .reference}/conversations/${res
+                                                  .locals.conversation
+                                                  .reference}/messages/${message.reference}/endorsements${isEndorsed
+                                                  ? "?_method=DELETE"
+                                                  : ""}"
+                                              >
+                                                <input
+                                                  type="hidden"
+                                                  name="_csrf"
+                                                  value="${req.csrfToken()}"
+                                                />
+                                                $${isEndorsed
+                                                  ? html`
+                                                      <input
+                                                        type="hidden"
+                                                        name="isEndorsed"
+                                                        value="false"
+                                                      />
+                                                      <button
+                                                        class="button button--tight button--tight--inline button--tight-gap button--transparent text--blue"
+                                                        oninteractive="${javascript`
+                                                          tippy(this, {
+                                                            content: ${JSON.stringify(
+                                                              `Remove Endorsement${
+                                                                message
+                                                                  .endorsements
+                                                                  .length > 1
+                                                                  ? ` (Also endorsed by ${
+                                                                      /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                                        Intl as any
+                                                                      ).ListFormat(
+                                                                        "en"
+                                                                      ).format(
+                                                                        message.endorsements
+                                                                          .filter(
+                                                                            (
+                                                                              endorsement
+                                                                            ) =>
+                                                                              endorsement
+                                                                                .enrollment
+                                                                                .id !==
+                                                                              res
+                                                                                .locals
+                                                                                .enrollment
+                                                                                .id
+                                                                          )
+                                                                          .map(
+                                                                            (
+                                                                              endorsement
+                                                                            ) =>
+                                                                              endorsement
+                                                                                .enrollment
+                                                                                .user
+                                                                                .name
+                                                                          )
+                                                                      )
+                                                                    })`
+                                                                  : ``
+                                                              }`
+                                                            )},
+                                                            touch: false,
+                                                          });
+                                                        `}"
+                                                      >
+                                                        <i
+                                                          class="bi bi-award-fill"
+                                                        ></i>
+                                                        ${message.endorsements
+                                                          .length}
+                                                        Staff
+                                                        Endorsement${message
+                                                          .endorsements
+                                                          .length === 1
+                                                          ? ""
+                                                          : "s"}
+                                                      </button>
+                                                    `
+                                                  : html`
+                                                      <input
+                                                        type="hidden"
+                                                        name="isEndorsed"
+                                                        value="true"
+                                                      />
+                                                      <button
+                                                        class="button button--tight button--tight--inline button--tight-gap button--transparent text--lime"
+                                                        $${message.endorsements
+                                                          .length === 0
+                                                          ? html``
+                                                          : html`
                                                               oninteractive="${javascript`
                                                                 tippy(this, {
                                                                   content: ${JSON.stringify(
-                                                                    `Remove Endorsement${
-                                                                      message
-                                                                        .endorsements
-                                                                        .length >
-                                                                      1
-                                                                        ? ` (Also endorsed by ${
-                                                                            /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                                                              Intl as any
-                                                                            ).ListFormat(
-                                                                              "en"
-                                                                            ).format(
-                                                                              message.endorsements
-                                                                                .filter(
-                                                                                  (
-                                                                                    endorsement
-                                                                                  ) =>
-                                                                                    endorsement
-                                                                                      .enrollment
-                                                                                      .id !==
-                                                                                    res
-                                                                                      .locals
-                                                                                      .enrollment
-                                                                                      .id
-                                                                                )
-                                                                                .map(
-                                                                                  (
-                                                                                    endorsement
-                                                                                  ) =>
-                                                                                    endorsement
-                                                                                      .enrollment
-                                                                                      .user
-                                                                                      .name
-                                                                                )
-                                                                            )
-                                                                          })`
-                                                                        : ``
-                                                                    }`
+                                                                    `Endorse (Already endorsed by ${
+                                                                      /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                                        Intl as any
+                                                                      ).ListFormat(
+                                                                        "en"
+                                                                      ).format(
+                                                                        message.endorsements.map(
+                                                                          (
+                                                                            endorsement
+                                                                          ) =>
+                                                                            endorsement
+                                                                              .enrollment
+                                                                              .user
+                                                                              .name
+                                                                        )
+                                                                      )
+                                                                    })`
                                                                   )},
                                                                   touch: false,
                                                                 });
                                                               `}"
-                                                            >
-                                                              <i
-                                                                class="bi bi-award-fill"
-                                                              ></i>
-                                                              ${message
+                                                            `}
+                                                      >
+                                                        <i
+                                                          class="bi bi-award"
+                                                        ></i>
+                                                        ${message.endorsements
+                                                          .length === 0
+                                                          ? `Endorse`
+                                                          : `${
+                                                              message
                                                                 .endorsements
-                                                                .length}
-                                                              Staff
-                                                              Endorsement${message
+                                                                .length
+                                                            }
+                                                            Staff Endorsement${
+                                                              message
                                                                 .endorsements
                                                                 .length === 1
                                                                 ? ""
-                                                                : "s"}
-                                                            </button>
-                                                          `
-                                                        : html`
-                                                            <input
-                                                              type="hidden"
-                                                              name="isEndorsed"
-                                                              value="true"
-                                                            />
-                                                            <button
-                                                              class="button button--tight button--tight--inline button--tight-gap button--transparent text--lime"
-                                                              $${message
-                                                                .endorsements
-                                                                .length === 0
-                                                                ? html``
-                                                                : html`
-                                                                    oninteractive="${javascript`
-                                                                      tippy(this, {
-                                                                        content: ${JSON.stringify(
-                                                                          `Endorse (Already endorsed by ${
-                                                                            /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                                                              Intl as any
-                                                                            ).ListFormat(
-                                                                              "en"
-                                                                            ).format(
-                                                                              message.endorsements.map(
-                                                                                (
-                                                                                  endorsement
-                                                                                ) =>
-                                                                                  endorsement
-                                                                                    .enrollment
-                                                                                    .user
-                                                                                    .name
-                                                                              )
-                                                                            )
-                                                                          })`
-                                                                        )},
-                                                                        touch: false,
-                                                                      });
-                                                                    `}"
-                                                                  `}
-                                                            >
-                                                              <i
-                                                                class="bi bi-award"
-                                                              ></i>
-                                                              ${message
-                                                                .endorsements
-                                                                .length === 0
-                                                                ? `Endorse`
-                                                                : `${
-                                                                    message
-                                                                      .endorsements
-                                                                      .length
-                                                                  }
-                                                                  Staff Endorsement${
-                                                                    message
-                                                                      .endorsements
-                                                                      .length ===
-                                                                    1
-                                                                      ? ""
-                                                                      : "s"
-                                                                  }`}
-                                                            </button>
-                                                          `}
-                                                    </form>
-                                                  `);
-                                                } else if (
-                                                  res.locals.conversation
-                                                    .type === "question" &&
-                                                  message.authorEnrollment
-                                                    .role !== "staff" &&
-                                                  message.endorsements.length >
-                                                    0
-                                                )
-                                                  content.push(html`
-                                                    <div
-                                                      class="text--lime"
-                                                      oninteractive="${javascript`
-                                                        tippy(this, {
-                                                          content: ${JSON.stringify(
-                                                            `Endorsed by ${
-                                                              /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                                                Intl as any
-                                                              ).ListFormat(
-                                                                "en"
-                                                              ).format(
-                                                                message.endorsements.map(
-                                                                  (
-                                                                    endorsement
-                                                                  ) =>
-                                                                    endorsement
-                                                                      .enrollment
-                                                                      .user.name
-                                                                )
-                                                              )
-                                                            }`
-                                                          )},
-                                                          touch: false,
-                                                        });
-                                                      `}"
-                                                    >
-                                                      <i
-                                                        class="bi bi-award"
-                                                      ></i>
-                                                      ${message.endorsements
-                                                        .length}
-                                                      Staff
-                                                      Endorsement${message
-                                                        .endorsements.length ===
-                                                      1
-                                                        ? ""
-                                                        : "s"}
-                                                    </div>
-                                                  `);
-
-                                                if (content.length === 0)
-                                                  return ``;
-                                                const wrappedContent = html`
-                                                  <div
-                                                    style="${css`
-                                                      font-size: var(
-                                                        --font-size--xs
-                                                      );
-                                                      line-height: var(
-                                                        --line-height--xs
-                                                      );
-                                                      display: flex;
-                                                      gap: var(--space--4);
-                                                    `}"
-                                                  >
-                                                    <div
-                                                      style="${css`
-                                                        flex: 1;
-                                                        display: flex;
-                                                        flex-wrap: wrap;
-                                                        column-gap: var(
-                                                          --space--8
-                                                        );
-                                                        row-gap: var(
-                                                          --space--1
-                                                        );
-
-                                                        & > * {
-                                                          display: flex;
-                                                          gap: var(--space--1);
-                                                        }
-                                                      `}"
-                                                    >
-                                                      $${content}
-                                                    </div>
-                                                    $${menu}
-                                                  </div>
-                                                `;
-                                                menu = html``;
-                                                return wrappedContent;
-                                              })()}
-
+                                                                : "s"
+                                                            }`}
+                                                      </button>
+                                                    `}
+                                              </form>
+                                            `);
+                                          } else if (
+                                            res.locals.conversation.type ===
+                                              "question" &&
+                                            message.authorEnrollment.role !==
+                                              "staff" &&
+                                            message.endorsements.length > 0
+                                          )
+                                            content.push(html`
                                               <div
-                                                style="${css`
-                                                  display: flex;
-                                                  gap: var(--space--4);
-                                                  align-items: baseline;
-                                                  position: relative;
+                                                class="text--lime"
+                                                oninteractive="${javascript`
+                                                  tippy(this, {
+                                                    content: ${JSON.stringify(
+                                                      `Endorsed by ${
+                                                        /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                          Intl as any
+                                                        ).ListFormat(
+                                                          "en"
+                                                        ).format(
+                                                          message.endorsements.map(
+                                                            (endorsement) =>
+                                                              endorsement
+                                                                .enrollment.user
+                                                                .name
+                                                          )
+                                                        )
+                                                      }`
+                                                    )},
+                                                    touch: false,
+                                                  });
                                                 `}"
                                               >
-                                                $${message.reading === null
-                                                  ? html`
-                                                      <button
-                                                        class="button button--tight button--tight--inline button--blue"
-                                                        style="${css`
-                                                          width: var(
-                                                            --space--2
-                                                          );
-                                                          height: var(
-                                                            --space--2
-                                                          );
-                                                          margin-top: var(
-                                                            --space--4
-                                                          );
-                                                          @media (max-width: 629px) {
-                                                            margin-left: var(
-                                                              --space---3
-                                                            );
-                                                          }
-                                                          @media (min-width: 630px) {
-                                                            margin-left: var(
-                                                              --space---4
-                                                            );
-                                                          }
-                                                          position: absolute;
-                                                          transition-property: var(
-                                                            --transition-property--base
-                                                          );
-                                                        `}"
-                                                        oninteractive="${javascript`
-                                                          tippy(this, {
-                                                            content: "Unread Message",
-                                                            touch: false,
-                                                          });
-                                                          window.setTimeout(() => { this.click(); }, 2000);
-                                                        `}"
-                                                        onclick="${javascript`
-                                                          this.style.opacity = 0;
-                                                          window.setTimeout(() => { this.remove(); }, 500);
-                                                        `}"
-                                                      ></button>
-                                                    `
-                                                  : html``}
-                                                <div
-                                                  style="${css`
-                                                    flex: 1;
+                                                <i class="bi bi-award"></i>
+                                                ${message.endorsements.length}
+                                                Staff
+                                                Endorsement${message
+                                                  .endorsements.length === 1
+                                                  ? ""
+                                                  : "s"}
+                                              </div>
+                                            `);
+
+                                          if (content.length === 0) return ``;
+                                          const wrappedContent = html`
+                                            <div
+                                              style="${css`
+                                                font-size: var(--font-size--xs);
+                                                line-height: var(
+                                                  --line-height--xs
+                                                );
+                                                display: flex;
+                                                gap: var(--space--4);
+                                              `}"
+                                            >
+                                              <div
+                                                style="${css`
+                                                  flex: 1;
+                                                  display: flex;
+                                                  flex-wrap: wrap;
+                                                  column-gap: var(--space--8);
+                                                  row-gap: var(--space--1);
+
+                                                  & > * {
                                                     display: flex;
-                                                    gap: var(--space--2);
-                                                    align-items: baseline;
-                                                  `}"
-                                                >
-                                                  <div
-                                                    style="${css`
-                                                      position: relative;
-                                                      bottom: var(
-                                                        --space---1-5
+                                                    gap: var(--space--1);
+                                                  }
+                                                `}"
+                                              >
+                                                $${content}
+                                              </div>
+                                              $${menu}
+                                            </div>
+                                          `;
+                                          menu = html``;
+                                          return wrappedContent;
+                                        })()}
+
+                                        <div
+                                          style="${css`
+                                            display: flex;
+                                            gap: var(--space--4);
+                                            align-items: baseline;
+                                            position: relative;
+                                          `}"
+                                        >
+                                          $${message.reading === null
+                                            ? html`
+                                                <button
+                                                  class="button button--tight button--tight--inline button--blue"
+                                                  style="${css`
+                                                    width: var(--space--2);
+                                                    height: var(--space--2);
+                                                    margin-top: var(--space--4);
+                                                    @media (max-width: 629px) {
+                                                      margin-left: var(
+                                                        --space---3
                                                       );
-                                                    `}"
-                                                  >
-                                                    $${message.anonymousAt ===
-                                                    null
+                                                    }
+                                                    @media (min-width: 630px) {
+                                                      margin-left: var(
+                                                        --space---4
+                                                      );
+                                                    }
+                                                    position: absolute;
+                                                    transition-property: var(
+                                                      --transition-property--base
+                                                    );
+                                                  `}"
+                                                  oninteractive="${javascript`
+                                                    tippy(this, {
+                                                      content: "Unread Message",
+                                                      touch: false,
+                                                    });
+                                                    window.setTimeout(() => { this.click(); }, 2000);
+                                                  `}"
+                                                  onclick="${javascript`
+                                                    this.style.opacity = 0;
+                                                    window.setTimeout(() => { this.remove(); }, 500);
+                                                  `}"
+                                                ></button>
+                                              `
+                                            : html``}
+                                          <div
+                                            style="${css`
+                                              flex: 1;
+                                              display: flex;
+                                              gap: var(--space--2);
+                                              align-items: baseline;
+                                            `}"
+                                          >
+                                            <div
+                                              style="${css`
+                                                position: relative;
+                                                bottom: var(--space---1-5);
+                                              `}"
+                                            >
+                                              $${message.anonymousAt === null
+                                                ? html`
+                                                    $${message.authorEnrollment
+                                                      .user.avatar === null
                                                       ? html`
-                                                          $${message
-                                                            .authorEnrollment
-                                                            .user.avatar ===
-                                                          null
-                                                            ? html`
-                                                                <div
-                                                                  style="${css`
-                                                                    font-size: var(
-                                                                      --font-size--2xl
-                                                                    );
-                                                                    &
-                                                                      > *::before {
-                                                                      vertical-align: baseline;
-                                                                    }
-                                                                  `}"
-                                                                >
-                                                                  <i
-                                                                    class="bi bi-person-circle"
-                                                                  ></i>
-                                                                </div>
-                                                              `
-                                                            : html`
-                                                                <img
-                                                                  src="${message
-                                                                    .authorEnrollment
-                                                                    .user
-                                                                    .avatar}"
-                                                                  alt="${message
-                                                                    .authorEnrollment
-                                                                    .user.name}"
-                                                                  class="avatar avatar--2xl"
-                                                                />
-                                                              `}
-                                                        `
-                                                      : html`
                                                           <div
-                                                            class="text--violet"
                                                             style="${css`
                                                               font-size: var(
                                                                 --font-size--2xl
@@ -14749,121 +14654,144 @@ ${value}</textarea
                                                                 vertical-align: baseline;
                                                               }
                                                             `}"
-                                                            oninteractive="${javascript`
-                                                              tippy(this, {
-                                                                content: "Anonymous to other students.",
-                                                                touch: false,
-                                                              });
-                                                            `}"
                                                           >
                                                             <i
-                                                              class="bi bi-sunglasses"
+                                                              class="bi bi-person-circle"
                                                             ></i>
                                                           </div>
-                                                        `}
-                                                  </div>
-                                                  <h3>
-                                                    <span class="strong">
-                                                      $${message.anonymousAt ===
-                                                      null
-                                                        ? highlightSearchResult(
-                                                            html`${message
+                                                        `
+                                                      : html`
+                                                          <img
+                                                            src="${message
                                                               .authorEnrollment
-                                                              .user.name}`,
-                                                            req.query.search
-                                                          )
-                                                        : html`
-                                                            <span
-                                                              class="text--violet"
-                                                              oninteractive="${javascript`
-                                                                tippy(this, {
-                                                                  content: "Anonymous to other students.",
-                                                                  touch: false,
-                                                                });
-                                                              `}"
-                                                            >
-                                                              Anonymous
-                                                            </span>
-                                                          `}
-                                                    </span>
-                                                    <span
-                                                      class="secondary"
+                                                              .user.avatar}"
+                                                            alt="${message
+                                                              .authorEnrollment
+                                                              .user.name}"
+                                                            class="avatar avatar--2xl"
+                                                          />
+                                                        `}
+                                                  `
+                                                : html`
+                                                    <div
+                                                      class="text--violet"
                                                       style="${css`
                                                         font-size: var(
-                                                          --font-size--xs
+                                                          --font-size--2xl
                                                         );
-                                                        line-height: var(
-                                                          --line-height--xs
-                                                        );
+                                                        & > *::before {
+                                                          vertical-align: baseline;
+                                                        }
+                                                      `}"
+                                                      oninteractive="${javascript`
+                                                        tippy(this, {
+                                                          content: "Anonymous to other students.",
+                                                          touch: false,
+                                                        });
                                                       `}"
                                                     >
-                                                      $${message.anonymousAt !==
-                                                        null &&
-                                                      (res.locals.enrollment
-                                                        .role === "staff" ||
-                                                        message.authorEnrollment
-                                                          .id ===
-                                                          res.locals.enrollment
-                                                            .id)
-                                                        ? html`
-                                                            ($${message
+                                                      <i
+                                                        class="bi bi-sunglasses"
+                                                      ></i>
+                                                    </div>
+                                                  `}
+                                            </div>
+                                            <h3>
+                                              <span class="strong">
+                                                $${message.anonymousAt === null
+                                                  ? highlightSearchResult(
+                                                      html`${message
+                                                        .authorEnrollment.user
+                                                        .name}`,
+                                                      req.query.search
+                                                    )
+                                                  : html`
+                                                      <span
+                                                        class="text--violet"
+                                                        oninteractive="${javascript`
+                                                          tippy(this, {
+                                                            content: "Anonymous to other students.",
+                                                            touch: false,
+                                                          });
+                                                        `}"
+                                                      >
+                                                        Anonymous
+                                                      </span>
+                                                    `}
+                                              </span>
+                                              <span
+                                                class="secondary"
+                                                style="${css`
+                                                  font-size: var(
+                                                    --font-size--xs
+                                                  );
+                                                  line-height: var(
+                                                    --line-height--xs
+                                                  );
+                                                `}"
+                                              >
+                                                $${message.anonymousAt !==
+                                                  null &&
+                                                (res.locals.enrollment.role ===
+                                                  "staff" ||
+                                                  message.authorEnrollment
+                                                    .id ===
+                                                    res.locals.enrollment.id)
+                                                  ? html`
+                                                      ($${message
+                                                        .authorEnrollment.user
+                                                        .avatar === null
+                                                        ? html`<i
+                                                            class="bi bi-person-circle"
+                                                          ></i>`
+                                                        : html`<img
+                                                            src="${message
                                                               .authorEnrollment
-                                                              .user.avatar ===
-                                                            null
-                                                              ? html`<i
-                                                                  class="bi bi-person-circle"
-                                                                ></i>`
-                                                              : html`<img
-                                                                  src="${message
-                                                                    .authorEnrollment
-                                                                    .user
-                                                                    .avatar}"
-                                                                  alt="${message
-                                                                    .authorEnrollment
-                                                                    .user.name}"
-                                                                  class="avatar avatar--xs avatar--vertical-align"
-                                                                />`}
-                                                            $${highlightSearchResult(
-                                                              html`${message
-                                                                .authorEnrollment
-                                                                .user.name}`,
-                                                              req.query.search
-                                                            )})
-                                                          `
-                                                        : html``}
-                                                      ·
+                                                              .user.avatar}"
+                                                            alt="${message
+                                                              .authorEnrollment
+                                                              .user.name}"
+                                                            class="avatar avatar--xs avatar--vertical-align"
+                                                          />`}
+                                                      $${highlightSearchResult(
+                                                        html`${message
+                                                          .authorEnrollment.user
+                                                          .name}`,
+                                                        req.query.search
+                                                      )})
+                                                    `
+                                                  : html``}
+                                                ·
+                                                <time
+                                                  datetime="${new Date(
+                                                    message.createdAt
+                                                  ).toISOString()}"
+                                                  oninteractive="${javascript`
+                                                    leafac.relativizeDateTimeElement(this, { capitalize: true });
+                                                  `}"
+                                                >
+                                                </time>
+                                                $${message.updatedAt !== null
+                                                  ? html`
+                                                      · Updated
                                                       <time
                                                         datetime="${new Date(
-                                                          message.createdAt
+                                                          message.updatedAt
                                                         ).toISOString()}"
                                                         oninteractive="${javascript`
-                                                          leafac.relativizeDateTimeElement(this, { capitalize: true });
+                                                          leafac.relativizeDateTimeElement(this);
                                                         `}"
                                                       >
                                                       </time>
-                                                      $${message.updatedAt !==
-                                                      null
-                                                        ? html`
-                                                            · Updated
-                                                            <time
-                                                              datetime="${new Date(
-                                                                message.updatedAt
-                                                              ).toISOString()}"
-                                                              oninteractive="${javascript`
-                                                                leafac.relativizeDateTimeElement(this);
-                                                              `}"
-                                                            >
-                                                            </time>
-                                                          `
-                                                        : html``}
-                                                    </span>
-                                                  </h3>
-                                                </div>
+                                                    `
+                                                  : html``}
+                                              </span>
+                                            </h3>
+                                          </div>
 
-                                                $${menu}
-                                              </div>
-                                            </div>
-                                          `}
+                                          $${menu}
+                                        </div>
+                                      </div>
 
                                       <div
                                         class="message--show"

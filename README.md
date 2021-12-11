@@ -30,8 +30,20 @@
 
 - Messages display:
   - Group together messages sent in quick succession.
-    - Turn buttons into popper.
-    - Display dates on messages without header.
+    - shouldSkipHeader
+    ```js
+                                    const shouldSkipHeader =
+                                  res.locals.conversation.type === "chat" &&
+                                  previousMessage !== undefined &&
+                                  message.authorEnrollment.id !== null &&
+                                  message.authorEnrollment.id ===
+                                    previousMessage.authorEnrollment.id &&
+                                  new Date(message.createdAt).getTime() -
+                                    new Date(
+                                      previousMessage.createdAt
+                                    ).getTime() <
+                                    5 * 60 * 1000;
+    ```
     - Fix edit Markdown editor background color.
   - “Truncate” long messages.
 - Scroll on new message.
