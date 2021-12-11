@@ -13812,7 +13812,12 @@ ${value}</textarea
                                   previousMessage !== undefined &&
                                   message.authorEnrollment.id !== null &&
                                   message.authorEnrollment.id ===
-                                    previousMessage.authorEnrollment.id;
+                                    previousMessage.authorEnrollment.id &&
+                                  new Date(message.createdAt).getTime() -
+                                    new Date(
+                                      previousMessage.createdAt
+                                    ).getTime() <
+                                    5 * 60 * 1000;
 
                                 let menu = html`
                                   <div

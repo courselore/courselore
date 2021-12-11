@@ -31,7 +31,8 @@
 - Messages display:
   - Group together messages sent in quick succession.
     - Turn buttons into popper.
-    - What to do with dates?
+    - Display dates on messages without header.
+    - Fix edit Markdown editor background color.
   - “Truncate” long messages.
 - Scroll on new message.
 - Latency compensation when sending message.
