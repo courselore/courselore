@@ -13318,6 +13318,42 @@ ${value}</textarea
                               Conversation #${res.locals.conversation.reference}
                             </h3>
                             <div class="dropdown--menu">
+                              <button
+                                class="dropdown--menu--item button button--transparent"
+                                oninteractive="${javascript`
+                                  this.copied = tippy(this, {
+                                    content: "Copied",
+                                    theme: "green",
+                                    trigger: "manual",
+                                  });
+                                `}"
+                                onclick="${javascript`
+                                  (async () => {
+                                    await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
+                                    this.copied.show();
+                                    await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                                    this.copied.hide();
+                                  })();
+                                `}"
+                              >
+                                <i class="bi bi-link"></i>
+                                Copy Conversation Permanent Link to Clipboard
+                              </button>
+                              $${mayEditConversation(req, res)
+                                ? html`
+                                    <button
+                                      class="dropdown--menu--item button button--transparent"
+                                      onclick="${javascript`
+                                        this.closest(".conversation--header--full").querySelector(".title--show").hidden = true;
+                                        this.closest(".conversation--header--full").querySelector(".title--edit").hidden = false;
+                                        tippy.hideAll();
+                                      `}"
+                                    >
+                                      <i class="bi bi-pencil"></i>
+                                      Edit Conversation Title
+                                    </button>
+                                  `
+                                : html``}
                               $${res.locals.enrollment.role === "staff"
                                 ? html`
                                     <div>
@@ -13379,43 +13415,6 @@ ${value}</textarea
                                     </div>
                                   `
                                 : html``}
-                              $${mayEditConversation(req, res)
-                                ? html`
-                                    <button
-                                      class="dropdown--menu--item button button--transparent"
-                                      onclick="${javascript`
-                                        this.closest(".conversation--header--full").querySelector(".title--show").hidden = true;
-                                        this.closest(".conversation--header--full").querySelector(".title--edit").hidden = false;
-                                        tippy.hideAll();
-                                      `}"
-                                    >
-                                      <i class="bi bi-pencil"></i>
-                                      Edit Conversation Title
-                                    </button>
-                                  `
-                                : html``}
-
-                              <button
-                                class="dropdown--menu--item button button--transparent"
-                                oninteractive="${javascript`
-                                  this.copied = tippy(this, {
-                                    content: "Copied",
-                                    theme: "green",
-                                    trigger: "manual",
-                                  });
-                                `}"
-                                onclick="${javascript`
-                                  (async () => {
-                                    await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
-                                    this.copied.show();
-                                    await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                                    this.copied.hide();
-                                  })();
-                                `}"
-                              >
-                                <i class="bi bi-link"></i>
-                                Copy Conversation Permanent Link to Clipboard
-                              </button>
                             </div>
                           </div>
                         </div>
