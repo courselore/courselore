@@ -13294,131 +13294,131 @@ ${value}</textarea
                           : html``}
                       </div>
 
-                      <div
-                        class="secondary"
-                        style="${css`
-                          font-size: var(--font-size--xs);
-                          line-height: var(--line-height--xs);
-                          display: flex;
-                          gap: var(--space--2);
-                          transition-property: var(
-                            --transition-property--opacity
-                          );
-                          transition-duration: var(--transition-duration--150);
-                          transition-timing-function: var(
-                            --transition-timing-function--in-out
-                          );
-                          .conversation--header:not(:hover) & {
-                            opacity: var(--opacity--0);
-                          }
-                        `}"
-                      >
-                        $${res.locals.enrollment.role === "staff"
-                          ? html`
-                              <div>
-                                <button
-                                  class="button button--tight button--tight--inline button--transparent"
-                                  oninteractive="${javascript`
-                                    tippy(this, {
-                                      content: "Remove Conversation",
-                                      theme: "rose",
-                                      touch: false,
-                                    });
-                                    tippy(this, {
-                                      content: this.nextElementSibling.firstElementChild,
-                                      theme: "rose",
-                                      trigger: "click",
-                                      interactive: true,
-                                    });
-                                  `}"
-                                >
-                                  <i class="bi bi-trash"></i>
-                                </button>
-                                <div hidden>
-                                  <form
-                                    method="POST"
-                                    action="${baseURL}/courses/${res.locals
-                                      .course.reference}/conversations/${res
-                                      .locals.conversation
-                                      .reference}?_method=DELETE"
-                                    style="${css`
-                                      padding: var(--space--2);
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--space--4);
-                                    `}"
-                                  >
-                                    <input
-                                      type="hidden"
-                                      name="_csrf"
-                                      value="${req.csrfToken()}"
-                                    />
-                                    <p>
-                                      Are you sure you want to remove this
-                                      conversation?
-                                    </p>
-                                    <p>
-                                      <strong
-                                        style="${css`
-                                          font-weight: var(--font-weight--bold);
-                                        `}"
-                                      >
-                                        You may not undo this action!
-                                      </strong>
-                                    </p>
-                                    <button class="button button--rose">
-                                      <i class="bi bi-trash"></i>
-                                      Remove Conversation
-                                    </button>
-                                  </form>
-                                </div>
-                              </div>
-                            `
-                          : html``}
-                        $${mayEditConversation(req, res)
-                          ? html`
-                              <button
-                                class="button button--tight button--tight--inline button--transparent"
-                                oninteractive="${javascript`
-                                  tippy(this, {
-                                    content: "Edit Conversation Title",
-                                    touch: false,
-                                  });
-                                `}"
-                                onclick="${javascript`
-                                  this.closest(".conversation--header--full").querySelector(".title--show").hidden = true;
-                                  this.closest(".conversation--header--full").querySelector(".title--edit").hidden = false;
-                                `}"
-                              >
-                                <i class="bi bi-pencil"></i>
-                              </button>
-                            `
-                          : html``}
-
+                      <div>
                         <button
                           class="button button--tight button--tight--inline button--transparent"
                           oninteractive="${javascript`
                             tippy(this, {
-                              content: "Copy Conversation Permanent Link to Clipboard",
+                              content: "Actions",
                               touch: false,
                             });
-                            this.copied = tippy(this, {
-                              content: "Copied Conversation Permanent Link to Clipboard",
-                              theme: "green",
-                              trigger: "manual",
+                            tippy(this, {
+                              content: this.nextElementSibling.firstElementChild,
+                              trigger: "click",
+                              interactive: true,
                             });
                           `}"
-                          onclick="${javascript`
-                            (async () => {
-                              await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
-                              this.copied.show();
-                              await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                              this.copied.hide();
-                            })();
-                          `}"
                         >
-                          #${res.locals.conversation.reference}
+                          <i class="bi bi-three-dots-vertical"></i>
                         </button>
+                        <div hidden>
+                          <div>
+                            <h3 class="heading">
+                              <i class="bi bi-chat-left-text"></i>
+                              Conversation #${res.locals.conversation.reference}
+                            </h3>
+                            <div class="dropdown--menu">
+                              $${res.locals.enrollment.role === "staff"
+                                ? html`
+                                    <div>
+                                      <button
+                                        class="dropdown--menu--item button button--transparent"
+                                        oninteractive="${javascript`
+                                          tippy(this, {
+                                            content: this.nextElementSibling.firstElementChild,
+                                            theme: "rose",
+                                            trigger: "click",
+                                            interactive: true,
+                                          });
+                                        `}"
+                                      >
+                                        <i class="bi bi-trash"></i>
+                                        Remove Conversation
+                                      </button>
+                                      <div hidden>
+                                        <form
+                                          method="POST"
+                                          action="${baseURL}/courses/${res
+                                            .locals.course
+                                            .reference}/conversations/${res
+                                            .locals.conversation
+                                            .reference}?_method=DELETE"
+                                          style="${css`
+                                            padding: var(--space--2);
+                                            display: flex;
+                                            flex-direction: column;
+                                            gap: var(--space--4);
+                                          `}"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="_csrf"
+                                            value="${req.csrfToken()}"
+                                          />
+                                          <p>
+                                            Are you sure you want to remove this
+                                            conversation?
+                                          </p>
+                                          <p>
+                                            <strong
+                                              style="${css`
+                                                font-weight: var(
+                                                  --font-weight--bold
+                                                );
+                                              `}"
+                                            >
+                                              You may not undo this action!
+                                            </strong>
+                                          </p>
+                                          <button class="button button--rose">
+                                            <i class="bi bi-trash"></i>
+                                            Remove Conversation
+                                          </button>
+                                        </form>
+                                      </div>
+                                    </div>
+                                  `
+                                : html``}
+                              $${mayEditConversation(req, res)
+                                ? html`
+                                    <button
+                                      class="dropdown--menu--item button button--transparent"
+                                      onclick="${javascript`
+                                        this.closest(".conversation--header--full").querySelector(".title--show").hidden = true;
+                                        this.closest(".conversation--header--full").querySelector(".title--edit").hidden = false;
+                                        tippy.hideAll();
+                                      `}"
+                                    >
+                                      <i class="bi bi-pencil"></i>
+                                      Edit Conversation Title
+                                    </button>
+                                  `
+                                : html``}
+
+                              <button
+                                class="dropdown--menu--item button button--transparent"
+                                oninteractive="${javascript`
+                                  this.copied = tippy(this, {
+                                    content: "Copied",
+                                    theme: "green",
+                                    trigger: "manual",
+                                  });
+                                `}"
+                                onclick="${javascript`
+                                  (async () => {
+                                    await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
+                                    this.copied.show();
+                                    await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                                    this.copied.hide();
+                                  })();
+                                `}"
+                              >
+                                <i class="bi bi-link"></i>
+                                Copy Conversation Permanent Link to Clipboard
+                              </button>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
