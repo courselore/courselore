@@ -14366,6 +14366,9 @@ ${value}</textarea
                                                     style="${css`
                                                       width: var(--space--2);
                                                       height: var(--space--2);
+                                                      margin-top: var(
+                                                        --space--2
+                                                      );
                                                       @media (max-width: 629px) {
                                                         margin-left: var(
                                                           --space---3
@@ -14395,61 +14398,66 @@ ${value}</textarea
                                                   ></button>
                                                 `
                                               : html``}
-                                            $${message.anonymousAt === null
-                                              ? html`
-                                                  $${message.authorEnrollment
-                                                    .user.avatar === null
-                                                    ? html`
-                                                        <div
-                                                          style="${css`
-                                                            font-size: var(
-                                                              --font-size--2xl
-                                                            );
-                                                            & > *::before {
-                                                              vertical-align: baseline;
-                                                            }
-                                                          `}"
-                                                        >
-                                                          <i
-                                                            class="bi bi-person-circle"
-                                                          ></i>
-                                                        </div>
-                                                      `
-                                                    : html`
-                                                        <img
-                                                          src="${message
-                                                            .authorEnrollment
-                                                            .user.avatar}"
-                                                          alt="${message
-                                                            .authorEnrollment
-                                                            .user.name}"
-                                                          class="avatar avatar--2xl"
-                                                        />
-                                                      `}
-                                                `
-                                              : html`
-                                                  <div
-                                                    class="text--violet"
-                                                    style="${css`
-                                                      font-size: var(
-                                                        --font-size--2xl
-                                                      );
-                                                      & > *::before {
-                                                        vertical-align: baseline;
-                                                      }
-                                                    `}"
-                                                    oninteractive="${javascript`
-                                                      tippy(this, {
-                                                        content: "Anonymous to other students.",
-                                                        touch: false,
-                                                      });
-                                                    `}"
-                                                  >
-                                                    <i
-                                                      class="bi bi-sunglasses"
-                                                    ></i>
-                                                  </div>
-                                                `}
+                                            <div>
+                                              $${message.anonymousAt === null
+                                                ? html`
+                                                    $${message.authorEnrollment
+                                                      .user.avatar === null
+                                                      ? html`
+                                                          <div
+                                                            style="${css`
+                                                              font-size: var(
+                                                                --font-size--2xl
+                                                              );
+                                                              & > *::before {
+                                                                vertical-align: middle;
+                                                              }
+                                                            `}"
+                                                          >
+                                                            <i
+                                                              class="bi bi-person-circle"
+                                                            ></i>
+                                                          </div>
+                                                        `
+                                                      : html`
+                                                          <img
+                                                            src="${message
+                                                              .authorEnrollment
+                                                              .user.avatar}"
+                                                            alt="${message
+                                                              .authorEnrollment
+                                                              .user.name}"
+                                                            class="avatar avatar--2xl"
+                                                            style="${css`
+                                                              vertical-align: middle;
+                                                            `}"
+                                                          />
+                                                        `}
+                                                  `
+                                                : html`
+                                                    <div
+                                                      class="text--violet"
+                                                      style="${css`
+                                                        font-size: var(
+                                                          --font-size--2xl
+                                                        );
+                                                        & > *::before {
+                                                          vertical-align: middle;
+                                                        }
+                                                      `}"
+                                                      oninteractive="${javascript`
+                                                        tippy(this, {
+                                                          content: "Anonymous to other students.",
+                                                          touch: false,
+                                                        });
+                                                      `}"
+                                                    >
+                                                      <i
+                                                        class="bi bi-sunglasses"
+                                                      ></i>
+                                                    </div>
+                                                  `}
+                                            </div>
                                             <h3>
                                               <span class="strong">
                                                 $${message.anonymousAt === null
