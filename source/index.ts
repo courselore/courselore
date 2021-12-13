@@ -13422,86 +13422,83 @@ ${value}</textarea
                       </div>
                     </div>
 
-                    <div class="title">
-                      <h2
-                        class="title--show strong"
-                        style="${css`
-                          font-size: var(--font-size--lg);
-                          line-height: var(--line-height--lg);
-                        `}"
-                      >
-                        $${highlightSearchResult(
-                          html`${res.locals.conversation.title}`,
-                          req.query.search
-                        )}
-                      </h2>
+                    <h2
+                      class="title--show strong"
+                      style="${css`
+                        font-size: var(--font-size--lg);
+                        line-height: var(--line-height--lg);
+                      `}"
+                    >
+                      $${highlightSearchResult(
+                        html`${res.locals.conversation.title}`,
+                        req.query.search
+                      )}
+                    </h2>
 
-                      $${mayEditConversation(req, res)
-                        ? html`
-                            <form
-                              method="POST"
-                              action="${baseURL}/courses/${res.locals.course
-                                .reference}/conversations/${res.locals
-                                .conversation.reference}?_method=PATCH"
-                              novalidate
-                              hidden
-                              class="title--edit"
+                    $${mayEditConversation(req, res)
+                      ? html`
+                          <form
+                            method="POST"
+                            action="${baseURL}/courses/${res.locals.course
+                              .reference}/conversations/${res.locals
+                              .conversation.reference}?_method=PATCH"
+                            novalidate
+                            hidden
+                            class="title--edit"
+                            style="${css`
+                              display: flex;
+                              gap: var(--space--2);
+                              align-items: center;
+                            `}"
+                          >
+                            <input
+                              type="hidden"
+                              name="_csrf"
+                              value="${req.csrfToken()}"
+                            />
+                            <input
+                              type="text"
+                              name="title"
+                              value="${res.locals.conversation.title}"
+                              required
+                              autocomplete="off"
+                              class="input--text"
+                            />
+                            <button
+                              class="button button--tight button--tight--inline button--transparent text--green"
                               style="${css`
-                                display: flex;
-                                gap: var(--space--2);
-                                align-items: center;
+                                flex: 1;
+                              `}"
+                              oninteractive="${javascript`
+                                tippy(this, {
+                                  content: "Update Title",
+                                  theme: "green",
+                                  touch: false,
+                                });
                               `}"
                             >
-                              <input
-                                type="hidden"
-                                name="_csrf"
-                                value="${req.csrfToken()}"
-                              />
-                              <input
-                                type="text"
-                                name="title"
-                                value="${res.locals.conversation.title}"
-                                required
-                                autocomplete="off"
-                                class="input--text"
-                              />
-                              <button
-                                class="button button--tight button--tight--inline button--transparent text--green"
-                                style="${css`
-                                  flex: 1;
-                                `}"
-                                oninteractive="${javascript`
-                                  tippy(this, {
-                                    content: "Update Title",
-                                    theme: "green",
-                                    touch: false,
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-check-lg"></i>
-                              </button>
-                              <button
-                                type="reset"
-                                class="button button--tight button--tight--inline button--transparent text--rose"
-                                oninteractive="${javascript`
-                                  tippy(this, {
-                                    content: "Cancel",
-                                    theme: "rose",
-                                    touch: false,
-                                  });
-                                `}"
-                                onclick="${javascript`
-                                  this.closest(".conversation--header--full").querySelector(".title--show").hidden = false;
-                                  this.closest(".conversation--header--full").querySelector(".title--edit").hidden = true;
-                                `}"
-                              >
-                                <i class="bi bi-x-lg"></i>
-                              </button>
-                            </form>
-                          `
-                        : html``}
-                    </div>
-
+                              <i class="bi bi-check-lg"></i>
+                            </button>
+                            <button
+                              type="reset"
+                              class="button button--tight button--tight--inline button--transparent text--rose"
+                              oninteractive="${javascript`
+                                tippy(this, {
+                                  content: "Cancel",
+                                  theme: "rose",
+                                  touch: false,
+                                });
+                              `}"
+                              onclick="${javascript`
+                                this.closest(".conversation--header--full").querySelector(".title--show").hidden = false;
+                                this.closest(".conversation--header--full").querySelector(".title--edit").hidden = true;
+                              `}"
+                            >
+                              <i class="bi bi-x-lg"></i>
+                            </button>
+                          </form>
+                        `
+                      : html``}
                     $${res.locals.tags.length === 0
                       ? html``
                       : html`
