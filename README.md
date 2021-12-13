@@ -29,7 +29,6 @@
 ### Chat
 
 - Review what to do with menus that fade.
-  - `TODO`
   - Have them as poppers.
   - Have a `…` kind of button.
   - `opacity:`
