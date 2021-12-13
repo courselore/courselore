@@ -13952,17 +13952,12 @@ ${value}</textarea
                                     >
                                       <div
                                         style="${css`
+                                          padding: var(--space--2);
                                           ${res.locals.conversation.type ===
                                           "chat"
-                                            ? css`
-                                                padding: var(--space--0)
-                                                  var(--space--2)
-                                                  var(--space--2);
-                                              `
+                                            ? css``
                                             : css`
-                                                padding: var(--space--2)
-                                                  var(--space--2)
-                                                  var(--space--4);
+                                                padding-bottom: var(--space--4);
                                               `}
                                           border-radius: var(--border-radius--lg);
                                           margin: var(--space--0)
