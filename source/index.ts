@@ -14355,10 +14355,11 @@ ${value}</textarea
                                               position: relative;
                                               display: flex;
                                               gap: var(--space--2);
-                                              align-items: center;
+                                              align-items: baseline;
                                             `}"
                                           >
-                                            $${message.reading === null
+                                            $${message.reading === null ||
+                                            "TODO"
                                               ? html`
                                                   <button
                                                     class="button button--tight button--tight--inline button--blue"
@@ -14385,7 +14386,7 @@ ${value}</textarea
                                                         content: "Unread Message",
                                                         touch: false,
                                                       });
-                                                      window.setTimeout(() => { this.click(); }, 2000);
+                                                      /* TODO window.setTimeout(() => { this.click(); }, 2000); */
                                                     `}"
                                                     onclick="${javascript`
                                                       this.style.opacity = 0;

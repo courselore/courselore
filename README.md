@@ -29,6 +29,7 @@
 ### Chat
 
 - Review what to do with menus that fade.
+  - TODO
   - `opacity:`
 - Show who’s online (last visited at a certain time).
   - Fade in and out.
