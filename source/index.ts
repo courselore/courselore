@@ -14364,9 +14364,6 @@ ${value}</textarea
                                                     style="${css`
                                                       width: var(--space--2);
                                                       height: var(--space--2);
-                                                      margin-top: var(
-                                                        --space--4
-                                                      );
                                                       @media (max-width: 629px) {
                                                         margin-left: var(
                                                           --space---3
