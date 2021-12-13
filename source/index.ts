@@ -14354,6 +14354,11 @@ ${value}</textarea
                                               gap: var(--space--4);
                                               align-items: baseline;
                                               position: relative;
+
+                                              flex: 1;
+                                              display: flex;
+                                              gap: var(--space--2);
+                                              align-items: baseline;
                                             `}"
                                           >
                                             $${message.reading === null
@@ -14397,62 +14402,78 @@ ${value}</textarea
                                               : html``}
                                             <div
                                               style="${css`
-                                                flex: 1;
-                                                display: flex;
-                                                gap: var(--space--2);
-                                                align-items: baseline;
+                                                position: relative;
+                                                bottom: var(--space---1-5);
                                               `}"
                                             >
-                                              <div
-                                                style="${css`
-                                                  position: relative;
-                                                  bottom: var(--space---1-5);
-                                                `}"
-                                              >
-                                                $${message.anonymousAt === null
-                                                  ? html`
-                                                      $${message
-                                                        .authorEnrollment.user
-                                                        .avatar === null
-                                                        ? html`
-                                                            <div
-                                                              style="${css`
-                                                                font-size: var(
-                                                                  --font-size--2xl
-                                                                );
-                                                                & > *::before {
-                                                                  vertical-align: baseline;
-                                                                }
-                                                              `}"
-                                                            >
-                                                              <i
-                                                                class="bi bi-person-circle"
-                                                              ></i>
-                                                            </div>
-                                                          `
-                                                        : html`
-                                                            <img
-                                                              src="${message
-                                                                .authorEnrollment
-                                                                .user.avatar}"
-                                                              alt="${message
-                                                                .authorEnrollment
-                                                                .user.name}"
-                                                              class="avatar avatar--2xl"
-                                                            />
-                                                          `}
-                                                    `
-                                                  : html`
-                                                      <div
-                                                        class="text--violet"
-                                                        style="${css`
-                                                          font-size: var(
-                                                            --font-size--2xl
-                                                          );
-                                                          & > *::before {
-                                                            vertical-align: baseline;
-                                                          }
+                                              $${message.anonymousAt === null
+                                                ? html`
+                                                    $${message.authorEnrollment
+                                                      .user.avatar === null
+                                                      ? html`
+                                                          <div
+                                                            style="${css`
+                                                              font-size: var(
+                                                                --font-size--2xl
+                                                              );
+                                                              & > *::before {
+                                                                vertical-align: baseline;
+                                                              }
+                                                            `}"
+                                                          >
+                                                            <i
+                                                              class="bi bi-person-circle"
+                                                            ></i>
+                                                          </div>
+                                                        `
+                                                      : html`
+                                                          <img
+                                                            src="${message
+                                                              .authorEnrollment
+                                                              .user.avatar}"
+                                                            alt="${message
+                                                              .authorEnrollment
+                                                              .user.name}"
+                                                            class="avatar avatar--2xl"
+                                                          />
+                                                        `}
+                                                  `
+                                                : html`
+                                                    <div
+                                                      class="text--violet"
+                                                      style="${css`
+                                                        font-size: var(
+                                                          --font-size--2xl
+                                                        );
+                                                        & > *::before {
+                                                          vertical-align: baseline;
+                                                        }
+                                                      `}"
+                                                      oninteractive="${javascript`
+                                                          tippy(this, {
+                                                            content: "Anonymous to other students.",
+                                                            touch: false,
+                                                          });
                                                         `}"
+                                                    >
+                                                      <i
+                                                        class="bi bi-sunglasses"
+                                                      ></i>
+                                                    </div>
+                                                  `}
+                                            </div>
+                                            <h3>
+                                              <span class="strong">
+                                                $${message.anonymousAt === null
+                                                  ? highlightSearchResult(
+                                                      html`${message
+                                                        .authorEnrollment.user
+                                                        .name}`,
+                                                      req.query.search
+                                                    )
+                                                  : html`
+                                                      <span
+                                                        class="text--violet"
                                                         oninteractive="${javascript`
                                                           tippy(this, {
                                                             content: "Anonymous to other students.",
@@ -14460,103 +14481,76 @@ ${value}</textarea
                                                           });
                                                         `}"
                                                       >
-                                                        <i
-                                                          class="bi bi-sunglasses"
-                                                        ></i>
-                                                      </div>
+                                                        Anonymous
+                                                      </span>
                                                     `}
-                                              </div>
-                                              <h3>
-                                                <span class="strong">
-                                                  $${message.anonymousAt ===
-                                                  null
-                                                    ? highlightSearchResult(
+                                              </span>
+                                              <span
+                                                class="secondary"
+                                                style="${css`
+                                                  font-size: var(
+                                                    --font-size--xs
+                                                  );
+                                                  line-height: var(
+                                                    --line-height--xs
+                                                  );
+                                                `}"
+                                              >
+                                                $${message.anonymousAt !==
+                                                  null &&
+                                                (res.locals.enrollment.role ===
+                                                  "staff" ||
+                                                  message.authorEnrollment
+                                                    .id ===
+                                                    res.locals.enrollment.id)
+                                                  ? html`
+                                                      ($${message
+                                                        .authorEnrollment.user
+                                                        .avatar === null
+                                                        ? html`<i
+                                                            class="bi bi-person-circle"
+                                                          ></i>`
+                                                        : html`<img
+                                                            src="${message
+                                                              .authorEnrollment
+                                                              .user.avatar}"
+                                                            alt="${message
+                                                              .authorEnrollment
+                                                              .user.name}"
+                                                            class="avatar avatar--xs avatar--vertical-align"
+                                                          />`}
+                                                      $${highlightSearchResult(
                                                         html`${message
                                                           .authorEnrollment.user
                                                           .name}`,
                                                         req.query.search
-                                                      )
-                                                    : html`
-                                                        <span
-                                                          class="text--violet"
-                                                          oninteractive="${javascript`
-                                                            tippy(this, {
-                                                              content: "Anonymous to other students.",
-                                                              touch: false,
-                                                            });
-                                                          `}"
-                                                        >
-                                                          Anonymous
-                                                        </span>
-                                                      `}
-                                                </span>
-                                                <span
-                                                  class="secondary"
-                                                  style="${css`
-                                                    font-size: var(
-                                                      --font-size--xs
-                                                    );
-                                                    line-height: var(
-                                                      --line-height--xs
-                                                    );
+                                                      )})
+                                                    `
+                                                  : html``}
+                                                ·
+                                                <time
+                                                  datetime="${new Date(
+                                                    message.createdAt
+                                                  ).toISOString()}"
+                                                  oninteractive="${javascript`
+                                                    leafac.relativizeDateTimeElement(this, { capitalize: true });
                                                   `}"
-                                                >
-                                                  $${message.anonymousAt !==
-                                                    null &&
-                                                  (res.locals.enrollment
-                                                    .role === "staff" ||
-                                                    message.authorEnrollment
-                                                      .id ===
-                                                      res.locals.enrollment.id)
-                                                    ? html`
-                                                        ($${message
-                                                          .authorEnrollment.user
-                                                          .avatar === null
-                                                          ? html`<i
-                                                              class="bi bi-person-circle"
-                                                            ></i>`
-                                                          : html`<img
-                                                              src="${message
-                                                                .authorEnrollment
-                                                                .user.avatar}"
-                                                              alt="${message
-                                                                .authorEnrollment
-                                                                .user.name}"
-                                                              class="avatar avatar--xs avatar--vertical-align"
-                                                            />`}
-                                                        $${highlightSearchResult(
-                                                          html`${message
-                                                            .authorEnrollment
-                                                            .user.name}`,
-                                                          req.query.search
-                                                        )})
-                                                      `
-                                                    : html``}
-                                                  ·
-                                                  <time
-                                                    datetime="${new Date(
-                                                      message.createdAt
-                                                    ).toISOString()}"
-                                                    oninteractive="${javascript`
-                                                      leafac.relativizeDateTimeElement(this, { capitalize: true });
-                                                    `}"
-                                                  ></time>
-                                                  $${message.updatedAt !== null
-                                                    ? html`
-                                                        · Updated
-                                                        <time
-                                                          datetime="${new Date(
-                                                            message.updatedAt
-                                                          ).toISOString()}"
-                                                          oninteractive="${javascript`
-                                                            leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                                                          `}"
-                                                        ></time>
-                                                      `
-                                                    : html``}
-                                                </span>
-                                              </h3>
-                                            </div>
+                                                ></time>
+                                                $${message.updatedAt !== null
+                                                  ? html`
+                                                      · Updated
+                                                      <time
+                                                        datetime="${new Date(
+                                                          message.updatedAt
+                                                        ).toISOString()}"
+                                                        oninteractive="${javascript`
+                                                          leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                        `}"
+                                                      ></time>
+                                                    `
+                                                  : html``}
+                                              </span>
+                                            </h3>
                                           </div>
                                         </div>
 
