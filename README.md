@@ -114,6 +114,7 @@
 
 ### Notifications
 
+- Delay sending notifications for a little bit to give the person a chance to update or delete the message.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
 - Add different notification badges for when you’re @mentioned.
 - A timeline-like list of unread messages and other things that require your attention.
@@ -156,6 +157,7 @@
 
 ### File Management
 
+- Have a way to delete files.
 - Access control around attachments:
   - Possibilities:
     1. Anyone with a link may see the attachment.
@@ -365,6 +367,9 @@
 - Added a date separator between chat messages.
 - Group together messages sent in quick succession.
 - Started online indicators.
+- Other things we talked about:
+  - Delete attachments.
+  - Notifications delay.
 
 </details>
 
