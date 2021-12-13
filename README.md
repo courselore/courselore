@@ -29,8 +29,6 @@
 ### Chat
 
 - Review what to do with menus that fade.
-  - TODO
-  - Have them as poppers.
   - `opacity:`
 - Show who’s online (last visited at a certain time).
   - Fade in and out.
