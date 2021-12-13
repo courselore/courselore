@@ -13375,6 +13375,25 @@ ${value}</textarea
                               </div>
                             `
                           : html``}
+                        $${mayEditConversation(req, res)
+                          ? html`
+                              <button
+                                class="button button--tight button--tight--inline button--transparent"
+                                oninteractive="${javascript`
+                                  tippy(this, {
+                                    content: "Edit Conversation Title",
+                                    touch: false,
+                                  });
+                                `}"
+                                onclick="${javascript`
+                                  this.closest(".conversation--header--full").querySelector(".title--show").hidden = true;
+                                  this.closest(".conversation--header--full").querySelector(".title--edit").hidden = false;
+                                `}"
+                              >
+                                <i class="bi bi-pencil"></i>
+                              </button>
+                            `
+                          : html``}
 
                         <button
                           class="button button--tight button--tight--inline button--transparent"
@@ -13404,56 +13423,17 @@ ${value}</textarea
                     </div>
 
                     <div class="title">
-                      <h2 class="title--show">
-                        <span
-                          class="strong"
-                          style="${css`
-                            font-size: var(--font-size--lg);
-                            line-height: var(--line-height--lg);
-                          `}"
-                        >
-                          $${highlightSearchResult(
-                            html`${res.locals.conversation.title}`,
-                            req.query.search
-                          )}
-                        </span>
-
-                        $${mayEditConversation(req, res)
-                          ? html`
-                              <button
-                                class="button button--tight button--tight--inline button--transparent secondary"
-                                style="${css`
-                                  font-size: var(--font-size--xs);
-                                  line-height: var(--line-height--xs);
-                                  display: inline-flex;
-                                  transition-property: var(
-                                    --transition-property--opacity
-                                  );
-                                  transition-duration: var(
-                                    --transition-duration--150
-                                  );
-                                  transition-timing-function: var(
-                                    --transition-timing-function--in-out
-                                  );
-                                  .conversation--header:not(:hover) & {
-                                    opacity: var(--opacity--0);
-                                  }
-                                `}"
-                                oninteractive="${javascript`
-                                  tippy(this, {
-                                    content: "Edit Title",
-                                    touch: false,
-                                  });
-                                `}"
-                                onclick="${javascript`
-                                  this.closest(".title").querySelector(".title--show").hidden = true;
-                                  this.closest(".title").querySelector(".title--edit").hidden = false;
-                                `}"
-                              >
-                                <i class="bi bi-pencil"></i>
-                              </button>
-                            `
-                          : html``}
+                      <h2
+                        class="title--show strong"
+                        style="${css`
+                          font-size: var(--font-size--lg);
+                          line-height: var(--line-height--lg);
+                        `}"
+                      >
+                        $${highlightSearchResult(
+                          html`${res.locals.conversation.title}`,
+                          req.query.search
+                        )}
                       </h2>
 
                       $${mayEditConversation(req, res)
@@ -13511,8 +13491,8 @@ ${value}</textarea
                                   });
                                 `}"
                                 onclick="${javascript`
-                                  this.closest(".title").querySelector(".title--show").hidden = false;
-                                  this.closest(".title").querySelector(".title--edit").hidden = true;
+                                  this.closest(".conversation--header--full").querySelector(".title--show").hidden = false;
+                                  this.closest(".conversation--header--full").querySelector(".title--edit").hidden = true;
                                 `}"
                               >
                                 <i class="bi bi-x-lg"></i>
