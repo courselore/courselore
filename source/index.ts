@@ -14524,13 +14524,13 @@ ${value}</textarea
                                           `}"
                                         >
                                           <div
-                                            class="message--show--content"
+                                            class="message--show--content-area"
                                             style="${css`
                                               position: relative;
                                             `}"
                                           >
                                             <div
-                                              class="message--show--content--dropdown-menu-target"
+                                              class="message--show--content-area--dropdown-menu-target"
                                               style="${css`
                                                 width: var(--space--0);
                                                 height: var(--line-height--sm);
@@ -14538,9 +14538,9 @@ ${value}</textarea
                                               `}"
                                             ></div>
                                             <div
-                                              class="message--show--content--content"
+                                              class="message--show--content-area--content"
                                               oninteractive="${javascript`
-                                                const dropdownMenuTarget = this.closest(".message--show--content").querySelector(".message--show--content--dropdown-menu-target");
+                                                const dropdownMenuTarget = this.closest(".message--show--content-area").querySelector(".message--show--content-area--dropdown-menu-target");
                                                 const dropdownMenu = tippy(dropdownMenuTarget, {
                                                   content: this.nextElementSibling.firstElementChild,
                                                   trigger: "manual",
@@ -14610,7 +14610,7 @@ ${value}</textarea
                                                       ) &&
                                                       focusElement !== null
                                                     ) focusElement = focusElement.parentElement;
-                                                    const contentElement = this.closest(".message--show--content").querySelector(".message--show--content--content");
+                                                    const contentElement = this.closest(".message--show--content-area").querySelector(".message--show--content-area--content");
                                                     if (
                                                       selection.isCollapsed ||
                                                       anchorElement === null ||
