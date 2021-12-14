@@ -13985,7 +13985,8 @@ ${value}</textarea
                                                 transition-timing-function: var(
                                                   --transition-timing-function--in-out
                                                 );
-                                                &:hover {
+                                                &:hover,
+                                                &:focus-within {
                                                   background-color: var(
                                                     --color--gray--medium--100
                                                   );
@@ -14023,7 +14024,8 @@ ${value}</textarea
                                                         transition-timing-function: var(
                                                           --transition-timing-function--in-out
                                                         );
-                                                        .message:not(:hover) & {
+                                                        .message:not(:hover, :focus-within)
+                                                          & {
                                                           opacity: var(
                                                             --opacity--0
                                                           );
