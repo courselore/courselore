@@ -13296,7 +13296,7 @@ ${value}</textarea
 
                       <div>
                         <button
-                          class="button button--tight button--tight--inline button--transparent"
+                          class="button button--tight button--tight--inline button--transparent secondary"
                           oninteractive="${javascript`
                             tippy(this, {
                               content: "Actions",
@@ -14002,7 +14002,74 @@ ${value}</textarea
                                         `}"
                                       >
                                         $${(() => {
-                                          const content: HTML[] = [];
+                                          const actions = html`
+                                            <div>
+                                              <button
+                                                class="button button--tight button--tight--inline button--transparent secondary"
+                                                style="${css`
+                                                  font-size: var(
+                                                    --font-size--xs
+                                                  );
+                                                  line-height: var(
+                                                    --line-height--xs
+                                                  );
+                                                `}"
+                                                oninteractive="${javascript`
+                                                  tippy(this, {
+                                                    content: "Actions",
+                                                    touch: false,
+                                                  });
+                                                  tippy(this, {
+                                                    content: this.nextElementSibling.firstElementChild,
+                                                    trigger: "click",
+                                                    interactive: true,
+                                                  });
+                                                `}"
+                                              >
+                                                <i
+                                                  class="bi bi-three-dots-vertical"
+                                                ></i>
+                                              </button>
+                                              <div hidden>
+                                                <div>
+                                                  <h3 class="heading">
+                                                    <i
+                                                      class="bi bi-chat-left-text"
+                                                    ></i>
+                                                    Message
+                                                    #${res.locals.conversation
+                                                      .reference}/${message.reference}
+                                                  </h3>
+                                                  <div class="dropdown--menu">
+                                                    <button
+                                                      class="dropdown--menu--item button button--transparent"
+                                                      oninteractive="${javascript`
+                                                        this.copied = tippy(this, {
+                                                          content: "Copied",
+                                                          theme: "green",
+                                                          trigger: "manual",
+                                                        });
+                                                      `}"
+                                                      onclick="${javascript`
+                                                        (async () => {
+                                                          await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${message.reference}");
+                                                          this.copied.show();
+                                                          await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                                                          this.copied.hide();
+                                                        })();
+                                                      `}"
+                                                    >
+                                                      <i class="bi bi-link"></i>
+                                                      Copy Message Permanent
+                                                      Link to Clipboard
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          `;
+
+                                          const headers: HTML[] = [];
 
                                           if (
                                             mayEditMessage(req, res, message) &&
@@ -14010,7 +14077,7 @@ ${value}</textarea
                                             res.locals.conversation.type ===
                                               "question"
                                           )
-                                            content.push(html`
+                                            headers.push(html`
                                               <form
                                                 method="POST"
                                                 action="${baseURL}/courses/${res
@@ -14075,7 +14142,7 @@ ${value}</textarea
                                               "question" &&
                                             message.answerAt !== null
                                           )
-                                            content.push(html`
+                                            headers.push(html`
                                               <div class="text--emerald">
                                                 <i
                                                   class="bi bi-patch-check-fill"
@@ -14094,7 +14161,7 @@ ${value}</textarea
                                                   res.locals.enrollment.id
                                               );
 
-                                            content.push(html`
+                                            headers.push(html`
                                               <form
                                                 method="POST"
                                                 action="${baseURL}/courses/${res
@@ -14243,7 +14310,7 @@ ${value}</textarea
                                               "staff" &&
                                             message.endorsements.length > 0
                                           )
-                                            content.push(html`
+                                            headers.push(html`
                                               <div
                                                 class="text--lime"
                                                 oninteractive="${javascript`
@@ -14278,10 +14345,185 @@ ${value}</textarea
                                               </div>
                                             `);
 
-                                          return content.length === 0
-                                            ? html``
-                                            : html`
-                                                <div
+                                          return html`
+                                            $${headers.length === 0
+                                              ? html``
+                                              : html`
+                                                  <div
+                                                    style="${css`
+                                                      font-size: var(
+                                                        --font-size--xs
+                                                      );
+                                                      line-height: var(
+                                                        --line-height--xs
+                                                      );
+                                                      display: flex;
+                                                      gap: var(--space--4);
+                                                    `}"
+                                                  >
+                                                    <div
+                                                      style="${css`
+                                                        flex: 1;
+                                                        display: flex;
+                                                        flex-wrap: wrap;
+                                                        column-gap: var(
+                                                          --space--8
+                                                        );
+                                                        row-gap: var(
+                                                          --space--1
+                                                        );
+                                                        & > * {
+                                                          display: flex;
+                                                          gap: var(--space--1);
+                                                        }
+                                                      `}"
+                                                    >
+                                                      $${headers}
+                                                    </div>
+                                                    $${actions}
+                                                  </div>
+                                                `}
+
+                                            <div
+                                              style="${css`
+                                                position: relative;
+                                                display: flex;
+                                                gap: var(--space--2);
+                                                align-items: baseline;
+                                              `}"
+                                            >
+                                              $${message.reading === null
+                                                ? html`
+                                                    <button
+                                                      class="button button--tight button--tight--inline button--blue"
+                                                      style="${css`
+                                                        width: var(--space--2);
+                                                        height: var(--space--2);
+                                                        margin-top: var(
+                                                          --space--2
+                                                        );
+                                                        @media (max-width: 629px) {
+                                                          margin-left: var(
+                                                            --space---3
+                                                          );
+                                                        }
+                                                        @media (min-width: 630px) {
+                                                          margin-left: var(
+                                                            --space---4
+                                                          );
+                                                        }
+                                                        position: absolute;
+                                                        transition-property: var(
+                                                          --transition-property--base
+                                                        );
+                                                      `}"
+                                                      oninteractive="${javascript`
+                                                        tippy(this, {
+                                                          content: "Unread Message",
+                                                          touch: false,
+                                                        });
+                                                        window.setTimeout(() => { this.click(); }, 2000);
+                                                      `}"
+                                                      onclick="${javascript`
+                                                        this.style.opacity = 0;
+                                                        window.setTimeout(() => { this.remove(); }, 500);
+                                                      `}"
+                                                    ></button>
+                                                  `
+                                                : html``}
+
+                                              <div>
+                                                $${message.anonymousAt === null
+                                                  ? html`
+                                                      $${message
+                                                        .authorEnrollment.user
+                                                        .avatar === null
+                                                        ? html`
+                                                            <div
+                                                              style="${css`
+                                                                font-size: var(
+                                                                  --font-size--2xl
+                                                                );
+                                                                & > *::before {
+                                                                  vertical-align: middle;
+                                                                }
+                                                              `}"
+                                                            >
+                                                              <i
+                                                                class="bi bi-person-circle"
+                                                              ></i>
+                                                            </div>
+                                                          `
+                                                        : html`
+                                                            <img
+                                                              src="${message
+                                                                .authorEnrollment
+                                                                .user.avatar}"
+                                                              alt="${message
+                                                                .authorEnrollment
+                                                                .user.name}"
+                                                              class="avatar avatar--2xl"
+                                                              style="${css`
+                                                                vertical-align: middle;
+                                                              `}"
+                                                            />
+                                                          `}
+                                                    `
+                                                  : html`
+                                                      <div
+                                                        class="text--violet"
+                                                        style="${css`
+                                                          font-size: var(
+                                                            --font-size--2xl
+                                                          );
+                                                          & > *::before {
+                                                            vertical-align: middle;
+                                                          }
+                                                        `}"
+                                                        oninteractive="${javascript`
+                                                          tippy(this, {
+                                                            content: "Anonymous to other students.",
+                                                            touch: false,
+                                                          });
+                                                        `}"
+                                                      >
+                                                        <i
+                                                          class="bi bi-sunglasses"
+                                                        ></i>
+                                                      </div>
+                                                    `}
+                                              </div>
+
+                                              <h3
+                                                style="${css`
+                                                  flex: 1;
+                                                `}"
+                                              >
+                                                <span class="strong">
+                                                  $${message.anonymousAt ===
+                                                  null
+                                                    ? highlightSearchResult(
+                                                        html`${message
+                                                          .authorEnrollment.user
+                                                          .name}`,
+                                                        req.query.search
+                                                      )
+                                                    : html`
+                                                        <span
+                                                          class="text--violet"
+                                                          oninteractive="${javascript`
+                                                            tippy(this, {
+                                                              content: "Anonymous to other students.",
+                                                              touch: false,
+                                                            });
+                                                          `}"
+                                                        >
+                                                          Anonymous
+                                                        </span>
+                                                      `}
+                                                </span>
+                                                <span
+                                                  class="secondary"
                                                   style="${css`
                                                     font-size: var(
                                                       --font-size--xs
@@ -14289,275 +14531,70 @@ ${value}</textarea
                                                     line-height: var(
                                                       --line-height--xs
                                                     );
-                                                    display: flex;
-                                                    flex-wrap: wrap;
-                                                    column-gap: var(--space--8);
-                                                    row-gap: var(--space--1);
-
-                                                    & > * {
-                                                      display: flex;
-                                                      gap: var(--space--1);
-                                                    }
                                                   `}"
                                                 >
-                                                  $${content}
-                                                </div>
-                                              `;
-                                        })()}
-
-                                        <div
-                                          style="${css`
-                                            position: relative;
-                                            display: flex;
-                                            gap: var(--space--2);
-                                            align-items: baseline;
-                                          `}"
-                                        >
-                                          $${message.reading === null
-                                            ? html`
-                                                <button
-                                                  class="button button--tight button--tight--inline button--blue"
-                                                  style="${css`
-                                                    width: var(--space--2);
-                                                    height: var(--space--2);
-                                                    margin-top: var(--space--2);
-                                                    @media (max-width: 629px) {
-                                                      margin-left: var(
-                                                        --space---3
-                                                      );
-                                                    }
-                                                    @media (min-width: 630px) {
-                                                      margin-left: var(
-                                                        --space---4
-                                                      );
-                                                    }
-                                                    position: absolute;
-                                                    transition-property: var(
-                                                      --transition-property--base
-                                                    );
-                                                  `}"
-                                                  oninteractive="${javascript`
-                                                    tippy(this, {
-                                                      content: "Unread Message",
-                                                      touch: false,
-                                                    });
-                                                    window.setTimeout(() => { this.click(); }, 2000);
-                                                  `}"
-                                                  onclick="${javascript`
-                                                    this.style.opacity = 0;
-                                                    window.setTimeout(() => { this.remove(); }, 500);
-                                                  `}"
-                                                ></button>
-                                              `
-                                            : html``}
-
-                                          <div>
-                                            $${message.anonymousAt === null
-                                              ? html`
-                                                  $${message.authorEnrollment
-                                                    .user.avatar === null
+                                                  $${message.anonymousAt !==
+                                                    null &&
+                                                  (res.locals.enrollment
+                                                    .role === "staff" ||
+                                                    message.authorEnrollment
+                                                      .id ===
+                                                      res.locals.enrollment.id)
                                                     ? html`
-                                                        <div
-                                                          style="${css`
-                                                            font-size: var(
-                                                              --font-size--2xl
-                                                            );
-                                                            & > *::before {
-                                                              vertical-align: middle;
-                                                            }
-                                                          `}"
-                                                        >
-                                                          <i
-                                                            class="bi bi-person-circle"
-                                                          ></i>
-                                                        </div>
+                                                        ($${message
+                                                          .authorEnrollment.user
+                                                          .avatar === null
+                                                          ? html`<i
+                                                              class="bi bi-person-circle"
+                                                            ></i>`
+                                                          : html`<img
+                                                              src="${message
+                                                                .authorEnrollment
+                                                                .user.avatar}"
+                                                              alt="${message
+                                                                .authorEnrollment
+                                                                .user.name}"
+                                                              class="avatar avatar--xs avatar--vertical-align"
+                                                            />`}
+                                                        $${highlightSearchResult(
+                                                          html`${message
+                                                            .authorEnrollment
+                                                            .user.name}`,
+                                                          req.query.search
+                                                        )})
                                                       `
-                                                    : html`
-                                                        <img
-                                                          src="${message
-                                                            .authorEnrollment
-                                                            .user.avatar}"
-                                                          alt="${message
-                                                            .authorEnrollment
-                                                            .user.name}"
-                                                          class="avatar avatar--2xl"
-                                                          style="${css`
-                                                            vertical-align: middle;
+                                                    : html``}
+                                                  ·
+                                                  <time
+                                                    datetime="${new Date(
+                                                      message.createdAt
+                                                    ).toISOString()}"
+                                                    oninteractive="${javascript`
+                                                      leafac.relativizeDateTimeElement(this, { capitalize: true });
+                                                    `}"
+                                                  ></time>
+                                                  $${message.updatedAt !== null
+                                                    ? html`
+                                                        · Updated
+                                                        <time
+                                                          datetime="${new Date(
+                                                            message.updatedAt
+                                                          ).toISOString()}"
+                                                          oninteractive="${javascript`
+                                                            leafac.relativizeDateTimeElement(this, { preposition: "on" });
                                                           `}"
-                                                        />
-                                                      `}
-                                                `
-                                              : html`
-                                                  <div
-                                                    class="text--violet"
-                                                    style="${css`
-                                                      font-size: var(
-                                                        --font-size--2xl
-                                                      );
-                                                      & > *::before {
-                                                        vertical-align: middle;
-                                                      }
-                                                    `}"
-                                                    oninteractive="${javascript`
-                                                      tippy(this, {
-                                                        content: "Anonymous to other students.",
-                                                        touch: false,
-                                                      });
-                                                    `}"
-                                                  >
-                                                    <i
-                                                      class="bi bi-sunglasses"
-                                                    ></i>
-                                                  </div>
-                                                `}
-                                          </div>
+                                                        ></time>
+                                                      `
+                                                    : html``}
+                                                </span>
+                                              </h3>
 
-                                          <h3
-                                            style="${css`
-                                              flex: 1;
-                                            `}"
-                                          >
-                                            <span class="strong">
-                                              $${message.anonymousAt === null
-                                                ? highlightSearchResult(
-                                                    html`${message
-                                                      .authorEnrollment.user
-                                                      .name}`,
-                                                    req.query.search
-                                                  )
-                                                : html`
-                                                    <span
-                                                      class="text--violet"
-                                                      oninteractive="${javascript`
-                                                        tippy(this, {
-                                                          content: "Anonymous to other students.",
-                                                          touch: false,
-                                                        });
-                                                      `}"
-                                                    >
-                                                      Anonymous
-                                                    </span>
-                                                  `}
-                                            </span>
-                                            <span
-                                              class="secondary"
-                                              style="${css`
-                                                font-size: var(--font-size--xs);
-                                                line-height: var(
-                                                  --line-height--xs
-                                                );
-                                              `}"
-                                            >
-                                              $${message.anonymousAt !== null &&
-                                              (res.locals.enrollment.role ===
-                                                "staff" ||
-                                                message.authorEnrollment.id ===
-                                                  res.locals.enrollment.id)
-                                                ? html`
-                                                    ($${message.authorEnrollment
-                                                      .user.avatar === null
-                                                      ? html`<i
-                                                          class="bi bi-person-circle"
-                                                        ></i>`
-                                                      : html`<img
-                                                          src="${message
-                                                            .authorEnrollment
-                                                            .user.avatar}"
-                                                          alt="${message
-                                                            .authorEnrollment
-                                                            .user.name}"
-                                                          class="avatar avatar--xs avatar--vertical-align"
-                                                        />`}
-                                                    $${highlightSearchResult(
-                                                      html`${message
-                                                        .authorEnrollment.user
-                                                        .name}`,
-                                                      req.query.search
-                                                    )})
-                                                  `
+                                              $${headers.length === 0
+                                                ? actions
                                                 : html``}
-                                              ·
-                                              <time
-                                                datetime="${new Date(
-                                                  message.createdAt
-                                                ).toISOString()}"
-                                                oninteractive="${javascript`
-                                                  leafac.relativizeDateTimeElement(this, { capitalize: true });
-                                                `}"
-                                              ></time>
-                                              $${message.updatedAt !== null
-                                                ? html`
-                                                    · Updated
-                                                    <time
-                                                      datetime="${new Date(
-                                                        message.updatedAt
-                                                      ).toISOString()}"
-                                                      oninteractive="${javascript`
-                                                        leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                                                      `}"
-                                                    ></time>
-                                                  `
-                                                : html``}
-                                            </span>
-                                          </h3>
-
-                                          <div>
-                                            <button
-                                              class="button button--tight button--tight--inline button--transparent"
-                                              oninteractive="${javascript`
-                                                tippy(this, {
-                                                  content: "Actions",
-                                                  touch: false,
-                                                });
-                                                tippy(this, {
-                                                  content: this.nextElementSibling.firstElementChild,
-                                                  trigger: "click",
-                                                  interactive: true,
-                                                });
-                                              `}"
-                                            >
-                                              <i
-                                                class="bi bi-three-dots-vertical"
-                                              ></i>
-                                            </button>
-                                            <div hidden>
-                                              <div>
-                                                <h3 class="heading">
-                                                  <i
-                                                    class="bi bi-chat-left-text"
-                                                  ></i>
-                                                  Message
-                                                  #${res.locals.conversation
-                                                    .reference}/${message.reference}
-                                                </h3>
-                                                <div class="dropdown--menu">
-                                                  <button
-                                                    class="dropdown--menu--item button button--transparent"
-                                                    oninteractive="${javascript`
-                                                      this.copied = tippy(this, {
-                                                        content: "Copied",
-                                                        theme: "green",
-                                                        trigger: "manual",
-                                                      });
-                                                    `}"
-                                                    onclick="${javascript`
-                                                      (async () => {
-                                                        await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${message.reference}");
-                                                        this.copied.show();
-                                                        await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                                                        this.copied.hide();
-                                                      })();
-                                                    `}"
-                                                  >
-                                                    <i class="bi bi-link"></i>
-                                                    Copy Conversation Permanent
-                                                    Link to Clipboard
-                                                  </button>
-                                                </div>
-                                              </div>
                                             </div>
-                                          </div>
-                                        </div>
+                                          `;
+                                        })()}
 
                                         <div
                                           class="message--show"
