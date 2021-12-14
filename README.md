@@ -33,6 +33,7 @@
   - Add to conversations page:
     - conversationPartial.
     - Messages.
+- Test in other browsers.
 - Messages display:
   - “Truncate” long messages.
 - Scroll on new message.

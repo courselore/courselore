@@ -1099,6 +1099,30 @@ export default async function courselore({
                 }
               }
 
+              .online-indicator {
+                display: grid;
+                & > * {
+                  grid-area: 1 / 1;
+                  position: relative;
+                }
+                & > :last-child {
+                  background-color: var(--color--green--500);
+                  @media (prefers-color-scheme: dark) {
+                    background-color: var(--color--green--600);
+                  }
+                  width: var(--space--2);
+                  height: var(--space--2);
+                  border: var(--border-width--1) solid
+                    var(--color--gray--medium--50);
+                  @media (prefers-color-scheme: dark) {
+                    border-color: var(--color--gray--medium--900);
+                  }
+                  border-radius: var(--border-radius--circle);
+                  place-self: end;
+                  transform: translate(20%, 20%);
+                }
+              }
+
               .separator {
                 border-top: var(--border-width--1) solid
                   var(--color--gray--medium--200);
@@ -6800,15 +6824,7 @@ export default async function courselore({
                     `}"
                   >
                     <div>
-                      <div
-                        style="${css`
-                          display: grid;
-                          & > * {
-                            grid-area: 1 / 1;
-                            position: relative;
-                          }
-                        `}"
-                      >
+                      <div class="online-indicator">
                         $${enrollment.userAvatar === null
                           ? html`
                               <div
@@ -6827,22 +6843,6 @@ export default async function courselore({
                               />
                             `}
                         <div
-                          style="${css`
-                            background-color: var(--color--green--500);
-                            @media (prefers-color-scheme: dark) {
-                              background-color: var(--color--green--600);
-                            }
-                            width: var(--space--2);
-                            height: var(--space--2);
-                            border: var(--border-width--1) solid
-                              var(--color--gray--medium--50);
-                            @media (prefers-color-scheme: dark) {
-                              border-color: var(--color--gray--medium--900);
-                            }
-                            border-radius: var(--border-radius--circle);
-                            place-self: end;
-                            transform: translate(20%, 20%);
-                          `}"
                           oninteractive="${javascript`
                             tippy(this, {
                               content: "Online",
