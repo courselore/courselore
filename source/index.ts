@@ -6799,23 +6799,59 @@ export default async function courselore({
                       gap: var(--space--2);
                     `}"
                   >
-                    $${enrollment.userAvatar === null
-                      ? html`
-                          <div
-                            style="${css`
-                              font-size: var(--font-size--xl);
-                            `}"
-                          >
-                            <i class="bi bi-person-circle"></i>
-                          </div>
-                        `
-                      : html`
-                          <img
-                            src="${enrollment.userAvatar}"
-                            alt="${enrollment.userName}"
-                            class="avatar avatar--xl"
-                          />
-                        `}
+                    <div>
+                      <div
+                        style="${css`
+                          display: grid;
+                          & > * {
+                            grid-area: 1 / 1;
+                            position: relative;
+                          }
+                        `}"
+                      >
+                        $${enrollment.userAvatar === null
+                          ? html`
+                              <div
+                                style="${css`
+                                  font-size: var(--font-size--xl);
+                                `}"
+                              >
+                                <i class="bi bi-person-circle"></i>
+                              </div>
+                            `
+                          : html`
+                              <img
+                                src="${enrollment.userAvatar}"
+                                alt="${enrollment.userName}"
+                                class="avatar avatar--xl"
+                              />
+                            `}
+                        <div
+                          style="${css`
+                            background-color: var(--color--green--500);
+                            @media (prefers-color-scheme: dark) {
+                              background-color: var(--color--green--600);
+                            }
+                            width: var(--space--2);
+                            height: var(--space--2);
+                            border: var(--border-width--1) solid
+                              var(--color--gray--medium--50);
+                            @media (prefers-color-scheme: dark) {
+                              border-color: var(--color--gray--medium--900);
+                            }
+                            border-radius: var(--border-radius--circle);
+                            place-self: end;
+                            transform: translate(20%, 20%);
+                          `}"
+                          oninteractive="${javascript`
+                            tippy(this, {
+                              content: "Online",
+                              touch: false,
+                            });
+                          `}"
+                        ></div>
+                      </div>
+                    </div>
                     <div
                       style="${css`
                         flex: 1;
