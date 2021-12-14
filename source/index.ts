@@ -504,6 +504,10 @@ export default async function courselore({
               : javascript``};
 
             const onlineIndicator = (element) => {
+              tippy(element, {
+                content: "Online",
+                touch: false,
+              });
               (function update() {
                 element.hidden =
                   Date.now() -
@@ -6843,11 +6847,9 @@ export default async function courselore({
                               />
                             `}
                         <div
+                          data-last-seen-online-at="${enrollment.userLastSeenOnlineAt}"
                           oninteractive="${javascript`
-                            tippy(this, {
-                              content: "Online",
-                              touch: false,
-                            });
+                            onlineIndicator(this);
                           `}"
                         ></div>
                       </div>
