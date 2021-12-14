@@ -9143,6 +9143,7 @@ export default async function courselore({
             `
           : html``}
       </div>
+
       <h3
         style="${css`
           font-weight: var(--font-weight--bold);
@@ -9153,6 +9154,7 @@ export default async function courselore({
           ? conversation.conversationTitleSearchResultHighlight
           : html`${conversation.title}`}
       </h3>
+
       <div
         class="secondary"
         style="${css`
@@ -9220,6 +9222,7 @@ export default async function courselore({
           #${conversation.reference}
         </span>
       </div>
+
       $${conversation.taggings.length === 0
         ? html``
         : html`
