@@ -30,7 +30,6 @@
 
 - Show who’s online (last visited at a certain time).
   - Fade in and out.
-    - Use in unread indicators as well.
   - Add to conversations page:
     - conversationPartial.
     - Messages.

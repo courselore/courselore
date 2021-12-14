@@ -505,14 +505,11 @@ export default async function courselore({
 
             const onlineIndicator = (element) => {
               (function update() {
-                if (
+                element.hidden =
                   Date.now() -
-                    new Date(element.dataset.lastSeenOnlineAt).getTime() <
-                  5 * 60 * 1000
-                )
-                  element.classList.add("online-indicator");
-                else element.classList.remove("online-indicator");
-                window.setInterval(update, 1 * 60 * 1000);
+                    new Date(element.dataset.lastSeenOnlineAt).getTime() >
+                  5 * 60 * 1000;
+                window.setInterval(update, 60 * 1000);
               })();
             };
           </script>
@@ -1099,32 +1096,6 @@ export default async function courselore({
                   border-radius: var(--border-radius--circle);
                   justify-self: end;
                   transform: translateX(40%);
-                }
-              }
-
-              .online-indicator {
-                display: grid;
-                & > *,
-                &::after {
-                  grid-area: 1 / 1;
-                }
-                &::after {
-                  content: "";
-                  background-color: var(--color--green--500);
-                  @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--green--600);
-                  }
-                  display: block;
-                  width: var(--space--2);
-                  height: var(--space--2);
-                  border: var(--border-width--1) solid
-                    var(--color--gray--medium--50);
-                  @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--900);
-                  }
-                  border-radius: var(--border-radius--circle);
-                  place-self: end;
-                  transform: translate(20%, 20%);
                 }
               }
 
@@ -6828,32 +6799,23 @@ export default async function courselore({
                       gap: var(--space--2);
                     `}"
                   >
-                    <div>
-                      <div
-                        data-last-seen-online-at="${enrollment.userLastSeenOnlineAt}"
-                        oninteractive="${javascript`
-                          onlineIndicator(this);
-                        `}"
-                      >
-                        $${enrollment.userAvatar === null
-                          ? html`
-                              <div
-                                style="${css`
-                                  font-size: var(--font-size--xl);
-                                `}"
-                              >
-                                <i class="bi bi-person-circle"></i>
-                              </div>
-                            `
-                          : html`
-                              <img
-                                src="${enrollment.userAvatar}"
-                                alt="${enrollment.userName}"
-                                class="avatar avatar--xl"
-                              />
-                            `}
-                      </div>
-                    </div>
+                    $${enrollment.userAvatar === null
+                      ? html`
+                          <div
+                            style="${css`
+                              font-size: var(--font-size--xl);
+                            `}"
+                          >
+                            <i class="bi bi-person-circle"></i>
+                          </div>
+                        `
+                      : html`
+                          <img
+                            src="${enrollment.userAvatar}"
+                            alt="${enrollment.userName}"
+                            class="avatar avatar--xl"
+                          />
+                        `}
                     <div
                       style="${css`
                         flex: 1;
