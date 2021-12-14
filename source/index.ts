@@ -14013,6 +14013,25 @@ ${value}</textarea
                                                   line-height: var(
                                                     --line-height--xs
                                                   );
+                                                  ${res.locals.conversation
+                                                    .type === "chat"
+                                                    ? css`
+                                                        transition-property: var(
+                                                          --transition-property--opacity
+                                                        );
+                                                        transition-duration: var(
+                                                          --transition-duration--150
+                                                        );
+                                                        transition-timing-function: var(
+                                                          --transition-timing-function--in-out
+                                                        );
+                                                        .message:not(:hover) & {
+                                                          opacity: var(
+                                                            --opacity--0
+                                                          );
+                                                        }
+                                                      `
+                                                    : css``}
                                                 `}"
                                                 oninteractive="${javascript`
                                                   tippy(this, {
