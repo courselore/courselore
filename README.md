@@ -32,8 +32,6 @@
   - Add to conversations page:
     - conversationPartial.
     - Messages.
-  - Query the server for updates before turning off online indicator.
-  - Fade in and out.
 - Test in other browsers.
 - Messages display:
   - “Truncate” long messages.
@@ -60,10 +58,13 @@
 
 ### Users
 
-- Identicons
+- Identicons.
   - https://github.com/stewartlord/identicon.js/
   - https://jdenticon.com/
   - https://avatars.dicebear.com/
+- Online indicators.
+  - Query the server for updates before turning off online indicator.
+  - Fade in and out.
 - Make a little popup that displays basic user information, for example, the biography, when you hover over a name/mention.
 - Gravatar as a fallback to avatar.
 - Multiple emails.
