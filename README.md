@@ -115,6 +115,7 @@
 
 ### Notifications
 
+- Have a little red dot next to the course names for courses that have unread messages.
 - Delay sending notifications for a little bit to give the person a chance to update or delete the message.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
 - Add different notification badges for when you’re @mentioned.
@@ -132,6 +133,7 @@
 - Search in all courses you’re taking (for example, search for `deadline extension`) (see how GitHub does it).
 - Filters for unanswered questions, answered questions, and so forth.
 - Filter by date.
+- Show only conversations with unread messages.
 
 ### Markdown Editor
 
