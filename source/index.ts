@@ -9188,21 +9188,20 @@ export default async function courselore({
                 <i class="bi bi-sunglasses"></i>
                 Anonymous
               </span>
+              $${res.locals.enrollment.role === "staff" ||
+              conversation.authorEnrollment.id === res.locals.enrollment.id
+                ? html`
+                    ($${conversation.authorEnrollment.user.avatar === null
+                      ? html`<i class="bi bi-person-circle"></i>`
+                      : html`<img
+                          src="${conversation.authorEnrollment.user.avatar}"
+                          alt="${conversation.authorEnrollment.user.name}"
+                          class="avatar avatar--xs avatar--vertical-align"
+                        />`}
+                    ${conversation.authorEnrollment.user.name})
+                  `
+                : html``}
             `}
-        $${conversation.anonymousAt !== null &&
-        (res.locals.enrollment.role === "staff" ||
-          conversation.authorEnrollment.id === res.locals.enrollment.id)
-          ? html`
-              ($${conversation.authorEnrollment.user.avatar === null
-                ? html`<i class="bi bi-person-circle"></i>`
-                : html`<img
-                    src="${conversation.authorEnrollment.user.avatar}"
-                    alt="${conversation.authorEnrollment.user.name}"
-                    class="avatar avatar--xs avatar--vertical-align"
-                  />`}
-              ${conversation.authorEnrollment.user.name})
-            `
-          : html``}
         ·
         <time
           datetime="${new Date(conversation.createdAt).toISOString()}"
@@ -9304,30 +9303,29 @@ export default async function courselore({
                         <i class="bi bi-sunglasses"></i>
                         Anonymous
                       </span>
+                      $${res.locals.enrollment.role === "staff" ||
+                      conversation.messageAuthorUserNameSearchResultMessage
+                        .authorEnrollment.id === res.locals.enrollment.id
+                        ? html`
+                            ($${conversation
+                              .messageAuthorUserNameSearchResultMessage
+                              .authorEnrollment.user.avatar === null
+                              ? html`<i class="bi bi-person-circle"></i>`
+                              : html`
+                                  <img
+                                    src="${conversation
+                                      .messageAuthorUserNameSearchResultMessage
+                                      .authorEnrollment.user.avatar}"
+                                    alt="${conversation
+                                      .messageAuthorUserNameSearchResultMessage
+                                      .authorEnrollment.user.name}"
+                                    class="avatar avatar--xs avatar--vertical-align"
+                                  />
+                                `}
+                            $${conversation.messageAuthorUserNameSearchResultHighlight})
+                          `
+                        : html``}
                     `}
-                $${conversation.messageAuthorUserNameSearchResultMessage
-                  .anonymousAt !== null &&
-                (res.locals.enrollment.role === "staff" ||
-                  conversation.messageAuthorUserNameSearchResultMessage
-                    .authorEnrollment.id === res.locals.enrollment.id)
-                  ? html`
-                      ($${conversation.messageAuthorUserNameSearchResultMessage
-                        .authorEnrollment.user.avatar === null
-                        ? html`<i class="bi bi-person-circle"></i>`
-                        : html`
-                            <img
-                              src="${conversation
-                                .messageAuthorUserNameSearchResultMessage
-                                .authorEnrollment.user.avatar}"
-                              alt="${conversation
-                                .messageAuthorUserNameSearchResultMessage
-                                .authorEnrollment.user.name}"
-                              class="avatar avatar--xs avatar--vertical-align"
-                            />
-                          `}
-                      $${conversation.messageAuthorUserNameSearchResultHighlight})
-                    `
-                  : html``}
               </div>
               <div>
                 $${lodash.truncate(
@@ -9379,29 +9377,27 @@ export default async function courselore({
                         <i class="bi bi-sunglasses"></i>
                         Anonymous
                       </span>
+                      $${res.locals.enrollment.role === "staff" ||
+                      conversation.messageContentSearchResultMessage
+                        .authorEnrollment.id === res.locals.enrollment.id
+                        ? html`
+                            ($${conversation.messageContentSearchResultMessage
+                              .authorEnrollment.user.avatar === null
+                              ? html`<i class="bi bi-person-circle"></i>`
+                              : html`<img
+                                  src="${conversation
+                                    .messageContentSearchResultMessage
+                                    .authorEnrollment.user.avatar}"
+                                  alt="${conversation
+                                    .messageContentSearchResultMessage
+                                    .authorEnrollment.user.name}"
+                                  class="avatar avatar--xs avatar--vertical-align"
+                                />`}
+                            ${conversation.messageContentSearchResultMessage
+                              .authorEnrollment.user.name})
+                          `
+                        : html``}
                     `}
-                $${conversation.messageContentSearchResultMessage
-                  .anonymousAt !== null &&
-                (res.locals.enrollment.role === "staff" ||
-                  conversation.messageContentSearchResultMessage
-                    .authorEnrollment.id === res.locals.enrollment.id)
-                  ? html`
-                      ($${conversation.messageContentSearchResultMessage
-                        .authorEnrollment.user.avatar === null
-                        ? html`<i class="bi bi-person-circle"></i>`
-                        : html`<img
-                            src="${conversation
-                              .messageContentSearchResultMessage
-                              .authorEnrollment.user.avatar}"
-                            alt="${conversation
-                              .messageContentSearchResultMessage
-                              .authorEnrollment.user.name}"
-                            class="avatar avatar--xs avatar--vertical-align"
-                          />`}
-                      ${conversation.messageContentSearchResultMessage
-                        .authorEnrollment.user.name})
-                    `
-                  : html``}
               </div>
               <div>$${conversation.messageContentSearchResultSnippet}</div>
             </div>
@@ -9439,25 +9435,24 @@ export default async function courselore({
                         <i class="bi bi-sunglasses"></i>
                         Anonymous
                       </span>
+                      $${res.locals.enrollment.role === "staff" ||
+                      conversation.message.authorEnrollment.id ===
+                        res.locals.enrollment.id
+                        ? html`
+                            ($${conversation.message.authorEnrollment.user
+                              .avatar === null
+                              ? html`<i class="bi bi-person-circle"></i>`
+                              : html`<img
+                                  src="${conversation.message.authorEnrollment
+                                    .user.avatar}"
+                                  alt="${conversation.message.authorEnrollment
+                                    .user.name}"
+                                  class="avatar avatar--xs avatar--vertical-align"
+                                />`}
+                            ${conversation.message.authorEnrollment.user.name})
+                          `
+                        : html``}
                     `}
-                $${conversation.message.anonymousAt !== null &&
-                (res.locals.enrollment.role === "staff" ||
-                  conversation.message.authorEnrollment.id ===
-                    res.locals.enrollment.id)
-                  ? html`
-                      ($${conversation.message.authorEnrollment.user.avatar ===
-                      null
-                        ? html`<i class="bi bi-person-circle"></i>`
-                        : html`<img
-                            src="${conversation.message.authorEnrollment.user
-                              .avatar}"
-                            alt="${conversation.message.authorEnrollment.user
-                              .name}"
-                            class="avatar avatar--xs avatar--vertical-align"
-                          />`}
-                      ${conversation.message.authorEnrollment.user.name})
-                    `
-                  : html``}
               </div>
               <div>
                 $${lodash.truncate(conversation.message.contentSearch, {
@@ -14586,11 +14581,15 @@ ${value}</textarea
                                                         )})
                                                       `
                                                     : html``}
-                                                  ·
                                                   <time
                                                     datetime="${new Date(
                                                       message.createdAt
                                                     ).toISOString()}"
+                                                    style="${css`
+                                                      margin-left: var(
+                                                        --space--2
+                                                      );
+                                                    `}"
                                                     oninteractive="${javascript`
                                                       leafac.relativizeDateTimeElement(this, { capitalize: true });
                                                     `}"
