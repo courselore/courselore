@@ -14124,6 +14124,7 @@ ${value}</textarea
                                                         message.reference
                                                       )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n", "");
                                                         element.focus();
+                                                        tippy.hideAll();
                                                       `}"
                                                     >
                                                       <i
@@ -14252,6 +14253,7 @@ ${value}</textarea
                                                             onclick="${javascript`
                                                               this.closest(".message").querySelector(".message--show").hidden = true;
                                                               this.closest(".message").querySelector(".message--edit").hidden = false;
+                                                              tippy.hideAll();
                                                             `}"
                                                           >
                                                             <i
