@@ -14350,6 +14350,7 @@ ${value}</textarea
                                                 ></button>
                                               `
                                             : html``}
+
                                           <div>
                                             $${message.anonymousAt === null
                                               ? html`
@@ -14410,7 +14411,12 @@ ${value}</textarea
                                                   </div>
                                                 `}
                                           </div>
-                                          <h3>
+
+                                          <h3
+                                            style="${css`
+                                              flex: 1;
+                                            `}"
+                                          >
                                             <span class="strong">
                                               $${message.anonymousAt === null
                                                 ? highlightSearchResult(
@@ -14494,6 +14500,63 @@ ${value}</textarea
                                                 : html``}
                                             </span>
                                           </h3>
+
+                                          <div>
+                                            <button
+                                              class="button button--tight button--tight--inline button--transparent"
+                                              oninteractive="${javascript`
+                                                tippy(this, {
+                                                  content: "Actions",
+                                                  touch: false,
+                                                });
+                                                tippy(this, {
+                                                  content: this.nextElementSibling.firstElementChild,
+                                                  trigger: "click",
+                                                  interactive: true,
+                                                });
+                                              `}"
+                                            >
+                                              <i
+                                                class="bi bi-three-dots-vertical"
+                                              ></i>
+                                            </button>
+                                            <div hidden>
+                                              <div>
+                                                <h3 class="heading">
+                                                  <i
+                                                    class="bi bi-chat-left-text"
+                                                  ></i>
+                                                  Message
+                                                  #${res.locals.conversation
+                                                    .reference}/${message.reference}
+                                                </h3>
+                                                <div class="dropdown--menu">
+                                                  <button
+                                                    class="dropdown--menu--item button button--transparent"
+                                                    oninteractive="${javascript`
+                                                      this.copied = tippy(this, {
+                                                        content: "Copied",
+                                                        theme: "green",
+                                                        trigger: "manual",
+                                                      });
+                                                    `}"
+                                                    onclick="${javascript`
+                                                      (async () => {
+                                                        await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${message.reference}");
+                                                        this.copied.show();
+                                                        await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                                                        this.copied.hide();
+                                                      })();
+                                                    `}"
+                                                  >
+                                                    <i class="bi bi-link"></i>
+                                                    Copy Conversation Permanent
+                                                    Link to Clipboard
+                                                  </button>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
                                         </div>
 
                                         <div
