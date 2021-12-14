@@ -94,6 +94,7 @@ export default async function courselore({
     id: null,
     user: {
       id: null,
+      lastSeenOnlineAt: null,
       email: null,
       name: "No Longer Enrolled",
       avatar: null,
@@ -9479,6 +9480,7 @@ export default async function courselore({
               id: number;
               user: {
                 id: number;
+                lastSeenOnlineAt: string;
                 email: string;
                 name: string;
                 avatar: string | null;
@@ -9532,6 +9534,7 @@ export default async function courselore({
       reference: string;
       authorEnrollmentId: number | null;
       authorUserId: number | null;
+      authorUserLastSeenOnlineAt: string | null;
       authorUserEmail: string | null;
       authorUserName: string | null;
       authorUserAvatar: string | null;
@@ -9553,6 +9556,7 @@ export default async function courselore({
                "conversations"."reference",
                "authorEnrollment"."id" AS "authorEnrollmentId",
                "authorUser"."id" AS "authorUserId",
+               "authorUser"."lastSeenOnlineAt" AS "authorUserLastSeenOnlineAt",
                "authorUser"."email" AS "authorUserEmail",
                "authorUser"."name" AS "authorUserName",
                "authorUser"."avatar" AS "authorUserAvatar",
@@ -9675,6 +9679,7 @@ export default async function courselore({
       authorEnrollment:
         conversation.authorEnrollmentId !== null &&
         conversation.authorUserId !== null &&
+        conversation.authorUserLastSeenOnlineAt !== null &&
         conversation.authorUserEmail !== null &&
         conversation.authorUserName !== null &&
         conversation.authorEnrollmentReference !== null &&
@@ -9683,6 +9688,7 @@ export default async function courselore({
               id: conversation.authorEnrollmentId,
               user: {
                 id: conversation.authorUserId,
+                lastSeenOnlineAt: conversation.authorUserLastSeenOnlineAt,
                 email: conversation.authorUserEmail,
                 name: conversation.authorUserName,
                 avatar: conversation.authorUserAvatar,
@@ -9767,6 +9773,7 @@ export default async function courselore({
       reference: string;
       authorEnrollmentId: number | null;
       authorUserId: number | null;
+      authorUserLastSeenOnlineAt: string | null;
       authorUserEmail: string | null;
       authorUserName: string | null;
       authorUserAvatar: string | null;
@@ -9786,6 +9793,7 @@ export default async function courselore({
                "messages"."reference",
                "authorEnrollment"."id" AS "authorEnrollmentId",
                "authorUser"."id" AS "authorUserId",
+               "authorUser"."lastSeenOnlineAt" AS "authorUserLastSeenOnlineAt",
                "authorUser"."email" AS "authorUserEmail",
                "authorUser"."name" AS "authorUserName",
                "authorUser"."avatar" AS "authorUserAvatar",
@@ -9842,6 +9850,7 @@ export default async function courselore({
       id: number;
       enrollmentId: number | null;
       userId: number | null;
+      userLastSeenOnlineAt: string | null;
       userEmail: string | null;
       userName: string | null;
       userAvatar: string | null;
@@ -9853,6 +9862,7 @@ export default async function courselore({
         SELECT "likes"."id",
                 "enrollments"."id" AS "enrollmentId",
                 "users"."id" AS "userId",
+                "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
                 "users"."email" AS "userEmail",
                 "users"."name" AS "userName",
                 "users"."avatar" AS "userAvatar",
@@ -9875,6 +9885,7 @@ export default async function courselore({
       authorEnrollment:
         message.authorEnrollmentId !== null &&
         message.authorUserId !== null &&
+        message.authorUserLastSeenOnlineAt !== null &&
         message.authorUserEmail !== null &&
         message.authorUserName !== null &&
         message.authorEnrollmentReference !== null &&
@@ -9883,6 +9894,7 @@ export default async function courselore({
               id: message.authorEnrollmentId,
               user: {
                 id: message.authorUserId,
+                lastSeenOnlineAt: message.authorUserLastSeenOnlineAt,
                 email: message.authorUserEmail,
                 name: message.authorUserName,
                 avatar: message.authorUserAvatar,
@@ -9925,6 +9937,7 @@ export default async function courselore({
         enrollment:
           like.enrollmentId !== null &&
           like.userId !== null &&
+          like.userLastSeenOnlineAt !== null &&
           like.userEmail !== null &&
           like.userName !== null &&
           like.enrollmentReference !== null &&
@@ -9933,6 +9946,7 @@ export default async function courselore({
                 id: like.enrollmentId,
                 user: {
                   id: like.userId,
+                  lastSeenOnlineAt: like.userLastSeenOnlineAt,
                   email: like.userEmail,
                   name: like.userName,
                   avatar: like.userAvatar,
