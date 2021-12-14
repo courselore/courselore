@@ -29,10 +29,11 @@
 ### Chat
 
 - Show who’s online (last visited at a certain time).
-  - Fade in and out.
   - Add to conversations page:
     - conversationPartial.
     - Messages.
+  - Query the server for updates before turning off online indicator.
+  - Fade in and out.
 - Test in other browsers.
 - Messages display:
   - “Truncate” long messages.
