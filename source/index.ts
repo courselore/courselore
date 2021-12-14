@@ -1090,16 +1090,15 @@ export default async function courselore({
                     background-color: var(--color--rose--600);
                   }
                   display: block;
-                  width: var(--space--3);
-                  height: var(--space--3);
-                  border: var(--border-width--2) solid
-                    var(--color--gray--medium--100);
+                  width: var(--space--2);
+                  height: var(--space--2);
+                  border: var(--border-width--1) solid var(--color--rose--50);
                   @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--800);
+                    border-color: var(--color--rose--900);
                   }
                   border-radius: var(--border-radius--circle);
                   justify-self: end;
-                  transform: translateX(40%);
+                  transform: translate(20%, 20%);
                 }
               }
 
@@ -1116,10 +1115,9 @@ export default async function courselore({
                   }
                   width: var(--space--2);
                   height: var(--space--2);
-                  border: var(--border-width--1) solid
-                    var(--color--gray--medium--50);
+                  border: var(--border-width--1) solid var(--color--green--50);
                   @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--900);
+                    border-color: var(--color--green--900);
                   }
                   border-radius: var(--border-radius--circle);
                   place-self: end;
