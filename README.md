@@ -28,7 +28,6 @@
 
 ### Chat
 
-- Review what to do with menus that fade.
 - Show who’s online (last visited at a certain time).
   - Fade in and out.
     - Use in unread indicators as well.
