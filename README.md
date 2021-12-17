@@ -28,7 +28,6 @@
 
 ### Chat
 
-- Fix online-indicator flashing on load.
 - Show who’s online (last visited at a certain time).
   - Add to conversations page:
     - conversationPartial.
