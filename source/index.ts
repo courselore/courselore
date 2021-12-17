@@ -14855,39 +14855,53 @@ ${value}</textarea
                                               <div>
                                                 $${message.anonymousAt === null
                                                   ? html`
-                                                      $${message
-                                                        .authorEnrollment.user
-                                                        .avatar === null
-                                                        ? html`
-                                                            <div
-                                                              style="${css`
-                                                                font-size: var(
-                                                                  --font-size--2xl
-                                                                );
-                                                                & > *::before {
+                                                      <div
+                                                        class="online-indicator"
+                                                      >
+                                                        $${message
+                                                          .authorEnrollment.user
+                                                          .avatar === null
+                                                          ? html`
+                                                              <div
+                                                                style="${css`
+                                                                  font-size: var(
+                                                                    --font-size--2xl
+                                                                  );
+                                                                  &
+                                                                    > *::before {
+                                                                    vertical-align: middle;
+                                                                  }
+                                                                `}"
+                                                              >
+                                                                <i
+                                                                  class="bi bi-person-circle"
+                                                                ></i>
+                                                              </div>
+                                                            `
+                                                          : html`
+                                                              <img
+                                                                src="${message
+                                                                  .authorEnrollment
+                                                                  .user.avatar}"
+                                                                alt="${message
+                                                                  .authorEnrollment
+                                                                  .user.name}"
+                                                                class="avatar avatar--2xl"
+                                                                style="${css`
                                                                   vertical-align: middle;
-                                                                }
-                                                              `}"
-                                                            >
-                                                              <i
-                                                                class="bi bi-person-circle"
-                                                              ></i>
-                                                            </div>
-                                                          `
-                                                        : html`
-                                                            <img
-                                                              src="${message
-                                                                .authorEnrollment
-                                                                .user.avatar}"
-                                                              alt="${message
-                                                                .authorEnrollment
-                                                                .user.name}"
-                                                              class="avatar avatar--2xl"
-                                                              style="${css`
-                                                                vertical-align: middle;
-                                                              `}"
-                                                            />
-                                                          `}
+                                                                `}"
+                                                              />
+                                                            `}
+                                                        <div
+                                                          data-last-seen-online-at="${message
+                                                            .authorEnrollment
+                                                            .user
+                                                            .lastSeenOnlineAt}"
+                                                          oninteractive="${javascript`
+                                                            onlineIndicator(this);
+                                                          `}"
+                                                        ></div>
+                                                      </div>
                                                     `
                                                   : html`
                                                       <div
@@ -14961,21 +14975,35 @@ ${value}</textarea
                                                       .id ===
                                                       res.locals.enrollment.id)
                                                     ? html`
-                                                        ($${message
-                                                          .authorEnrollment.user
-                                                          .avatar === null
-                                                          ? html`<i
-                                                              class="bi bi-person-circle"
-                                                            ></i>`
-                                                          : html`<img
-                                                              src="${message
-                                                                .authorEnrollment
-                                                                .user.avatar}"
-                                                              alt="${message
-                                                                .authorEnrollment
-                                                                .user.name}"
-                                                              class="avatar avatar--xs avatar--vertical-align"
-                                                            />`}
+                                                        (<span
+                                                          class="online-indicator online-indicator--inline online-indicator--small"
+                                                        >
+                                                          $${message
+                                                            .authorEnrollment
+                                                            .user.avatar ===
+                                                          null
+                                                            ? html`<i
+                                                                class="bi bi-person-circle"
+                                                              ></i>`
+                                                            : html`<img
+                                                                src="${message
+                                                                  .authorEnrollment
+                                                                  .user.avatar}"
+                                                                alt="${message
+                                                                  .authorEnrollment
+                                                                  .user.name}"
+                                                                class="avatar avatar--xs avatar--vertical-align"
+                                                              />`}
+                                                          <span
+                                                            data-last-seen-online-at="${message
+                                                              .authorEnrollment
+                                                              .user
+                                                              .lastSeenOnlineAt}"
+                                                            oninteractive="${javascript`
+                                                              onlineIndicator(this);
+                                                            `}"
+                                                          ></span>
+                                                        </span>
                                                         $${highlightSearchResult(
                                                           html`${message
                                                             .authorEnrollment
