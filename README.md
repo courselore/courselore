@@ -32,6 +32,7 @@
   - Add to conversations page:
     - conversationPartial.
     - Messages.
+  - `bi-person-circle`
 - Line to separate new messages instead of little unread indicator?
 - Test in other browsers.
 - Messages display:

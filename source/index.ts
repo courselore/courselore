@@ -9244,13 +9244,24 @@ export default async function courselore({
               $${res.locals.enrollment.role === "staff" ||
               conversation.authorEnrollment.id === res.locals.enrollment.id
                 ? html`
-                    ($${conversation.authorEnrollment.user.avatar === null
-                      ? html`<i class="bi bi-person-circle"></i>`
-                      : html`<img
-                          src="${conversation.authorEnrollment.user.avatar}"
-                          alt="${conversation.authorEnrollment.user.name}"
-                          class="avatar avatar--xs avatar--vertical-align"
-                        />`}
+                    (<span
+                      class="online-indicator online-indicator--inline online-indicator--small"
+                    >
+                      $${conversation.authorEnrollment.user.avatar === null
+                        ? html`<i class="bi bi-person-circle"></i>`
+                        : html`<img
+                            src="${conversation.authorEnrollment.user.avatar}"
+                            alt="${conversation.authorEnrollment.user.name}"
+                            class="avatar avatar--xs avatar--vertical-align"
+                          />`}
+                      <span
+                        data-last-seen-online-at="${conversation
+                          .authorEnrollment.user.lastSeenOnlineAt}"
+                        oninteractive="${javascript`
+                          onlineIndicator(this);
+                        `}"
+                      ></span>
+                    </span>
                     ${conversation.authorEnrollment.user.name})
                   `
                 : html``}
@@ -9327,20 +9338,31 @@ export default async function courselore({
                 $${conversation.messageAuthorUserNameSearchResultMessage
                   .anonymousAt === null
                   ? html`
-                      $${conversation.messageAuthorUserNameSearchResultMessage
-                        .authorEnrollment.user.avatar === null
-                        ? html`<i class="bi bi-person-circle"></i>`
-                        : html`
-                            <img
-                              src="${conversation
-                                .messageAuthorUserNameSearchResultMessage
-                                .authorEnrollment.user.avatar}"
-                              alt="${conversation
-                                .messageAuthorUserNameSearchResultMessage
-                                .authorEnrollment.user.name}"
-                              class="avatar avatar--xs avatar--vertical-align"
-                            />
-                          `}
+                      <span
+                        class="online-indicator online-indicator--inline online-indicator--small"
+                      >
+                        $${conversation.messageAuthorUserNameSearchResultMessage
+                          .authorEnrollment.user.avatar === null
+                          ? html`<i class="bi bi-person-circle"></i>`
+                          : html`
+                              <img
+                                src="${conversation
+                                  .messageAuthorUserNameSearchResultMessage
+                                  .authorEnrollment.user.avatar}"
+                                alt="${conversation
+                                  .messageAuthorUserNameSearchResultMessage
+                                  .authorEnrollment.user.name}"
+                                class="avatar avatar--xs avatar--vertical-align"
+                              />
+                            `}
+                        <span
+                          data-last-seen-online-at="${conversation
+                            .authorEnrollment.user.lastSeenOnlineAt}"
+                          oninteractive="${javascript`
+                            onlineIndicator(this);
+                          `}"
+                        ></span>
+                      </span>
                       $${conversation.messageAuthorUserNameSearchResultHighlight}
                     `
                   : html`
@@ -9360,21 +9382,32 @@ export default async function courselore({
                       conversation.messageAuthorUserNameSearchResultMessage
                         .authorEnrollment.id === res.locals.enrollment.id
                         ? html`
-                            ($${conversation
-                              .messageAuthorUserNameSearchResultMessage
-                              .authorEnrollment.user.avatar === null
-                              ? html`<i class="bi bi-person-circle"></i>`
-                              : html`
-                                  <img
-                                    src="${conversation
-                                      .messageAuthorUserNameSearchResultMessage
-                                      .authorEnrollment.user.avatar}"
-                                    alt="${conversation
-                                      .messageAuthorUserNameSearchResultMessage
-                                      .authorEnrollment.user.name}"
-                                    class="avatar avatar--xs avatar--vertical-align"
-                                  />
-                                `}
+                            (<span
+                              class="online-indicator online-indicator--inline online-indicator--small"
+                            >
+                              $${conversation
+                                .messageAuthorUserNameSearchResultMessage
+                                .authorEnrollment.user.avatar === null
+                                ? html`<i class="bi bi-person-circle"></i>`
+                                : html`
+                                    <img
+                                      src="${conversation
+                                        .messageAuthorUserNameSearchResultMessage
+                                        .authorEnrollment.user.avatar}"
+                                      alt="${conversation
+                                        .messageAuthorUserNameSearchResultMessage
+                                        .authorEnrollment.user.name}"
+                                      class="avatar avatar--xs avatar--vertical-align"
+                                    />
+                                  `}
+                              <span
+                                data-last-seen-online-at="${conversation
+                                  .authorEnrollment.user.lastSeenOnlineAt}"
+                                oninteractive="${javascript`
+                                  onlineIndicator(this);
+                                `}"
+                              ></span>
+                            </span>
                             $${conversation.messageAuthorUserNameSearchResultHighlight})
                           `
                         : html``}
@@ -9400,20 +9433,31 @@ export default async function courselore({
                 $${conversation.messageContentSearchResultMessage
                   .anonymousAt === null
                   ? html`
-                      $${conversation.messageContentSearchResultMessage
-                        .authorEnrollment.user.avatar === null
-                        ? html`<i class="bi bi-person-circle"></i>`
-                        : html`
-                            <img
-                              src="${conversation
-                                .messageContentSearchResultMessage
-                                .authorEnrollment.user.avatar}"
-                              alt="${conversation
-                                .messageContentSearchResultMessage
-                                .authorEnrollment.user.name}"
-                              class="avatar avatar--xs avatar--vertical-align"
-                            />
-                          `}
+                      <span
+                        class="online-indicator online-indicator--inline online-indicator--small"
+                      >
+                        $${conversation.messageContentSearchResultMessage
+                          .authorEnrollment.user.avatar === null
+                          ? html`<i class="bi bi-person-circle"></i>`
+                          : html`
+                              <img
+                                src="${conversation
+                                  .messageContentSearchResultMessage
+                                  .authorEnrollment.user.avatar}"
+                                alt="${conversation
+                                  .messageContentSearchResultMessage
+                                  .authorEnrollment.user.name}"
+                                class="avatar avatar--xs avatar--vertical-align"
+                              />
+                            `}
+                        <span
+                          data-last-seen-online-at="${conversation
+                            .authorEnrollment.user.lastSeenOnlineAt}"
+                          oninteractive="${javascript`
+                            onlineIndicator(this);
+                          `}"
+                        ></span>
+                      </span>
                       ${conversation.messageContentSearchResultMessage
                         .authorEnrollment.user.name}
                     `
@@ -9434,18 +9478,29 @@ export default async function courselore({
                       conversation.messageContentSearchResultMessage
                         .authorEnrollment.id === res.locals.enrollment.id
                         ? html`
-                            ($${conversation.messageContentSearchResultMessage
-                              .authorEnrollment.user.avatar === null
-                              ? html`<i class="bi bi-person-circle"></i>`
-                              : html`<img
-                                  src="${conversation
-                                    .messageContentSearchResultMessage
-                                    .authorEnrollment.user.avatar}"
-                                  alt="${conversation
-                                    .messageContentSearchResultMessage
-                                    .authorEnrollment.user.name}"
-                                  class="avatar avatar--xs avatar--vertical-align"
-                                />`}
+                            (<span
+                              class="online-indicator online-indicator--inline online-indicator--small"
+                            >
+                              $${conversation.messageContentSearchResultMessage
+                                .authorEnrollment.user.avatar === null
+                                ? html`<i class="bi bi-person-circle"></i>`
+                                : html`<img
+                                    src="${conversation
+                                      .messageContentSearchResultMessage
+                                      .authorEnrollment.user.avatar}"
+                                    alt="${conversation
+                                      .messageContentSearchResultMessage
+                                      .authorEnrollment.user.name}"
+                                    class="avatar avatar--xs avatar--vertical-align"
+                                  />`}
+                              <span
+                                data-last-seen-online-at="${conversation
+                                  .authorEnrollment.user.lastSeenOnlineAt}"
+                                oninteractive="${javascript`
+                                  onlineIndicator(this);
+                                `}"
+                              ></span>
+                            </span>
                             ${conversation.messageContentSearchResultMessage
                               .authorEnrollment.user.name})
                           `
@@ -9461,18 +9516,29 @@ export default async function courselore({
               <div class="secondary">
                 $${conversation.message.anonymousAt === null
                   ? html`
-                      $${conversation.message.authorEnrollment.user.avatar ===
-                      null
-                        ? html`<i class="bi bi-person-circle"></i>`
-                        : html`
-                            <img
-                              src="${conversation.message.authorEnrollment.user
-                                .avatar}"
-                              alt="${conversation.message.authorEnrollment.user
-                                .name}"
-                              class="avatar avatar--xs avatar--vertical-align"
-                            />
-                          `}
+                      <span
+                        class="online-indicator online-indicator--inline online-indicator--small"
+                      >
+                        $${conversation.message.authorEnrollment.user.avatar ===
+                        null
+                          ? html`<i class="bi bi-person-circle"></i>`
+                          : html`
+                              <img
+                                src="${conversation.message.authorEnrollment
+                                  .user.avatar}"
+                                alt="${conversation.message.authorEnrollment
+                                  .user.name}"
+                                class="avatar avatar--xs avatar--vertical-align"
+                              />
+                            `}
+                        <span
+                          data-last-seen-online-at="${conversation
+                            .authorEnrollment.user.lastSeenOnlineAt}"
+                          oninteractive="${javascript`
+                            onlineIndicator(this);
+                          `}"
+                        ></span>
+                      </span>
                       ${conversation.message.authorEnrollment.user.name}
                     `
                   : html`
@@ -9492,16 +9558,27 @@ export default async function courselore({
                       conversation.message.authorEnrollment.id ===
                         res.locals.enrollment.id
                         ? html`
-                            ($${conversation.message.authorEnrollment.user
-                              .avatar === null
-                              ? html`<i class="bi bi-person-circle"></i>`
-                              : html`<img
-                                  src="${conversation.message.authorEnrollment
-                                    .user.avatar}"
-                                  alt="${conversation.message.authorEnrollment
-                                    .user.name}"
-                                  class="avatar avatar--xs avatar--vertical-align"
-                                />`}
+                            (<span
+                              class="online-indicator online-indicator--inline online-indicator--small"
+                            >
+                              $${conversation.message.authorEnrollment.user
+                                .avatar === null
+                                ? html`<i class="bi bi-person-circle"></i>`
+                                : html`<img
+                                    src="${conversation.message.authorEnrollment
+                                      .user.avatar}"
+                                    alt="${conversation.message.authorEnrollment
+                                      .user.name}"
+                                    class="avatar avatar--xs avatar--vertical-align"
+                                  />`}
+                              <span
+                                data-last-seen-online-at="${conversation
+                                  .authorEnrollment.user.lastSeenOnlineAt}"
+                                oninteractive="${javascript`
+                                  onlineIndicator(this);
+                                `}"
+                              ></span>
+                            </span>
                             ${conversation.message.authorEnrollment.user.name})
                           `
                         : html``}
