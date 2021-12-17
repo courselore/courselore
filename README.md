@@ -29,6 +29,7 @@
 ### Chat
 
 - Avatars.
+  - Extract a partial?
   - Fix small online indicator on inline contexts for people who don’t have avatars.
   - Person information widget:
     - Last visited time.
