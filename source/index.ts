@@ -14856,7 +14856,10 @@ ${value}</textarea
                                                 $${message.anonymousAt === null
                                                   ? html`
                                                       <div
-                                                        class="online-indicator"
+                                                        class="online-indicator online-indicator--inline"
+                                                        style="${css`
+                                                          vertical-align: middle;
+                                                        `}"
                                                       >
                                                         $${message
                                                           .authorEnrollment.user
