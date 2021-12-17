@@ -1143,6 +1143,14 @@ export default async function courselore({
                   transform: translate(20%, 20%);
                   display: none;
                 }
+                &.online-indicator--inline {
+                  display: inline-grid;
+                }
+                &.online-indicator--small > :last-child {
+                  width: var(--space--1-5);
+                  height: var(--space--1-5);
+                  transform: translate(20%, 80%);
+                }
               }
 
               .separator {
@@ -9198,15 +9206,26 @@ export default async function courselore({
       >
         $${conversation.anonymousAt === null
           ? html`
-              $${conversation.authorEnrollment.user.avatar === null
-                ? html`<i class="bi bi-person-circle"></i>`
-                : html`
-                    <img
-                      src="${conversation.authorEnrollment.user.avatar}"
-                      alt="${conversation.authorEnrollment.user.name}"
-                      class="avatar avatar--xs avatar--vertical-align"
-                    />
-                  `}
+              <span
+                class="online-indicator online-indicator--inline online-indicator--small"
+              >
+                $${conversation.authorEnrollment.user.avatar === null
+                  ? html`<i class="bi bi-person-circle"></i>`
+                  : html`
+                      <img
+                        src="${conversation.authorEnrollment.user.avatar}"
+                        alt="${conversation.authorEnrollment.user.name}"
+                        class="avatar avatar--xs avatar--vertical-align"
+                      />
+                    `}
+                <span
+                  data-last-seen-online-at="${conversation.authorEnrollment.user
+                    .lastSeenOnlineAt}"
+                  oninteractive="${javascript`
+                    onlineIndicator(this);
+                  `}"
+                ></span>
+              </span>
               ${conversation.authorEnrollment.user.name}
             `
           : html`
