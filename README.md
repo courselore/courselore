@@ -28,11 +28,11 @@
 
 ### Chat
 
-- Line to separate new messages instead of little unread indicator?
 - Show who’s online (last visited at a certain time).
   - Add to conversations page:
     - conversationPartial.
     - Messages.
+- Line to separate new messages instead of little unread indicator?
 - Test in other browsers.
 - Messages display:
   - “Truncate” long messages.
