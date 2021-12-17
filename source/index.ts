@@ -1016,13 +1016,29 @@ export default async function courselore({
               }
 
               .details {
-                padding: var(--space--2) var(--space--4);
                 background-color: var(--color--gray--medium--200);
                 @media (prefers-color-scheme: dark) {
                   background-color: var(--color--gray--medium--700);
                 }
                 border-radius: var(--border-radius--xl);
                 summary {
+                  &:hover,
+                  &:focus-within {
+                    background-color: var(--color--gray--medium--300);
+                  }
+                  @media (prefers-color-scheme: dark) {
+                    &:hover,
+                    &:focus-within {
+                      background-color: var(--color--gray--medium--600);
+                    }
+                  }
+                  padding: var(--space--2) var(--space--4);
+                  border-radius: var(--border-radius--xl);
+                  transition-property: var(--transition-property--colors);
+                  transition-duration: var(--transition-duration--150);
+                  transition-timing-function: var(
+                    --transition-timing-function--in-out
+                  );
                   cursor: pointer;
                   &::before {
                     content: "\\f275";
@@ -1032,11 +1048,11 @@ export default async function courselore({
                     margin-right: var(--space--2);
                   }
                 }
-                &[open] > summary {
-                  margin-bottom: var(--space--4);
-                  &::before {
-                    content: "\\f273";
-                  }
+                &[open] > summary::before {
+                  content: "\\f273";
+                }
+                & > div:last-child {
+                  padding: var(--space--4);
                 }
               }
 
@@ -1512,13 +1528,29 @@ export default async function courselore({
                 }
 
                 details {
-                  padding: var(--space--2) var(--space--4);
                   background-color: var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
                     background-color: var(--color--gray--medium--700);
                   }
                   border-radius: var(--border-radius--xl);
                   summary {
+                    &:hover,
+                    &:focus-within {
+                      background-color: var(--color--gray--medium--300);
+                    }
+                    @media (prefers-color-scheme: dark) {
+                      &:hover,
+                      &:focus-within {
+                        background-color: var(--color--gray--medium--600);
+                      }
+                    }
+                    padding: var(--space--2) var(--space--4);
+                    border-radius: var(--border-radius--xl);
+                    transition-property: var(--transition-property--colors);
+                    transition-duration: var(--transition-duration--150);
+                    transition-timing-function: var(
+                      --transition-timing-function--in-out
+                    );
                     cursor: pointer;
                     &::before {
                       content: "\\f275";
@@ -1528,11 +1560,11 @@ export default async function courselore({
                       margin-right: var(--space--2);
                     }
                   }
-                  &[open] > summary {
-                    margin-bottom: var(--space--4);
-                    &::before {
-                      content: "\\f273";
-                    }
+                  &[open] > summary::before {
+                    content: "\\f273";
+                  }
+                  & > div:last-child {
+                    padding: var(--space--4);
                   }
                 }
 

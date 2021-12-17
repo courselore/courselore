@@ -28,6 +28,9 @@
 
 ### Chat
 
+- Fix `<summary>`’s `:focus`.
+  - Fix on `.markdown` as well.
+- Fix online-indicator flashing on load.
 - Show who’s online (last visited at a certain time).
   - Add to conversations page:
     - conversationPartial.
