@@ -28,12 +28,15 @@
 
 ### Chat
 
-- Show who’s online (last visited at a certain time).
-  - Add to conversations page:
-    - Messages.
+- Show who’s online ().
+  - Fix small online indicator on inline contexts for people who don’t have avatars.
+  - Person information widget:
+    - Last visited time.
+    - Biography.
   - `bi-person-circle`
-- Line to separate new messages instead of little unread indicator?
-- Test in other browsers.
+- Revisit unread management:
+  - Don’t store all readings, but only the latest for a given conversation.
+  - Line to separate new messages instead of little unread indicator.
 - Messages display:
   - “Truncate” long messages.
 - Scroll on new message.
