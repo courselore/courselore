@@ -510,10 +510,12 @@ export default async function courselore({
                 touch: false,
               });
               (function update() {
-                element.hidden =
+                element.style.display =
                   Date.now() -
-                    new Date(element.dataset.lastSeenOnlineAt).getTime() >
-                  5 * 60 * 1000;
+                    new Date(element.dataset.lastSeenOnlineAt).getTime() <
+                  5 * 60 * 1000
+                    ? "block"
+                    : "none";
                 window.setInterval(update, 60 * 1000);
               })();
             };
@@ -1139,6 +1141,7 @@ export default async function courselore({
                   border-radius: var(--border-radius--circle);
                   place-self: end;
                   transform: translate(20%, 20%);
+                  display: none;
                 }
               }
 
