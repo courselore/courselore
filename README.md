@@ -28,7 +28,7 @@
 
 ### Chat
 
-- Show who’s online ().
+- Avatars.
   - Fix small online indicator on inline contexts for people who don’t have avatars.
   - Person information widget:
     - Last visited time.
