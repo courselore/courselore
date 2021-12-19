@@ -2710,8 +2710,8 @@ export default async function courselore({
               @media (prefers-color-scheme: dark) {
                 /* TODO */
               }
-              width: var(--font-size--xl);
-              height: var(--font-size--xl);
+              width: var(--space--6);
+              height: var(--space--6);
               border-radius: var(--border-radius--circle);
               display: flex;
               justify-content: center;
@@ -2726,8 +2726,8 @@ export default async function courselore({
             src="${user.avatar}"
             alt="${user.name}"
             style="${css`
-              width: var(--font-size--xl);
-              height: var(--font-size--xl);
+              width: var(--space--6);
+              height: var(--space--6);
               border-radius: var(--border-radius--circle);
               @media (prefers-color-scheme: dark) {
                 filter: brightness(var(--brightness--90));
