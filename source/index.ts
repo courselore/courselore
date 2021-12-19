@@ -2315,22 +2315,26 @@ export default async function courselore({
             >
               <div
                 style="${css`
-                  font-size: var(--font-size--xl);
-                  line-height: var(--line-height--xl);
-                  font-weight: var(--font-weight--bold);
-                  width: var(--space--6);
-                  height: var(--space--6);
-                  ${res.locals.invitations!.length === 0
-                    ? css``
-                    : css`
-                        display: grid;
-                        & > * {
-                          grid-area: 1 / 1;
-                        }
-                      `}
+                  display: grid;
+                  & > * {
+                    grid-area: 1 / 1;
+                  }
                 `}"
               >
-                <span>+</span>
+                <div
+                  style="${css`
+                    font-size: var(--font-size--xl);
+                    line-height: var(--line-height--xl);
+                    font-weight: var(--font-weight--bold);
+                    width: var(--space--6);
+                    height: var(--space--6);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  `}"
+                >
+                  +
+                </div>
                 $${res.locals.invitations!.length === 0
                   ? html``
                   : html`
@@ -2340,7 +2344,6 @@ export default async function courselore({
                           @media (prefers-color-scheme: dark) {
                             background-color: var(--color--rose--600);
                           }
-                          display: block;
                           width: var(--space--2);
                           height: var(--space--2);
                           border: var(--border-width--1) solid
@@ -2350,7 +2353,6 @@ export default async function courselore({
                           }
                           border-radius: var(--border-radius--circle);
                           justify-self: end;
-                          transform: translate(20%, 20%);
                         `}"
                       ></div>
                     `}
