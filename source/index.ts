@@ -2872,17 +2872,18 @@ export default async function courselore({
       req: express.Request<{}, any, {}, {}, {}>,
       res: express.Response<any, {}>
     ): HTML | undefined {
+      if (req.cookies.flash === undefined) return undefined;
       const flash = database.get<{
+        id: number;
         content: HTML;
       }>(
-        sql`SELECT "content" FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
-      );
-      database.run(
-        sql`DELETE FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
+        sql`SELECT "id", "content" FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
       );
       delete req.cookies.flash;
       res.clearCookie("flash", cookieOptions);
-      return flash?.content;
+      if (flash === undefined) return undefined;
+      database.run(sql`DELETE FROM "flashes" WHERE "id" = ${flash.id}`);
+      return flash.content;
     },
   };
 
@@ -2918,7 +2919,7 @@ export default async function courselore({
       req: express.Request<{}, any, {}, {}, {}>,
       res: express.Response<any, {}>
     ): number | undefined {
-      if (req.cookies.session === undefined) return;
+      if (req.cookies.session === undefined) return undefined;
       const session = database.get<{
         createdAt: string;
         user: number;
@@ -2928,27 +2929,36 @@ export default async function courselore({
       if (
         session === undefined ||
         new Date(session.createdAt).getTime() < Date.now() - Session.maxAge
-      )
+      ) {
         Session.close(req, res);
-      else if (
+        return undefined;
+      } else if (
         new Date(session.createdAt).getTime() <
         Date.now() - Session.maxAge / 2
       ) {
         Session.close(req, res);
         Session.open(req, res, session.user);
       }
-      return session?.user;
+      database.run(
+        sql`
+          UPDATE "users"
+          SET "lastSeenOnlineAt" = ${new Date().toISOString()}
+          WHERE "id" = ${session.user}
+        `
+      );
+      return session.user;
     },
 
     close(
       req: express.Request<{}, any, {}, {}, {}>,
       res: express.Response<any, {}>
     ): void {
+      if (req.cookies.session === undefined) return;
+      delete req.cookies.session;
+      res.clearCookie("session", cookieOptions);
       database.run(
         sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies.session}`
       );
-      delete req.cookies.session;
-      res.clearCookie("session", cookieOptions);
     },
   };
 
@@ -3013,41 +3023,33 @@ export default async function courselore({
       const userId = Session.get(req, res);
       if (userId === undefined) return next("route");
 
-      res.locals.user = {
-        ...database.get<{
-          id: number;
-          email: string;
-          password: string;
-          emailConfirmedAt: string | null;
-          name: string;
-          avatar: string | null;
-          avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-          biography: string | null;
-          emailNotifications: UserEmailNotifications;
-        }>(
-          sql`
-            SELECT "id",
-                  "email",
-                  "password",
-                  "emailConfirmedAt",
-                  "name",
-                  "avatar",
-                  "avatarlessBackgroundColor",
-                  "biography",
-                  "emailNotifications"
-            FROM "users"
-            WHERE "id" = ${userId}
-          `
-        )!,
-        lastSeenOnlineAt: new Date().toISOString(),
-      };
-      database.run(
+      res.locals.user = database.get<{
+        id: number;
+        lastSeenOnlineAt: string;
+        email: string;
+        password: string;
+        emailConfirmedAt: string | null;
+        name: string;
+        avatar: string | null;
+        avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+        biography: string | null;
+        emailNotifications: UserEmailNotifications;
+      }>(
         sql`
-          UPDATE "users"
-          SET "lastSeenOnlineAt" = ${res.locals.user.lastSeenOnlineAt}
-          WHERE "id" = ${res.locals.user.id}
+          SELECT "id",
+                 "lastSeenOnlineAt",
+                 "email",
+                 "password",
+                 "emailConfirmedAt",
+                 "name",
+                 "avatar",
+                 "avatarlessBackgroundColor",
+                 "biography",
+                 "emailNotifications"
+          FROM "users"
+          WHERE "id" = ${userId}
         `
-      );
+      )!;
 
       res.locals.invitations = database
         .all<{
