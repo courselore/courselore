@@ -2679,11 +2679,23 @@ export default async function courselore({
       ? html`
           <div
             style="${css`
-              font-size: var(--font-size--xl);
-              line-height: var(--line-height--xl);
+              font-size: var(--font-size--lg);
+              line-height: var(--line-height--lg);
+              font-weight: var(--font-weight--bold);
+              color: var(--color--orange--100);
+              background-color: var(--color--orange--500);
+              @media (prefers-color-scheme: dark) {
+                /* TODO */
+              }
+              width: var(--font-size--xl);
+              height: var(--font-size--xl);
+              border-radius: var(--border-radius--circle);
+              display: flex;
+              justify-content: center;
+              align-items: center;
             `}"
           >
-            <i class="bi bi-person-circle"></i>
+            ${user.name.trim()[0].toUpperCase()}
           </div>
         `
       : html`
@@ -2691,12 +2703,12 @@ export default async function courselore({
             src="${user.avatar}"
             alt="${user.name}"
             style="${css`
+              width: var(--font-size--xl);
+              height: var(--font-size--xl);
               border-radius: var(--border-radius--circle);
               @media (prefers-color-scheme: dark) {
                 filter: brightness(var(--brightness--90));
               }
-              width: var(--font-size--xl);
-              height: var(--font-size--xl);
             `}"
           />
         `}
