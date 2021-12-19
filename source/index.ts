@@ -2340,7 +2340,7 @@ export default async function courselore({
                   line-height: var(--line-height--xl);
                 `}"
               >
-                <i class="bi bi-plus-circle"></i>
+                <i class="bi bi-plus"></i>
               </div>
             </button>
             <div hidden>
