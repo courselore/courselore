@@ -9665,7 +9665,7 @@ export default async function courselore({
     </div>
   `;
 
-  type ConversationAuthorEnrollment =
+  type AuthorEnrollment =
     | {
         id: number;
         user: {
@@ -9692,7 +9692,7 @@ export default async function courselore({
         createdAt: string;
         updatedAt: string | null;
         reference: string;
-        authorEnrollment: ConversationAuthorEnrollment;
+        authorEnrollment: AuthorEnrollment;
         anonymousAt: string | null;
         type: ConversationType;
         pinnedAt: string | null;
@@ -9713,7 +9713,7 @@ export default async function courselore({
         readingsCount: number;
         endorsements: {
           id: number;
-          enrollment: ConversationAuthorEnrollment;
+          enrollment: AuthorEnrollment;
         }[];
       }
     | undefined => {
