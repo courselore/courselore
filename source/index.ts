@@ -2695,10 +2695,7 @@ export default async function courselore({
     </svg>
   `;
 
-  const avatarPartial = (user: {
-    name: string;
-    avatar: string | null;
-  }): HTML => html`
+  const avatarPartial = (user: AuthorEnrollment["user"]): HTML => html`
     $${user.avatar === null
       ? html`
           <div
@@ -2972,6 +2969,7 @@ export default async function courselore({
   interface IsSignedInMiddlewareLocals {
     user: {
       id: number;
+      lastSeenOnlineAt: string;
       email: string;
       password: string;
       emailConfirmedAt: string | null;
@@ -3015,36 +3013,38 @@ export default async function courselore({
       const userId = Session.get(req, res);
       if (userId === undefined) return next("route");
 
-      res.locals.user = database.get<{
-        id: number;
-        email: string;
-        password: string;
-        emailConfirmedAt: string | null;
-        name: string;
-        avatar: string | null;
-        avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-        biography: string | null;
-        emailNotifications: UserEmailNotifications;
-      }>(
-        sql`
-          SELECT "id",
-                 "email",
-                 "password",
-                 "emailConfirmedAt",
-                 "name",
-                 "avatar",
-                 "avatarlessBackgroundColor",
-                 "biography",
-                 "emailNotifications"
-          FROM "users"
-          WHERE "id" = ${userId}
-        `
-      )!;
-
+      res.locals.user = {
+        ...database.get<{
+          id: number;
+          email: string;
+          password: string;
+          emailConfirmedAt: string | null;
+          name: string;
+          avatar: string | null;
+          avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+          biography: string | null;
+          emailNotifications: UserEmailNotifications;
+        }>(
+          sql`
+            SELECT "id",
+                  "email",
+                  "password",
+                  "emailConfirmedAt",
+                  "name",
+                  "avatar",
+                  "avatarlessBackgroundColor",
+                  "biography",
+                  "emailNotifications"
+            FROM "users"
+            WHERE "id" = ${userId}
+          `
+        )!,
+        lastSeenOnlineAt: new Date().toISOString(),
+      };
       database.run(
         sql`
           UPDATE "users"
-          SET "lastSeenOnlineAt" = ${new Date().toISOString()}
+          SET "lastSeenOnlineAt" = ${res.locals.user.lastSeenOnlineAt}
           WHERE "id" = ${res.locals.user.id}
         `
       );
