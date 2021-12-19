@@ -9949,7 +9949,7 @@ export default async function courselore({
   const getMessage = (
     req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>,
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
-    conversation: IsConversationAccessibleMiddlewareLocals["conversation"],
+    conversation: NonNullable<ReturnType<typeof getConversation>>,
     messageReference: string
   ):
     | {
