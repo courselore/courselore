@@ -2310,6 +2310,9 @@ export default async function courselore({
                 style="${css`
                   font-size: var(--font-size--xl);
                   line-height: var(--line-height--xl);
+                  font-weight: var(--font-weight--bold);
+                  width: var(--space--6);
+                  height: var(--space--6);
                   ${res.locals.invitations!.length === 0
                     ? css``
                     : css`
@@ -2320,7 +2323,7 @@ export default async function courselore({
                       `}
                 `}"
               >
-                <i class="bi bi-plus"></i>
+                <span>+</span>
                 $${res.locals.invitations!.length === 0
                   ? html``
                   : html`
