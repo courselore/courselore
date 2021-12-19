@@ -2344,15 +2344,11 @@ export default async function courselore({
                           @media (prefers-color-scheme: dark) {
                             background-color: var(--color--rose--600);
                           }
-                          width: var(--space--2);
-                          height: var(--space--2);
-                          border: var(--border-width--1) solid
-                            var(--color--rose--50);
-                          @media (prefers-color-scheme: dark) {
-                            border-color: var(--color--rose--900);
-                          }
+                          width: var(--space--1-5);
+                          height: var(--space--1-5);
                           border-radius: var(--border-radius--circle);
                           justify-self: end;
+                          transform: translate(-50%, 50%);
                         `}"
                       ></div>
                     `}
