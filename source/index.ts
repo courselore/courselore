@@ -10030,6 +10030,7 @@ export default async function courselore({
       id: number;
       enrollmentId: number | null;
       userId: number | null;
+      userLastSeenOnlineAt: string | null;
       userEmail: string | null;
       userName: string | null;
       userAvatar: string | null;
@@ -10042,6 +10043,7 @@ export default async function courselore({
         SELECT "endorsements"."id",
                 "enrollments"."id" AS "enrollmentId",
                 "users"."id" AS "userId",
+                "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
                 "users"."email" AS "userEmail",
                 "users"."name" AS "userName",
                 "users"."avatar" AS "userAvatar",
@@ -10130,6 +10132,7 @@ export default async function courselore({
         enrollment:
           endorsement.enrollmentId !== null &&
           endorsement.userId !== null &&
+          endorsement.userLastSeenOnlineAt !== null &&
           endorsement.userEmail !== null &&
           endorsement.userName !== null &&
           endorsement.userAvatarlessBackgroundColor !== null &&
@@ -10139,6 +10142,7 @@ export default async function courselore({
                 id: endorsement.enrollmentId,
                 user: {
                   id: endorsement.userId,
+                  lastSeenOnlineAt: endorsement.userLastSeenOnlineAt,
                   email: endorsement.userEmail,
                   name: endorsement.userName,
                   avatar: endorsement.userAvatar,
