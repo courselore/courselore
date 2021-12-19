@@ -29,15 +29,16 @@
 ### Chat
 
 - Avatars.
+  - Extract partial.
+  - Fix small online indicator on inline contexts for people who don’t have avatars.
+  - Review
+    - `bi-person-circle`
   - Remove CSS
     - `.avatar`
     - `.online-indicator`
-  - Extract a partial?
-  - Fix small online indicator on inline contexts for people who don’t have avatars.
   - Person information widget:
     - Last visited time.
     - Biography.
-  - `bi-person-circle`
 - Revisit unread management:
   - Don’t store all readings, but only the latest for a given conversation.
   - Line to separate new messages instead of little unread indicator.
