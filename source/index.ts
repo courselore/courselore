@@ -2805,8 +2805,9 @@ export default async function courselore({
     ): void {
       const flash = database.get<{ nonce: string }>(
         sql`
-          INSERT INTO "flashes" ("nonce", "content")
+          INSERT INTO "flashes" ("createdAt", "nonce", "content")
           VALUES (
+            ${new Date().toISOString()},
             ${cryptoRandomString({ length: 10, type: "alphanumeric" })},
             ${content}
           )
@@ -2850,8 +2851,9 @@ export default async function courselore({
         token: string;
       }>(
         sql`
-          INSERT INTO "sessions" ("token", "user")
+          INSERT INTO "sessions" ("createdAt", "token", "user")
           VALUES (
+            ${new Date().toISOString()},
             ${cryptoRandomString({ length: 100, type: "alphanumeric" })},
             ${userId}
           )
@@ -3237,8 +3239,9 @@ export default async function courselore({
       );
       return database.get<{ nonce: string }>(
         sql`
-          INSERT INTO "passwordResets" ("user", "nonce")
+          INSERT INTO "passwordResets" ("createdAt", "user", "nonce")
           VALUES (
+            ${new Date().toISOString()},
             ${userId},
             ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
           )
@@ -3701,8 +3704,9 @@ export default async function courselore({
       nonce: string;
     }>(
       sql`
-        INSERT INTO "emailConfirmations" ("user", "nonce")
+        INSERT INTO "emailConfirmations" ("createdAt", "user", "nonce")
         VALUES (
+          ${new Date().toISOString()},
           ${user.id},
           ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
         )
@@ -3769,6 +3773,7 @@ export default async function courselore({
             database.run(
               sql`
                 INSERT INTO "users" (
+                  "createdAt",
                   "lastSeenOnlineAt",
                   "email",
                   "password",
@@ -3778,6 +3783,7 @@ export default async function courselore({
                   "emailNotifications"
                 )
                 VALUES (
+                  ${new Date().toISOString()},
                   ${new Date().toISOString()},
                   ${req.body.email},
                   ${await argon2.hash(req.body.password, argon2Options)},
@@ -4916,8 +4922,9 @@ export default async function courselore({
         reference: string;
       }>(
         sql`
-          INSERT INTO "courses" ("reference", "name", "nextConversationReference")
+          INSERT INTO "courses" ("createdAt", "reference", "name", "nextConversationReference")
           VALUES (
+            ${new Date().toISOString()},
             ${cryptoRandomString({ length: 10, type: "numeric" })},
             ${req.body.name},
             ${1}
@@ -4927,8 +4934,9 @@ export default async function courselore({
       )!;
       database.run(
         sql`
-          INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
+          INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "role", "accentColor")
           VALUES (
+            ${new Date().toISOString()},
             ${res.locals.user.id},
             ${course.id},
             ${cryptoRandomString({ length: 10, type: "numeric" })},
@@ -6512,8 +6520,9 @@ export default async function courselore({
         case "link":
           const invitation = database.get<{ reference: string }>(
             sql`
-              INSERT INTO "invitations" ("expiresAt", "course", "reference", "role")
+              INSERT INTO "invitations" ("createdAt", "expiresAt", "course", "reference", "role")
               VALUES (
+                ${new Date().toISOString()},
                 ${req.body.expiresAt},
                 ${res.locals.course.id},
                 ${cryptoRandomString({ length: 10, type: "numeric" })},
@@ -6630,8 +6639,9 @@ export default async function courselore({
               role: EnrollmentRole;
             }>(
               sql`
-                INSERT INTO "invitations" ("expiresAt", "course", "reference", "email", "name", "role")
+                INSERT INTO "invitations" ("createdAt", "expiresAt", "course", "reference", "email", "name", "role")
                 VALUES (
+                  ${new Date().toISOString()},
                   ${req.body.expiresAt ?? null},
                   ${res.locals.course.id},
                   ${cryptoRandomString({ length: 10, type: "numeric" })},
@@ -7726,8 +7736,9 @@ export default async function courselore({
         if (tag.reference === undefined)
           database.run(
             sql`
-              INSERT INTO "tags" ("course", "reference", "name", "staffOnlyAt")
+              INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
               VALUES (
+                ${new Date().toISOString()},
                 ${res.locals.course.id},
                 ${cryptoRandomString({ length: 10, type: "numeric" })},
                 ${tag.name},
@@ -8030,8 +8041,9 @@ export default async function courselore({
     (req, res) => {
       database.run(
         sql`
-          INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
+          INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "role", "accentColor")
           VALUES (
+            ${new Date().toISOString()},
             ${res.locals.user.id},
             ${res.locals.invitation.course.id},
             ${cryptoRandomString({ length: 10, type: "numeric" })},
@@ -12729,6 +12741,7 @@ ${value}</textarea
             database.run(
               sql`
                 INSERT INTO "conversations" (
+                  "createdAt",
                   "course",
                   "reference",
                   "authorEnrollment",
@@ -12741,6 +12754,7 @@ ${value}</textarea
                   "nextMessageReference"
                 )
                 VALUES (
+                  ${new Date().toISOString()},
                   ${res.locals.course.id},
                   ${String(res.locals.course.nextConversationReference)},
                   ${res.locals.enrollment.id},
@@ -12760,8 +12774,9 @@ ${value}</textarea
       for (const tagReference of req.body.tagsReferences)
         database.run(
           sql`
-            INSERT INTO "taggings" ("conversation", "tag")
+            INSERT INTO "taggings" ("createdAt", "conversation", "tag")
             VALUES (
+              ${new Date().toISOString()},
               ${conversation.id},
               ${
                 res.locals.tags.find(
@@ -12794,6 +12809,7 @@ ${value}</textarea
               database.run(
                 sql`
                   INSERT INTO "messages" (
+                    "createdAt",
                     "conversation",
                     "reference",
                     "authorEnrollment",
@@ -12802,6 +12818,7 @@ ${value}</textarea
                     "contentSearch"
                   )
                   VALUES (
+                    ${new Date().toISOString()},
                     ${conversation.id},
                     ${"1"},
                     ${res.locals.enrollment.id},
@@ -12816,8 +12833,12 @@ ${value}</textarea
         )!;
         database.run(
           sql`
-            INSERT INTO "readings" ("message", "enrollment")
-            VALUES (${message.id}, ${res.locals.enrollment.id})
+            INSERT INTO "readings" ("createdAt", "message", "enrollment")
+            VALUES (
+              ${new Date().toISOString()},
+              ${message.id},
+              ${res.locals.enrollment.id}
+            )
           `
         );
 
@@ -12872,8 +12893,12 @@ ${value}</textarea
       for (const message of messages)
         database.run(
           sql`
-            INSERT INTO "readings" ("message", "enrollment")
-            VALUES (${message.id}, ${res.locals.enrollment.id})
+            INSERT INTO "readings" ("createdAt", "message", "enrollment")
+            VALUES (
+              ${new Date().toISOString()},
+              ${message.id},
+              ${res.locals.enrollment.id}
+            )
           `
         );
       res.redirect("back");
@@ -13029,8 +13054,12 @@ ${value}</textarea
       for (const message of messages)
         database.run(
           sql`
-            INSERT INTO "readings" ("message", "enrollment")
-            VALUES (${message.id}, ${res.locals.enrollment.id})
+            INSERT INTO "readings" ("createdAt", "message", "enrollment")
+            VALUES (
+              ${new Date().toISOString()},
+              ${message.id},
+              ${res.locals.enrollment.id}
+            )
           `
         );
 
@@ -15802,8 +15831,9 @@ ${value}</textarea
 
       database.run(
         sql`
-          INSERT INTO "taggings" ("conversation", "tag")
+          INSERT INTO "taggings" ("createdAt", "conversation", "tag")
           VALUES (
+            ${new Date().toISOString()},
             ${res.locals.conversation.id},
             ${
               res.locals.tags.find(
@@ -15939,6 +15969,7 @@ ${value}</textarea
               database.run(
                 sql`
                   INSERT INTO "messages" (
+                    "createdAt",
                     "conversation",
                     "reference",
                     "authorEnrollment",
@@ -15948,6 +15979,7 @@ ${value}</textarea
                     "contentSearch"
                   )
                   VALUES (
+                    ${new Date().toISOString()},
                     ${res.locals.conversation.id},
                     ${String(res.locals.conversation.nextMessageReference)},
                     ${res.locals.enrollment.id},
@@ -15963,8 +15995,12 @@ ${value}</textarea
         )!;
         database.run(
           sql`
-            INSERT INTO "readings" ("message", "enrollment")
-            VALUES (${message.id}, ${res.locals.enrollment.id})
+            INSERT INTO "readings" ("createdAt", "message", "enrollment")
+            VALUES (
+              ${new Date().toISOString()},
+              ${message.id},
+              ${res.locals.enrollment.id}
+            )
           `
         );
         notify = () => {
@@ -16158,7 +16194,14 @@ ${value}</textarea
         return next("validation");
 
       database.run(
-        sql`INSERT INTO "likes" ("message", "enrollment") VALUES (${res.locals.message.id}, ${res.locals.enrollment.id})`
+        sql`
+          INSERT INTO "likes" ("createdAt", "message", "enrollment")
+          VALUES (
+            ${new Date().toISOString()},
+            ${res.locals.message.id},
+            ${res.locals.enrollment.id}
+          )
+        `
       );
 
       res.redirect(
@@ -16265,7 +16308,14 @@ ${value}</textarea
         return next("validation");
 
       database.run(
-        sql`INSERT INTO "endorsements" ("message", "enrollment") VALUES (${res.locals.message.id}, ${res.locals.enrollment.id})`
+        sql`
+          INSERT INTO "endorsements" ("createdAt", "message", "enrollment")
+          VALUES (
+            ${new Date().toISOString()},
+            ${res.locals.message.id},
+            ${res.locals.enrollment.id}
+          )
+        `
       );
 
       res.redirect(
@@ -16423,8 +16473,8 @@ ${value}</textarea
 
       database.run(
         sql`
-          INSERT INTO "notificationDeliveries" ("message", "enrollment")
-          VALUES (${message.id}, ${enrollment.id})
+          INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
+          VALUES (${new Date().toISOString()}, ${message.id}, ${enrollment.id})
         `
       );
     }
@@ -16444,6 +16494,7 @@ ${value}</textarea
               database.run(
                 sql`
                   INSERT INTO "users" (
+                    "createdAt",
                     "lastSeenOnlineAt",
                     "email",
                     "password",
@@ -16455,6 +16506,7 @@ ${value}</textarea
                     "emailNotifications"
                   )
                   VALUES (
+                    ${new Date().toISOString()},
                     ${new Date(
                       Date.now() - lodash.random(0, 5 * 60 * 60 * 1000)
                     ).toISOString()},
@@ -16489,6 +16541,7 @@ ${value}</textarea
                 database.run(
                   sql`
                     INSERT INTO "users" (
+                      "createdAt",
                       "lastSeenOnlineAt",
                       "email",
                       "password",
@@ -16500,6 +16553,7 @@ ${value}</textarea
                       "emailNotifications"
                     )
                     VALUES (
+                      ${new Date().toISOString()},
                       ${new Date(
                         Date.now() -
                           (Math.random() < 0.5
@@ -16549,11 +16603,13 @@ ${value}</textarea
           }>(
             sql`
               INSERT INTO "courses" (
+                "createdAt",
                 "reference",
                 "name",
                 "nextConversationReference"
               )
               VALUES (
+                ${new Date().toISOString()},
                 ${cryptoRandomString({ length: 10, type: "numeric" })},
                 ${name},
                 ${lodash.random(30, 50)}
@@ -16567,8 +16623,9 @@ ${value}</textarea
             role: EnrollmentRole;
           }>(
             sql`
-              INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
+              INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "role", "accentColor")
               VALUES (
+                ${new Date().toISOString()},
                 ${demonstrationUser.id},
                 ${course.id},
                 ${cryptoRandomString({ length: 10, type: "numeric" })},
@@ -16594,6 +16651,7 @@ ${value}</textarea
             database.run(
               sql`
                 INSERT INTO "invitations" (
+                  "createdAt",
                   "expiresAt",
                   "usedAt",
                   "course",
@@ -16603,6 +16661,7 @@ ${value}</textarea
                   "role"
                 )
                 VALUES (
+                  ${new Date().toISOString()},
                   ${expiresAt},
                   ${
                     user === null || Math.random() < 0.4
@@ -16635,8 +16694,9 @@ ${value}</textarea
                   role: EnrollmentRole;
                 }>(
                   sql`
-                    INSERT INTO "enrollments" ("user", "course", "reference", "role", "accentColor")
+                    INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "role", "accentColor")
                     VALUES (
+                      ${new Date().toISOString()},
                       ${enrollmentUser.id},
                       ${course.id},
                       ${cryptoRandomString({ length: 10, type: "numeric" })},
@@ -16705,8 +16765,9 @@ ${value}</textarea
             ({ name, staffOnlyAt }) =>
               database.get<{ id: number }>(
                 sql`
-                    INSERT INTO "tags" ("course", "reference", "name", "staffOnlyAt")
+                    INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
                     VALUES (
+                      ${new Date().toISOString()},
                       ${course.id},
                       ${cryptoRandomString({ length: 10, type: "numeric" })},
                       ${name},
@@ -16824,8 +16885,9 @@ ${value}</textarea
 
             database.run(
               sql`
-                INSERT INTO "taggings" ("conversation", "tag")
+                INSERT INTO "taggings" ("createdAt", "conversation", "tag")
                 VALUES (
+                  ${new Date().toISOString()},
                   ${conversation.id},
                   ${lodash.sample(tags)!.id}
                 )
@@ -16916,8 +16978,12 @@ ${value}</textarea
               ))
                 database.run(
                   sql`
-                    INSERT INTO "endorsements" ("message", "enrollment")
-                    VALUES (${message.id}, ${enrollment.id})
+                    INSERT INTO "endorsements" ("createdAt", "message", "enrollment")
+                    VALUES (
+                      ${new Date().toISOString()},
+                      ${message.id},
+                      ${enrollment.id}
+                    )
                   `
                 );
 
@@ -16929,8 +16995,12 @@ ${value}</textarea
               ))
                 database.run(
                   sql`
-                    INSERT INTO "likes" ("message", "enrollment")
-                    VALUES (${message.id}, ${enrollment.id})
+                    INSERT INTO "likes" ("createdAt", "message", "enrollment")
+                    VALUES (
+                      ${new Date().toISOString()},
+                      ${message.id},
+                      ${enrollment.id}
+                    )
                   `
                 );
             }
