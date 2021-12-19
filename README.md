@@ -30,7 +30,6 @@
 
 - Avatars.
   - Remove CSS
-    - `.notification-indicator`
     - `.avatar`
     - `.online-indicator`
   - Extract a partial?

@@ -1120,31 +1120,6 @@ export default async function courselore({
                 align-items: center;
               }
 
-              .notification-indicator {
-                display: grid;
-                & > *,
-                &::after {
-                  grid-area: 1 / 1;
-                }
-                &::after {
-                  content: "";
-                  background-color: var(--color--rose--500);
-                  @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--rose--600);
-                  }
-                  display: block;
-                  width: var(--space--2);
-                  height: var(--space--2);
-                  border: var(--border-width--1) solid var(--color--rose--50);
-                  @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--rose--900);
-                  }
-                  border-radius: var(--border-radius--circle);
-                  justify-self: end;
-                  transform: translate(20%, 20%);
-                }
-              }
-
               .online-indicator {
                 display: grid;
                 & > * {
@@ -2332,15 +2307,43 @@ export default async function courselore({
               `}"
             >
               <div
-                $${res.locals.invitations!.length === 0
-                  ? html``
-                  : html`class="notification-indicator"`}
                 style="${css`
                   font-size: var(--font-size--xl);
                   line-height: var(--line-height--xl);
+                  ${res.locals.invitations!.length === 0
+                    ? css``
+                    : css`
+                        display: grid;
+                        & > * {
+                          grid-area: 1 / 1;
+                        }
+                      `}
                 `}"
               >
                 <i class="bi bi-plus"></i>
+                $${res.locals.invitations!.length === 0
+                  ? html``
+                  : html`
+                      <div
+                        style="${css`
+                          background-color: var(--color--rose--500);
+                          @media (prefers-color-scheme: dark) {
+                            background-color: var(--color--rose--600);
+                          }
+                          display: block;
+                          width: var(--space--2);
+                          height: var(--space--2);
+                          border: var(--border-width--1) solid
+                            var(--color--rose--50);
+                          @media (prefers-color-scheme: dark) {
+                            border-color: var(--color--rose--900);
+                          }
+                          border-radius: var(--border-radius--circle);
+                          justify-self: end;
+                          transform: translate(20%, 20%);
+                        `}"
+                      ></div>
+                    `}
               </div>
             </button>
             <div hidden>
