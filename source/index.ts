@@ -2702,13 +2702,16 @@ export default async function courselore({
             style="${css`
               font-size: var(--font-size--md);
               line-height: var(--line-height--md);
-              font-weight: var(--font-weight--bold);
+              font-weight: var(--font-weight--black);
               color: var(--color--${user.avatarlessBackgroundColor}--100);
               background-color: var(
-                --color--${user.avatarlessBackgroundColor}--500
+                --color--${user.avatarlessBackgroundColor}--600
               );
               @media (prefers-color-scheme: dark) {
-                /* TODO */
+                color: var(--color--${user.avatarlessBackgroundColor}--500);
+                background-color: var(
+                  --color--${user.avatarlessBackgroundColor}--800
+                );
               }
               width: var(--space--6);
               height: var(--space--6);
