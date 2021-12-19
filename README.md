@@ -28,9 +28,6 @@
 
 ### Chat
 
-- Types
-  - Types should be on `getConversation` & `getMessage`, not on `MiddlewareLocals`
-  - `NonNullable`
 - Avatars.
   - Remove CSS
     - `.avatar`
