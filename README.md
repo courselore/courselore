@@ -29,9 +29,8 @@
 ### Chat
 
 - Avatars.
-  - `colorForAvatarlessBackground` -> `avatarlessBackgroundColor`
   - `"avatar"`
-  - `avatar;`
+  - `avatar:`
   - Remove CSS
     - `.avatar`
     - `.online-indicator`
