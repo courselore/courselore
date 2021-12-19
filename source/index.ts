@@ -9957,16 +9957,19 @@ export default async function courselore({
         createdAt: string;
         updatedAt: string | null;
         reference: string;
-        authorEnrollment: IsConversationAccessibleMiddlewareLocals["conversation"]["authorEnrollment"];
+        authorEnrollment: AuthorEnrollment;
         anonymousAt: string | null;
         answerAt: string | null;
         content: string;
         contentSearch: string;
         reading: { id: number } | null;
-        endorsements: IsConversationAccessibleMiddlewareLocals["conversation"]["endorsements"];
+        endorsements: {
+          id: number;
+          enrollment: AuthorEnrollment;
+        }[];
         likes: {
           id: number;
-          enrollment: IsConversationAccessibleMiddlewareLocals["conversation"]["authorEnrollment"];
+          enrollment: AuthorEnrollment;
         }[];
       }
     | undefined => {
