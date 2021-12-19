@@ -118,7 +118,7 @@ export default async function courselore({
     sql`
       CREATE TABLE "flashes" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "createdAt" TEXT NOT NULL,
         "nonce" TEXT NOT NULL UNIQUE,
         "content" TEXT NOT NULL
       );
@@ -126,7 +126,7 @@ export default async function courselore({
 
       CREATE TABLE "users" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "createdAt" TEXT NOT NULL,
         "lastSeenOnlineAt" TEXT NOT NULL,
         "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
         "password" TEXT NOT NULL,
@@ -156,7 +156,7 @@ export default async function courselore({
 
       CREATE TABLE "emailConfirmations" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "createdAt" TEXT NOT NULL,
         "nonce" TEXT NOT NULL UNIQUE,
         "user" INTEGER NOT NULL UNIQUE REFERENCES "users" ON DELETE CASCADE
       );
@@ -164,7 +164,7 @@ export default async function courselore({
 
       CREATE TABLE "passwordResets" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "createdAt" TEXT NOT NULL,
         "nonce" TEXT NOT NULL UNIQUE,
         "user" INTEGER NOT NULL UNIQUE REFERENCES "users" ON DELETE CASCADE
       );
@@ -172,7 +172,7 @@ export default async function courselore({
 
       CREATE TABLE "sessions" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "createdAt" TEXT NOT NULL,
         "token" TEXT NOT NULL UNIQUE,
         "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
       );
@@ -180,7 +180,7 @@ export default async function courselore({
 
       CREATE TABLE "courses" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "createdAt" TEXT NOT NULL,
         "reference" TEXT NOT NULL UNIQUE,
         "name" TEXT NOT NULL,
         "nextConversationReference" INTEGER NOT NULL
@@ -188,7 +188,7 @@ export default async function courselore({
 
       CREATE TABLE "invitations" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "createdAt" TEXT NOT NULL,
         "expiresAt" TEXT NULL,
         "usedAt" TEXT NULL,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
@@ -203,7 +203,7 @@ export default async function courselore({
 
       CREATE TABLE "enrollments" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "createdAt" TEXT NOT NULL,
         "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
@@ -217,7 +217,7 @@ export default async function courselore({
 
       CREATE TABLE "tags" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "createdAt" TEXT NOT NULL,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
         "name" TEXT NOT NULL,
@@ -228,7 +228,7 @@ export default async function courselore({
 
       CREATE TABLE "conversations" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "createdAt" TEXT NOT NULL,
         "updatedAt" TEXT NULL,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
@@ -281,7 +281,7 @@ export default async function courselore({
 
       CREATE TABLE "taggings" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "createdAt" TEXT NOT NULL,
         "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
         "tag" INTEGER NOT NULL REFERENCES "tags" ON DELETE CASCADE,
         UNIQUE ("conversation", "tag")
@@ -291,7 +291,7 @@ export default async function courselore({
 
       CREATE TABLE "messages" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "createdAt" TEXT NOT NULL,
         "updatedAt" TEXT NULL,
         "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
@@ -339,7 +339,7 @@ export default async function courselore({
 
       CREATE TABLE "readings" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "createdAt" TEXT NOT NULL,
         "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
         "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
         UNIQUE ("message", "enrollment") ON CONFLICT IGNORE
@@ -347,7 +347,7 @@ export default async function courselore({
 
       CREATE TABLE "notificationDeliveries" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "createdAt" TEXT NOT NULL,
         "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
         "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
         UNIQUE ("message", "enrollment") ON CONFLICT IGNORE
@@ -355,7 +355,7 @@ export default async function courselore({
 
       CREATE TABLE "endorsements" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "createdAt" TEXT NOT NULL,
         "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
         "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
         UNIQUE ("message", "enrollment")
@@ -364,7 +364,7 @@ export default async function courselore({
 
       CREATE TABLE "likes" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ')),
+        "createdAt" TEXT NOT NULL,
         "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
         "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
         UNIQUE ("message", "enrollment")
