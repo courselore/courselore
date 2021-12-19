@@ -9665,6 +9665,23 @@ export default async function courselore({
     </div>
   `;
 
+  type ConversationAuthorEnrollment =
+    | {
+        id: number;
+        user: {
+          id: number;
+          lastSeenOnlineAt: string;
+          email: string;
+          name: string;
+          avatar: string | null;
+          avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+          biography: string | null;
+        };
+        reference: string;
+        role: EnrollmentRole;
+      }
+    | NoLongerEnrolledEnrollment;
+
   const getConversation = (
     req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>,
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
@@ -9675,22 +9692,7 @@ export default async function courselore({
         createdAt: string;
         updatedAt: string | null;
         reference: string;
-        authorEnrollment:
-          | {
-              id: number;
-              user: {
-                id: number;
-                lastSeenOnlineAt: string;
-                email: string;
-                name: string;
-                avatar: string | null;
-                avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-                biography: string | null;
-              };
-              reference: string;
-              role: EnrollmentRole;
-            }
-          | NoLongerEnrolledEnrollment;
+        authorEnrollment: ConversationAuthorEnrollment;
         anonymousAt: string | null;
         type: ConversationType;
         pinnedAt: string | null;
@@ -9711,21 +9713,7 @@ export default async function courselore({
         readingsCount: number;
         endorsements: {
           id: number;
-          enrollment:
-            | {
-                id: number;
-                user: {
-                  id: number;
-                  email: string;
-                  name: string;
-                  avatar: string | null;
-                  avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-                  biography: string | null;
-                };
-                reference: string;
-                role: EnrollmentRole;
-              }
-            | NoLongerEnrolledEnrollment;
+          enrollment: ConversationAuthorEnrollment;
         }[];
       }
     | undefined => {
@@ -9848,6 +9836,7 @@ export default async function courselore({
             id: number;
             enrollmentId: number | null;
             userId: number | null;
+            userLastSeenOnlineAt: string | null;
             userEmail: string | null;
             userName: string | null;
             userAvatar: string | null;
@@ -9860,6 +9849,7 @@ export default async function courselore({
               SELECT "endorsements"."id",
                      "enrollments"."id" AS "enrollmentId",
                      "users"."id" AS "userId",
+                     "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
                      "users"."email" AS "userEmail",
                      "users"."name" AS "userName",
                      "users"."avatar" AS "userAvatar",
@@ -9930,6 +9920,7 @@ export default async function courselore({
         enrollment:
           endorsement.enrollmentId !== null &&
           endorsement.userId !== null &&
+          endorsement.userLastSeenOnlineAt !== null &&
           endorsement.userEmail !== null &&
           endorsement.userName !== null &&
           endorsement.userAvatarlessBackgroundColor !== null &&
@@ -9939,6 +9930,7 @@ export default async function courselore({
                 id: endorsement.enrollmentId,
                 user: {
                   id: endorsement.userId,
+                  lastSeenOnlineAt: endorsement.userLastSeenOnlineAt,
                   email: endorsement.userEmail,
                   name: endorsement.userName,
                   avatar: endorsement.userAvatar,
