@@ -9717,7 +9717,7 @@ export default async function courselore({
         }[];
       }
     | undefined => {
-    const conversation = database.get<{
+    const conversationRow = database.get<{
       id: number;
       createdAt: string;
       updatedAt: string | null;
@@ -9787,32 +9787,80 @@ export default async function courselore({
               }
       `
     );
-    if (conversation === undefined) return undefined;
+    if (conversationRow === undefined) return undefined;
+    const conversation = {
+      id: conversationRow.id,
+      createdAt: conversationRow.createdAt,
+      updatedAt: conversationRow.updatedAt,
+      reference: conversationRow.reference,
+      authorEnrollment:
+        conversationRow.authorEnrollmentId !== null &&
+        conversationRow.authorUserId !== null &&
+        conversationRow.authorUserLastSeenOnlineAt !== null &&
+        conversationRow.authorUserEmail !== null &&
+        conversationRow.authorUserName !== null &&
+        conversationRow.authorUserAvatarlessBackgroundColor !== null &&
+        conversationRow.authorEnrollmentReference !== null &&
+        conversationRow.authorEnrollmentRole !== null
+          ? {
+              id: conversationRow.authorEnrollmentId,
+              user: {
+                id: conversationRow.authorUserId,
+                lastSeenOnlineAt: conversationRow.authorUserLastSeenOnlineAt,
+                email: conversationRow.authorUserEmail,
+                name: conversationRow.authorUserName,
+                avatar: conversationRow.authorUserAvatar,
+                avatarlessBackgroundColor:
+                  conversationRow.authorUserAvatarlessBackgroundColor,
+                biography: conversationRow.authorUserBiography,
+              },
+              reference: conversationRow.authorEnrollmentReference,
+              role: conversationRow.authorEnrollmentRole,
+            }
+          : noLongerEnrolledEnrollment,
+      anonymousAt: conversationRow.anonymousAt,
+      type: conversationRow.type,
+      pinnedAt: conversationRow.pinnedAt,
+      staffOnlyAt: conversationRow.staffOnlyAt,
+      title: conversationRow.title,
+      titleSearch: conversationRow.titleSearch,
+      nextMessageReference: conversationRow.nextMessageReference,
+    };
 
-    const taggings = database.all<{
-      id: number;
-      tagId: number;
-      tagReference: string;
-      tagName: string;
-      tagStaffOnlyAt: string | null;
-    }>(
-      sql`
-        SELECT "taggings"."id",
-                "tags"."id" AS "tagId",
-                "tags"."reference" AS "tagReference",
-                "tags"."name" AS "tagName",
-                "tags"."staffOnlyAt" AS "tagStaffOnlyAt"
-        FROM "taggings"
-        JOIN "tags" ON "taggings"."tag" = "tags"."id"
-        $${
-          res.locals.enrollment.role === "student"
-            ? sql`AND "tags"."staffOnlyAt" IS NULL`
-            : sql``
-        }
-        WHERE "taggings"."conversation" = ${conversation.id}
-        ORDER BY "tags"."id" ASC
-      `
-    );
+    const taggings = database
+      .all<{
+        id: number;
+        tagId: number;
+        tagReference: string;
+        tagName: string;
+        tagStaffOnlyAt: string | null;
+      }>(
+        sql`
+          SELECT "taggings"."id",
+                 "tags"."id" AS "tagId",
+                 "tags"."reference" AS "tagReference",
+                 "tags"."name" AS "tagName",
+                 "tags"."staffOnlyAt" AS "tagStaffOnlyAt"
+          FROM "taggings"
+          JOIN "tags" ON "taggings"."tag" = "tags"."id"
+          $${
+            res.locals.enrollment.role === "student"
+              ? sql`AND "tags"."staffOnlyAt" IS NULL`
+              : sql``
+          }
+          WHERE "taggings"."conversation" = ${conversation.id}
+          ORDER BY "tags"."id" ASC
+        `
+      )
+      .map((tagging) => ({
+        id: tagging.id,
+        tag: {
+          id: tagging.tagId,
+          reference: tagging.tagReference,
+          name: tagging.tagName,
+          staffOnlyAt: tagging.tagStaffOnlyAt,
+        },
+      }));
 
     const messagesCount = database.get<{
       messagesCount: number;
@@ -9832,117 +9880,76 @@ export default async function courselore({
 
     const endorsements =
       conversation.type === "question"
-        ? database.all<{
-            id: number;
-            enrollmentId: number | null;
-            userId: number | null;
-            userLastSeenOnlineAt: string | null;
-            userEmail: string | null;
-            userName: string | null;
-            userAvatar: string | null;
-            userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
-            userBiography: string | null;
-            enrollmentReference: string | null;
-            enrollmentRole: EnrollmentRole | null;
-          }>(
-            sql`
-              SELECT "endorsements"."id",
-                     "enrollments"."id" AS "enrollmentId",
-                     "users"."id" AS "userId",
-                     "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                     "users"."email" AS "userEmail",
-                     "users"."name" AS "userName",
-                     "users"."avatar" AS "userAvatar",
-                     "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                     "users"."biography" AS "userBiography",      
-                     "enrollments"."reference" AS "enrollmentReference",
-                     "enrollments"."role" AS "enrollmentRole"
-              FROM "endorsements"
-              JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
-              JOIN "users" ON "enrollments"."user" = "users"."id"
-              JOIN "messages" ON "endorsements"."message" = "messages"."id" AND
-                                 "messages"."conversation" = ${conversation.id}
-              ORDER BY "endorsements"."id" ASC
-            `
-          )
+        ? database
+            .all<{
+              id: number;
+              enrollmentId: number | null;
+              userId: number | null;
+              userLastSeenOnlineAt: string | null;
+              userEmail: string | null;
+              userName: string | null;
+              userAvatar: string | null;
+              userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
+              userBiography: string | null;
+              enrollmentReference: string | null;
+              enrollmentRole: EnrollmentRole | null;
+            }>(
+              sql`
+                SELECT "endorsements"."id",
+                       "enrollments"."id" AS "enrollmentId",
+                       "users"."id" AS "userId",
+                       "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                       "users"."email" AS "userEmail",
+                       "users"."name" AS "userName",
+                       "users"."avatar" AS "userAvatar",
+                       "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+                       "users"."biography" AS "userBiography",      
+                       "enrollments"."reference" AS "enrollmentReference",
+                       "enrollments"."role" AS "enrollmentRole"
+                FROM "endorsements"
+                JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
+                JOIN "users" ON "enrollments"."user" = "users"."id"
+                JOIN "messages" ON "endorsements"."message" = "messages"."id" AND
+                                  "messages"."conversation" = ${conversation.id}
+                ORDER BY "endorsements"."id" ASC
+              `
+            )
+            .map((endorsement) => ({
+              id: endorsement.id,
+              enrollment:
+                endorsement.enrollmentId !== null &&
+                endorsement.userId !== null &&
+                endorsement.userLastSeenOnlineAt !== null &&
+                endorsement.userEmail !== null &&
+                endorsement.userName !== null &&
+                endorsement.userAvatarlessBackgroundColor !== null &&
+                endorsement.enrollmentReference !== null &&
+                endorsement.enrollmentRole !== null
+                  ? {
+                      id: endorsement.enrollmentId,
+                      user: {
+                        id: endorsement.userId,
+                        lastSeenOnlineAt: endorsement.userLastSeenOnlineAt,
+                        email: endorsement.userEmail,
+                        name: endorsement.userName,
+                        avatar: endorsement.userAvatar,
+                        avatarlessBackgroundColor:
+                          endorsement.userAvatarlessBackgroundColor,
+                        biography: endorsement.userBiography,
+                      },
+                      reference: endorsement.enrollmentReference,
+                      role: endorsement.enrollmentRole,
+                    }
+                  : noLongerEnrolledEnrollment,
+            }))
         : [];
 
     return {
-      id: conversation.id,
-      createdAt: conversation.createdAt,
-      updatedAt: conversation.updatedAt,
-      reference: conversation.reference,
-      authorEnrollment:
-        conversation.authorEnrollmentId !== null &&
-        conversation.authorUserId !== null &&
-        conversation.authorUserLastSeenOnlineAt !== null &&
-        conversation.authorUserEmail !== null &&
-        conversation.authorUserName !== null &&
-        conversation.authorUserAvatarlessBackgroundColor !== null &&
-        conversation.authorEnrollmentReference !== null &&
-        conversation.authorEnrollmentRole !== null
-          ? {
-              id: conversation.authorEnrollmentId,
-              user: {
-                id: conversation.authorUserId,
-                lastSeenOnlineAt: conversation.authorUserLastSeenOnlineAt,
-                email: conversation.authorUserEmail,
-                name: conversation.authorUserName,
-                avatar: conversation.authorUserAvatar,
-                avatarlessBackgroundColor:
-                  conversation.authorUserAvatarlessBackgroundColor,
-                biography: conversation.authorUserBiography,
-              },
-              reference: conversation.authorEnrollmentReference,
-              role: conversation.authorEnrollmentRole,
-            }
-          : noLongerEnrolledEnrollment,
-      anonymousAt: conversation.anonymousAt,
-      type: conversation.type,
-      pinnedAt: conversation.pinnedAt,
-      staffOnlyAt: conversation.staffOnlyAt,
-      title: conversation.title,
-      titleSearch: conversation.titleSearch,
-      nextMessageReference: conversation.nextMessageReference,
-      taggings: taggings.map((tagging) => ({
-        id: tagging.id,
-        tag: {
-          id: tagging.tagId,
-          reference: tagging.tagReference,
-          name: tagging.tagName,
-          staffOnlyAt: tagging.tagStaffOnlyAt,
-        },
-      })),
+      ...conversation,
+      taggings,
       messagesCount,
       readingsCount,
-      endorsements: endorsements.map((endorsement) => ({
-        id: endorsement.id,
-        enrollment:
-          endorsement.enrollmentId !== null &&
-          endorsement.userId !== null &&
-          endorsement.userLastSeenOnlineAt !== null &&
-          endorsement.userEmail !== null &&
-          endorsement.userName !== null &&
-          endorsement.userAvatarlessBackgroundColor !== null &&
-          endorsement.enrollmentReference !== null &&
-          endorsement.enrollmentRole !== null
-            ? {
-                id: endorsement.enrollmentId,
-                user: {
-                  id: endorsement.userId,
-                  lastSeenOnlineAt: endorsement.userLastSeenOnlineAt,
-                  email: endorsement.userEmail,
-                  name: endorsement.userName,
-                  avatar: endorsement.userAvatar,
-                  avatarlessBackgroundColor:
-                    endorsement.userAvatarlessBackgroundColor,
-                  biography: endorsement.userBiography,
-                },
-                reference: endorsement.enrollmentReference,
-                role: endorsement.enrollmentRole,
-              }
-            : noLongerEnrolledEnrollment,
-      })),
+      endorsements,
     };
   };
 
