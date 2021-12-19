@@ -29,6 +29,9 @@
 ### Chat
 
 - Avatars.
+  - `colorForAvatarlessBackground` -> `avatarlessBackgroundColor`
+  - `"avatar"`
+  - `avatar;`
   - Remove CSS
     - `.avatar`
     - `.online-indicator`
@@ -41,6 +44,9 @@
 - Revisit unread management:
   - Don’t store all readings, but only the latest for a given conversation.
   - Line to separate new messages instead of little unread indicator.
+  - Or maybe not, because then we can have features such as (`person ___ read this message at ___`).
+  - Also, we could attach reactions to the reading, for example, likes & endorsements
+    - But then we’d be associating personal data (when the reading happened) with data about messages (whether it was liked). The first should be deleted when the person leaves the course; the second shouldn’t.
 - Messages display:
   - “Truncate” long messages.
 - Scroll on new message.
