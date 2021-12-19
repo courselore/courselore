@@ -9980,7 +9980,7 @@ export default async function courselore({
         }[];
       }
     | undefined => {
-    const message = database.get<{
+    const messageRow = database.get<{
       id: number;
       createdAt: string;
       updatedAt: string | null;
@@ -10031,110 +10031,79 @@ export default async function courselore({
         ORDER BY "messages"."id" ASC
       `
     );
-    if (message === undefined) return undefined;
-
-    const endorsements = database.all<{
-      id: number;
-      enrollmentId: number | null;
-      userId: number | null;
-      userLastSeenOnlineAt: string | null;
-      userEmail: string | null;
-      userName: string | null;
-      userAvatar: string | null;
-      userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
-      userBiography: string | null;
-      enrollmentReference: string | null;
-      enrollmentRole: EnrollmentRole | null;
-    }>(
-      sql`
-        SELECT "endorsements"."id",
-                "enrollments"."id" AS "enrollmentId",
-                "users"."id" AS "userId",
-                "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                "users"."email" AS "userEmail",
-                "users"."name" AS "userName",
-                "users"."avatar" AS "userAvatar",
-                "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                "users"."biography" AS "userBiography",
-                "enrollments"."reference" AS "enrollmentReference",
-                "enrollments"."role" AS "enrollmentRole"
-        FROM "endorsements"
-        JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
-        JOIN "users" ON "enrollments"."user" = "users"."id"
-        WHERE "endorsements"."message" = ${message.id}
-        ORDER BY "endorsements"."id" ASC
-      `
-    );
-
-    const likes = database.all<{
-      id: number;
-      enrollmentId: number | null;
-      userId: number | null;
-      userLastSeenOnlineAt: string | null;
-      userEmail: string | null;
-      userName: string | null;
-      userAvatar: string | null;
-      userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
-      userBiography: string | null;
-      enrollmentReference: string | null;
-      enrollmentRole: EnrollmentRole | null;
-    }>(
-      sql`
-        SELECT "likes"."id",
-                "enrollments"."id" AS "enrollmentId",
-                "users"."id" AS "userId",
-                "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                "users"."email" AS "userEmail",
-                "users"."name" AS "userName",
-                "users"."avatar" AS "userAvatar",
-                "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                "users"."biography" AS "userBiography",
-                "enrollments"."reference" AS "enrollmentReference",
-                "enrollments"."role" AS "enrollmentRole"
-        FROM "likes"
-        LEFT JOIN "enrollments" ON "likes"."enrollment" = "enrollments"."id"
-        LEFT JOIN "users" ON "enrollments"."user" = "users"."id"
-        WHERE "likes"."message" = ${message.id}
-        ORDER BY "likes"."id" ASC
-      `
-    );
-
-    return {
-      id: message.id,
-      createdAt: message.createdAt,
-      updatedAt: message.updatedAt,
-      reference: message.reference,
+    if (messageRow === undefined) return undefined;
+    const message = {
+      id: messageRow.id,
+      createdAt: messageRow.createdAt,
+      updatedAt: messageRow.updatedAt,
+      reference: messageRow.reference,
       authorEnrollment:
-        message.authorEnrollmentId !== null &&
-        message.authorUserId !== null &&
-        message.authorUserLastSeenOnlineAt !== null &&
-        message.authorUserEmail !== null &&
-        message.authorUserName !== null &&
-        message.authorUserAvatarlessBackgroundColor !== null &&
-        message.authorEnrollmentReference !== null &&
-        message.authorEnrollmentRole !== null
+        messageRow.authorEnrollmentId !== null &&
+        messageRow.authorUserId !== null &&
+        messageRow.authorUserLastSeenOnlineAt !== null &&
+        messageRow.authorUserEmail !== null &&
+        messageRow.authorUserName !== null &&
+        messageRow.authorUserAvatarlessBackgroundColor !== null &&
+        messageRow.authorEnrollmentReference !== null &&
+        messageRow.authorEnrollmentRole !== null
           ? {
-              id: message.authorEnrollmentId,
+              id: messageRow.authorEnrollmentId,
               user: {
-                id: message.authorUserId,
-                lastSeenOnlineAt: message.authorUserLastSeenOnlineAt,
-                email: message.authorUserEmail,
-                name: message.authorUserName,
-                avatar: message.authorUserAvatar,
+                id: messageRow.authorUserId,
+                lastSeenOnlineAt: messageRow.authorUserLastSeenOnlineAt,
+                email: messageRow.authorUserEmail,
+                name: messageRow.authorUserName,
+                avatar: messageRow.authorUserAvatar,
                 avatarlessBackgroundColor:
-                  message.authorUserAvatarlessBackgroundColor,
-                biography: message.authorUserBiography,
+                  messageRow.authorUserAvatarlessBackgroundColor,
+                biography: messageRow.authorUserBiography,
               },
-              reference: message.authorEnrollmentReference,
-              role: message.authorEnrollmentRole,
+              reference: messageRow.authorEnrollmentReference,
+              role: messageRow.authorEnrollmentRole,
             }
           : noLongerEnrolledEnrollment,
-      anonymousAt: message.anonymousAt,
-      answerAt: message.answerAt,
-      content: message.content,
-      contentSearch: message.contentSearch,
-      reading: message.readingId === null ? null : { id: message.readingId },
-      endorsements: endorsements.map((endorsement) => ({
+      anonymousAt: messageRow.anonymousAt,
+      answerAt: messageRow.answerAt,
+      content: messageRow.content,
+      contentSearch: messageRow.contentSearch,
+      reading:
+        messageRow.readingId === null ? null : { id: messageRow.readingId },
+    };
+
+    const endorsements = database
+      .all<{
+        id: number;
+        enrollmentId: number | null;
+        userId: number | null;
+        userLastSeenOnlineAt: string | null;
+        userEmail: string | null;
+        userName: string | null;
+        userAvatar: string | null;
+        userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
+        userBiography: string | null;
+        enrollmentReference: string | null;
+        enrollmentRole: EnrollmentRole | null;
+      }>(
+        sql`
+          SELECT "endorsements"."id",
+                "enrollments"."id" AS "enrollmentId",
+                "users"."id" AS "userId",
+                "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                "users"."email" AS "userEmail",
+                "users"."name" AS "userName",
+                "users"."avatar" AS "userAvatar",
+                "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+                "users"."biography" AS "userBiography",
+                "enrollments"."reference" AS "enrollmentReference",
+                "enrollments"."role" AS "enrollmentRole"
+          FROM "endorsements"
+          JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
+          JOIN "users" ON "enrollments"."user" = "users"."id"
+          WHERE "endorsements"."message" = ${message.id}
+          ORDER BY "endorsements"."id" ASC
+        `
+      )
+      .map((endorsement) => ({
         id: endorsement.id,
         enrollment:
           endorsement.enrollmentId !== null &&
@@ -10161,8 +10130,42 @@ export default async function courselore({
                 role: endorsement.enrollmentRole,
               }
             : noLongerEnrolledEnrollment,
-      })),
-      likes: likes.map((like) => ({
+      }));
+
+    const likes = database
+      .all<{
+        id: number;
+        enrollmentId: number | null;
+        userId: number | null;
+        userLastSeenOnlineAt: string | null;
+        userEmail: string | null;
+        userName: string | null;
+        userAvatar: string | null;
+        userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
+        userBiography: string | null;
+        enrollmentReference: string | null;
+        enrollmentRole: EnrollmentRole | null;
+      }>(
+        sql`
+          SELECT "likes"."id",
+                "enrollments"."id" AS "enrollmentId",
+                "users"."id" AS "userId",
+                "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                "users"."email" AS "userEmail",
+                "users"."name" AS "userName",
+                "users"."avatar" AS "userAvatar",
+                "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+                "users"."biography" AS "userBiography",
+                "enrollments"."reference" AS "enrollmentReference",
+                "enrollments"."role" AS "enrollmentRole"
+          FROM "likes"
+          LEFT JOIN "enrollments" ON "likes"."enrollment" = "enrollments"."id"
+          LEFT JOIN "users" ON "enrollments"."user" = "users"."id"
+          WHERE "likes"."message" = ${message.id}
+          ORDER BY "likes"."id" ASC
+        `
+      )
+      .map((like) => ({
         id: like.id,
         enrollment:
           like.enrollmentId !== null &&
@@ -10188,7 +10191,12 @@ export default async function courselore({
                 role: like.enrollmentRole,
               }
             : noLongerEnrolledEnrollment,
-      })),
+      }));
+
+    return {
+      ...message,
+      endorsements,
+      likes,
     };
   };
 
