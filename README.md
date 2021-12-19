@@ -29,8 +29,6 @@
 ### Chat
 
 - Avatars.
-  - `"avatar"`
-  - `avatar:`
   - Remove CSS
     - `.avatar`
     - `.online-indicator`

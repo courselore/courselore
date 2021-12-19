@@ -120,6 +120,7 @@ export default async function courselore({
       email: null,
       name: "No Longer Enrolled",
       avatar: null,
+      avatarlessBackgroundColor: null,
       biography: null,
     },
     reference: null,
@@ -16588,8 +16589,8 @@ ${value}</textarea
                     "name",
                     "nameSearch",
                     "avatar",
-                    "biography",
                     "avatarlessBackgroundColor",
+                    "biography",
                     "emailNotifications"
                   )
                   VALUES (
@@ -16606,8 +16607,8 @@ ${value}</textarea
                     ${name},
                     ${html`${name}`},
                     ${`${baseURL}/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`},
-                    ${casual.sentences(lodash.random(5, 7))},
                     ${lodash.sample(userAvatarlessBackgroundColors)},
+                    ${casual.sentences(lodash.random(5, 7))},
                     ${"none"}
                   )
                 `
@@ -16637,8 +16638,8 @@ ${value}</textarea
                       "name",
                       "nameSearch",
                       "avatar",
-                      "biography",
                       "avatarlessBackgroundColor",
+                      "biography",
                       "emailNotifications"
                     )
                     VALUES (
@@ -16662,8 +16663,8 @@ ${value}</textarea
                           ? `${baseURL}/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
                           : null
                       },
-                      ${casual.sentences(lodash.random(5, 7))},
                       ${lodash.sample(userAvatarlessBackgroundColors)},
+                      ${casual.sentences(lodash.random(5, 7))},
                       ${"none"}
                     )
                   `
