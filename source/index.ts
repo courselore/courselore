@@ -69,6 +69,27 @@ export default async function courselore({
 
   const app = express();
 
+  type UserColorForAvatarlessBackground = typeof userColorsForAvatarlessBackground[number];
+  const userColorsForAvatarlessBackground = [
+    "red",
+    "orange",
+    "amber",
+    "yellow",
+    "lime",
+    "green",
+    "emerald",
+    "teal",
+    "cyan",
+    "sky",
+    "blue",
+    "indigo",
+    "violet",
+    "purple",
+    "fuchsia",
+    "pink",
+    "rose",
+  ] as const;
+
   type UserEmailNotifications = typeof userEmailNotificationses[number];
   const userEmailNotificationses = [
     "all-messages",
@@ -134,6 +155,7 @@ export default async function courselore({
         "name" TEXT NOT NULL,
         "nameSearch" TEXT NOT NULL,
         "avatar" TEXT NULL,
+        "colorForAvatarlessBackground" TEXT NOT NULL,
         "biography" TEXT NULL,
         "emailNotifications" TEXT NOT NULL
       );
@@ -2953,6 +2975,7 @@ export default async function courselore({
       emailConfirmedAt: string | null;
       name: string;
       avatar: string | null;
+      colorForAvatarlessBackground: UserColorForAvatarlessBackground;
       biography: string | null;
       emailNotifications: UserEmailNotifications;
     };
@@ -2997,6 +3020,7 @@ export default async function courselore({
         emailConfirmedAt: string | null;
         name: string;
         avatar: string | null;
+        colorForAvatarlessBackground: UserColorForAvatarlessBackground;
         biography: string | null;
         emailNotifications: UserEmailNotifications;
       }>(
@@ -3007,6 +3031,7 @@ export default async function courselore({
                  "emailConfirmedAt",
                  "name",
                  "avatar",
+                 "colorForAvatarlessBackground",
                  "biography",
                  "emailNotifications"
           FROM "users"
@@ -3806,6 +3831,7 @@ export default async function courselore({
                   "emailConfirmedAt",
                   "name",
                   "nameSearch",
+                  "colorForAvatarlessBackground",
                   "emailNotifications"
                 )
                 VALUES (
@@ -3816,6 +3842,7 @@ export default async function courselore({
                   ${null},
                   ${req.body.name},
                   ${html`${req.body.name}`},
+                  ${lodash.sample(userColorsForAvatarlessBackground)},
                   ${"staff-announcements-and-mentions"}
                 )
               `
