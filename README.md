@@ -29,6 +29,9 @@
 ### Chat
 
 - Avatars.
+  - Remove CSS
+    - `.avatar`
+    - `.online-indicator`
   - Extract a partial?
   - Fix small online indicator on inline contexts for people who don’t have avatars.
   - Person information widget:

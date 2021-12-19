@@ -2392,24 +2392,7 @@ export default async function courselore({
                 });
               `}"
             >
-              $${res.locals.user.avatar === null
-                ? html`
-                    <div
-                      style="${css`
-                        font-size: var(--font-size--xl);
-                        line-height: var(--line-height--xl);
-                      `}"
-                    >
-                      <i class="bi bi-person-circle"></i>
-                    </div>
-                  `
-                : html`
-                    <img
-                      src="${res.locals.user.avatar}"
-                      alt="${res.locals.user.name}"
-                      class="avatar avatar--xl"
-                    />
-                  `}
+              $${avatarPartial(res.locals.user)}
             </button>
             <div hidden>
               <div
@@ -2686,6 +2669,37 @@ export default async function courselore({
         `}"
       />
     </svg>
+  `;
+
+  const avatarPartial = (user: {
+    name: string;
+    avatar: string | null;
+  }): HTML => html`
+    $${user.avatar === null
+      ? html`
+          <div
+            style="${css`
+              font-size: var(--font-size--xl);
+              line-height: var(--line-height--xl);
+            `}"
+          >
+            <i class="bi bi-person-circle"></i>
+          </div>
+        `
+      : html`
+          <img
+            src="${user.avatar}"
+            alt="${user.name}"
+            style="${css`
+              border-radius: var(--border-radius--circle);
+              @media (prefers-color-scheme: dark) {
+                filter: brightness(var(--brightness--90));
+              }
+              width: var(--font-size--xl);
+              height: var(--font-size--xl);
+            `}"
+          />
+        `}
   `;
 
   const enrollmentRoleIcon = {
