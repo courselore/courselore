@@ -2114,6 +2114,12 @@ export default async function courselore({
           <a
             href="${baseURL}/"
             class="button button--tight button--tight--inline button--transparent"
+            oninteractive="${javascript`
+              tippy(this, {
+                content: "CourseLore",
+                touch: false,
+              });
+            `}"
           >
             $${logo}
           </a>
