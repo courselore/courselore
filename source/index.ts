@@ -120,7 +120,7 @@ export default async function courselore({
       email: null,
       name: "No Longer Enrolled",
       avatar: null,
-      avatarlessBackgroundColor: null,
+      avatarlessBackgroundColor: "rose",
       biography: null,
     },
     reference: null,
@@ -2700,11 +2700,13 @@ export default async function courselore({
       ? html`
           <div
             style="${css`
-              font-size: var(--font-size--lg);
-              line-height: var(--line-height--lg);
+              font-size: var(--font-size--md);
+              line-height: var(--line-height--md);
               font-weight: var(--font-weight--bold);
-              color: var(--color--orange--100);
-              background-color: var(--color--orange--500);
+              color: var(--color--${user.avatarlessBackgroundColor}--100);
+              background-color: var(
+                --color--${user.avatarlessBackgroundColor}--500
+              );
               @media (prefers-color-scheme: dark) {
                 /* TODO */
               }
