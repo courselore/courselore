@@ -2285,6 +2285,7 @@ export default async function courselore({
                   </div>
                 `}
           </div>
+
           <div>
             <button
               class="button button--tight button--tight--inline button--transparent"
@@ -2407,6 +2408,7 @@ export default async function courselore({
               </div>
             </div>
           </div>
+
           <div>
             <button
               class="button button--tight button--tight--inline button--transparent"
@@ -2629,7 +2631,7 @@ export default async function courselore({
   const logo = (() => {
     // https://www.youtube.com/watch?v=dSK-MW-zuAc
     const order = 2;
-    const size = 20;
+    const size = 24; /* var(--space--6) */
     // Hilbert
     // let points = [
     //   [1 / 4, 1 / 4],
