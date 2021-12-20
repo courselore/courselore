@@ -2860,19 +2860,19 @@ export default async function courselore({
                 display: none;
               `}"
               oninteractive="${javascript`
-                  const element = this;
-                  const lastSeenOnlineAt = ${new Date(
-                    user.lastSeenOnlineAt
-                  ).getTime()};
-                  tippy(element, {
-                    content: "Online",
-                    touch: false,
-                  });
-                  (function update() {
-                    element.style.display = Date.now() - lastSeenOnlineAt < 5 * 60 * 1000 ? "block" : "none";
-                    window.setInterval(update, 60 * 1000);
-                  })();
-                `}"
+                const element = this;
+                const lastSeenOnlineAt = ${new Date(
+                  user.lastSeenOnlineAt
+                ).getTime()};
+                tippy(element, {
+                  content: "Online",
+                  touch: false,
+                });
+                (function update() {
+                  element.style.display = Date.now() - lastSeenOnlineAt < 5 * 60 * 1000 ? "block" : "none";
+                  window.setInterval(update, 60 * 1000);
+                })();
+              `}"
             ></span>
           `
         : html``}
