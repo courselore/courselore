@@ -2749,8 +2749,7 @@ export default async function courselore({
       ? html`
           <div
             style="${css`
-              display: inline-grid;
-              vertical-align: var(--space---1-5);
+              display: grid;
               & > * {
                 grid-area: 1 / 1;
               }
@@ -7010,7 +7009,6 @@ export default async function courselore({
                     style="${css`
                       display: flex;
                       gap: var(--space--2);
-                      align-items: baseline;
                     `}"
                   >
                     <div>$${avatarPartial(enrollment.user)}</div>
