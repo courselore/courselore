@@ -2710,55 +2710,90 @@ export default async function courselore({
   const avatarPartial = (
     user: AuthorEnrollment["user"],
     { onlineIndicator = true }: { onlineIndicator?: boolean } = {}
-  ): HTML => html`
-    $${user.avatar === null
+  ): HTML => {
+    const avatar = html`
+      $${user.avatar === null
+        ? html`
+            <div
+              style="${css`
+                font-size: var(--font-size--xs);
+                line-height: var(--line-height--xs);
+                font-weight: var(--font-weight--black);
+                color: var(--color--${user.avatarlessBackgroundColor}--600);
+                background-color: var(
+                  --color--${user.avatarlessBackgroundColor}--200
+                );
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--${user.avatarlessBackgroundColor}--300);
+                  background-color: var(
+                    --color--${user.avatarlessBackgroundColor}--900
+                  );
+                }
+                width: var(--space--6);
+                height: var(--space--6);
+                border-radius: var(--border-radius--circle);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              `}"
+            >
+              ${(() => {
+                const nameParts = user.name.split(/\s+/);
+                return `${nameParts[0][0]}${
+                  nameParts.length > 0 ? nameParts[nameParts.length - 1][0] : ""
+                }`.toUpperCase();
+              })()}
+            </div>
+          `
+        : html`
+            <img
+              src="${user.avatar}"
+              alt="${user.name}"
+              style="${css`
+                width: var(--space--6);
+                height: var(--space--6);
+                border-radius: var(--border-radius--circle);
+                @media (prefers-color-scheme: dark) {
+                  filter: brightness(var(--brightness--90));
+                }
+              `}"
+            />
+          `}
+    `;
+
+    return onlineIndicator
       ? html`
           <div
             style="${css`
-              font-size: var(--font-size--xs);
-              line-height: var(--line-height--xs);
-              font-weight: var(--font-weight--black);
-              color: var(--color--${user.avatarlessBackgroundColor}--600);
-              background-color: var(
-                --color--${user.avatarlessBackgroundColor}--200
-              );
-              @media (prefers-color-scheme: dark) {
-                color: var(--color--${user.avatarlessBackgroundColor}--300);
-                background-color: var(
-                  --color--${user.avatarlessBackgroundColor}--900
-                );
+              display: grid;
+              & > * {
+                grid-area: 1 / 1;
               }
-              width: var(--space--6);
-              height: var(--space--6);
-              border-radius: var(--border-radius--circle);
-              display: flex;
-              justify-content: center;
-              align-items: center;
             `}"
           >
-            ${(() => {
-              const nameParts = user.name.split(/\s+/);
-              return `${nameParts[0][0]}${
-                nameParts.length > 0 ? nameParts[nameParts.length - 1][0] : ""
-              }`.toUpperCase();
-            })()}
+            $${avatar}
+            <div
+              style="${css`
+                background-color: var(--color--green--500);
+                @media (prefers-color-scheme: dark) {
+                  background-color: var(--color--green--600);
+                }
+                width: var(--space--2);
+                height: var(--space--2);
+                border: var(--border-width--1) solid var(--color--green--50);
+                @media (prefers-color-scheme: dark) {
+                  border-color: var(--color--green--900);
+                }
+                border-radius: var(--border-radius--circle);
+                place-self: end;
+                transform: translate(20%, 20%);
+                /* display: none; */
+              `}"
+            ></div>
           </div>
         `
-      : html`
-          <img
-            src="${user.avatar}"
-            alt="${user.name}"
-            style="${css`
-              width: var(--space--6);
-              height: var(--space--6);
-              border-radius: var(--border-radius--circle);
-              @media (prefers-color-scheme: dark) {
-                filter: brightness(var(--brightness--90));
-              }
-            `}"
-          />
-        `}
-  `;
+      : html`$${avatar}`;
+  };
 
   const enrollmentRoleIcon = {
     student: {
@@ -6978,7 +7013,7 @@ export default async function courselore({
                       gap: var(--space--2);
                     `}"
                   >
-                    $${avatarPartial(enrollment.user)}
+                    <div>$${avatarPartial(enrollment.user)}</div>
 
                     <div
                       style="${css`
