@@ -15000,22 +15000,18 @@ ${value}</textarea
                                                       style="${css`
                                                         width: var(--space--2);
                                                         height: var(--space--2);
-                                                        /*
-                                                        margin-top: var(
-                                                          --space--2
-                                                        );
                                                         @media (max-width: 629px) {
-                                                          margin-left: var(
-                                                            --space---3
+                                                          transform: translate(
+                                                            var(--space---2),
+                                                            var(--space--2-5)
                                                           );
                                                         }
                                                         @media (min-width: 630px) {
-                                                          margin-left: var(
-                                                            --space---4
+                                                          transform: translate(
+                                                            var(--space---3-5),
+                                                            var(--space--2-5)
                                                           );
                                                         }
-                                                        position: absolute;
-                                                        */
                                                         transition-property: var(
                                                           --transition-property--base
                                                         );
