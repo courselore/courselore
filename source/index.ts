@@ -2693,16 +2693,23 @@ export default async function courselore({
 
   const avatarPartial = (
     user: AuthorEnrollment["user"],
-    { onlineIndicator = true }: { onlineIndicator?: boolean } = {}
+    {
+      onlineIndicator = true,
+      size = "base",
+    }: { onlineIndicator?: boolean; size?: "base" | "small" } = {}
   ): HTML => {
+    const dimension = { base: "var(--space--6)", small: "var(--space--4)" }[
+      size
+    ];
     const avatar = html`
       $${user.avatar === null
         ? html`
             <svg
               style="${css`
-                width: var(--space--6);
-                height: var(--space--6);
+                width: ${dimension};
+                height: ${dimension};
               `}"
+              viewBox="0 0 24 24"
             >
               <circle
                 cx="12"
@@ -2745,8 +2752,8 @@ export default async function courselore({
               src="${user.avatar}"
               alt="${user.name}"
               style="${css`
-                width: var(--space--6);
-                height: var(--space--6);
+                width: ${dimension};
+                height: ${dimension};
                 border-radius: var(--border-radius--circle);
                 @media (prefers-color-scheme: dark) {
                   filter: brightness(var(--brightness--90));
@@ -9330,7 +9337,9 @@ export default async function courselore({
       >
         $${conversation.anonymousAt === null
           ? html`
-              $${avatarPartial(conversation.authorEnrollment.user)}
+              $${avatarPartial(conversation.authorEnrollment.user, {
+                size: "small",
+              })}
               ${conversation.authorEnrollment.user.name}
             `
           : html`
