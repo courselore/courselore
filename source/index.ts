@@ -9341,7 +9341,7 @@ export default async function courselore({
                   data-last-seen-online-at="${conversation.authorEnrollment.user
                     .lastSeenOnlineAt}"
                   oninteractive="${javascript`
-                    onlineIndicator(this);
+                    // onlineIndicator(this);
                   `}"
                 ></span>
               </span>
@@ -9377,7 +9377,7 @@ export default async function courselore({
                         data-last-seen-online-at="${conversation
                           .authorEnrollment.user.lastSeenOnlineAt}"
                         oninteractive="${javascript`
-                          onlineIndicator(this);
+                          // onlineIndicator(this);
                         `}"
                       ></span>
                     </span>
@@ -9478,7 +9478,7 @@ export default async function courselore({
                           data-last-seen-online-at="${conversation
                             .authorEnrollment.user.lastSeenOnlineAt}"
                           oninteractive="${javascript`
-                            onlineIndicator(this);
+                            // onlineIndicator(this);
                           `}"
                         ></span>
                       </span>
@@ -9523,7 +9523,7 @@ export default async function courselore({
                                 data-last-seen-online-at="${conversation
                                   .authorEnrollment.user.lastSeenOnlineAt}"
                                 oninteractive="${javascript`
-                                  onlineIndicator(this);
+                                  // onlineIndicator(this);
                                 `}"
                               ></span>
                             </span>
@@ -9573,7 +9573,7 @@ export default async function courselore({
                           data-last-seen-online-at="${conversation
                             .authorEnrollment.user.lastSeenOnlineAt}"
                           oninteractive="${javascript`
-                            onlineIndicator(this);
+                            // onlineIndicator(this);
                           `}"
                         ></span>
                       </span>
@@ -9616,7 +9616,7 @@ export default async function courselore({
                                 data-last-seen-online-at="${conversation
                                   .authorEnrollment.user.lastSeenOnlineAt}"
                                 oninteractive="${javascript`
-                                  onlineIndicator(this);
+                                  // onlineIndicator(this);
                                 `}"
                               ></span>
                             </span>
@@ -9654,7 +9654,7 @@ export default async function courselore({
                           data-last-seen-online-at="${conversation
                             .authorEnrollment.user.lastSeenOnlineAt}"
                           oninteractive="${javascript`
-                            onlineIndicator(this);
+                            // onlineIndicator(this);
                           `}"
                         ></span>
                       </span>
@@ -9694,7 +9694,7 @@ export default async function courselore({
                                 data-last-seen-online-at="${conversation
                                   .authorEnrollment.user.lastSeenOnlineAt}"
                                 oninteractive="${javascript`
-                                  onlineIndicator(this);
+                                  // onlineIndicator(this);
                                 `}"
                               ></span>
                             </span>
@@ -15081,7 +15081,7 @@ ${value}</textarea
                                                             .user
                                                             .lastSeenOnlineAt}"
                                                           oninteractive="${javascript`
-                                                            onlineIndicator(this);
+                                                            // onlineIndicator(this);
                                                           `}"
                                                         ></div>
                                                       </div>
@@ -15183,7 +15183,7 @@ ${value}</textarea
                                                               .user
                                                               .lastSeenOnlineAt}"
                                                             oninteractive="${javascript`
-                                                              onlineIndicator(this);
+                                                              // onlineIndicator(this);
                                                             `}"
                                                           ></span>
                                                         </span>
