@@ -6970,34 +6970,8 @@ export default async function courselore({
                       gap: var(--space--2);
                     `}"
                   >
-                    <div>
-                      <div class="online-indicator">
-                        $${enrollment.user.avatar === null
-                          ? html`
-                              <div
-                                style="${css`
-                                  font-size: var(--font-size--xl);
-                                `}"
-                              >
-                                <i class="bi bi-person-circle"></i>
-                              </div>
-                            `
-                          : html`
-                              <img
-                                src="${enrollment.user.avatar}"
-                                alt="${enrollment.user.name}"
-                                class="avatar avatar--xl"
-                              />
-                            `}
-                        <div
-                          data-last-seen-online-at="${enrollment.user
-                            .lastSeenOnlineAt}"
-                          oninteractive="${javascript`
-                            onlineIndicator(this);
-                          `}"
-                        ></div>
-                      </div>
-                    </div>
+                    $${avatarPartial(enrollment.user)}
+
                     <div
                       style="${css`
                         flex: 1;

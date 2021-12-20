@@ -36,6 +36,7 @@
   - Remove CSS
     - `.avatar`
     - `.online-indicator`
+  - Remove `onlineIndicator`
   - Person information widget:
     - Last visited time.
     - Biography.
