@@ -9413,19 +9413,14 @@ export default async function courselore({
       >
         $${avatarPartial(
           conversation.anonymousAt === null
-            ? undefined
-            : conversation.authorEnrollment.user,
+            ? conversation.authorEnrollment.user
+            : undefined,
           {
             size: "xs",
           }
         )}
         $${conversation.anonymousAt === null
-          ? html`
-              $${avatarPartial(conversation.authorEnrollment.user, {
-                size: "xs",
-              })}
-              ${conversation.authorEnrollment.user.name}
-            `
+          ? html`${conversation.authorEnrollment.user.name}`
           : html`
               <span
                 class="text--violet"
