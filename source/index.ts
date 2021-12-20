@@ -2734,7 +2734,6 @@ export default async function courselore({
                 x="12"
                 y="16"
                 text-anchor="middle"
-                class="text--violet"
                 style="${css`
                   font-size: var(--font-size--2xs);
                   line-height: var(--line-height--2xs);
@@ -2744,7 +2743,11 @@ export default async function courselore({
                     fill: var(--color--violet--300);
                   }
                 `}"
-              ></text>
+              >
+                <span class="text--violet">
+                  <i class="bi bi-sunglasses"></i>
+                </span>
+              </text>
             </svg>
           `
         : user.avatar === null
