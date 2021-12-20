@@ -2428,7 +2428,7 @@ export default async function courselore({
                 });
               `}"
             >
-              $${avatarPartial(res.locals.user)}
+              $${avatarPartial(res.locals.user, { onlineIndicator: false })}
             </button>
             <div hidden>
               <div
@@ -2707,7 +2707,10 @@ export default async function courselore({
     </svg>
   `;
 
-  const avatarPartial = (user: AuthorEnrollment["user"]): HTML => html`
+  const avatarPartial = (
+    user: AuthorEnrollment["user"],
+    { onlineIndicator = true }: { onlineIndicator?: boolean } = {}
+  ): HTML => html`
     $${user.avatar === null
       ? html`
           <div
