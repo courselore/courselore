@@ -30,6 +30,7 @@
 
 - Avatars.
   - Extract partial.
+  - Fix colors of `<i class="bi bi-journal-text"></i>`.
   - Fix small online indicator on inline contexts for people who don’t have avatars.
   - Review
     - `bi-person-circle`
