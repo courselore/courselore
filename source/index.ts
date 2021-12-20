@@ -7022,13 +7022,7 @@ export default async function courselore({
                         min-width: var(--space--0);
                       `}"
                     >
-                      <div
-                        style="${css`
-                          flex: 1;
-                          display: flex;
-                          flex-direction: column;
-                        `}"
-                      >
+                      <div>
                         <div class="strong">${enrollment.user.name}</div>
                         <div class="secondary">${enrollment.user.email}</div>
                         <div
