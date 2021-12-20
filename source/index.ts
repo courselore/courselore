@@ -2730,24 +2730,20 @@ export default async function courselore({
                   }
                 `}"
               />
-              <text
-                x="12"
-                y="16"
-                text-anchor="middle"
-                style="${css`
-                  font-size: var(--font-size--2xs);
-                  line-height: var(--line-height--2xs);
-                  font-weight: var(--font-weight--black);
-                  fill: var(--color--violet--600);
-                  @media (prefers-color-scheme: dark) {
-                    fill: var(--color--violet--300);
-                  }
-                `}"
-              >
-                <span class="text--violet">
+              <foreignObject x="2" y="-2" width="20" height="20">
+                <span
+                  style="${css`
+                    font-size: var(--font-size--xl);
+                    line-height: var(--line-height--xl);
+                    color: var(--color--violet--600);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--violet--300);
+                    }
+                  `}"
+                >
                   <i class="bi bi-sunglasses"></i>
                 </span>
-              </text>
+              </foreignObject>
             </svg>
           `
         : user.avatar === null
