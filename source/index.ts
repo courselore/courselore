@@ -2749,7 +2749,8 @@ export default async function courselore({
       ? html`
           <div
             style="${css`
-              display: grid;
+              display: inline-grid;
+              vertical-align: var(--space---1-5);
               & > * {
                 grid-area: 1 / 1;
               }
