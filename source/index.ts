@@ -2698,14 +2698,21 @@ export default async function courselore({
       size = "sm",
     }: { onlineIndicator?: boolean; size?: "xs" | "sm" } = {}
   ): HTML => {
-    const dimension = { xs: "var(--space--4)", sm: "var(--space--6)" }[size];
     const avatar = html`
       $${user.avatar === null
         ? html`
             <svg
               style="${css`
-                width: ${dimension};
-                height: ${dimension};
+                ${{
+                  xs: css`
+                    width: var(--space--4);
+                    height: var(--space--4);
+                  `,
+                  sm: css`
+                    width: var(--space--6);
+                    height: var(--space--6);
+                  `,
+                }[size]}
               `}"
               viewBox="0 0 24 24"
             >
@@ -2750,8 +2757,16 @@ export default async function courselore({
               src="${user.avatar}"
               alt="${user.name}"
               style="${css`
-                width: ${dimension};
-                height: ${dimension};
+                ${{
+                  xs: css`
+                    width: var(--space--4);
+                    height: var(--space--4);
+                  `,
+                  sm: css`
+                    width: var(--space--6);
+                    height: var(--space--6);
+                  `,
+                }[size]}
                 border-radius: var(--border-radius--circle);
                 @media (prefers-color-scheme: dark) {
                   filter: brightness(var(--brightness--90));
@@ -2769,7 +2784,10 @@ export default async function courselore({
               & > * {
                 grid-area: 1 / 1;
               }
-              vertical-align: var(--space---1);
+              vertical-align: ${{
+                xs: "var(--space---1)",
+                sm: "var(--space---2)",
+              }[size]};
             `}"
           >
             $${avatar}
@@ -2779,8 +2797,16 @@ export default async function courselore({
                 @media (prefers-color-scheme: dark) {
                   background-color: var(--color--green--600);
                 }
-                width: var(--space--2);
-                height: var(--space--2);
+                ${{
+                  xs: css`
+                    width: var(--space--1-5);
+                    height: var(--space--1-5);
+                  `,
+                  sm: css`
+                    width: var(--space--2);
+                    height: var(--space--2);
+                  `,
+                }[size]}
                 border: var(--border-width--1) solid var(--color--green--50);
                 @media (prefers-color-scheme: dark) {
                   border-color: var(--color--green--900);
@@ -7026,6 +7052,7 @@ export default async function courselore({
                     style="${css`
                       display: flex;
                       gap: var(--space--2);
+                      align-items: baseline;
                     `}"
                   >
                     <div>$${avatarPartial(enrollment.user)}</div>
@@ -7033,7 +7060,6 @@ export default async function courselore({
                     <div
                       style="${css`
                         flex: 1;
-                        margin-top: var(--space--0-5);
                         display: flex;
                         flex-direction: column;
                         gap: var(--space--2);
