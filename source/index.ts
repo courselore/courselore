@@ -6890,35 +6890,50 @@ export default async function courselore({
     "/courses/:courseReference/settings/enrollments",
     ...isCourseStaffMiddleware,
     (req, res) => {
-      const enrollments = database.all<{
-        id: number;
-        userId: number;
-        userLastSeenOnlineAt: string;
-        userEmail: string;
-        userName: string;
-        userAvatar: string | null;
-        userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-        userBiography: string | null;
-        reference: string;
-        role: EnrollmentRole;
-      }>(
-        sql`
-          SELECT "enrollments"."id",
-                 "users"."id" AS "userId",
-                 "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                 "users"."email" AS "userEmail",
-                 "users"."name" AS "userName",
-                 "users"."avatar" AS "userAvatar",
-                 "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                 "users"."biography" AS "userBiography",
-                 "enrollments"."reference",
-                 "enrollments"."role"
-          FROM "enrollments"
-          JOIN "users" ON "enrollments"."user" = "users"."id"
-          WHERE "enrollments"."course" = ${res.locals.course.id}
-          ORDER BY "enrollments"."role" ASC, "users"."name" ASC
-        `
-      );
+      const enrollments = database
+        .all<{
+          id: number;
+          userId: number;
+          userLastSeenOnlineAt: string;
+          userEmail: string;
+          userName: string;
+          userAvatar: string | null;
+          userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+          userBiography: string | null;
+          reference: string;
+          role: EnrollmentRole;
+        }>(
+          sql`
+            SELECT "enrollments"."id",
+                  "users"."id" AS "userId",
+                  "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                  "users"."email" AS "userEmail",
+                  "users"."name" AS "userName",
+                  "users"."avatar" AS "userAvatar",
+                  "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+                  "users"."biography" AS "userBiography",
+                  "enrollments"."reference",
+                  "enrollments"."role"
+            FROM "enrollments"
+            JOIN "users" ON "enrollments"."user" = "users"."id"
+            WHERE "enrollments"."course" = ${res.locals.course.id}
+            ORDER BY "enrollments"."role" ASC, "users"."name" ASC
+          `
+        )
+        .map((enrollment) => ({
+          id: enrollment.id,
+          user: {
+            id: enrollment.userId,
+            lastSeenOnlineAt: enrollment.userLastSeenOnlineAt,
+            email: enrollment.userEmail,
+            name: enrollment.userName,
+            avatar: enrollment.userAvatar,
+            avatarlessBackgroundColor: enrollment.userAvatarlessBackgroundColor,
+            biography: enrollment.userBiography,
+          },
+          reference: enrollment.reference,
+          role: enrollment.role,
+        }));
 
       res.send(
         courseSettingsLayout({
@@ -6957,7 +6972,7 @@ export default async function courselore({
                   >
                     <div>
                       <div class="online-indicator">
-                        $${enrollment.userAvatar === null
+                        $${enrollment.user.avatar === null
                           ? html`
                               <div
                                 style="${css`
@@ -6969,13 +6984,14 @@ export default async function courselore({
                             `
                           : html`
                               <img
-                                src="${enrollment.userAvatar}"
-                                alt="${enrollment.userName}"
+                                src="${enrollment.user.avatar}"
+                                alt="${enrollment.user.name}"
                                 class="avatar avatar--xl"
                               />
                             `}
                         <div
-                          data-last-seen-online-at="${enrollment.userLastSeenOnlineAt}"
+                          data-last-seen-online-at="${enrollment.user
+                            .lastSeenOnlineAt}"
                           oninteractive="${javascript`
                             onlineIndicator(this);
                           `}"
@@ -6998,8 +7014,8 @@ export default async function courselore({
                           flex-direction: column;
                         `}"
                       >
-                        <div class="strong">${enrollment.userName}</div>
-                        <div class="secondary">${enrollment.userEmail}</div>
+                        <div class="strong">${enrollment.user.name}</div>
+                        <div class="secondary">${enrollment.user.email}</div>
                       </div>
 
                       <div
@@ -7228,7 +7244,7 @@ export default async function courselore({
                         Last seen online
                         <time
                           datetime="${new Date(
-                            enrollment.userLastSeenOnlineAt
+                            enrollment.user.lastSeenOnlineAt
                           ).toISOString()}"
                           oninteractive="${javascript`
                             leafac.relativizeDateTimeElement(this, { preposition: "on" });
@@ -7236,7 +7252,7 @@ export default async function courselore({
                         ></time>
                       </div>
 
-                      $${enrollment.userBiography !== null
+                      $${enrollment.user.biography !== null
                         ? html`
                             <details class="details">
                               <summary>Biography</summary>
@@ -7244,7 +7260,7 @@ export default async function courselore({
                                 $${markdownProcessor({
                                   req,
                                   res,
-                                  markdown: enrollment.userBiography,
+                                  markdown: enrollment.user.biography,
                                 }).html}
                               </div>
                             </details>
