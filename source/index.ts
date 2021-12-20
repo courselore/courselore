@@ -2764,6 +2764,7 @@ export default async function courselore({
               & > * {
                 grid-area: 1 / 1;
               }
+              vertical-align: middle;
             `}"
           >
             $${avatar}
