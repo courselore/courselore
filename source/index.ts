@@ -7030,7 +7030,6 @@ export default async function courselore({
                           class="secondary"
                           style="${css`
                             font-size: var(--font-size--xs);
-                            line-height: var(--line-height--xs);
                           `}"
                         >
                           Last seen online
