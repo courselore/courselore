@@ -116,7 +116,7 @@ export default async function courselore({
     id: null,
     user: {
       id: null,
-      lastSeenOnlineAt: null,
+      lastSeenOnlineAt: "0000-01-01T00:00:00.000Z",
       email: null,
       name: "No Longer Enrolled",
       avatar: null,
@@ -527,22 +527,6 @@ export default async function courselore({
                   leafac.liveReload();
                 `
               : javascript``};
-
-            const onlineIndicator = (element) => {
-              tippy(element, {
-                content: "Online",
-                touch: false,
-              });
-              (function update() {
-                element.style.display =
-                  Date.now() -
-                    new Date(element.dataset.lastSeenOnlineAt).getTime() <
-                  5 * 60 * 1000
-                    ? "block"
-                    : "none";
-                window.setInterval(update, 60 * 1000);
-              })();
-            };
           </script>
 
           $${res?.locals.eventSource
@@ -2787,7 +2771,21 @@ export default async function courselore({
                 border-radius: var(--border-radius--circle);
                 place-self: end;
                 transform: translate(20%, 20%);
-                /* display: none; */
+                display: none;
+              `}"
+              oninteractive="${javascript`
+                const element = this;
+                const lastSeenOnlineAt = ${new Date(
+                  user.lastSeenOnlineAt
+                ).getTime()};
+                tippy(element, {
+                  content: "Online",
+                  touch: false,
+                });
+                (function update() {
+                  element.style.display = Date.now() - lastSeenOnlineAt < 5 * 60 * 1000 ? "block" : "none";
+                  window.setInterval(update, 60 * 1000);
+                })();
               `}"
             ></div>
           </div>
