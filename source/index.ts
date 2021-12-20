@@ -2720,8 +2720,8 @@ export default async function courselore({
                 y="16"
                 text-anchor="middle"
                 style="${css`
-                  font-size: var(--font-size--xs);
-                  line-height: var(--line-height--xs);
+                  font-size: var(--font-size--2xs);
+                  line-height: var(--line-height--2xs);
                   font-weight: var(--font-weight--black);
                   fill: var(--color--${user.avatarlessBackgroundColor}--600);
                   @media (prefers-color-scheme: dark) {
