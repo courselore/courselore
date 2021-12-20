@@ -14986,10 +14986,10 @@ ${value}</textarea
 
                                             <div
                                               style="${css`
-                                                position: relative;
                                                 display: flex;
-                                                gap: var(--space--2);
-                                                align-items: baseline;
+                                                & > * {
+                                                  grid-area: 1 / 1;
+                                                }
                                               `}"
                                             >
                                               $${message.reading === null
@@ -14999,185 +14999,95 @@ ${value}</textarea
                                                       style="${css`
                                                         width: var(--space--2);
                                                         height: var(--space--2);
-                                                        margin-top: var(
-                                                          --space--2
+                                                        /*
+                                                      margin-top: var(
+                                                        --space--2
+                                                      );
+                                                      @media (max-width: 629px) {
+                                                        margin-left: var(
+                                                          --space---3
                                                         );
-                                                        @media (max-width: 629px) {
-                                                          margin-left: var(
-                                                            --space---3
-                                                          );
-                                                        }
-                                                        @media (min-width: 630px) {
-                                                          margin-left: var(
-                                                            --space---4
-                                                          );
-                                                        }
-                                                        position: absolute;
+                                                      }
+                                                      @media (min-width: 630px) {
+                                                        margin-left: var(
+                                                          --space---4
+                                                        );
+                                                      }
+                                                      position: absolute;
+                                                      */
                                                         transition-property: var(
                                                           --transition-property--base
                                                         );
                                                       `}"
                                                       oninteractive="${javascript`
-                                                        tippy(this, {
-                                                          content: "Unread Message",
-                                                          touch: false,
-                                                        });
-                                                        window.setTimeout(() => { this.click(); }, 2000);
-                                                      `}"
+                                                      tippy(this, {
+                                                        content: "Unread Message",
+                                                        touch: false,
+                                                      });
+                                                      window.setTimeout(() => { this.click(); }, 2000);
+                                                    `}"
                                                       onclick="${javascript`
-                                                        this.style.opacity = 0;
-                                                        window.setTimeout(() => { this.remove(); }, 500);
-                                                      `}"
+                                                      this.style.opacity = 0;
+                                                      window.setTimeout(() => { this.remove(); }, 500);
+                                                    `}"
                                                     ></button>
                                                   `
                                                 : html``}
 
-                                              <div>
-                                                $${message.anonymousAt === null
-                                                  ? html`
-                                                      <div
-                                                        class="online-indicator online-indicator--inline"
-                                                        style="${css`
-                                                          vertical-align: middle;
-                                                        `}"
-                                                      >
-                                                        $${message
-                                                          .authorEnrollment.user
-                                                          .avatar === null
-                                                          ? html`
-                                                              <div
-                                                                style="${css`
-                                                                  font-size: var(
-                                                                    --font-size--2xl
-                                                                  );
-                                                                  &
-                                                                    > *::before {
-                                                                    vertical-align: middle;
-                                                                  }
-                                                                `}"
-                                                              >
-                                                                <i
-                                                                  class="bi bi-person-circle"
-                                                                ></i>
-                                                              </div>
-                                                            `
-                                                          : html`
-                                                              <img
-                                                                src="${message
-                                                                  .authorEnrollment
-                                                                  .user.avatar}"
-                                                                alt="${message
-                                                                  .authorEnrollment
-                                                                  .user.name}"
-                                                                class="avatar avatar--2xl"
-                                                                style="${css`
-                                                                  vertical-align: middle;
-                                                                `}"
-                                                              />
-                                                            `}
-                                                        <div
-                                                          data-last-seen-online-at="${message
-                                                            .authorEnrollment
-                                                            .user
-                                                            .lastSeenOnlineAt}"
-                                                          oninteractive="${javascript`
-                                                            // onlineIndicator(this);
-                                                          `}"
-                                                        ></div>
-                                                      </div>
-                                                    `
-                                                  : html`
-                                                      <div
-                                                        class="text--violet"
-                                                        style="${css`
-                                                          font-size: var(
-                                                            --font-size--2xl
-                                                          );
-                                                          & > *::before {
-                                                            vertical-align: middle;
-                                                          }
-                                                        `}"
-                                                        oninteractive="${javascript`
-                                                          tippy(this, {
-                                                            content: "Anonymous to other students.",
-                                                            touch: false,
-                                                          });
-                                                        `}"
-                                                      >
-                                                        <i
-                                                          class="bi bi-sunglasses"
-                                                        ></i>
-                                                      </div>
-                                                    `}
-                                              </div>
-
-                                              <h3
+                                              <div
                                                 style="${css`
-                                                  flex: 1;
+                                                  display: flex;
+                                                  gap: var(--space--2);
+                                                  align-items: baseline;
                                                 `}"
                                               >
-                                                <span class="strong">
+                                                <div>
                                                   $${message.anonymousAt ===
                                                   null
-                                                    ? highlightSearchResult(
-                                                        html`${message
-                                                          .authorEnrollment.user
-                                                          .name}`,
-                                                        req.query.search
-                                                      )
-                                                    : html`
-                                                        <span
-                                                          class="text--violet"
-                                                          oninteractive="${javascript`
-                                                            tippy(this, {
-                                                              content: "Anonymous to other students.",
-                                                              touch: false,
-                                                            });
-                                                          `}"
-                                                        >
-                                                          Anonymous
-                                                        </span>
-                                                      `}
-                                                </span>
-                                                <span
-                                                  class="secondary"
-                                                  style="${css`
-                                                    font-size: var(
-                                                      --font-size--xs
-                                                    );
-                                                    line-height: var(
-                                                      --line-height--xs
-                                                    );
-                                                  `}"
-                                                >
-                                                  $${message.anonymousAt !==
-                                                    null &&
-                                                  (res.locals.enrollment
-                                                    .role === "staff" ||
-                                                    message.authorEnrollment
-                                                      .id ===
-                                                      res.locals.enrollment.id)
                                                     ? html`
-                                                        (<span
-                                                          class="online-indicator online-indicator--inline online-indicator--small"
+                                                        <div
+                                                          class="online-indicator online-indicator--inline"
+                                                          style="${css`
+                                                            vertical-align: middle;
+                                                          `}"
                                                         >
                                                           $${message
                                                             .authorEnrollment
                                                             .user.avatar ===
                                                           null
-                                                            ? html`<i
-                                                                class="bi bi-person-circle"
-                                                              ></i>`
-                                                            : html`<img
-                                                                src="${message
-                                                                  .authorEnrollment
-                                                                  .user.avatar}"
-                                                                alt="${message
-                                                                  .authorEnrollment
-                                                                  .user.name}"
-                                                                class="avatar avatar--xs avatar--vertical-align"
-                                                              />`}
-                                                          <span
+                                                            ? html`
+                                                                <div
+                                                                  style="${css`
+                                                                    font-size: var(
+                                                                      --font-size--2xl
+                                                                    );
+                                                                    &
+                                                                      > *::before {
+                                                                      vertical-align: middle;
+                                                                    }
+                                                                  `}"
+                                                                >
+                                                                  <i
+                                                                    class="bi bi-person-circle"
+                                                                  ></i>
+                                                                </div>
+                                                              `
+                                                            : html`
+                                                                <img
+                                                                  src="${message
+                                                                    .authorEnrollment
+                                                                    .user
+                                                                    .avatar}"
+                                                                  alt="${message
+                                                                    .authorEnrollment
+                                                                    .user.name}"
+                                                                  class="avatar avatar--2xl"
+                                                                  style="${css`
+                                                                    vertical-align: middle;
+                                                                  `}"
+                                                                />
+                                                              `}
+                                                          <div
                                                             data-last-seen-online-at="${message
                                                               .authorEnrollment
                                                               .user
@@ -15185,48 +15095,154 @@ ${value}</textarea
                                                             oninteractive="${javascript`
                                                               // onlineIndicator(this);
                                                             `}"
-                                                          ></span>
-                                                        </span>
-                                                        $${highlightSearchResult(
+                                                          ></div>
+                                                        </div>
+                                                      `
+                                                    : html`
+                                                        <div
+                                                          class="text--violet"
+                                                          style="${css`
+                                                            font-size: var(
+                                                              --font-size--2xl
+                                                            );
+                                                            & > *::before {
+                                                              vertical-align: middle;
+                                                            }
+                                                          `}"
+                                                          oninteractive="${javascript`
+                                                            tippy(this, {
+                                                              content: "Anonymous to other students.",
+                                                              touch: false,
+                                                            });
+                                                          `}"
+                                                        >
+                                                          <i
+                                                            class="bi bi-sunglasses"
+                                                          ></i>
+                                                        </div>
+                                                      `}
+                                                </div>
+
+                                                <h3
+                                                  style="${css`
+                                                    flex: 1;
+                                                  `}"
+                                                >
+                                                  <span class="strong">
+                                                    $${message.anonymousAt ===
+                                                    null
+                                                      ? highlightSearchResult(
                                                           html`${message
                                                             .authorEnrollment
                                                             .user.name}`,
                                                           req.query.search
-                                                        )})
-                                                      `
-                                                    : html``}
-                                                  <time
-                                                    datetime="${new Date(
-                                                      message.createdAt
-                                                    ).toISOString()}"
+                                                        )
+                                                      : html`
+                                                          <span
+                                                            class="text--violet"
+                                                            oninteractive="${javascript`
+                                                              tippy(this, {
+                                                                content: "Anonymous to other students.",
+                                                                touch: false,
+                                                              });
+                                                            `}"
+                                                          >
+                                                            Anonymous
+                                                          </span>
+                                                        `}
+                                                  </span>
+                                                  <span
+                                                    class="secondary"
                                                     style="${css`
-                                                      margin-left: var(
-                                                        --space--2
+                                                      font-size: var(
+                                                        --font-size--xs
+                                                      );
+                                                      line-height: var(
+                                                        --line-height--xs
                                                       );
                                                     `}"
-                                                    oninteractive="${javascript`
-                                                      leafac.relativizeDateTimeElement(this, { capitalize: true });
-                                                    `}"
-                                                  ></time>
-                                                  $${message.updatedAt !== null
-                                                    ? html`
-                                                        · Updated
-                                                        <time
-                                                          datetime="${new Date(
-                                                            message.updatedAt
-                                                          ).toISOString()}"
-                                                          oninteractive="${javascript`
-                                                            leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                                                          `}"
-                                                        ></time>
-                                                      `
-                                                    : html``}
-                                                </span>
-                                              </h3>
+                                                  >
+                                                    $${message.anonymousAt !==
+                                                      null &&
+                                                    (res.locals.enrollment
+                                                      .role === "staff" ||
+                                                      message.authorEnrollment
+                                                        .id ===
+                                                        res.locals.enrollment
+                                                          .id)
+                                                      ? html`
+                                                          (<span
+                                                            class="online-indicator online-indicator--inline online-indicator--small"
+                                                          >
+                                                            $${message
+                                                              .authorEnrollment
+                                                              .user.avatar ===
+                                                            null
+                                                              ? html`<i
+                                                                  class="bi bi-person-circle"
+                                                                ></i>`
+                                                              : html`<img
+                                                                  src="${message
+                                                                    .authorEnrollment
+                                                                    .user
+                                                                    .avatar}"
+                                                                  alt="${message
+                                                                    .authorEnrollment
+                                                                    .user.name}"
+                                                                  class="avatar avatar--xs avatar--vertical-align"
+                                                                />`}
+                                                            <span
+                                                              data-last-seen-online-at="${message
+                                                                .authorEnrollment
+                                                                .user
+                                                                .lastSeenOnlineAt}"
+                                                              oninteractive="${javascript`
+                                                                // onlineIndicator(this);
+                                                              `}"
+                                                            ></span>
+                                                          </span>
+                                                          $${highlightSearchResult(
+                                                            html`${message
+                                                              .authorEnrollment
+                                                              .user.name}`,
+                                                            req.query.search
+                                                          )})
+                                                        `
+                                                      : html``}
+                                                    <time
+                                                      datetime="${new Date(
+                                                        message.createdAt
+                                                      ).toISOString()}"
+                                                      style="${css`
+                                                        margin-left: var(
+                                                          --space--2
+                                                        );
+                                                      `}"
+                                                      oninteractive="${javascript`
+                                                        leafac.relativizeDateTimeElement(this, { capitalize: true });
+                                                      `}"
+                                                    ></time>
+                                                    $${message.updatedAt !==
+                                                    null
+                                                      ? html`
+                                                          · Updated
+                                                          <time
+                                                            datetime="${new Date(
+                                                              message.updatedAt
+                                                            ).toISOString()}"
+                                                            oninteractive="${javascript`
+                                                              leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                            `}"
+                                                          ></time>
+                                                        `
+                                                      : html``}
+                                                  </span>
+                                                </h3>
 
-                                              $${headers.length === 0
-                                                ? actions
-                                                : html``}
+                                                $${headers.length === 0
+                                                  ? actions
+                                                  : html``}
+                                              </div>
                                             </div>
                                           `;
                                         })()}
