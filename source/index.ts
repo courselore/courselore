@@ -2698,36 +2698,47 @@ export default async function courselore({
     const avatar = html`
       $${user.avatar === null
         ? html`
-            <span
+            <svg
               style="${css`
-                font-size: var(--font-size--xs);
-                line-height: var(--line-height--xs);
-                font-weight: var(--font-weight--black);
-                color: var(--color--${user.avatarlessBackgroundColor}--600);
-                background-color: var(
-                  --color--${user.avatarlessBackgroundColor}--200
-                );
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--${user.avatarlessBackgroundColor}--300);
-                  background-color: var(
-                    --color--${user.avatarlessBackgroundColor}--900
-                  );
-                }
                 width: var(--space--6);
                 height: var(--space--6);
-                border-radius: var(--border-radius--circle);
-                display: flex;
-                justify-content: center;
-                align-items: center;
               `}"
             >
-              ${(() => {
-                const nameParts = user.name.split(/\s+/);
-                return `${nameParts[0][0]}${
-                  nameParts.length > 0 ? nameParts[nameParts.length - 1][0] : ""
-                }`.toUpperCase();
-              })()}
-            </span>
+              <circle
+                cx="12"
+                cy="12"
+                r="12"
+                style="${css`
+                  fill: var(--color--${user.avatarlessBackgroundColor}--200);
+                  @media (prefers-color-scheme: dark) {
+                    fill: var(--color--${user.avatarlessBackgroundColor}--900);
+                  }
+                `}"
+              />
+              <text
+                x="12"
+                y="16"
+                text-anchor="middle"
+                style="${css`
+                  font-size: var(--font-size--xs);
+                  line-height: var(--line-height--xs);
+                  font-weight: var(--font-weight--black);
+                  fill: var(--color--${user.avatarlessBackgroundColor}--600);
+                  @media (prefers-color-scheme: dark) {
+                    fill: var(--color--${user.avatarlessBackgroundColor}--300);
+                  }
+                `}"
+              >
+                ${(() => {
+                  const nameParts = user.name.split(/\s+/);
+                  return `${nameParts[0][0]}${
+                    nameParts.length > 0
+                      ? nameParts[nameParts.length - 1][0]
+                      : ""
+                  }`.toUpperCase();
+                })()}
+              </text>
+            </svg>
           `
         : html`
             <img
