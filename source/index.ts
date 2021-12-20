@@ -2698,7 +2698,7 @@ export default async function courselore({
     const avatar = html`
       $${user.avatar === null
         ? html`
-            <div
+            <span
               style="${css`
                 font-size: var(--font-size--xs);
                 line-height: var(--line-height--xs);
@@ -2727,7 +2727,7 @@ export default async function courselore({
                   nameParts.length > 0 ? nameParts[nameParts.length - 1][0] : ""
                 }`.toUpperCase();
               })()}
-            </div>
+            </span>
           `
         : html`
             <img
@@ -2747,16 +2747,16 @@ export default async function courselore({
 
     return onlineIndicator
       ? html`
-          <div
+          <span
             style="${css`
-              display: grid;
+              display: inline-grid;
               & > * {
                 grid-area: 1 / 1;
               }
             `}"
           >
             $${avatar}
-            <div
+            <span
               style="${css`
                 background-color: var(--color--green--500);
                 @media (prefers-color-scheme: dark) {
@@ -2787,8 +2787,8 @@ export default async function courselore({
                   window.setInterval(update, 60 * 1000);
                 })();
               `}"
-            ></div>
-          </div>
+            ></span>
+          </span>
         `
       : html`$${avatar}`;
   };
@@ -9318,26 +9318,7 @@ export default async function courselore({
       >
         $${conversation.anonymousAt === null
           ? html`
-              <span
-                class="online-indicator online-indicator--inline online-indicator--small"
-              >
-                $${conversation.authorEnrollment.user.avatar === null
-                  ? html`<i class="bi bi-person-circle"></i>`
-                  : html`
-                      <img
-                        src="${conversation.authorEnrollment.user.avatar}"
-                        alt="${conversation.authorEnrollment.user.name}"
-                        class="avatar avatar--xs avatar--vertical-align"
-                      />
-                    `}
-                <span
-                  data-last-seen-online-at="${conversation.authorEnrollment.user
-                    .lastSeenOnlineAt}"
-                  oninteractive="${javascript`
-                    // onlineIndicator(this);
-                  `}"
-                ></span>
-              </span>
+              $${avatarPartial(conversation.authorEnrollment.user)}
               ${conversation.authorEnrollment.user.name}
             `
           : html`
