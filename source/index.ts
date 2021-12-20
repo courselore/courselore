@@ -9402,47 +9402,56 @@ export default async function courselore({
         style="${css`
           font-size: var(--font-size--xs);
           line-height: var(--line-height--xs);
+          display: flex;
+          flex-wrap: wrap;
+          column-gap: var(--space--2);
+          row-gap: var(--space--0-5);
+
+          & > * {
+            display: flex;
+            gap: var(--space--1);
+          }
         `}"
       >
-        $${avatarPartial(
-          conversation.anonymousAt === null
-            ? conversation.authorEnrollment.user
-            : undefined,
-          {
-            size: "xs",
-          }
-        )}
-        $${conversation.anonymousAt === null
-          ? html`
-              <span
-                style="${css`
-                  font-weight: var(--font-weight--bold);
-                `}"
-              >
-                ${conversation.authorEnrollment.user.name}
-              </span>
-            `
-          : html`
-              Anonymous
-              $${res.locals.enrollment.role === "staff" ||
-              conversation.authorEnrollment.id === res.locals.enrollment.id
-                ? html`
-                    ($${avatarPartial(conversation.authorEnrollment.user, {
-                      size: "xs",
-                    })}
-                    ${conversation.authorEnrollment.user.name})
-                  `
-                : html``}
-            `}
-        ·
+        <div
+          style="${css`
+            font-weight: var(--font-weight--bold);
+          `}"
+        >
+          $${avatarPartial(
+            conversation.anonymousAt === null
+              ? conversation.authorEnrollment.user
+              : undefined,
+            {
+              size: "xs",
+            }
+          )}
+          $${conversation.anonymousAt === null
+            ? html`${conversation.authorEnrollment.user.name}`
+            : html`
+                Anonymous
+                $${res.locals.enrollment.role === "staff" ||
+                conversation.authorEnrollment.id === res.locals.enrollment.id
+                  ? html`
+                      <span>
+                        ($${avatarPartial(conversation.authorEnrollment.user, {
+                          size: "xs",
+                        })}
+                        ${conversation.authorEnrollment.user.name})
+                      </span>
+                    `
+                  : html``}
+              `}
+        </div>
+
         <time
           datetime="${new Date(conversation.createdAt).toISOString()}"
           oninteractive="${javascript`
             leafac.relativizeDateTimeElement(this, { capitalize: true });
           `}"
         ></time>
-        ·
-        <span
+
+        <div
           oninteractive="${javascript`
             tippy(this, {
               content: "Conversation Reference",
@@ -9451,7 +9460,7 @@ export default async function courselore({
           `}"
         >
           #${conversation.reference}
-        </span>
+        </div>
       </div>
 
       $${conversation.taggings.length === 0
