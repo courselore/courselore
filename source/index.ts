@@ -2700,8 +2700,19 @@ export default async function courselore({
       onlineIndicator?: boolean;
       size?: "xs" | "sm";
     } = {}
-  ): HTML => {
-    const avatar = html`
+  ): HTML => html`
+    <span
+      style="${css`
+        display: inline-grid;
+        & > * {
+          grid-area: 1 / 1;
+        }
+        vertical-align: ${{
+          xs: "var(--space---1)",
+          sm: "var(--space---2)",
+        }[size]};
+      `}"
+    >
       $${user === undefined
         ? html`
             <svg
@@ -2821,71 +2832,52 @@ export default async function courselore({
               `}"
             />
           `}
-    `;
-
-    return onlineIndicator
-      ? html`
-          <span
-            style="${css`
-              display: inline-grid;
-              & > * {
-                grid-area: 1 / 1;
-              }
-              vertical-align: ${{
-                xs: "var(--space---1)",
-                sm: "var(--space---2)",
-              }[size]};
-            `}"
-          >
-            $${avatar}
-            $${user === undefined
-              ? html``
-              : html`
-                  <span
-                    style="${css`
-                      background-color: var(--color--green--500);
-                      @media (prefers-color-scheme: dark) {
-                        background-color: var(--color--green--600);
-                      }
-                      ${{
-                        xs: css`
-                          width: var(--space--1-5);
-                          height: var(--space--1-5);
-                        `,
-                        sm: css`
-                          width: var(--space--2);
-                          height: var(--space--2);
-                        `,
-                      }[size]}
-                      border: var(--border-width--1) solid var(--color--green--50);
-                      @media (prefers-color-scheme: dark) {
-                        border-color: var(--color--green--900);
-                      }
-                      border-radius: var(--border-radius--circle);
-                      place-self: end;
-                      transform: translate(20%, 20%);
-                      display: none;
-                    `}"
-                    oninteractive="${javascript`
-                      const element = this;
-                      const lastSeenOnlineAt = ${new Date(
-                        user.lastSeenOnlineAt
-                      ).getTime()};
-                      tippy(element, {
-                        content: "Online",
-                        touch: false,
-                      });
-                      (function update() {
-                        element.style.display = Date.now() - lastSeenOnlineAt < 5 * 60 * 1000 ? "block" : "none";
-                        window.setInterval(update, 60 * 1000);
-                      })();
-                    `}"
-                  ></span>
-                `}
-          </span>
-        `
-      : html`$${avatar}`;
-  };
+      $${onlineIndicator && user !== undefined
+        ? html`
+            <span
+              style="${css`
+                background-color: var(--color--green--500);
+                @media (prefers-color-scheme: dark) {
+                  background-color: var(--color--green--600);
+                }
+                ${{
+                  xs: css`
+                    width: var(--space--1-5);
+                    height: var(--space--1-5);
+                  `,
+                  sm: css`
+                    width: var(--space--2);
+                    height: var(--space--2);
+                  `,
+                }[size]}
+                border: var(--border-width--1) solid var(--color--green--50);
+                @media (prefers-color-scheme: dark) {
+                  border-color: var(--color--green--900);
+                }
+                border-radius: var(--border-radius--circle);
+                place-self: end;
+                transform: translate(20%, 20%);
+                display: none;
+              `}"
+              oninteractive="${javascript`
+                  const element = this;
+                  const lastSeenOnlineAt = ${new Date(
+                    user.lastSeenOnlineAt
+                  ).getTime()};
+                  tippy(element, {
+                    content: "Online",
+                    touch: false,
+                  });
+                  (function update() {
+                    element.style.display = Date.now() - lastSeenOnlineAt < 5 * 60 * 1000 ? "block" : "none";
+                    window.setInterval(update, 60 * 1000);
+                  })();
+                `}"
+            ></span>
+          `
+        : html``}
+    </span>
+  `;
 
   const enrollmentRoleIcon = {
     student: {
