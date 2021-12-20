@@ -143,6 +143,7 @@
 - Digests that accumulate notifications over a period.
 - Other channels: Use the browser Notifications API & Push API; Desktop & phone applications.
 - Snooze.
+- Don’t require user to be logged in to unsubscribe from notifications?
 
 ### Search
 
