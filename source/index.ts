@@ -15044,7 +15044,7 @@ ${value}</textarea
 
                                             <div
                                               style="${css`
-                                                display: flex;
+                                                display: grid;
                                                 & > * {
                                                   grid-area: 1 / 1;
                                                 }
@@ -15095,10 +15095,18 @@ ${value}</textarea
                                                 `}"
                                               >
                                                 <div
+                                                  class="secondary"
                                                   style="${css`
+                                                    font-size: var(
+                                                      --font-size--xs
+                                                    );
+                                                    line-height: var(
+                                                      --line-height--xs
+                                                    );
                                                     flex: 1;
                                                     display: flex;
                                                     flex-wrap: wrap;
+                                                    align-items: center;
                                                     column-gap: var(--space--4);
                                                     row-gap: var(--space--2);
                                                     & > * {
@@ -15107,7 +15115,17 @@ ${value}</textarea
                                                     }
                                                   `}"
                                                 >
-                                                  <div class="strong">
+                                                  <div
+                                                    class="strong"
+                                                    style="${css`
+                                                      font-size: var(
+                                                        --font-size--sm
+                                                      );
+                                                      line-height: var(
+                                                        --line-height--sm
+                                                      );
+                                                    `}"
+                                                  >
                                                     $${avatarPartial(
                                                       message.anonymousAt ===
                                                         null
@@ -15161,11 +15179,6 @@ ${value}</textarea
                                                     datetime="${new Date(
                                                       message.createdAt
                                                     ).toISOString()}"
-                                                    style="${css`
-                                                      margin-left: var(
-                                                        --space--2
-                                                      );
-                                                    `}"
                                                     oninteractive="${javascript`
                                                       leafac.relativizeDateTimeElement(this, { capitalize: true });
                                                     `}"
