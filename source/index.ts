@@ -14992,7 +14992,7 @@ ${value}</textarea
                                                 }
                                               `}"
                                             >
-                                              $${message.reading === null
+                                              $${message.reading === null || "TODO"
                                                 ? html`
                                                     <button
                                                       class="button button--tight button--tight--inline button--blue"
@@ -15000,36 +15000,36 @@ ${value}</textarea
                                                         width: var(--space--2);
                                                         height: var(--space--2);
                                                         /*
-                                                      margin-top: var(
-                                                        --space--2
-                                                      );
-                                                      @media (max-width: 629px) {
-                                                        margin-left: var(
-                                                          --space---3
+                                                        margin-top: var(
+                                                          --space--2
                                                         );
-                                                      }
-                                                      @media (min-width: 630px) {
-                                                        margin-left: var(
-                                                          --space---4
-                                                        );
-                                                      }
-                                                      position: absolute;
-                                                      */
+                                                        @media (max-width: 629px) {
+                                                          margin-left: var(
+                                                            --space---3
+                                                          );
+                                                        }
+                                                        @media (min-width: 630px) {
+                                                          margin-left: var(
+                                                            --space---4
+                                                          );
+                                                        }
+                                                        position: absolute;
+                                                        */
                                                         transition-property: var(
                                                           --transition-property--base
                                                         );
                                                       `}"
                                                       oninteractive="${javascript`
-                                                      tippy(this, {
-                                                        content: "Unread Message",
-                                                        touch: false,
-                                                      });
-                                                      window.setTimeout(() => { this.click(); }, 2000);
-                                                    `}"
+                                                        tippy(this, {
+                                                          content: "Unread Message",
+                                                          touch: false,
+                                                        });
+                                                        // TODO: window.setTimeout(() => { this.click(); }, 2000);
+                                                      `}"
                                                       onclick="${javascript`
-                                                      this.style.opacity = 0;
-                                                      window.setTimeout(() => { this.remove(); }, 500);
-                                                    `}"
+                                                        this.style.opacity = 0;
+                                                        window.setTimeout(() => { this.remove(); }, 500);
+                                                      `}"
                                                     ></button>
                                                   `
                                                 : html``}
