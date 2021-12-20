@@ -2715,14 +2715,14 @@ export default async function courselore({
               font-size: var(--font-size--md);
               line-height: var(--line-height--md);
               font-weight: var(--font-weight--black);
-              color: var(--color--${user.avatarlessBackgroundColor}--100);
+              color: var(--color--${user.avatarlessBackgroundColor}--600);
               background-color: var(
-                --color--${user.avatarlessBackgroundColor}--600
+                --color--${user.avatarlessBackgroundColor}--200
               );
               @media (prefers-color-scheme: dark) {
-                color: var(--color--${user.avatarlessBackgroundColor}--500);
+                color: var(--color--${user.avatarlessBackgroundColor}--300);
                 background-color: var(
-                  --color--${user.avatarlessBackgroundColor}--800
+                  --color--${user.avatarlessBackgroundColor}--900
                 );
               }
               width: var(--space--6);
