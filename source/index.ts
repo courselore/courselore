@@ -7031,6 +7031,23 @@ export default async function courselore({
                       >
                         <div class="strong">${enrollment.user.name}</div>
                         <div class="secondary">${enrollment.user.email}</div>
+                        <div
+                          class="secondary"
+                          style="${css`
+                            font-size: var(--font-size--xs);
+                            line-height: var(--line-height--xs);
+                          `}"
+                        >
+                          Last seen online
+                          <time
+                            datetime="${new Date(
+                              enrollment.user.lastSeenOnlineAt
+                            ).toISOString()}"
+                            oninteractive="${javascript`
+                              leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                            `}"
+                          ></time>
+                        </div>
                       </div>
 
                       <div
@@ -7247,24 +7264,6 @@ export default async function courselore({
                                 </div>
                               `}
                         </div>
-                      </div>
-
-                      <div
-                        class="secondary"
-                        style="${css`
-                          font-size: var(--font-size--xs);
-                          line-height: var(--line-height--xs);
-                        `}"
-                      >
-                        Last seen online
-                        <time
-                          datetime="${new Date(
-                            enrollment.user.lastSeenOnlineAt
-                          ).toISOString()}"
-                          oninteractive="${javascript`
-                            leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                          `}"
-                        ></time>
                       </div>
 
                       $${enrollment.user.biography !== null
