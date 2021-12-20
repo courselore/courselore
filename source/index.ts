@@ -14992,7 +14992,8 @@ ${value}</textarea
                                                 }
                                               `}"
                                             >
-                                              $${message.reading === null || "TODO"
+                                              $${message.reading === null ||
+                                              "TODO"
                                                 ? html`
                                                     <button
                                                       class="button button--tight button--tight--inline button--blue"
