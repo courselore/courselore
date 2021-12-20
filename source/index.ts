@@ -2712,8 +2712,8 @@ export default async function courselore({
       ? html`
           <div
             style="${css`
-              font-size: var(--font-size--md);
-              line-height: var(--line-height--md);
+              font-size: var(--font-size--xs);
+              line-height: var(--line-height--xs);
               font-weight: var(--font-weight--black);
               color: var(--color--${user.avatarlessBackgroundColor}--600);
               background-color: var(
@@ -2733,7 +2733,12 @@ export default async function courselore({
               align-items: center;
             `}"
           >
-            ${user.name.trim()[0].toUpperCase()}
+            ${(() => {
+              const nameParts = user.name.split(/\s+/);
+              return `${nameParts[0][0]}${
+                nameParts.length > 0 ? nameParts[nameParts.length - 1][0] : ""
+              }`.toUpperCase();
+            })()}
           </div>
         `
       : html`
@@ -5308,8 +5313,8 @@ export default async function courselore({
         isExpired(res.locals.invitation.expiresAt) ||
         (res.locals.invitation.email !== null &&
           res.locals.user !== undefined &&
-          res.locals.invitation.email.toLocaleLowerCase() !==
-            res.locals.user.email.toLocaleLowerCase())
+          res.locals.invitation.email.toLowerCase() !==
+            res.locals.user.email.toLowerCase())
       )
         return next("route");
       next();
