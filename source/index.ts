@@ -3986,7 +3986,7 @@ export default async function courselore({
                     class="decorative-icon"
                     style="${css`
                       svg {
-                        transform: scale(7);
+                        transform: scale(6);
                       }
                     `}"
                   >
