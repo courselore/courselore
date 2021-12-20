@@ -2695,12 +2695,10 @@ export default async function courselore({
     user: AuthorEnrollment["user"],
     {
       onlineIndicator = true,
-      size = "base",
-    }: { onlineIndicator?: boolean; size?: "base" | "small" } = {}
+      size = "sm",
+    }: { onlineIndicator?: boolean; size?: "xs" | "sm" } = {}
   ): HTML => {
-    const dimension = { base: "var(--space--6)", small: "var(--space--4)" }[
-      size
-    ];
+    const dimension = { xs: "var(--space--4)", sm: "var(--space--6)" }[size];
     const avatar = html`
       $${user.avatar === null
         ? html`
@@ -2771,7 +2769,7 @@ export default async function courselore({
               & > * {
                 grid-area: 1 / 1;
               }
-              vertical-align: middle;
+              vertical-align: var(--space---1);
             `}"
           >
             $${avatar}
@@ -9338,7 +9336,7 @@ export default async function courselore({
         $${conversation.anonymousAt === null
           ? html`
               $${avatarPartial(conversation.authorEnrollment.user, {
-                size: "small",
+                size: "xs",
               })}
               ${conversation.authorEnrollment.user.name}
             `
