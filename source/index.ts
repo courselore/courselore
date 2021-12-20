@@ -2692,19 +2692,62 @@ export default async function courselore({
   `;
 
   const avatarPartial = (
-    user: AuthorEnrollment["user"],
+    user: AuthorEnrollment["user"] | undefined,
     {
       onlineIndicator = true,
-      anonymous = false,
       size = "sm",
     }: {
       onlineIndicator?: boolean;
-      anonymous?: boolean;
       size?: "xs" | "sm";
     } = {}
   ): HTML => {
     const avatar = html`
-      $${user.avatar === null
+      $${user === undefined
+        ? html`
+            <svg
+              style="${css`
+                ${{
+                  xs: css`
+                    width: var(--space--4);
+                    height: var(--space--4);
+                  `,
+                  sm: css`
+                    width: var(--space--6);
+                    height: var(--space--6);
+                  `,
+                }[size]}
+              `}"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="12"
+                style="${css`
+                  fill: var(--color--violet--200);
+                  @media (prefers-color-scheme: dark) {
+                    fill: var(--color--violet--900);
+                  }
+                `}"
+              />
+              <text
+                x="12"
+                y="16"
+                text-anchor="middle"
+                class="text--violet"
+                style="${css`
+                  font-size: var(--font-size--2xs);
+                  line-height: var(--line-height--2xs);
+                  font-weight: var(--font-weight--black);
+                  fill: var(--color--violet--600);
+                  @media (prefers-color-scheme: dark) {
+                    fill: var(--color--violet--300);
+                  }
+                `}"
+              ></text>
+            </svg>
+          `
+        : user.avatar === null
         ? html`
             <svg
               style="${css`
@@ -2796,46 +2839,50 @@ export default async function courselore({
             `}"
           >
             $${avatar}
-            <span
-              style="${css`
-                background-color: var(--color--green--500);
-                @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--green--600);
-                }
-                ${{
-                  xs: css`
-                    width: var(--space--1-5);
-                    height: var(--space--1-5);
-                  `,
-                  sm: css`
-                    width: var(--space--2);
-                    height: var(--space--2);
-                  `,
-                }[size]}
-                border: var(--border-width--1) solid var(--color--green--50);
-                @media (prefers-color-scheme: dark) {
-                  border-color: var(--color--green--900);
-                }
-                border-radius: var(--border-radius--circle);
-                place-self: end;
-                transform: translate(20%, 20%);
-                display: none;
-              `}"
-              oninteractive="${javascript`
-                const element = this;
-                const lastSeenOnlineAt = ${new Date(
-                  user.lastSeenOnlineAt
-                ).getTime()};
-                tippy(element, {
-                  content: "Online",
-                  touch: false,
-                });
-                (function update() {
-                  element.style.display = Date.now() - lastSeenOnlineAt < 5 * 60 * 1000 ? "block" : "none";
-                  window.setInterval(update, 60 * 1000);
-                })();
-              `}"
-            ></span>
+            $${user === undefined
+              ? html``
+              : html`
+                  <span
+                    style="${css`
+                      background-color: var(--color--green--500);
+                      @media (prefers-color-scheme: dark) {
+                        background-color: var(--color--green--600);
+                      }
+                      ${{
+                        xs: css`
+                          width: var(--space--1-5);
+                          height: var(--space--1-5);
+                        `,
+                        sm: css`
+                          width: var(--space--2);
+                          height: var(--space--2);
+                        `,
+                      }[size]}
+                      border: var(--border-width--1) solid var(--color--green--50);
+                      @media (prefers-color-scheme: dark) {
+                        border-color: var(--color--green--900);
+                      }
+                      border-radius: var(--border-radius--circle);
+                      place-self: end;
+                      transform: translate(20%, 20%);
+                      display: none;
+                    `}"
+                    oninteractive="${javascript`
+                      const element = this;
+                      const lastSeenOnlineAt = ${new Date(
+                        user.lastSeenOnlineAt
+                      ).getTime()};
+                      tippy(element, {
+                        content: "Online",
+                        touch: false,
+                      });
+                      (function update() {
+                        element.style.display = Date.now() - lastSeenOnlineAt < 5 * 60 * 1000 ? "block" : "none";
+                        window.setInterval(update, 60 * 1000);
+                      })();
+                    `}"
+                  ></span>
+                `}
           </span>
         `
       : html`$${avatar}`;
@@ -9364,10 +9411,14 @@ export default async function courselore({
           line-height: var(--line-height--xs);
         `}"
       >
-        $${avatarPartial(conversation.authorEnrollment.user, {
-          anonymous: conversation.anonymousAt !== null,
-          size: "xs",
-        })}
+        $${avatarPartial(
+          conversation.anonymousAt === null
+            ? undefined
+            : conversation.authorEnrollment.user,
+          {
+            size: "xs",
+          }
+        )}
         $${conversation.anonymousAt === null
           ? html`
               $${avatarPartial(conversation.authorEnrollment.user, {
