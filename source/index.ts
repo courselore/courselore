@@ -2695,8 +2695,13 @@ export default async function courselore({
     user: AuthorEnrollment["user"],
     {
       onlineIndicator = true,
+      anonymous = false,
       size = "sm",
-    }: { onlineIndicator?: boolean; size?: "xs" | "sm" } = {}
+    }: {
+      onlineIndicator?: boolean;
+      anonymous?: boolean;
+      size?: "xs" | "sm";
+    } = {}
   ): HTML => {
     const avatar = html`
       $${user.avatar === null
@@ -9359,6 +9364,10 @@ export default async function courselore({
           line-height: var(--line-height--xs);
         `}"
       >
+        $${avatarPartial(conversation.authorEnrollment.user, {
+          anonymous: conversation.anonymousAt !== null,
+          size: "xs",
+        })}
         $${conversation.anonymousAt === null
           ? html`
               $${avatarPartial(conversation.authorEnrollment.user, {
