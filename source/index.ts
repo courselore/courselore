@@ -9413,7 +9413,15 @@ export default async function courselore({
           }
         )}
         $${conversation.anonymousAt === null
-          ? html`${conversation.authorEnrollment.user.name}`
+          ? html`
+              <span
+                style="${css`
+                  font-weight: var(--font-weight--bold);
+                `}"
+              >
+                ${conversation.authorEnrollment.user.name}
+              </span>
+            `
           : html`
               Anonymous
               $${res.locals.enrollment.role === "staff" ||
