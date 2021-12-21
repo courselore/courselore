@@ -2892,19 +2892,18 @@ export default async function courselore({
         </foreignObject>
       </svg>`;
 
-      if (name !== false)
-        anonymousAvatar = html`<span
-          style="${css`
-            font-weight: var(--font-weight--bold);
-          `}"
-          oninteractive="${javascript`
-            tippy(this, {
-              content: "Anonymous to Other Students",
-              touch: false,
-            });
-          `}"
-          >$${anonymousAvatar} Anonymous</span
-        >`;
+      anonymousAvatar = html`<span
+        style="${css`
+          font-weight: var(--font-weight--bold);
+        `}"
+        oninteractive="${javascript`
+          tippy(this, {
+            content: "Anonymous to Other Students",
+            touch: false,
+          });
+        `}"
+        >$${anonymousAvatar} Anonymous</span
+      >`;
     }
 
     return anonymous === false
