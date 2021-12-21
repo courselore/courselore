@@ -2708,185 +2708,189 @@ export default async function courselore({
       anonymous?: boolean | "reveal";
     } = {}
   ): HTML => html`<span
-    style="${css`
-      display: inline-grid;
-      & > * {
-        grid-area: 1 / 1;
-      }
-      vertical-align: ${{
-        xs: "var(--space---1)",
-        sm: "var(--space---2)",
-      }[size]};
-    `}"
-  >
-    $${user === undefined
-      ? html`
-          <svg
-            style="${css`
-              ${{
-                xs: css`
-                  width: var(--space--4);
-                  height: var(--space--4);
-                `,
-                sm: css`
-                  width: var(--space--6);
-                  height: var(--space--6);
-                `,
-              }[size]}
-            `}"
-            viewBox="0 0 24 24"
-            oninteractive="${javascript`
-              tippy(this, {
-                content: "Anonymous to Other Students",
-                touch: false,
-              });
-            `}"
-          >
-            <circle
-              cx="12"
-              cy="12"
-              r="12"
+    ><span
+      style="${css`
+        display: inline-grid;
+        & > * {
+          grid-area: 1 / 1;
+        }
+        vertical-align: ${{
+          xs: "var(--space---1)",
+          sm: "var(--space---2)",
+        }[size]};
+      `}"
+    >
+      $${user === undefined
+        ? html`
+            <svg
               style="${css`
-                fill: var(--color--violet--200);
-                @media (prefers-color-scheme: dark) {
-                  fill: var(--color--violet--900);
-                }
+                ${{
+                  xs: css`
+                    width: var(--space--4);
+                    height: var(--space--4);
+                  `,
+                  sm: css`
+                    width: var(--space--6);
+                    height: var(--space--6);
+                  `,
+                }[size]}
               `}"
-            />
-            <foreignObject x="2" y="-2" width="20" height="20">
-              <span
+              viewBox="0 0 24 24"
+              oninteractive="${javascript`
+            tippy(this, {
+              content: "Anonymous to Other Students",
+              touch: false,
+            });
+          `}"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="12"
                 style="${css`
-                  font-size: var(--font-size--xl);
-                  line-height: var(--line-height--xl);
-                  color: var(--color--violet--600);
+                  fill: var(--color--violet--200);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--violet--300);
+                    fill: var(--color--violet--900);
+                  }
+                `}"
+              />
+              <foreignObject x="2" y="-2" width="20" height="20">
+                <span
+                  style="${css`
+                    font-size: var(--font-size--xl);
+                    line-height: var(--line-height--xl);
+                    color: var(--color--violet--600);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--violet--300);
+                    }
+                  `}"
+                >
+                  <i class="bi bi-sunglasses"></i>
+                </span>
+              </foreignObject>
+            </svg>
+          `
+        : user.avatar === null
+        ? html`
+            <svg
+              style="${css`
+                ${{
+                  xs: css`
+                    width: var(--space--4);
+                    height: var(--space--4);
+                  `,
+                  sm: css`
+                    width: var(--space--6);
+                    height: var(--space--6);
+                  `,
+                }[size]}
+              `}"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="12"
+                style="${css`
+                  fill: var(--color--${user.avatarlessBackgroundColor}--200);
+                  @media (prefers-color-scheme: dark) {
+                    fill: var(--color--${user.avatarlessBackgroundColor}--900);
+                  }
+                `}"
+              />
+              <text
+                x="12"
+                y="16"
+                text-anchor="middle"
+                style="${css`
+                  font-size: var(--font-size--2xs);
+                  line-height: var(--line-height--2xs);
+                  font-weight: var(--font-weight--black);
+                  fill: var(--color--${user.avatarlessBackgroundColor}--600);
+                  @media (prefers-color-scheme: dark) {
+                    fill: var(--color--${user.avatarlessBackgroundColor}--300);
                   }
                 `}"
               >
-                <i class="bi bi-sunglasses"></i>
-              </span>
-            </foreignObject>
-          </svg>
-        `
-      : user.avatar === null
-      ? html`
-          <svg
-            style="${css`
-              ${{
-                xs: css`
-                  width: var(--space--4);
-                  height: var(--space--4);
-                `,
-                sm: css`
-                  width: var(--space--6);
-                  height: var(--space--6);
-                `,
-              }[size]}
-            `}"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              cx="12"
-              cy="12"
-              r="12"
+                ${(() => {
+                  const nameParts = user.name.split(/\s+/);
+                  return `${nameParts[0][0]}${
+                    nameParts.length > 0
+                      ? nameParts[nameParts.length - 1][0]
+                      : ""
+                  }`.toUpperCase();
+                })()}
+              </text>
+            </svg>
+          `
+        : html`
+            <img
+              src="${user.avatar}"
+              alt="${user.name}"
               style="${css`
-                fill: var(--color--${user.avatarlessBackgroundColor}--200);
+                ${{
+                  xs: css`
+                    width: var(--space--4);
+                    height: var(--space--4);
+                  `,
+                  sm: css`
+                    width: var(--space--6);
+                    height: var(--space--6);
+                  `,
+                }[size]}
+                border-radius: var(--border-radius--circle);
                 @media (prefers-color-scheme: dark) {
-                  fill: var(--color--${user.avatarlessBackgroundColor}--900);
+                  filter: brightness(var(--brightness--90));
                 }
               `}"
             />
-            <text
-              x="12"
-              y="16"
-              text-anchor="middle"
+          `}
+      $${onlineIndicator && user !== undefined
+        ? html`
+            <span
               style="${css`
-                font-size: var(--font-size--2xs);
-                line-height: var(--line-height--2xs);
-                font-weight: var(--font-weight--black);
-                fill: var(--color--${user.avatarlessBackgroundColor}--600);
+                background-color: var(--color--green--500);
                 @media (prefers-color-scheme: dark) {
-                  fill: var(--color--${user.avatarlessBackgroundColor}--300);
+                  background-color: var(--color--green--600);
                 }
+                ${{
+                  xs: css`
+                    width: var(--space--1-5);
+                    height: var(--space--1-5);
+                  `,
+                  sm: css`
+                    width: var(--space--2);
+                    height: var(--space--2);
+                  `,
+                }[size]}
+                border: var(--border-width--1) solid var(--color--green--50);
+                @media (prefers-color-scheme: dark) {
+                  border-color: var(--color--green--900);
+                }
+                border-radius: var(--border-radius--circle);
+                place-self: end;
+                transform: translate(20%, 20%);
+                display: none;
               `}"
-            >
-              ${(() => {
-                const nameParts = user.name.split(/\s+/);
-                return `${nameParts[0][0]}${
-                  nameParts.length > 0 ? nameParts[nameParts.length - 1][0] : ""
-                }`.toUpperCase();
-              })()}
-            </text>
-          </svg>
-        `
-      : html`
-          <img
-            src="${user.avatar}"
-            alt="${user.name}"
-            style="${css`
-              ${{
-                xs: css`
-                  width: var(--space--4);
-                  height: var(--space--4);
-                `,
-                sm: css`
-                  width: var(--space--6);
-                  height: var(--space--6);
-                `,
-              }[size]}
-              border-radius: var(--border-radius--circle);
-              @media (prefers-color-scheme: dark) {
-                filter: brightness(var(--brightness--90));
-              }
-            `}"
-          />
-        `}
-    $${onlineIndicator && user !== undefined
-      ? html`
-          <span
-            style="${css`
-              background-color: var(--color--green--500);
-              @media (prefers-color-scheme: dark) {
-                background-color: var(--color--green--600);
-              }
-              ${{
-                xs: css`
-                  width: var(--space--1-5);
-                  height: var(--space--1-5);
-                `,
-                sm: css`
-                  width: var(--space--2);
-                  height: var(--space--2);
-                `,
-              }[size]}
-              border: var(--border-width--1) solid var(--color--green--50);
-              @media (prefers-color-scheme: dark) {
-                border-color: var(--color--green--900);
-              }
-              border-radius: var(--border-radius--circle);
-              place-self: end;
-              transform: translate(20%, 20%);
-              display: none;
-            `}"
-            oninteractive="${javascript`
-              const element = this;
-              const lastSeenOnlineAt = ${new Date(
-                user.lastSeenOnlineAt
-              ).getTime()};
-              tippy(element, {
-                content: "Online",
-                touch: false,
-              });
-              (function update() {
-                element.style.display = Date.now() - lastSeenOnlineAt < 5 * 60 * 1000 ? "block" : "none";
-                window.setInterval(update, 60 * 1000);
-              })();
-            `}"
-          ></span>
-        `
-      : html``}
-  </span>`;
+              oninteractive="${javascript`
+            const element = this;
+            const lastSeenOnlineAt = ${new Date(
+              user.lastSeenOnlineAt
+            ).getTime()};
+            tippy(element, {
+              content: "Online",
+              touch: false,
+            });
+            (function update() {
+              element.style.display = Date.now() - lastSeenOnlineAt < 5 * 60 * 1000 ? "block" : "none";
+              window.setInterval(update, 60 * 1000);
+            })();
+          `}"
+            ></span>
+          `
+        : html``}
+    </span></span
+  >`;
 
   const enrollmentRoleIcon = {
     student: {
