@@ -2696,9 +2696,11 @@ export default async function courselore({
     {
       size = "sm",
       onlineIndicator = true,
+      name = true,
     }: {
       size?: "xs" | "sm";
       onlineIndicator?: boolean;
+      name?: boolean;
     } = {}
   ): HTML => html`<span
     style="${css`
