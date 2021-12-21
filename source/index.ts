@@ -2898,7 +2898,7 @@ export default async function courselore({
               <i class="bi bi-sunglasses"></i>
             </span>
           </foreignObject></svg
-        > Anonymous${anonymous === "reveal"
+        > Anonymous$${anonymous === "reveal"
           ? html` ($${output})`
           : html``}</span
       >`;
