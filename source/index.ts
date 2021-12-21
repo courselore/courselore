@@ -2412,7 +2412,7 @@ export default async function courselore({
                 });
               `}"
             >
-              $${avatarPartial(res.locals.user, { onlineIndicator: false })}
+              $${userPartial(res.locals.user, { onlineIndicator: false })}
             </button>
             <div hidden>
               <div
@@ -2691,7 +2691,7 @@ export default async function courselore({
     </svg>
   `;
 
-  const avatarPartial = (
+  const userPartial = (
     user: AuthorEnrollment["user"] | undefined,
     {
       onlineIndicator = true,
@@ -7100,7 +7100,7 @@ export default async function courselore({
                       align-items: baseline;
                     `}"
                   >
-                    <div>$${avatarPartial(enrollment.user)}</div>
+                    <div>$${userPartial(enrollment.user)}</div>
 
                     <div
                       style="${css`
@@ -9418,7 +9418,7 @@ export default async function courselore({
             font-weight: var(--font-weight--bold);
           `}"
         >
-          $${avatarPartial(
+          $${userPartial(
             conversation.anonymousAt === null
               ? conversation.authorEnrollment.user
               : undefined,
@@ -9434,7 +9434,7 @@ export default async function courselore({
                 conversation.authorEnrollment.id === res.locals.enrollment.id
                   ? html`
                       <span>
-                        ($${avatarPartial(conversation.authorEnrollment.user, {
+                        ($${userPartial(conversation.authorEnrollment.user, {
                           size: "xs",
                         })}
                         ${conversation.authorEnrollment.user.name})
@@ -15126,7 +15126,7 @@ ${value}</textarea
                                                       );
                                                     `}"
                                                   >
-                                                    $${avatarPartial(
+                                                    $${userPartial(
                                                       message.anonymousAt ===
                                                         null
                                                         ? message
@@ -15156,7 +15156,7 @@ ${value}</textarea
                                                               .enrollment.id
                                                             ? html`
                                                                 <span>
-                                                                  ($${avatarPartial(
+                                                                  ($${userPartial(
                                                                     message
                                                                       .authorEnrollment
                                                                       .user
