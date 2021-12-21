@@ -30,7 +30,7 @@
 
 - Avatars.
   - Extract partial.
-  - Fix colors of `<i class="bi bi-journal-text"></i>`.
+  - Fix colors of `<i class="bi bi-journal-text"></i>` (for example, the course switcher).
   - Review
     - `bi-person-circle`
   - Remove CSS
