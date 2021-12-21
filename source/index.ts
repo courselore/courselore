@@ -2694,11 +2694,11 @@ export default async function courselore({
   const userPartial = (
     user: AuthorEnrollment["user"] | undefined,
     {
-      onlineIndicator = true,
       size = "sm",
+      onlineIndicator = true,
     }: {
-      onlineIndicator?: boolean;
       size?: "xs" | "sm";
+      onlineIndicator?: boolean;
     } = {}
   ): HTML => html`<span
     style="${css`
