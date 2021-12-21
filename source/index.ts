@@ -2849,15 +2849,16 @@ export default async function courselore({
 
     if (anonymous !== false)
       output = html`<span
+        ><span
           style="${css`
             font-weight: var(--font-weight--bold);
           `}"
           oninteractive="${javascript`
-          tippy(this, {
-            content: "Anonymous to Other Students",
-            touch: false,
-          });
-        `}"
+            tippy(this, {
+              content: "Anonymous to Other Students",
+              touch: false,
+            });
+          `}"
           ><svg
             style="${css`
               ${{
@@ -2899,9 +2900,10 @@ export default async function courselore({
               </span>
             </foreignObject></svg
           > Anonymous</span
-        >$${anonymous === "reveal" ? html` ($${output})` : html``}`;
+        >$${anonymous === "reveal" ? html` ($${output})` : html``}</span
+      >`;
 
-    return html`<span>$${output}</span>`;
+    return output;
   };
 
   const enrollmentRoleIcon = {
