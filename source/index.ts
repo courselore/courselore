@@ -9433,7 +9433,6 @@ export default async function courselore({
           font-size: var(--font-size--xs);
           line-height: var(--line-height--xs);
           display: flex;
-          align-items: baseline;
           flex-wrap: wrap;
           column-gap: var(--space--3);
           row-gap: var(--space--0-5);
