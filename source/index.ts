@@ -2839,7 +2839,7 @@ export default async function courselore({
         </span>`;
     }
 
-    return userAvatar;
+    return name === false ? userAvatar! : html``;
   };
 
   const enrollmentRoleIcon = {
