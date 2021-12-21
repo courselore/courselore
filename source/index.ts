@@ -2708,7 +2708,7 @@ export default async function courselore({
       anonymous?: boolean | "reveal";
     } = {}
   ): HTML => {
-    let result =
+    let userAvatar =
       anonymous === true
         ? undefined
         : user.avatar === null
@@ -2781,9 +2781,9 @@ export default async function courselore({
             `}"
           />`;
 
-    if (result !== undefined) {
+    if (userAvatar !== undefined) {
       if (onlineIndicator)
-        result = html`<span
+        userAvatar = html`<span
           style="${css`
             display: inline-grid;
             & > * {
@@ -2795,7 +2795,7 @@ export default async function courselore({
             }[size]};
           `}"
         >
-          $${result}
+          $${userAvatar}
           <span
             style="${css`
               background-color: var(--color--green--500);
@@ -2839,7 +2839,7 @@ export default async function courselore({
         </span>`;
     }
 
-    return result;
+    return userAvatar;
   };
 
   const enrollmentRoleIcon = {
