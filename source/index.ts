@@ -2901,7 +2901,7 @@ export default async function courselore({
           > Anonymous</span
         >$${anonymous === "reveal" ? html` ($${output})` : html``}`;
 
-    return output;
+    return html`<span>$${output}</span>`;
   };
 
   const enrollmentRoleIcon = {
@@ -9429,11 +9429,6 @@ export default async function courselore({
           flex-wrap: wrap;
           column-gap: var(--space--2);
           row-gap: var(--space--0-5);
-
-          & > * {
-            display: flex;
-            gap: var(--space--1);
-          }
         `}"
       >
         $${userPartial(conversation.authorEnrollment.user, {
