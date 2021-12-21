@@ -2864,12 +2864,6 @@ export default async function courselore({
           }[size]}
         `}"
         viewBox="0 0 24 24"
-        oninteractive="${javascript`
-          tippy(this, {
-            content: "Anonymous to Other Students",
-            touch: false,
-          });
-        `}"
       >
         <circle
           cx="12"
