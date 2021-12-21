@@ -2864,10 +2864,12 @@ export default async function courselore({
               xs: css`
                 width: var(--space--4);
                 height: var(--space--4);
+                vertical-align: var(--space---1);
               `,
               sm: css`
                 width: var(--space--6);
                 height: var(--space--6);
+                vertical-align: var(--space---2);
               `,
             }[size]}
           `}"
