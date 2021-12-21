@@ -2708,9 +2708,9 @@ export default async function courselore({
       anonymous?: boolean | "reveal";
     } = {}
   ): HTML => {
-    let userAvatar: HTML | undefined;
+    let output: HTML | undefined;
     if (anonymous !== true) {
-      userAvatar =
+      output =
         user.avatar === null
           ? html`<svg
               style="${css`
@@ -2784,7 +2784,7 @@ export default async function courselore({
             />`;
 
       if (onlineIndicator)
-        userAvatar = html`<span
+        output = html`<span
           style="${css`
             display: inline-grid;
             & > * {
@@ -2796,7 +2796,7 @@ export default async function courselore({
             }[size]};
           `}"
         >
-          $${userAvatar}
+          $${output}
           <span
             style="${css`
               background-color: var(--color--green--500);
@@ -2840,16 +2840,16 @@ export default async function courselore({
         </span>`;
 
       if (name !== false)
-        userAvatar = html`<span
+        output = html`<span
           style="${css`
             font-weight: var(--font-weight--bold);
           `}"
-          >$${userAvatar} $${name === true ? html`${user.name}` : name}</span
+          >$${output} $${name === true ? html`${user.name}` : name}</span
         >`;
     }
 
     return anonymous === false
-      ? userAvatar!
+      ? output!
       : html`<span
           style="${css`
             font-weight: var(--font-weight--bold);
@@ -2901,7 +2901,7 @@ export default async function courselore({
               </span>
             </foreignObject></svg
           > Anonymous${anonymous === "reveal"
-            ? html` ($${userAvatar})`
+            ? html` ($${output})`
             : html``}</span
         >`;
   };
