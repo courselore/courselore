@@ -15111,13 +15111,9 @@ ${value}</textarea
                                                     flex: 1;
                                                     display: flex;
                                                     flex-wrap: wrap;
-                                                    align-items: center;
+                                                    align-items: baseline;
                                                     column-gap: var(--space--4);
                                                     row-gap: var(--space--2);
-                                                    & > * {
-                                                      display: flex;
-                                                      gap: var(--space--1);
-                                                    }
                                                   `}"
                                                 >
                                                   <div
