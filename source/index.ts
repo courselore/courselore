@@ -2843,7 +2843,7 @@ export default async function courselore({
           style="${css`
             font-weight: var(--font-weight--bold);
           `}"
-          >$${output} $${name === true ? html`${user.name}` : name}</span
+          >$${output}  $${name === true ? html`${user.name}` : name}</span
         >`;
     }
 
@@ -2898,7 +2898,7 @@ export default async function courselore({
               <i class="bi bi-sunglasses"></i>
             </span>
           </foreignObject></svg
-        > Anonymous</span
+        >  Anonymous</span
       >`;
       output =
         anonymous === "reveal"
@@ -9431,8 +9431,9 @@ export default async function courselore({
           font-size: var(--font-size--xs);
           line-height: var(--line-height--xs);
           display: flex;
+          align-items: baseline;
           flex-wrap: wrap;
-          column-gap: var(--space--2);
+          column-gap: var(--space--3);
           row-gap: var(--space--0-5);
         `}"
       >
