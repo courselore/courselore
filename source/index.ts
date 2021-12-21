@@ -2848,62 +2848,63 @@ export default async function courselore({
         >`;
     }
 
-    return anonymous === false
-      ? output!
-      : html`<span
+    if (anonymous !== false)
+      output = html`<span
+        style="${css`
+          font-weight: var(--font-weight--bold);
+        `}"
+        oninteractive="${javascript`
+          tippy(this, {
+            content: "Anonymous to Other Students",
+            touch: false,
+          });
+        `}"
+        ><svg
           style="${css`
-            font-weight: var(--font-weight--bold);
+            ${{
+              xs: css`
+                width: var(--space--4);
+                height: var(--space--4);
+              `,
+              sm: css`
+                width: var(--space--6);
+                height: var(--space--6);
+              `,
+            }[size]}
           `}"
-          oninteractive="${javascript`
-            tippy(this, {
-              content: "Anonymous to Other Students",
-              touch: false,
-            });
-          `}"
-          ><svg
+          viewBox="0 0 24 24"
+        >
+          <circle
+            cx="12"
+            cy="12"
+            r="12"
             style="${css`
-              ${{
-                xs: css`
-                  width: var(--space--4);
-                  height: var(--space--4);
-                `,
-                sm: css`
-                  width: var(--space--6);
-                  height: var(--space--6);
-                `,
-              }[size]}
+              fill: var(--color--violet--200);
+              @media (prefers-color-scheme: dark) {
+                fill: var(--color--violet--900);
+              }
             `}"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              cx="12"
-              cy="12"
-              r="12"
+          />
+          <foreignObject x="2" y="-2" width="20" height="20">
+            <span
               style="${css`
-                fill: var(--color--violet--200);
+                font-size: var(--font-size--xl);
+                line-height: var(--line-height--xl);
+                color: var(--color--violet--600);
                 @media (prefers-color-scheme: dark) {
-                  fill: var(--color--violet--900);
+                  color: var(--color--violet--300);
                 }
               `}"
-            />
-            <foreignObject x="2" y="-2" width="20" height="20">
-              <span
-                style="${css`
-                  font-size: var(--font-size--xl);
-                  line-height: var(--line-height--xl);
-                  color: var(--color--violet--600);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--violet--300);
-                  }
-                `}"
-              >
-                <i class="bi bi-sunglasses"></i>
-              </span>
-            </foreignObject></svg
-          > Anonymous${anonymous === "reveal"
-            ? html` ($${output})`
-            : html``}</span
-        >`;
+            >
+              <i class="bi bi-sunglasses"></i>
+            </span>
+          </foreignObject></svg
+        > Anonymous${anonymous === "reveal"
+          ? html` ($${output})`
+          : html``}</span
+      >`;
+
+    return output!;
   };
 
   const enrollmentRoleIcon = {
