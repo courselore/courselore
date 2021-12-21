@@ -2709,79 +2709,78 @@ export default async function courselore({
     } = {}
   ): HTML => {
     let output = html``;
+
     if (anonymous !== true) {
-      output =
-        user.avatar === null
-          ? html`<svg
-              style="${css`
-                ${{
-                  xs: css`
-                    width: var(--space--4);
-                    height: var(--space--4);
-                  `,
-                  sm: css`
-                    width: var(--space--6);
-                    height: var(--space--6);
-                  `,
-                }[size]}
-              `}"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                cx="12"
-                cy="12"
-                r="12"
-                style="${css`
-                  fill: var(--color--${user.avatarlessBackgroundColor}--200);
-                  @media (prefers-color-scheme: dark) {
-                    fill: var(--color--${user.avatarlessBackgroundColor}--900);
-                  }
-                `}"
-              />
-              <text
-                x="12"
-                y="16"
-                text-anchor="middle"
-                style="${css`
-                  font-size: var(--font-size--2xs);
-                  line-height: var(--line-height--2xs);
-                  font-weight: var(--font-weight--black);
-                  fill: var(--color--${user.avatarlessBackgroundColor}--600);
-                  @media (prefers-color-scheme: dark) {
-                    fill: var(--color--${user.avatarlessBackgroundColor}--300);
-                  }
-                `}"
-              >
-                ${(() => {
-                  const nameParts = user.name.split(/\s+/);
-                  return `${nameParts[0][0]}${
-                    nameParts.length > 0
-                      ? nameParts[nameParts.length - 1][0]
-                      : ""
-                  }`.toUpperCase();
-                })()}
-              </text>
-            </svg>`
-          : html`<img
-              src="${user.avatar}"
-              alt="${user.name}"
-              style="${css`
-                ${{
-                  xs: css`
-                    width: var(--space--4);
-                    height: var(--space--4);
-                  `,
-                  sm: css`
-                    width: var(--space--6);
-                    height: var(--space--6);
-                  `,
-                }[size]}
-                border-radius: var(--border-radius--circle);
-                @media (prefers-color-scheme: dark) {
-                  filter: brightness(var(--brightness--90));
-                }
-              `}"
-            />`;
+      if (user.avatar !== null)
+        output = html`<img
+          src="${user.avatar}"
+          alt="${user.name}"
+          style="${css`
+            ${{
+              xs: css`
+                width: var(--space--4);
+                height: var(--space--4);
+              `,
+              sm: css`
+                width: var(--space--6);
+                height: var(--space--6);
+              `,
+            }[size]}
+            border-radius: var(--border-radius--circle);
+            @media (prefers-color-scheme: dark) {
+              filter: brightness(var(--brightness--90));
+            }
+          `}"
+        />`;
+      else
+        output = html`<svg
+          style="${css`
+            ${{
+              xs: css`
+                width: var(--space--4);
+                height: var(--space--4);
+              `,
+              sm: css`
+                width: var(--space--6);
+                height: var(--space--6);
+              `,
+            }[size]}
+          `}"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            cx="12"
+            cy="12"
+            r="12"
+            style="${css`
+              fill: var(--color--${user.avatarlessBackgroundColor}--200);
+              @media (prefers-color-scheme: dark) {
+                fill: var(--color--${user.avatarlessBackgroundColor}--900);
+              }
+            `}"
+          />
+          <text
+            x="12"
+            y="16"
+            text-anchor="middle"
+            style="${css`
+              font-size: var(--font-size--2xs);
+              line-height: var(--line-height--2xs);
+              font-weight: var(--font-weight--black);
+              fill: var(--color--${user.avatarlessBackgroundColor}--600);
+              @media (prefers-color-scheme: dark) {
+                fill: var(--color--${user.avatarlessBackgroundColor}--300);
+              }
+            `}"
+          >
+            ${(() => {
+              const nameParts = user.name.split(/\s+/);
+              return `${nameParts[0][0]}${
+                nameParts.length > 0 ? nameParts[nameParts.length - 1][0] : ""
+              }`.toUpperCase();
+            })()}
+          </text>
+        </svg>`;
 
       if (onlineIndicator)
         output = html`<span
