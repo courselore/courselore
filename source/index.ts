@@ -2412,7 +2412,10 @@ export default async function courselore({
                 });
               `}"
             >
-              $${userPartial(res.locals.user, { onlineIndicator: false })}
+              $${userPartial(res.locals.user, {
+                onlineIndicator: false,
+                name: false,
+              })}
             </button>
             <div hidden>
               <div
@@ -2692,15 +2695,17 @@ export default async function courselore({
   `;
 
   const userPartial = (
-    user: AuthorEnrollment["user"] | undefined,
+    user: AuthorEnrollment["user"],
     {
       size = "sm",
       onlineIndicator = true,
       name = true,
+      anonymous = false,
     }: {
       size?: "xs" | "sm";
       onlineIndicator?: boolean;
-      name?: boolean;
+      name?: boolean | string;
+      anonymous?: boolean | "reveal";
     } = {}
   ): HTML => html`<span
     style="${css`
@@ -7102,7 +7107,7 @@ export default async function courselore({
                       align-items: baseline;
                     `}"
                   >
-                    <div>$${userPartial(enrollment.user)}</div>
+                    $${userPartial(enrollment.user, { name: false })}
 
                     <div
                       style="${css`
@@ -9415,36 +9420,16 @@ export default async function courselore({
           }
         `}"
       >
-        <div
-          style="${css`
-            font-weight: var(--font-weight--bold);
-          `}"
-        >
-          $${userPartial(
+        $${userPartial(conversation.authorEnrollment.user, {
+          size: "xs",
+          anonymous:
             conversation.anonymousAt === null
-              ? conversation.authorEnrollment.user
-              : undefined,
-            {
-              size: "xs",
-            }
-          )}
-          $${conversation.anonymousAt === null
-            ? html`${conversation.authorEnrollment.user.name}`
-            : html`
-                Anonymous
-                $${res.locals.enrollment.role === "staff" ||
+              ? false
+              : res.locals.enrollment.role === "staff" ||
                 conversation.authorEnrollment.id === res.locals.enrollment.id
-                  ? html`
-                      <span>
-                        ($${userPartial(conversation.authorEnrollment.user, {
-                          size: "xs",
-                        })}
-                        ${conversation.authorEnrollment.user.name})
-                      </span>
-                    `
-                  : html``}
-              `}
-        </div>
+              ? "reveal"
+              : true,
+        })}
 
         <time
           datetime="${new Date(conversation.createdAt).toISOString()}"
@@ -15129,52 +15114,32 @@ ${value}</textarea
                                                     `}"
                                                   >
                                                     $${userPartial(
-                                                      message.anonymousAt ===
-                                                        null
-                                                        ? message
+                                                      message.authorEnrollment
+                                                        .user,
+                                                      {
+                                                        name: highlightSearchResult(
+                                                          html`${message
                                                             .authorEnrollment
-                                                            .user
-                                                        : undefined
+                                                            .user.name}`,
+                                                          req.query.search
+                                                        ),
+                                                        anonymous:
+                                                          message.anonymousAt ===
+                                                          null
+                                                            ? false
+                                                            : res.locals
+                                                                .enrollment
+                                                                .role ===
+                                                                "staff" ||
+                                                              message
+                                                                .authorEnrollment
+                                                                .id ===
+                                                                res.locals
+                                                                  .enrollment.id
+                                                            ? "reveal"
+                                                            : true,
+                                                      }
                                                     )}
-                                                    $${message.anonymousAt ===
-                                                    null
-                                                      ? html`
-                                                          $${highlightSearchResult(
-                                                            html`${message
-                                                              .authorEnrollment
-                                                              .user.name}`,
-                                                            req.query.search
-                                                          )}
-                                                        `
-                                                      : html`
-                                                          Anonymous
-                                                          $${res.locals
-                                                            .enrollment.role ===
-                                                            "staff" ||
-                                                          message
-                                                            .authorEnrollment
-                                                            .id ===
-                                                            res.locals
-                                                              .enrollment.id
-                                                            ? html`
-                                                                <span>
-                                                                  ($${userPartial(
-                                                                    message
-                                                                      .authorEnrollment
-                                                                      .user
-                                                                  )}
-                                                                  $${highlightSearchResult(
-                                                                    html`${message
-                                                                      .authorEnrollment
-                                                                      .user
-                                                                      .name}`,
-                                                                    req.query
-                                                                      .search
-                                                                  )})
-                                                                </span>
-                                                              `
-                                                            : html``}
-                                                        `}
                                                   </div>
 
                                                   <time
