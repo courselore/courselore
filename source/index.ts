@@ -2880,44 +2880,46 @@ export default async function courselore({
             }
           `}"
           oninteractive="${javascript`
-            tippy(this, {
-              content: ${JSON.stringify(
-                html`
-                  <div class="user-partial--user-overlay">
-                    $${userPartial({
-                      req,
-                      res,
-                      user: user,
-                      size: "sm",
-                      name: false,
-                    })}
+            const content = new DOMParser().parseFromString(${JSON.stringify(
+              html`
+                <div class="user-partial--user-overlay">
+                  $${userPartial({
+                    req,
+                    res,
+                    user: user,
+                    size: "sm",
+                    name: false,
+                  })}
+                  <div>
                     <div>
-                      <div>
-                        <div class="strong">${user.name}</div>
-                        <div class="secondary">${user.email}</div>
-                        <div class="secondary">
-                          Last seen online
-                          <time
-                            datetime="${new Date(
-                              user.lastSeenOnlineAt
-                            ).toISOString()}"
-                            oninteractive="${javascript`
-                          leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                        `}"
-                          ></time>
-                        </div>
+                      <div class="strong">${user.name}</div>
+                      <div class="secondary">${user.email}</div>
+                      <div class="secondary">
+                        Last seen online
+                        <time
+                          datetime="${new Date(
+                            user.lastSeenOnlineAt
+                          ).toISOString()}"
+                          oninteractive="${javascript`
+                        leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                      `}"
+                        ></time>
                       </div>
-                      $${user.biography === null
-                        ? html``
-                        : markdownProcessor({
-                            req,
-                            res,
-                            markdown: user.biography,
-                          }).html}
                     </div>
+                    $${user.biography === null
+                      ? html``
+                      : markdownProcessor({
+                          req,
+                          res,
+                          markdown: user.biography,
+                        }).html}
                   </div>
-                `
-              )},
+                </div>
+              `
+            )}, "text/html").body.firstChild;
+            leafac.evaluateElementsAttribute(content);
+            tippy(this, {
+              content,
               touch: false,
               allowHTML: true,
               interactive: true,
