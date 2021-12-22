@@ -30,6 +30,7 @@
 
 - Avatars.
   - Extract partial.
+  - Add new avatar style to `/settings/profile`.
   - Fix colors of `<i class="bi bi-journal-text"></i>` (for example, the course switcher).
   - Review
     - `bi-person-circle`
