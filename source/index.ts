@@ -2847,7 +2847,8 @@ export default async function courselore({
             font-weight: var(--font-weight--bold);
             @at-root {
               .user-partial--user-overlay {
-                background-color: red;
+                display: flex;
+                gap: var(--space--2);
               }
             }
           `}"
@@ -2857,6 +2858,7 @@ export default async function courselore({
                 html`
                   <div class="user-partial--user-overlay">
                     $${userPartial(user, { size: "sm", name: false })}
+                    <div></div>
                   </div>
                 `
               )},
