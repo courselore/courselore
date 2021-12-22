@@ -4415,10 +4415,11 @@ export default async function courselore({
                   >
                     <button
                       type="button"
-                      class="button button--tight button--tight--inline button--transparent"
+                      class="button button--transparent"
                       style="${css`
-                        transform: scale(8) translate(41%, 41%);
+                        transform: scale(8) translate(40%, 40%);
                         padding: var(--space--px);
+                        margin: var(--space---px);
                         border-radius: var(--border-radius--circle);
                       `}"
                       oninteractive="${javascript`
