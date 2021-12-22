@@ -384,6 +384,15 @@
 <summary><strong>Meetings</strong></summary>
 
 <details>
+<summary>2021-12-22</summary>
+
+- Actions menu.
+- User component.
+- Database improvements: cleaned up a bit of magic, cleaned up repetition, and so forth.
+
+</details>
+
+<details>
 <summary>2021-12-11</summary>
 
 - Finished presentation of chat messages.
