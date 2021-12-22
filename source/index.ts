@@ -2861,7 +2861,9 @@ export default async function courselore({
               .user-partial--user-overlay {
                 display: flex;
                 gap: var(--space--2);
+                padding: var(--space--1) var(--space--2);
                 & > :last-child {
+                  padding-top: var(--space--0-5);
                   display: flex;
                   flex-direction: column;
                   gap: var(--space--2);
