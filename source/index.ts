@@ -2859,6 +2859,8 @@ export default async function courselore({
             font-weight: var(--font-weight--bold);
             @at-root {
               .user-partial--user-overlay {
+                max-height: var(--space--24);
+                overflow: auto;
                 display: flex;
                 gap: var(--space--2);
                 padding: var(--space--1) var(--space--2);
