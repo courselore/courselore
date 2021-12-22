@@ -4445,7 +4445,10 @@ export default async function courselore({
                         this.closest("form").querySelector(".avatar-chooser--upload").click();
                       `}"
                     >
-                      <i class="bi bi-person-circle"></i>
+                      $${userPartial(
+                        { ...res.locals.user, avatar: null },
+                        { onlineIndicator: false, name: false }
+                      )}
                     </button>
                   </div>
                   <div
