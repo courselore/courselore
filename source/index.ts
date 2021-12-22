@@ -2845,6 +2845,25 @@ export default async function courselore({
         output = html`<span
           style="${css`
             font-weight: var(--font-weight--bold);
+            @at-root {
+              .user-partial--user-overlay {
+                background-color: red;
+              }
+            }
+          `}"
+          oninteractive="${javascript`
+            tippy(this, {
+              content: ${JSON.stringify(
+                html`
+                  <div class="user-partial--user-overlay">
+                    $${userPartial(user, { size: "sm", name: false })}
+                  </div>
+                `
+              )},
+              touch: false,
+              allowHTML: true,
+              interactive: true,
+            });
           `}"
           >$${output}  $${name === true ? html`${user.name}` : name}</span
         >`;
