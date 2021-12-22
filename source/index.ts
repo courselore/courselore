@@ -2697,20 +2697,29 @@ export default async function courselore({
     </svg>
   `;
 
-  const userPartial = (
-    user: AuthorEnrollment["user"],
-    {
-      size = "sm",
-      onlineIndicator = true,
-      name = true,
-      anonymous = false,
-    }: {
-      size?: "xs" | "sm";
-      onlineIndicator?: boolean;
-      name?: boolean | string;
-      anonymous?: boolean | "reveal";
-    } = {}
-  ): HTML => {
+  const userPartial = ({
+    req,
+    res,
+    user,
+    size = "sm",
+    onlineIndicator = true,
+    name = true,
+    anonymous = false,
+  }: {
+    req: express.Request<
+      {},
+      any,
+      {},
+      {},
+      Partial<IsEnrolledInCourseMiddlewareLocals>
+    >;
+    res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>;
+    user: AuthorEnrollment["user"];
+    size?: "xs" | "sm";
+    onlineIndicator?: boolean;
+    name?: boolean | string;
+    anonymous?: boolean | "reveal";
+  }): HTML => {
     let output = html``;
 
     if (anonymous !== true) {
@@ -2849,6 +2858,17 @@ export default async function courselore({
               .user-partial--user-overlay {
                 display: flex;
                 gap: var(--space--2);
+                & > :last-child {
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--2);
+                  & > :first-child {
+                    & > :last-child {
+                      font-size: var(--font-size--xs);
+                      line-height: var(--line-height--xs);
+                    }
+                  }
+                }
               }
             }
           `}"
@@ -2858,7 +2878,32 @@ export default async function courselore({
                 html`
                   <div class="user-partial--user-overlay">
                     $${userPartial(user, { size: "sm", name: false })}
-                    <div></div>
+                    <div>
+                      <div>
+                        <div class="strong">${user.name}</div>
+                        <div class="secondary">${user.email}</div>
+                        <div class="secondary">
+                          Last seen online
+                          <time
+                            datetime="${new Date(
+                              user.lastSeenOnlineAt
+                            ).toISOString()}"
+                            oninteractive="${javascript`
+                          leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                        `}"
+                          ></time>
+                        </div>
+                      </div>
+                      $${user.biography === null
+                        ? html``
+                        : html`<div>
+                            ${markdownProcessor({
+                              req,
+                              res,
+                              markdown: user.biography,
+                            })}
+                          </div>`}
+                    </div>
                   </div>
                 `
               )},
