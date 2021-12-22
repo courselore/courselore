@@ -29,11 +29,13 @@
 ### Chat
 
 - Avatars.
-  - Extract partial.
-  - Sticky headers (showing author name) in messages?
   - Add support for out-of-band tippy contents.
-    - `#13` references in `markdownProcessor`.
-    - User biographies in `userPartial`.
+    - Uses:
+      - `#13` references in `markdownProcessor`.
+      - User biographies in `userPartial`.
+    - Should fix the following bugs:
+      - Text color in avatar popper when button color is active (for example, the blue conversation on the left bar when it’s the current conversation).
+      - Online indicator isn’t showing up in avatar popper.
   - Fix colors of `<i class="bi bi-journal-text"></i>` (for example, the course switcher).
   - Review
     - `bi-person-circle`
@@ -41,6 +43,7 @@
     - `.avatar`
     - `.online-indicator`
   - Remove `onlineIndicator`
+- Sticky headers (showing author name) in messages?
 - Revisit unread management:
   - Don’t store all readings, but only the latest for a given conversation.
   - Line to separate new messages instead of little unread indicator.
