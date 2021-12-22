@@ -30,7 +30,6 @@
 
 - Avatars.
   - Extract partial.
-  - Add new avatar style to `/settings/profile`.
   - Sticky headers (showing author name) in messages?
   - Fix colors of `<i class="bi bi-journal-text"></i>` (for example, the course switcher).
   - Review
