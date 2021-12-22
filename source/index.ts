@@ -2905,13 +2905,11 @@ export default async function courselore({
                       </div>
                       $${user.biography === null
                         ? html``
-                        : html`<div>
-                            ${markdownProcessor({
-                              req,
-                              res,
-                              markdown: user.biography,
-                            })}
-                          </div>`}
+                        : markdownProcessor({
+                            req,
+                            res,
+                            markdown: user.biography,
+                          }).html}
                     </div>
                   </div>
                 `
