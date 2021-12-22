@@ -2415,7 +2415,10 @@ export default async function courselore({
                 });
               `}"
             >
-              $${userPartial(res.locals.user, {
+              $${userPartial({
+                req,
+                res,
+                user: res.locals.user,
                 onlineIndicator: false,
                 name: false,
               })}
@@ -2877,7 +2880,13 @@ export default async function courselore({
               content: ${JSON.stringify(
                 html`
                   <div class="user-partial--user-overlay">
-                    $${userPartial(user, { size: "sm", name: false })}
+                    $${userPartial({
+                      req,
+                      res,
+                      user: user,
+                      size: "sm",
+                      name: false,
+                    })}
                     <div>
                       <div>
                         <div class="strong">${user.name}</div>
@@ -4502,10 +4511,14 @@ export default async function courselore({
                         this.closest("form").querySelector(".avatar-chooser--upload").click();
                       `}"
                     >
-                      $${userPartial(
-                        { ...res.locals.user, avatar: null },
-                        { size: "xs", onlineIndicator: false, name: false }
-                      )}
+                      $${userPartial({
+                        req,
+                        res,
+                        user: { ...res.locals.user, avatar: null },
+                        size: "xs",
+                        onlineIndicator: false,
+                        name: false,
+                      })}
                     </button>
                   </div>
                   <div
@@ -7178,7 +7191,14 @@ export default async function courselore({
                       gap: var(--space--2);
                     `}"
                   >
-                    <div>$${userPartial(enrollment.user, { name: false })}</div>
+                    <div>
+                      $${userPartial({
+                        req,
+                        res,
+                        user: enrollment.user,
+                        name: false,
+                      })}
+                    </div>
 
                     <div
                       style="${css`
@@ -9487,7 +9507,10 @@ export default async function courselore({
           row-gap: var(--space--0-5);
         `}"
       >
-        $${userPartial(conversation.authorEnrollment.user, {
+        $${userPartial({
+          req,
+          res,
+          user: conversation.authorEnrollment.user,
           size: "xs",
           anonymous:
             conversation.anonymousAt === null
@@ -15176,33 +15199,33 @@ ${value}</textarea
                                                       );
                                                     `}"
                                                   >
-                                                    $${userPartial(
-                                                      message.authorEnrollment
-                                                        .user,
-                                                      {
-                                                        name: highlightSearchResult(
-                                                          html`${message
-                                                            .authorEnrollment
-                                                            .user.name}`,
-                                                          req.query.search
-                                                        ),
-                                                        anonymous:
-                                                          message.anonymousAt ===
-                                                          null
-                                                            ? false
-                                                            : res.locals
-                                                                .enrollment
-                                                                .role ===
-                                                                "staff" ||
-                                                              message
-                                                                .authorEnrollment
-                                                                .id ===
-                                                                res.locals
-                                                                  .enrollment.id
-                                                            ? "reveal"
-                                                            : true,
-                                                      }
-                                                    )}
+                                                    $${userPartial({
+                                                      req,
+                                                      res,
+                                                      user: message
+                                                        .authorEnrollment.user,
+                                                      name: highlightSearchResult(
+                                                        html`${message
+                                                          .authorEnrollment.user
+                                                          .name}`,
+                                                        req.query.search
+                                                      ),
+                                                      anonymous:
+                                                        message.anonymousAt ===
+                                                        null
+                                                          ? false
+                                                          : res.locals
+                                                              .enrollment
+                                                              .role ===
+                                                              "staff" ||
+                                                            message
+                                                              .authorEnrollment
+                                                              .id ===
+                                                              res.locals
+                                                                .enrollment.id
+                                                          ? "reveal"
+                                                          : true,
+                                                    })}
                                                   </div>
 
                                                   <time
