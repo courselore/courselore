@@ -4412,10 +4412,10 @@ export default async function courselore({
                   >
                     <button
                       type="button"
-                      class="button decorative-icon"
+                      class="button button--tight button--tight--inline button--transparent"
                       style="${css`
-                        font-size: var(--font-size--8xl);
-                        line-height: var(--line-height--8xl);
+                        transform: scale(8) translate(50%, 50%);
+                        /*
                         width: 100%;
                         height: 100%;
                         &:hover,
@@ -4434,6 +4434,7 @@ export default async function courselore({
                             color: var(--color--gray--medium--400);
                           }
                         }
+                        */
                       `}"
                       oninteractive="${javascript`
                         tippy(this, {
@@ -4445,16 +4446,10 @@ export default async function courselore({
                         this.closest("form").querySelector(".avatar-chooser--upload").click();
                       `}"
                     >
-                      <div
-                        style="${css`
-                          transform: scale(8);
-                        `}"
-                      >
-                        $${userPartial(
-                          { ...res.locals.user, avatar: null },
-                          { size: "xs", onlineIndicator: false, name: false }
-                        )}
-                      </div>
+                      $${userPartial(
+                        { ...res.locals.user, avatar: null },
+                        { size: "xs", onlineIndicator: false, name: false }
+                      )}
                     </button>
                   </div>
                   <div
