@@ -4490,7 +4490,7 @@ export default async function courselore({
                         height: var(--font-size--2xl);
                         padding: var(--space--0);
                         border-radius: var(--border-radius--circle);
-                        margin-right: var(--space--2);
+                        transform: translate(-20%, -20%);
                         align-items: center;
                       `}"
                       oninteractive="${javascript`
