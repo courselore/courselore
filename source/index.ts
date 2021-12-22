@@ -4455,22 +4455,11 @@ export default async function courselore({
                   >
                     <button
                       type="button"
-                      class="button"
+                      class="button button--transparent"
                       style="${css`
-                        padding: var(--space--0);
-                        place-self: center;
-                        transition-property: var(--transition-property--base);
-                        transition-duration: var(--transition-duration--150);
-                        transition-timing-function: var(
-                          --transition-timing-function--in-out
-                        );
-                        &:hover,
-                        &:focus-within {
-                          filter: brightness(var(--brightness--105));
-                        }
-                        &:active {
-                          filter: brightness(var(--brightness--95));
-                        }
+                        padding: var(--space--2);
+                        margin: var(--space---2);
+                        border-radius: var(--border-radius--circle);
                       `}"
                       oninteractive="${javascript`
                         tippy(this, {
