@@ -4417,7 +4417,11 @@ export default async function courselore({
                       type="button"
                       class="button button--transparent"
                       style="${css`
-                        transform: scale(8) translate(calc(50% - 2 * var(--space--px)), calc(50% - 2 * var(--space--px)));
+                        transform: scale(8)
+                          translate(
+                            calc(var(--space---px) + 50% + var(--space---px)),
+                            calc(var(--space---px) + 50% + var(--space---px))
+                          );
                         padding: var(--space--px);
                         margin: var(--space---px);
                         border-radius: var(--border-radius--circle);
