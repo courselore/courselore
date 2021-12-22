@@ -4447,12 +4447,12 @@ export default async function courselore({
                     >
                       <div
                         style="${css`
-                          transform: scale(5);
+                          transform: scale(8);
                         `}"
                       >
                         $${userPartial(
                           { ...res.locals.user, avatar: null },
-                          { onlineIndicator: false, name: false }
+                          { size: "xs", onlineIndicator: false, name: false }
                         )}
                       </div>
                     </button>
