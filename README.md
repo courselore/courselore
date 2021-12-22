@@ -75,15 +75,9 @@
 
 ### Users
 
-- Identicons.
-  - https://github.com/stewartlord/identicon.js/
-  - https://jdenticon.com/
-  - https://avatars.dicebear.com/
 - Online indicators.
   - Query the server for updates before turning off online indicator.
   - Fade in and out.
-- Make a little popup that displays basic user information, for example, the biography, when you hover over a name/mention.
-- Gravatar as a fallback to avatar.
 - Multiple emails.
 - Allow people to remove their accounts.
 - Authentication:
