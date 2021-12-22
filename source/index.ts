@@ -2883,13 +2883,15 @@ export default async function courselore({
             const content = new DOMParser().parseFromString(${JSON.stringify(
               html`
                 <div class="user-partial--user-overlay">
-                  $${userPartial({
-                    req,
-                    res,
-                    user: user,
-                    size: "sm",
-                    name: false,
-                  })}
+                  <div>
+                    $${userPartial({
+                      req,
+                      res,
+                      user: user,
+                      size: "sm",
+                      name: false,
+                    })}
+                  </div>
                   <div>
                     <div>
                       <div class="strong">${user.name}</div>
