@@ -2310,8 +2310,7 @@ export default async function courselore({
                     font-size: var(--font-size--xl);
                     line-height: var(--line-height--xl);
                     font-weight: var(--font-weight--bold);
-                    width: var(--space--6);
-                    height: var(--space--6);
+                    padding: var(--space--0) var(--space--1);
                     display: flex;
                     justify-content: center;
                     align-items: center;
@@ -2332,7 +2331,7 @@ export default async function courselore({
                           height: var(--space--1-5);
                           border-radius: var(--border-radius--circle);
                           justify-self: end;
-                          transform: translate(-50%, 50%);
+                          transform: translateY(50%);
                         `}"
                       ></div>
                     `}
@@ -2400,6 +2399,10 @@ export default async function courselore({
           <div>
             <button
               class="button button--tight button--tight--inline button--transparent"
+              style="${css`
+                padding: var(--space--1);
+                border-radius: var(--border-radius--circle);
+              `}"
               oninteractive="${javascript`
                 tippy(this, {
                   content: ${JSON.stringify(res.locals.user.name)},
@@ -4412,29 +4415,11 @@ export default async function courselore({
                   >
                     <button
                       type="button"
-                      class="button button--tight button--tight--inline button--transparent"
+                      class="button button--transparent"
                       style="${css`
-                        transform: scale(8) translate(50%, 50%);
-                        /*
-                        width: 100%;
-                        height: 100%;
-                        &:hover,
-                        &:focus-within {
-                          color: var(--color--gray--medium--400);
-                        }
-                        &:active {
-                          color: var(--color--gray--medium--500);
-                        }
-                        @media (prefers-color-scheme: dark) {
-                          &:hover,
-                          &:focus-within {
-                            color: var(--color--gray--medium--500);
-                          }
-                          &:active {
-                            color: var(--color--gray--medium--400);
-                          }
-                        }
-                        */
+                        padding: var(--space--px);
+                        transform: scale(8) translate(30%, 30%);
+                        border-radius: var(--border-radius--circle);
                       `}"
                       oninteractive="${javascript`
                         tippy(this, {
