@@ -3075,17 +3075,21 @@ export default async function courselore({
   interface TippyContentMiddlewareLocals {
     tippyContent?: HTML[];
   }
-  const tippyContent = (
+  const tippyContent = ({
+    req,
+    res,
+    content,
+  }: {
     req: express.Request<
       {},
       any,
       {},
       {},
       TippyContentMiddlewareLocals & object
-    >,
-    res: express.Response<any, TippyContentMiddlewareLocals & object>,
-    content: HTML
-  ): JavaScript => {
+    >;
+    res: express.Response<any, TippyContentMiddlewareLocals & object>;
+    content: HTML;
+  }): JavaScript => {
     res.locals.tippyContent ??= [];
     const id = `tippy-content--${res.locals.tippyContent.length}`;
     res.locals.tippyContent.push(html`<div id="${id}">$${content}</div>`);
