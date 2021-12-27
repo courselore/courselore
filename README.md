@@ -30,7 +30,6 @@
 
 - Add support for out-of-band tippy contents.
   - `allowHTML` shouldn’t exist anymore.
-  - `this.nextElementSibling.firstElementChild`.
   - `tippy(`
   - `<div hidden`
   - `conversationPartial`, `getConversation`, and `getMessage` should have keyword arguments.
