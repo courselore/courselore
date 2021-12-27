@@ -443,14 +443,14 @@ export default async function courselore({
       (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
         Partial<IsEnrolledInCourseMiddlewareLocals> &
         Partial<EventSourceMiddlewareLocals> &
-        TippyContentMiddlewareLocals
+        Partial<TippyContentMiddlewareLocals>
     >;
     res: express.Response<
       any,
       (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
         Partial<IsEnrolledInCourseMiddlewareLocals> &
         Partial<EventSourceMiddlewareLocals> &
-        TippyContentMiddlewareLocals
+        Partial<TippyContentMiddlewareLocals>
     >;
     head: HTML;
     extraHeaders?: HTML;
@@ -1748,7 +1748,51 @@ export default async function courselore({
                           class="button button--transparent"
                           oninteractive="${javascript`
                             tippy(this, {
-                              content: this.nextElementSibling.firstElementChild,
+                              content: ${tippyContent(
+                                req,
+                                res,
+                                html`
+                                  <div
+                                    style="${css`
+                                      padding: var(--space--2);
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--space--4);
+                                    `}"
+                                  >
+                                    <p>
+                                      CourseLore is running in Demonstration
+                                      Mode. All data may be lost, including
+                                      courses, conversations, users, and so
+                                      forth. Also, no emails are actually sent.
+                                    </p>
+                                    <p>
+                                      To give you a better idea of what
+                                      CourseLore looks like in use, you may
+                                      create demonstration data.
+                                    </p>
+                                    <form
+                                      method="POST"
+                                      action="${baseURL}/demonstration-data"
+                                    >
+                                      <input
+                                        type="hidden"
+                                        name="_csrf"
+                                        value="${req.csrfToken()}"
+                                      />
+                                      <button
+                                        class="button button--blue"
+                                        style="${css`
+                                          width: 100%;
+                                        `}"
+                                      >
+                                        <i class="bi bi-easel"></i>
+                                        Create Demonstration Data
+                                      </button>
+                                    </form>
+                                  </div>
+                                `
+                              )},
                               trigger: "click",
                               interactive: true,
                             });
@@ -1757,46 +1801,6 @@ export default async function courselore({
                           <i class="bi bi-easel"></i>
                           Demonstration Mode
                         </button>
-                        <div hidden>
-                          <div
-                            style="${css`
-                              padding: var(--space--2);
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--space--4);
-                            `}"
-                          >
-                            <p>
-                              CourseLore is running in Demonstration Mode. All
-                              data may be lost, including courses,
-                              conversations, users, and so forth. Also, no
-                              emails are actually sent.
-                            </p>
-                            <p>
-                              To give you a better idea of what CourseLore looks
-                              like in use, you may create demonstration data.
-                            </p>
-                            <form
-                              method="POST"
-                              action="${baseURL}/demonstration-data"
-                            >
-                              <input
-                                type="hidden"
-                                name="_csrf"
-                                value="${req.csrfToken()}"
-                              />
-                              <button
-                                class="button button--blue"
-                                style="${css`
-                                  width: 100%;
-                                `}"
-                              >
-                                <i class="bi bi-easel"></i>
-                                Create Demonstration Data
-                              </button>
-                            </form>
-                          </div>
-                        </div>
                       </div>
                       $${process.env.NODE_ENV !== "production"
                         ? html`
@@ -2132,7 +2136,128 @@ export default async function courselore({
                     `}"
                     oninteractive="${javascript`
                       tippy(this, {
-                        content: this.nextElementSibling.firstElementChild,
+                        content: ${tippyContent(
+                          req,
+                          res,
+                          html`
+                            <div
+                              style="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--2);
+                              `}"
+                            >
+                              <div>
+                                <h3 class="heading">
+                                  <i class="bi bi-journal-text"></i>
+                                  ${res.locals.course.name}
+                                </h3>
+                                <div class="dropdown--menu">
+                                  <a
+                                    href="${baseURL}/courses/${res.locals.course
+                                      .reference}"
+                                    class="dropdown--menu--item button ${req.path.includes(
+                                      "/settings/"
+                                    )
+                                      ? "button--transparent"
+                                      : "button--blue"}"
+                                  >
+                                    <i class="bi bi-chat-left-text"></i>
+                                    Conversations
+                                  </a>
+                                  <a
+                                    href="${baseURL}/courses/${res.locals.course
+                                      .reference}/settings"
+                                    class="dropdown--menu--item button ${req.path.includes(
+                                      "/settings/"
+                                    )
+                                      ? "button--blue"
+                                      : "button--transparent"}"
+                                  >
+                                    <i class="bi bi-sliders"></i>
+                                    Course Settings
+                                  </a>
+                                </div>
+                              </div>
+                              $${res.locals.enrollments.length > 1
+                                ? html`
+                                    <div>
+                                      <h3 class="heading">
+                                        <i class="bi bi-arrow-left-right"></i>
+                                        Switch to Another Course
+                                      </h3>
+                                      <div class="dropdown--menu">
+                                        $${res.locals.enrollments.map(
+                                          (enrollment) => html`
+                                            <a
+                                              href="${baseURL}/courses/${enrollment
+                                                .course.reference}"
+                                              class="dropdown--menu--item button ${enrollment.id ===
+                                              res.locals.enrollment?.id
+                                                ? "button--blue"
+                                                : "button--transparent"}"
+                                            >
+                                              <div
+                                                class="button button--tight"
+                                                style="${css`
+                                                  color: var(
+                                                    --color--${enrollment.accentColor}--600
+                                                  );
+                                                  background-color: var(
+                                                    --color--${enrollment.accentColor}--100
+                                                  );
+                                                  @media (prefers-color-scheme: dark) {
+                                                    color: var(
+                                                      --color--${enrollment.accentColor}--500
+                                                    );
+                                                    background-color: var(
+                                                      --color--${enrollment.accentColor}--800
+                                                    );
+                                                  }
+                                                `}"
+                                              >
+                                                <i
+                                                  class="bi bi-journal-text"
+                                                ></i>
+                                              </div>
+                                              <span>
+                                                ${enrollment.course.name}
+                                                <span
+                                                  class="secondary"
+                                                  style="${css`
+                                                    font-size: var(
+                                                      --font-size--xs
+                                                    );
+                                                    line-height: var(
+                                                      --line-height--xs
+                                                    );
+                                                  `}"
+                                                  oninteractive="${javascript`
+                                                    tippy(this, {
+                                                      content: ${JSON.stringify(
+                                                        lodash.capitalize(
+                                                          enrollment.role
+                                                        )
+                                                      )},
+                                                      touch: false,
+                                                    });
+                                                  `}"
+                                                >
+                                                  $${enrollmentRoleIcon[
+                                                    enrollment.role
+                                                  ].regular}
+                                                </span>
+                                              </span>
+                                            </a>
+                                          `
+                                        )}
+                                      </div>
+                                    </div>
+                                  `
+                                : html``}
+                            </div>
+                          `
+                        )},
                         trigger: "click",
                         interactive: true,
                       });
@@ -2168,117 +2293,6 @@ export default async function courselore({
                     </span>
                     <i class="bi bi-chevron-down"></i>
                   </button>
-                  <div hidden>
-                    <div
-                      style="${css`
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--space--2);
-                      `}"
-                    >
-                      <div>
-                        <h3 class="heading">
-                          <i class="bi bi-journal-text"></i>
-                          ${res.locals.course.name}
-                        </h3>
-                        <div class="dropdown--menu">
-                          <a
-                            href="${baseURL}/courses/${res.locals.course
-                              .reference}"
-                            class="dropdown--menu--item button ${req.path.includes(
-                              "/settings/"
-                            )
-                              ? "button--transparent"
-                              : "button--blue"}"
-                          >
-                            <i class="bi bi-chat-left-text"></i>
-                            Conversations
-                          </a>
-                          <a
-                            href="${baseURL}/courses/${res.locals.course
-                              .reference}/settings"
-                            class="dropdown--menu--item button ${req.path.includes(
-                              "/settings/"
-                            )
-                              ? "button--blue"
-                              : "button--transparent"}"
-                          >
-                            <i class="bi bi-sliders"></i>
-                            Course Settings
-                          </a>
-                        </div>
-                      </div>
-                      $${res.locals.enrollments.length > 1
-                        ? html`
-                            <div>
-                              <h3 class="heading">
-                                <i class="bi bi-arrow-left-right"></i>
-                                Switch to Another Course
-                              </h3>
-                              <div class="dropdown--menu">
-                                $${res.locals.enrollments.map(
-                                  (enrollment) => html`
-                                    <a
-                                      href="${baseURL}/courses/${enrollment
-                                        .course.reference}"
-                                      class="dropdown--menu--item button ${enrollment.id ===
-                                      res.locals.enrollment?.id
-                                        ? "button--blue"
-                                        : "button--transparent"}"
-                                    >
-                                      <div
-                                        class="button button--tight"
-                                        style="${css`
-                                          color: var(
-                                            --color--${enrollment.accentColor}--600
-                                          );
-                                          background-color: var(
-                                            --color--${enrollment.accentColor}--100
-                                          );
-                                          @media (prefers-color-scheme: dark) {
-                                            color: var(
-                                              --color--${enrollment.accentColor}--500
-                                            );
-                                            background-color: var(
-                                              --color--${enrollment.accentColor}--800
-                                            );
-                                          }
-                                        `}"
-                                      >
-                                        <i class="bi bi-journal-text"></i>
-                                      </div>
-                                      <span>
-                                        ${enrollment.course.name}
-                                        <span
-                                          class="secondary"
-                                          style="${css`
-                                            font-size: var(--font-size--xs);
-                                            line-height: var(--line-height--xs);
-                                          `}"
-                                          oninteractive="${javascript`
-                                            tippy(this, {
-                                              content: ${JSON.stringify(
-                                                lodash.capitalize(
-                                                  enrollment.role
-                                                )
-                                              )},
-                                              touch: false,
-                                            });
-                                          `}"
-                                        >
-                                          $${enrollmentRoleIcon[enrollment.role]
-                                            .regular}
-                                        </span>
-                                      </span>
-                                    </a>
-                                  `
-                                )}
-                              </div>
-                            </div>
-                          `
-                        : html``}
-                    </div>
-                  </div>
                 `}
           </div>
 
@@ -2297,7 +2311,68 @@ export default async function courselore({
                   touch: false,
                 });
                 tippy(this, {
-                  content: this.nextElementSibling.firstElementChild,
+                  content: ${tippyContent(
+                    req,
+                    res,
+                    html`
+                      <div
+                        style="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--2);
+                        `}"
+                      >
+                        $${res.locals.invitations!.length === 0
+                          ? html``
+                          : html`
+                              <div>
+                                <h3 class="heading">
+                                  <i class="bi bi-journal-arrow-down"></i>
+                                  Invitations
+                                </h3>
+                                <div class="dropdown--menu">
+                                  $${res.locals.invitations!.map(
+                                    (invitation) => html`
+                                      <a
+                                        href="${baseURL}/courses/${invitation
+                                          .course
+                                          .reference}/invitations/${invitation.reference}"
+                                        class="dropdown--menu--item button button--transparent"
+                                      >
+                                        <i class="bi bi-journal-arrow-down"></i>
+                                        Enroll in ${invitation.course.name} as
+                                        ${lodash.capitalize(invitation.role)}
+                                      </a>
+                                    `
+                                  )}
+                                </div>
+                              </div>
+                              <hr class="dropdown--separator" />
+                            `}
+                        <div class="dropdown--menu">
+                          <button
+                            class="dropdown--menu--item button button--transparent"
+                            oninteractive="${javascript`
+                              tippy(this, {
+                                content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
+                                trigger: "click",
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-journal-arrow-down"></i>
+                            Enroll in an Existing Course
+                          </button>
+                          <a
+                            href="${baseURL}/courses/new"
+                            class="dropdown--menu--item button button--transparent"
+                          >
+                            <i class="bi bi-journal-plus"></i>
+                            Create a New Course
+                          </a>
+                        </div>
+                      </div>
+                    `
+                  )},
                   trigger: "click",
                   interactive: true,
                 });
@@ -2343,63 +2418,6 @@ export default async function courselore({
                     `}
               </div>
             </button>
-            <div hidden>
-              <div
-                style="${css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--2);
-                `}"
-              >
-                $${res.locals.invitations!.length === 0
-                  ? html``
-                  : html`
-                      <div>
-                        <h3 class="heading">
-                          <i class="bi bi-journal-arrow-down"></i>
-                          Invitations
-                        </h3>
-                        <div class="dropdown--menu">
-                          $${res.locals.invitations!.map(
-                            (invitation) => html`
-                              <a
-                                href="${baseURL}/courses/${invitation.course
-                                  .reference}/invitations/${invitation.reference}"
-                                class="dropdown--menu--item button button--transparent"
-                              >
-                                <i class="bi bi-journal-arrow-down"></i>
-                                Enroll in ${invitation.course.name} as
-                                ${lodash.capitalize(invitation.role)}
-                              </a>
-                            `
-                          )}
-                        </div>
-                      </div>
-                      <hr class="dropdown--separator" />
-                    `}
-                <div class="dropdown--menu">
-                  <button
-                    class="dropdown--menu--item button button--transparent"
-                    oninteractive="${javascript`
-                      tippy(this, {
-                        content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
-                        trigger: "click",
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-journal-arrow-down"></i>
-                    Enroll in an Existing Course
-                  </button>
-                  <a
-                    href="${baseURL}/courses/new"
-                    class="dropdown--menu--item button button--transparent"
-                  >
-                    <i class="bi bi-journal-plus"></i>
-                    Create a New Course
-                  </a>
-                </div>
-              </div>
-            </div>
           </div>
 
           <div>
@@ -2415,7 +2433,7 @@ export default async function courselore({
                   touch: false,
                 });
                 tippy(this, {
-                  content: this.nextElementSibling.firstElementChild,
+                  content: ${tippyContent(req, res, html``)},
                   trigger: "click",
                   interactive: true,
                 });
@@ -2579,7 +2597,7 @@ export default async function courselore({
                   class="button button--transparent"
                   oninteractive="${javascript`
                     tippy(this, {
-                      content: this.nextElementSibling.firstElementChild,
+                      content: ${tippyContent(req, res, html``)},
                       trigger: "click",
                       interactive: true,
                     });
@@ -3054,8 +3072,14 @@ export default async function courselore({
     tippyContent?: HTML[];
   }
   const tippyContent = (
-    req: express.Request<{}, any, {}, {}, TippyContentMiddlewareLocals>,
-    res: express.Response<any, TippyContentMiddlewareLocals>,
+    req: express.Request<
+      {},
+      any,
+      {},
+      {},
+      TippyContentMiddlewareLocals & object
+    >,
+    res: express.Response<any, TippyContentMiddlewareLocals & object>,
     content: HTML
   ): JavaScript => {
     res.locals.tippyContent ??= [];
@@ -4628,7 +4652,7 @@ export default async function courselore({
                       const avatarEmpty = avatarChooser.querySelector(".avatar-chooser--empty");
                       const avatarFilled = avatarChooser.querySelector(".avatar-chooser--filled");
                       const uploadingIndicator = tippy(avatarChooser, {
-                        content: this.nextElementSibling.firstElementChild,
+                        content: ${tippyContent(req, res, html``)},
                         trigger: "manual",
                         hideOnClick: false,
                       });
@@ -5985,7 +6009,7 @@ export default async function courselore({
                     class="button button--tight button--tight--inline button--transparent"
                     oninteractive="${javascript`
                       tippy(this, {
-                        content: this.nextElementSibling.firstElementChild,
+                        content: ${tippyContent(req, res, html``)},
                         trigger: "click",
                       });
                     `}"
@@ -6245,7 +6269,11 @@ export default async function courselore({
                                           touch: false,
                                         });
                                         tippy(this, {
-                                          content: this.nextElementSibling.firstElementChild,
+                                          content: ${tippyContent(
+                                            req,
+                                            res,
+                                            html``
+                                          )},
                                           trigger: "click",
                                           interactive: true,
                                           maxWidth: "none",
@@ -6351,7 +6379,11 @@ export default async function courselore({
                                       `}"
                                       oninteractive="${javascript`
                                         tippy(this, {
-                                          content: this.nextElementSibling.firstElementChild,
+                                          content: ${tippyContent(
+                                            req,
+                                            res,
+                                            html``
+                                          )},
                                           trigger: "click",
                                           interactive: true,
                                         });
@@ -6449,7 +6481,11 @@ export default async function courselore({
                                       touch: false,
                                     });
                                     tippy(this, {
-                                      content: this.nextElementSibling.firstElementChild,
+                                      content: ${tippyContent(
+                                        req,
+                                        res,
+                                        html``
+                                      )},
                                       trigger: "click",
                                       interactive: true,
                                     });
@@ -6626,7 +6662,11 @@ export default async function courselore({
                                             `}"
                                             oninteractive="${javascript`
                                               tippy(this, {
-                                                content: this.nextElementSibling.firstElementChild,
+                                                content: ${tippyContent(
+                                                  req,
+                                                  res,
+                                                  html``
+                                                )},
                                                 touch: false,
                                               });
                                             `}"
@@ -6660,7 +6700,11 @@ export default async function courselore({
                                                 touch: false,
                                               });
                                               tippy(this, {
-                                                content: this.nextElementSibling.firstElementChild,
+                                                content: ${tippyContent(
+                                                  req,
+                                                  res,
+                                                  html``
+                                                )},
                                                 trigger: "click",
                                                 interactive: true,
                                               });
@@ -6712,7 +6756,11 @@ export default async function courselore({
                                                 touch: false,
                                               });
                                               tippy(this, {
-                                                content: this.nextElementSibling.firstElementChild,
+                                                content: ${tippyContent(
+                                                  req,
+                                                  res,
+                                                  html``
+                                                )},
                                                 trigger: "click",
                                                 interactive: true,
                                               });
@@ -6750,7 +6798,11 @@ export default async function courselore({
                                                 touch: false,
                                               });
                                               tippy(this, {
-                                                content: this.nextElementSibling.firstElementChild,
+                                                content: ${tippyContent(
+                                                  req,
+                                                  res,
+                                                  html``
+                                                )},
                                                 trigger: "click",
                                                 interactive: true,
                                               });
@@ -7279,7 +7331,7 @@ export default async function courselore({
                                 touch: false,
                               });
                               tippy(this, {
-                                content: this.nextElementSibling.firstElementChild,
+                                content: ${tippyContent(req, res, html``)},
                                 trigger: "click",
                                 interactive: true,
                               });
@@ -7327,7 +7379,11 @@ export default async function courselore({
                                               ? html`
                                                   type="button"
                                                   oninteractive="${javascript`
-                                                    const element = this.nextElementSibling.firstElementChild;
+                                                    const element = ${tippyContent(
+                                                      req,
+                                                      res,
+                                                      html``
+                                                    )};
                                                     element.form = this.closest("form");
                                                     tippy(this, {
                                                       content: element,
@@ -7419,7 +7475,11 @@ export default async function courselore({
                                     `
                                   : javascript`
                                       tippy(this, {
-                                        content: this.nextElementSibling.firstElementChild,
+                                        content: ${tippyContent(
+                                          req,
+                                          res,
+                                          html``
+                                        )},
                                         theme: "rose",
                                         trigger: "click",
                                         interactive: true,
@@ -7738,7 +7798,7 @@ export default async function courselore({
                                     touch: false,
                                   });
                                   tippy(this, {
-                                    content: this.nextElementSibling.firstElementChild,
+                                    content: ${tippyContent(req, res, html``)},
                                     theme: "rose",
                                     trigger: "click",
                                     interactive: true,
@@ -7880,7 +7940,11 @@ export default async function courselore({
                       });
                     `}"
                     onclick="${javascript`
-                      const newTag = this.nextElementSibling.firstElementChild.cloneNode(true);
+                      const newTag = ${tippyContent(
+                        req,
+                        res,
+                        html``
+                      )}.cloneNode(true);
                       this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
                       leafac.evaluateElementsAttribute(newTag, "onmount");
                     `}"
@@ -10618,7 +10682,7 @@ export default async function courselore({
                     touch: false,
                   });
                   tippy(this, {
-                    content: this.nextElementSibling.firstElementChild,
+                    content: ${tippyContent(req, res, html``)},
                     trigger: "click",
                     interactive: true,
                   });
@@ -11243,7 +11307,7 @@ export default async function courselore({
                 oninteractive="${javascript`
                   const textarea = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                   const uploadingIndicator = tippy(textarea, {
-                    content: this.nextElementSibling.firstElementChild,
+                    content: ${tippyContent(req, res, html``)},
                     trigger: "manual",
                     hideOnClick: false,
                   });
@@ -13513,7 +13577,11 @@ ${value}</textarea
                                       touch: false,
                                     });
                                     tippy(this, {
-                                      content: this.nextElementSibling.firstElementChild,
+                                      content: ${tippyContent(
+                                        req,
+                                        res,
+                                        html``
+                                      )},
                                       trigger: "click",
                                       interactive: true,
                                     });
@@ -13664,7 +13732,7 @@ ${value}</textarea
                                     touch: false,
                                   });
                                   tippy(this, {
-                                    content: this.nextElementSibling.firstElementChild,
+                                    content: ${tippyContent(req, res, html``)},
                                     theme: "rose",
                                     trigger: "click",
                                     interactive: true,
@@ -13785,7 +13853,7 @@ ${value}</textarea
                               touch: false,
                             });
                             tippy(this, {
-                              content: this.nextElementSibling.firstElementChild,
+                              content: ${tippyContent(req, res, html``)},
                               trigger: "click",
                               interactive: true,
                             });
@@ -13843,7 +13911,11 @@ ${value}</textarea
                                         class="dropdown--menu--item button button--transparent"
                                         oninteractive="${javascript`
                                           tippy(this, {
-                                            content: this.nextElementSibling.firstElementChild,
+                                            content: ${tippyContent(
+                                              req,
+                                              res,
+                                              html``
+                                            )},
                                             theme: "rose",
                                             trigger: "click",
                                             interactive: true,
@@ -14116,7 +14188,11 @@ ${value}</textarea
                                                 touch: false,
                                               });
                                               tippy(this, {
-                                                content: this.nextElementSibling.firstElementChild,
+                                                content: ${tippyContent(
+                                                  req,
+                                                  res,
+                                                  html``
+                                                )},
                                                 trigger: "click",
                                                 interactive: true,
                                               });
@@ -14523,7 +14599,11 @@ ${value}</textarea
                                                     touch: false,
                                                   });
                                                   tippy(this, {
-                                                    content: this.nextElementSibling.firstElementChild,
+                                                    content: ${tippyContent(
+                                                      req,
+                                                      res,
+                                                      html``
+                                                    )},
                                                     trigger: "click",
                                                     interactive: true,
                                                   });
@@ -14755,7 +14835,11 @@ ${value}</textarea
                                                               class="dropdown--menu--item button button--transparent"
                                                               oninteractive="${javascript`
                                                                 tippy(this, {
-                                                                  content: this.nextElementSibling.firstElementChild,
+                                                                  content: ${tippyContent(
+                                                                    req,
+                                                                    res,
+                                                                    html``
+                                                                  )},
                                                                   theme: "rose",
                                                                   trigger: "click",
                                                                   interactive: true,
@@ -15315,7 +15399,11 @@ ${value}</textarea
                                               oninteractive="${javascript`
                                                 const dropdownMenuTarget = this.closest(".message--show--content-area").querySelector(".message--show--content-area--dropdown-menu-target");
                                                 const dropdownMenu = tippy(dropdownMenuTarget, {
-                                                  content: this.nextElementSibling.firstElementChild,
+                                                  content: ${tippyContent(
+                                                    req,
+                                                    res,
+                                                    html``
+                                                  )},
                                                   trigger: "manual",
                                                   interactive: true,
                                                   touch: false,

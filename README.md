@@ -29,6 +29,10 @@
 ### Chat
 
 - Add support for out-of-band tippy contents.
+  - `allowHTML` shouldn’t exist anymore.
+  - `this.nextElementSibling.firstElementChild`.
+  - `tippy(`
+  - `<div hidden`
   - Uses:
     - `#13` references in `markdownProcessor`.
     - User biographies in `userPartial`.
