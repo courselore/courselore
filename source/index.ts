@@ -6688,17 +6688,15 @@ export default async function courselore({
                                                   req,
                                                   res,
                                                   content: html`
-                                                    <div>
-                                                      Used
-                                                      <time
-                                                        datetime="${new Date(
-                                                          invitation.usedAt!
-                                                        ).toISOString()}"
-                                                        oninteractive="${javascript`
-                                                          leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                                                        `}"
-                                                      ></time>
-                                                    </div>
+                                                    Used
+                                                    <time
+                                                      datetime="${new Date(
+                                                        invitation.usedAt!
+                                                      ).toISOString()}"
+                                                      oninteractive="${javascript`
+                                                        leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                      `}"
+                                                    ></time>
                                                   `,
                                                 })},
                                                 touch: false,
@@ -7406,7 +7404,58 @@ export default async function courselore({
                                                               {
                                                                 req,
                                                                 res,
-                                                                content: html``,
+                                                                content: html`
+                                                                  <div
+                                                                    class="confirmation"
+                                                                    style="${css`
+                                                                      padding: var(
+                                                                        --space--2
+                                                                      );
+                                                                      display: flex;
+                                                                      flex-direction: column;
+                                                                      gap: var(
+                                                                        --space--4
+                                                                      );
+                                                                    `}"
+                                                                  >
+                                                                    <p>
+                                                                      Are you
+                                                                      sure you
+                                                                      want to
+                                                                      update
+                                                                      your own
+                                                                      role to
+                                                                      ${role}?
+                                                                    </p>
+                                                                    <p>
+                                                                      <strong
+                                                                        style="${css`
+                                                                          font-weight: var(
+                                                                            --font-weight--bold
+                                                                          );
+                                                                        `}"
+                                                                      >
+                                                                        You may
+                                                                        not undo
+                                                                        this
+                                                                        action!
+                                                                      </strong>
+                                                                    </p>
+                                                                    <button
+                                                                      class="button button--rose"
+                                                                      onclick="${javascript`
+                                                                          this.closest(".confirmation").form.submit();
+                                                                        `}"
+                                                                    >
+                                                                      Update My
+                                                                      Own Role
+                                                                      to
+                                                                      ${lodash.capitalize(
+                                                                        role
+                                                                      )}
+                                                                    </button>
+                                                                  </div>
+                                                                `,
                                                               }
                                                             )};
                                                             element.form = this.closest("form");
@@ -7425,56 +7474,6 @@ export default async function courselore({
                                                       .regular}
                                                     ${lodash.capitalize(role)}
                                                   </button>
-                                                  $${isSelf
-                                                    ? html`
-                                                        <div hidden>
-                                                          <div
-                                                            class="confirmation"
-                                                            style="${css`
-                                                              padding: var(
-                                                                --space--2
-                                                              );
-                                                              display: flex;
-                                                              flex-direction: column;
-                                                              gap: var(
-                                                                --space--4
-                                                              );
-                                                            `}"
-                                                          >
-                                                            <p>
-                                                              Are you sure you
-                                                              want to update
-                                                              your own role to
-                                                              ${role}?
-                                                            </p>
-                                                            <p>
-                                                              <strong
-                                                                style="${css`
-                                                                  font-weight: var(
-                                                                    --font-weight--bold
-                                                                  );
-                                                                `}"
-                                                              >
-                                                                You may not undo
-                                                                this action!
-                                                              </strong>
-                                                            </p>
-                                                            <button
-                                                              class="button button--rose"
-                                                              onclick="${javascript`
-                                                                  this.closest(".confirmation").form.submit();
-                                                                `}"
-                                                            >
-                                                              Update My Own Role
-                                                              to
-                                                              ${lodash.capitalize(
-                                                                role
-                                                              )}
-                                                            </button>
-                                                          </div>
-                                                        </div>
-                                                      `
-                                                    : html``}
                                                 </div>
                                               </form>
                                             `
@@ -10739,24 +10738,22 @@ export default async function courselore({
                       req,
                       res,
                       content: html`
-                        <div>
-                          <p>
-                            You may style text with
-                            <a
-                              href="https://guides.github.com/features/mastering-markdown/"
-                              target="_blank"
-                              class="link"
-                              >GitHub Flavored Markdown</a
-                            >
-                            and include mathematical formulas with
-                            <a
-                              href="https://katex.org/docs/supported.html"
-                              target="_blank"
-                              class="link"
-                              >LaTeX</a
-                            >.
-                          </p>
-                        </div>
+                        <p>
+                          You may style text with
+                          <a
+                            href="https://guides.github.com/features/mastering-markdown/"
+                            target="_blank"
+                            class="link"
+                            >GitHub Flavored Markdown</a
+                          >
+                          and include mathematical formulas with
+                          <a
+                            href="https://katex.org/docs/supported.html"
+                            target="_blank"
+                            class="link"
+                            >LaTeX</a
+                          >.
+                        </p>
                       `,
                     })},
                     trigger: "click",
