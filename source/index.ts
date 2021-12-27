@@ -14,7 +14,7 @@ import qs from "qs";
 import { Database, sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
 import { css, extractInlineStyles } from "@leafac/css";
-import javascript from "@leafac/javascript";
+import javascript, { JavaScript } from "@leafac/javascript";
 type Markdown = string;
 import markdown from "tagged-template-noop";
 import dedent from "dedent";
@@ -442,13 +442,15 @@ export default async function courselore({
       {},
       (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
         Partial<IsEnrolledInCourseMiddlewareLocals> &
-        Partial<EventSourceMiddlewareLocals>
+        Partial<EventSourceMiddlewareLocals> &
+        TippyContentMiddlewareLocals
     >;
     res: express.Response<
       any,
       (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
         Partial<IsEnrolledInCourseMiddlewareLocals> &
-        Partial<EventSourceMiddlewareLocals>
+        Partial<EventSourceMiddlewareLocals> &
+        TippyContentMiddlewareLocals
     >;
     head: HTML;
     extraHeaders?: HTML;
@@ -1674,39 +1676,42 @@ export default async function courselore({
                           touch: false,
                         });
                         tippy(this, {
-                          content: this.nextElementSibling.firstElementChild,
+                          content: ${tippyContent(
+                            req,
+                            res,
+                            html`
+                              <div
+                                style="${css`
+                                  padding: var(--space--2);
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--4);
+                                `}"
+                              >
+                                <p>
+                                  This bar with an accent color appears at the
+                                  top of pages related to this course to help
+                                  you differentiate between courses.
+                                </p>
+                                <a
+                                  class="button button--blue"
+                                  href="${baseURL}/courses/${res.locals.course!
+                                    .reference}/settings/your-enrollment"
+                                  style="${css`
+                                    width: 100%;
+                                  `}"
+                                >
+                                  <i class="bi bi-palette"></i>
+                                  Update Accent Color
+                                </a>
+                              </div>
+                            `
+                          )},
                           trigger: "click",
                           interactive: true,
                         });
                       `}"
                     ></button>
-                    <div hidden>
-                      <div
-                        style="${css`
-                          padding: var(--space--2);
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--space--4);
-                        `}"
-                      >
-                        <p>
-                          This bar with an accent color appears at the top of
-                          pages related to this course to help you differentiate
-                          between courses.
-                        </p>
-                        <a
-                          class="button button--blue"
-                          href="${baseURL}/courses/${res.locals.course!
-                            .reference}/settings/your-enrollment"
-                          style="${css`
-                            width: 100%;
-                          `}"
-                        >
-                          <i class="bi bi-palette"></i>
-                          Update Accent Color
-                        </a>
-                      </div>
-                    </div>
                   </div>
                 `}
             <div
@@ -1968,6 +1973,7 @@ export default async function courselore({
               $${body}
             </div>
           </div>
+          <div hidden>$${res.locals.tippyContent ?? []}</div>
         </body>
       </html>
     `);
@@ -3042,6 +3048,20 @@ export default async function courselore({
       display: "text--cyan",
       select: "text--cyan",
     },
+  };
+
+  interface TippyContentMiddlewareLocals {
+    tippyContent?: HTML[];
+  }
+  const tippyContent = (
+    req: express.Request<{}, any, {}, {}, TippyContentMiddlewareLocals>,
+    res: express.Response<any, TippyContentMiddlewareLocals>,
+    content: HTML
+  ): JavaScript => {
+    res.locals.tippyContent ??= [];
+    const id = `tippy-content--${res.locals.tippyContent.length}`;
+    res.locals.tippyContent.push(html`<div id="${id}">$${content}</div>`);
+    return javascript`document.querySelector("#${id}")`;
   };
 
   app.use(
