@@ -6396,11 +6396,11 @@ export default async function courselore({
                                       `}"
                                       oninteractive="${javascript`
                                         tippy(this, {
-                                          content: ${tippyContent(
+                                          content: ${tippyContent({
                                             req,
                                             res,
-                                            html``
-                                          )},
+                                            content: html``,
+                                          })},
                                           trigger: "click",
                                           interactive: true,
                                         });
@@ -6498,11 +6498,11 @@ export default async function courselore({
                                       touch: false,
                                     });
                                     tippy(this, {
-                                      content: ${tippyContent(
+                                      content: ${tippyContent({
                                         req,
                                         res,
-                                        html``
-                                      )},
+                                        content: html``,
+                                      })},
                                       trigger: "click",
                                       interactive: true,
                                     });
@@ -6679,11 +6679,11 @@ export default async function courselore({
                                             `}"
                                             oninteractive="${javascript`
                                               tippy(this, {
-                                                content: ${tippyContent(
+                                                content: ${tippyContent({
                                                   req,
                                                   res,
-                                                  html``
-                                                )},
+                                                  content: html``,
+                                                })},
                                                 touch: false,
                                               });
                                             `}"
@@ -6717,11 +6717,11 @@ export default async function courselore({
                                                 touch: false,
                                               });
                                               tippy(this, {
-                                                content: ${tippyContent(
+                                                content: ${tippyContent({
                                                   req,
                                                   res,
-                                                  html``
-                                                )},
+                                                  content: html``,
+                                                })},
                                                 trigger: "click",
                                                 interactive: true,
                                               });
@@ -6773,11 +6773,11 @@ export default async function courselore({
                                                 touch: false,
                                               });
                                               tippy(this, {
-                                                content: ${tippyContent(
+                                                content: ${tippyContent({
                                                   req,
                                                   res,
-                                                  html``
-                                                )},
+                                                  content: html``,
+                                                })},
                                                 trigger: "click",
                                                 interactive: true,
                                               });
@@ -6815,11 +6815,11 @@ export default async function courselore({
                                                 touch: false,
                                               });
                                               tippy(this, {
-                                                content: ${tippyContent(
+                                                content: ${tippyContent({
                                                   req,
                                                   res,
-                                                  html``
-                                                )},
+                                                  content: html``,
+                                                })},
                                                 trigger: "click",
                                                 interactive: true,
                                               });
@@ -7401,9 +7401,11 @@ export default async function courselore({
                                                   type="button"
                                                   oninteractive="${javascript`
                                                     const element = ${tippyContent(
-                                                      req,
-                                                      res,
-                                                      html``
+                                                      {
+                                                        req,
+                                                        res,
+                                                        content: html``,
+                                                      }
                                                     )};
                                                     element.form = this.closest("form");
                                                     tippy(this, {
@@ -7496,11 +7498,11 @@ export default async function courselore({
                                     `
                                   : javascript`
                                       tippy(this, {
-                                        content: ${tippyContent(
+                                        content: ${tippyContent({
                                           req,
                                           res,
-                                          html``
-                                        )},
+                                          content: html``,
+                                        })},
                                         theme: "rose",
                                         trigger: "click",
                                         interactive: true,
@@ -7965,11 +7967,11 @@ export default async function courselore({
                       });
                     `}"
                     onclick="${javascript`
-                      const newTag = ${tippyContent(
+                      const newTag = ${tippyContent({
                         req,
                         res,
-                        html``
-                      )}.cloneNode(true);
+                        content: html``,
+                      })}.cloneNode(true);
                       this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
                       leafac.evaluateElementsAttribute(newTag, "onmount");
                     `}"
@@ -13602,11 +13604,11 @@ ${value}</textarea
                                       touch: false,
                                     });
                                     tippy(this, {
-                                      content: ${tippyContent(
+                                      content: ${tippyContent({
                                         req,
                                         res,
-                                        html``
-                                      )},
+                                        content: html``,
+                                      })},
                                       trigger: "click",
                                       interactive: true,
                                     });
@@ -13944,11 +13946,11 @@ ${value}</textarea
                                         class="dropdown--menu--item button button--transparent"
                                         oninteractive="${javascript`
                                           tippy(this, {
-                                            content: ${tippyContent(
+                                            content: ${tippyContent({
                                               req,
                                               res,
-                                              html``
-                                            )},
+                                              content: html``,
+                                            })},
                                             theme: "rose",
                                             trigger: "click",
                                             interactive: true,
@@ -14221,11 +14223,11 @@ ${value}</textarea
                                                 touch: false,
                                               });
                                               tippy(this, {
-                                                content: ${tippyContent(
+                                                content: ${tippyContent({
                                                   req,
                                                   res,
-                                                  html``
-                                                )},
+                                                  content: html``,
+                                                })},
                                                 trigger: "click",
                                                 interactive: true,
                                               });
@@ -14632,11 +14634,11 @@ ${value}</textarea
                                                     touch: false,
                                                   });
                                                   tippy(this, {
-                                                    content: ${tippyContent(
+                                                    content: ${tippyContent({
                                                       req,
                                                       res,
-                                                      html``
-                                                    )},
+                                                      content: html``,
+                                                    })},
                                                     trigger: "click",
                                                     interactive: true,
                                                   });
@@ -14869,9 +14871,11 @@ ${value}</textarea
                                                               oninteractive="${javascript`
                                                                 tippy(this, {
                                                                   content: ${tippyContent(
-                                                                    req,
-                                                                    res,
-                                                                    html``
+                                                                    {
+                                                                      req,
+                                                                      res,
+                                                                      content: html``,
+                                                                    }
                                                                   )},
                                                                   theme: "rose",
                                                                   trigger: "click",
@@ -15432,11 +15436,11 @@ ${value}</textarea
                                               oninteractive="${javascript`
                                                 const dropdownMenuTarget = this.closest(".message--show--content-area").querySelector(".message--show--content-area--dropdown-menu-target");
                                                 const dropdownMenu = tippy(dropdownMenuTarget, {
-                                                  content: ${tippyContent(
+                                                  content: ${tippyContent({
                                                     req,
                                                     res,
-                                                    html``
-                                                  )},
+                                                    content: html``,
+                                                  })},
                                                   trigger: "manual",
                                                   interactive: true,
                                                   touch: false,
