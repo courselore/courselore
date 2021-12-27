@@ -29,13 +29,11 @@
 ### Chat
 
 - Add support for out-of-band tippy contents.
+  - `<div hidden`
   - `allowHTML` shouldn’t exist anymore.
   - `tippy(`
-  - `<div hidden`
   - `conversationPartial`, `getConversation`, and `getMessage` should have keyword arguments.
-  - Uses:
-    - `#13` references in `markdownProcessor`.
-    - User biographies in `userPartial`.
+  - User biographies in `userPartial`.
   - Should fix the following bugs:
     - Text color in avatar popper when button color is active (for example, the blue conversation on the left bar when it’s the current conversation).
     - Online indicator isn’t showing up in avatar popper.
