@@ -12316,16 +12316,15 @@ ${value}</textarea
     }): { html: HTML; text: string; mentions: Set<string> } => {
       const mentions = new Set<string>();
 
-      const document = JSDOM.fragment(html`
+      const markdownElement = JSDOM.fragment(html`
         <div class="markdown">
-          <div class="markdown--content">
-            $${unifiedProcessor.processSync(markdown).toString()}
-          </div>
-          <div hidden class="markdown--references"></div>
+          $${unifiedProcessor.processSync(markdown).toString()}
         </div>
-      `);
+      `).firstElementChild!;
 
-      for (const element of document.querySelectorAll("li, td, th, dt, dd"))
+      for (const element of markdownElement.querySelectorAll(
+        "li, td, th, dt, dd"
+      ))
         element.innerHTML = [...element.childNodes].some(
           (node) =>
             node.nodeType === node.TEXT_NODE && node.textContent!.trim() !== ""
@@ -12333,7 +12332,7 @@ ${value}</textarea
           ? html`<div><p>$${element.innerHTML}</p></div>`
           : html`<div>$${element.innerHTML}</div>`;
 
-      for (const element of document.querySelectorAll("details")) {
+      for (const element of markdownElement.querySelectorAll("details")) {
         const summaries: Node[] = [];
         const rest: Node[] = [];
         for (const child of element.childNodes)
@@ -12372,7 +12371,7 @@ ${value}</textarea
           IsEnrolledInCourseMiddlewareLocals
         >;
 
-        for (const element of document.querySelectorAll("a")) {
+        for (const element of markdownElement.querySelectorAll("a")) {
           if (element.href !== element.textContent!.trim()) continue;
           const match = element.href.match(
             new RegExp(
@@ -12530,10 +12529,10 @@ ${value}</textarea
                 break;
             }
           }
-        })(document);
+        })(markdownElement);
 
         const references: HTML[] = [];
-        for (const element of document.querySelectorAll("a")) {
+        for (const element of markdownElement.querySelectorAll("a")) {
           const hrefMatch = element.href.match(
             new RegExp(
               `^${escapeStringRegexp(
@@ -12624,7 +12623,7 @@ ${value}</textarea
             `
           );
         }
-        document.querySelector(
+        markdownElement.querySelector(
           ".markdown--references"
         )!.innerHTML = html`$${references}`;
       }
@@ -12648,11 +12647,11 @@ ${value}</textarea
                 break;
             }
           }
-        })(document);
+        })(markdownElement);
 
       return {
-        html: document.firstElementChild!.outerHTML,
-        text: document.querySelector(".markdown--content")!.textContent!,
+        html: markdownElement.outerHTML,
+        text: markdownElement.textContent!,
         mentions,
       };
     };
