@@ -6401,7 +6401,56 @@ export default async function courselore({
                                           content: ${tippyContent({
                                             req,
                                             res,
-                                            content: html``,
+                                            content: html`
+                                              <div class="dropdown--menu">
+                                                <form
+                                                  method="POST"
+                                                  action="${action}?_method=PATCH"
+                                                >
+                                                  <input
+                                                    type="hidden"
+                                                    name="_csrf"
+                                                    value="${req.csrfToken()}"
+                                                  />
+                                                  <input
+                                                    type="hidden"
+                                                    name="resend"
+                                                    value="true"
+                                                  />
+                                                  <button
+                                                    class="dropdown--menu--item button button--transparent"
+                                                    $${isUsed
+                                                      ? html`
+                                                          type="button"
+                                                          oninteractive="${javascript`
+                                                            tippy(this, {
+                                                              content: "You may not resend this invitation because it’s used.",
+                                                              theme: "rose",
+                                                              trigger: "click",
+                                                            });
+                                                          `}"
+                                                        `
+                                                      : isInvitationExpired
+                                                      ? html`
+                                                          type="button"
+                                                          oninteractive="${javascript`
+                                                            tippy(this, {
+                                                              content: "You may not resend this invitation because it’s expired.",
+                                                              theme: "rose",
+                                                              trigger: "click",
+                                                            });
+                                                          `}"
+                                                        `
+                                                      : html``}
+                                                  >
+                                                    <i
+                                                      class="bi bi-envelope"
+                                                    ></i>
+                                                    Resend Invitation Email
+                                                  </button>
+                                                </form>
+                                              </div>
+                                            `,
                                           })},
                                           trigger: "click",
                                           interactive: true,
@@ -6427,54 +6476,6 @@ export default async function courselore({
                                           `
                                         : html``}
                                     </button>
-                                    <div hidden>
-                                      <div class="dropdown--menu">
-                                        <form
-                                          method="POST"
-                                          action="${action}?_method=PATCH"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="_csrf"
-                                            value="${req.csrfToken()}"
-                                          />
-                                          <input
-                                            type="hidden"
-                                            name="resend"
-                                            value="true"
-                                          />
-                                          <button
-                                            class="dropdown--menu--item button button--transparent"
-                                            $${isUsed
-                                              ? html`
-                                                  type="button"
-                                                  oninteractive="${javascript`
-                                                    tippy(this, {
-                                                      content: "You may not resend this invitation because it’s used.",
-                                                      theme: "rose",
-                                                      trigger: "click",
-                                                    });
-                                                  `}"
-                                                `
-                                              : isInvitationExpired
-                                              ? html`
-                                                  type="button"
-                                                  oninteractive="${javascript`
-                                                    tippy(this, {
-                                                      content: "You may not resend this invitation because it’s expired.",
-                                                      theme: "rose",
-                                                      trigger: "click",
-                                                    });
-                                                  `}"
-                                                `
-                                              : html``}
-                                          >
-                                            <i class="bi bi-envelope"></i>
-                                            Resend Invitation Email
-                                          </button>
-                                        </form>
-                                      </div>
-                                    </div>
                                   </div>
                                 `}
 
@@ -6503,7 +6504,64 @@ export default async function courselore({
                                       content: ${tippyContent({
                                         req,
                                         res,
-                                        content: html``,
+                                        content: html`
+                                          <div class="dropdown--menu">
+                                            $${enrollmentRoles.map((role) =>
+                                              role === invitation.role
+                                                ? html``
+                                                : html`
+                                                    <form
+                                                      method="POST"
+                                                      action="${action}?_method=PATCH"
+                                                    >
+                                                      <input
+                                                        type="hidden"
+                                                        name="_csrf"
+                                                        value="${req.csrfToken()}"
+                                                      />
+                                                      <input
+                                                        type="hidden"
+                                                        name="role"
+                                                        value="${role}"
+                                                      />
+                                                      <button
+                                                        class="dropdown--menu--item button button--transparent"
+                                                        $${isUsed
+                                                          ? html`
+                                                              type="button"
+                                                              oninteractive="${javascript`
+                                                                tippy(this, {
+                                                                  content: "You may not update the role of this invitation because it’s used.",
+                                                                  theme: "rose",
+                                                                  trigger: "click",
+                                                                });
+                                                              `}"
+                                                            `
+                                                          : isInvitationExpired
+                                                          ? html`
+                                                              type="button"
+                                                              oninteractive="${javascript`
+                                                                tippy(this, {
+                                                                  content: "You may not update the role of this invitation because it’s expired.",
+                                                                  theme: "rose",
+                                                                  trigger: "click",
+                                                                });
+                                                              `}"
+                                                            `
+                                                          : html``}
+                                                      >
+                                                        $${enrollmentRoleIcon[
+                                                          role
+                                                        ].regular}
+                                                        ${lodash.capitalize(
+                                                          role
+                                                        )}
+                                                      </button>
+                                                    </form>
+                                                  `
+                                            )}
+                                          </div>
+                                        `,
                                       })},
                                       trigger: "click",
                                       interactive: true,
@@ -6515,61 +6573,6 @@ export default async function courselore({
                                   ${lodash.capitalize(invitation.role)}
                                   <i class="bi bi-chevron-down"></i>
                                 </button>
-                                <div hidden>
-                                  <div class="dropdown--menu">
-                                    $${enrollmentRoles.map((role) =>
-                                      role === invitation.role
-                                        ? html``
-                                        : html`
-                                            <form
-                                              method="POST"
-                                              action="${action}?_method=PATCH"
-                                            >
-                                              <input
-                                                type="hidden"
-                                                name="_csrf"
-                                                value="${req.csrfToken()}"
-                                              />
-                                              <input
-                                                type="hidden"
-                                                name="role"
-                                                value="${role}"
-                                              />
-                                              <button
-                                                class="dropdown--menu--item button button--transparent"
-                                                $${isUsed
-                                                  ? html`
-                                                      type="button"
-                                                      oninteractive="${javascript`
-                                                        tippy(this, {
-                                                          content: "You may not update the role of this invitation because it’s used.",
-                                                          theme: "rose",
-                                                          trigger: "click",
-                                                        });
-                                                      `}"
-                                                    `
-                                                  : isInvitationExpired
-                                                  ? html`
-                                                      type="button"
-                                                      oninteractive="${javascript`
-                                                        tippy(this, {
-                                                          content: "You may not update the role of this invitation because it’s expired.",
-                                                          theme: "rose",
-                                                          trigger: "click",
-                                                        });
-                                                      `}"
-                                                    `
-                                                  : html``}
-                                              >
-                                                $${enrollmentRoleIcon[role]
-                                                  .regular}
-                                                ${lodash.capitalize(role)}
-                                              </button>
-                                            </form>
-                                          `
-                                    )}
-                                  </div>
-                                </div>
                               </div>
 
                               <div
@@ -6684,7 +6687,19 @@ export default async function courselore({
                                                 content: ${tippyContent({
                                                   req,
                                                   res,
-                                                  content: html``,
+                                                  content: html`
+                                                    <div>
+                                                      Used
+                                                      <time
+                                                        datetime="${new Date(
+                                                          invitation.usedAt!
+                                                        ).toISOString()}"
+                                                        oninteractive="${javascript`
+                                                          leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                        `}"
+                                                      ></time>
+                                                    </div>
+                                                  `,
                                                 })},
                                                 touch: false,
                                               });
@@ -6692,19 +6707,6 @@ export default async function courselore({
                                           >
                                             <i class="bi bi-check-lg"></i>
                                             Used
-                                          </div>
-                                          <div hidden>
-                                            <div>
-                                              Used
-                                              <time
-                                                datetime="${new Date(
-                                                  invitation.usedAt!
-                                                ).toISOString()}"
-                                                oninteractive="${javascript`
-                                                  leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                                                `}"
-                                              ></time>
-                                            </div>
                                           </div>
                                         </div>
                                       `
@@ -6722,7 +6724,37 @@ export default async function courselore({
                                                 content: ${tippyContent({
                                                   req,
                                                   res,
-                                                  content: html``,
+                                                  content: html`
+                                                    <div
+                                                      style="${css`
+                                                        display: flex;
+                                                        flex-direction: column;
+                                                        gap: var(--space--2);
+                                                      `}"
+                                                    >
+                                                      <h3 class="heading">
+                                                        <i
+                                                          class="bi bi-calendar-x"
+                                                        ></i>
+                                                        <span>
+                                                          Expired
+                                                          <time
+                                                            datetime="${new Date(
+                                                              invitation.expiresAt!
+                                                            ).toISOString()}"
+                                                            oninteractive="${javascript`
+                                                              leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                            `}"
+                                                          ></time>
+                                                        </span>
+                                                      </h3>
+                                                      $${updateExpirationForm}
+                                                      <hr
+                                                        class="dropdown--separator"
+                                                      />
+                                                      $${removeExpirationForm}
+                                                    </div>
+                                                  `,
                                                 })},
                                                 trigger: "click",
                                                 interactive: true,
@@ -6735,33 +6767,6 @@ export default async function courselore({
                                             Expired
                                             <i class="bi bi-chevron-down"></i>
                                           </button>
-                                          <div hidden>
-                                            <div
-                                              style="${css`
-                                                display: flex;
-                                                flex-direction: column;
-                                                gap: var(--space--2);
-                                              `}"
-                                            >
-                                              <h3 class="heading">
-                                                <i class="bi bi-calendar-x"></i>
-                                                <span>
-                                                  Expired
-                                                  <time
-                                                    datetime="${new Date(
-                                                      invitation.expiresAt!
-                                                    ).toISOString()}"
-                                                    oninteractive="${javascript`
-                                                      leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                                                    `}"
-                                                  ></time>
-                                                </span>
-                                              </h3>
-                                              $${updateExpirationForm}
-                                              <hr class="dropdown--separator" />
-                                              $${removeExpirationForm}
-                                            </div>
-                                          </div>
                                         </div>
                                       `
                                     : invitation.expiresAt === null
@@ -6778,7 +6783,24 @@ export default async function courselore({
                                                 content: ${tippyContent({
                                                   req,
                                                   res,
-                                                  content: html``,
+                                                  content: html`
+                                                    <div
+                                                      style="${css`
+                                                        padding-top: var(
+                                                          --space--2
+                                                        );
+                                                        display: flex;
+                                                        flex-direction: column;
+                                                        gap: var(--space--2);
+                                                      `}"
+                                                    >
+                                                      $${updateExpirationForm}
+                                                      <hr
+                                                        class="dropdown--separator"
+                                                      />
+                                                      $${expireForm}
+                                                    </div>
+                                                  `,
                                                 })},
                                                 trigger: "click",
                                                 interactive: true,
@@ -6791,20 +6813,6 @@ export default async function courselore({
                                             Doesn’t Expire
                                             <i class="bi bi-chevron-down"></i>
                                           </button>
-                                          <div hidden>
-                                            <div
-                                              style="${css`
-                                                padding-top: var(--space--2);
-                                                display: flex;
-                                                flex-direction: column;
-                                                gap: var(--space--2);
-                                              `}"
-                                            >
-                                              $${updateExpirationForm}
-                                              <hr class="dropdown--separator" />
-                                              $${expireForm}
-                                            </div>
-                                          </div>
                                         </div>
                                       `
                                     : html`
@@ -6820,7 +6828,41 @@ export default async function courselore({
                                                 content: ${tippyContent({
                                                   req,
                                                   res,
-                                                  content: html``,
+                                                  content: html`
+                                                    <div
+                                                      style="${css`
+                                                        display: flex;
+                                                        flex-direction: column;
+                                                        gap: var(--space--2);
+                                                      `}"
+                                                    >
+                                                      <h3 class="heading">
+                                                        <i
+                                                          class="bi bi-calendar-plus"
+                                                        ></i>
+                                                        <span>
+                                                          Expires
+                                                          <time
+                                                            datetime="${new Date(
+                                                              invitation.expiresAt
+                                                            ).toISOString()}"
+                                                            oninteractive="${javascript`
+                                                              leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                            `}"
+                                                          ></time>
+                                                        </span>
+                                                      </h3>
+                                                      <hr
+                                                        class="dropdown--separator"
+                                                      />
+                                                      $${updateExpirationForm}
+                                                      <hr
+                                                        class="dropdown--separator"
+                                                      />
+                                                      $${removeExpirationForm}
+                                                      $${expireForm}
+                                                    </div>
+                                                  `,
                                                 })},
                                                 trigger: "click",
                                                 interactive: true,
@@ -6833,37 +6875,6 @@ export default async function courselore({
                                             Expires
                                             <i class="bi bi-chevron-down"></i>
                                           </button>
-                                          <div hidden>
-                                            <div
-                                              style="${css`
-                                                display: flex;
-                                                flex-direction: column;
-                                                gap: var(--space--2);
-                                              `}"
-                                            >
-                                              <h3 class="heading">
-                                                <i
-                                                  class="bi bi-calendar-plus"
-                                                ></i>
-                                                <span>
-                                                  Expires
-                                                  <time
-                                                    datetime="${new Date(
-                                                      invitation.expiresAt
-                                                    ).toISOString()}"
-                                                    oninteractive="${javascript`
-                                                      leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                                                    `}"
-                                                  ></time>
-                                                </span>
-                                              </h3>
-                                              <hr class="dropdown--separator" />
-                                              $${updateExpirationForm}
-                                              <hr class="dropdown--separator" />
-                                              $${removeExpirationForm}
-                                              $${expireForm}
-                                            </div>
-                                          </div>
                                         </div>
                                       `;
                                 })()}
@@ -7353,7 +7364,123 @@ export default async function courselore({
                                 content: ${tippyContent({
                                   req,
                                   res,
-                                  content: html``,
+                                  content: html`
+                                    <div class="dropdown--menu">
+                                      $${enrollmentRoles.map((role) =>
+                                        role === enrollment.role
+                                          ? html``
+                                          : html`
+                                              <form
+                                                method="POST"
+                                                action="${action}?_method=PATCH"
+                                              >
+                                                <input
+                                                  type="hidden"
+                                                  name="_csrf"
+                                                  value="${req.csrfToken()}"
+                                                />
+                                                <input
+                                                  type="hidden"
+                                                  name="role"
+                                                  value="${role}"
+                                                />
+                                                <div>
+                                                  <button
+                                                    class="dropdown--menu--item button button--transparent"
+                                                    $${isOnlyStaff
+                                                      ? html`
+                                                          type="button"
+                                                          oninteractive="${javascript`
+                                                            tippy(this, {
+                                                              content: "You may not update your own role because you’re the only staff member.",
+                                                              theme: "rose",
+                                                              trigger: "click",
+                                                            });
+                                                          `}"
+                                                        `
+                                                      : isSelf
+                                                      ? html`
+                                                          type="button"
+                                                          oninteractive="${javascript`
+                                                            const element = ${tippyContent(
+                                                              {
+                                                                req,
+                                                                res,
+                                                                content: html``,
+                                                              }
+                                                            )};
+                                                            element.form = this.closest("form");
+                                                            tippy(this, {
+                                                              content: element,
+                                                              theme: "rose",
+                                                              trigger: "click",
+                                                              interactive: true,
+                                                              appendTo: document.body,
+                                                            });
+                                                          `}"
+                                                        `
+                                                      : html``}
+                                                  >
+                                                    $${enrollmentRoleIcon[role]
+                                                      .regular}
+                                                    ${lodash.capitalize(role)}
+                                                  </button>
+                                                  $${isSelf
+                                                    ? html`
+                                                        <div hidden>
+                                                          <div
+                                                            class="confirmation"
+                                                            style="${css`
+                                                              padding: var(
+                                                                --space--2
+                                                              );
+                                                              display: flex;
+                                                              flex-direction: column;
+                                                              gap: var(
+                                                                --space--4
+                                                              );
+                                                            `}"
+                                                          >
+                                                            <p>
+                                                              Are you sure you
+                                                              want to update
+                                                              your own role to
+                                                              ${role}?
+                                                            </p>
+                                                            <p>
+                                                              <strong
+                                                                style="${css`
+                                                                  font-weight: var(
+                                                                    --font-weight--bold
+                                                                  );
+                                                                `}"
+                                                              >
+                                                                You may not undo
+                                                                this action!
+                                                              </strong>
+                                                            </p>
+                                                            <button
+                                                              class="button button--rose"
+                                                              onclick="${javascript`
+                                                                  this.closest(".confirmation").form.submit();
+                                                                `}"
+                                                            >
+                                                              Update My Own Role
+                                                              to
+                                                              ${lodash.capitalize(
+                                                                role
+                                                              )}
+                                                            </button>
+                                                          </div>
+                                                        </div>
+                                                      `
+                                                    : html``}
+                                                </div>
+                                              </form>
+                                            `
+                                      )}
+                                    </div>
+                                  `,
                                 })},
                                 trigger: "click",
                                 interactive: true,
@@ -7364,114 +7491,6 @@ export default async function courselore({
                             ${lodash.capitalize(enrollment.role)}
                             <i class="bi bi-chevron-down"></i>
                           </button>
-                          <div hidden>
-                            <div class="dropdown--menu">
-                              $${enrollmentRoles.map((role) =>
-                                role === enrollment.role
-                                  ? html``
-                                  : html`
-                                      <form
-                                        method="POST"
-                                        action="${action}?_method=PATCH"
-                                      >
-                                        <input
-                                          type="hidden"
-                                          name="_csrf"
-                                          value="${req.csrfToken()}"
-                                        />
-                                        <input
-                                          type="hidden"
-                                          name="role"
-                                          value="${role}"
-                                        />
-                                        <div>
-                                          <button
-                                            class="dropdown--menu--item button button--transparent"
-                                            $${isOnlyStaff
-                                              ? html`
-                                                  type="button"
-                                                  oninteractive="${javascript`
-                                                    tippy(this, {
-                                                      content: "You may not update your own role because you’re the only staff member.",
-                                                      theme: "rose",
-                                                      trigger: "click",
-                                                    });
-                                                  `}"
-                                                `
-                                              : isSelf
-                                              ? html`
-                                                  type="button"
-                                                  oninteractive="${javascript`
-                                                    const element = ${tippyContent(
-                                                      {
-                                                        req,
-                                                        res,
-                                                        content: html``,
-                                                      }
-                                                    )};
-                                                    element.form = this.closest("form");
-                                                    tippy(this, {
-                                                      content: element,
-                                                      theme: "rose",
-                                                      trigger: "click",
-                                                      interactive: true,
-                                                      appendTo: document.body,
-                                                    });
-                                                  `}"
-                                                `
-                                              : html``}
-                                          >
-                                            $${enrollmentRoleIcon[role].regular}
-                                            ${lodash.capitalize(role)}
-                                          </button>
-                                          $${isSelf
-                                            ? html`
-                                                <div hidden>
-                                                  <div
-                                                    class="confirmation"
-                                                    style="${css`
-                                                      padding: var(--space--2);
-                                                      display: flex;
-                                                      flex-direction: column;
-                                                      gap: var(--space--4);
-                                                    `}"
-                                                  >
-                                                    <p>
-                                                      Are you sure you want to
-                                                      update your own role to
-                                                      ${role}?
-                                                    </p>
-                                                    <p>
-                                                      <strong
-                                                        style="${css`
-                                                          font-weight: var(
-                                                            --font-weight--bold
-                                                          );
-                                                        `}"
-                                                      >
-                                                        You may not undo this
-                                                        action!
-                                                      </strong>
-                                                    </p>
-                                                    <button
-                                                      class="button button--rose"
-                                                      onclick="${javascript`
-                                                          this.closest(".confirmation").form.submit();
-                                                        `}"
-                                                    >
-                                                      Update My Own Role to
-                                                      ${lodash.capitalize(role)}
-                                                    </button>
-                                                  </div>
-                                                </div>
-                                              `
-                                            : html``}
-                                        </div>
-                                      </form>
-                                    `
-                              )}
-                            </div>
-                          </div>
                         </div>
 
                         <div
@@ -7503,7 +7522,50 @@ export default async function courselore({
                                         content: ${tippyContent({
                                           req,
                                           res,
-                                          content: html``,
+                                          content: html`
+                                            <form
+                                              method="POST"
+                                              action="${action}?_method=DELETE"
+                                              style="${css`
+                                                padding: var(--space--2);
+                                                display: flex;
+                                                flex-direction: column;
+                                                gap: var(--space--4);
+                                              `}"
+                                            >
+                                              <input
+                                                type="hidden"
+                                                name="_csrf"
+                                                value="${req.csrfToken()}"
+                                              />
+                                              <p>
+                                                Are you sure you want to remove
+                                                ${isSelf
+                                                  ? "yourself"
+                                                  : "this person"}
+                                                from the course?
+                                              </p>
+                                              <p>
+                                                <strong
+                                                  style="${css`
+                                                    font-weight: var(
+                                                      --font-weight--bold
+                                                    );
+                                                  `}"
+                                                >
+                                                  You may not undo this action!
+                                                </strong>
+                                              </p>
+                                              <button
+                                                class="button button--rose"
+                                              >
+                                                <i
+                                                  class="bi bi-person-dash"
+                                                ></i>
+                                                Remove from the Course
+                                              </button>
+                                            </form>
+                                          `,
                                         })},
                                         theme: "rose",
                                         trigger: "click",
@@ -7515,46 +7577,6 @@ export default async function courselore({
                           >
                             <i class="bi bi-person-dash"></i>
                           </button>
-                          $${isOnlyStaff
-                            ? html``
-                            : html`
-                                <div hidden>
-                                  <form
-                                    method="POST"
-                                    action="${action}?_method=DELETE"
-                                    style="${css`
-                                      padding: var(--space--2);
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--space--4);
-                                    `}"
-                                  >
-                                    <input
-                                      type="hidden"
-                                      name="_csrf"
-                                      value="${req.csrfToken()}"
-                                    />
-                                    <p>
-                                      Are you sure you want to remove
-                                      ${isSelf ? "yourself" : "this person"}
-                                      from the course?
-                                    </p>
-                                    <p>
-                                      <strong
-                                        style="${css`
-                                          font-weight: var(--font-weight--bold);
-                                        `}"
-                                      >
-                                        You may not undo this action!
-                                      </strong>
-                                    </p>
-                                    <button class="button button--rose">
-                                      <i class="bi bi-person-dash"></i>
-                                      Remove from the Course
-                                    </button>
-                                  </form>
-                                </div>
-                              `}
                         </div>
                       </div>
 
@@ -7826,7 +7848,58 @@ export default async function courselore({
                                     content: ${tippyContent({
                                       req,
                                       res,
-                                      content: html``,
+                                      content: html`
+                                        <div
+                                          style="${css`
+                                            padding: var(--space--2)
+                                              var(--space--0);
+                                            display: flex;
+                                            flex-direction: column;
+                                            gap: var(--space--4);
+                                          `}"
+                                        >
+                                          <p>
+                                            Are you sure you want to remove this
+                                            tag?
+                                          </p>
+                                          <p>
+                                            <strong
+                                              style="${css`
+                                                font-weight: var(
+                                                  --font-weight--bold
+                                                );
+                                              `}"
+                                            >
+                                              The tag will be removed from all
+                                              conversations and you may not undo
+                                              this action!
+                                            </strong>
+                                          </p>
+                                          <button
+                                            type="button"
+                                            class="button button--rose"
+                                            onclick="${javascript`
+                                              const tag = this.closest(".tag");
+                                              tag.classList.add("deleted");
+                                              const tagIconClassList = tag.querySelector(".tag--icon").classList;
+                                              tagIconClassList.remove("text--teal");
+                                              tagIconClassList.add("text--rose");
+                                              tag.querySelector('[name$="[delete]"]').disabled = false;
+                                              for (const element of tag.querySelectorAll(".disable-on-delete")) {
+                                                element.disabled = true;
+                                                const button = element.closest(".button");
+                                                if (button === null) continue;
+                                                button.classList.add("disabled");
+                                                for (const element of button.querySelectorAll("*"))
+                                                  if (element.tooltip !== undefined) element.tooltip.disable();
+                                              }
+                                            `}"
+                                          >
+                                            <i class="bi bi-trash"></i>
+                                            Remove Tag
+                                          </button>
+                                        </div>
+                                      `,
                                     })},
                                     theme: "rose",
                                     trigger: "click",
@@ -7836,54 +7909,6 @@ export default async function courselore({
                               >
                                 <i class="bi bi-trash"></i>
                               </button>
-                              <div hidden>
-                                <div
-                                  style="${css`
-                                    padding: var(--space--2) var(--space--0);
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--space--4);
-                                  `}"
-                                >
-                                  <p>
-                                    Are you sure you want to remove this tag?
-                                  </p>
-                                  <p>
-                                    <strong
-                                      style="${css`
-                                        font-weight: var(--font-weight--bold);
-                                      `}"
-                                    >
-                                      The tag will be removed from all
-                                      conversations and you may not undo this
-                                      action!
-                                    </strong>
-                                  </p>
-                                  <button
-                                    type="button"
-                                    class="button button--rose"
-                                    onclick="${javascript`
-                                      const tag = this.closest(".tag");
-                                      tag.classList.add("deleted");
-                                      const tagIconClassList = tag.querySelector(".tag--icon").classList;
-                                      tagIconClassList.remove("text--teal");
-                                      tagIconClassList.add("text--rose");
-                                      tag.querySelector('[name$="[delete]"]').disabled = false;
-                                      for (const element of tag.querySelectorAll(".disable-on-delete")) {
-                                        element.disabled = true;
-                                        const button = element.closest(".button");
-                                        if (button === null) continue;
-                                        button.classList.add("disabled");
-                                        for (const element of button.querySelectorAll("*"))
-                                          if (element.tooltip !== undefined) element.tooltip.disable();
-                                      }
-                                    `}"
-                                  >
-                                    <i class="bi bi-trash"></i>
-                                    Remove Tag
-                                  </button>
-                                </div>
-                              </div>
                             </div>
                             <div
                               style="${css`
@@ -7972,7 +7997,112 @@ export default async function courselore({
                       const newTag = ${tippyContent({
                         req,
                         res,
-                        content: html``,
+                        content: html`
+                          <div
+                            class="tag"
+                            style="${css`
+                              display: flex;
+                              gap: var(--space--2);
+                              align-items: baseline;
+                            `}"
+                          >
+                            <div class="text--teal">
+                              <i class="bi bi-tag-fill"></i>
+                            </div>
+                            <div
+                              style="${css`
+                                flex: 1;
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--2);
+                              `}"
+                            >
+                              <input
+                                type="text"
+                                placeholder=" "
+                                required
+                                autocomplete="off"
+                                disabled
+                                class="input--text"
+                                onmount="${javascript`
+                                  this.dataset.forceIsModified = true;
+                                  this.disabled = false;
+                                  this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][name]";
+                                `}"
+                              />
+                              <div
+                                style="${css`
+                                  display: flex;
+                                  flex-wrap: wrap;
+                                  column-gap: var(--space--4);
+                                  row-gap: var(--space--2);
+                                `}"
+                              >
+                                <div
+                                  style="${css`
+                                    width: var(--space--40);
+                                  `}"
+                                >
+                                  <label
+                                    class="button button--tight button--tight--inline button--justify-start button--transparent"
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      disabled
+                                      class="visually-hidden input--radio-or-checkbox--multilabel"
+                                      onmount="${javascript`
+                                        this.dataset.forceIsModified = true;
+                                        this.disabled = false;
+                                        this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][isStaffOnly]";
+                                      `}"
+                                    />
+                                    <span
+                                      onmount="${javascript`
+                                        tippy(this, {
+                                          content: "Set as Visible by Staff Only",
+                                          touch: false,
+                                        });
+                                      `}"
+                                    >
+                                      <i class="bi bi-eye"></i>
+                                      Visible by Everyone
+                                    </span>
+                                    <span
+                                      class="text--pink"
+                                      onmount="${javascript`
+                                        tippy(this, {
+                                          content: "Set as Visible by Everyone",
+                                          touch: false,
+                                        });
+                                      `}"
+                                    >
+                                      <i class="bi bi-mortarboard-fill"></i>
+                                      Visible by Staff Only
+                                    </span>
+                                  </label>
+                                </div>
+                                <button
+                                  type="button"
+                                  class="button button--tight button--tight--inline button--transparent"
+                                  onmount="${javascript`
+                                    tippy(this, {
+                                      content: "Remove Tag",
+                                      theme: "rose",
+                                      touch: false,
+                                    });
+                                  `}"
+                                  onclick="${javascript`
+                                    const tag = this.closest(".tag");
+                                    tag.replaceChildren();
+                                    tag.hidden = true;
+                                  `}"
+                                >
+                                  <i class="bi bi-trash"></i>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        `,
                       })}.cloneNode(true);
                       this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
                       leafac.evaluateElementsAttribute(newTag, "onmount");
@@ -7981,112 +8111,6 @@ export default async function courselore({
                     <i class="bi bi-plus-circle"></i>
                     Add Tag
                   </button>
-                  <div hidden>
-                    <div
-                      class="tag"
-                      style="${css`
-                        display: flex;
-                        gap: var(--space--2);
-                        align-items: baseline;
-                      `}"
-                    >
-                      <div class="text--teal">
-                        <i class="bi bi-tag-fill"></i>
-                      </div>
-                      <div
-                        style="${css`
-                          flex: 1;
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--space--2);
-                        `}"
-                      >
-                        <input
-                          type="text"
-                          placeholder=" "
-                          required
-                          autocomplete="off"
-                          disabled
-                          class="input--text"
-                          onmount="${javascript`
-                            this.dataset.forceIsModified = true;
-                            this.disabled = false;
-                            this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][name]";
-                          `}"
-                        />
-                        <div
-                          style="${css`
-                            display: flex;
-                            flex-wrap: wrap;
-                            column-gap: var(--space--4);
-                            row-gap: var(--space--2);
-                          `}"
-                        >
-                          <div
-                            style="${css`
-                              width: var(--space--40);
-                            `}"
-                          >
-                            <label
-                              class="button button--tight button--tight--inline button--justify-start button--transparent"
-                            >
-                              <input
-                                type="checkbox"
-                                disabled
-                                class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onmount="${javascript`
-                                  this.dataset.forceIsModified = true;
-                                  this.disabled = false;
-                                  this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][isStaffOnly]";
-                                `}"
-                              />
-                              <span
-                                onmount="${javascript`
-                                  tippy(this, {
-                                    content: "Set as Visible by Staff Only",
-                                    touch: false,
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-eye"></i>
-                                Visible by Everyone
-                              </span>
-                              <span
-                                class="text--pink"
-                                onmount="${javascript`
-                                  tippy(this, {
-                                    content: "Set as Visible by Everyone",
-                                    touch: false,
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-mortarboard-fill"></i>
-                                Visible by Staff Only
-                              </span>
-                            </label>
-                          </div>
-                          <button
-                            type="button"
-                            class="button button--tight button--tight--inline button--transparent"
-                            onmount="${javascript`
-                              tippy(this, {
-                                content: "Remove Tag",
-                                theme: "rose",
-                                touch: false,
-                              });
-                            `}"
-                            onclick="${javascript`
-                              const tag = this.closest(".tag");
-                              tag.replaceChildren();
-                              tag.hidden = true;
-                            `}"
-                          >
-                            <i class="bi bi-trash"></i>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
               <div>
@@ -10711,7 +10735,30 @@ export default async function courselore({
                     touch: false,
                   });
                   tippy(this, {
-                    content: ${tippyContent({ req, res, content: html`` })},
+                    content: ${tippyContent({
+                      req,
+                      res,
+                      content: html`
+                        <div>
+                          <p>
+                            You may style text with
+                            <a
+                              href="https://guides.github.com/features/mastering-markdown/"
+                              target="_blank"
+                              class="link"
+                              >GitHub Flavored Markdown</a
+                            >
+                            and include mathematical formulas with
+                            <a
+                              href="https://katex.org/docs/supported.html"
+                              target="_blank"
+                              class="link"
+                              >LaTeX</a
+                            >.
+                          </p>
+                        </div>
+                      `,
+                    })},
                     trigger: "click",
                     interactive: true,
                   });
@@ -10719,26 +10766,6 @@ export default async function courselore({
               >
                 <i class="bi bi-info-circle"></i>
               </button>
-              <div hidden>
-                <div>
-                  <p>
-                    You may style text with
-                    <a
-                      href="https://guides.github.com/features/mastering-markdown/"
-                      target="_blank"
-                      class="link"
-                      >GitHub Flavored Markdown</a
-                    >
-                    and include mathematical formulas with
-                    <a
-                      href="https://katex.org/docs/supported.html"
-                      target="_blank"
-                      class="link"
-                      >LaTeX</a
-                    >.
-                  </p>
-                </div>
-              </div>
             </div>
             <div>
               <button
@@ -11336,7 +11363,20 @@ export default async function courselore({
                 oninteractive="${javascript`
                   const textarea = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                   const uploadingIndicator = tippy(textarea, {
-                    content: ${tippyContent({ req, res, content: html`` })},
+                    content: ${tippyContent({
+                      req,
+                      res,
+                      content: html`
+                        <div
+                          style="${css`
+                            display: flex;
+                            gap: var(--space--2);
+                          `}"
+                        >
+                          $${spinner} Uploading…
+                        </div>
+                      `,
+                    })},
                     trigger: "manual",
                     hideOnClick: false,
                   });
@@ -11362,16 +11402,6 @@ export default async function courselore({
                   this.upload(this.files);
                 `}"
               />
-              <div hidden>
-                <div
-                  style="${css`
-                    display: flex;
-                    gap: var(--space--2);
-                  `}"
-                >
-                  $${spinner} Uploading…
-                </div>
-              </div>
             </div>
           </div>
           <div
@@ -13609,7 +13639,48 @@ ${value}</textarea
                                       content: ${tippyContent({
                                         req,
                                         res,
-                                        content: html``,
+                                        content: html`
+                                          <div class="dropdown--menu">
+                                            $${res.locals.conversationTypes.map(
+                                              (conversationType) => html`
+                                                <form
+                                                  method="POST"
+                                                  action="${baseURL}/courses/${res
+                                                    .locals.course
+                                                    .reference}/conversations/${res
+                                                    .locals.conversation
+                                                    .reference}?_method=PATCH"
+                                                >
+                                                  <input
+                                                    type="hidden"
+                                                    name="_csrf"
+                                                    value="${req.csrfToken()}"
+                                                  />
+                                                  <input
+                                                    type="hidden"
+                                                    name="type"
+                                                    value="${conversationType}"
+                                                  />
+                                                  <button
+                                                    class="dropdown--menu--item button ${conversationType ===
+                                                    res.locals.conversation.type
+                                                      ? "button--blue"
+                                                      : "button--transparent"} ${conversationTypeTextColor[
+                                                      conversationType
+                                                    ].display}"
+                                                  >
+                                                    $${conversationTypeIcon[
+                                                      conversationType
+                                                    ].fill}
+                                                    $${lodash.capitalize(
+                                                      conversationType
+                                                    )}
+                                                  </button>
+                                                </form>
+                                              `
+                                            )}
+                                          </div>
+                                        `,
                                       })},
                                       trigger: "click",
                                       interactive: true,
@@ -13623,48 +13694,6 @@ ${value}</textarea
                                     res.locals.conversation.type
                                   )}
                                 </button>
-                                <div hidden>
-                                  <div class="dropdown--menu">
-                                    $${res.locals.conversationTypes.map(
-                                      (conversationType) => html`
-                                        <form
-                                          method="POST"
-                                          action="${baseURL}/courses/${res
-                                            .locals.course
-                                            .reference}/conversations/${res
-                                            .locals.conversation
-                                            .reference}?_method=PATCH"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="_csrf"
-                                            value="${req.csrfToken()}"
-                                          />
-                                          <input
-                                            type="hidden"
-                                            name="type"
-                                            value="${conversationType}"
-                                          />
-                                          <button
-                                            class="dropdown--menu--item button ${conversationType ===
-                                            res.locals.conversation.type
-                                              ? "button--blue"
-                                              : "button--transparent"} ${conversationTypeTextColor[
-                                              conversationType
-                                            ].display}"
-                                          >
-                                            $${conversationTypeIcon[
-                                              conversationType
-                                            ].fill}
-                                            $${lodash.capitalize(
-                                              conversationType
-                                            )}
-                                          </button>
-                                        </form>
-                                      `
-                                    )}
-                                  </div>
-                                </div>
                               </div>
                             `
                           : html`
@@ -13764,7 +13793,96 @@ ${value}</textarea
                                     content: ${tippyContent({
                                       req,
                                       res,
-                                      content: html``,
+                                      content: html`
+                                        <form
+                                          method="POST"
+                                          action="${baseURL}/courses/${res
+                                            .locals.course
+                                            .reference}/conversations/${res
+                                            .locals.conversation
+                                            .reference}?_method=PATCH"
+                                          style="${css`
+                                            padding: var(--space--2);
+                                            display: flex;
+                                            flex-direction: column;
+                                            gap: var(--space--4);
+                                          `}"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="_csrf"
+                                            value="${req.csrfToken()}"
+                                          />
+                                          $${res.locals.conversation
+                                            .staffOnlyAt === null
+                                            ? html`
+                                                <input
+                                                  type="hidden"
+                                                  name="isStaffOnly"
+                                                  value="true"
+                                                />
+                                                <p>
+                                                  Are you sure you want to set
+                                                  this conversation as Visible
+                                                  by Staff Only?
+                                                </p>
+                                                <p>
+                                                  <strong
+                                                    style="${css`
+                                                      font-weight: var(
+                                                        --font-weight--bold
+                                                      );
+                                                    `}"
+                                                  >
+                                                    Students who already
+                                                    participated in the
+                                                    conversation will continue
+                                                    to have access to it.
+                                                  </strong>
+                                                </p>
+                                                <button
+                                                  class="button button--rose"
+                                                >
+                                                  <i
+                                                    class="bi bi-mortarboard"
+                                                  ></i>
+                                                  Set as Visible by Staff Only
+                                                </button>
+                                              `
+                                            : html`
+                                                <input
+                                                  type="hidden"
+                                                  name="isStaffOnly"
+                                                  value="false"
+                                                />
+                                                <p>
+                                                  Are you sure you want to set
+                                                  this conversation as Visible
+                                                  by Everyone?
+                                                </p>
+                                                <p>
+                                                  <strong
+                                                    style="${css`
+                                                      font-weight: var(
+                                                        --font-weight--bold
+                                                      );
+                                                    `}"
+                                                  >
+                                                    Ensure that people involved
+                                                    in the conversation consent
+                                                    to having their messages
+                                                    visible by everyone.
+                                                  </strong>
+                                                </p>
+                                                <button
+                                                  class="button button--rose"
+                                                >
+                                                  <i class="bi bi-eye"></i>
+                                                  Set as Visible by Everyone
+                                                </button>
+                                              `}
+                                        </form>
+                                      `,
                                     })},
                                     theme: "rose",
                                     trigger: "click",
@@ -13782,84 +13900,6 @@ ${value}</textarea
                                       Visible by Staff Only
                                     `}
                               </button>
-                              <div hidden>
-                                <form
-                                  method="POST"
-                                  action="${baseURL}/courses/${res.locals.course
-                                    .reference}/conversations/${res.locals
-                                    .conversation.reference}?_method=PATCH"
-                                  style="${css`
-                                    padding: var(--space--2);
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--space--4);
-                                  `}"
-                                >
-                                  <input
-                                    type="hidden"
-                                    name="_csrf"
-                                    value="${req.csrfToken()}"
-                                  />
-                                  $${res.locals.conversation.staffOnlyAt ===
-                                  null
-                                    ? html`
-                                        <input
-                                          type="hidden"
-                                          name="isStaffOnly"
-                                          value="true"
-                                        />
-                                        <p>
-                                          Are you sure you want to set this
-                                          conversation as Visible by Staff Only?
-                                        </p>
-                                        <p>
-                                          <strong
-                                            style="${css`
-                                              font-weight: var(
-                                                --font-weight--bold
-                                              );
-                                            `}"
-                                          >
-                                            Students who already participated in
-                                            the conversation will continue to
-                                            have access to it.
-                                          </strong>
-                                        </p>
-                                        <button class="button button--rose">
-                                          <i class="bi bi-mortarboard"></i>
-                                          Set as Visible by Staff Only
-                                        </button>
-                                      `
-                                    : html`
-                                        <input
-                                          type="hidden"
-                                          name="isStaffOnly"
-                                          value="false"
-                                        />
-                                        <p>
-                                          Are you sure you want to set this
-                                          conversation as Visible by Everyone?
-                                        </p>
-                                        <p>
-                                          <strong
-                                            style="${css`
-                                              font-weight: var(
-                                                --font-weight--bold
-                                              );
-                                            `}"
-                                          >
-                                            Ensure that people involved in the
-                                            conversation consent to having their
-                                            messages visible by everyone.
-                                          </strong>
-                                        </p>
-                                        <button class="button button--rose">
-                                          <i class="bi bi-eye"></i>
-                                          Set as Visible by Everyone
-                                        </button>
-                                      `}
-                                </form>
-                              </div>
                             `
                           : res.locals.conversation.staffOnlyAt !== null
                           ? html`
@@ -13889,7 +13929,124 @@ ${value}</textarea
                               content: ${tippyContent({
                                 req,
                                 res,
-                                content: html``,
+                                content: html`
+                                  <h3 class="heading">
+                                    <i class="bi bi-chat-left-text"></i>
+                                    Conversation
+                                    #${res.locals.conversation.reference}
+                                  </h3>
+                                  <div class="dropdown--menu">
+                                    <button
+                                      class="dropdown--menu--item button button--transparent"
+                                      oninteractive="${javascript`
+                                        this.copied = tippy(this, {
+                                          content: "Copied",
+                                          theme: "green",
+                                          trigger: "manual",
+                                        });
+                                      `}"
+                                      onclick="${javascript`
+                                        (async () => {
+                                          await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
+                                          this.copied.show();
+                                          await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                                          this.copied.hide();
+                                        })();
+                                      `}"
+                                    >
+                                      <i class="bi bi-link"></i>
+                                      Copy Conversation Permanent Link to
+                                      Clipboard
+                                    </button>
+                                    $${mayEditConversation(req, res)
+                                      ? html`
+                                          <button
+                                            class="dropdown--menu--item button button--transparent"
+                                            onclick="${javascript`
+                                              this.closest(".conversation--header--full").querySelector(".title--show").hidden = true;
+                                              this.closest(".conversation--header--full").querySelector(".title--edit").hidden = false;
+                                              tippy.hideAll();
+                                            `}"
+                                          >
+                                            <i class="bi bi-pencil"></i>
+                                            Edit Conversation Title
+                                          </button>
+                                        `
+                                      : html``}
+                                    $${res.locals.enrollment.role === "staff"
+                                      ? html`
+                                          <div>
+                                            <button
+                                              class="dropdown--menu--item button button--transparent"
+                                              oninteractive="${javascript`
+                                                tippy(this, {
+                                                  content: ${tippyContent({
+                                                    req,
+                                                    res,
+                                                    content: html`
+                                                      <form
+                                                        method="POST"
+                                                        action="${baseURL}/courses/${res
+                                                          .locals.course
+                                                          .reference}/conversations/${res
+                                                          .locals.conversation
+                                                          .reference}?_method=DELETE"
+                                                        style="${css`
+                                                          padding: var(
+                                                            --space--2
+                                                          );
+                                                          display: flex;
+                                                          flex-direction: column;
+                                                          gap: var(--space--4);
+                                                        `}"
+                                                      >
+                                                        <input
+                                                          type="hidden"
+                                                          name="_csrf"
+                                                          value="${req.csrfToken()}"
+                                                        />
+                                                        <p>
+                                                          Are you sure you want
+                                                          to remove this
+                                                          conversation?
+                                                        </p>
+                                                        <p>
+                                                          <strong
+                                                            style="${css`
+                                                              font-weight: var(
+                                                                --font-weight--bold
+                                                              );
+                                                            `}"
+                                                          >
+                                                            You may not undo
+                                                            this action!
+                                                          </strong>
+                                                        </p>
+                                                        <button
+                                                          class="button button--rose"
+                                                        >
+                                                          <i
+                                                            class="bi bi-trash"
+                                                          ></i>
+                                                          Remove Conversation
+                                                        </button>
+                                                      </form>
+                                                    `,
+                                                  })},
+                                                  theme: "rose",
+                                                  trigger: "click",
+                                                  interactive: true,
+                                                });
+                                              `}"
+                                            >
+                                              <i class="bi bi-trash"></i>
+                                              Remove Conversation
+                                            </button>
+                                          </div>
+                                        `
+                                      : html``}
+                                  </div>
+                                `,
                               })},
                               trigger: "click",
                               interactive: true,
@@ -13898,117 +14055,6 @@ ${value}</textarea
                         >
                           <i class="bi bi-three-dots-vertical"></i>
                         </button>
-                        <div hidden>
-                          <div>
-                            <h3 class="heading">
-                              <i class="bi bi-chat-left-text"></i>
-                              Conversation #${res.locals.conversation.reference}
-                            </h3>
-                            <div class="dropdown--menu">
-                              <button
-                                class="dropdown--menu--item button button--transparent"
-                                oninteractive="${javascript`
-                                  this.copied = tippy(this, {
-                                    content: "Copied",
-                                    theme: "green",
-                                    trigger: "manual",
-                                  });
-                                `}"
-                                onclick="${javascript`
-                                  (async () => {
-                                    await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
-                                    this.copied.show();
-                                    await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                                    this.copied.hide();
-                                  })();
-                                `}"
-                              >
-                                <i class="bi bi-link"></i>
-                                Copy Conversation Permanent Link to Clipboard
-                              </button>
-                              $${mayEditConversation(req, res)
-                                ? html`
-                                    <button
-                                      class="dropdown--menu--item button button--transparent"
-                                      onclick="${javascript`
-                                        this.closest(".conversation--header--full").querySelector(".title--show").hidden = true;
-                                        this.closest(".conversation--header--full").querySelector(".title--edit").hidden = false;
-                                        tippy.hideAll();
-                                      `}"
-                                    >
-                                      <i class="bi bi-pencil"></i>
-                                      Edit Conversation Title
-                                    </button>
-                                  `
-                                : html``}
-                              $${res.locals.enrollment.role === "staff"
-                                ? html`
-                                    <div>
-                                      <button
-                                        class="dropdown--menu--item button button--transparent"
-                                        oninteractive="${javascript`
-                                          tippy(this, {
-                                            content: ${tippyContent({
-                                              req,
-                                              res,
-                                              content: html``,
-                                            })},
-                                            theme: "rose",
-                                            trigger: "click",
-                                            interactive: true,
-                                          });
-                                        `}"
-                                      >
-                                        <i class="bi bi-trash"></i>
-                                        Remove Conversation
-                                      </button>
-                                      <div hidden>
-                                        <form
-                                          method="POST"
-                                          action="${baseURL}/courses/${res
-                                            .locals.course
-                                            .reference}/conversations/${res
-                                            .locals.conversation
-                                            .reference}?_method=DELETE"
-                                          style="${css`
-                                            padding: var(--space--2);
-                                            display: flex;
-                                            flex-direction: column;
-                                            gap: var(--space--4);
-                                          `}"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="_csrf"
-                                            value="${req.csrfToken()}"
-                                          />
-                                          <p>
-                                            Are you sure you want to remove this
-                                            conversation?
-                                          </p>
-                                          <p>
-                                            <strong
-                                              style="${css`
-                                                font-weight: var(
-                                                  --font-weight--bold
-                                                );
-                                              `}"
-                                            >
-                                              You may not undo this action!
-                                            </strong>
-                                          </p>
-                                          <button class="button button--rose">
-                                            <i class="bi bi-trash"></i>
-                                            Remove Conversation
-                                          </button>
-                                        </form>
-                                      </div>
-                                    </div>
-                                  `
-                                : html``}
-                            </div>
-                          </div>
-                        </div>
                       </div>
                     </div>
 
@@ -14228,7 +14274,77 @@ ${value}</textarea
                                                 content: ${tippyContent({
                                                   req,
                                                   res,
-                                                  content: html``,
+                                                  content: html`
+                                                    <div
+                                                      class="dropdown--menu"
+                                                      style="${css`
+                                                        max-height: var(
+                                                          --space--40
+                                                        );
+                                                        overflow: auto;
+                                                      `}"
+                                                    >
+                                                      $${res.locals.tags
+                                                        .filter(
+                                                          (tag) =>
+                                                            !res.locals.conversation.taggings.some(
+                                                              (tagging) =>
+                                                                tagging.tag
+                                                                  .id === tag.id
+                                                            )
+                                                        )
+                                                        .map(
+                                                          (tag) => html`
+                                                            <form
+                                                              method="POST"
+                                                              action="${baseURL}/courses/${res
+                                                                .locals.course
+                                                                .reference}/conversations/${res
+                                                                .locals
+                                                                .conversation
+                                                                .reference}/taggings"
+                                                            >
+                                                              <input
+                                                                type="hidden"
+                                                                name="_csrf"
+                                                                value="${req.csrfToken()}"
+                                                              />
+                                                              <input
+                                                                type="hidden"
+                                                                name="reference"
+                                                                value="${tag.reference}"
+                                                              />
+                                                              <button
+                                                                class="dropdown--menu--item button button--transparent text--teal"
+                                                              >
+                                                                <i
+                                                                  class="bi bi-tag-fill"
+                                                                ></i>
+                                                                ${tag.name}
+                                                                $${tag.staffOnlyAt !==
+                                                                null
+                                                                  ? html`
+                                                                      <span
+                                                                        class="text--pink"
+                                                                        oninteractive="${javascript`
+                                                                          tippy(this, {
+                                                                            content: "This tag is visible by staff only.",
+                                                                            touch: false,
+                                                                          });
+                                                                        `}"
+                                                                      >
+                                                                        <i
+                                                                          class="bi bi-mortarboard-fill"
+                                                                        ></i>
+                                                                      </span>
+                                                                    `
+                                                                  : html``}
+                                                              </button>
+                                                            </form>
+                                                          `
+                                                        )}
+                                                    </div>
+                                                  `,
                                                 })},
                                                 trigger: "click",
                                                 interactive: true,
@@ -14237,74 +14353,6 @@ ${value}</textarea
                                           >
                                             <i class="bi bi-tags-fill"></i>
                                           </button>
-                                          <div hidden>
-                                            <div
-                                              class="dropdown--menu"
-                                              style="${css`
-                                                max-height: var(--space--40);
-                                                overflow: auto;
-                                              `}"
-                                            >
-                                              $${res.locals.tags
-                                                .filter(
-                                                  (tag) =>
-                                                    !res.locals.conversation.taggings.some(
-                                                      (tagging) =>
-                                                        tagging.tag.id ===
-                                                        tag.id
-                                                    )
-                                                )
-                                                .map(
-                                                  (tag) => html`
-                                                    <form
-                                                      method="POST"
-                                                      action="${baseURL}/courses/${res
-                                                        .locals.course
-                                                        .reference}/conversations/${res
-                                                        .locals.conversation
-                                                        .reference}/taggings"
-                                                    >
-                                                      <input
-                                                        type="hidden"
-                                                        name="_csrf"
-                                                        value="${req.csrfToken()}"
-                                                      />
-                                                      <input
-                                                        type="hidden"
-                                                        name="reference"
-                                                        value="${tag.reference}"
-                                                      />
-                                                      <button
-                                                        class="dropdown--menu--item button button--transparent text--teal"
-                                                      >
-                                                        <i
-                                                          class="bi bi-tag-fill"
-                                                        ></i>
-                                                        ${tag.name}
-                                                        $${tag.staffOnlyAt !==
-                                                        null
-                                                          ? html`
-                                                              <span
-                                                                class="text--pink"
-                                                                oninteractive="${javascript`
-                                                                  tippy(this, {
-                                                                    content: "This tag is visible by staff only.",
-                                                                    touch: false,
-                                                                  });
-                                                                `}"
-                                                              >
-                                                                <i
-                                                                  class="bi bi-mortarboard-fill"
-                                                                ></i>
-                                                              </span>
-                                                            `
-                                                          : html``}
-                                                      </button>
-                                                    </form>
-                                                  `
-                                                )}
-                                            </div>
-                                          </div>
                                         </div>
                                       `
                                     : html``}
@@ -14639,7 +14687,334 @@ ${value}</textarea
                                                     content: ${tippyContent({
                                                       req,
                                                       res,
-                                                      content: html``,
+                                                      content: html`
+                                                        <h3 class="heading">
+                                                          <i
+                                                            class="bi bi-chat-left-text"
+                                                          ></i>
+                                                          Message
+                                                          #${res.locals
+                                                            .conversation
+                                                            .reference}/${message.reference}
+                                                        </h3>
+                                                        <div
+                                                          class="dropdown--menu"
+                                                        >
+                                                          $${res.locals
+                                                            .conversation
+                                                            .type === "chat" &&
+                                                          message.likes
+                                                            .length === 0
+                                                            ? html`
+                                                                <form
+                                                                  method="POST"
+                                                                  action="${baseURL}/courses/${res
+                                                                    .locals
+                                                                    .course
+                                                                    .reference}/conversations/${res
+                                                                    .locals
+                                                                    .conversation
+                                                                    .reference}/messages/${message.reference}/likes"
+                                                                  onsubmit="${javascript`
+                                                                    event.preventDefault();
+                                                                    fetch(this.action, {
+                                                                      method: this.method,
+                                                                      body: new URLSearchParams(new FormData(this)),
+                                                                    });
+                                                                  `}"
+                                                                >
+                                                                  <input
+                                                                    type="hidden"
+                                                                    name="_csrf"
+                                                                    value="${req.csrfToken()}"
+                                                                  />
+                                                                  <button
+                                                                    class="dropdown--menu--item button button--transparent"
+                                                                  >
+                                                                    <i
+                                                                      class="bi bi-hand-thumbs-up"
+                                                                    ></i>
+                                                                    Like
+                                                                  </button>
+                                                                </form>
+                                                              `
+                                                            : html``}
+
+                                                          <button
+                                                            class="dropdown--menu--item button button--transparent"
+                                                            onclick="${javascript`
+                                                              const content = JSON.parse(this.closest("[data-content]").dataset.content);
+                                                              const newMessage = document.querySelector(".new-message");
+                                                              newMessage.querySelector(".markdown-editor--button--write").click();
+                                                              const element = newMessage.querySelector(".markdown-editor--write--textarea");
+                                                              textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
+                                                                message.anonymousAt ===
+                                                                null
+                                                                  ? `${
+                                                                      message
+                                                                        .authorEnrollment
+                                                                        .reference
+                                                                    }--${slugify(
+                                                                      message
+                                                                        .authorEnrollment
+                                                                        .user
+                                                                        .name
+                                                                    )}`
+                                                                  : `anonymous`
+                                                              }" + " · #" + ${JSON.stringify(
+                                                              res.locals
+                                                                .conversation
+                                                                .reference
+                                                            )} + "/" + ${JSON.stringify(
+                                                              message.reference
+                                                            )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n", "");
+                                                              element.focus();
+                                                              tippy.hideAll();
+                                                            `}"
+                                                          >
+                                                            <i
+                                                              class="bi bi-reply"
+                                                            ></i>
+                                                            Reply
+                                                          </button>
+
+                                                          <button
+                                                            class="dropdown--menu--item button button--transparent"
+                                                            oninteractive="${javascript`
+                                                              this.copied = tippy(this, {
+                                                                content: "Copied",
+                                                                theme: "green",
+                                                                trigger: "manual",
+                                                              });
+                                                            `}"
+                                                            onclick="${javascript`
+                                                              (async () => {
+                                                                await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${message.reference}");
+                                                                this.copied.show();
+                                                                await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                                                                this.copied.hide();
+                                                              })();
+                                                            `}"
+                                                          >
+                                                            <i
+                                                              class="bi bi-link"
+                                                            ></i>
+                                                            Copy Message
+                                                            Permanent Link to
+                                                            Clipboard
+                                                          </button>
+
+                                                          $${message
+                                                            .authorEnrollment
+                                                            .id ===
+                                                            res.locals
+                                                              .enrollment.id &&
+                                                          res.locals.enrollment
+                                                            .role ===
+                                                            "student" &&
+                                                          res.locals
+                                                            .conversation
+                                                            .staffOnlyAt ===
+                                                            null
+                                                            ? html`
+                                                                <form
+                                                                  method="POST"
+                                                                  action="${baseURL}/courses/${res
+                                                                    .locals
+                                                                    .course
+                                                                    .reference}/conversations/${res
+                                                                    .locals
+                                                                    .conversation
+                                                                    .reference}/messages/${message.reference}?_method=PATCH"
+                                                                  class="dropdown--menu"
+                                                                >
+                                                                  <input
+                                                                    type="hidden"
+                                                                    name="_csrf"
+                                                                    value="${req.csrfToken()}"
+                                                                  />
+                                                                  $${message.anonymousAt ===
+                                                                  null
+                                                                    ? html`
+                                                                        <input
+                                                                          type="hidden"
+                                                                          name="isAnonymous"
+                                                                          value="true"
+                                                                        />
+                                                                        <button
+                                                                          class="dropdown--menu--item button button--transparent"
+                                                                        >
+                                                                          <i
+                                                                            class="bi bi-sunglasses"
+                                                                          ></i>
+                                                                          Set as
+                                                                          Anonymous
+                                                                          to
+                                                                          Other
+                                                                          Students
+                                                                        </button>
+                                                                      `
+                                                                    : html`
+                                                                        <input
+                                                                          type="hidden"
+                                                                          name="isAnonymous"
+                                                                          value="false"
+                                                                        />
+                                                                        <button
+                                                                          class="dropdown--menu--item button button--transparent"
+                                                                        >
+                                                                          $${res
+                                                                            .locals
+                                                                            .user
+                                                                            .avatar ===
+                                                                          null
+                                                                            ? html`
+                                                                                <i
+                                                                                  class="bi bi-person-circle"
+                                                                                ></i>
+                                                                              `
+                                                                            : html`
+                                                                                <img
+                                                                                  src="${res
+                                                                                    .locals
+                                                                                    .user
+                                                                                    .avatar}"
+                                                                                  alt="${res
+                                                                                    .locals
+                                                                                    .user
+                                                                                    .name}"
+                                                                                  class="avatar avatar--sm avatar--vertical-align"
+                                                                                />
+                                                                              `}
+                                                                          Set as
+                                                                          Signed
+                                                                          by
+                                                                          ${res
+                                                                            .locals
+                                                                            .user
+                                                                            .name}
+                                                                        </button>
+                                                                      `}
+                                                                </form>
+                                                              `
+                                                            : html``}
+                                                          $${mayEditMessage(
+                                                            req,
+                                                            res,
+                                                            message
+                                                          )
+                                                            ? html`
+                                                                <button
+                                                                  class="dropdown--menu--item button button--transparent"
+                                                                  onclick="${javascript`
+                                                                    this.closest(".message").querySelector(".message--show").hidden = true;
+                                                                    this.closest(".message").querySelector(".message--edit").hidden = false;
+                                                                    tippy.hideAll();
+                                                                  `}"
+                                                                >
+                                                                  <i
+                                                                    class="bi bi-pencil"
+                                                                  ></i>
+                                                                  Edit Message
+                                                                </button>
+                                                              `
+                                                            : html``}
+                                                          $${res.locals
+                                                            .enrollment.role ===
+                                                          "staff"
+                                                            ? html`
+                                                                <div>
+                                                                  <button
+                                                                    class="dropdown--menu--item button button--transparent"
+                                                                    oninteractive="${javascript`
+                                                                      tippy(this, {
+                                                                        content: ${tippyContent(
+                                                                          {
+                                                                            req,
+                                                                            res,
+                                                                            content: html`
+                                                                              <form
+                                                                                method="POST"
+                                                                                action="${baseURL}/courses/${res
+                                                                                  .locals
+                                                                                  .course
+                                                                                  .reference}/conversations/${res
+                                                                                  .locals
+                                                                                  .conversation
+                                                                                  .reference}/messages/${message.reference}?_method=DELETE"
+                                                                                style="${css`
+                                                                                  padding: var(
+                                                                                    --space--2
+                                                                                  );
+                                                                                  display: flex;
+                                                                                  flex-direction: column;
+                                                                                  gap: var(
+                                                                                    --space--4
+                                                                                  );
+                                                                                `}"
+                                                                              >
+                                                                                <input
+                                                                                  type="hidden"
+                                                                                  name="_csrf"
+                                                                                  value="${req.csrfToken()}"
+                                                                                />
+                                                                                <p>
+                                                                                  Are
+                                                                                  you
+                                                                                  sure
+                                                                                  you
+                                                                                  want
+                                                                                  to
+                                                                                  remove
+                                                                                  this
+                                                                                  message?
+                                                                                </p>
+                                                                                <p>
+                                                                                  <strong
+                                                                                    style="${css`
+                                                                                      font-weight: var(
+                                                                                        --font-weight--bold
+                                                                                      );
+                                                                                    `}"
+                                                                                  >
+                                                                                    You
+                                                                                    may
+                                                                                    not
+                                                                                    undo
+                                                                                    this
+                                                                                    action!
+                                                                                  </strong>
+                                                                                </p>
+                                                                                <button
+                                                                                  class="button button--rose"
+                                                                                >
+                                                                                  <i
+                                                                                    class="bi bi-trash"
+                                                                                  ></i>
+                                                                                  Remove
+                                                                                  Message
+                                                                                </button>
+                                                                              </form>
+                                                                            `,
+                                                                          }
+                                                                        )},
+                                                                        theme: "rose",
+                                                                        trigger: "click",
+                                                                        interactive: true,
+                                                                      });
+                                                                    `}"
+                                                                  >
+                                                                    <i
+                                                                      class="bi bi-trash"
+                                                                    ></i>
+                                                                    Remove
+                                                                    Message
+                                                                  </button>
+                                                                </div>
+                                                              `
+                                                            : html``}
+                                                        </div>
+                                                      `,
                                                     })},
                                                     trigger: "click",
                                                     interactive: true,
@@ -14650,306 +15025,6 @@ ${value}</textarea
                                                   class="bi bi-three-dots-vertical"
                                                 ></i>
                                               </button>
-                                              <div hidden>
-                                                <div>
-                                                  <h3 class="heading">
-                                                    <i
-                                                      class="bi bi-chat-left-text"
-                                                    ></i>
-                                                    Message
-                                                    #${res.locals.conversation
-                                                      .reference}/${message.reference}
-                                                  </h3>
-                                                  <div class="dropdown--menu">
-                                                    $${res.locals.conversation
-                                                      .type === "chat" &&
-                                                    message.likes.length === 0
-                                                      ? html`
-                                                          <form
-                                                            method="POST"
-                                                            action="${baseURL}/courses/${res
-                                                              .locals.course
-                                                              .reference}/conversations/${res
-                                                              .locals
-                                                              .conversation
-                                                              .reference}/messages/${message.reference}/likes"
-                                                            onsubmit="${javascript`
-                                                              event.preventDefault();
-                                                              fetch(this.action, {
-                                                                method: this.method,
-                                                                body: new URLSearchParams(new FormData(this)),
-                                                              });
-                                                            `}"
-                                                          >
-                                                            <input
-                                                              type="hidden"
-                                                              name="_csrf"
-                                                              value="${req.csrfToken()}"
-                                                            />
-                                                            <button
-                                                              class="dropdown--menu--item button button--transparent"
-                                                            >
-                                                              <i
-                                                                class="bi bi-hand-thumbs-up"
-                                                              ></i>
-                                                              Like
-                                                            </button>
-                                                          </form>
-                                                        `
-                                                      : html``}
-
-                                                    <button
-                                                      class="dropdown--menu--item button button--transparent"
-                                                      onclick="${javascript`
-                                                        const content = JSON.parse(this.closest("[data-content]").dataset.content);
-                                                        const newMessage = document.querySelector(".new-message");
-                                                        newMessage.querySelector(".markdown-editor--button--write").click();
-                                                        const element = newMessage.querySelector(".markdown-editor--write--textarea");
-                                                        textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
-                                                          message.anonymousAt ===
-                                                          null
-                                                            ? `${
-                                                                message
-                                                                  .authorEnrollment
-                                                                  .reference
-                                                              }--${slugify(
-                                                                message
-                                                                  .authorEnrollment
-                                                                  .user.name
-                                                              )}`
-                                                            : `anonymous`
-                                                        }" + " · #" + ${JSON.stringify(
-                                                        res.locals.conversation
-                                                          .reference
-                                                      )} + "/" + ${JSON.stringify(
-                                                        message.reference
-                                                      )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n", "");
-                                                        element.focus();
-                                                        tippy.hideAll();
-                                                      `}"
-                                                    >
-                                                      <i
-                                                        class="bi bi-reply"
-                                                      ></i>
-                                                      Reply
-                                                    </button>
-
-                                                    <button
-                                                      class="dropdown--menu--item button button--transparent"
-                                                      oninteractive="${javascript`
-                                                        this.copied = tippy(this, {
-                                                          content: "Copied",
-                                                          theme: "green",
-                                                          trigger: "manual",
-                                                        });
-                                                      `}"
-                                                      onclick="${javascript`
-                                                        (async () => {
-                                                          await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${message.reference}");
-                                                          this.copied.show();
-                                                          await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                                                          this.copied.hide();
-                                                        })();
-                                                      `}"
-                                                    >
-                                                      <i class="bi bi-link"></i>
-                                                      Copy Message Permanent
-                                                      Link to Clipboard
-                                                    </button>
-
-                                                    $${message.authorEnrollment
-                                                      .id ===
-                                                      res.locals.enrollment
-                                                        .id &&
-                                                    res.locals.enrollment
-                                                      .role === "student" &&
-                                                    res.locals.conversation
-                                                      .staffOnlyAt === null
-                                                      ? html`
-                                                          <form
-                                                            method="POST"
-                                                            action="${baseURL}/courses/${res
-                                                              .locals.course
-                                                              .reference}/conversations/${res
-                                                              .locals
-                                                              .conversation
-                                                              .reference}/messages/${message.reference}?_method=PATCH"
-                                                            class="dropdown--menu"
-                                                          >
-                                                            <input
-                                                              type="hidden"
-                                                              name="_csrf"
-                                                              value="${req.csrfToken()}"
-                                                            />
-                                                            $${message.anonymousAt ===
-                                                            null
-                                                              ? html`
-                                                                  <input
-                                                                    type="hidden"
-                                                                    name="isAnonymous"
-                                                                    value="true"
-                                                                  />
-                                                                  <button
-                                                                    class="dropdown--menu--item button button--transparent"
-                                                                  >
-                                                                    <i
-                                                                      class="bi bi-sunglasses"
-                                                                    ></i>
-                                                                    Set as
-                                                                    Anonymous to
-                                                                    Other
-                                                                    Students
-                                                                  </button>
-                                                                `
-                                                              : html`
-                                                                  <input
-                                                                    type="hidden"
-                                                                    name="isAnonymous"
-                                                                    value="false"
-                                                                  />
-                                                                  <button
-                                                                    class="dropdown--menu--item button button--transparent"
-                                                                  >
-                                                                    $${res
-                                                                      .locals
-                                                                      .user
-                                                                      .avatar ===
-                                                                    null
-                                                                      ? html`
-                                                                          <i
-                                                                            class="bi bi-person-circle"
-                                                                          ></i>
-                                                                        `
-                                                                      : html`
-                                                                          <img
-                                                                            src="${res
-                                                                              .locals
-                                                                              .user
-                                                                              .avatar}"
-                                                                            alt="${res
-                                                                              .locals
-                                                                              .user
-                                                                              .name}"
-                                                                            class="avatar avatar--sm avatar--vertical-align"
-                                                                          />
-                                                                        `}
-                                                                    Set as
-                                                                    Signed by
-                                                                    ${res.locals
-                                                                      .user
-                                                                      .name}
-                                                                  </button>
-                                                                `}
-                                                          </form>
-                                                        `
-                                                      : html``}
-                                                    $${mayEditMessage(
-                                                      req,
-                                                      res,
-                                                      message
-                                                    )
-                                                      ? html`
-                                                          <button
-                                                            class="dropdown--menu--item button button--transparent"
-                                                            onclick="${javascript`
-                                                              this.closest(".message").querySelector(".message--show").hidden = true;
-                                                              this.closest(".message").querySelector(".message--edit").hidden = false;
-                                                              tippy.hideAll();
-                                                            `}"
-                                                          >
-                                                            <i
-                                                              class="bi bi-pencil"
-                                                            ></i>
-                                                            Edit Message
-                                                          </button>
-                                                        `
-                                                      : html``}
-                                                    $${res.locals.enrollment
-                                                      .role === "staff"
-                                                      ? html`
-                                                          <div>
-                                                            <button
-                                                              class="dropdown--menu--item button button--transparent"
-                                                              oninteractive="${javascript`
-                                                                tippy(this, {
-                                                                  content: ${tippyContent(
-                                                                    {
-                                                                      req,
-                                                                      res,
-                                                                      content: html``,
-                                                                    }
-                                                                  )},
-                                                                  theme: "rose",
-                                                                  trigger: "click",
-                                                                  interactive: true,
-                                                                });
-                                                              `}"
-                                                            >
-                                                              <i
-                                                                class="bi bi-trash"
-                                                              ></i>
-                                                              Remove Message
-                                                            </button>
-                                                            <div hidden>
-                                                              <form
-                                                                method="POST"
-                                                                action="${baseURL}/courses/${res
-                                                                  .locals.course
-                                                                  .reference}/conversations/${res
-                                                                  .locals
-                                                                  .conversation
-                                                                  .reference}/messages/${message.reference}?_method=DELETE"
-                                                                style="${css`
-                                                                  padding: var(
-                                                                    --space--2
-                                                                  );
-                                                                  display: flex;
-                                                                  flex-direction: column;
-                                                                  gap: var(
-                                                                    --space--4
-                                                                  );
-                                                                `}"
-                                                              >
-                                                                <input
-                                                                  type="hidden"
-                                                                  name="_csrf"
-                                                                  value="${req.csrfToken()}"
-                                                                />
-                                                                <p>
-                                                                  Are you sure
-                                                                  you want to
-                                                                  remove this
-                                                                  message?
-                                                                </p>
-                                                                <p>
-                                                                  <strong
-                                                                    style="${css`
-                                                                      font-weight: var(
-                                                                        --font-weight--bold
-                                                                      );
-                                                                    `}"
-                                                                  >
-                                                                    You may not
-                                                                    undo this
-                                                                    action!
-                                                                  </strong>
-                                                                </p>
-                                                                <button
-                                                                  class="button button--rose"
-                                                                >
-                                                                  <i
-                                                                    class="bi bi-trash"
-                                                                  ></i>
-                                                                  Remove Message
-                                                                </button>
-                                                              </form>
-                                                            </div>
-                                                          </div>
-                                                        `
-                                                      : html``}
-                                                  </div>
-                                                </div>
-                                              </div>
                                             </div>
                                           `;
 
@@ -15441,7 +15516,77 @@ ${value}</textarea
                                                   content: ${tippyContent({
                                                     req,
                                                     res,
-                                                    content: html``,
+                                                    content: html`
+                                                      <div
+                                                        class="dropdown--menu"
+                                                      >
+                                                        <button
+                                                          class="dropdown--menu--item button button--transparent"
+                                                          onclick="${javascript`
+                                                            tippy.hideAll();
+                                                            const selection = window.getSelection();
+                                                            let anchorElement = selection.anchorNode;
+                                                            while (
+                                                              (
+                                                                anchorElement?.dataset?.position === undefined ||
+                                                                anchorElement?.parentElement?.dataset?.position !== undefined
+                                                              ) &&
+                                                              anchorElement !== null
+                                                            ) anchorElement = anchorElement.parentElement;
+                                                            let focusElement = selection.focusNode;
+                                                            while (
+                                                              (
+                                                                focusElement?.dataset?.position === undefined ||
+                                                                focusElement?.parentElement?.dataset?.position !== undefined
+                                                              ) &&
+                                                              focusElement !== null
+                                                            ) focusElement = focusElement.parentElement;
+                                                            const contentElement = this.closest(".message--show--content-area").querySelector(".message--show--content-area--content");
+                                                            if (
+                                                              selection.isCollapsed ||
+                                                              anchorElement === null ||
+                                                              focusElement === null ||
+                                                              !contentElement.contains(anchorElement) ||
+                                                              !contentElement.contains(focusElement)
+                                                            ) return;
+                                                            const anchorPosition = JSON.parse(anchorElement.dataset.position);
+                                                            const focusPosition = JSON.parse(focusElement.dataset.position);
+                                                            const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
+                                                            const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
+                                                            const content = JSON.parse(anchorElement.closest("[data-content]").dataset.content);
+                                                            const newMessage = document.querySelector(".new-message");
+                                                            newMessage.querySelector(".markdown-editor--button--write").click();
+                                                            const element = newMessage.querySelector(".markdown-editor--write--textarea");
+                                                            textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
+                                                              message.anonymousAt ===
+                                                              null
+                                                                ? `${
+                                                                    message
+                                                                      .authorEnrollment
+                                                                      .reference
+                                                                  }--${slugify(
+                                                                    message
+                                                                      .authorEnrollment
+                                                                      .user.name
+                                                                  )}`
+                                                                : `anonymous`
+                                                            }" + " · #" + ${JSON.stringify(
+                                                            res.locals
+                                                              .conversation
+                                                              .reference
+                                                          )} + "/" + ${JSON.stringify(
+                                                            message.reference
+                                                          )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n", "");
+                                                            element.focus();
+                                                          `}"
+                                                        >
+                                                          <i
+                                                            class="bi bi-chat-left-quote"
+                                                          ></i>
+                                                          Quote
+                                                        </button>
+                                                      </div>
+                                                    `,
                                                   })},
                                                   trigger: "manual",
                                                   interactive: true,
@@ -15486,74 +15631,6 @@ ${value}</textarea
                                                 markdown: message.content,
                                                 search: req.query.search,
                                               }).html}
-                                            </div>
-                                            <div hidden>
-                                              <div class="dropdown--menu">
-                                                <button
-                                                  class="dropdown--menu--item button button--transparent"
-                                                  onclick="${javascript`
-                                                    tippy.hideAll();
-                                                    const selection = window.getSelection();
-                                                    let anchorElement = selection.anchorNode;
-                                                    while (
-                                                      (
-                                                        anchorElement?.dataset?.position === undefined ||
-                                                        anchorElement?.parentElement?.dataset?.position !== undefined
-                                                      ) &&
-                                                      anchorElement !== null
-                                                    ) anchorElement = anchorElement.parentElement;
-                                                    let focusElement = selection.focusNode;
-                                                    while (
-                                                      (
-                                                        focusElement?.dataset?.position === undefined ||
-                                                        focusElement?.parentElement?.dataset?.position !== undefined
-                                                      ) &&
-                                                      focusElement !== null
-                                                    ) focusElement = focusElement.parentElement;
-                                                    const contentElement = this.closest(".message--show--content-area").querySelector(".message--show--content-area--content");
-                                                    if (
-                                                      selection.isCollapsed ||
-                                                      anchorElement === null ||
-                                                      focusElement === null ||
-                                                      !contentElement.contains(anchorElement) ||
-                                                      !contentElement.contains(focusElement)
-                                                    ) return;
-                                                    const anchorPosition = JSON.parse(anchorElement.dataset.position);
-                                                    const focusPosition = JSON.parse(focusElement.dataset.position);
-                                                    const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
-                                                    const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
-                                                    const content = JSON.parse(anchorElement.closest("[data-content]").dataset.content);
-                                                    const newMessage = document.querySelector(".new-message");
-                                                    newMessage.querySelector(".markdown-editor--button--write").click();
-                                                    const element = newMessage.querySelector(".markdown-editor--write--textarea");
-                                                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
-                                                      message.anonymousAt ===
-                                                      null
-                                                        ? `${
-                                                            message
-                                                              .authorEnrollment
-                                                              .reference
-                                                          }--${slugify(
-                                                            message
-                                                              .authorEnrollment
-                                                              .user.name
-                                                          )}`
-                                                        : `anonymous`
-                                                    }" + " · #" + ${JSON.stringify(
-                                                    res.locals.conversation
-                                                      .reference
-                                                  )} + "/" + ${JSON.stringify(
-                                                    message.reference
-                                                  )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n", "");
-                                                    element.focus();
-                                                  `}"
-                                                >
-                                                  <i
-                                                    class="bi bi-chat-left-quote"
-                                                  ></i>
-                                                  Quote
-                                                </button>
-                                              </div>
                                             </div>
                                           </div>
 
