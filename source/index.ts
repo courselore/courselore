@@ -1676,10 +1676,10 @@ export default async function courselore({
                           touch: false,
                         });
                         tippy(this, {
-                          content: ${tippyContent(
+                          content: ${tippyContent({
                             req,
                             res,
-                            html`
+                            content: html`
                               <div
                                 style="${css`
                                   padding: var(--space--2);
@@ -1705,8 +1705,8 @@ export default async function courselore({
                                   Update Accent Color
                                 </a>
                               </div>
-                            `
-                          )},
+                            `,
+                          })},
                           trigger: "click",
                           interactive: true,
                         });
@@ -1748,10 +1748,10 @@ export default async function courselore({
                           class="button button--transparent"
                           oninteractive="${javascript`
                             tippy(this, {
-                              content: ${tippyContent(
+                              content: ${tippyContent({
                                 req,
                                 res,
-                                html`
+                                content: html`
                                   <div
                                     style="${css`
                                       padding: var(--space--2);
@@ -1791,8 +1791,8 @@ export default async function courselore({
                                       </button>
                                     </form>
                                   </div>
-                                `
-                              )},
+                                `,
+                              })},
                               trigger: "click",
                               interactive: true,
                             });
@@ -2136,10 +2136,10 @@ export default async function courselore({
                     `}"
                     oninteractive="${javascript`
                       tippy(this, {
-                        content: ${tippyContent(
+                        content: ${tippyContent({
                           req,
                           res,
-                          html`
+                          content: html`
                             <div
                               style="${css`
                                 display: flex;
@@ -2256,8 +2256,8 @@ export default async function courselore({
                                   `
                                 : html``}
                             </div>
-                          `
-                        )},
+                          `,
+                        })},
                         trigger: "click",
                         interactive: true,
                       });
@@ -2311,10 +2311,10 @@ export default async function courselore({
                   touch: false,
                 });
                 tippy(this, {
-                  content: ${tippyContent(
+                  content: ${tippyContent({
                     req,
                     res,
-                    html`
+                    content: html`
                       <div
                         style="${css`
                           display: flex;
@@ -2371,8 +2371,8 @@ export default async function courselore({
                           </a>
                         </div>
                       </div>
-                    `
-                  )},
+                    `,
+                  })},
                   trigger: "click",
                   interactive: true,
                 });
@@ -2433,10 +2433,10 @@ export default async function courselore({
                   touch: false,
                 });
                 tippy(this, {
-                  content: ${tippyContent(
+                  content: ${tippyContent({
                     req,
                     res,
-                    html`
+                    content: html`
                       <div
                         style="${css`
                           display: flex;
@@ -2481,8 +2481,8 @@ export default async function courselore({
                           </form>
                         </div>
                       </div>
-                    `
-                  )},
+                    `,
+                  })},
                   trigger: "click",
                   interactive: true,
                 });
@@ -2600,11 +2600,13 @@ export default async function courselore({
                   class="button button--transparent"
                   oninteractive="${javascript`
                     tippy(this, {
-                      content: ${tippyContent(
+                      content: ${tippyContent({
                         req,
                         res,
-                        html`<div class="dropdown--menu">$${menu}</div>`
-                      )},
+                        content: html`
+                          <div class="dropdown--menu">$${menu}</div>
+                        `,
+                      })},
                       trigger: "click",
                       interactive: true,
                     });
@@ -4660,10 +4662,10 @@ export default async function courselore({
                       const avatarEmpty = avatarChooser.querySelector(".avatar-chooser--empty");
                       const avatarFilled = avatarChooser.querySelector(".avatar-chooser--filled");
                       const uploadingIndicator = tippy(avatarChooser, {
-                        content: ${tippyContent(
+                        content: ${tippyContent({
                           req,
                           res,
-                          html`
+                          content: html`
                             <div
                               style="${css`
                                 display: flex;
@@ -4672,8 +4674,8 @@ export default async function courselore({
                             >
                               $${spinner} Uploading…
                             </div>
-                          `
-                        )},
+                          `,
+                        })},
                         trigger: "manual",
                         hideOnClick: false,
                       });
@@ -6020,10 +6022,10 @@ export default async function courselore({
                     class="button button--tight button--tight--inline button--transparent"
                     oninteractive="${javascript`
                       tippy(this, {
-                        content: ${tippyContent(
+                        content: ${tippyContent({
                           req,
                           res,
-                          html`
+                          content: html`
                             <div
                               style="${css`
                                 padding: var(--space--2);
@@ -6043,8 +6045,8 @@ export default async function courselore({
                                 leandro@courselore.org
                               `}</code></pre>
                             </div>
-                          `
-                        )},
+                          `,
+                        })},
                         trigger: "click",
                       });
                     `}"
@@ -6285,10 +6287,10 @@ export default async function courselore({
                                         tippy(this, {
                                           content: ${(() => {
                                             const link = `${baseURL}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
-                                            return tippyContent(
+                                            return tippyContent({
                                               req,
                                               res,
-                                              html`
+                                              content: html`
                                                 <div
                                                   style="${css`
                                                     display: flex;
@@ -6368,8 +6370,8 @@ export default async function courselore({
                                                     </button>
                                                   </div>
                                                 </div>
-                                              `
-                                            );
+                                              `,
+                                            });
                                           })()},
                                           trigger: "click",
                                           interactive: true,
