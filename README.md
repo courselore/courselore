@@ -28,7 +28,16 @@
 
 ### Chat
 
+- README
+  - Description.
+  - Links.
+    - Production
+    - Staging
+    - Home.
+    - GitHub.
+  - Installation.
 - Avatars.
+  - Don’t disclose emails to students.
   - Add support for out-of-band tippy contents.
     - Uses:
       - `#13` references in `markdownProcessor`.
@@ -43,6 +52,7 @@
     - `.avatar`
     - `.online-indicator`
   - Remove `onlineIndicator`
+- 1-to-1 conversation: Use background color to distinguish between people, so you don’t have to show their names over and over.
 - Sticky headers (showing author name) in messages?
 - Revisit unread management:
   - Don’t store all readings, but only the latest for a given conversation.
@@ -62,6 +72,7 @@
 ### Performance
 
 - Cache Markdown parsing.
+  - Similar to Discourse’s `rebake` task.
 - Pagination.
   - Messages in conversation.
   - Conversations on sidebar.
@@ -380,9 +391,22 @@
 <details>
 <summary>2021-12-22</summary>
 
-- Actions menu.
-- User component.
-- Database improvements: cleaned up a bit of magic, cleaned up repetition, and so forth.
+- Progress:
+  - User component.
+  - Actions menu.
+  - Database improvements: cleaned up a bit of magic, cleaned up repetition, and so forth.
+- Other topics:
+  - README
+    - Description.
+    - Links.
+      - Production
+      - Staging
+      - Home.
+      - GitHub.
+    - Installation.
+  - Don’t disclose emails to students.
+  - 1-to-1 conversation: Use background color to distinguish between people, so you don’t have to show their names over and over.
+  - Discourse rebake task.
 
 </details>
 
