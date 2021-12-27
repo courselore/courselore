@@ -7348,7 +7348,11 @@ export default async function courselore({
                                 touch: false,
                               });
                               tippy(this, {
-                                content: ${tippyContent(req, res, html``)},
+                                content: ${tippyContent({
+                                  req,
+                                  res,
+                                  content: html``,
+                                })},
                                 trigger: "click",
                                 interactive: true,
                               });
@@ -7815,7 +7819,11 @@ export default async function courselore({
                                     touch: false,
                                   });
                                   tippy(this, {
-                                    content: ${tippyContent(req, res, html``)},
+                                    content: ${tippyContent({
+                                      req,
+                                      res,
+                                      content: html``,
+                                    })},
                                     theme: "rose",
                                     trigger: "click",
                                     interactive: true,
@@ -10699,7 +10707,7 @@ export default async function courselore({
                     touch: false,
                   });
                   tippy(this, {
-                    content: ${tippyContent(req, res, html``)},
+                    content: ${tippyContent({ req, res, content: html`` })},
                     trigger: "click",
                     interactive: true,
                   });
@@ -11324,7 +11332,7 @@ export default async function courselore({
                 oninteractive="${javascript`
                   const textarea = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                   const uploadingIndicator = tippy(textarea, {
-                    content: ${tippyContent(req, res, html``)},
+                    content: ${tippyContent({ req, res, content: html`` })},
                     trigger: "manual",
                     hideOnClick: false,
                   });
@@ -13749,7 +13757,11 @@ ${value}</textarea
                                     touch: false,
                                   });
                                   tippy(this, {
-                                    content: ${tippyContent(req, res, html``)},
+                                    content: ${tippyContent({
+                                      req,
+                                      res,
+                                      content: html``,
+                                    })},
                                     theme: "rose",
                                     trigger: "click",
                                     interactive: true,
@@ -13870,7 +13882,11 @@ ${value}</textarea
                               touch: false,
                             });
                             tippy(this, {
-                              content: ${tippyContent(req, res, html``)},
+                              content: ${tippyContent({
+                                req,
+                                res,
+                                content: html``,
+                              })},
                               trigger: "click",
                               interactive: true,
                             });
