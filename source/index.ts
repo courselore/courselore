@@ -12531,7 +12531,6 @@ ${value}</textarea
           }
         })(markdownElement);
 
-        const references: HTML[] = [];
         for (const element of markdownElement.querySelectorAll("a")) {
           const hrefMatch = element.href.match(
             new RegExp(
@@ -12571,20 +12570,25 @@ ${value}</textarea
               "oninteractive",
               javascript`
                 tippy(this, {
-                  content: this.closest(".markdown").querySelector(".markdown--references").firstElementChild,
+                  content: ${tippyContent({
+                    req,
+                    res,
+                    content: html`
+                      <div
+                        style="${css`
+                          padding: var(--space--2);
+                        `}"
+                      >
+                        $${conversationPartial(
+                          narrowReq,
+                          narrowRes,
+                          conversation
+                        )}
+                      </div>
+                    `,
+                  })},
                   touch: false,
                 });
-              `
-            );
-            references.push(
-              html`
-                <div
-                  style="${css`
-                    padding: var(--space--2);
-                  `}"
-                >
-                  $${conversationPartial(narrowReq, narrowRes, conversation)}
-                </div>
               `
             );
             continue;
@@ -12600,32 +12604,30 @@ ${value}</textarea
             "oninteractive",
             javascript`
               tippy(this, {
-                content: this.closest(".markdown").querySelector(".markdown--references").firstElementChild,
+                content: ${tippyContent({
+                  req,
+                  res,
+                  content: html`
+                    <div
+                      style="${css`
+                        padding: var(--space--2);
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--2);
+                      `}"
+                    >
+                      $${conversationPartial(narrowReq, narrowRes, {
+                        ...conversation,
+                        message,
+                      })}
+                    </div>
+                  `,
+                })},
                 touch: false,
               });
             `
           );
-          references.push(
-            html`
-              <div
-                style="${css`
-                  padding: var(--space--2);
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--2);
-                `}"
-              >
-                $${conversationPartial(narrowReq, narrowRes, {
-                  ...conversation,
-                  message,
-                })}
-              </div>
-            `
-          );
         }
-        markdownElement.querySelector(
-          ".markdown--references"
-        )!.innerHTML = html`$${references}`;
       }
 
       if (search !== undefined)
