@@ -2972,7 +2972,7 @@ export default async function courselore({
             touch: false,
           });
         `}"
-        ><svg
+        >$${html`<svg
           style="${css`
             ${{
               xs: css`
@@ -3013,8 +3013,8 @@ export default async function courselore({
             >
               <i class="bi bi-sunglasses"></i>
             </span>
-          </foreignObject></svg
-        >  Anonymous</span
+          </foreignObject>
+        </svg>`}  Anonymous</span
       >`;
       output =
         anonymous === "reveal"
