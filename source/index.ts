@@ -12571,8 +12571,8 @@ ${value}</textarea
               javascript`
                 tippy(this, {
                   content: ${tippyContent({
-                    req,
-                    res,
+                    req: narrowReq,
+                    res: narrowRes,
                     content: html`
                       <div
                         style="${css`
@@ -12605,8 +12605,8 @@ ${value}</textarea
             javascript`
               tippy(this, {
                 content: ${tippyContent({
-                  req,
-                  res,
+                  req: narrowReq,
+                  res: narrowRes,
                   content: html`
                     <div
                       style="${css`
