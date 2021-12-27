@@ -2433,7 +2433,56 @@ export default async function courselore({
                   touch: false,
                 });
                 tippy(this, {
-                  content: ${tippyContent(req, res, html``)},
+                  content: ${tippyContent(
+                    req,
+                    res,
+                    html`
+                      <div
+                        style="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--2);
+                        `}"
+                      >
+                        <div
+                          style="${css`
+                            padding: var(--space--0) var(--space--2);
+                          `}"
+                        >
+                          <p class="strong">${res.locals.user.name}</p>
+                          <p class="secondary">${res.locals.user.email}</p>
+                        </div>
+
+                        <hr class="dropdown--separator" />
+
+                        <div class="dropdown--menu">
+                          <a
+                            class="dropdown--menu--item button button--transparent"
+                            href="${baseURL}/settings"
+                          >
+                            <i class="bi bi-sliders"></i>
+                            User Settings
+                          </a>
+                          <form
+                            method="POST"
+                            action="${baseURL}/sign-out?_method=DELETE"
+                          >
+                            <input
+                              type="hidden"
+                              name="_csrf"
+                              value="${req.csrfToken()}"
+                            />
+                            <button
+                              class="dropdown--menu--item button button--transparent"
+                            >
+                              <i class="bi bi-box-arrow-right"></i>
+                              Sign Out
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    `
+                  )},
                   trigger: "click",
                   interactive: true,
                 });
@@ -2447,52 +2496,6 @@ export default async function courselore({
                 name: false,
               })}
             </button>
-            <div hidden>
-              <div
-                style="${css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--2);
-                `}"
-              >
-                <div
-                  style="${css`
-                    padding: var(--space--0) var(--space--2);
-                  `}"
-                >
-                  <p class="strong">${res.locals.user.name}</p>
-                  <p class="secondary">${res.locals.user.email}</p>
-                </div>
-
-                <hr class="dropdown--separator" />
-
-                <div class="dropdown--menu">
-                  <a
-                    class="dropdown--menu--item button button--transparent"
-                    href="${baseURL}/settings"
-                  >
-                    <i class="bi bi-sliders"></i>
-                    User Settings
-                  </a>
-                  <form
-                    method="POST"
-                    action="${baseURL}/sign-out?_method=DELETE"
-                  >
-                    <input
-                      type="hidden"
-                      name="_csrf"
-                      value="${req.csrfToken()}"
-                    />
-                    <button
-                      class="dropdown--menu--item button button--transparent"
-                    >
-                      <i class="bi bi-box-arrow-right"></i>
-                      Sign Out
-                    </button>
-                  </form>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -2597,7 +2600,11 @@ export default async function courselore({
                   class="button button--transparent"
                   oninteractive="${javascript`
                     tippy(this, {
-                      content: ${tippyContent(req, res, html``)},
+                      content: ${tippyContent(
+                        req,
+                        res,
+                        html`<div class="dropdown--menu">$${menu}</div>`
+                      )},
                       trigger: "click",
                       interactive: true,
                     });
@@ -2606,9 +2613,6 @@ export default async function courselore({
                   $${menuButton}
                   <i class="bi bi-chevron-down"></i>
                 </button>
-                <div hidden>
-                  <div class="dropdown--menu">$${menu}</div>
-                </div>
               </div>
             `,
       body: html`
@@ -4652,7 +4656,20 @@ export default async function courselore({
                       const avatarEmpty = avatarChooser.querySelector(".avatar-chooser--empty");
                       const avatarFilled = avatarChooser.querySelector(".avatar-chooser--filled");
                       const uploadingIndicator = tippy(avatarChooser, {
-                        content: ${tippyContent(req, res, html``)},
+                        content: ${tippyContent(
+                          req,
+                          res,
+                          html`
+                            <div
+                              style="${css`
+                                display: flex;
+                                gap: var(--space--2);
+                              `}"
+                            >
+                              $${spinner} Uploading…
+                            </div>
+                          `
+                        )},
                         trigger: "manual",
                         hideOnClick: false,
                       });
@@ -4693,16 +4710,6 @@ export default async function courselore({
                       this.upload(this.files);
                     `}"
                   />
-                  <div hidden>
-                    <div
-                      style="${css`
-                        display: flex;
-                        gap: var(--space--2);
-                      `}"
-                    >
-                      $${spinner} Uploading…
-                    </div>
-                  </div>
                   <input
                     type="text"
                     name="avatar"
@@ -6009,34 +6016,37 @@ export default async function courselore({
                     class="button button--tight button--tight--inline button--transparent"
                     oninteractive="${javascript`
                       tippy(this, {
-                        content: ${tippyContent(req, res, html``)},
+                        content: ${tippyContent(
+                          req,
+                          res,
+                          html`
+                            <div
+                              style="${css`
+                                padding: var(--space--2);
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--2);
+                              `}"
+                            >
+                              <p>
+                                Emails must be separated by commas and/or
+                                newlines, and may include names which may be
+                                quoted or not, for example:
+                              </p>
+                              <pre class="pre"><code>${dedent`
+                                "Scott" <scott@courselore.org>,
+                                Ali <ali@courselore.org>
+                                leandro@courselore.org
+                              `}</code></pre>
+                            </div>
+                          `
+                        )},
                         trigger: "click",
                       });
                     `}"
                   >
                     <i class="bi bi-info-circle"></i>
                   </button>
-                  <div hidden>
-                    <div
-                      style="${css`
-                        padding: var(--space--2);
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--space--2);
-                      `}"
-                    >
-                      <p>
-                        Emails must be separated by commas and/or newlines, and
-                        may include names which may be quoted or not, for
-                        example:
-                      </p>
-                      <pre class="pre"><code>${dedent`
-                        "Scott" <scott@courselore.org>,
-                        Ali <ali@courselore.org>
-                        leandro@courselore.org
-                      `}</code></pre>
-                    </div>
-                  </div>
                 </div>
                 <textarea
                   name="emails"
@@ -6269,11 +6279,94 @@ export default async function courselore({
                                           touch: false,
                                         });
                                         tippy(this, {
-                                          content: ${tippyContent(
-                                            req,
-                                            res,
-                                            html``
-                                          )},
+                                          content: ${(() => {
+                                            const link = `${baseURL}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
+                                            return tippyContent(
+                                              req,
+                                              res,
+                                              html`
+                                                <div
+                                                  style="${css`
+                                                    display: flex;
+                                                    flex-direction: column;
+                                                    gap: var(--space--2);
+                                                  `}"
+                                                >
+                                                  $${isInvitationExpired
+                                                    ? html`
+                                                        <p
+                                                          class="text--rose"
+                                                          style="${css`
+                                                            display: flex;
+                                                            gap: var(
+                                                              --space--2
+                                                            );
+                                                            justify-content: center;
+                                                          `}"
+                                                        >
+                                                          <i
+                                                            class="bi bi-calendar-x-fill"
+                                                          ></i>
+                                                          Expired
+                                                        </p>
+                                                      `
+                                                    : html``}
+                                                  <div
+                                                    style="${css`
+                                                      display: flex;
+                                                      gap: var(--space--2);
+                                                      align-items: center;
+                                                    `}"
+                                                  >
+                                                    <div>
+                                                      <a
+                                                        href="${link}"
+                                                        class="link"
+                                                        >${link}</a
+                                                      >
+                                                    </div>
+                                                    <button
+                                                      class="button button--tight button--transparent"
+                                                      oninteractive="${javascript`
+                                                        tippy(this, {
+                                                          content: "Copy to Clipboard",
+                                                          touch: false,
+                                                        });
+                                                      `}"
+                                                      onclick="${javascript`
+                                                        (async () => {
+                                                          await navigator.clipboard.writeText(${JSON.stringify(
+                                                            link
+                                                          )});
+                                                          const clipboard = this.querySelector(".clipboard");
+                                                          const check = this.querySelector(".check");
+                                                          clipboard.hidden = true;
+                                                          check.hidden = false;
+                                                          await new Promise((resolve) => { window.setTimeout(resolve, 500); });
+                                                          clipboard.hidden = false;
+                                                          check.hidden = true;
+                                                        })();
+                                                      `}"
+                                                    >
+                                                      <span class="clipboard">
+                                                        <i
+                                                          class="bi bi-clipboard"
+                                                        ></i>
+                                                      </span>
+                                                      <span
+                                                        hidden
+                                                        class="check text--green"
+                                                      >
+                                                        <i
+                                                          class="bi bi-check-lg"
+                                                        ></i>
+                                                      </span>
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                              `
+                                            );
+                                          })()},
                                           trigger: "click",
                                           interactive: true,
                                           maxWidth: "none",
@@ -6285,86 +6378,6 @@ export default async function courselore({
                                       )}${invitation.reference.slice(6)}
                                       <i class="bi bi-chevron-down"></i>
                                     </button>
-                                    $${(() => {
-                                      const link = `${baseURL}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
-                                      return html`
-                                        <div hidden>
-                                          <div
-                                            style="${css`
-                                              display: flex;
-                                              flex-direction: column;
-                                              gap: var(--space--2);
-                                            `}"
-                                          >
-                                            $${isInvitationExpired
-                                              ? html`
-                                                  <p
-                                                    class="text--rose"
-                                                    style="${css`
-                                                      display: flex;
-                                                      gap: var(--space--2);
-                                                      justify-content: center;
-                                                    `}"
-                                                  >
-                                                    <i
-                                                      class="bi bi-calendar-x-fill"
-                                                    ></i>
-                                                    Expired
-                                                  </p>
-                                                `
-                                              : html``}
-                                            <div
-                                              style="${css`
-                                                display: flex;
-                                                gap: var(--space--2);
-                                                align-items: center;
-                                              `}"
-                                            >
-                                              <div>
-                                                <a href="${link}" class="link"
-                                                  >${link}</a
-                                                >
-                                              </div>
-                                              <button
-                                                class="button button--tight button--transparent"
-                                                oninteractive="${javascript`
-                                                  tippy(this, {
-                                                    content: "Copy to Clipboard",
-                                                    touch: false,
-                                                  });
-                                                `}"
-                                                onclick="${javascript`
-                                                  (async () => {
-                                                    await navigator.clipboard.writeText(${JSON.stringify(
-                                                      link
-                                                    )});
-                                                    const clipboard = this.querySelector(".clipboard");
-                                                    const check = this.querySelector(".check");
-                                                    clipboard.hidden = true;
-                                                    check.hidden = false;
-                                                    await new Promise((resolve) => { window.setTimeout(resolve, 500); });
-                                                    clipboard.hidden = false;
-                                                    check.hidden = true;
-                                                  })();
-                                                `}"
-                                              >
-                                                <span class="clipboard">
-                                                  <i
-                                                    class="bi bi-clipboard"
-                                                  ></i>
-                                                </span>
-                                                <span
-                                                  hidden
-                                                  class="check text--green"
-                                                >
-                                                  <i class="bi bi-check-lg"></i>
-                                                </span>
-                                              </button>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      `;
-                                    })()}
                                   </div>
                                 `
                               : html`
