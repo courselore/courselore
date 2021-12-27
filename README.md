@@ -33,7 +33,7 @@
   - `this.nextElementSibling.firstElementChild`.
   - `tippy(`
   - `<div hidden`
-  - `conversationPartial` should have keyword arguments.
+  - `conversationPartial`, `getConversation`, and `getMessage` should have keyword arguments.
   - Uses:
     - `#13` references in `markdownProcessor`.
     - User biographies in `userPartial`.
