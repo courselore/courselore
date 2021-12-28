@@ -29,7 +29,6 @@
 ### Chat
 
 - Add support for out-of-band tippy contents.
-  - `eventDestination` should store `req` as well.
   - In `conversationPartial`, separate search results from `conversation`.
   - User biographies in `userPartial`.
   - Should fix the following bugs:

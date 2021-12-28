@@ -3130,7 +3130,7 @@ export default async function courselore({
       res.type("text/event-stream").flushHeaders();
     });
 
-  const eventDestinations = new Set<express.Response>();
+  const eventDestinations = new Map<express.Request, express.Response>();
 
   interface EventSourceMiddlewareLocals {
     eventSource: boolean;
@@ -3147,9 +3147,9 @@ export default async function courselore({
         res.locals.eventSource = true;
         return next();
       }
-      eventDestinations.add(res);
+      eventDestinations.set(req, res);
       res.on("close", () => {
-        eventDestinations.delete(res);
+        eventDestinations.delete(req);
       });
       res.type("text/event-stream").flushHeaders();
     },
@@ -16960,7 +16960,7 @@ ${value}</textarea
   );
 
   const emitCourseRefresh = (courseId: number): void => {
-    for (const eventDestination of eventDestinations)
+    for (const eventDestination of eventDestinations.values())
       eventDestination.write(`event: refresh\ndata:\n\n`);
   };
 
