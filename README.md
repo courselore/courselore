@@ -30,6 +30,7 @@
 
 - Add support for out-of-band tippy contents.
   - `conversationPartial`, `getConversation`, and `getMessage` should have keyword arguments.
+  - In `conversationPartial`, separate search results from `conversation`.
   - User biographies in `userPartial`.
   - Should fix the following bugs:
     - Text color in avatar popper when button color is active (for example, the blue conversation on the left bar when it’s the current conversation).
