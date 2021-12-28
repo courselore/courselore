@@ -29,6 +29,7 @@
 ### Chat
 
 - Add support for out-of-band tippy contents.
+  - Move `content:` down, because it tends to be the longest option.
   - `<div hidden`
   - `allowHTML` shouldn’t exist anymore.
   - `tippy(`
