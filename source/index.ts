@@ -13574,17 +13574,21 @@ ${value}</textarea
     },
   ];
 
-  const mayEditMessage = (
+  const mayEditMessage = ({
+    req,
+    res,
+    message,
+  }: {
     req: express.Request<
       { courseReference: string; conversationReference: string },
       any,
       {},
       {},
       IsConversationAccessibleMiddlewareLocals
-    >,
-    res: express.Response<any, IsConversationAccessibleMiddlewareLocals>,
-    message: MessageExistsMiddlewareLocals["message"]
-  ) =>
+    >;
+    res: express.Response<any, IsConversationAccessibleMiddlewareLocals>;
+    message: MessageExistsMiddlewareLocals["message"];
+  }) =>
     res.locals.enrollment.role === "staff" ||
     message.authorEnrollment.id === res.locals.enrollment.id;
 
@@ -13603,7 +13607,8 @@ ${value}</textarea
   >[] = [
     ...messageExistsMiddleware,
     (req, res, next) => {
-      if (mayEditMessage(req, res, res.locals.message)) return next();
+      if (mayEditMessage({ req, res, message: res.locals.message }))
+        return next();
       next("route");
     },
   ];
@@ -15054,11 +15059,11 @@ ${value}</textarea
                                                                 </form>
                                                               `
                                                             : html``}
-                                                          $${mayEditMessage(
+                                                          $${mayEditMessage({
                                                             req,
                                                             res,
-                                                            message
-                                                          )
+                                                            message,
+                                                          })
                                                             ? html`
                                                                 <button
                                                                   class="dropdown--menu--item button button--transparent"
@@ -15185,7 +15190,11 @@ ${value}</textarea
                                           const headers: HTML[] = [];
 
                                           if (
-                                            mayEditMessage(req, res, message) &&
+                                            mayEditMessage({
+                                              req,
+                                              res,
+                                              message,
+                                            }) &&
                                             message.reference !== "1" &&
                                             res.locals.conversation.type ===
                                               "question"
@@ -15894,7 +15903,7 @@ ${value}</textarea
                                           })()}
                                         </div>
 
-                                        $${mayEditMessage(req, res, message)
+                                        $${mayEditMessage({ req, res, message })
                                           ? html`
                                               <form
                                                 method="POST"
