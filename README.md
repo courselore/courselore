@@ -30,11 +30,6 @@
 
 - Add support for out-of-band tippy contents.
   - Keyword arguments.
-    - `PasswordReset`
-    - `sendConfirmationEmail`
-    - `defaultAccentColor`
-    - `sendInvitationEmail`
-    - `mayEditConversation`
     - `mayEditMessage`
     - `mayEndorseMessage`
     - `emitCourseRefresh`

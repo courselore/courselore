@@ -13510,16 +13510,19 @@ ${value}</textarea
     },
   ];
 
-  const mayEditConversation = (
+  const mayEditConversation = ({
+    req,
+    res,
+  }: {
     req: express.Request<
       { courseReference: string; conversationReference: string },
       any,
       {},
       {},
       IsConversationAccessibleMiddlewareLocals
-    >,
-    res: express.Response<any, IsConversationAccessibleMiddlewareLocals>
-  ): boolean =>
+    >;
+    res: express.Response<any, IsConversationAccessibleMiddlewareLocals>;
+  }): boolean =>
     res.locals.enrollment.role === "staff" ||
     res.locals.conversation.authorEnrollment.id === res.locals.enrollment.id;
 
@@ -13537,7 +13540,7 @@ ${value}</textarea
   >[] = [
     ...isConversationAccessibleMiddleware,
     (req, res, next) => {
-      if (mayEditConversation(req, res)) return next();
+      if (mayEditConversation({ req, res })) return next();
       next("route");
     },
   ];
@@ -13774,7 +13777,7 @@ ${value}</textarea
                           }
                         `}"
                       >
-                        $${mayEditConversation(req, res)
+                        $${mayEditConversation({ req, res })
                           ? html`
                               <div>
                                 <button
@@ -14111,7 +14114,7 @@ ${value}</textarea
                                       Copy Conversation Permanent Link to
                                       Clipboard
                                     </button>
-                                    $${mayEditConversation(req, res)
+                                    $${mayEditConversation({ req, res })
                                       ? html`
                                           <button
                                             class="dropdown--menu--item button button--transparent"
@@ -14222,7 +14225,7 @@ ${value}</textarea
                       )}
                     </h2>
 
-                    $${mayEditConversation(req, res)
+                    $${mayEditConversation({ req, res })
                       ? html`
                           <form
                             method="POST"
@@ -14304,7 +14307,7 @@ ${value}</textarea
                               }
                             `}"
                           >
-                            $${mayEditConversation(req, res)
+                            $${mayEditConversation({ req, res })
                               ? html`
                                   $${res.locals.conversation.taggings.length ===
                                   1
