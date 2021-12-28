@@ -15274,7 +15274,11 @@ ${value}</textarea
                                             `);
 
                                           if (
-                                            mayEndorseMessage(req, res, message)
+                                            mayEndorseMessage({
+                                              req,
+                                              res,
+                                              message,
+                                            })
                                           ) {
                                             const isEndorsed =
                                               message.endorsements.some(
@@ -16838,7 +16842,11 @@ ${value}</textarea
     }
   );
 
-  const mayEndorseMessage = (
+  const mayEndorseMessage = ({
+    req,
+    res,
+    message,
+  }: {
     req: express.Request<
       {
         courseReference: string;
@@ -16848,10 +16856,10 @@ ${value}</textarea
       {},
       {},
       IsConversationAccessibleMiddlewareLocals
-    >,
-    res: express.Response<any, IsConversationAccessibleMiddlewareLocals>,
-    message: MessageExistsMiddlewareLocals["message"]
-  ): boolean =>
+    >;
+    res: express.Response<any, IsConversationAccessibleMiddlewareLocals>;
+    message: MessageExistsMiddlewareLocals["message"];
+  }): boolean =>
     res.locals.enrollment.role === "staff" &&
     res.locals.conversation.type === "question" &&
     message.reference !== "1" &&
@@ -16873,7 +16881,8 @@ ${value}</textarea
   >[] = [
     ...messageExistsMiddleware,
     (req, res, next) => {
-      if (mayEndorseMessage(req, res, res.locals.message)) return next();
+      if (mayEndorseMessage({ req, res, message: res.locals.message }))
+        return next();
       next("route");
     },
   ];
