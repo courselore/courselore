@@ -2913,6 +2913,7 @@ export default async function courselore({
             tippy(this, {
               touch: false,
               interactive: true,
+              appendTo: document.body,
               content: ${tippyContent({
                 req,
                 res,
