@@ -13383,18 +13383,18 @@ ${value}</textarea
             res,
             conversationReference: conversation.reference,
           })!;
-          sendNotifications(
+          sendNotifications({
             req,
             res,
-            completeConversation,
-            getMessage({
+            conversation: completeConversation,
+            message: getMessage({
               req,
               res,
               conversation: completeConversation,
               messageReference: message.reference,
             })!,
-            processedContent.mentions
-          );
+            mentions: processedContent.mentions,
+          });
         };
       }
 
@@ -16539,18 +16539,18 @@ ${value}</textarea
           `
         );
         notify = () => {
-          sendNotifications(
+          sendNotifications({
             req,
             res,
-            res.locals.conversation,
-            getMessage({
+            conversation: res.locals.conversation,
+            message: getMessage({
               req,
               res,
               conversation: res.locals.conversation,
               messageReference: message.reference,
             })!,
-            processedContent.mentions
-          );
+            mentions: processedContent.mentions,
+          });
         };
       }
 
@@ -16675,13 +16675,13 @@ ${value}</textarea
       emitCourseRefresh(res.locals.course.id);
 
       if (typeof req.body.content === "string")
-        sendNotifications(
+        sendNotifications({
           req,
           res,
-          res.locals.conversation,
-          res.locals.message,
-          processedContent!.mentions
-        );
+          conversation: res.locals.conversation,
+          message: res.locals.message,
+          mentions: processedContent!.mentions,
+        });
     }
   );
 
@@ -16902,13 +16902,19 @@ ${value}</textarea
       eventDestination.write(`event: refresh\ndata:\n\n`);
   };
 
-  const sendNotifications = (
-    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>,
-    res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
-    conversation: NonNullable<ReturnType<typeof getConversation>>,
-    message: NonNullable<ReturnType<typeof getMessage>>,
-    mentions: Set<string>
-  ): void => {
+  const sendNotifications = ({
+    req,
+    res,
+    conversation,
+    message,
+    mentions,
+  }: {
+    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
+    res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+    conversation: NonNullable<ReturnType<typeof getConversation>>;
+    message: NonNullable<ReturnType<typeof getMessage>>;
+    mentions: Set<string>;
+  }): void => {
     let enrollments = database.all<{
       id: number;
       userId: number;
