@@ -2887,27 +2887,6 @@ export default async function courselore({
         output = html`<span
           style="${css`
             font-weight: var(--font-weight--bold);
-            @at-root {
-              .user-partial--user-overlay {
-                max-height: var(--space--24);
-                overflow: auto;
-                display: flex;
-                gap: var(--space--2);
-                padding: var(--space--1) var(--space--2);
-                & > :last-child {
-                  padding-top: var(--space--0-5);
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--2);
-                  & > :first-child {
-                    & > :last-child {
-                      font-size: var(--font-size--xs);
-                      line-height: var(--line-height--xs);
-                    }
-                  }
-                }
-              }
-            }
           `}"
           oninteractive="${javascript`
             tippy(this, {
@@ -2918,7 +2897,15 @@ export default async function courselore({
                 req,
                 res,
                 content: html`
-                  <div class="user-partial--user-overlay">
+                  <div
+                    style="${css`
+                      max-height: var(--space--56);
+                      overflow: auto;
+                      display: flex;
+                      gap: var(--space--2);
+                      padding: var(--space--1) var(--space--2);
+                    `}"
+                  >
                     <div>
                       $${userPartial({
                         req,
@@ -2928,11 +2915,24 @@ export default async function courselore({
                         name: false,
                       })}
                     </div>
-                    <div>
+                    <div
+                      style="${css`
+                        padding-top: var(--space--0-5);
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--2);
+                      `}"
+                    >
                       <div>
                         <div class="strong">${user.name}</div>
                         <div class="secondary">${user.email}</div>
-                        <div class="secondary">
+                        <div
+                          class="secondary"
+                          style="${css`
+                            font-size: var(--font-size--xs);
+                            line-height: var(--line-height--xs);
+                          `}"
+                        >
                           Last seen online
                           <time
                             datetime="${new Date(
