@@ -8808,11 +8808,11 @@ export default async function courselore({
         `
       )
       .flatMap((conversationRow) => {
-        const conversation = getConversation(
+        const conversation = getConversation({
           req,
           res,
-          conversationRow.reference
-        );
+          conversationReference: conversationRow.reference,
+        });
         if (conversation === undefined) return [];
         return [
           {
@@ -10024,11 +10024,15 @@ export default async function courselore({
       }
     | NoLongerEnrolledEnrollment;
 
-  const getConversation = (
-    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>,
-    res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
-    conversationReference: string
-  ):
+  const getConversation = ({
+    req,
+    res,
+    conversationReference,
+  }: {
+    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
+    res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+    conversationReference: string;
+  }):
     | {
         id: number;
         createdAt: string;
@@ -11906,11 +11910,11 @@ ${value}</textarea
               `
             )
             .flatMap((conversationRow) => {
-              const conversation = getConversation(
+              const conversation = getConversation({
                 req,
                 res,
-                conversationRow.reference
-              );
+                conversationReference: conversationRow.reference,
+              });
               return conversation === undefined
                 ? []
                 : [
@@ -11943,7 +11947,11 @@ ${value}</textarea
       if (messageReferenceSearchMatch !== null) {
         const [conversationReference, messageReferenceSearch] =
           messageReferenceSearchMatch.slice(1);
-        const conversation = getConversation(req, res, conversationReference);
+        const conversation = getConversation({
+          req,
+          res,
+          conversationReference,
+        });
         if (conversation !== undefined) {
           results.push(
             ...database
@@ -12056,11 +12064,11 @@ ${value}</textarea
             `
           )
           .flatMap((conversationRow) => {
-            const conversation = getConversation(
+            const conversation = getConversation({
               req,
               res,
-              conversationRow.reference
-            );
+              conversationReference: conversationRow.reference,
+            });
             return conversation === undefined
               ? []
               : [
@@ -12124,11 +12132,11 @@ ${value}</textarea
             `
           )
           .flatMap((messageRow) => {
-            const conversation = getConversation(
+            const conversation = getConversation({
               req,
               res,
-              messageRow.conversationReference
-            );
+              conversationReference: messageRow.conversationReference,
+            });
             if (conversation === undefined) return [];
             const message = getMessage(
               req,
@@ -12209,11 +12217,11 @@ ${value}</textarea
             `
           )
           .flatMap((messageRow) => {
-            const conversation = getConversation(
+            const conversation = getConversation({
               req,
               res,
-              messageRow.conversationReference
-            );
+              conversationReference: messageRow.conversationReference,
+            });
             if (conversation === undefined) return [];
             const message = getMessage(
               req,
@@ -12464,11 +12472,11 @@ ${value}</textarea
           const [courseReference, conversationReference, messageReference] =
             match.slice(1);
           if (courseReference !== res.locals.course.reference) continue;
-          const conversation = getConversation(
-            narrowReq,
-            narrowRes,
-            conversationReference
-          );
+          const conversation = getConversation({
+            req: narrowReq,
+            res: narrowRes,
+            conversationReference,
+          });
           if (conversation === undefined) continue;
           if (messageReference === undefined) {
             element.textContent = `#${conversation.reference}`;
@@ -12576,11 +12584,11 @@ ${value}</textarea
                 newNodeHTML = newNodeHTML.replace(
                   /(?<!\w)#(\d+)(?:\/(\d+))?(?!\w)/g,
                   (match, conversationReference, messageReference) => {
-                    const conversation = getConversation(
-                      narrowReq,
-                      narrowRes,
-                      conversationReference
-                    );
+                    const conversation = getConversation({
+                      req: narrowReq,
+                      res: narrowRes,
+                      conversationReference,
+                    });
                     if (conversation === undefined) return match;
                     if (messageReference === undefined)
                       return html`<a
@@ -12639,11 +12647,11 @@ ${value}</textarea
             hrefMessageReference !== textContentMessageReference
           )
             continue;
-          const conversation = getConversation(
-            narrowReq,
-            narrowRes,
-            hrefConversationReference
-          );
+          const conversation = getConversation({
+            req: narrowReq,
+            res: narrowRes,
+            conversationReference: hrefConversationReference,
+          });
           if (conversation === undefined) continue;
           if (hrefMessageReference === undefined) {
             element.setAttribute(
@@ -13363,11 +13371,11 @@ ${value}</textarea
         );
 
         sendNotificationsIfNecessary = () => {
-          const completeConversation = getConversation(
+          const completeConversation = getConversation({
             req,
             res,
-            conversation.reference
-          )!;
+            conversationReference: conversation.reference,
+          })!;
           sendNotifications(
             req,
             res,
@@ -13438,11 +13446,11 @@ ${value}</textarea
   >[] = [
     ...isEnrolledInCourseMiddleware,
     (req, res, next) => {
-      const conversation = getConversation(
+      const conversation = getConversation({
         req,
         res,
-        req.params.conversationReference
-      );
+        conversationReference: req.params.conversationReference,
+      });
       if (conversation === undefined) return next("route");
       res.locals.conversation = conversation;
       next();

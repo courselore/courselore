@@ -29,7 +29,7 @@
 ### Chat
 
 - Add support for out-of-band tippy contents.
-  - `conversationPartial`, `getConversation`, and `getMessage` should have keyword arguments.
+  - `getMessage` should have keyword arguments.
   - In `conversationPartial`, separate search results from `conversation`.
   - User biographies in `userPartial`.
   - Should fix the following bugs:
