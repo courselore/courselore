@@ -30,7 +30,6 @@
 
 - Add support for out-of-band tippy contents.
   - Keyword arguments.
-    - `sendNotifications`
     - `Flash`
     - `Session`
     - `PasswordReset`
