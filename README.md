@@ -29,7 +29,8 @@
 ### Chat
 
 - Add support for out-of-band tippy contents.
-  - `sendNotifications` should have keyword arguments.
+  - `sendNotifications`, `Flash`, `Session`, `PasswordReset`, `sendConfirmationEmail`, `defaultAccentColor`, `sendInvitationEmail`, `mayEditConversation`, `mayEditMessage`, `mayEndorseMessage`, `emitCourseRefresh`, `highlightSearchResult` should have keyword arguments.
+  - `eventDestination` should store `req` as well.
   - In `conversationPartial`, separate search results from `conversation`.
   - User biographies in `userPartial`.
   - Should fix the following bugs:
