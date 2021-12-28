@@ -7445,8 +7445,8 @@ export default async function courselore({
                                                                     <button
                                                                       class="button button--rose"
                                                                       onclick="${javascript`
-                                                                          this.closest(".confirmation").form.submit();
-                                                                        `}"
+                                                                        this.closest(".confirmation").form.submit();
+                                                                      `}"
                                                                     >
                                                                       Update My
                                                                       Own Role
