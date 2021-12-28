@@ -3210,11 +3210,15 @@ export default async function courselore({
   const Session = {
     maxAge: 180 * 24 * 60 * 60 * 1000,
 
-    open(
-      req: express.Request<{}, any, {}, {}, {}>,
-      res: express.Response<any, {}>,
-      userId: number
-    ): void {
+    open({
+      req,
+      res,
+      userId,
+    }: {
+      req: express.Request<{}, any, {}, {}, {}>;
+      res: express.Response<any, {}>;
+      userId: number;
+    }): void {
       const session = database.get<{
         token: string;
       }>(
@@ -3235,10 +3239,13 @@ export default async function courselore({
       });
     },
 
-    get(
-      req: express.Request<{}, any, {}, {}, {}>,
-      res: express.Response<any, {}>
-    ): number | undefined {
+    get({
+      req,
+      res,
+    }: {
+      req: express.Request<{}, any, {}, {}, {}>;
+      res: express.Response<any, {}>;
+    }): number | undefined {
       if (req.cookies.session === undefined) return undefined;
       const session = database.get<{
         createdAt: string;
@@ -3250,14 +3257,14 @@ export default async function courselore({
         session === undefined ||
         new Date(session.createdAt).getTime() < Date.now() - Session.maxAge
       ) {
-        Session.close(req, res);
+        Session.close({ req, res });
         return undefined;
       } else if (
         new Date(session.createdAt).getTime() <
         Date.now() - Session.maxAge / 2
       ) {
-        Session.close(req, res);
-        Session.open(req, res, session.user);
+        Session.close({ req, res });
+        Session.open({ req, res, userId: session.user });
       }
       database.run(
         sql`
@@ -3269,10 +3276,13 @@ export default async function courselore({
       return session.user;
     },
 
-    close(
-      req: express.Request<{}, any, {}, {}, {}>,
-      res: express.Response<any, {}>
-    ): void {
+    close({
+      req,
+      res,
+    }: {
+      req: express.Request<{}, any, {}, {}, {}>;
+      res: express.Response<any, {}>;
+    }): void {
       if (req.cookies.session === undefined) return;
       delete req.cookies.session;
       res.clearCookie("session", cookieOptions);
@@ -3291,7 +3301,7 @@ export default async function courselore({
     IsSignedOutMiddlewareLocals
   >[] = [
     (req, res, next) => {
-      if (Session.get(req, res) !== undefined) return next("route");
+      if (Session.get({ req, res }) !== undefined) return next("route");
       next();
     },
   ];
@@ -3340,7 +3350,7 @@ export default async function courselore({
     IsSignedInMiddlewareLocals
   >[] = [
     (req, res, next) => {
-      const userId = Session.get(req, res);
+      const userId = Session.get({ req, res });
       if (userId === undefined) return next("route");
 
       res.locals.user = database.get<{
@@ -3600,7 +3610,7 @@ export default async function courselore({
           })}`
         );
       }
-      Session.open(req, res, user.id);
+      Session.open({ req, res, userId: user.id });
       res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
     })
   );
@@ -3941,7 +3951,7 @@ export default async function courselore({
           WHERE "id" = ${userId}
         `
       )!;
-      Session.open(req, res, userId);
+      Session.open({ req, res, userId: userId });
       Flash.set({
         req,
         res,
@@ -4183,7 +4193,7 @@ export default async function courselore({
         `
       )!;
       sendConfirmationEmail(user);
-      Session.open(req, res, user.id);
+      Session.open({ req, res, userId: user.id });
       res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
     })
   );
@@ -4272,7 +4282,7 @@ export default async function courselore({
     "/sign-out",
     ...isSignedInMiddleware,
     (req, res) => {
-      Session.close(req, res);
+      Session.close({ req, res });
       res.redirect(`${baseURL}/`);
     }
   );
@@ -17588,7 +17598,7 @@ ${value}</textarea
           }
         }
 
-        Session.open(req, res, demonstrationUser.id);
+        Session.open({ req, res, userId: demonstrationUser.id });
         Flash.set({
           req,
           res,

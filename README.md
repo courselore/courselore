@@ -30,8 +30,6 @@
 
 - Add support for out-of-band tippy contents.
   - Keyword arguments.
-    - `Flash`
-    - `Session`
     - `PasswordReset`
     - `sendConfirmationEmail`
     - `defaultAccentColor`
