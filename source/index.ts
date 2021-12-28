@@ -8829,12 +8829,13 @@ export default async function courselore({
         )
           return {
             ...conversation,
-            messageAuthorUserNameSearchResultMessage: getMessage(
+            messageAuthorUserNameSearchResultMessage: getMessage({
               req,
               res,
               conversation,
-              conversation.messageAuthorUserNameSearchResultMessageReference
-            ),
+              messageReference:
+                conversation.messageAuthorUserNameSearchResultMessageReference,
+            }),
             messageContentSearchResultMessage: undefined,
           };
         else if (
@@ -8844,12 +8845,13 @@ export default async function courselore({
           return {
             ...conversation,
             messageAuthorUserNameSearchResultMessage: undefined,
-            messageContentSearchResultMessage: getMessage(
+            messageContentSearchResultMessage: getMessage({
               req,
               res,
               conversation,
-              conversation.messageContentSearchResultMessageReference
-            ),
+              messageReference:
+                conversation.messageContentSearchResultMessageReference,
+            }),
           };
         return {
           ...conversation,
@@ -10299,12 +10301,17 @@ export default async function courselore({
     };
   };
 
-  const getMessage = (
-    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>,
-    res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
-    conversation: NonNullable<ReturnType<typeof getConversation>>,
-    messageReference: string
-  ):
+  const getMessage = ({
+    req,
+    res,
+    conversation,
+    messageReference,
+  }: {
+    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
+    res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+    conversation: NonNullable<ReturnType<typeof getConversation>>;
+    messageReference: string;
+  }):
     | {
         id: number;
         createdAt: string;
@@ -11976,12 +11983,12 @@ ${value}</textarea
                 `
               )
               .flatMap((messageRow) => {
-                const message = getMessage(
+                const message = getMessage({
                   req,
                   res,
                   conversation,
-                  messageRow.reference
-                );
+                  messageReference: messageRow.reference,
+                });
                 return message === undefined
                   ? []
                   : [
@@ -12138,12 +12145,12 @@ ${value}</textarea
               conversationReference: messageRow.conversationReference,
             });
             if (conversation === undefined) return [];
-            const message = getMessage(
+            const message = getMessage({
               req,
               res,
               conversation,
-              messageRow.messageReference
-            );
+              messageReference: messageRow.messageReference,
+            });
             return message === undefined
               ? []
               : [
@@ -12223,12 +12230,12 @@ ${value}</textarea
               conversationReference: messageRow.conversationReference,
             });
             if (conversation === undefined) return [];
-            const message = getMessage(
+            const message = getMessage({
               req,
               res,
               conversation,
-              messageRow.messageReference
-            );
+              messageReference: messageRow.messageReference,
+            });
             return message === undefined
               ? []
               : [
@@ -12482,12 +12489,12 @@ ${value}</textarea
             element.textContent = `#${conversation.reference}`;
             continue;
           }
-          const message = getMessage(
-            narrowReq,
-            narrowRes,
+          const message = getMessage({
+            req: narrowReq,
+            res: narrowRes,
             conversation,
-            messageReference
-          );
+            messageReference,
+          });
           if (message === undefined) continue;
           element.textContent = `#${conversation.reference}/${message.reference}`;
         }
@@ -12597,12 +12604,12 @@ ${value}</textarea
                           .reference}/conversations/${conversation.reference}"
                         >${match}</a
                       >`;
-                    const message = getMessage(
-                      narrowReq,
-                      narrowRes,
+                    const message = getMessage({
+                      req: narrowReq,
+                      res: narrowRes,
                       conversation,
-                      messageReference
-                    );
+                      messageReference,
+                    });
                     if (message === undefined) return match;
                     return html`<a
                       class="reference"
@@ -12681,12 +12688,12 @@ ${value}</textarea
             );
             continue;
           }
-          const message = getMessage(
-            narrowReq,
-            narrowRes,
+          const message = getMessage({
+            req: narrowReq,
+            res: narrowRes,
             conversation,
-            hrefMessageReference
-          );
+            messageReference: hrefMessageReference,
+          });
           if (message === undefined) continue;
           element.setAttribute(
             "oninteractive",
@@ -13380,7 +13387,12 @@ ${value}</textarea
             req,
             res,
             completeConversation,
-            getMessage(req, res, completeConversation, message.reference)!,
+            getMessage({
+              req,
+              res,
+              conversation: completeConversation,
+              messageReference: message.reference,
+            })!,
             processedContent.mentions
           );
         };
@@ -13506,12 +13518,12 @@ ${value}</textarea
   >[] = [
     ...isConversationAccessibleMiddleware,
     (req, res, next) => {
-      const message = getMessage(
+      const message = getMessage({
         req,
         res,
-        res.locals.conversation,
-        req.params.messageReference
-      );
+        conversation: res.locals.conversation,
+        messageReference: req.params.messageReference,
+      });
       if (message === undefined) return next("route");
       res.locals.message = message;
       next();
@@ -13576,7 +13588,12 @@ ${value}</textarea
         )
         .map(
           (message) =>
-            getMessage(req, res, res.locals.conversation, message.reference)!
+            getMessage({
+              req,
+              res,
+              conversation: res.locals.conversation,
+              messageReference: message.reference,
+            })!
         );
 
       for (const message of messages)
@@ -16426,12 +16443,14 @@ ${value}</textarea
       )
         return next("validation");
 
-      const mostRecentMessage = getMessage(
+      const mostRecentMessage = getMessage({
         req,
         res,
-        res.locals.conversation,
-        String(res.locals.conversation.nextMessageReference - 1)
-      );
+        conversation: res.locals.conversation,
+        messageReference: String(
+          res.locals.conversation.nextMessageReference - 1
+        ),
+      });
       const shouldAppendToMostRecentMessage =
         res.locals.conversation.type === "chat" &&
         mostRecentMessage !== undefined &&
@@ -16524,7 +16543,12 @@ ${value}</textarea
             req,
             res,
             res.locals.conversation,
-            getMessage(req, res, res.locals.conversation, message.reference)!,
+            getMessage({
+              req,
+              res,
+              conversation: res.locals.conversation,
+              messageReference: message.reference,
+            })!,
             processedContent.mentions
           );
         };
