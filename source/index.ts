@@ -7401,71 +7401,67 @@ export default async function courselore({
                                                       ? html`
                                                           type="button"
                                                           oninteractive="${javascript`
-                                                            const element = ${tippyContent(
-                                                              {
-                                                                req,
-                                                                res,
-                                                                content: html`
-                                                                  <div
-                                                                    class="confirmation"
-                                                                    style="${css`
-                                                                      padding: var(
-                                                                        --space--2
-                                                                      );
-                                                                      display: flex;
-                                                                      flex-direction: column;
-                                                                      gap: var(
-                                                                        --space--4
-                                                                      );
-                                                                    `}"
-                                                                  >
-                                                                    <p>
-                                                                      Are you
-                                                                      sure you
-                                                                      want to
-                                                                      update
-                                                                      your own
-                                                                      role to
-                                                                      ${role}?
-                                                                    </p>
-                                                                    <p>
-                                                                      <strong
-                                                                        style="${css`
-                                                                          font-weight: var(
-                                                                            --font-weight--bold
-                                                                          );
-                                                                        `}"
-                                                                      >
-                                                                        You may
-                                                                        not undo
-                                                                        this
-                                                                        action!
-                                                                      </strong>
-                                                                    </p>
-                                                                    <button
-                                                                      class="button button--rose"
-                                                                      onclick="${javascript`
-                                                                        this.closest(".confirmation").form.submit();
-                                                                      `}"
-                                                                    >
-                                                                      Update My
-                                                                      Own Role
-                                                                      to
-                                                                      ${lodash.capitalize(
-                                                                        role
-                                                                      )}
-                                                                    </button>
-                                                                  </div>
-                                                                `,
-                                                              }
-                                                            )};
-                                                            element.form = this.closest("form");
                                                             tippy(this, {
                                                               theme: "rose",
                                                               trigger: "click",
                                                               interactive: true,
-                                                              appendTo: document.body,
-                                                              content: element,
+                                                              content: ${tippyContent(
+                                                                {
+                                                                  req,
+                                                                  res,
+                                                                  content: html`
+                                                                    <div
+                                                                      class="confirmation"
+                                                                      style="${css`
+                                                                        padding: var(
+                                                                          --space--2
+                                                                        );
+                                                                        display: flex;
+                                                                        flex-direction: column;
+                                                                        gap: var(
+                                                                          --space--4
+                                                                        );
+                                                                      `}"
+                                                                    >
+                                                                      <p>
+                                                                        Are you
+                                                                        sure you
+                                                                        want to
+                                                                        update
+                                                                        your own
+                                                                        role to
+                                                                        ${role}?
+                                                                      </p>
+                                                                      <p>
+                                                                        <strong
+                                                                          style="${css`
+                                                                            font-weight: var(
+                                                                              --font-weight--bold
+                                                                            );
+                                                                          `}"
+                                                                        >
+                                                                          You
+                                                                          may
+                                                                          not
+                                                                          undo
+                                                                          this
+                                                                          action!
+                                                                        </strong>
+                                                                      </p>
+                                                                      <button
+                                                                        class="button button--rose"
+                                                                      >
+                                                                        Update
+                                                                        My Own
+                                                                        Role to
+                                                                        ${lodash.capitalize(
+                                                                          role
+                                                                        )}
+                                                                      </button>
+                                                                    </div>
+                                                                  `,
+                                                                }
+                                                              )},
                                                             });
                                                           `}"
                                                         `
