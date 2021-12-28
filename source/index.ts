@@ -2748,7 +2748,7 @@ export default async function courselore({
     >;
     res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>;
     user: AuthorEnrollment["user"];
-    size?: "xs" | "sm";
+    size?: "xs" | "sm" | "xl";
     onlineIndicator?: boolean;
     name?: boolean | string;
     anonymous?: boolean | "reveal";
@@ -2770,6 +2770,10 @@ export default async function courselore({
                 width: var(--space--6);
                 height: var(--space--6);
               `,
+              xl: css`
+                width: var(--space--32);
+                height: var(--space--32);
+              `,
             }[size]}
             border-radius: var(--border-radius--circle);
             @media (prefers-color-scheme: dark) {
@@ -2788,6 +2792,10 @@ export default async function courselore({
               sm: css`
                 width: var(--space--6);
                 height: var(--space--6);
+              `,
+              xl: css`
+                width: var(--space--32);
+                height: var(--space--32);
               `,
             }[size]}
           `}"
@@ -2837,6 +2845,7 @@ export default async function courselore({
             vertical-align: ${{
               xs: "var(--space---1)",
               sm: "var(--space---2)",
+              xl: "var(--space---2)",
             }[size]};
           `}"
         >
@@ -2853,6 +2862,10 @@ export default async function courselore({
                   height: var(--space--1-5);
                 `,
                 sm: css`
+                  width: var(--space--2);
+                  height: var(--space--2);
+                `,
+                xl: css`
                   width: var(--space--2);
                   height: var(--space--2);
                 `,
@@ -2911,7 +2924,7 @@ export default async function courselore({
                         req,
                         res,
                         user: user,
-                        size: "sm",
+                        size: "xl",
                         name: false,
                       })}
                     </div>
@@ -2983,6 +2996,11 @@ export default async function courselore({
               sm: css`
                 width: var(--space--6);
                 height: var(--space--6);
+                vertical-align: var(--space---2);
+              `,
+              xl: css`
+                width: var(--space--32);
+                height: var(--space--32);
                 vertical-align: var(--space---2);
               `,
             }[size]}
