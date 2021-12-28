@@ -10673,16 +10673,19 @@ export default async function courselore({
                   `
             }
               tippy(this, {
-                content: ${JSON.stringify(html`
-                  <span class="keyboard-shortcut">
-                    Ctrl+Shift+P or
-                    <span class="keyboard-shortcut--cluster"
-                      ><i class="bi bi-shift"></i
-                      ><i class="bi bi-command"></i>P</span
-                    >
-                  </span>
-                `)},
-                allowHTML: true,
+                content: ${tippyContent({
+                  req,
+                  res,
+                  content: html`
+                    <span class="keyboard-shortcut">
+                      Ctrl+Shift+P or
+                      <span class="keyboard-shortcut--cluster"
+                        ><i class="bi bi-shift"></i
+                        ><i class="bi bi-command"></i>P</span
+                      >
+                    </span>
+                  `,
+                })},
                 touch: false,
               });
             `}"
@@ -10770,18 +10773,21 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+1", () => { this.click(); return false; });
                   tippy(this, {
-                    content: ${JSON.stringify(html`
-                      Heading 1
-                      <span class="keyboard-shortcut">
-                        (Ctrl+Alt+1 or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-alt"></i
-                          ><i class="bi bi-command"></i>1</span
-                        >)
-                      </span>
-                    `)},
+                    content: ${tippyContent({
+                      req,
+                      res,
+                      content: html`
+                        Heading 1
+                        <span class="keyboard-shortcut">
+                          (Ctrl+Alt+1 or
+                          <span class="keyboard-shortcut--cluster"
+                            ><i class="bi bi-alt"></i
+                            ><i class="bi bi-command"></i>1</span
+                          >)
+                        </span>
+                      `,
+                    })},
                     touch: false,
-                    allowHTML: true,
                   });
                 `}"
                 onclick="${javascript`
@@ -10798,18 +10804,21 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+2", () => { this.click(); return false; });
                   tippy(this, {
-                    content: ${JSON.stringify(html`
-                      Heading 2
-                      <span class="keyboard-shortcut">
-                        (Ctrl+Alt+2 or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-alt"></i
-                          ><i class="bi bi-command"></i>2</span
-                        >)
-                      </span>
-                    `)},
+                    content: ${tippyContent({
+                      req,
+                      res,
+                      content: html`
+                        Heading 2
+                        <span class="keyboard-shortcut">
+                          (Ctrl+Alt+2 or
+                          <span class="keyboard-shortcut--cluster"
+                            ><i class="bi bi-alt"></i
+                            ><i class="bi bi-command"></i>2</span
+                          >)
+                        </span>
+                      `,
+                    })},
                     touch: false,
-                    allowHTML: true,
                   });
                 `}"
                 onclick="${javascript`
@@ -10826,18 +10835,21 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+3", () => { this.click(); return false; });
                   tippy(this, {
-                    content: ${JSON.stringify(html`
-                      Heading 3
-                      <span class="keyboard-shortcut">
-                        (Ctrl+Alt+3 or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-alt"></i
-                          ><i class="bi bi-command"></i>3</span
-                        >)
-                      </span>
-                    `)},
+                    content: ${tippyContent({
+                      req,
+                      res,
+                      content: html`
+                        Heading 3
+                        <span class="keyboard-shortcut">
+                          (Ctrl+Alt+3 or
+                          <span class="keyboard-shortcut--cluster"
+                            ><i class="bi bi-alt"></i
+                            ><i class="bi bi-command"></i>3</span
+                          >)
+                        </span>
+                      `,
+                    })},
                     touch: false,
-                    allowHTML: true,
                   });
                 `}"
                 onclick="${javascript`
@@ -10856,17 +10868,20 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+b", () => { this.click(); return false; });
                   tippy(this, {
-                    content: ${JSON.stringify(html`
-                      Bold
-                      <span class="keyboard-shortcut">
-                        (Ctrl+B or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-command"></i>B</span
-                        >)
-                      </span>
-                    `)},
+                    content: ${tippyContent({
+                      req,
+                      res,
+                      content: html`
+                        Bold
+                        <span class="keyboard-shortcut">
+                          (Ctrl+B or
+                          <span class="keyboard-shortcut--cluster"
+                            ><i class="bi bi-command"></i>B</span
+                          >)
+                        </span>
+                      `,
+                    })},
                     touch: false,
-                    allowHTML: true,
                   });
                 `}"
                 onclick="${javascript`
@@ -10883,17 +10898,20 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+i", () => { this.click(); return false; });
                   tippy(this, {
-                    content: ${JSON.stringify(html`
-                      Italic
-                      <span class="keyboard-shortcut">
-                        (Ctrl+I or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-command"></i>I</span
-                        >)
-                      </span>
-                    `)},
+                    content: ${tippyContent({
+                      req,
+                      res,
+                      content: html`
+                        Italic
+                        <span class="keyboard-shortcut">
+                          (Ctrl+I or
+                          <span class="keyboard-shortcut--cluster"
+                            ><i class="bi bi-command"></i>I</span
+                          >)
+                        </span>
+                      `,
+                    })},
                     touch: false,
-                    allowHTML: true,
                   });
                 `}"
                 onclick="${javascript`
@@ -10910,17 +10928,20 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+k", () => { this.click(); return false; });
                   tippy(this, {
-                    content: ${JSON.stringify(html`
-                      Link
-                      <span class="keyboard-shortcut">
-                        (Ctrl+K or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-command"></i>K</span
-                        >)
-                      </span>
-                    `)},
+                    content: ${tippyContent({
+                      req,
+                      res,
+                      content: html`
+                        Link
+                        <span class="keyboard-shortcut">
+                          (Ctrl+K or
+                          <span class="keyboard-shortcut--cluster"
+                            ><i class="bi bi-command"></i>K</span
+                          >)
+                        </span>
+                      `,
+                    })},
                     touch: false,
-                    allowHTML: true,
                   });
                 `}"
                 onclick="${javascript`
@@ -10939,18 +10960,21 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+8", () => { this.click(); return false; });
                   tippy(this, {
-                    content: ${JSON.stringify(html`
-                      Bulleted List
-                      <span class="keyboard-shortcut">
-                        (Ctrl+Shift+8 or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-shift"></i
-                          ><i class="bi bi-command"></i>8</span
-                        >)
-                      </span>
-                    `)},
+                    content: ${tippyContent({
+                      req,
+                      res,
+                      content: html`
+                        Bulleted List
+                        <span class="keyboard-shortcut">
+                          (Ctrl+Shift+8 or
+                          <span class="keyboard-shortcut--cluster"
+                            ><i class="bi bi-shift"></i
+                            ><i class="bi bi-command"></i>8</span
+                          >)
+                        </span>
+                      `,
+                    })},
                     touch: false,
-                    allowHTML: true,
                   });
                 `}"
                 onclick="${javascript`
@@ -10967,18 +10991,21 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+7", () => { this.click(); return false; });
                   tippy(this, {
-                    content: ${JSON.stringify(html`
-                      Numbered List
-                      <span class="keyboard-shortcut">
-                        (Ctrl+Shift+7 or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-shift"></i
-                          ><i class="bi bi-command"></i>7</span
-                        >)
-                      </span>
-                    `)},
+                    content: ${tippyContent({
+                      req,
+                      res,
+                      content: html`
+                        Numbered List
+                        <span class="keyboard-shortcut">
+                          (Ctrl+Shift+7 or
+                          <span class="keyboard-shortcut--cluster"
+                            ><i class="bi bi-shift"></i
+                            ><i class="bi bi-command"></i>7</span
+                          >)
+                        </span>
+                      `,
+                    })},
                     touch: false,
-                    allowHTML: true,
                   });
                 `}"
                 onclick="${javascript`
@@ -10995,18 +11022,21 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+9", () => { this.click(); return false; });
                   tippy(this, {
-                    content: ${JSON.stringify(html`
-                      Checklist
-                      <span class="keyboard-shortcut">
-                        (Ctrl+Shift+9 or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-shift"></i
-                          ><i class="bi bi-command"></i>9</span
-                        >)
-                      </span>
-                    `)},
+                    content: ${tippyContent({
+                      req,
+                      res,
+                      content: html`
+                        Checklist
+                        <span class="keyboard-shortcut">
+                          (Ctrl+Shift+9 or
+                          <span class="keyboard-shortcut--cluster"
+                            ><i class="bi bi-shift"></i
+                            ><i class="bi bi-command"></i>9</span
+                          >)
+                        </span>
+                      `,
+                    })},
                     touch: false,
-                    allowHTML: true,
                   });
                 `}"
                 onclick="${javascript`
@@ -11025,17 +11055,20 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+'", () => { this.click(); return false; });
                   tippy(this, {
-                    content: ${JSON.stringify(html`
-                      Quote
-                      <span class="keyboard-shortcut">
-                        (Ctrl+' or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-command"></i>'</span
-                        >)
-                      </span>
-                    `)},
+                    content: ${tippyContent({
+                      req,
+                      res,
+                      content: html`
+                        Quote
+                        <span class="keyboard-shortcut">
+                          (Ctrl+' or
+                          <span class="keyboard-shortcut--cluster"
+                            ><i class="bi bi-command"></i>'</span
+                          >)
+                        </span>
+                      `,
+                    })},
                     touch: false,
-                    allowHTML: true,
                   });
                 `}"
                 onclick="${javascript`
@@ -11052,18 +11085,21 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+t", () => { this.click(); return false; });
                   tippy(this, {
-                    content: ${JSON.stringify(html`
-                      Table
-                      <span class="keyboard-shortcut">
-                        (Ctrl+Alt+T or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-alt"></i
-                          ><i class="bi bi-command"></i>T</span
-                        >)
-                      </span>
-                    `)},
+                    content: ${tippyContent({
+                      req,
+                      res,
+                      content: html`
+                        Table
+                        <span class="keyboard-shortcut">
+                          (Ctrl+Alt+T or
+                          <span class="keyboard-shortcut--cluster"
+                            ><i class="bi bi-alt"></i
+                            ><i class="bi bi-command"></i>T</span
+                          >)
+                        </span>
+                      `,
+                    })},
                     touch: false,
-                    allowHTML: true,
                   });
                 `}"
                 onclick="${javascript`
@@ -11081,18 +11117,21 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+d", () => { this.click(); return false; });
                   tippy(this, {
-                    content: ${JSON.stringify(html`
-                      Disclosure
-                      <span class="keyboard-shortcut">
-                        (Ctrl+Shift+D or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-shift"></i
-                          ><i class="bi bi-command"></i>D</span
-                        >)
-                      </span>
-                    `)},
+                    content: ${tippyContent({
+                      req,
+                      res,
+                      content: html`
+                        Disclosure
+                        <span class="keyboard-shortcut">
+                          (Ctrl+Shift+D or
+                          <span class="keyboard-shortcut--cluster"
+                            ><i class="bi bi-shift"></i
+                            ><i class="bi bi-command"></i>D</span
+                          >)
+                        </span>
+                      `,
+                    })},
                     touch: false,
-                    allowHTML: true,
                   });
                 `}"
                 onclick="${javascript`
@@ -11109,18 +11148,21 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+f", () => { this.click(); return false; });
                   tippy(this, {
-                    content: ${JSON.stringify(html`
-                      Footnote
-                      <span class="keyboard-shortcut">
-                        (Ctrl+Shift+F or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-shift"></i
-                          ><i class="bi bi-command"></i>F</span
-                        >)
-                      </span>
-                    `)},
+                    content: ${tippyContent({
+                      req,
+                      res,
+                      content: html`
+                        Footnote
+                        <span class="keyboard-shortcut">
+                          (Ctrl+Shift+F or
+                          <span class="keyboard-shortcut--cluster"
+                            ><i class="bi bi-shift"></i
+                            ><i class="bi bi-command"></i>F</span
+                          >)
+                        </span>
+                      `,
+                    })},
                     touch: false,
-                    allowHTML: true,
                   });
                 `}"
                 onclick="${javascript`
@@ -11139,17 +11181,20 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+e", () => { this.click(); return false; });
                   tippy(this, {
-                    content: ${JSON.stringify(html`
-                      Inline Code
-                      <span class="keyboard-shortcut">
-                        (Ctrl+E or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-command"></i>E</span
-                        >)
-                      </span>
-                    `)},
+                    content: ${tippyContent({
+                      req,
+                      res,
+                      content: html`
+                        Inline Code
+                        <span class="keyboard-shortcut">
+                          (Ctrl+E or
+                          <span class="keyboard-shortcut--cluster"
+                            ><i class="bi bi-command"></i>E</span
+                          >)
+                        </span>
+                      `,
+                    })},
                     touch: false,
-                    allowHTML: true,
                   });
                 `}"
                 onclick="${javascript`
@@ -11166,18 +11211,21 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+e", () => { this.click(); return false; });
                   tippy(this, {
-                    content: ${JSON.stringify(html`
-                      Code Block
-                      <span class="keyboard-shortcut">
-                        (Ctrl+Shift+E or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-shift"></i
-                          ><i class="bi bi-command"></i>E</span
-                        >)
-                      </span>
-                    `)},
+                    content: ${tippyContent({
+                      req,
+                      res,
+                      content: html`
+                        Code Block
+                        <span class="keyboard-shortcut">
+                          (Ctrl+Shift+E or
+                          <span class="keyboard-shortcut--cluster"
+                            ><i class="bi bi-shift"></i
+                            ><i class="bi bi-command"></i>E</span
+                          >)
+                        </span>
+                      `,
+                    })},
                     touch: false,
-                    allowHTML: true,
                   });
                 `}"
                 onclick="${javascript`
@@ -11196,18 +11244,21 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+e", () => { this.click(); return false; });
                   tippy(this, {
-                    content: ${JSON.stringify(html`
-                      Inline Equation
-                      <span class="keyboard-shortcut">
-                        (Ctrl+Alt+E or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-alt"></i
-                          ><i class="bi bi-command"></i>E</span
-                        >)
-                      </span>
-                    `)},
+                    content: ${tippyContent({
+                      req,
+                      res,
+                      content: html`
+                        Inline Equation
+                        <span class="keyboard-shortcut">
+                          (Ctrl+Alt+E or
+                          <span class="keyboard-shortcut--cluster"
+                            ><i class="bi bi-alt"></i
+                            ><i class="bi bi-command"></i>E</span
+                          >)
+                        </span>
+                      `,
+                    })},
                     touch: false,
-                    allowHTML: true,
                   });
                 `}"
                 onclick="${javascript`
@@ -11224,18 +11275,21 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+shift+e", () => { this.click(); return false; });
                   tippy(this, {
-                    content: ${JSON.stringify(html`
-                      Equation Block
-                      <span class="keyboard-shortcut">
-                        (Ctrl+Alt+Shift+E or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-shift"></i><i class="bi bi-alt"></i
-                          ><i class="bi bi-command"></i>E</span
-                        >)
-                      </span>
-                    `)},
+                    content: ${tippyContent({
+                      req,
+                      res,
+                      content: html`
+                        Equation Block
+                        <span class="keyboard-shortcut">
+                          (Ctrl+Alt+Shift+E or
+                          <span class="keyboard-shortcut--cluster"
+                            ><i class="bi bi-shift"></i><i class="bi bi-alt"></i
+                            ><i class="bi bi-command"></i>E</span
+                          >)
+                        </span>
+                      `,
+                    })},
                     touch: false,
-                    allowHTML: true,
                   });
                 `}"
                 onclick="${javascript`
@@ -11255,12 +11309,15 @@ export default async function courselore({
                       class="button button--tight button--transparent"
                       oninteractive="${javascript`
                         tippy(this, {
-                          content: ${JSON.stringify(html`
-                            Mention User
-                            <span class="keyboard-shortcut">(@)</span>
-                          `)},
+                          content: ${tippyContent({
+                            req,
+                            res,
+                            content: html`
+                              Mention User
+                              <span class="keyboard-shortcut">(@)</span>
+                            `,
+                          })},
                           touch: false,
-                          allowHTML: true,
                         }); 
                       `}"
                       onclick="${javascript`
@@ -11276,12 +11333,15 @@ export default async function courselore({
                       class="button button--tight button--transparent"
                       oninteractive="${javascript`
                         tippy(this, {
-                          content: ${JSON.stringify(html`
-                            Refer to Conversation or Message
-                            <span class="keyboard-shortcut">(#)</span>
-                          `)},
+                          content: ${tippyContent({
+                            req,
+                            res,
+                            content: html`
+                              Refer to Conversation or Message
+                              <span class="keyboard-shortcut">(#)</span>
+                            `,
+                          })},
                           touch: false,
-                          allowHTML: true,
                         });
                       `}"
                       onclick="${javascript`
@@ -11302,19 +11362,22 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+i", () => { this.click(); return false; });
                   tippy(this, {
-                    content: ${JSON.stringify(html`
-                      Image
-                      <span class="keyboard-shortcut">
-                        (Ctrl+Shift+I or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-shift"></i
-                          ><i class="bi bi-command"></i>I</span
-                        >
-                        or drag-and-drop or copy-and-paste)
-                      </span>
-                    `)},
+                    content: ${tippyContent({
+                      req,
+                      res,
+                      content: html`
+                        Image
+                        <span class="keyboard-shortcut">
+                          (Ctrl+Shift+I or
+                          <span class="keyboard-shortcut--cluster"
+                            ><i class="bi bi-shift"></i
+                            ><i class="bi bi-command"></i>I</span
+                          >
+                          or drag-and-drop or copy-and-paste)
+                        </span>
+                      `,
+                    })},
                     touch: false,
-                    allowHTML: true,
                   });
                 `}"
                 onclick="${javascript`
@@ -11329,19 +11392,22 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+k", () => { this.click(); return false; });
                   tippy(this, {
-                    content: ${JSON.stringify(html`
-                      Attachment
-                      <span class="keyboard-shortcut">
-                        (Ctrl+Shift+K or
-                        <span class="keyboard-shortcut--cluster"
-                          ><i class="bi bi-shift"></i
-                          ><i class="bi bi-command"></i>K</span
-                        >
-                        or drag-and-drop or copy-and-paste)
-                      </span>
-                    `)},
+                    content: ${tippyContent({
+                      req,
+                      res,
+                      content: html`
+                        Attachment
+                        <span class="keyboard-shortcut">
+                          (Ctrl+Shift+K or
+                          <span class="keyboard-shortcut--cluster"
+                            ><i class="bi bi-shift"></i
+                            ><i class="bi bi-command"></i>K</span
+                          >
+                          or drag-and-drop or copy-and-paste)
+                        </span>
+                      `,
+                    })},
                     touch: false,
-                    allowHTML: true,
                   });
                 `}"
                 onclick="${javascript`
@@ -13076,17 +13142,20 @@ ${value}</textarea
                     oninteractive="${javascript`
                       Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                       tippy(this, {
-                        content: ${JSON.stringify(html`
-                          <span class="keyboard-shortcut">
-                            Ctrl+Enter or
-                            <span class="keyboard-shortcut--cluster"
-                              ><i class="bi bi-command"></i
-                              ><i class="bi bi-arrow-return-left"></i
-                            ></span>
-                          </span>
-                        `)},
+                        content: ${tippyContent({
+                          req,
+                          res,
+                          content: html`
+                            <span class="keyboard-shortcut">
+                              Ctrl+Enter or
+                              <span class="keyboard-shortcut--cluster"
+                                ><i class="bi bi-command"></i
+                                ><i class="bi bi-arrow-return-left"></i
+                              ></span>
+                            </span>
+                          `,
+                        })},
                         touch: false,
-                        allowHTML: true,
                       });
                     `}"
                   >
@@ -15782,24 +15851,29 @@ ${value}</textarea
                                                     oninteractive="${javascript`
                                                       Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                                                       tippy(this, {
-                                                        content: ${JSON.stringify(html`
-                                                          <span
-                                                            class="keyboard-shortcut"
-                                                          >
-                                                            Ctrl+Enter or
-                                                            <span
-                                                              class="keyboard-shortcut--cluster"
-                                                              ><i
-                                                                class="bi bi-command"
-                                                              ></i
-                                                              ><i
-                                                                class="bi bi-arrow-return-left"
-                                                              ></i
-                                                            ></span>
-                                                          </span>
-                                                        `)},
+                                                        content: ${tippyContent(
+                                                          {
+                                                            req,
+                                                            res,
+                                                            content: html`
+                                                              <span
+                                                                class="keyboard-shortcut"
+                                                              >
+                                                                Ctrl+Enter or
+                                                                <span
+                                                                  class="keyboard-shortcut--cluster"
+                                                                  ><i
+                                                                    class="bi bi-command"
+                                                                  ></i
+                                                                  ><i
+                                                                    class="bi bi-arrow-return-left"
+                                                                  ></i
+                                                                ></span>
+                                                              </span>
+                                                            `,
+                                                          }
+                                                        )},
                                                         touch: false,
-                                                        allowHTML: true,
                                                       });
                                                     `}"
                                                   >
@@ -15980,18 +16054,21 @@ ${value}</textarea
                             `}"
                             oninteractive="${javascript`
                               tippy(this, {
-                                content: ${JSON.stringify(html`
-                                  Send Message
-                                  <span class="keyboard-shortcut">
-                                    Ctrl+Enter or
-                                    <span class="keyboard-shortcut--cluster"
-                                      ><i class="bi bi-command"></i
-                                      ><i class="bi bi-arrow-return-left"></i
-                                    ></span>
-                                  </span>
-                                `)},
+                                content: ${tippyContent({
+                                  req,
+                                  res,
+                                  content: html`
+                                    Send Message
+                                    <span class="keyboard-shortcut">
+                                      Ctrl+Enter or
+                                      <span class="keyboard-shortcut--cluster"
+                                        ><i class="bi bi-command"></i
+                                        ><i class="bi bi-arrow-return-left"></i
+                                      ></span>
+                                    </span>
+                                  `,
+                                })},
                                 touch: false,
-                                allowHTML: true,
                               });
                             `}"
                           >
@@ -16075,17 +16152,20 @@ ${value}</textarea
                       oninteractive="${javascript`
                         Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                         tippy(this, {
-                          content: ${JSON.stringify(html`
-                            <span class="keyboard-shortcut">
-                              Ctrl+Enter or
-                              <span class="keyboard-shortcut--cluster"
-                                ><i class="bi bi-command"></i
-                                ><i class="bi bi-arrow-return-left"></i
-                              ></span>
-                            </span>
-                          `)},
+                          content: ${tippyContent({
+                            req,
+                            res,
+                            content: html`
+                              <span class="keyboard-shortcut">
+                                Ctrl+Enter or
+                                <span class="keyboard-shortcut--cluster"
+                                  ><i class="bi bi-command"></i
+                                  ><i class="bi bi-arrow-return-left"></i
+                                ></span>
+                              </span>
+                            `,
+                          })},
                           touch: false,
-                          allowHTML: true,
                         });
                       `}"
                     >
