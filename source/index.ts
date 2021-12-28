@@ -1672,10 +1672,12 @@ export default async function courselore({
                       `}"
                       oninteractive="${javascript`
                         tippy(this, {
-                          content: "What’s This?",
                           touch: false,
+                          content: "What’s This?",
                         });
                         tippy(this, {
+                          trigger: "click",
+                          interactive: true,
                           content: ${tippyContent({
                             req,
                             res,
@@ -1707,8 +1709,6 @@ export default async function courselore({
                               </div>
                             `,
                           })},
-                          trigger: "click",
-                          interactive: true,
                         });
                       `}"
                     ></button>
@@ -1748,6 +1748,8 @@ export default async function courselore({
                           class="button button--transparent"
                           oninteractive="${javascript`
                             tippy(this, {
+                              trigger: "click",
+                              interactive: true,
                               content: ${tippyContent({
                                 req,
                                 res,
@@ -1793,8 +1795,6 @@ export default async function courselore({
                                   </div>
                                 `,
                               })},
-                              trigger: "click",
-                              interactive: true,
                             });
                           `}"
                         >
@@ -2110,8 +2110,8 @@ export default async function courselore({
             class="button button--tight button--tight--inline button--transparent"
             oninteractive="${javascript`
               tippy(this, {
-                content: "CourseLore",
                 touch: false,
+                content: "CourseLore",
               });
             `}"
           >
@@ -2136,6 +2136,8 @@ export default async function courselore({
                     `}"
                     oninteractive="${javascript`
                       tippy(this, {
+                        trigger: "click",
+                        interactive: true,
                         content: ${tippyContent({
                           req,
                           res,
@@ -2234,12 +2236,12 @@ export default async function courselore({
                                                   `}"
                                                   oninteractive="${javascript`
                                                     tippy(this, {
+                                                      touch: false,
                                                       content: ${JSON.stringify(
                                                         lodash.capitalize(
                                                           enrollment.role
                                                         )
                                                       )},
-                                                      touch: false,
                                                     });
                                                   `}"
                                                 >
@@ -2258,8 +2260,6 @@ export default async function courselore({
                             </div>
                           `,
                         })},
-                        trigger: "click",
-                        interactive: true,
                       });
                     `}"
                   >
@@ -2280,10 +2280,10 @@ export default async function courselore({
                         `}"
                         oninteractive="${javascript`
                           tippy(this, {
+                            touch: false,
                             content: ${JSON.stringify(
                               lodash.capitalize(res.locals.enrollment!.role)
                             )},
-                            touch: false,
                           });
                         `}"
                       >
@@ -2301,6 +2301,7 @@ export default async function courselore({
               class="button button--tight button--tight--inline button--transparent"
               oninteractive="${javascript`
                 tippy(this, {
+                  touch: false,
                   content: ${JSON.stringify(
                     res.locals.invitations!.length === 0
                       ? "Add"
@@ -2308,9 +2309,10 @@ export default async function courselore({
                           res.locals.invitations!.length === 1 ? "" : "s"
                         }`
                   )},
-                  touch: false,
                 });
                 tippy(this, {
+                  trigger: "click",
+                  interactive: true,
                   content: ${tippyContent({
                     req,
                     res,
@@ -2354,8 +2356,8 @@ export default async function courselore({
                             class="dropdown--menu--item button button--transparent"
                             oninteractive="${javascript`
                               tippy(this, {
-                                content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
                                 trigger: "click",
+                                content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
                               });
                             `}"
                           >
@@ -2373,8 +2375,6 @@ export default async function courselore({
                       </div>
                     `,
                   })},
-                  trigger: "click",
-                  interactive: true,
                 });
               `}"
             >
@@ -2429,10 +2429,12 @@ export default async function courselore({
               `}"
               oninteractive="${javascript`
                 tippy(this, {
-                  content: ${JSON.stringify(res.locals.user.name)},
                   touch: false,
+                  content: ${JSON.stringify(res.locals.user.name)},
                 });
                 tippy(this, {
+                  trigger: "click",
+                  interactive: true,
                   content: ${tippyContent({
                     req,
                     res,
@@ -2483,8 +2485,6 @@ export default async function courselore({
                       </div>
                     `,
                   })},
-                  trigger: "click",
-                  interactive: true,
                 });
               `}"
             >
@@ -2600,6 +2600,8 @@ export default async function courselore({
                   class="button button--transparent"
                   oninteractive="${javascript`
                     tippy(this, {
+                      trigger: "click",
+                      interactive: true,
                       content: ${tippyContent({
                         req,
                         res,
@@ -2607,8 +2609,6 @@ export default async function courselore({
                           <div class="dropdown--menu">$${menu}</div>
                         `,
                       })},
-                      trigger: "click",
-                      interactive: true,
                     });
                   `}"
                 >
@@ -2872,8 +2872,8 @@ export default async function courselore({
                 user.lastSeenOnlineAt
               ).getTime()};
               tippy(element, {
-                content: "Online",
                 touch: false,
+                content: "Online",
               });
               (function update() {
                 element.style.display = Date.now() - lastSeenOnlineAt < 5 * 60 * 1000 ? "block" : "none";
@@ -2911,6 +2911,8 @@ export default async function courselore({
           `}"
           oninteractive="${javascript`
             tippy(this, {
+              touch: false,
+              interactive: true,
               content: ${tippyContent({
                 req,
                 res,
@@ -2952,8 +2954,6 @@ export default async function courselore({
                   </div>
                 `,
               })},
-              touch: false,
-              interactive: true,
             });
           `}"
           >$${output}  $${name === true ? html`${user.name}` : name}</span
@@ -2967,8 +2967,8 @@ export default async function courselore({
         `}"
         oninteractive="${javascript`
           tippy(this, {
-            content: "Anonymous to Other Students",
             touch: false,
+            content: "Anonymous to Other Students",
           });
         `}"
         >$${html`<svg
@@ -4294,8 +4294,8 @@ export default async function courselore({
                       class="menu-box--item button button--blue"
                       oninteractive="${javascript`
                         tippy(this, {
-                          content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
                           trigger: "click",
+                          content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
                         });
                       `}"
                     >
@@ -4390,10 +4390,10 @@ export default async function courselore({
                                 `}"
                                 oninteractive="${javascript`
                                   tippy(this, {
+                                    touch: false,
                                     content: ${JSON.stringify(
                                       lodash.capitalize(enrollment.role)
                                     )},
-                                    touch: false,
                                   });
                                 `}"
                               >
@@ -4562,8 +4562,8 @@ export default async function courselore({
                       `}"
                       oninteractive="${javascript`
                         tippy(this, {
-                          content: "Add Avatar",
                           touch: false,
+                          content: "Add Avatar",
                         });
                       `}"
                       onclick="${javascript`
@@ -4601,8 +4601,8 @@ export default async function courselore({
                       `}"
                       oninteractive="${javascript`
                         tippy(this, {
-                          content: "Update Avatar",
                           touch: false,
+                          content: "Update Avatar",
                         });
                       `}"
                       onclick="${javascript`
@@ -4633,9 +4633,9 @@ export default async function courselore({
                       `}"
                       oninteractive="${javascript`
                         tippy(this, {
-                          content: "Remove Avatar",
                           theme: "rose",
                           touch: false,
+                          content: "Remove Avatar",
                         });
                       `}"
                       onclick="${javascript`
@@ -4661,6 +4661,8 @@ export default async function courselore({
                       const avatarEmpty = avatarChooser.querySelector(".avatar-chooser--empty");
                       const avatarFilled = avatarChooser.querySelector(".avatar-chooser--filled");
                       const uploadingIndicator = tippy(avatarChooser, {
+                        trigger: "manual",
+                        hideOnClick: false,
                         content: ${tippyContent({
                           req,
                           res,
@@ -4675,8 +4677,6 @@ export default async function courselore({
                             </div>
                           `,
                         })},
-                        trigger: "manual",
-                        hideOnClick: false,
                       });
                       this.upload = async (fileList) => {
                         const body = new FormData();
@@ -4694,13 +4694,13 @@ export default async function courselore({
                         uploadingIndicator.hide();
                         if (!response.ok) {
                           const tooltip = tippy(avatarChooser, {
-                            content: await response.text(),
                             theme: "validation--error",
                             trigger: "manual",
                             showOnCreate: true,
                             onHidden: () => {
                               tooltip.destroy();
                             },
+                            content: await response.text(),
                           });
                           return;
                         }
@@ -6021,6 +6021,7 @@ export default async function courselore({
                     class="button button--tight button--tight--inline button--transparent"
                     oninteractive="${javascript`
                       tippy(this, {
+                        trigger: "click",
                         content: ${tippyContent({
                           req,
                           res,
@@ -6046,7 +6047,6 @@ export default async function courselore({
                             </div>
                           `,
                         })},
-                        trigger: "click",
                       });
                     `}"
                   >
@@ -6148,8 +6148,8 @@ export default async function courselore({
                     <span
                       oninteractive="${javascript`
                         tippy(this, {
-                          content: "Set as Expiring",
                           touch: false,
+                          content: "Set as Expiring",
                         });
                       `}"
                     >
@@ -6160,8 +6160,8 @@ export default async function courselore({
                       class="text--amber"
                       oninteractive="${javascript`
                         tippy(this, {
-                          content: "Set as Not Expiring",
                           touch: false,
+                          content: "Set as Not Expiring",
                         });
                       `}"
                     >
@@ -6180,8 +6180,8 @@ export default async function courselore({
                     class="button button--tight button--tight--inline button--transparent"
                     oninteractive="${javascript`
                       tippy(this, {
-                        content: "This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving change.",
                         trigger: "click",
+                        content: "This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving change.",
                       });
                     `}"
                   >
@@ -6243,8 +6243,8 @@ export default async function courselore({
                                   <span
                                     oninteractive="${javascript`
                                       tippy(this, {
-                                        content: "Invitation Link",
                                         touch: false,
+                                        content: "Invitation Link",
                                       });
                                     `}"
                                   >
@@ -6255,8 +6255,8 @@ export default async function courselore({
                                   <span
                                     oninteractive="${javascript`
                                       tippy(this, {
-                                        content: "Invitation Email",
                                         touch: false,
+                                        content: "Invitation Email",
                                       });
                                     `}"
                                   >
@@ -6280,10 +6280,13 @@ export default async function courselore({
                                       class="button button--tight button--tight--inline button--transparent strong"
                                       oninteractive="${javascript`
                                         this.tooltip = tippy(this, {
-                                          content: "See Invitation Link",
                                           touch: false,
+                                          content: "See Invitation Link",
                                         });
                                         tippy(this, {
+                                          trigger: "click",
+                                          interactive: true,
+                                          maxWidth: "none",
                                           content: ${(() => {
                                             const link = `${baseURL}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
                                             return tippyContent({
@@ -6334,8 +6337,8 @@ export default async function courselore({
                                                       class="button button--tight button--transparent"
                                                       oninteractive="${javascript`
                                                         tippy(this, {
-                                                          content: "Copy to Clipboard",
                                                           touch: false,
+                                                          content: "Copy to Clipboard",
                                                         });
                                                       `}"
                                                       onclick="${javascript`
@@ -6372,9 +6375,6 @@ export default async function courselore({
                                               `,
                                             });
                                           })()},
-                                          trigger: "click",
-                                          interactive: true,
-                                          maxWidth: "none",
                                         });
                                       `}"
                                     >
@@ -6397,6 +6397,8 @@ export default async function courselore({
                                       `}"
                                       oninteractive="${javascript`
                                         tippy(this, {
+                                          trigger: "click",
+                                          interactive: true,
                                           content: ${tippyContent({
                                             req,
                                             res,
@@ -6423,9 +6425,9 @@ export default async function courselore({
                                                           type="button"
                                                           oninteractive="${javascript`
                                                             tippy(this, {
-                                                              content: "You may not resend this invitation because it’s used.",
                                                               theme: "rose",
                                                               trigger: "click",
+                                                              content: "You may not resend this invitation because it’s used.",
                                                             });
                                                           `}"
                                                         `
@@ -6434,9 +6436,9 @@ export default async function courselore({
                                                           type="button"
                                                           oninteractive="${javascript`
                                                             tippy(this, {
-                                                              content: "You may not resend this invitation because it’s expired.",
                                                               theme: "rose",
                                                               trigger: "click",
+                                                              content: "You may not resend this invitation because it’s expired.",
                                                             });
                                                           `}"
                                                         `
@@ -6451,8 +6453,6 @@ export default async function courselore({
                                               </div>
                                             `,
                                           })},
-                                          trigger: "click",
-                                          interactive: true,
                                         });
                                       `}"
                                     >
@@ -6496,10 +6496,12 @@ export default async function courselore({
                                   class="button button--tight button--tight--inline button--transparent"
                                   oninteractive="${javascript`
                                     tippy(this, {
-                                      content: "Update Role",
                                       touch: false,
+                                      content: "Update Role",
                                     });
                                     tippy(this, {
+                                      trigger: "click",
+                                      interactive: true,
                                       content: ${tippyContent({
                                         req,
                                         res,
@@ -6530,9 +6532,9 @@ export default async function courselore({
                                                               type="button"
                                                               oninteractive="${javascript`
                                                                 tippy(this, {
-                                                                  content: "You may not update the role of this invitation because it’s used.",
                                                                   theme: "rose",
                                                                   trigger: "click",
+                                                                  content: "You may not update the role of this invitation because it’s used.",
                                                                 });
                                                               `}"
                                                             `
@@ -6541,9 +6543,9 @@ export default async function courselore({
                                                               type="button"
                                                               oninteractive="${javascript`
                                                                 tippy(this, {
-                                                                  content: "You may not update the role of this invitation because it’s expired.",
                                                                   theme: "rose",
                                                                   trigger: "click",
+                                                                  content: "You may not update the role of this invitation because it’s expired.",
                                                                 });
                                                               `}"
                                                             `
@@ -6562,8 +6564,6 @@ export default async function courselore({
                                           </div>
                                         `,
                                       })},
-                                      trigger: "click",
-                                      interactive: true,
                                     });
                                   `}"
                                 >
@@ -6683,6 +6683,7 @@ export default async function courselore({
                                             `}"
                                             oninteractive="${javascript`
                                               tippy(this, {
+                                                touch: false,
                                                 content: ${tippyContent({
                                                   req,
                                                   res,
@@ -6698,7 +6699,6 @@ export default async function courselore({
                                                     ></time>
                                                   `,
                                                 })},
-                                                touch: false,
                                               });
                                             `}"
                                           >
@@ -6714,10 +6714,12 @@ export default async function courselore({
                                             class="button button--tight button--tight--inline button--transparent text--rose"
                                             oninteractive="${javascript`
                                               tippy(this, {
-                                                content: "Update Expiration",
                                                 touch: false,
+                                                content: "Update Expiration",
                                               });
                                               tippy(this, {
+                                                trigger: "click",
+                                                interactive: true,
                                                 content: ${tippyContent({
                                                   req,
                                                   res,
@@ -6753,8 +6755,6 @@ export default async function courselore({
                                                     </div>
                                                   `,
                                                 })},
-                                                trigger: "click",
-                                                interactive: true,
                                               });
                                             `}"
                                           >
@@ -6773,10 +6773,12 @@ export default async function courselore({
                                             class="button button--tight button--tight--inline button--transparent text--blue"
                                             oninteractive="${javascript`
                                               tippy(this, {
-                                                content: "Update Expiration",
                                                 touch: false,
+                                                content: "Update Expiration",
                                               });
                                               tippy(this, {
+                                                trigger: "click",
+                                                interactive: true,
                                                 content: ${tippyContent({
                                                   req,
                                                   res,
@@ -6799,8 +6801,6 @@ export default async function courselore({
                                                     </div>
                                                   `,
                                                 })},
-                                                trigger: "click",
-                                                interactive: true,
                                               });
                                             `}"
                                           >
@@ -6818,10 +6818,12 @@ export default async function courselore({
                                             class="button button--tight button--tight--inline button--transparent text--amber"
                                             oninteractive="${javascript`
                                               tippy(this, {
-                                                content: "Update Expiration",
                                                 touch: false,
+                                                content: "Update Expiration",
                                               });
                                               tippy(this, {
+                                                trigger: "click",
+                                                interactive: true,
                                                 content: ${tippyContent({
                                                   req,
                                                   res,
@@ -6861,8 +6863,6 @@ export default async function courselore({
                                                     </div>
                                                   `,
                                                 })},
-                                                trigger: "click",
-                                                interactive: true,
                                               });
                                             `}"
                                           >
@@ -7354,10 +7354,12 @@ export default async function courselore({
                             class="button button--tight button--tight--inline button--transparent"
                             oninteractive="${javascript`
                               tippy(this, {
-                                content: "Update Role",
                                 touch: false,
+                                content: "Update Role",
                               });
                               tippy(this, {
+                                trigger: "click",
+                                interactive: true,
                                 content: ${tippyContent({
                                   req,
                                   res,
@@ -7389,9 +7391,9 @@ export default async function courselore({
                                                           type="button"
                                                           oninteractive="${javascript`
                                                             tippy(this, {
-                                                              content: "You may not update your own role because you’re the only staff member.",
                                                               theme: "rose",
                                                               trigger: "click",
+                                                              content: "You may not update your own role because you’re the only staff member.",
                                                             });
                                                           `}"
                                                         `
@@ -7459,11 +7461,11 @@ export default async function courselore({
                                                             )};
                                                             element.form = this.closest("form");
                                                             tippy(this, {
-                                                              content: element,
                                                               theme: "rose",
                                                               trigger: "click",
                                                               interactive: true,
                                                               appendTo: document.body,
+                                                              content: element,
                                                             });
                                                           `}"
                                                         `
@@ -7480,8 +7482,6 @@ export default async function courselore({
                                     </div>
                                   `,
                                 })},
-                                trigger: "click",
-                                interactive: true,
                               });
                             `}"
                           >
@@ -7502,21 +7502,24 @@ export default async function courselore({
                             class="button button--tight button--tight--inline button--transparent"
                             oninteractive="${javascript`
                               tippy(this, {
-                                content: "Remove from the Course",
                                 theme: "rose",
                                 touch: false,
+                                content: "Remove from the Course",
                               });
                               ${
                                 isOnlyStaff
                                   ? javascript`
                                       tippy(this, {
-                                        content: "You may not remove yourself from the course because you’re the only staff member.",
                                         theme: "rose",
                                         trigger: "click",
+                                        content: "You may not remove yourself from the course because you’re the only staff member.",
                                       });
                                     `
                                   : javascript`
                                       tippy(this, {
+                                        theme: "rose",
+                                        trigger: "click",
+                                        interactive: true,
                                         content: ${tippyContent({
                                           req,
                                           res,
@@ -7565,9 +7568,6 @@ export default async function courselore({
                                             </form>
                                           `,
                                         })},
-                                        theme: "rose",
-                                        trigger: "click",
-                                        interactive: true,
                                       });
                                     `
                               }
@@ -7804,8 +7804,8 @@ export default async function courselore({
                                 <span
                                   oninteractive="${javascript`
                                     tippy(this, {
-                                      content: "Set as Visible by Staff Only",
                                       touch: false,
+                                      content: "Set as Visible by Staff Only",
                                     });
                                   `}"
                                 >
@@ -7816,8 +7816,8 @@ export default async function courselore({
                                   class="text--pink"
                                   oninteractive="${javascript`
                                     tippy(this, {
-                                      content: "Set as Visible by Everyone",
                                       touch: false,
+                                      content: "Set as Visible by Everyone",
                                     });
                                   `}"
                                 >
@@ -7838,11 +7838,14 @@ export default async function courselore({
                                 class="button button--tight button--tight--inline button--transparent"
                                 oninteractive="${javascript`
                                   tippy(this, {
-                                    content: "Remove Tag",
                                     theme: "rose",
                                     touch: false,
+                                    content: "Remove Tag",
                                   });
                                   tippy(this, {
+                                    theme: "rose",
+                                    trigger: "click",
+                                    interactive: true,
                                     content: ${tippyContent({
                                       req,
                                       res,
@@ -7899,9 +7902,6 @@ export default async function courselore({
                                         </div>
                                       `,
                                     })},
-                                    theme: "rose",
-                                    trigger: "click",
-                                    interactive: true,
                                   });
                                 `}"
                               >
@@ -7920,8 +7920,8 @@ export default async function courselore({
                                 class="button button--tight button--tight--inline button--transparent"
                                 oninteractive="${javascript`
                                   tippy(this, {
-                                    content: "Don’t Remove Tag",
                                     touch: false,
+                                    content: "Don’t Remove Tag",
                                   });
                                 `}"
                                 onclick="${javascript`
@@ -7961,8 +7961,8 @@ export default async function courselore({
                                     class="button button--tight button--tight--inline button--transparent"
                                     oninteractive="${javascript`
                                       tippy(this, {
-                                        content: "See Conversations with This Tag",
                                         touch: false,
+                                        content: "See Conversations with This Tag",
                                       });
                                     `}"
                                   >
@@ -8057,8 +8057,8 @@ export default async function courselore({
                                     <span
                                       onmount="${javascript`
                                         tippy(this, {
-                                          content: "Set as Visible by Staff Only",
                                           touch: false,
+                                          content: "Set as Visible by Staff Only",
                                         });
                                       `}"
                                     >
@@ -8069,8 +8069,8 @@ export default async function courselore({
                                       class="text--pink"
                                       onmount="${javascript`
                                         tippy(this, {
-                                          content: "Set as Visible by Everyone",
                                           touch: false,
+                                          content: "Set as Visible by Everyone",
                                         });
                                       `}"
                                     >
@@ -8084,9 +8084,9 @@ export default async function courselore({
                                   class="button button--tight button--tight--inline button--transparent"
                                   onmount="${javascript`
                                     tippy(this, {
-                                      content: "Remove Tag",
                                       theme: "rose",
                                       touch: false,
+                                      content: "Remove Tag",
                                     });
                                   `}"
                                   onclick="${javascript`
@@ -8252,8 +8252,8 @@ export default async function courselore({
                     class="button button--tight button--tight--inline button--transparent"
                     oninteractive="${javascript`
                         tippy(this, {
-                          content: "A bar with the accent color appears at the top of pages related to this course to help you differentiate between courses.",
                           trigger: "click",
+                          content: "A bar with the accent color appears at the top of pages related to this course to help you differentiate between courses.",
                         });
                       `}"
                   >
@@ -9002,8 +9002,8 @@ export default async function courselore({
                       class="button button--tight button--tight--inline button--transparent"
                       oninteractive="${javascript`
                         tippy(this, {
-                          content: "Search",
                           touch: false,
+                          content: "Search",
                         });
                       `}"
                     >
@@ -9024,8 +9024,8 @@ export default async function courselore({
                             class="button button--tight button--tight--inline button--transparent"
                             oninteractive="${javascript`
                               tippy(this, {
-                                content: "Clear Search & Filters",
                                 touch: false,
+                                content: "Clear Search & Filters",
                               });
                             `}"
                           >
@@ -9129,8 +9129,8 @@ export default async function courselore({
                           class="button button--tight button--tight--inline button--transparent"
                           oninteractive="${javascript`
                             tippy(this, {
-                              content: "Pinned conversations are listed first.",
                               trigger: "click",
+                              content: "Pinned conversations are listed first.",
                             });
                           `}"
                         >
@@ -9268,8 +9268,8 @@ export default async function courselore({
                                 class="button button--tight button--tight--inline button--transparent"
                                 oninteractive="${javascript`
                                   tippy(this, {
-                                    content: "Tags help to organize conversations.",
                                     trigger: "click",
+                                    content: "Tags help to organize conversations.",
                                   });
                                 `}"
                               >
@@ -9321,8 +9321,8 @@ export default async function courselore({
                                             class="text--pink"
                                             oninteractive="${javascript`
                                               tippy(this, {
-                                                content: "This tag is visible by staff only.",
                                                 touch: false,
+                                                content: "This tag is visible by staff only.",
                                               });
                                             `}"
                                           >
@@ -9484,8 +9484,8 @@ export default async function courselore({
                                           `}"
                                           oninteractive="${javascript`
                                             tippy(this, {
-                                              content: "Mark as Read",
                                               touch: false,
+                                              content: "Mark as Read",
                                             });
                                           `}"
                                           onclick="${javascript`
@@ -9606,8 +9606,8 @@ export default async function courselore({
                 class="text--amber"
                 oninteractive="${javascript`
                   tippy(this, {
-                    content: "Pinned conversations are listed first.",
                     touch: false,
+                    content: "Pinned conversations are listed first.",
                   });
                 `}"
               >
@@ -9672,8 +9672,8 @@ export default async function courselore({
         <div
           oninteractive="${javascript`
             tippy(this, {
-              content: "Conversation Reference",
               touch: false,
+              content: "Conversation Reference",
             });
           `}"
         >
@@ -9710,8 +9710,8 @@ export default async function courselore({
                             class="text--pink"
                             oninteractive="${javascript`
                               tippy(this, {
-                                content: "This tag is visible by staff only.",
                                 touch: false,
+                                content: "This tag is visible by staff only.",
                               });
                             `}"
                           >
@@ -9765,8 +9765,8 @@ export default async function courselore({
                         class="text--violet"
                         oninteractive="${javascript`
                         tippy(this, {
-                          content: "Anonymous to other students.",
                           touch: false,
+                          content: "Anonymous to other students.",
                         });
                       `}"
                       >
@@ -9861,8 +9861,8 @@ export default async function courselore({
                         class="text--violet"
                         oninteractive="${javascript`
                           tippy(this, {
-                            content: "Anonymous to other students.",
                             touch: false,
+                            content: "Anonymous to other students.",
                           });
                         `}"
                       >
@@ -9941,8 +9941,8 @@ export default async function courselore({
                         class="text--violet"
                         oninteractive="${javascript`
                           tippy(this, {
-                            content: "Anonymous to other students.",
                             touch: false,
+                            content: "Anonymous to other students.",
                           });
                         `}"
                       >
@@ -10673,6 +10673,7 @@ export default async function courselore({
                   `
             }
               tippy(this, {
+                touch: false,
                 content: ${tippyContent({
                   req,
                   res,
@@ -10686,7 +10687,6 @@ export default async function courselore({
                     </span>
                   `,
                 })},
-                touch: false,
               });
             `}"
           >
@@ -10732,10 +10732,12 @@ export default async function courselore({
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
                   tippy(this, {
-                    content: "Help",
                     touch: false,
+                    content: "Help",
                   });
                   tippy(this, {
+                    trigger: "click",
+                    interactive: true,
                     content: ${tippyContent({
                       req,
                       res,
@@ -10758,8 +10760,6 @@ export default async function courselore({
                         </p>
                       `,
                     })},
-                    trigger: "click",
-                    interactive: true,
                   });
                 `}"
               >
@@ -10773,6 +10773,7 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+1", () => { this.click(); return false; });
                   tippy(this, {
+                    touch: false,
                     content: ${tippyContent({
                       req,
                       res,
@@ -10787,7 +10788,6 @@ export default async function courselore({
                         </span>
                       `,
                     })},
-                    touch: false,
                   });
                 `}"
                 onclick="${javascript`
@@ -10804,6 +10804,7 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+2", () => { this.click(); return false; });
                   tippy(this, {
+                    touch: false,
                     content: ${tippyContent({
                       req,
                       res,
@@ -10818,7 +10819,6 @@ export default async function courselore({
                         </span>
                       `,
                     })},
-                    touch: false,
                   });
                 `}"
                 onclick="${javascript`
@@ -10835,6 +10835,7 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+3", () => { this.click(); return false; });
                   tippy(this, {
+                    touch: false,
                     content: ${tippyContent({
                       req,
                       res,
@@ -10849,7 +10850,6 @@ export default async function courselore({
                         </span>
                       `,
                     })},
-                    touch: false,
                   });
                 `}"
                 onclick="${javascript`
@@ -10868,6 +10868,7 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+b", () => { this.click(); return false; });
                   tippy(this, {
+                    touch: false,
                     content: ${tippyContent({
                       req,
                       res,
@@ -10881,7 +10882,6 @@ export default async function courselore({
                         </span>
                       `,
                     })},
-                    touch: false,
                   });
                 `}"
                 onclick="${javascript`
@@ -10898,6 +10898,7 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+i", () => { this.click(); return false; });
                   tippy(this, {
+                    touch: false,
                     content: ${tippyContent({
                       req,
                       res,
@@ -10911,7 +10912,6 @@ export default async function courselore({
                         </span>
                       `,
                     })},
-                    touch: false,
                   });
                 `}"
                 onclick="${javascript`
@@ -10928,6 +10928,7 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+k", () => { this.click(); return false; });
                   tippy(this, {
+                    touch: false,
                     content: ${tippyContent({
                       req,
                       res,
@@ -10941,7 +10942,6 @@ export default async function courselore({
                         </span>
                       `,
                     })},
-                    touch: false,
                   });
                 `}"
                 onclick="${javascript`
@@ -10960,6 +10960,7 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+8", () => { this.click(); return false; });
                   tippy(this, {
+                    touch: false,
                     content: ${tippyContent({
                       req,
                       res,
@@ -10974,7 +10975,6 @@ export default async function courselore({
                         </span>
                       `,
                     })},
-                    touch: false,
                   });
                 `}"
                 onclick="${javascript`
@@ -10991,6 +10991,7 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+7", () => { this.click(); return false; });
                   tippy(this, {
+                    touch: false,
                     content: ${tippyContent({
                       req,
                       res,
@@ -11005,7 +11006,6 @@ export default async function courselore({
                         </span>
                       `,
                     })},
-                    touch: false,
                   });
                 `}"
                 onclick="${javascript`
@@ -11022,6 +11022,7 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+9", () => { this.click(); return false; });
                   tippy(this, {
+                    touch: false,
                     content: ${tippyContent({
                       req,
                       res,
@@ -11036,7 +11037,6 @@ export default async function courselore({
                         </span>
                       `,
                     })},
-                    touch: false,
                   });
                 `}"
                 onclick="${javascript`
@@ -11055,6 +11055,7 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+'", () => { this.click(); return false; });
                   tippy(this, {
+                    touch: false,
                     content: ${tippyContent({
                       req,
                       res,
@@ -11068,7 +11069,6 @@ export default async function courselore({
                         </span>
                       `,
                     })},
-                    touch: false,
                   });
                 `}"
                 onclick="${javascript`
@@ -11085,6 +11085,7 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+t", () => { this.click(); return false; });
                   tippy(this, {
+                    touch: false,
                     content: ${tippyContent({
                       req,
                       res,
@@ -11099,7 +11100,6 @@ export default async function courselore({
                         </span>
                       `,
                     })},
-                    touch: false,
                   });
                 `}"
                 onclick="${javascript`
@@ -11117,6 +11117,7 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+d", () => { this.click(); return false; });
                   tippy(this, {
+                    touch: false,
                     content: ${tippyContent({
                       req,
                       res,
@@ -11131,7 +11132,6 @@ export default async function courselore({
                         </span>
                       `,
                     })},
-                    touch: false,
                   });
                 `}"
                 onclick="${javascript`
@@ -11148,6 +11148,7 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+f", () => { this.click(); return false; });
                   tippy(this, {
+                    touch: false,
                     content: ${tippyContent({
                       req,
                       res,
@@ -11162,7 +11163,6 @@ export default async function courselore({
                         </span>
                       `,
                     })},
-                    touch: false,
                   });
                 `}"
                 onclick="${javascript`
@@ -11181,6 +11181,7 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+e", () => { this.click(); return false; });
                   tippy(this, {
+                    touch: false,
                     content: ${tippyContent({
                       req,
                       res,
@@ -11194,7 +11195,6 @@ export default async function courselore({
                         </span>
                       `,
                     })},
-                    touch: false,
                   });
                 `}"
                 onclick="${javascript`
@@ -11211,6 +11211,7 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+e", () => { this.click(); return false; });
                   tippy(this, {
+                    touch: false,
                     content: ${tippyContent({
                       req,
                       res,
@@ -11225,7 +11226,6 @@ export default async function courselore({
                         </span>
                       `,
                     })},
-                    touch: false,
                   });
                 `}"
                 onclick="${javascript`
@@ -11244,6 +11244,7 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+e", () => { this.click(); return false; });
                   tippy(this, {
+                    touch: false,
                     content: ${tippyContent({
                       req,
                       res,
@@ -11258,7 +11259,6 @@ export default async function courselore({
                         </span>
                       `,
                     })},
-                    touch: false,
                   });
                 `}"
                 onclick="${javascript`
@@ -11275,6 +11275,7 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+shift+e", () => { this.click(); return false; });
                   tippy(this, {
+                    touch: false,
                     content: ${tippyContent({
                       req,
                       res,
@@ -11289,7 +11290,6 @@ export default async function courselore({
                         </span>
                       `,
                     })},
-                    touch: false,
                   });
                 `}"
                 onclick="${javascript`
@@ -11309,6 +11309,7 @@ export default async function courselore({
                       class="button button--tight button--transparent"
                       oninteractive="${javascript`
                         tippy(this, {
+                          touch: false,
                           content: ${tippyContent({
                             req,
                             res,
@@ -11317,7 +11318,6 @@ export default async function courselore({
                               <span class="keyboard-shortcut">(@)</span>
                             `,
                           })},
-                          touch: false,
                         }); 
                       `}"
                       onclick="${javascript`
@@ -11333,6 +11333,7 @@ export default async function courselore({
                       class="button button--tight button--transparent"
                       oninteractive="${javascript`
                         tippy(this, {
+                          touch: false,
                           content: ${tippyContent({
                             req,
                             res,
@@ -11341,7 +11342,6 @@ export default async function courselore({
                               <span class="keyboard-shortcut">(#)</span>
                             `,
                           })},
-                          touch: false,
                         });
                       `}"
                       onclick="${javascript`
@@ -11362,6 +11362,7 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+i", () => { this.click(); return false; });
                   tippy(this, {
+                    touch: false,
                     content: ${tippyContent({
                       req,
                       res,
@@ -11377,7 +11378,6 @@ export default async function courselore({
                         </span>
                       `,
                     })},
-                    touch: false,
                   });
                 `}"
                 onclick="${javascript`
@@ -11392,6 +11392,7 @@ export default async function courselore({
                 oninteractive="${javascript`
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+k", () => { this.click(); return false; });
                   tippy(this, {
+                    touch: false,
                     content: ${tippyContent({
                       req,
                       res,
@@ -11407,7 +11408,6 @@ export default async function courselore({
                         </span>
                       `,
                     })},
-                    touch: false,
                   });
                 `}"
                 onclick="${javascript`
@@ -11425,6 +11425,8 @@ export default async function courselore({
                 oninteractive="${javascript`
                   const textarea = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
                   const uploadingIndicator = tippy(textarea, {
+                    trigger: "manual",
+                    hideOnClick: false,
                     content: ${tippyContent({
                       req,
                       res,
@@ -11439,8 +11441,6 @@ export default async function courselore({
                         </div>
                       `,
                     })},
-                    trigger: "manual",
-                    hideOnClick: false,
                   });
                   this.upload = async (fileList) => {
                     const body = new FormData();
@@ -11514,6 +11514,9 @@ export default async function courselore({
                           trigger: "@",
                           route: "mention-user-search",
                           dropdownMenu: tippy(dropdownMenuTarget, {
+                            placement: "bottom-start",
+                            trigger: "manual",
+                            interactive: true,
                             content: ${tippyContent({
                               req,
                               res,
@@ -11562,15 +11565,15 @@ export default async function courselore({
                                 </div>
                               `,
                             })},
-                            placement: "bottom-start",
-                            trigger: "manual",
-                            interactive: true,
                           }),
                         },
                         {
                           trigger: "#",
                           route: "refer-to-conversation-or-message-search",
                           dropdownMenu: tippy(dropdownMenuTarget, {
+                            placement: "bottom-start",
+                            trigger: "manual",
+                            interactive: true,
                             content: ${tippyContent({
                               req,
                               res,
@@ -11592,9 +11595,6 @@ export default async function courselore({
                                 </div>
                               `,
                             })},
-                            placement: "bottom-start",
-                            trigger: "manual",
-                            interactive: true,
                           }),
                         },
                       ];
@@ -11836,10 +11836,10 @@ ${value}</textarea
                         class="secondary"
                         oninteractive="${javascript`
                           tippy(this, {
+                            touch: false,
                             content: ${JSON.stringify(
                               lodash.capitalize(user.enrollmentRole)
                             )},
-                            touch: false,
                           });
                         `}"
                       >
@@ -12548,8 +12548,8 @@ ${value}</textarea
                       class="mention"
                       oninteractive="${javascript`
                         tippy(this, {
-                          content: "Mention",
                           touch: false,
+                          content: "Mention",
                         });
                       `}"
                       >$${mentionHTML}</strong
@@ -12634,6 +12634,7 @@ ${value}</textarea
               "oninteractive",
               javascript`
                 tippy(this, {
+                  touch: false,
                   content: ${tippyContent({
                     req: narrowReq,
                     res: narrowRes,
@@ -12651,7 +12652,6 @@ ${value}</textarea
                       </div>
                     `,
                   })},
-                  touch: false,
                 });
               `
             );
@@ -12668,6 +12668,7 @@ ${value}</textarea
             "oninteractive",
             javascript`
               tippy(this, {
+                touch: false,
                 content: ${tippyContent({
                   req: narrowReq,
                   res: narrowRes,
@@ -12687,7 +12688,6 @@ ${value}</textarea
                     </div>
                   `,
                 })},
-                touch: false,
               });
             `
           );
@@ -12884,8 +12884,8 @@ ${value}</textarea
                               class="button button--tight button--tight--inline button--transparent"
                               oninteractive="${javascript`
                                 tippy(this, {
-                                  content: "Pinned conversations are listed first.",
                                   trigger: "click",
+                                  content: "Pinned conversations are listed first.",
                                 });
                               `}"
                             >
@@ -12908,8 +12908,8 @@ ${value}</textarea
                               <span
                                 oninteractive="${javascript`
                                   tippy(this, {
-                                    content: "Pin",
                                     touch: false,
+                                    content: "Pin",
                                   });
                                 `}"
                               >
@@ -12920,8 +12920,8 @@ ${value}</textarea
                                 class="text--amber"
                                 oninteractive="${javascript`
                                   tippy(this, {
-                                    content: "Unpin",
                                     touch: false,
+                                    content: "Unpin",
                                   });
                                 `}"
                               >
@@ -12964,8 +12964,8 @@ ${value}</textarea
                         <span
                           oninteractive="${javascript`
                             tippy(this, {
-                              content: "Set as Visible by Staff Only",
                               touch: false,
+                              content: "Set as Visible by Staff Only",
                             });
                           `}"
                         >
@@ -12976,8 +12976,8 @@ ${value}</textarea
                           class="text--pink"
                           oninteractive="${javascript`
                             tippy(this, {
-                              content: "Set as Visible by Everyone",
                               touch: false,
+                              content: "Set as Visible by Everyone",
                             });
                           `}"
                         >
@@ -13013,8 +13013,8 @@ ${value}</textarea
                             class="button button--tight button--tight--inline button--transparent"
                             oninteractive="${javascript`
                               tippy(this, {
-                                content: "Tags help to organize conversations.",
                                 trigger: "click",
+                                content: "Tags help to organize conversations.",
                               });
                             `}"
                           >
@@ -13062,8 +13062,8 @@ ${value}</textarea
                                         class="text--pink"
                                         oninteractive="${javascript`
                                           tippy(this, {
-                                            content: "This tag is visible by staff only.",
                                             touch: false,
+                                            content: "This tag is visible by staff only.",
                                           });
                                         `}"
                                       >
@@ -13103,8 +13103,8 @@ ${value}</textarea
                             <span
                               oninteractive="${javascript`
                                 tippy(this, {
-                                  content: "Set as Anonymous to Other Students",
                                   touch: false,
+                                  content: "Set as Anonymous to Other Students",
                                 });
                               `}"
                             >
@@ -13123,8 +13123,8 @@ ${value}</textarea
                               class="text--violet"
                               oninteractive="${javascript`
                                 tippy(this, {
-                                  content: "Set as Signed by ${res.locals.user.name}",
                                   touch: false,
+                                  content: "Set as Signed by ${res.locals.user.name}",
                                 });
                               `}"
                             >
@@ -13142,6 +13142,7 @@ ${value}</textarea
                     oninteractive="${javascript`
                       Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                       tippy(this, {
+                        touch: false,
                         content: ${tippyContent({
                           req,
                           res,
@@ -13155,7 +13156,6 @@ ${value}</textarea
                             </span>
                           `,
                         })},
-                        touch: false,
                       });
                     `}"
                   >
@@ -13697,10 +13697,12 @@ ${value}</textarea
                                   ].display}"
                                   oninteractive="${javascript`
                                     tippy(this, {
-                                      content: "Update Conversation Type",
                                       touch: false,
+                                      content: "Update Conversation Type",
                                     });
                                     tippy(this, {
+                                      trigger: "click",
+                                      interactive: true,
                                       content: ${tippyContent({
                                         req,
                                         res,
@@ -13747,8 +13749,6 @@ ${value}</textarea
                                           </div>
                                         `,
                                       })},
-                                      trigger: "click",
-                                      interactive: true,
                                     });
                                   `}"
                                 >
@@ -13799,8 +13799,8 @@ ${value}</textarea
                                         class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                         oninteractive="${javascript`
                                           tippy(this, {
-                                            content: "Pin",
                                             touch: false,
+                                            content: "Pin",
                                           });
                                         `}"
                                       >
@@ -13818,8 +13818,8 @@ ${value}</textarea
                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--amber"
                                         oninteractive="${javascript`
                                           tippy(this, {
-                                            content: "Unpin",
                                             touch: false,
+                                            content: "Unpin",
                                           });
                                         `}"
                                       >
@@ -13846,15 +13846,18 @@ ${value}</textarea
                                   : "text--pink"}"
                                 oninteractive="${javascript`
                                   tippy(this, {
+                                    touch: false,
                                     content: "Set as ${
                                       res.locals.conversation.staffOnlyAt ===
                                       null
                                         ? "Visible by Staff Only"
                                         : "Visible by Everyone"
                                     }",
-                                    touch: false,
                                   });
                                   tippy(this, {
+                                    theme: "rose",
+                                    trigger: "click",
+                                    interactive: true,
                                     content: ${tippyContent({
                                       req,
                                       res,
@@ -13949,9 +13952,6 @@ ${value}</textarea
                                         </form>
                                       `,
                                     })},
-                                    theme: "rose",
-                                    trigger: "click",
-                                    interactive: true,
                                   });
                                 `}"
                               >
@@ -13987,10 +13987,12 @@ ${value}</textarea
                           class="button button--tight button--tight--inline button--transparent secondary"
                           oninteractive="${javascript`
                             tippy(this, {
-                              content: "Actions",
                               touch: false,
+                              content: "Actions",
                             });
                             tippy(this, {
+                              trigger: "click",
+                              interactive: true,
                               content: ${tippyContent({
                                 req,
                                 res,
@@ -14005,9 +14007,9 @@ ${value}</textarea
                                       class="dropdown--menu--item button button--transparent"
                                       oninteractive="${javascript`
                                         this.copied = tippy(this, {
-                                          content: "Copied",
                                           theme: "green",
                                           trigger: "manual",
+                                          content: "Copied",
                                         });
                                       `}"
                                       onclick="${javascript`
@@ -14045,6 +14047,9 @@ ${value}</textarea
                                               class="dropdown--menu--item button button--transparent"
                                               oninteractive="${javascript`
                                                 tippy(this, {
+                                                  theme: "rose",
+                                                  trigger: "click",
+                                                  interactive: true,
                                                   content: ${tippyContent({
                                                     req,
                                                     res,
@@ -14098,9 +14103,6 @@ ${value}</textarea
                                                       </form>
                                                     `,
                                                   })},
-                                                  theme: "rose",
-                                                  trigger: "click",
-                                                  interactive: true,
                                                 });
                                               `}"
                                             >
@@ -14113,8 +14115,6 @@ ${value}</textarea
                                   </div>
                                 `,
                               })},
-                              trigger: "click",
-                              interactive: true,
                             });
                           `}"
                         >
@@ -14172,9 +14172,9 @@ ${value}</textarea
                               `}"
                               oninteractive="${javascript`
                                 tippy(this, {
-                                  content: "Update Title",
                                   theme: "green",
                                   touch: false,
+                                  content: "Update Title",
                                 });
                               `}"
                             >
@@ -14185,9 +14185,9 @@ ${value}</textarea
                               class="button button--tight button--tight--inline button--transparent text--rose"
                               oninteractive="${javascript`
                                 tippy(this, {
-                                  content: "Cancel",
                                   theme: "rose",
                                   touch: false,
+                                  content: "Cancel",
                                 });
                               `}"
                               onclick="${javascript`
@@ -14231,9 +14231,9 @@ ${value}</textarea
                                             `}"
                                             oninteractive="${javascript`
                                               tippy(this, {
-                                                content: "You may not remove this tag because a conversation must have at least one tag.",
                                                 theme: "rose",
                                                 touch: false,
+                                                content: "You may not remove this tag because a conversation must have at least one tag.",
                                               });
                                             `}"
                                           >
@@ -14248,8 +14248,8 @@ ${value}</textarea
                                                   class="text--pink"
                                                   oninteractive="${javascript`
                                                     tippy(this, {
-                                                      content: "This tag is visible by staff only.",
                                                       touch: false,
+                                                      content: "This tag is visible by staff only.",
                                                     });
                                                   `}"
                                                 >
@@ -14293,9 +14293,9 @@ ${value}</textarea
                                                 `}"
                                                 oninteractive="${javascript`
                                                   tippy(this, {
-                                                    content: "Remove Tag",
                                                     theme: "rose",
                                                     touch: false,
+                                                    content: "Remove Tag",
                                                   });
                                                 `}"
                                               >
@@ -14309,8 +14309,8 @@ ${value}</textarea
                                                       class="text--pink"
                                                       oninteractive="${javascript`
                                                         tippy(this, {
-                                                          content: "This tag is visible by staff only.",
                                                           touch: false,
+                                                          content: "This tag is visible by staff only.",
                                                         });
                                                       `}"
                                                     >
@@ -14332,10 +14332,12 @@ ${value}</textarea
                                             class="button button--tight button--tight--inline button--transparent text--teal"
                                             oninteractive="${javascript`
                                               tippy(this, {
-                                                content: "Add Tag",
                                                 touch: false,
+                                                content: "Add Tag",
                                               });
                                               tippy(this, {
+                                                trigger: "click",
+                                                interactive: true,
                                                 content: ${tippyContent({
                                                   req,
                                                   res,
@@ -14393,8 +14395,8 @@ ${value}</textarea
                                                                         class="text--pink"
                                                                         oninteractive="${javascript`
                                                                           tippy(this, {
-                                                                            content: "This tag is visible by staff only.",
                                                                             touch: false,
+                                                                            content: "This tag is visible by staff only.",
                                                                           });
                                                                         `}"
                                                                       >
@@ -14411,8 +14413,6 @@ ${value}</textarea
                                                     </div>
                                                   `,
                                                 })},
-                                                trigger: "click",
-                                                interactive: true,
                                               });
                                             `}"
                                           >
@@ -14745,10 +14745,12 @@ ${value}</textarea
                                                 `}"
                                                 oninteractive="${javascript`
                                                   tippy(this, {
-                                                    content: "Actions",
                                                     touch: false,
+                                                    content: "Actions",
                                                   });
                                                   tippy(this, {
+                                                    trigger: "click",
+                                                    interactive: true,
                                                     content: ${tippyContent({
                                                       req,
                                                       res,
@@ -14847,9 +14849,9 @@ ${value}</textarea
                                                             class="dropdown--menu--item button button--transparent"
                                                             oninteractive="${javascript`
                                                               this.copied = tippy(this, {
-                                                                content: "Copied",
                                                                 theme: "green",
                                                                 trigger: "manual",
+                                                                content: "Copied",
                                                               });
                                                             `}"
                                                             onclick="${javascript`
@@ -14993,6 +14995,9 @@ ${value}</textarea
                                                                     class="dropdown--menu--item button button--transparent"
                                                                     oninteractive="${javascript`
                                                                       tippy(this, {
+                                                                        theme: "rose",
+                                                                        trigger: "click",
+                                                                        interactive: true,
                                                                         content: ${tippyContent(
                                                                           {
                                                                             req,
@@ -15063,9 +15068,6 @@ ${value}</textarea
                                                                             `,
                                                                           }
                                                                         )},
-                                                                        theme: "rose",
-                                                                        trigger: "click",
-                                                                        interactive: true,
                                                                       });
                                                                     `}"
                                                                   >
@@ -15081,8 +15083,6 @@ ${value}</textarea
                                                         </div>
                                                       `,
                                                     })},
-                                                    trigger: "click",
-                                                    interactive: true,
                                                   });
                                                 `}"
                                               >
@@ -15126,8 +15126,8 @@ ${value}</textarea
                                                         class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                                         oninteractive="${javascript`
                                                           tippy(this, {
-                                                            content: "Set as Answer",
                                                             touch: false,
+                                                            content: "Set as Answer",
                                                           });
                                                         `}"
                                                       >
@@ -15147,8 +15147,8 @@ ${value}</textarea
                                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
                                                         oninteractive="${javascript`
                                                           tippy(this, {
-                                                            content: "Set as Not an Answer",
                                                             touch: false,
+                                                            content: "Set as Not an Answer",
                                                           });
                                                         `}"
                                                       >
@@ -15212,6 +15212,7 @@ ${value}</textarea
                                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--blue"
                                                         oninteractive="${javascript`
                                                           tippy(this, {
+                                                            touch: false,
                                                             content: ${JSON.stringify(
                                                               `Remove Endorsement${
                                                                 message
@@ -15250,7 +15251,6 @@ ${value}</textarea
                                                                   : ``
                                                               }`
                                                             )},
-                                                            touch: false,
                                                           });
                                                         `}"
                                                       >
@@ -15281,6 +15281,7 @@ ${value}</textarea
                                                           : html`
                                                               oninteractive="${javascript`
                                                                 tippy(this, {
+                                                                  touch: false,
                                                                   content: ${JSON.stringify(
                                                                     `Endorse (Already endorsed by ${
                                                                       /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
@@ -15300,7 +15301,6 @@ ${value}</textarea
                                                                       )
                                                                     })`
                                                                   )},
-                                                                  touch: false,
                                                                 });
                                                               `}"
                                                             `}
@@ -15339,6 +15339,7 @@ ${value}</textarea
                                                 class="text--lime"
                                                 oninteractive="${javascript`
                                                   tippy(this, {
+                                                    touch: false,
                                                     content: ${JSON.stringify(
                                                       `Endorsed by ${
                                                         /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
@@ -15355,7 +15356,6 @@ ${value}</textarea
                                                         )
                                                       }`
                                                     )},
-                                                    touch: false,
                                                   });
                                                 `}"
                                               >
@@ -15441,8 +15441,8 @@ ${value}</textarea
                                                       `}"
                                                       oninteractive="${javascript`
                                                         tippy(this, {
-                                                          content: "Unread Message",
                                                           touch: false,
+                                                          content: "Unread Message",
                                                         });
                                                         window.setTimeout(() => { this.click(); }, 2000);
                                                       `}"
@@ -15578,6 +15578,9 @@ ${value}</textarea
                                               oninteractive="${javascript`
                                                 const dropdownMenuTarget = this.closest(".message--show--content-area").querySelector(".message--show--content-area--dropdown-menu-target");
                                                 const dropdownMenu = tippy(dropdownMenuTarget, {
+                                                  trigger: "manual",
+                                                  interactive: true,
+                                                  touch: false,
                                                   content: ${tippyContent({
                                                     req,
                                                     res,
@@ -15653,9 +15656,6 @@ ${value}</textarea
                                                       </div>
                                                     `,
                                                   })},
-                                                  trigger: "manual",
-                                                  interactive: true,
-                                                  touch: false,
                                                 });
                                                 this.addEventListener("mouseup", (event) => {
                                                   window.setTimeout(() => {
@@ -15747,12 +15747,12 @@ ${value}</textarea
                                                         : html`
                                                             oninteractive="${javascript`
                                                               tippy(this, {
+                                                                touch: false,
                                                                 content: ${JSON.stringify(
                                                                   isLiked
                                                                     ? "Remove Like"
                                                                     : "Like"
                                                                 )},
-                                                                touch: false,
                                                               });
                                                             `}"
                                                           `}
@@ -15851,6 +15851,7 @@ ${value}</textarea
                                                     oninteractive="${javascript`
                                                       Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                                                       tippy(this, {
+                                                        touch: false,
                                                         content: ${tippyContent(
                                                           {
                                                             req,
@@ -15873,7 +15874,6 @@ ${value}</textarea
                                                             `,
                                                           }
                                                         )},
-                                                        touch: false,
                                                       });
                                                     `}"
                                                   >
@@ -15987,8 +15987,8 @@ ${value}</textarea
                               <span
                                 oninteractive="${javascript`
                                   tippy(this, {
-                                    content: "Set as Answer",
                                     touch: false,
+                                    content: "Set as Answer",
                                   });
                                 `}"
                               >
@@ -15999,8 +15999,8 @@ ${value}</textarea
                                 class="text--emerald"
                                 oninteractive="${javascript`
                                   tippy(this, {
-                                    content: "Set as Not an Answer",
                                     touch: false,
+                                    content: "Set as Not an Answer",
                                   });
                                 `}"
                               >
@@ -16054,6 +16054,7 @@ ${value}</textarea
                             `}"
                             oninteractive="${javascript`
                               tippy(this, {
+                                touch: false,
                                 content: ${tippyContent({
                                   req,
                                   res,
@@ -16068,7 +16069,6 @@ ${value}</textarea
                                     </span>
                                   `,
                                 })},
-                                touch: false,
                               });
                             `}"
                           >
@@ -16109,8 +16109,8 @@ ${value}</textarea
                               <span
                                 oninteractive="${javascript`
                                   tippy(this, {
-                                    content: "Set as Anonymous to Other Students",
                                     touch: false,
+                                    content: "Set as Anonymous to Other Students",
                                   });
                                 `}"
                               >
@@ -16129,8 +16129,8 @@ ${value}</textarea
                                 class="text--violet"
                                 oninteractive="${javascript`
                                   tippy(this, {
-                                    content: "Set as Signed by ${res.locals.user.name}",
                                     touch: false,
+                                    content: "Set as Signed by ${res.locals.user.name}",
                                   });
                                 `}"
                               >
@@ -16152,6 +16152,7 @@ ${value}</textarea
                       oninteractive="${javascript`
                         Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                         tippy(this, {
+                          touch: false,
                           content: ${tippyContent({
                             req,
                             res,
@@ -16165,7 +16166,6 @@ ${value}</textarea
                               </span>
                             `,
                           })},
-                          touch: false,
                         });
                       `}"
                     >
