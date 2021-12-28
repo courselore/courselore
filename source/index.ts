@@ -11542,7 +11542,7 @@ export default async function courselore({
                           const value = this.value;
                           const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
                           const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
-                          for (const { trigger, searchResultsContainer, buttonsContainer, dropdownMenu, route } of dropdownMenus) {
+                          for (const { trigger, route, dropdownMenu } of dropdownMenus) {
                             if (!dropdownMenu.state.isShown) {
                               if (
                                 value[selectionMin - 1] !== trigger ||
@@ -11565,15 +11565,17 @@ export default async function courselore({
                             }
                             isUpdating = true;
                             shouldUpdateAgain = false;
+                            const content = dropdownMenu.props.content;
+                            const searchResults = content.querySelector(".search-results");
                             const search = value.slice(anchorIndex, selectionMax).trim();
-                            searchResultsContainer.innerHTML =
+                            searchResults.innerHTML =
                               search === ""
                               ? ""
                               : await (await fetch("${baseURL}/courses/${
                       res.locals.course.reference
                     }/markdown-editor/" + route + "?" + new URLSearchParams({ search }))).text();
-                            leafac.evaluateElementsAttribute(searchResultsContainer);
-                            const buttons = buttonsContainer.querySelectorAll(".button");
+                            leafac.evaluateElementsAttribute(searchResults);
+                            const buttons = content.querySelectorAll(".button");
                             for (const button of buttons) button.classList.remove("hover");
                             if (buttons.length > 0) buttons[0].classList.add("hover");
                             isUpdating = false;
@@ -11583,15 +11585,16 @@ export default async function courselore({
                       })());
 
                       this.addEventListener("keydown", (event) => {
-                        for (const { buttonsContainer, dropdownMenu } of dropdownMenus) {
+                        for (const { dropdownMenu } of dropdownMenus) {
                           if (!dropdownMenu.state.isShown) continue;
+                          const content = dropdownMenu.props.content;
                           switch (event.code) {
                             case "ArrowUp":
                             case "ArrowDown":
                               event.preventDefault();
-                              const buttons = [...buttonsContainer.querySelectorAll(".button")];
+                              const buttons = [...content.querySelectorAll(".button")];
                               if (buttons.length === 0) continue;    
-                              const currentHoverIndex = buttons.indexOf(buttonsContainer.querySelector(".button.hover"));
+                              const currentHoverIndex = buttons.indexOf(content.querySelector(".button.hover"));
                               if (
                                 currentHoverIndex === -1 ||
                                 (event.code === "ArrowUp" && currentHoverIndex === 0) ||
@@ -11605,7 +11608,7 @@ export default async function courselore({
 
                             case "Enter":
                             case "Tab":
-                              const buttonHover = buttonsContainer.querySelector(".button.hover");
+                              const buttonHover = content.querySelector(".button.hover");
                               if (buttonHover === null) dropdownMenu.hide();
                               else {
                                 event.preventDefault();
