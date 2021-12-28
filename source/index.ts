@@ -7405,12 +7405,15 @@ export default async function courselore({
                                                               theme: "rose",
                                                               trigger: "click",
                                                               interactive: true,
+                                                              appendTo: document.body,
                                                               content: ${tippyContent(
                                                                 {
                                                                   req,
                                                                   res,
                                                                   content: html`
-                                                                    <div
+                                                                    <form
+                                                                      method="POST"
+                                                                      action="${action}?_method=PATCH"
                                                                       style="${css`
                                                                         padding: var(
                                                                           --space--2
@@ -7422,6 +7425,16 @@ export default async function courselore({
                                                                         );
                                                                       `}"
                                                                     >
+                                                                      <input
+                                                                        type="hidden"
+                                                                        name="_csrf"
+                                                                        value="${req.csrfToken()}"
+                                                                      />
+                                                                      <input
+                                                                        type="hidden"
+                                                                        name="role"
+                                                                        value="${role}"
+                                                                      />
                                                                       <p>
                                                                         Are you
                                                                         sure you
@@ -7457,7 +7470,7 @@ export default async function courselore({
                                                                           role
                                                                         )}
                                                                       </button>
-                                                                    </div>
+                                                                    </form>
                                                                   `,
                                                                 }
                                                               )},
