@@ -29,10 +29,6 @@
 ### Chat
 
 - Add support for out-of-band tippy contents.
-  - Keyword arguments.
-    - `mayEndorseMessage`
-    - `emitCourseRefresh`
-    - `highlightSearchResult`
   - `eventDestination` should store `req` as well.
   - In `conversationPartial`, separate search results from `conversation`.
   - User biographies in `userPartial`.
