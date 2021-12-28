@@ -7411,7 +7411,6 @@ export default async function courselore({
                                                                   res,
                                                                   content: html`
                                                                     <div
-                                                                      class="confirmation"
                                                                       style="${css`
                                                                         padding: var(
                                                                           --space--2
