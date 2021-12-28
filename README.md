@@ -30,7 +30,6 @@
 
 - Add support for out-of-band tippy contents.
   - Move tippies up so that nested oninteractives work.
-  - `tippy(`
   - Double-check the need for `appendTo`
   - Move `content:` down, because it tends to be the longest option.
   - `conversationPartial`, `getConversation`, and `getMessage` should have keyword arguments.
