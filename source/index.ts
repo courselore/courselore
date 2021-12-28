@@ -9464,7 +9464,11 @@ export default async function courselore({
                                   flex: 1;
                                 `}"
                               >
-                                $${conversationPartial(req, res, conversation)}
+                                $${conversationPartial({
+                                  req,
+                                  res,
+                                  conversation,
+                                })}
                               </div>
                               <div
                                 style="${css`
@@ -9570,9 +9574,13 @@ export default async function courselore({
     });
   };
 
-  const conversationPartial = (
-    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>,
-    res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>,
+  const conversationPartial = ({
+    req,
+    res,
+    conversation,
+  }: {
+    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
+    res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
     conversation: NonNullable<ReturnType<typeof getConversation>> & {
       conversationTitleSearchResultHighlight?: string | null;
       messageAuthorUserNameSearchResultHighlight?: string | null;
@@ -9580,8 +9588,8 @@ export default async function courselore({
       messageContentSearchResultSnippet?: string | null;
       messageContentSearchResultMessage?: ReturnType<typeof getMessage>;
       message?: ReturnType<typeof getMessage>;
-    }
-  ): HTML => html`
+    };
+  }): HTML => html`
     <div
       style="${css`
         display: flex;
@@ -12652,11 +12660,11 @@ ${value}</textarea
                           padding: var(--space--2);
                         `}"
                       >
-                        $${conversationPartial(
-                          narrowReq,
-                          narrowRes,
-                          conversation
-                        )}
+                        $${conversationPartial({
+                          req: narrowReq,
+                          res: narrowRes,
+                          conversation,
+                        })}
                       </div>
                     `,
                   })},
@@ -12689,9 +12697,13 @@ ${value}</textarea
                         gap: var(--space--2);
                       `}"
                     >
-                      $${conversationPartial(narrowReq, narrowRes, {
-                        ...conversation,
-                        message,
+                      $${conversationPartial({
+                        req: narrowReq,
+                        res: narrowRes,
+                        conversation: {
+                          ...conversation,
+                          message,
+                        },
                       })}
                     </div>
                   `,
