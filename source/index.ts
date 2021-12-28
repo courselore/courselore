@@ -1889,7 +1889,7 @@ export default async function courselore({
                 `
               : html``}
             $${(() => {
-              const flash = Flash.get(req, res);
+              const flash = Flash.get({ req, res });
               return flash === undefined
                 ? html``
                 : html`
@@ -3158,11 +3158,15 @@ export default async function courselore({
   const Flash = {
     maxAge: 5 * 60 * 1000,
 
-    set(
-      req: express.Request<{}, any, {}, {}, {}>,
-      res: express.Response<any, {}>,
-      content: HTML
-    ): void {
+    set({
+      req,
+      res,
+      content,
+    }: {
+      req: express.Request<{}, any, {}, {}, {}>;
+      res: express.Response<any, {}>;
+      content: HTML;
+    }): void {
       const flash = database.get<{ nonce: string }>(
         sql`
           INSERT INTO "flashes" ("createdAt", "nonce", "content")
@@ -3181,10 +3185,13 @@ export default async function courselore({
       });
     },
 
-    get(
-      req: express.Request<{}, any, {}, {}, {}>,
-      res: express.Response<any, {}>
-    ): HTML | undefined {
+    get({
+      req,
+      res,
+    }: {
+      req: express.Request<{}, any, {}, {}, {}>;
+      res: express.Response<any, {}>;
+    }): HTML | undefined {
       if (req.cookies.flash === undefined) return undefined;
       const flash = database.get<{
         id: number;
@@ -3580,11 +3587,13 @@ export default async function courselore({
         user === undefined ||
         !(await argon2.verify(user.password, req.body.password))
       ) {
-        Flash.set(
+        Flash.set({
           req,
           res,
-          html`<div class="flash--rose">Incorrect email & password.</div>`
-        );
+          content: html`
+            <div class="flash--rose">Incorrect email & password.</div>
+          `,
+        });
         return res.redirect(
           `${baseURL}/sign-in${qs.stringify(req.query, {
             addQueryPrefix: true,
@@ -3734,11 +3743,11 @@ export default async function courselore({
       sql`SELECT "id", "email" FROM "users" WHERE "email" = ${req.body.email}`
     );
     if (user === undefined) {
-      Flash.set(
+      Flash.set({
         req,
         res,
-        html`<div class="flash--rose">Email not found.</div>`
-      );
+        content: html`<div class="flash--rose">Email not found.</div>`,
+      });
       return res.redirect(
         `${baseURL}/reset-password${qs.stringify(req.query, {
           addQueryPrefix: true,
@@ -3764,7 +3773,11 @@ export default async function courselore({
       `,
     });
     if (req.body.resend === "true")
-      Flash.set(req, res, html`<div class="flash--green">Email resent.</div>`);
+      Flash.set({
+        req,
+        res,
+        content: html`<div class="flash--green">Email resent.</div>`,
+      });
     res.send(
       boxLayout({
         req,
@@ -3810,15 +3823,15 @@ export default async function courselore({
     (req, res) => {
       const userId = PasswordReset.get(req.params.passwordResetNonce);
       if (userId === undefined) {
-        Flash.set(
+        Flash.set({
           req,
           res,
-          html`
+          content: html`
             <div class="flash--rose">
               This Password Reset Link is invalid or expired.
             </div>
-          `
-        );
+          `,
+        });
         return res.redirect(
           `${baseURL}/reset-password${qs.stringify(req.query, {
             addQueryPrefix: true,
@@ -3902,15 +3915,15 @@ export default async function courselore({
 
       const userId = PasswordReset.get(req.params.passwordResetNonce);
       if (userId === undefined) {
-        Flash.set(
+        Flash.set({
           req,
           res,
-          html`
+          content: html`
             <div class="flash--rose">
               Something went wrong in your password reset. Please start over.
             </div>
-          `
-        );
+          `,
+        });
         return res.redirect(
           `${baseURL}/reset-password${qs.stringify(req.query, {
             addQueryPrefix: true,
@@ -3929,11 +3942,13 @@ export default async function courselore({
         `
       )!;
       Session.open(req, res, userId);
-      Flash.set(
+      Flash.set({
         req,
         res,
-        html`<div class="flash--green">Password reset successfully.</div>`
-      );
+        content: html`
+          <div class="flash--green">Password reset successfully.</div>
+        `,
+      });
       res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
     })
   );
@@ -4123,11 +4138,11 @@ export default async function courselore({
           `
         )!.exists === 1
       ) {
-        Flash.set(
+        Flash.set({
           req,
           res,
-          html`<div class="flash--rose">Email already taken.</div>`
-        );
+          content: html`<div class="flash--rose">Email already taken.</div>`,
+        });
         return res.redirect(
           `${baseURL}/sign-in${qs.stringify(req.query, {
             addQueryPrefix: true,
@@ -4178,20 +4193,24 @@ export default async function courselore({
     ...isSignedInMiddleware,
     (req, res, next) => {
       if (res.locals.user.emailConfirmedAt !== null) {
-        Flash.set(
+        Flash.set({
           req,
           res,
-          html`<div class="flash--rose">Email already confirmed.</div>`
-        );
+          content: html`
+            <div class="flash--rose">Email already confirmed.</div>
+          `,
+        });
         return res.redirect(`${baseURL}/`);
       }
 
       sendConfirmationEmail(res.locals.user);
-      Flash.set(
+      Flash.set({
         req,
         res,
-        html`<div class="flash--green">Confirmation email resent.</div>`
-      );
+        content: html`
+          <div class="flash--green">Confirmation email resent.</div>
+        `,
+      });
       res.redirect(`${baseURL}/`);
     }
   );
@@ -4220,15 +4239,15 @@ export default async function courselore({
         emailConfirmation === undefined ||
         emailConfirmation.user !== res.locals.user.id
       ) {
-        Flash.set(
+        Flash.set({
           req,
           res,
-          html`
+          content: html`
             <div class="flash--rose">
               This Email Confirmation Link is invalid.
             </div>
-          `
-        );
+          `,
+        });
         return res.redirect(`${baseURL}/`);
       }
       database.run(
@@ -4238,11 +4257,13 @@ export default async function courselore({
           WHERE "id" = ${res.locals.user.id}
         `
       );
-      Flash.set(
+      Flash.set({
         req,
         res,
-        html`<div class="flash--green">Email confirmed successfully.</div>`
-      );
+        content: html`
+          <div class="flash--green">Email confirmed successfully.</div>
+        `,
+      });
       return res.redirect(`${baseURL}/`);
     }
   );
@@ -4798,11 +4819,13 @@ export default async function courselore({
         WHERE "id" = ${res.locals.user.id}
       `
     );
-    Flash.set(
+    Flash.set({
       req,
       res,
-      html`<div class="flash--green">Profile updated successfully.</div>`
-    );
+      content: html`
+        <div class="flash--green">Profile updated successfully.</div>
+      `,
+    });
     res.redirect(`${baseURL}/settings/profile`);
   });
 
@@ -5000,11 +5023,11 @@ export default async function courselore({
           req.body.currentPassword
         ))
       ) {
-        Flash.set(
+        Flash.set({
           req,
           res,
-          html`<div class="flash--rose">Incorrect password.</div>`
-        );
+          content: html`<div class="flash--rose">Incorrect password.</div>`,
+        });
         return res.redirect(`${baseURL}/settings/update-email-and-password`);
       }
       if (typeof req.body.email === "string") {
@@ -5019,11 +5042,11 @@ export default async function courselore({
             `
           )!.exists === 1
         ) {
-          Flash.set(
+          Flash.set({
             req,
             res,
-            html`<div class="flash--rose">Email already taken.</div>`
-          );
+            content: html`<div class="flash--rose">Email already taken.</div>`,
+          });
           return res.redirect(`${baseURL}/settings/update-email-and-password`);
         }
 
@@ -5036,11 +5059,13 @@ export default async function courselore({
           `
         );
         sendConfirmationEmail(res.locals.user);
-        Flash.set(
+        Flash.set({
           req,
           res,
-          html`<div class="flash--green">Email updated successfully.</div>`
-        );
+          content: html`
+            <div class="flash--green">Email updated successfully.</div>
+          `,
+        });
       }
 
       if (typeof req.body.newPassword === "string") {
@@ -5060,11 +5085,13 @@ export default async function courselore({
             WHERE "id" = ${res.locals.user.id}
           `
         );
-        Flash.set(
+        Flash.set({
           req,
           res,
-          html`<div class="flash--green">Password updated successfully.</div>`
-        );
+          content: html`
+            <div class="flash--green">Password updated successfully.</div>
+          `,
+        });
       }
       res.redirect(`${baseURL}/settings/update-email-and-password`);
     })
@@ -5201,15 +5228,15 @@ export default async function courselore({
         `
       );
 
-      Flash.set(
+      Flash.set({
         req,
         res,
-        html`
+        content: html`
           <div class="flash--green">
             Notifications preferences updated successfully.
           </div>
-        `
-      );
+        `,
+      });
 
       res.redirect(`${baseURL}/settings/notifications-preferences`);
     }
@@ -5879,15 +5906,15 @@ export default async function courselore({
         `
       );
 
-      Flash.set(
+      Flash.set({
         req,
         res,
-        html`
+        content: html`
           <div class="flash--green">
             Course information updated successfully.
           </div>
-        `
-      );
+        `,
+      });
 
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/settings/course-information`
@@ -6932,10 +6959,10 @@ export default async function courselore({
           `
           )!;
 
-          Flash.set(
+          Flash.set({
             req,
             res,
-            html`
+            content: html`
               <div class="flash--green">
                 <div
                   style="${css`
@@ -6961,8 +6988,8 @@ export default async function courselore({
                   </button>
                 </div>
               </div>
-            `
-          );
+            `,
+          });
           break;
 
         case "email":
@@ -7059,13 +7086,13 @@ export default async function courselore({
             });
           }
 
-          Flash.set(
+          Flash.set({
             req,
             res,
-            html`
+            content: html`
               <div class="flash--green">Invitations sent successfully.</div>
-            `
-          );
+            `,
+          });
           break;
       }
 
@@ -7106,15 +7133,15 @@ export default async function courselore({
           }
         );
 
-        Flash.set(
+        Flash.set({
           req,
           res,
-          html`
+          content: html`
             <div class="flash--green">
               Invitation email resent successfully.
             </div>
-          `
-        );
+          `,
+        });
       }
 
       if (req.body.role !== undefined) {
@@ -7128,15 +7155,15 @@ export default async function courselore({
           sql`UPDATE "invitations" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.invitation.id}`
         );
 
-        Flash.set(
+        Flash.set({
           req,
           res,
-          html`
+          content: html`
             <div class="flash--green">
               Invitation role updated successfully.
             </div>
-          `
-        );
+          `,
+        });
       }
 
       if (req.body.expiresAt !== undefined) {
@@ -7151,15 +7178,15 @@ export default async function courselore({
           sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitation.id}`
         );
 
-        Flash.set(
+        Flash.set({
           req,
           res,
-          html`
+          content: html`
             <div class="flash--green">
               Invitation expiration updated successfully.
             </div>
-          `
-        );
+          `,
+        });
       }
 
       if (req.body.removeExpiration === "true") {
@@ -7171,15 +7198,15 @@ export default async function courselore({
           `
         );
 
-        Flash.set(
+        Flash.set({
           req,
           res,
-          html`
+          content: html`
             <div class="flash--green">
               Invitation expiration removed successfully.
             </div>
-          `
-        );
+          `,
+        });
       }
 
       if (req.body.expire === "true") {
@@ -7191,13 +7218,13 @@ export default async function courselore({
           `
         );
 
-        Flash.set(
+        Flash.set({
           req,
           res,
-          html`
+          content: html`
             <div class="flash--green">Invitation expired successfully.</div>
-          `
-        );
+          `,
+        });
       }
 
       res.redirect(
@@ -7627,13 +7654,13 @@ export default async function courselore({
           sql`UPDATE "enrollments" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.managedEnrollment.id}`
         );
 
-        Flash.set(
+        Flash.set({
           req,
           res,
-          html`
+          content: html`
             <div class="flash--green">Enrollment updated successfully.</div>
-          `
-        );
+          `,
+        });
       }
 
       res.redirect(
@@ -7658,18 +7685,18 @@ export default async function courselore({
         sql`DELETE FROM "enrollments" WHERE "id" = ${res.locals.managedEnrollment.id}`
       );
 
-      Flash.set(
+      Flash.set({
         req,
         res,
-        html`
+        content: html`
           <div class="flash--green">
             $${res.locals.managedEnrollment.isSelf
               ? html`You removed yourself`
               : html`Person removed`}
             from the course successfully.
           </div>
-        `
-      );
+        `,
+      });
 
       res.redirect(
         res.locals.managedEnrollment.isSelf
@@ -8200,11 +8227,13 @@ export default async function courselore({
             `
           );
 
-      Flash.set(
+      Flash.set({
         req,
         res,
-        html`<div class="flash--green">Tags updated successfully.</div>`
-      );
+        content: html`
+          <div class="flash--green">Tags updated successfully.</div>
+        `,
+      });
 
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/settings/tags`
@@ -8350,11 +8379,13 @@ export default async function courselore({
         sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollment.id}`
       );
 
-      Flash.set(
+      Flash.set({
         req,
         res,
-        html` <div class="flash--green">Enrollment updated successfully.</div> `
-      );
+        content: html`
+          <div class="flash--green">Enrollment updated successfully.</div>
+        `,
+      });
 
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/settings/your-enrollment`
@@ -17558,10 +17589,10 @@ ${value}</textarea
         }
 
         Session.open(req, res, demonstrationUser.id);
-        Flash.set(
+        Flash.set({
           req,
           res,
-          html`
+          content: html`
             <div class="flash--green">
               <p>
                 Demonstration data including users, courses, conversations, and
@@ -17571,8 +17602,8 @@ ${value}</textarea
                 demonstration users, their password is “courselore”.
               </p>
             </div>
-          `
-        );
+          `,
+        });
         res.redirect(baseURL);
       })
     );
