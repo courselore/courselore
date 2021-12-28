@@ -29,7 +29,6 @@
 ### Chat
 
 - Add support for out-of-band tippy contents.
-  - `allowHTML` shouldn’t exist anymore.
   - `tippy(`
   - Move `content:` down, because it tends to be the longest option.
   - `conversationPartial`, `getConversation`, and `getMessage` should have keyword arguments.
