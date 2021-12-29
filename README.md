@@ -388,6 +388,13 @@
 <details>
 <summary>2021-12-22</summary>
 
+- Tooltips are rendered out-of-band, to support block elements in tooltip contents even when the tooltip target is inline.
+
+</details>
+
+<details>
+<summary>2021-12-22</summary>
+
 - Progress:
   - User component.
   - Actions menu.
