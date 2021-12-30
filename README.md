@@ -28,6 +28,7 @@
 
 ### Chat
 
+- Update better-sqlite3
 - Add support for out-of-band tippy contents.
   - In `conversationPartial`, separate search results from `conversation`.
   - Review `userPartial`.
