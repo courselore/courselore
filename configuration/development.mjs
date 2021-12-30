@@ -3,7 +3,7 @@ export default async (
   courseloreImport,
   courseloreImportMetaURL
 ) => {
-  const baseURL = process.env.BASE_URL ?? `https://localhost:5000`;
+  const baseURL = process.env.BASE_URL ?? `https://localhost:4000`;
   const administratorEmail = "development@courselore.org";
   if (process.argv[3] === undefined) {
     const url = await courseloreImport("node:url");
@@ -29,7 +29,7 @@ export default async (
           }
 
           ${baseURL} {
-            reverse_proxy 127.0.0.1:4000
+            reverse_proxy 127.0.0.1:4001
             encode zstd gzip
           }
         `,
@@ -68,7 +68,7 @@ export default async (
       })(),
       liveReload: true,
     });
-    app.listen(4000, "127.0.0.1", () => {
+    app.listen(4001, "127.0.0.1", () => {
       console.log(`CourseLore/${version} started at ${baseURL}`);
     });
   }
