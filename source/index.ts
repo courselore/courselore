@@ -8868,50 +8868,62 @@ export default async function courselore({
           conversationReference: conversationRow.reference,
         });
         if (conversation === undefined) return [];
-        return [
-          {
-            ...conversationRow,
-            ...conversation,
-          },
-        ];
-      })
-      .map((conversation) => {
+
+        if (conversationRow.conversationTitleSearchResultHighlight !== null)
+          return [
+            {
+              ...conversation,
+              searchResults: {
+                conversationTitleSearchResultHighlight:
+                  conversationRow.conversationTitleSearchResultHighlight,
+              },
+            },
+          ];
+
         if (
-          conversation.messageAuthorUserNameSearchResultMessageReference !==
+          conversationRow.messageAuthorUserNameSearchResultMessageReference !==
             null &&
-          conversation.messageAuthorUserNameSearchResultHighlight !== null
+          conversationRow.messageAuthorUserNameSearchResultHighlight !== null
         )
-          return {
-            ...conversation,
-            messageAuthorUserNameSearchResultMessage: getMessage({
-              req,
-              res,
-              conversation,
-              messageReference:
-                conversation.messageAuthorUserNameSearchResultMessageReference,
-            }),
-            messageContentSearchResultMessage: undefined,
-          };
-        else if (
-          conversation.messageContentSearchResultMessageReference !== null &&
-          conversation.messageContentSearchResultSnippet !== null
+          return [
+            {
+              ...conversation,
+              searchResults: {
+                messageAuthorUserNameSearchResultMessage: getMessage({
+                  req,
+                  res,
+                  conversation,
+                  messageReference:
+                    conversationRow.messageAuthorUserNameSearchResultMessageReference,
+                }),
+                messageAuthorUserNameSearchResultHighlight:
+                  conversationRow.messageAuthorUserNameSearchResultHighlight,
+              },
+            },
+          ];
+
+        if (
+          conversationRow.messageContentSearchResultMessageReference !== null &&
+          conversationRow.messageContentSearchResultSnippet !== null
         )
-          return {
-            ...conversation,
-            messageAuthorUserNameSearchResultMessage: undefined,
-            messageContentSearchResultMessage: getMessage({
-              req,
-              res,
-              conversation,
-              messageReference:
-                conversation.messageContentSearchResultMessageReference,
-            }),
-          };
-        return {
-          ...conversation,
-          messageAuthorUserNameSearchResultMessage: undefined,
-          messageContentSearchResultMessage: undefined,
-        };
+          return [
+            {
+              ...conversation,
+              searchResults: {
+                messageContentSearchResultMessage: getMessage({
+                  req,
+                  res,
+                  conversation,
+                  messageReference:
+                    conversationRow.messageContentSearchResultMessageReference,
+                }),
+                messageContentSearchResultSnippet:
+                  conversationRow.messageContentSearchResultSnippet,
+              },
+            },
+          ];
+
+        return [{ ...conversation, searchResults: {} }];
       });
 
     return applicationLayout({
@@ -9480,12 +9492,14 @@ export default async function courselore({
                                   "scrollToConversation",
                                 ]),
                                 { addQueryPrefix: true }
-                              )}${conversation.messageAuthorUserNameSearchResultMessage !==
+                              )}${conversation.searchResults
+                                .messageAuthorUserNameSearchResultMessage !==
                               undefined
-                                ? `#message--${conversation.messageAuthorUserNameSearchResultMessage.reference}`
-                                : conversation.messageContentSearchResultMessage !==
+                                ? `#message--${conversation.searchResults.messageAuthorUserNameSearchResultMessage.reference}`
+                                : conversation.searchResults
+                                    .messageContentSearchResultMessage !==
                                   undefined
-                                ? `#message--${conversation.messageContentSearchResultMessage.reference}`
+                                ? `#message--${conversation.searchResults.messageContentSearchResultMessage.reference}`
                                 : ""}"
                               class="button ${isSelected
                                 ? "button--blue"
@@ -9524,6 +9538,7 @@ export default async function courselore({
                                   req,
                                   res,
                                   conversation,
+                                  searchResults: conversation.searchResults,
                                 })}
                               </div>
                               <div
@@ -9642,10 +9657,10 @@ export default async function courselore({
     conversation: NonNullable<ReturnType<typeof getConversation>>;
     searchResults?: {
       conversationTitleSearchResultHighlight?: string | null;
-      messageAuthorUserNameSearchResultHighlight?: string | null;
       messageAuthorUserNameSearchResultMessage?: ReturnType<typeof getMessage>;
-      messageContentSearchResultSnippet?: string | null;
+      messageAuthorUserNameSearchResultHighlight?: string | null;
       messageContentSearchResultMessage?: ReturnType<typeof getMessage>;
+      messageContentSearchResultSnippet?: string | null;
     };
     message?: ReturnType<typeof getMessage>;
   }): HTML => html`
