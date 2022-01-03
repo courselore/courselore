@@ -9634,17 +9634,20 @@ export default async function courselore({
     req,
     res,
     conversation,
+    searchResults = undefined,
+    message = undefined,
   }: {
     req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
-    conversation: NonNullable<ReturnType<typeof getConversation>> & {
+    conversation: NonNullable<ReturnType<typeof getConversation>>;
+    searchResults?: {
       conversationTitleSearchResultHighlight?: string | null;
       messageAuthorUserNameSearchResultHighlight?: string | null;
       messageAuthorUserNameSearchResultMessage?: ReturnType<typeof getMessage>;
       messageContentSearchResultSnippet?: string | null;
       messageContentSearchResultMessage?: ReturnType<typeof getMessage>;
-      message?: ReturnType<typeof getMessage>;
     };
+    message?: ReturnType<typeof getMessage>;
   }): HTML => html`
     <div
       style="${css`
@@ -9796,72 +9799,30 @@ export default async function courselore({
               )}
             </div>
           `}
-      $${typeof conversation.messageAuthorUserNameSearchResultHighlight ===
-        "string" &&
-      conversation.messageAuthorUserNameSearchResultMessage !== undefined
+      $${searchResults !== undefined
         ? html`
-            <div>
-              <div>
-                $${conversation.messageAuthorUserNameSearchResultMessage
-                  .anonymousAt === null
-                  ? html`
-                      <span
-                        class="online-indicator online-indicator--inline online-indicator--small"
-                      >
-                        $${conversation.messageAuthorUserNameSearchResultMessage
-                          .authorEnrollment.user.avatar === null
-                          ? html`<i class="bi bi-person-circle"></i>`
-                          : html`
-                              <img
-                                src="${conversation
-                                  .messageAuthorUserNameSearchResultMessage
-                                  .authorEnrollment.user.avatar}"
-                                alt="${conversation
-                                  .messageAuthorUserNameSearchResultMessage
-                                  .authorEnrollment.user.name}"
-                                class="avatar avatar--xs avatar--vertical-align"
-                              />
-                            `}
-                        <span
-                          data-last-seen-online-at="${conversation
-                            .authorEnrollment.user.lastSeenOnlineAt}"
-                          oninteractive="${javascript`
-                            // onlineIndicator(this);
-                          `}"
-                        ></span>
-                      </span>
-                      $${conversation.messageAuthorUserNameSearchResultHighlight}
-                    `
-                  : html`
-                      <span
-                        class="text--violet"
-                        oninteractive="${javascript`
-                        tippy(this, {
-                          touch: false,
-                          content: "Anonymous to other students.",
-                        });
-                      `}"
-                      >
-                        <i class="bi bi-sunglasses"></i>
-                        Anonymous
-                      </span>
-                      $${res.locals.enrollment.role === "staff" ||
-                      conversation.messageAuthorUserNameSearchResultMessage
-                        .authorEnrollment.id === res.locals.enrollment.id
+            $${typeof searchResults.messageAuthorUserNameSearchResultHighlight ===
+              "string" &&
+            searchResults.messageAuthorUserNameSearchResultMessage !== undefined
+              ? html`
+                  <div>
+                    <div>
+                      $${searchResults.messageAuthorUserNameSearchResultMessage
+                        .anonymousAt === null
                         ? html`
-                            (<span
+                            <span
                               class="online-indicator online-indicator--inline online-indicator--small"
                             >
-                              $${conversation
+                              $${searchResults
                                 .messageAuthorUserNameSearchResultMessage
                                 .authorEnrollment.user.avatar === null
                                 ? html`<i class="bi bi-person-circle"></i>`
                                 : html`
                                     <img
-                                      src="${conversation
+                                      src="${searchResults
                                         .messageAuthorUserNameSearchResultMessage
                                         .authorEnrollment.user.avatar}"
-                                      alt="${conversation
+                                      alt="${searchResults
                                         .messageAuthorUserNameSearchResultMessage
                                         .authorEnrollment.user.name}"
                                       class="avatar avatar--xs avatar--vertical-align"
@@ -9875,91 +9836,98 @@ export default async function courselore({
                                 `}"
                               ></span>
                             </span>
-                            $${conversation.messageAuthorUserNameSearchResultHighlight})
+                            $${searchResults.messageAuthorUserNameSearchResultHighlight}
                           `
-                        : html``}
-                    `}
-              </div>
-              <div>
-                $${lodash.truncate(
-                  conversation.messageAuthorUserNameSearchResultMessage
-                    .contentSearch,
-                  {
-                    length: 100,
-                    separator: /\W/,
-                  }
-                )}
-              </div>
-            </div>
-          `
-        : typeof conversation.messageContentSearchResultSnippet === "string" &&
-          conversation.messageContentSearchResultMessage !== undefined
-        ? html`
-            <div>
-              <div>
-                $${conversation.messageContentSearchResultMessage
-                  .anonymousAt === null
-                  ? html`
-                      <span
-                        class="online-indicator online-indicator--inline online-indicator--small"
-                      >
-                        $${conversation.messageContentSearchResultMessage
-                          .authorEnrollment.user.avatar === null
-                          ? html`<i class="bi bi-person-circle"></i>`
-                          : html`
-                              <img
-                                src="${conversation
-                                  .messageContentSearchResultMessage
-                                  .authorEnrollment.user.avatar}"
-                                alt="${conversation
-                                  .messageContentSearchResultMessage
-                                  .authorEnrollment.user.name}"
-                                class="avatar avatar--xs avatar--vertical-align"
-                              />
-                            `}
-                        <span
-                          data-last-seen-online-at="${conversation
-                            .authorEnrollment.user.lastSeenOnlineAt}"
-                          oninteractive="${javascript`
-                            // onlineIndicator(this);
-                          `}"
-                        ></span>
-                      </span>
-                      ${conversation.messageContentSearchResultMessage
-                        .authorEnrollment.user.name}
-                    `
-                  : html`
-                      <span
-                        class="text--violet"
-                        oninteractive="${javascript`
-                          tippy(this, {
-                            touch: false,
-                            content: "Anonymous to other students.",
-                          });
-                        `}"
-                      >
-                        <i class="bi bi-sunglasses"></i>
-                        Anonymous
-                      </span>
-                      $${res.locals.enrollment.role === "staff" ||
-                      conversation.messageContentSearchResultMessage
-                        .authorEnrollment.id === res.locals.enrollment.id
+                        : html`
+                            <span
+                              class="text--violet"
+                              oninteractive="${javascript`
+                                tippy(this, {
+                                  touch: false,
+                                  content: "Anonymous to other students.",
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-sunglasses"></i>
+                              Anonymous
+                            </span>
+                            $${res.locals.enrollment.role === "staff" ||
+                            searchResults
+                              .messageAuthorUserNameSearchResultMessage
+                              .authorEnrollment.id === res.locals.enrollment.id
+                              ? html`
+                                  (<span
+                                    class="online-indicator online-indicator--inline online-indicator--small"
+                                  >
+                                    $${searchResults
+                                      .messageAuthorUserNameSearchResultMessage
+                                      .authorEnrollment.user.avatar === null
+                                      ? html`<i
+                                          class="bi bi-person-circle"
+                                        ></i>`
+                                      : html`
+                                          <img
+                                            src="${searchResults
+                                              .messageAuthorUserNameSearchResultMessage
+                                              .authorEnrollment.user.avatar}"
+                                            alt="${searchResults
+                                              .messageAuthorUserNameSearchResultMessage
+                                              .authorEnrollment.user.name}"
+                                            class="avatar avatar--xs avatar--vertical-align"
+                                          />
+                                        `}
+                                    <span
+                                      data-last-seen-online-at="${conversation
+                                        .authorEnrollment.user
+                                        .lastSeenOnlineAt}"
+                                      oninteractive="${javascript`
+                                        // onlineIndicator(this);
+                                      `}"
+                                    ></span>
+                                  </span>
+                                  $${searchResults.messageAuthorUserNameSearchResultHighlight})
+                                `
+                              : html``}
+                          `}
+                    </div>
+                    <div>
+                      $${lodash.truncate(
+                        searchResults.messageAuthorUserNameSearchResultMessage
+                          .contentSearch,
+                        {
+                          length: 100,
+                          separator: /\W/,
+                        }
+                      )}
+                    </div>
+                  </div>
+                `
+              : typeof searchResults.messageContentSearchResultSnippet ===
+                  "string" &&
+                searchResults.messageContentSearchResultMessage !== undefined
+              ? html`
+                  <div>
+                    <div>
+                      $${searchResults.messageContentSearchResultMessage
+                        .anonymousAt === null
                         ? html`
-                            (<span
+                            <span
                               class="online-indicator online-indicator--inline online-indicator--small"
                             >
-                              $${conversation.messageContentSearchResultMessage
+                              $${searchResults.messageContentSearchResultMessage
                                 .authorEnrollment.user.avatar === null
                                 ? html`<i class="bi bi-person-circle"></i>`
-                                : html`<img
-                                    src="${conversation
-                                      .messageContentSearchResultMessage
-                                      .authorEnrollment.user.avatar}"
-                                    alt="${conversation
-                                      .messageContentSearchResultMessage
-                                      .authorEnrollment.user.name}"
-                                    class="avatar avatar--xs avatar--vertical-align"
-                                  />`}
+                                : html`
+                                    <img
+                                      src="${searchResults
+                                        .messageContentSearchResultMessage
+                                        .authorEnrollment.user.avatar}"
+                                      alt="${searchResults
+                                        .messageContentSearchResultMessage
+                                        .authorEnrollment.user.name}"
+                                      class="avatar avatar--xs avatar--vertical-align"
+                                    />
+                                  `}
                               <span
                                 data-last-seen-online-at="${conversation
                                   .authorEnrollment.user.lastSeenOnlineAt}"
@@ -9968,33 +9936,83 @@ export default async function courselore({
                                 `}"
                               ></span>
                             </span>
-                            ${conversation.messageContentSearchResultMessage
-                              .authorEnrollment.user.name})
+                            ${searchResults.messageContentSearchResultMessage
+                              .authorEnrollment.user.name}
                           `
-                        : html``}
-                    `}
-              </div>
-              <div>$${conversation.messageContentSearchResultSnippet}</div>
-            </div>
+                        : html`
+                            <span
+                              class="text--violet"
+                              oninteractive="${javascript`
+                              tippy(this, {
+                                touch: false,
+                                content: "Anonymous to other students.",
+                              });
+                            `}"
+                            >
+                              <i class="bi bi-sunglasses"></i>
+                              Anonymous
+                            </span>
+                            $${res.locals.enrollment.role === "staff" ||
+                            searchResults.messageContentSearchResultMessage
+                              .authorEnrollment.id === res.locals.enrollment.id
+                              ? html`
+                                  (<span
+                                    class="online-indicator online-indicator--inline online-indicator--small"
+                                  >
+                                    $${searchResults
+                                      .messageContentSearchResultMessage
+                                      .authorEnrollment.user.avatar === null
+                                      ? html`<i
+                                          class="bi bi-person-circle"
+                                        ></i>`
+                                      : html`<img
+                                          src="${searchResults
+                                            .messageContentSearchResultMessage
+                                            .authorEnrollment.user.avatar}"
+                                          alt="${searchResults
+                                            .messageContentSearchResultMessage
+                                            .authorEnrollment.user.name}"
+                                          class="avatar avatar--xs avatar--vertical-align"
+                                        />`}
+                                    <span
+                                      data-last-seen-online-at="${conversation
+                                        .authorEnrollment.user
+                                        .lastSeenOnlineAt}"
+                                      oninteractive="${javascript`
+                                        // onlineIndicator(this);
+                                      `}"
+                                    ></span>
+                                  </span>
+                                  ${searchResults
+                                    .messageContentSearchResultMessage
+                                    .authorEnrollment.user.name})
+                                `
+                              : html``}
+                          `}
+                    </div>
+                    <div>
+                      $${searchResults.messageContentSearchResultSnippet}
+                    </div>
+                  </div>
+                `
+              : html``}
           `
-        : conversation.message !== undefined
+        : html``}
+      $${message !== undefined
         ? html`
             <div>
               <div class="secondary">
-                $${conversation.message.anonymousAt === null
+                $${message.anonymousAt === null
                   ? html`
                       <span
                         class="online-indicator online-indicator--inline online-indicator--small"
                       >
-                        $${conversation.message.authorEnrollment.user.avatar ===
-                        null
+                        $${message.authorEnrollment.user.avatar === null
                           ? html`<i class="bi bi-person-circle"></i>`
                           : html`
                               <img
-                                src="${conversation.message.authorEnrollment
-                                  .user.avatar}"
-                                alt="${conversation.message.authorEnrollment
-                                  .user.name}"
+                                src="${message.authorEnrollment.user.avatar}"
+                                alt="${message.authorEnrollment.user.name}"
                                 class="avatar avatar--xs avatar--vertical-align"
                               />
                             `}
@@ -10006,7 +10024,7 @@ export default async function courselore({
                           `}"
                         ></span>
                       </span>
-                      ${conversation.message.authorEnrollment.user.name}
+                      ${message.authorEnrollment.user.name}
                     `
                   : html`
                       <span
@@ -10022,20 +10040,17 @@ export default async function courselore({
                         Anonymous
                       </span>
                       $${res.locals.enrollment.role === "staff" ||
-                      conversation.message.authorEnrollment.id ===
-                        res.locals.enrollment.id
+                      message.authorEnrollment.id === res.locals.enrollment.id
                         ? html`
                             (<span
                               class="online-indicator online-indicator--inline online-indicator--small"
                             >
-                              $${conversation.message.authorEnrollment.user
-                                .avatar === null
+                              $${message.authorEnrollment.user.avatar === null
                                 ? html`<i class="bi bi-person-circle"></i>`
                                 : html`<img
-                                    src="${conversation.message.authorEnrollment
-                                      .user.avatar}"
-                                    alt="${conversation.message.authorEnrollment
-                                      .user.name}"
+                                    src="${message.authorEnrollment.user
+                                      .avatar}"
+                                    alt="${message.authorEnrollment.user.name}"
                                     class="avatar avatar--xs avatar--vertical-align"
                                   />`}
                               <span
@@ -10046,13 +10061,13 @@ export default async function courselore({
                                 `}"
                               ></span>
                             </span>
-                            ${conversation.message.authorEnrollment.user.name})
+                            ${message.authorEnrollment.user.name})
                           `
                         : html``}
                     `}
               </div>
               <div>
-                $${lodash.truncate(conversation.message.contentSearch, {
+                $${lodash.truncate(message.contentSearch, {
                   length: 100,
                   separator: /\W/,
                 })}
