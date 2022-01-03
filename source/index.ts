@@ -15931,15 +15931,13 @@ ${value}</textarea
                                   });
                                 `}"
                               >
-                                $${res.locals.user.avatar === null
-                                  ? html`<i class="bi bi-person-circle"></i>`
-                                  : html`
-                                      <img
-                                        src="${res.locals.user.avatar}"
-                                        alt="${res.locals.user.name}"
-                                        class="avatar avatar--sm avatar--vertical-align"
-                                      />
-                                    `}
+                                $${userPartial({
+                                  req,
+                                  res,
+                                  user: res.locals.user,
+                                  onlineIndicator: false,
+                                  name: false,
+                                })}
                                 Signed by ${res.locals.user.name}
                               </span>
                               <span
