@@ -8869,80 +8869,49 @@ export default async function courselore({
         });
         if (conversation === undefined) return [];
 
-        let searchResult:
-          | {
-              type: "conversationTitle";
-              highlight: string;
-            }
-          | {
-              type: "messageAuthorUserName";
-              message: NonNullable<ReturnType<typeof getMessage>>;
-              highlight: string;
-            }
-          | {
-              type: "messageContent";
-              message: NonNullable<ReturnType<typeof getMessage>>;
-              snippet: string;
-            }
-          | undefined;
-
-        if (
+        const searchResult =
           conversationWithSearchResult.conversationTitleSearchResultHighlight !==
           null
-        )
-          searchResult = {
-            type: "conversationTitle",
-            highlight:
-              conversationWithSearchResult.conversationTitleSearchResultHighlight,
-          };
-
-        if (
-          conversationWithSearchResult.messageAuthorUserNameSearchResultMessageReference !==
-            null &&
-          conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight !==
-            null
-        )
-          return [
-            {
-              conversation,
-              searchResults: {
-                messageAuthorUserNameSearchResultMessage: getMessage({
+            ? {
+                type: "conversationTitle",
+                highlight:
+                  conversationWithSearchResult.conversationTitleSearchResultHighlight,
+              }
+            : conversationWithSearchResult.messageAuthorUserNameSearchResultMessageReference !==
+                null &&
+              conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight !==
+                null
+            ? {
+                type: "messageAuthorUserName",
+                message: getMessage({
                   req,
                   res,
                   conversation,
                   messageReference:
                     conversationWithSearchResult.messageAuthorUserNameSearchResultMessageReference,
-                }),
-                messageAuthorUserNameSearchResultHighlight:
+                })!,
+                highlight:
                   conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight,
-              },
-            },
-          ];
-
-        if (
-          conversationWithSearchResult.messageContentSearchResultMessageReference !==
-            null &&
-          conversationWithSearchResult.messageContentSearchResultSnippet !==
-            null
-        )
-          return [
-            {
-              conversation,
-              searchResults: {
-                messageContentSearchResultMessage: getMessage({
+              }
+            : conversationWithSearchResult.messageContentSearchResultMessageReference !==
+                null &&
+              conversationWithSearchResult.messageContentSearchResultSnippet !==
+                null
+            ? {
+                type: "messageContent",
+                message: getMessage({
                   req,
                   res,
                   conversation,
                   messageReference:
                     conversationWithSearchResult.messageContentSearchResultMessageReference,
-                }),
-                messageContentSearchResultSnippet:
+                })!,
+                snippet:
                   conversationWithSearchResult.messageContentSearchResultSnippet,
-              },
-            },
-          ];
+              }
+            : undefined;
 
-        return [{ conversation, searchResults: searchResult }];
+        return [{ conversation, searchResult }];
       });
 
     return applicationLayout({
