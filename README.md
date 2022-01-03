@@ -14,15 +14,6 @@
 
 **Hard Deadline:** 2022-02-01
 
-**November**
-
-- Chat.
-
-**December**
-
-- More granular control of who’s in a conversation (1-on-1, just a group of people, and so forth).
-- Performance.
-
 <details>
 <summary><strong>Backlog</strong></summary>
 
@@ -332,8 +323,7 @@ $${searchResults !== undefined
     - `.avatar`
     - `.online-indicator`
   - Remove `onlineIndicator`
-- 1-to-1 conversation: Use background color to distinguish between people, so you don’t have to show their names over and over.
-- Sticky headers (showing author name) in messages?
+- `position: sticky` headers (showing author name) in messages?
 - Revisit unread management:
   - Don’t store all readings, but only the latest for a given conversation.
   - Line to separate new messages instead of little unread indicator.
@@ -357,6 +347,15 @@ $${searchResults !== undefined
   - Messages in conversation.
   - Conversations on sidebar.
 - Test with thousands of messages.
+
+### Advanced Access Control
+
+- Chats with only a few people.
+- 1-to-1 conversation: Use background color to distinguish between people, so you don’t have to show their names over and over.
+- Groups, for example, Graders, Project Advisors, Group members, different sections on courses.
+  - Some groups are available only to students, while others only to staff.
+  - People assign themselves to groups.
+- Add mentions like `@group-3`.
 
 ### Release
 
@@ -403,14 +402,6 @@ $${searchResults !== undefined
 - Assign questions to CAs.
 - Scroll the conversations list to the current conversation doesn’t work on mobile.
 - Save drafts of conversations you’re creating.
-
-### Advanced Access Control
-
-- Chats with only a few people.
-- Groups, for example, Graders, Project Advisors, Group members, different sections on courses.
-  - Some groups are available only to students, while others only to staff.
-  - People assign themselves to groups.
-- Add mentions like `@group-3`.
 
 ### Anonymity
 
