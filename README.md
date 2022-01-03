@@ -23,9 +23,6 @@
   - Review
     - `bi-person-circle`
     - `avatar`
-  - Remove CSS
-    - `.avatar`
-    - `.online-indicator`
   - Remove `onlineIndicator`
   - Finish using `userPartial` in every location where it belongs.
   - Don’t disclose emails to students.
