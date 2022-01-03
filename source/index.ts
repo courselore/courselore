@@ -12516,10 +12516,8 @@ ${value}</textarea
                       $${conversationPartial({
                         req: narrowReq,
                         res: narrowRes,
-                        conversation: {
-                          ...conversation,
-                          message,
-                        },
+                        conversation,
+                        message,
                       })}
                     </div>
                   `,
