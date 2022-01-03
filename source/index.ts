@@ -2717,7 +2717,7 @@ export default async function courselore({
               sm: css`
                 width: var(--space--6);
                 height: var(--space--6);
-                vertical-align: var(--space---2);
+                vertical-align: var(--space---1-5);
               `,
               xl: css`
                 width: var(--space--32);
@@ -2742,7 +2742,7 @@ export default async function courselore({
               sm: css`
                 width: var(--space--6);
                 height: var(--space--6);
-                vertical-align: var(--space---2);
+                vertical-align: var(--space---1-5);
               `,
               xl: css`
                 width: var(--space--32);
@@ -2798,7 +2798,7 @@ export default async function courselore({
                 vertical-align: var(--space---1);
               `,
               sm: css`
-                vertical-align: var(--space---2);
+                vertical-align: var(--space---1-5);
               `,
               xl: css``,
             }[size]}
@@ -2962,7 +2962,7 @@ export default async function courselore({
               sm: css`
                 width: var(--space--6);
                 height: var(--space--6);
-                vertical-align: var(--space---2);
+                vertical-align: var(--space---1-5);
               `,
               xl: css`
                 width: var(--space--32);
