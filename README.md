@@ -22,6 +22,7 @@
 - Avatars.
   - Finish using `userPartial` in every location where it belongs.
     - `bi-person-circle`
+    - `bi-sunglasses`
     - `avatar`
   - Don’t disclose emails to students.
   - `TODO`
