@@ -8733,11 +8733,11 @@ export default async function courselore({
     const conversationsWithSearchResults = database
       .all<{
         reference: string;
-        conversationTitleSearchResultHighlight: string | null;
-        messageAuthorUserNameSearchResultMessageReference: string | null;
-        messageAuthorUserNameSearchResultHighlight: string | null;
-        messageContentSearchResultMessageReference: string | null;
-        messageContentSearchResultSnippet: string | null;
+        conversationTitleSearchResultHighlight?: string | null;
+        messageAuthorUserNameSearchResultMessageReference?: string | null;
+        messageAuthorUserNameSearchResultHighlight?: string | null;
+        messageContentSearchResultMessageReference?: string | null;
+        messageContentSearchResultSnippet?: string | null;
       }>(
         sql`
           SELECT "conversations"."reference"
