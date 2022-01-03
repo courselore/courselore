@@ -29,7 +29,6 @@
 ### Chat
 
 - Add support for out-of-band tippy contents.
-  - Review `userPartial`’s implementation.
   - `TODO`
   - Finish using `userPartial` in every location where it belongs.
   - Add staff badge to `userPartial`.
