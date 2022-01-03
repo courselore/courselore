@@ -4625,7 +4625,6 @@ export default async function courselore({
                       <img
                         src="${res.locals.user.avatar ?? ""}"
                         alt="Avatar"
-                        class="avatar"
                         style="${css`
                           width: 100%;
                           height: 100%;
