@@ -2842,11 +2842,15 @@ export default async function courselore({
             & > * {
               grid-area: 1 / 1;
             }
-            vertical-align: ${{
-              xs: "var(--space---1)",
-              sm: "var(--space---2)",
-              xl: "var(--space---2)",
-            }[size]};
+            ${{
+              xs: css`
+                vertical-align: var(--space---1);
+              `,
+              sm: css`
+                vertical-align: var(--space---2);
+              `,
+              xl: css``,
+            }[size]}
           `}"
         >
           $${output}
@@ -2866,8 +2870,8 @@ export default async function courselore({
                   height: var(--space--2);
                 `,
                 xl: css`
-                  width: var(--space--2);
-                  height: var(--space--2);
+                  width: var(--space--3);
+                  height: var(--space--3);
                 `,
               }[size]}
               border: var(--border-width--1) solid var(--color--green--50);
@@ -2876,7 +2880,17 @@ export default async function courselore({
               }
               border-radius: var(--border-radius--circle);
               place-self: end;
-              transform: translate(20%, 20%);
+              ${{
+                xs: css`
+                  transform: translate(20%, 20%);
+                `,
+                sm: css`
+                  transform: translate(20%, 20%);
+                `,
+                xl: css`
+                  transform: translate(-100%, -100%);
+                `,
+              }[size]}
               display: none;
             `}"
             oninteractive="${javascript`
@@ -2906,6 +2920,9 @@ export default async function courselore({
               touch: false,
               interactive: true,
               appendTo: document.body,
+              // TODO: REMOVE
+              showOnCreate: true,
+              trigger: "manual",
               content: ${tippyContent({
                 req,
                 res,
@@ -3001,7 +3018,6 @@ export default async function courselore({
               xl: css`
                 width: var(--space--32);
                 height: var(--space--32);
-                vertical-align: var(--space---2);
               `,
             }[size]}
           `}"
