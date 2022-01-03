@@ -20,10 +20,10 @@
 ### Chat
 
 - Avatars.
+  - Finish using `userPartial` in every location where it belongs.
   - Review
     - `bi-person-circle`
     - `avatar`
-  - Finish using `userPartial` in every location where it belongs.
   - Don’t disclose emails to students.
   - `TODO`
   - Add staff badge to `userPartial`.
