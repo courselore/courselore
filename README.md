@@ -21,7 +21,6 @@
 
 - Avatars.
   - Finish using `userPartial` in every location where it belongs.
-  - Review
     - `bi-person-circle`
     - `avatar`
   - Don’t disclose emails to students.
