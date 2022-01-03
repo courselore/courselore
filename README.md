@@ -20,7 +20,6 @@
 ### Chat
 
 - Avatars.
-  - Don’t disclose emails to students.
   - Review
     - `bi-person-circle`
   - Remove CSS
@@ -28,6 +27,7 @@
     - `.online-indicator`
   - Remove `onlineIndicator`
   - Finish using `userPartial` in every location where it belongs.
+  - Don’t disclose emails to students.
   - `TODO`
   - Add staff badge to `userPartial`.
   - Test everything in different browsers.
