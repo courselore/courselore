@@ -4628,6 +4628,7 @@ export default async function courselore({
                         style="${css`
                           width: 100%;
                           height: 100%;
+                          border-radius: var(--border-radius--circle);
                         `}"
                       />
                     </button>
