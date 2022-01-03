@@ -23,7 +23,6 @@
   - Review
     - `bi-person-circle`
     - `avatar`
-  - Remove `onlineIndicator`
   - Finish using `userPartial` in every location where it belongs.
   - Don’t disclose emails to students.
   - `TODO`
