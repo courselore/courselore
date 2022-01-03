@@ -31,7 +31,8 @@
 - Update better-sqlite3
 - Add support for out-of-band tippy contents.
   - In `conversationPartial`, separate search results from `conversation`.
-  - Review `userPartial`.
+  - Review `userPartial`’s implementation.
+  - Finish using `userPartial` in every location where it belongs.
   - Test everything in different browsers.
 - README
   - Description.
