@@ -29,8 +29,8 @@
 ### Chat
 
 - Add support for out-of-band tippy contents.
-  - `TODO`
   - Finish using `userPartial` in every location where it belongs.
+  - `TODO`
   - Add staff badge to `userPartial`.
   - Test everything in different browsers.
 
