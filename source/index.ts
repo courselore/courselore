@@ -8870,17 +8870,17 @@ export default async function courselore({
         if (conversation === undefined) return [];
 
         const searchResult =
-          conversationWithSearchResult.conversationTitleSearchResultHighlight !==
-          null
+          typeof conversationWithSearchResult.conversationTitleSearchResultHighlight ===
+          "string"
             ? ({
                 type: "conversationTitle",
                 highlight:
                   conversationWithSearchResult.conversationTitleSearchResultHighlight,
               } as const)
-            : conversationWithSearchResult.messageAuthorUserNameSearchResultMessageReference !==
-                null &&
-              conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight !==
-                null
+            : typeof conversationWithSearchResult.messageAuthorUserNameSearchResultMessageReference ===
+                "string" &&
+              typeof conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight ===
+                "string"
             ? ({
                 type: "messageAuthorUserName",
                 message: getMessage({
@@ -8893,10 +8893,10 @@ export default async function courselore({
                 highlight:
                   conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight,
               } as const)
-            : conversationWithSearchResult.messageContentSearchResultMessageReference !==
-                null &&
-              conversationWithSearchResult.messageContentSearchResultSnippet !==
-                null
+            : typeof conversationWithSearchResult.messageContentSearchResultMessageReference ===
+                "string" &&
+              typeof conversationWithSearchResult.messageContentSearchResultSnippet ===
+                "string"
             ? ({
                 type: "messageContent",
                 message: getMessage({
