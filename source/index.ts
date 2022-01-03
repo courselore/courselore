@@ -4178,37 +4178,31 @@ export default async function courselore({
           })}`
         );
       }
-      // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
       const user = database.get<{ id: number; email: string; name: string }>(
         sql`
-          SELECT * FROM "users" WHERE "id" = ${Number(
-            database.run(
-              sql`
-                INSERT INTO "users" (
-                  "createdAt",
-                  "lastSeenOnlineAt",
-                  "email",
-                  "password",
-                  "emailConfirmedAt",
-                  "name",
-                  "nameSearch",
-                  "avatarlessBackgroundColor",
-                  "emailNotifications"
-                )
-                VALUES (
-                  ${new Date().toISOString()},
-                  ${new Date().toISOString()},
-                  ${req.body.email},
-                  ${await argon2.hash(req.body.password, argon2Options)},
-                  ${null},
-                  ${req.body.name},
-                  ${html`${req.body.name}`},
-                  ${lodash.sample(userAvatarlessBackgroundColors)},
-                  ${"staff-announcements-and-mentions"}
-                )
-              `
-            ).lastInsertRowid
-          )}
+          INSERT INTO "users" (
+            "createdAt",
+            "lastSeenOnlineAt",
+            "email",
+            "password",
+            "emailConfirmedAt",
+            "name",
+            "nameSearch",
+            "avatarlessBackgroundColor",
+            "emailNotifications"
+          )
+          VALUES (
+            ${new Date().toISOString()},
+            ${new Date().toISOString()},
+            ${req.body.email},
+            ${await argon2.hash(req.body.password, argon2Options)},
+            ${null},
+            ${req.body.name},
+            ${html`${req.body.name}`},
+            ${lodash.sample(userAvatarlessBackgroundColors)},
+            ${"staff-announcements-and-mentions"}
+          )
+          RETURNING *
         `
       )!;
       sendConfirmationEmail(user);
@@ -13323,7 +13317,6 @@ ${value}</textarea
           WHERE "id" = ${res.locals.course.id}
         `
       );
-      // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
       const conversation = database.get<{
         id: number;
         reference: string;
@@ -13332,38 +13325,33 @@ ${value}</textarea
         title: string;
       }>(
         sql`
-          SELECT * FROM "conversations" WHERE "id" = ${Number(
-            database.run(
-              sql`
-                INSERT INTO "conversations" (
-                  "createdAt",
-                  "course",
-                  "reference",
-                  "authorEnrollment",
-                  "anonymousAt",
-                  "type",
-                  "pinnedAt",
-                  "staffOnlyAt",
-                  "title",
-                  "titleSearch",
-                  "nextMessageReference"
-                )
-                VALUES (
-                  ${new Date().toISOString()},
-                  ${res.locals.course.id},
-                  ${String(res.locals.course.nextConversationReference)},
-                  ${res.locals.enrollment.id},
-                  ${req.body.isAnonymous ? new Date().toISOString() : null},
-                  ${req.body.type},
-                  ${req.body.isPinned ? new Date().toISOString() : null},
-                  ${req.body.isStaffOnly ? new Date().toISOString() : null},
-                  ${req.body.title},
-                  ${html`${req.body.title}`},
-                  ${2}
-                )
-              `
-            ).lastInsertRowid
-          )}
+          INSERT INTO "conversations" (
+            "createdAt",
+            "course",
+            "reference",
+            "authorEnrollment",
+            "anonymousAt",
+            "type",
+            "pinnedAt",
+            "staffOnlyAt",
+            "title",
+            "titleSearch",
+            "nextMessageReference"
+          )
+          VALUES (
+            ${new Date().toISOString()},
+            ${res.locals.course.id},
+            ${String(res.locals.course.nextConversationReference)},
+            ${res.locals.enrollment.id},
+            ${req.body.isAnonymous ? new Date().toISOString() : null},
+            ${req.body.type},
+            ${req.body.isPinned ? new Date().toISOString() : null},
+            ${req.body.isStaffOnly ? new Date().toISOString() : null},
+            ${req.body.title},
+            ${html`${req.body.title}`},
+            ${2}
+          )
+          RETURNING *
         `
       )!;
       for (const tagReference of req.body.tagsReferences)
@@ -13392,7 +13380,6 @@ ${value}</textarea
           res,
           markdown: req.body.content,
         });
-        // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
         const message = database.get<{
           id: number;
           reference: string;
@@ -13400,30 +13387,25 @@ ${value}</textarea
           contentSearch: string;
         }>(
           sql`
-            SELECT * FROM "messages" WHERE "id" = ${Number(
-              database.run(
-                sql`
-                  INSERT INTO "messages" (
-                    "createdAt",
-                    "conversation",
-                    "reference",
-                    "authorEnrollment",
-                    "anonymousAt",
-                    "content",
-                    "contentSearch"
-                  )
-                  VALUES (
-                    ${new Date().toISOString()},
-                    ${conversation.id},
-                    ${"1"},
-                    ${res.locals.enrollment.id},
-                    ${req.body.isAnonymous ? new Date().toISOString() : null},
-                    ${req.body.content},
-                    ${processedContent.text}
-                  )
-                `
-              ).lastInsertRowid
-            )}
+            INSERT INTO "messages" (
+              "createdAt",
+              "conversation",
+              "reference",
+              "authorEnrollment",
+              "anonymousAt",
+              "content",
+              "contentSearch"
+            )
+            VALUES (
+              ${new Date().toISOString()},
+              ${conversation.id},
+              ${"1"},
+              ${res.locals.enrollment.id},
+              ${req.body.isAnonymous ? new Date().toISOString() : null},
+              ${req.body.content},
+              ${processedContent.text}
+            )
+            RETURNING *
           `
         )!;
         database.run(
@@ -16573,35 +16555,29 @@ ${value}</textarea
             WHERE "id" = ${res.locals.conversation.id}
           `
         );
-        // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
         const message = database.get<{ id: number; reference: string }>(
           sql`
-            SELECT * FROM "messages" WHERE "id" = ${Number(
-              database.run(
-                sql`
-                  INSERT INTO "messages" (
-                    "createdAt",
-                    "conversation",
-                    "reference",
-                    "authorEnrollment",
-                    "anonymousAt",
-                    "answerAt",
-                    "content",
-                    "contentSearch"
-                  )
-                  VALUES (
-                    ${new Date().toISOString()},
-                    ${res.locals.conversation.id},
-                    ${String(res.locals.conversation.nextMessageReference)},
-                    ${res.locals.enrollment.id},
-                    ${req.body.isAnonymous ? new Date().toISOString() : null},
-                    ${req.body.isAnswer ? new Date().toISOString() : null},
-                    ${req.body.content},
-                    ${processedContent.text}
-                  )
-                `
-              ).lastInsertRowid
-            )}
+            INSERT INTO "messages" (
+              "createdAt",
+              "conversation",
+              "reference",
+              "authorEnrollment",
+              "anonymousAt",
+              "answerAt",
+              "content",
+              "contentSearch"
+            )
+            VALUES (
+              ${new Date().toISOString()},
+              ${res.locals.conversation.id},
+              ${String(res.locals.conversation.nextMessageReference)},
+              ${res.locals.enrollment.id},
+              ${req.body.isAnonymous ? new Date().toISOString() : null},
+              ${req.body.isAnswer ? new Date().toISOString() : null},
+              ${req.body.content},
+              ${processedContent.text}
+            )
+            RETURNING *
           `
         )!;
         database.run(
@@ -17114,102 +17090,90 @@ ${value}</textarea
         const password = await argon2.hash("courselore", argon2Options);
         const name = casual.full_name;
         const avatarIndices = lodash.shuffle([...new Array(250).keys()]);
-        // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
         const demonstrationUser = database.get<{ id: number; name: string }>(
           sql`
-            SELECT * FROM "users" WHERE "id" = ${Number(
-              database.run(
-                sql`
-                  INSERT INTO "users" (
-                    "createdAt",
-                    "lastSeenOnlineAt",
-                    "email",
-                    "password",
-                    "emailConfirmedAt",
-                    "name",
-                    "nameSearch",
-                    "avatar",
-                    "avatarlessBackgroundColor",
-                    "biography",
-                    "emailNotifications"
-                  )
-                  VALUES (
-                    ${new Date().toISOString()},
-                    ${new Date(
-                      Date.now() - lodash.random(0, 5 * 60 * 60 * 1000)
-                    ).toISOString()},
-                    ${`${slugify(name)}--${cryptoRandomString({
-                      length: 5,
-                      type: "numeric",
-                    })}@courselore.org`},
-                    ${password},
-                    ${new Date().toISOString()},
-                    ${name},
-                    ${html`${name}`},
-                    ${`${baseURL}/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`},
-                    ${lodash.sample(userAvatarlessBackgroundColors)},
-                    ${casual.sentences(lodash.random(5, 7))},
-                    ${"none"}
-                  )
-                `
-              ).lastInsertRowid
-            )}
+            INSERT INTO "users" (
+              "createdAt",
+              "lastSeenOnlineAt",
+              "email",
+              "password",
+              "emailConfirmedAt",
+              "name",
+              "nameSearch",
+              "avatar",
+              "avatarlessBackgroundColor",
+              "biography",
+              "emailNotifications"
+            )
+            VALUES (
+              ${new Date().toISOString()},
+              ${new Date(
+                Date.now() - lodash.random(0, 5 * 60 * 60 * 1000)
+              ).toISOString()},
+              ${`${slugify(name)}--${cryptoRandomString({
+                length: 5,
+                type: "numeric",
+              })}@courselore.org`},
+              ${password},
+              ${new Date().toISOString()},
+              ${name},
+              ${html`${name}`},
+              ${`${baseURL}/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`},
+              ${lodash.sample(userAvatarlessBackgroundColors)},
+              ${casual.sentences(lodash.random(5, 7))},
+              ${"none"}
+            )
+            RETURNING *
           `
         )!;
 
         const users = lodash.times(150, () => {
           const name = casual.full_name;
-          // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
           return database.get<{
             id: number;
             email: string;
             name: string;
           }>(
             sql`
-              SELECT * FROM "users" WHERE "id" = ${Number(
-                database.run(
-                  sql`
-                    INSERT INTO "users" (
-                      "createdAt",
-                      "lastSeenOnlineAt",
-                      "email",
-                      "password",
-                      "emailConfirmedAt",
-                      "name",
-                      "nameSearch",
-                      "avatar",
-                      "avatarlessBackgroundColor",
-                      "biography",
-                      "emailNotifications"
-                    )
-                    VALUES (
-                      ${new Date().toISOString()},
-                      ${new Date(
-                        Date.now() -
-                          (Math.random() < 0.5
-                            ? 0
-                            : lodash.random(0, 5 * 60 * 60 * 1000))
-                      ).toISOString()},
-                      ${`${slugify(name)}--${cryptoRandomString({
-                        length: 5,
-                        type: "numeric",
-                      })}@courselore.org`},
-                      ${password},
-                      ${new Date().toISOString()},
-                      ${name},
-                      ${html`${name}`},
-                      ${
-                        Math.random() < 0.6
-                          ? `${baseURL}/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
-                          : null
-                      },
-                      ${lodash.sample(userAvatarlessBackgroundColors)},
-                      ${casual.sentences(lodash.random(5, 7))},
-                      ${"none"}
-                    )
-                  `
-                ).lastInsertRowid
-              )}
+              INSERT INTO "users" (
+                "createdAt",
+                "lastSeenOnlineAt",
+                "email",
+                "password",
+                "emailConfirmedAt",
+                "name",
+                "nameSearch",
+                "avatar",
+                "avatarlessBackgroundColor",
+                "biography",
+                "emailNotifications"
+              )
+              VALUES (
+                ${new Date().toISOString()},
+                ${new Date(
+                  Date.now() -
+                    (Math.random() < 0.5
+                      ? 0
+                      : lodash.random(0, 5 * 60 * 60 * 1000))
+                ).toISOString()},
+                ${`${slugify(name)}--${cryptoRandomString({
+                  length: 5,
+                  type: "numeric",
+                })}@courselore.org`},
+                ${password},
+                ${new Date().toISOString()},
+                ${name},
+                ${html`${name}`},
+                ${
+                  Math.random() < 0.6
+                    ? `${baseURL}/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
+                    : null
+                },
+                ${lodash.sample(userAvatarlessBackgroundColors)},
+                ${casual.sentences(lodash.random(5, 7))},
+                ${"none"}
+              )
+              RETURNING *
             `
           )!;
         });
@@ -17459,7 +17423,6 @@ ${value}</textarea
                   )
                 ).toISOString()
               );
-            // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
             const title = `${lodash.capitalize(
               casual.words(lodash.random(3, 9))
             )}${type === "question" ? "?" : ""}`;
@@ -17471,46 +17434,35 @@ ${value}</textarea
               title: string;
             }>(
               sql`
-                SELECT * FROM "conversations" WHERE "id" = ${Number(
-                  database.run(
-                    sql`
-                      INSERT INTO "conversations" (
-                        "createdAt",
-                        "updatedAt",
-                        "course",
-                        "reference",
-                        "authorEnrollment",
-                        "anonymousAt",      
-                        "type",
-                        "pinnedAt",
-                        "staffOnlyAt",
-                        "title",
-                        "titleSearch",
-                        "nextMessageReference"
-                      )
-                      VALUES (
-                        ${conversationCreatedAt},
-                        ${messageCreatedAts[messageCreatedAts.length - 1]},
-                        ${course.id},
-                        ${String(conversationReference)},
-                        ${lodash.sample(enrollments)!.id},
-                        ${
-                          Math.random() < 0.5 ? new Date().toISOString() : null
-                        },
-                        ${type},
-                        ${
-                          Math.random() < 0.15 ? new Date().toISOString() : null
-                        },
-                        ${
-                          Math.random() < 0.25 ? new Date().toISOString() : null
-                        },
-                        ${title},
-                        ${html`${title}`},
-                        ${nextMessageReference}
-                      )
-                    `
-                  ).lastInsertRowid
-                )}
+                INSERT INTO "conversations" (
+                  "createdAt",
+                  "updatedAt",
+                  "course",
+                  "reference",
+                  "authorEnrollment",
+                  "anonymousAt",      
+                  "type",
+                  "pinnedAt",
+                  "staffOnlyAt",
+                  "title",
+                  "titleSearch",
+                  "nextMessageReference"
+                )
+                VALUES (
+                  ${conversationCreatedAt},
+                  ${messageCreatedAts[messageCreatedAts.length - 1]},
+                  ${course.id},
+                  ${String(conversationReference)},
+                  ${lodash.sample(enrollments)!.id},
+                  ${Math.random() < 0.5 ? new Date().toISOString() : null},
+                  ${type},
+                  ${Math.random() < 0.15 ? new Date().toISOString() : null},
+                  ${Math.random() < 0.25 ? new Date().toISOString() : null},
+                  ${title},
+                  ${html`${title}`},
+                  ${nextMessageReference}
+                )
+                RETURNING *
               `
             )!;
 
@@ -17542,64 +17494,54 @@ ${value}</textarea
                 res,
                 markdown: content,
               });
-              // FIXME: https://github.com/JoshuaWise/better-sqlite3/issues/654
               const message = database.get<{ id: number }>(
                 sql`
-                  SELECT * FROM "messages" WHERE "id" = ${Number(
-                    database.run(
-                      sql`
-                        INSERT INTO "messages" (
-                          "createdAt",
-                          "updatedAt",
-                          "conversation",
-                          "reference",
-                          "authorEnrollment",
-                          "anonymousAt",
-                          "answerAt",
-                          "content",
-                          "contentSearch"
-                        )
-                        VALUES (
-                          ${messageCreatedAt},
-                          ${
-                            Math.random() < 0.8
-                              ? null
-                              : new Date(
-                                  Math.min(
-                                    Date.now(),
-                                    new Date(messageCreatedAt).getTime() +
-                                      lodash.random(
-                                        5 * 60 * 60 * 1000,
-                                        18 * 60 * 60 * 1000
-                                      )
-                                  )
-                                ).toISOString()
-                          },
-                          ${conversation.id},
-                          ${String(messageReference)},
-                          ${
-                            messageReference === 1
-                              ? conversation.authorEnrollment
-                              : lodash.sample(enrollments)!.id
-                          },
-                          ${
-                            messageReference === 1
-                              ? conversation.anonymousAt
-                              : Math.random() < 0.5
-                              ? new Date().toISOString()
-                              : null
-                          },
-                          ${
-                            Math.random() < 0.5
-                              ? new Date().toISOString()
-                              : null
-                          },
-                          ${content},
-                          ${processedContent.text}
-                        )
-                      `
-                    ).lastInsertRowid
-                  )}
+                  INSERT INTO "messages" (
+                    "createdAt",
+                    "updatedAt",
+                    "conversation",
+                    "reference",
+                    "authorEnrollment",
+                    "anonymousAt",
+                    "answerAt",
+                    "content",
+                    "contentSearch"
+                  )
+                  VALUES (
+                    ${messageCreatedAt},
+                    ${
+                      Math.random() < 0.8
+                        ? null
+                        : new Date(
+                            Math.min(
+                              Date.now(),
+                              new Date(messageCreatedAt).getTime() +
+                                lodash.random(
+                                  5 * 60 * 60 * 1000,
+                                  18 * 60 * 60 * 1000
+                                )
+                            )
+                          ).toISOString()
+                    },
+                    ${conversation.id},
+                    ${String(messageReference)},
+                    ${
+                      messageReference === 1
+                        ? conversation.authorEnrollment
+                        : lodash.sample(enrollments)!.id
+                    },
+                    ${
+                      messageReference === 1
+                        ? conversation.anonymousAt
+                        : Math.random() < 0.5
+                        ? new Date().toISOString()
+                        : null
+                    },
+                    ${Math.random() < 0.5 ? new Date().toISOString() : null},
+                    ${content},
+                    ${processedContent.text}
+                  )
+                  RETURNING *
                 `
               )!;
 
