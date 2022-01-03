@@ -2712,10 +2712,12 @@ export default async function courselore({
               xs: css`
                 width: var(--space--4);
                 height: var(--space--4);
+                vertical-align: var(--space---1);
               `,
               sm: css`
                 width: var(--space--6);
                 height: var(--space--6);
+                vertical-align: var(--space---2);
               `,
               xl: css`
                 width: var(--space--32);
@@ -2735,10 +2737,12 @@ export default async function courselore({
               xs: css`
                 width: var(--space--4);
                 height: var(--space--4);
+                vertical-align: var(--space---1);
               `,
               sm: css`
                 width: var(--space--6);
                 height: var(--space--6);
+                vertical-align: var(--space---2);
               `,
               xl: css`
                 width: var(--space--32);
@@ -2811,14 +2815,17 @@ export default async function courselore({
                 xs: css`
                   width: var(--space--1-5);
                   height: var(--space--1-5);
+                  transform: translate(20%, 20%);
                 `,
                 sm: css`
                   width: var(--space--2);
                   height: var(--space--2);
+                  transform: translate(20%, 20%);
                 `,
                 xl: css`
                   width: var(--space--3);
                   height: var(--space--3);
+                  transform: translate(-100%, -100%);
                 `,
               }[size]}
               border: var(--border-width--1) solid var(--color--green--50);
@@ -2827,17 +2834,6 @@ export default async function courselore({
               }
               border-radius: var(--border-radius--circle);
               place-self: end;
-              ${{
-                xs: css`
-                  transform: translate(20%, 20%);
-                `,
-                sm: css`
-                  transform: translate(20%, 20%);
-                `,
-                xl: css`
-                  transform: translate(-100%, -100%);
-                `,
-              }[size]}
               display: none;
             `}"
             oninteractive="${javascript`
@@ -15931,14 +15927,16 @@ ${value}</textarea
                                   });
                                 `}"
                               >
-                                $${userPartial({
-                                  req,
-                                  res,
-                                  user: res.locals.user,
-                                  onlineIndicator: false,
-                                  name: false,
-                                })}
-                                Signed by You
+                                <span>
+                                  $${userPartial({
+                                    req,
+                                    res,
+                                    user: res.locals.user,
+                                    onlineIndicator: false,
+                                    name: false,
+                                  })}
+                                  Signed by You
+                                </span>
                               </span>
                               <span
                                 class="text--violet"
