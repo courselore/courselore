@@ -2920,9 +2920,6 @@ export default async function courselore({
               touch: false,
               interactive: true,
               appendTo: document.body,
-              // TODO: REMOVE
-              showOnCreate: true,
-              trigger: "manual",
               content: ${tippyContent({
                 req,
                 res,
