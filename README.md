@@ -20,7 +20,6 @@
 ### Chat
 
 - Avatars.
-  - Fix colors of `<i class="bi bi-journal-text"></i>` (for example, the course switcher).
   - Don’t disclose emails to students.
   - Review
     - `bi-person-circle`

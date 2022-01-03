@@ -2203,14 +2203,14 @@ export default async function courselore({
                                                 class="button button--tight"
                                                 style="${css`
                                                   color: var(
-                                                    --color--${enrollment.accentColor}--600
+                                                    --color--${enrollment.accentColor}--700
                                                   );
                                                   background-color: var(
                                                     --color--${enrollment.accentColor}--100
                                                   );
                                                   @media (prefers-color-scheme: dark) {
                                                     color: var(
-                                                      --color--${enrollment.accentColor}--500
+                                                      --color--${enrollment.accentColor}--200
                                                     );
                                                     background-color: var(
                                                       --color--${enrollment.accentColor}--800
@@ -4429,14 +4429,14 @@ export default async function courselore({
                               class="button button--tight"
                               style="${css`
                                 color: var(
-                                  --color--${enrollment.accentColor}--600
+                                  --color--${enrollment.accentColor}--700
                                 );
                                 background-color: var(
                                   --color--${enrollment.accentColor}--100
                                 );
                                 @media (prefers-color-scheme: dark) {
                                   color: var(
-                                    --color--${enrollment.accentColor}--500
+                                    --color--${enrollment.accentColor}--200
                                   );
                                   background-color: var(
                                     --color--${enrollment.accentColor}--800
