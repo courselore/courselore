@@ -9405,7 +9405,7 @@ export default async function courselore({
                   </div>
                 </form>
 
-                $${conversations.length === 0
+                $${conversationsWithSearchResults.length === 0
                   ? html`
                       <hr class="separator" />
 
@@ -9425,8 +9425,8 @@ export default async function courselore({
                   : html`
                       $${req.query.search === undefined &&
                       req.query.filters === undefined &&
-                      conversations.some(
-                        (conversation) =>
+                      conversationsWithSearchResults.some(
+                        ({ conversation }) =>
                           conversation.readingsCount <
                           conversation.messagesCount
                       )
@@ -9462,117 +9462,114 @@ export default async function courselore({
                         : html``}
 
                       <div>
-                        $${conversations.map((conversation) => {
-                          const isSelected =
-                            conversation.id === res.locals.conversation?.id;
-                          return html`
-                            <hr
-                              class="separator"
-                              style="${css`
-                                margin: var(--space---px) var(--space--0);
-                              `}"
-                            />
-                            <a
-                              href="${baseURL}/courses/${res.locals.course
-                                .reference}/conversations/${conversation.reference}${qs.stringify(
-                                lodash.omit(req.query, [
-                                  "conversationLayoutSidebarOpenOnSmallScreen",
-                                  "scrollToConversation",
-                                ]),
-                                { addQueryPrefix: true }
-                              )}${conversation.searchResults
-                                .messageAuthorUserNameSearchResultMessage !==
-                              undefined
-                                ? `#message--${conversation.searchResults.messageAuthorUserNameSearchResultMessage.reference}`
-                                : conversation.searchResults
-                                    .messageContentSearchResultMessage !==
-                                  undefined
-                                ? `#message--${conversation.searchResults.messageContentSearchResultMessage.reference}`
-                                : ""}"
-                              class="button ${isSelected
-                                ? "button--blue"
-                                : "button--transparent"}"
-                              style="${css`
-                                width: calc(
-                                  var(--space--2) + 100% + var(--space--2)
-                                );
-                                padding: var(--space--3) var(--space--2);
-                                margin-left: var(--space---2);
-                                position: relative;
-                                align-items: center;
-                                ${isSelected
-                                  ? css`
-                                      & + * {
-                                        margin-bottom: var(--space--0);
-                                      }
-                                    `
-                                  : css``}
-                              `}"
-                              $${isSelected &&
-                              req.query.scrollToConversation !== "false"
-                                ? html`
-                                    oninteractive="${javascript`
+                        $${conversationsWithSearchResults.map(
+                          ({ conversation, searchResult }) => {
+                            const isSelected =
+                              conversation.id === res.locals.conversation?.id;
+                            return html`
+                              <hr
+                                class="separator"
+                                style="${css`
+                                  margin: var(--space---px) var(--space--0);
+                                `}"
+                              />
+                              <a
+                                href="${baseURL}/courses/${res.locals.course
+                                  .reference}/conversations/${conversation.reference}${qs.stringify(
+                                  lodash.omit(req.query, [
+                                    "conversationLayoutSidebarOpenOnSmallScreen",
+                                    "scrollToConversation",
+                                  ]),
+                                  { addQueryPrefix: true }
+                                )}${searchResult?.message?.reference !==
+                                undefined
+                                  ? `#message--${searchResult.message.reference}`
+                                  : ``}"
+                                class="button ${isSelected
+                                  ? "button--blue"
+                                  : "button--transparent"}"
+                                style="${css`
+                                  width: calc(
+                                    var(--space--2) + 100% + var(--space--2)
+                                  );
+                                  padding: var(--space--3) var(--space--2);
+                                  margin-left: var(--space---2);
+                                  position: relative;
+                                  align-items: center;
+                                  ${isSelected
+                                    ? css`
+                                        & + * {
+                                          margin-bottom: var(--space--0);
+                                        }
+                                      `
+                                    : css``}
+                                `}"
+                                $${isSelected &&
+                                req.query.scrollToConversation !== "false"
+                                  ? html`
+                                      oninteractive="${javascript`
                                       window.setTimeout(() => { this.scrollIntoView({ block: "center" }); }, 0);
                                     `}"
-                                  `
-                                : html``}
-                            >
-                              <div
-                                style="${css`
-                                  flex: 1;
-                                `}"
+                                    `
+                                  : html``}
                               >
-                                $${conversationPartial({
-                                  req,
-                                  res,
-                                  conversation,
-                                  searchResults: conversation.searchResults,
-                                })}
-                              </div>
-                              <div
-                                style="${css`
-                                  width: var(--space--4);
-                                  display: flex;
-                                  justify-content: flex-end;
-                                `}"
-                              >
-                                $${(() => {
-                                  const unreadCount =
-                                    conversation.messagesCount -
-                                    conversation.readingsCount;
-                                  return unreadCount === 0 ||
-                                    conversation.id ===
-                                      res.locals.conversation?.id
-                                    ? html``
-                                    : html`
-                                        <button
-                                          class="button button--tight button--blue"
-                                          style="${css`
-                                            font-size: var(--font-size--2xs);
-                                            line-height: var(
-                                              --line-height--2xs
-                                            );
-                                          `}"
-                                          oninteractive="${javascript`
+                                <div
+                                  style="${css`
+                                    flex: 1;
+                                  `}"
+                                >
+                                  $${conversationPartial({
+                                    req,
+                                    res,
+                                    conversation,
+                                    searchResult,
+                                  })}
+                                </div>
+                                <div
+                                  style="${css`
+                                    width: var(--space--4);
+                                    display: flex;
+                                    justify-content: flex-end;
+                                  `}"
+                                >
+                                  $${(() => {
+                                    const unreadCount =
+                                      conversation.messagesCount -
+                                      conversation.readingsCount;
+                                    return unreadCount === 0 ||
+                                      conversation.id ===
+                                        res.locals.conversation?.id
+                                      ? html``
+                                      : html`
+                                          <button
+                                            class="button button--tight button--blue"
+                                            style="${css`
+                                              font-size: var(--font-size--2xs);
+                                              line-height: var(
+                                                --line-height--2xs
+                                              );
+                                            `}"
+                                            oninteractive="${javascript`
                                             tippy(this, {
                                               touch: false,
                                               content: "Mark as Read",
                                             });
                                           `}"
-                                          onclick="${javascript`
+                                            onclick="${javascript`
                                             event.preventDefault();
                                             fetch(this.closest("a").href);
                                             this.remove();
                                           `}"
-                                        >
-                                          ${unreadCount}
-                                        </button>
-                                      `;
-                                })()}
-                              </div>
-                            </a>
-                          `;
-                        })}
+                                          >
+                                            ${unreadCount}
+                                          </button>
+                                        `;
+                                  })()}
+                                </div>
+                              </a>
+                            `;
+                          }
+                        )}
                       </div>
                     `}
               </div>
