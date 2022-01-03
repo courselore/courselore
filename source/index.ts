@@ -12920,14 +12920,14 @@ ${value}</textarea
                                       class="avatar avatar--sm avatar--vertical-align"
                                     />
                                   `}
-                              Signed by ${res.locals.user.name}
+                              Signed by You
                             </span>
                             <span
                               class="text--violet"
                               oninteractive="${javascript`
                                 tippy(this, {
                                   touch: false,
-                                  content: "Set as Signed by ${res.locals.user.name}",
+                                  content: "Set as Signed by You",
                                 });
                               `}"
                             >
@@ -15938,14 +15938,14 @@ ${value}</textarea
                                   onlineIndicator: false,
                                   name: false,
                                 })}
-                                Signed by ${res.locals.user.name}
+                                Signed by You
                               </span>
                               <span
                                 class="text--violet"
                                 oninteractive="${javascript`
                                   tippy(this, {
                                     touch: false,
-                                    content: "Set as Signed by ${res.locals.user.name}",
+                                    content: "Set as Signed by You",
                                   });
                                 `}"
                               >
