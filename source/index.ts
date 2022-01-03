@@ -8730,7 +8730,7 @@ export default async function courselore({
         filters.isStaffOnly = req.query.filters.isStaffOnly;
     }
 
-    const conversations = database
+    const conversationsWithSearchResults = database
       .all<{
         reference: string;
         conversationTitleSearchResultHighlight: string | null;
@@ -8861,69 +8861,88 @@ export default async function courselore({
                     "conversations"."id" DESC
         `
       )
-      .flatMap((conversationRow) => {
+      .flatMap((conversationWithSearchResult) => {
         const conversation = getConversation({
           req,
           res,
-          conversationReference: conversationRow.reference,
+          conversationReference: conversationWithSearchResult.reference,
         });
         if (conversation === undefined) return [];
 
-        if (conversationRow.conversationTitleSearchResultHighlight !== null)
-          return [
-            {
-              ...conversation,
-              searchResults: {
-                conversationTitleSearchResultHighlight:
-                  conversationRow.conversationTitleSearchResultHighlight,
-              },
-            },
-          ];
+        let searchResult:
+          | {
+              type: "conversationTitle";
+              highlight: string;
+            }
+          | {
+              type: "messageAuthorUserName";
+              message: NonNullable<ReturnType<typeof getMessage>>;
+              highlight: string;
+            }
+          | {
+              type: "messageContent";
+              message: NonNullable<ReturnType<typeof getMessage>>;
+              snippet: string;
+            }
+          | undefined;
 
         if (
-          conversationRow.messageAuthorUserNameSearchResultMessageReference !==
+          conversationWithSearchResult.conversationTitleSearchResultHighlight !==
+          null
+        )
+          searchResult = {
+            type: "conversationTitle",
+            highlight:
+              conversationWithSearchResult.conversationTitleSearchResultHighlight,
+          };
+
+        if (
+          conversationWithSearchResult.messageAuthorUserNameSearchResultMessageReference !==
             null &&
-          conversationRow.messageAuthorUserNameSearchResultHighlight !== null
+          conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight !==
+            null
         )
           return [
             {
-              ...conversation,
+              conversation,
               searchResults: {
                 messageAuthorUserNameSearchResultMessage: getMessage({
                   req,
                   res,
                   conversation,
                   messageReference:
-                    conversationRow.messageAuthorUserNameSearchResultMessageReference,
+                    conversationWithSearchResult.messageAuthorUserNameSearchResultMessageReference,
                 }),
                 messageAuthorUserNameSearchResultHighlight:
-                  conversationRow.messageAuthorUserNameSearchResultHighlight,
+                  conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight,
               },
             },
           ];
 
         if (
-          conversationRow.messageContentSearchResultMessageReference !== null &&
-          conversationRow.messageContentSearchResultSnippet !== null
+          conversationWithSearchResult.messageContentSearchResultMessageReference !==
+            null &&
+          conversationWithSearchResult.messageContentSearchResultSnippet !==
+            null
         )
           return [
             {
-              ...conversation,
+              conversation,
               searchResults: {
                 messageContentSearchResultMessage: getMessage({
                   req,
                   res,
                   conversation,
                   messageReference:
-                    conversationRow.messageContentSearchResultMessageReference,
+                    conversationWithSearchResult.messageContentSearchResultMessageReference,
                 }),
                 messageContentSearchResultSnippet:
-                  conversationRow.messageContentSearchResultSnippet,
+                  conversationWithSearchResult.messageContentSearchResultSnippet,
               },
             },
           ];
 
-        return [{ ...conversation, searchResults: {} }];
+        return [{ conversation, searchResults: searchResult }];
       });
 
     return applicationLayout({
