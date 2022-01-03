@@ -1068,27 +1068,6 @@ export default async function courselore({
                 }
               }
 
-              .avatar {
-                border-radius: var(--border-radius--circle);
-                @media (prefers-color-scheme: dark) {
-                  filter: brightness(var(--brightness--90));
-                }
-
-                ${["xs", "sm", "xl", "2xl"].map(
-                  (size) => css`
-                    &.avatar--${size} {
-                      width: var(--font-size--${size});
-                      height: var(--font-size--${size});
-                    }
-                  `
-                )}
-
-                &.avatar--vertical-align {
-                  position: relative;
-                  top: var(--space--0-5);
-                }
-              }
-
               .decorative-icon {
                 font-size: var(--font-size--9xl);
                 line-height: var(--line-height--9xl);
@@ -1104,38 +1083,6 @@ export default async function courselore({
                 display: flex;
                 justify-content: center;
                 align-items: center;
-              }
-
-              .online-indicator {
-                display: grid;
-                & > * {
-                  grid-area: 1 / 1;
-                  position: relative;
-                }
-                & > :last-child {
-                  background-color: var(--color--green--500);
-                  @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--green--600);
-                  }
-                  width: var(--space--2);
-                  height: var(--space--2);
-                  border: var(--border-width--1) solid var(--color--green--50);
-                  @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--green--900);
-                  }
-                  border-radius: var(--border-radius--circle);
-                  place-self: end;
-                  transform: translate(20%, 20%);
-                  display: none;
-                }
-                &.online-indicator--inline {
-                  display: inline-grid;
-                }
-                &.online-indicator--small > :last-child {
-                  width: var(--space--1-5);
-                  height: var(--space--1-5);
-                  transform: translate(20%, 80%);
-                }
               }
 
               .separator {

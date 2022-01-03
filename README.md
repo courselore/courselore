@@ -22,6 +22,7 @@
 - Avatars.
   - Review
     - `bi-person-circle`
+    - `avatar`
   - Remove CSS
     - `.avatar`
     - `.online-indicator`
