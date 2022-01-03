@@ -8872,16 +8872,16 @@ export default async function courselore({
         const searchResult =
           conversationWithSearchResult.conversationTitleSearchResultHighlight !==
           null
-            ? {
+            ? ({
                 type: "conversationTitle",
                 highlight:
                   conversationWithSearchResult.conversationTitleSearchResultHighlight,
-              }
+              } as const)
             : conversationWithSearchResult.messageAuthorUserNameSearchResultMessageReference !==
                 null &&
               conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight !==
                 null
-            ? {
+            ? ({
                 type: "messageAuthorUserName",
                 message: getMessage({
                   req,
@@ -8892,12 +8892,12 @@ export default async function courselore({
                 })!,
                 highlight:
                   conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight,
-              }
+              } as const)
             : conversationWithSearchResult.messageContentSearchResultMessageReference !==
                 null &&
               conversationWithSearchResult.messageContentSearchResultSnippet !==
                 null
-            ? {
+            ? ({
                 type: "messageContent",
                 message: getMessage({
                   req,
@@ -8908,7 +8908,7 @@ export default async function courselore({
                 })!,
                 snippet:
                   conversationWithSearchResult.messageContentSearchResultSnippet,
-              }
+              } as const)
             : undefined;
 
         return [{ conversation, searchResult }];
