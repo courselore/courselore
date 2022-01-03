@@ -32,6 +32,7 @@
   - In `conversationPartial`, separate search results from `conversation`.
   - Review `userPartial`’s implementation.
   - Finish using `userPartial` in every location where it belongs.
+  - Add staff badge to `userPartial`.
   - Test everything in different browsers.
 - README
   - Description.
