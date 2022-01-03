@@ -29,7 +29,6 @@
 ### Chat
 
 - Add support for out-of-band tippy contents.
-  - In `conversationPartial`, separate search results from `conversation`.
   - Review `userPartial`’s implementation.
   - Finish using `userPartial` in every location where it belongs.
   - Add staff badge to `userPartial`.
