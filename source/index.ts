@@ -9481,8 +9481,8 @@ export default async function courselore({
                                     "scrollToConversation",
                                   ]),
                                   { addQueryPrefix: true }
-                                )}${searchResult?.message?.reference !==
-                                undefined
+                                )}${typeof searchResult?.message?.reference ===
+                                "string"
                                   ? `#message--${searchResult.message.reference}`
                                   : ``}"
                                 class="button ${isSelected
@@ -9634,20 +9634,28 @@ export default async function courselore({
     req,
     res,
     conversation,
-    searchResults = undefined,
+    searchResult = undefined,
     message = undefined,
   }: {
     req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
     conversation: NonNullable<ReturnType<typeof getConversation>>;
-    searchResults?: {
-      conversationTitleSearchResultHighlight?: string | null;
-      messageAuthorUserNameSearchResultMessage?: ReturnType<typeof getMessage>;
-      messageAuthorUserNameSearchResultHighlight?: string | null;
-      messageContentSearchResultMessage?: ReturnType<typeof getMessage>;
-      messageContentSearchResultSnippet?: string | null;
-    };
-    message?: ReturnType<typeof getMessage>;
+    searchResult?:
+      | {
+          type: "conversationTitle";
+          highlight: HTML;
+        }
+      | {
+          type: "messageAuthorUserName";
+          message: NonNullable<ReturnType<typeof getMessage>>;
+          highlight: HTML;
+        }
+      | {
+          type: "messageContent";
+          message: NonNullable<ReturnType<typeof getMessage>>;
+          snippet: HTML;
+        };
+    message?: NonNullable<ReturnType<typeof getMessage>>;
   }): HTML => html`
     <div
       style="${css`
@@ -9706,9 +9714,8 @@ export default async function courselore({
           font-weight: var(--font-weight--bold);
         `}"
       >
-        $${searchResults !== undefined &&
-        typeof searchResults.conversationTitleSearchResultHighlight === "string"
-          ? searchResults.conversationTitleSearchResultHighlight
+        $${searchResult?.type === "conversationTitle"
+          ? searchResult.highlight
           : html`${conversation.title}`}
       </h3>
 
