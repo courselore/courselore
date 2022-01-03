@@ -19,7 +19,15 @@
 
 ### Chat
 
-- Add support for out-of-band tippy contents.
+- Avatars.
+  - Don’t disclose emails to students.
+  - Fix colors of `<i class="bi bi-journal-text"></i>` (for example, the course switcher).
+  - Review
+    - `bi-person-circle`
+  - Remove CSS
+    - `.avatar`
+    - `.online-indicator`
+  - Remove `onlineIndicator`
   - Finish using `userPartial` in every location where it belongs.
   - `TODO`
   - Add staff badge to `userPartial`.
@@ -314,15 +322,6 @@ $${searchResults !== undefined
     - Home.
     - GitHub.
   - Installation.
-- Avatars.
-  - Don’t disclose emails to students.
-  - Fix colors of `<i class="bi bi-journal-text"></i>` (for example, the course switcher).
-  - Review
-    - `bi-person-circle`
-  - Remove CSS
-    - `.avatar`
-    - `.online-indicator`
-  - Remove `onlineIndicator`
 - `position: sticky` headers (showing author name) in messages?
 - Revisit unread management:
   - Don’t store all readings, but only the latest for a given conversation.
