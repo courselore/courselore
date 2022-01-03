@@ -9706,9 +9706,9 @@ export default async function courselore({
           font-weight: var(--font-weight--bold);
         `}"
       >
-        $${typeof conversation.conversationTitleSearchResultHighlight ===
-        "string"
-          ? conversation.conversationTitleSearchResultHighlight
+        $${searchResults !== undefined &&
+        typeof searchResults.conversationTitleSearchResultHighlight === "string"
+          ? searchResults.conversationTitleSearchResultHighlight
           : html`${conversation.title}`}
       </h3>
 
