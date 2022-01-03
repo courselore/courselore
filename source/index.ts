@@ -15935,7 +15935,13 @@ ${value}</textarea
                                     onlineIndicator: false,
                                     name: false,
                                   })}
-                                  Signed by You
+                                  <span
+                                    style="${css`
+                                      margin-left: var(--space--1);
+                                    `}"
+                                  >
+                                    Signed by You
+                                  </span>
                                 </span>
                               </span>
                               <span
