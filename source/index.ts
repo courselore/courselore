@@ -2927,58 +2927,67 @@ export default async function courselore({
                   <div
                     style="${css`
                       max-height: var(--space--56);
+                      padding: var(--space--1) var(--space--2);
                       overflow: auto;
                       display: flex;
-                      gap: var(--space--2);
-                      padding: var(--space--1) var(--space--2);
+                      flex-direction: column;
+                      gap: var(--space--4);
                     `}"
                   >
-                    <div>
-                      $${userPartial({
-                        req,
-                        res,
-                        user: user,
-                        size: "xl",
-                        name: false,
-                      })}
-                    </div>
                     <div
                       style="${css`
-                        padding-top: var(--space--0-5);
                         display: flex;
-                        flex-direction: column;
-                        gap: var(--space--2);
+                        gap: var(--space--4);
+                        align-items: center;
                       `}"
                     >
                       <div>
-                        <div class="strong">${user.name}</div>
-                        <div class="secondary">${user.email}</div>
-                        <div
-                          class="secondary"
-                          style="${css`
-                            font-size: var(--font-size--xs);
-                            line-height: var(--line-height--xs);
-                          `}"
-                        >
-                          Last seen online
-                          <time
-                            datetime="${new Date(
-                              user.lastSeenOnlineAt
-                            ).toISOString()}"
-                            oninteractive="${javascript`
+                        $${userPartial({
+                          req,
+                          res,
+                          user: user,
+                          size: "xl",
+                          name: false,
+                        })}
+                      </div>
+                      <div
+                        style="${css`
+                          padding-top: var(--space--0-5);
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--2);
+                        `}"
+                      >
+                        <div>
+                          <div class="strong">${user.name}</div>
+                          <div class="secondary">${user.email}</div>
+                          <div
+                            class="secondary"
+                            style="${css`
+                              font-size: var(--font-size--xs);
+                              line-height: var(--line-height--xs);
+                            `}"
+                          >
+                            Last seen online
+                            <time
+                              datetime="${new Date(
+                                user.lastSeenOnlineAt
+                              ).toISOString()}"
+                              oninteractive="${javascript`
                               leafac.relativizeDateTimeElement(this, { preposition: "on" });
                             `}"
-                          ></time>
+                            ></time>
+                          </div>
                         </div>
                       </div>
-                      $${user.biography === null
-                        ? html``
-                        : markdownProcessor({
-                            req,
-                            res,
-                            markdown: user.biography,
-                          }).html}
                     </div>
+                    $${user.biography === null
+                      ? html``
+                      : markdownProcessor({
+                          req,
+                          res,
+                          markdown: user.biography,
+                        }).html}
                   </div>
                 `,
               })},
