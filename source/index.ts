@@ -12582,7 +12582,7 @@ ${value}</textarea
     any,
     { content?: string },
     {},
-    IsSignedInMiddlewareLocals
+    IsSignedInMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
   > = (req, res, next) => {
     if (typeof req.body.content !== "string" || req.body.content.trim() === "")
       return next("validation");
@@ -12594,6 +12594,7 @@ ${value}</textarea
           req,
           res,
           markdown: req.body.content,
+          decorate: res.locals.course !== undefined,
         }).html,
       })
     );
@@ -15574,6 +15575,7 @@ ${value}</textarea
                                                 res,
                                                 markdown: message.content,
                                                 search: req.query.search,
+                                                decorate: true,
                                               }).html}
                                             </div>
                                           </div>
