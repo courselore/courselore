@@ -12884,12 +12884,7 @@ ${value}</textarea
                 $${res.locals.enrollment.role === "staff"
                   ? html``
                   : html`
-                      <div
-                        class="anonymity label"
-                        style="${css`
-                          width: var(--space--56);
-                        `}"
-                      >
+                      <div class="anonymity label">
                         <p class="label--text">Anonymity</p>
                         <div
                           style="${css`
@@ -12912,19 +12907,24 @@ ${value}</textarea
                                 });
                               `}"
                             >
-                              $${res.locals.user.avatar === null
-                                ? html`<i class="bi bi-person-circle"></i>`
-                                : html`
-                                    <img
-                                      src="${res.locals.user.avatar}"
-                                      alt="${res.locals.user.name}"
-                                      class="avatar avatar--sm avatar--vertical-align"
-                                    />
-                                  `}
-                              Signed by You
+                              <span>
+                                $${userPartial({
+                                  req,
+                                  res,
+                                  user: res.locals.user,
+                                  onlineIndicator: false,
+                                  name: false,
+                                })}
+                                <span
+                                  style="${css`
+                                    margin-left: var(--space--1);
+                                  `}"
+                                >
+                                  Signed by You
+                                </span>
+                              </span>
                             </span>
                             <span
-                              class="text--violet"
                               oninteractive="${javascript`
                                 tippy(this, {
                                   touch: false,
@@ -12932,8 +12932,23 @@ ${value}</textarea
                                 });
                               `}"
                             >
-                              <i class="bi bi-sunglasses"></i>
-                              Anonymous to Other Students
+                              <span>
+                                $${userPartial({
+                                  req,
+                                  res,
+                                  user: res.locals.user,
+                                  onlineIndicator: false,
+                                  name: false,
+                                  anonymous: true,
+                                })}
+                                <span
+                                  style="${css`
+                                    margin-left: var(--space--1);
+                                  `}"
+                                >
+                                  Anonymous to Other Students
+                                </span>
+                              </span>
                             </span>
                           </label>
                         </div>
