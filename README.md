@@ -25,7 +25,6 @@
   - Finish using `userPartial` in every location where it belongs.
     - `bi-person-circle`
     - `bi-sunglasses`
-      - `text--violet`
     - `avatar`
   - Don’t disclose emails to students.
   - `TODO` (see code below)

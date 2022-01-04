@@ -995,7 +995,6 @@ export default async function courselore({
                 "lime",
                 "emerald",
                 "fuchsia",
-                "violet",
                 "cyan",
               ].map(
                 (color) => css`
