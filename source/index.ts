@@ -15945,7 +15945,6 @@ ${value}</textarea
                                 </span>
                               </span>
                               <span
-                                class="text--violet"
                                 oninteractive="${javascript`
                                   tippy(this, {
                                     touch: false,
@@ -15953,8 +15952,23 @@ ${value}</textarea
                                   });
                                 `}"
                               >
-                                <i class="bi bi-sunglasses"></i>
-                                Anonymous to Other Students
+                                <span>
+                                  $${userPartial({
+                                    req,
+                                    res,
+                                    user: res.locals.user,
+                                    onlineIndicator: false,
+                                    name: false,
+                                    anonymous: true,
+                                  })}
+                                  <span
+                                    style="${css`
+                                      margin-left: var(--space--1);
+                                    `}"
+                                  >
+                                    Anonymous to Other Students
+                                  </span>
+                                </span>
                               </span>
                             </label>
                           </div>
