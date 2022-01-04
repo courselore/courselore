@@ -2650,6 +2650,24 @@ export default async function courselore({
     `;
   })();
 
+  const partialLayout = ({
+    req,
+    res,
+    body,
+  }: {
+    req: express.Request<{}, any, {}, {}, {}>;
+    res: express.Response<any, {}>;
+    body: HTML;
+  }): HTML =>
+    extractInlineStyles(html`
+      <!DOCTYPE html>
+      <html>
+        <body>
+          $${body}
+        </body>
+      </html>
+    `);
+
   const spinner = html`
     <svg
       width="20"
@@ -11618,34 +11636,40 @@ ${value}</textarea
       );
 
       res.send(
-        html`
-          $${users.length === 0
-            ? html`
-                <div class="dropdown--menu--item secondary">No user found.</div>
-              `
-            : users.map(
-                (user) => html`
-                  <button
-                    type="button"
-                    class="dropdown--menu--item button button--transparent"
-                    onclick="${javascript`
-                      this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${
-                        user.enrollmentReference
-                      }--${slugify(user.name)}");
-                    `}"
-                  >
-                    $${userPartial({
-                      req,
-                      res,
-                      user,
-                      name: user.userNameSearchResultHighlight,
-                      tooltip: false,
-                      size: "xs",
-                    })}
-                  </button>
+        partialLayout({
+          req,
+          res,
+          body: html`
+            $${users.length === 0
+              ? html`
+                  <div class="dropdown--menu--item secondary">
+                    No user found.
+                  </div>
                 `
-              )}
-        `
+              : users.map(
+                  (user) => html`
+                    <button
+                      type="button"
+                      class="dropdown--menu--item button button--transparent"
+                      onclick="${javascript`
+                        this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${
+                          user.enrollmentReference
+                        }--${slugify(user.name)}");
+                      `}"
+                    >
+                      $${userPartial({
+                        req,
+                        res,
+                        user,
+                        name: user.userNameSearchResultHighlight,
+                        tooltip: false,
+                        size: "xs",
+                      })}
+                    </button>
+                  `
+                )}
+          `,
+        })
       );
     }
   );
