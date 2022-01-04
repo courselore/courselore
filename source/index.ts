@@ -2680,7 +2680,7 @@ export default async function courselore({
   const userPartial = ({
     req,
     res,
-    user,
+    user = undefined,
     size = "sm",
     onlineIndicator = true,
     name = true,
@@ -2694,14 +2694,16 @@ export default async function courselore({
       Partial<IsEnrolledInCourseMiddlewareLocals>
     >;
     res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>;
-    user: AuthorEnrollment["user"];
+    user?: AuthorEnrollment["user"];
     size?: "xs" | "sm" | "xl";
     onlineIndicator?: boolean;
     name?: boolean | string;
     anonymous?: boolean | "reveal";
   }): HTML => {
+    if (user === undefined) anonymous = true;
+
     let userAvatar = html``;
-    if (anonymous !== true) {
+    if (user !== undefined && anonymous !== true) {
       if (user.avatar !== null)
         userAvatar = html`<img
           src="${user.avatar}"
