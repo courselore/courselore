@@ -12297,8 +12297,16 @@ ${value}</textarea
                       case "staff":
                       case "students":
                         mentions.add(mention);
-                        mentionHTML = html`@${lodash.capitalize(mention)} in the
-                        Conversation`;
+                        mentionHTML = html`<strong
+                          oninteractive="${javascript`
+                            tippy(this, {
+                              touch: false,
+                              content: "Mention",
+                            });
+                          `}"
+                          >${lodash.capitalize(mention)} in the
+                          Conversation</strong
+                        >`;
                         break;
                       case "anonymous":
                         mentionHTML = userPartial({ req, res });

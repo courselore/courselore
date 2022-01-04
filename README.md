@@ -21,6 +21,7 @@
 
 - Avatars.
   - On `@mentions` to self, the `<mark>` bleeds under the avatar.
+  - `#references` in Preview aren’t working.
   - Finish using `userPartial` in every location where it belongs.
     - `bi-person-circle`
     - `bi-sunglasses`
