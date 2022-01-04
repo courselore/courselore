@@ -2701,7 +2701,6 @@ export default async function courselore({
     anonymous?: boolean | "reveal";
   }): HTML => {
     let userAvatar = html``;
-
     if (anonymous !== true) {
       if (user.avatar !== null)
         userAvatar = html`<img
