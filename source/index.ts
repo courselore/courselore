@@ -12311,11 +12311,10 @@ ${value}</textarea
             element.textContent = `#${conversation.reference}/${message.reference}`;
           }
 
-          (function processMentionsAndReferences(node: Node): void {
+          (function processTree(node: Node): void {
             processNode();
             if (node.hasChildNodes())
-              for (const childNode of node.childNodes)
-                processMentionsAndReferences(childNode);
+              for (const childNode of node.childNodes) processTree(childNode);
             function processNode() {
               switch (node.nodeType) {
                 case node.TEXT_NODE:
@@ -12549,10 +12548,10 @@ ${value}</textarea
         }
 
         if (search !== undefined)
-          (function processSearch(node: Node): void {
+          (function processTree(node: Node): void {
             processNode();
             if (node.hasChildNodes())
-              for (const childNode of node.childNodes) processSearch(childNode);
+              for (const childNode of node.childNodes) processTree(childNode);
             function processNode() {
               switch (node.nodeType) {
                 case node.TEXT_NODE:
