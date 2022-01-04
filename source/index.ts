@@ -14739,7 +14739,13 @@ ${value}</textarea
                                                                         <button
                                                                           class="dropdown--menu--item button button--transparent"
                                                                         >
-                                                                          <span>
+                                                                          <span
+                                                                            style="${css`
+                                                                              margin-left: var(
+                                                                                --space---0-5
+                                                                              );
+                                                                            `}"
+                                                                          >
                                                                             $${userPartial(
                                                                               {
                                                                                 req,
@@ -14765,7 +14771,13 @@ ${value}</textarea
                                                                         <button
                                                                           class="dropdown--menu--item button button--transparent"
                                                                         >
-                                                                          <span>
+                                                                          <span
+                                                                            style="${css`
+                                                                              margin-left: var(
+                                                                                --space---0-5
+                                                                              );
+                                                                            `}"
+                                                                          >
                                                                             $${userPartial(
                                                                               {
                                                                                 req,
