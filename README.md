@@ -31,6 +31,7 @@
   - Don’t disclose emails to students.
   - `TODO` (see code below)
   - Add staff badge to `userPartial`.
+    - Remove it from `@mentions` widget.
   - Test everything in different browsers.
 
 ```js

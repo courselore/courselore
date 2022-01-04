@@ -11626,12 +11626,16 @@ ${value}</textarea
                       }--${slugify(user.name)}");
                     `}"
                   >
-                    $${userPartial({ req, res, user, name: false, size: "xs" })}
-                    <span>
-                      $${user.userNameSearchResultHighlight}
-                      <span
-                        class="secondary"
-                        oninteractive="${javascript`
+                    $${userPartial({
+                      req,
+                      res,
+                      user,
+                      name: user.userNameSearchResultHighlight,
+                      size: "xs",
+                    })}
+                    <span
+                      class="secondary"
+                      oninteractive="${javascript`
                           tippy(this, {
                             touch: false,
                             content: ${JSON.stringify(
@@ -11639,9 +11643,8 @@ ${value}</textarea
                             )},
                           });
                         `}"
-                      >
-                        $${enrollmentRoleIcon[user.enrollmentRole].regular}
-                      </span>
+                    >
+                      $${enrollmentRoleIcon[user.enrollmentRole].regular}
                     </span>
                   </button>
                 `
