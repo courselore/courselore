@@ -12357,8 +12357,7 @@ ${value}</textarea
                           res,
                           user,
                         });
-                        mentionHTML = html`$${enrollment.userId ===
-                        res.locals.user!.id
+                        mentionHTML = html`$${user.id === res.locals.user!.id
                           ? html`<mark class="mark">$${mentionInnerHTML}</mark>`
                           : html`$${mentionInnerHTML}`}`;
                         break;
