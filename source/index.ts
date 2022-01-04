@@ -2889,7 +2889,7 @@ export default async function courselore({
                         $${userPartial({
                           req,
                           res,
-                          user: user,
+                          user,
                           name: false,
                           size: "xl",
                         })}
