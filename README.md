@@ -31,8 +31,24 @@
   - Don’t disclose emails to students.
   - `TODO` (see code below)
   - Add staff badge to `userPartial`.
-    - Remove it from `@mentions` widget.
-  - Test everything in different browsers.
+
+```js
+<span
+  class="secondary"
+  oninteractive="${javascript`
+                          tippy(this, {
+                            touch: false,
+                            content: ${JSON.stringify(
+                              lodash.capitalize(user.enrollmentRole)
+                            )},
+                          });
+                        `}"
+>
+  $${enrollmentRoleIcon[user.enrollmentRole].regular}
+</span>
+```
+
+- Test everything in different browsers.
 
 ```js
 $${searchResults !== undefined

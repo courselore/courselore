@@ -11633,19 +11633,6 @@ ${value}</textarea
                       name: user.userNameSearchResultHighlight,
                       size: "xs",
                     })}
-                    <span
-                      class="secondary"
-                      oninteractive="${javascript`
-                          tippy(this, {
-                            touch: false,
-                            content: ${JSON.stringify(
-                              lodash.capitalize(user.enrollmentRole)
-                            )},
-                          });
-                        `}"
-                    >
-                      $${enrollmentRoleIcon[user.enrollmentRole].regular}
-                    </span>
                   </button>
                 `
               )}
