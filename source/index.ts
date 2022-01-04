@@ -14773,6 +14773,8 @@ ${value}</textarea
                                                                                 user: res
                                                                                   .locals
                                                                                   .user,
+                                                                                onlineIndicator:
+                                                                                  false,
                                                                                 name: false,
                                                                                 size: "xs",
                                                                               }
