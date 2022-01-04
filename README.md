@@ -24,7 +24,6 @@
   - `#references` in Preview aren’t working.
   - Finish using `userPartial` in every location where it belongs.
     - `bi-person-circle`
-    - `bi-sunglasses`
     - `avatar`
   - Don’t disclose emails to students.
   - `TODO` (see code below)
