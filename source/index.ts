@@ -12206,7 +12206,7 @@ ${value}</textarea
       res,
       markdown,
       search = undefined,
-      decorate = false,
+      personalize = false,
     }: {
       req: express.Request<
         {},
@@ -12218,7 +12218,7 @@ ${value}</textarea
       res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>;
       markdown: Markdown;
       search?: string | string[] | undefined;
-      decorate?: boolean;
+      personalize?: boolean;
     }): { html: HTML; text: string; mentions: Set<string> } => {
       const mentions = new Set<string>();
 
@@ -12264,7 +12264,7 @@ ${value}</textarea
         element.replaceChildren(summaries[0], wrapper);
       }
 
-      if (decorate) {
+      if (personalize) {
         if (res.locals.course !== undefined) {
           const narrowReq = req as express.Request<
             {},
