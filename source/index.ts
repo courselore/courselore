@@ -2942,64 +2942,67 @@ export default async function courselore({
 
     let anonymousAvatar = html``;
     if (anonymous !== false) {
-      anonymousAvatar = html`<span
+      anonymousAvatar = html`<svg
         style="${css`
-          font-weight: var(--font-weight--bold);
+          ${{
+            xs: css`
+              width: var(--space--4);
+              height: var(--space--4);
+              vertical-align: var(--space---1);
+            `,
+            sm: css`
+              width: var(--space--6);
+              height: var(--space--6);
+              vertical-align: var(--space---1-5);
+            `,
+            xl: css`
+              width: var(--space--32);
+              height: var(--space--32);
+            `,
+          }[size]}
         `}"
-        oninteractive="${javascript`
-          tippy(this, {
-            touch: false,
-            content: "Anonymous to Other Students",
-          });
-        `}"
-        >$${html`<svg
+        viewBox="0 0 24 24"
+      >
+        <circle
+          cx="12"
+          cy="12"
+          r="12"
           style="${css`
-            ${{
-              xs: css`
-                width: var(--space--4);
-                height: var(--space--4);
-                vertical-align: var(--space---1);
-              `,
-              sm: css`
-                width: var(--space--6);
-                height: var(--space--6);
-                vertical-align: var(--space---1-5);
-              `,
-              xl: css`
-                width: var(--space--32);
-                height: var(--space--32);
-              `,
-            }[size]}
+            fill: var(--color--violet--200);
+            @media (prefers-color-scheme: dark) {
+              fill: var(--color--violet--900);
+            }
           `}"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            cx="12"
-            cy="12"
-            r="12"
+        />
+        <foreignObject x="2" y="-2" width="20" height="20">
+          <span
             style="${css`
-              fill: var(--color--violet--200);
+              font-size: var(--font-size--xl);
+              line-height: var(--line-height--xl);
+              color: var(--color--violet--600);
               @media (prefers-color-scheme: dark) {
-                fill: var(--color--violet--900);
+                color: var(--color--violet--300);
               }
             `}"
-          />
-          <foreignObject x="2" y="-2" width="20" height="20">
-            <span
-              style="${css`
-                font-size: var(--font-size--xl);
-                line-height: var(--line-height--xl);
-                color: var(--color--violet--600);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--violet--300);
-                }
-              `}"
-            >
-              <i class="bi bi-sunglasses"></i>
-            </span>
-          </foreignObject>
-        </svg>`}  Anonymous</span
-      >`;
+          >
+            <i class="bi bi-sunglasses"></i>
+          </span>
+        </foreignObject>
+      </svg>`;
+
+      if (name !== false)
+        anonymousAvatar = html`<span
+          style="${css`
+            font-weight: var(--font-weight--bold);
+          `}"
+          oninteractive="${javascript`
+            tippy(this, {
+              touch: false,
+              content: "Anonymous to Other Students",
+            });
+          `}"
+          >$${anonymousAvatar}  Anonymous</span
+        >`;
     }
 
     return anonymous === false
