@@ -12301,7 +12301,7 @@ ${value}</textarea
                         Conversation`;
                         break;
                       case "anonymous":
-                        mentionHTML = html`@$${userPartial({ req, res })}`;
+                        mentionHTML = userPartial({ req, res });
                         break;
                       default:
                         const enrollmentReference = mention.split("--")[0];
@@ -12344,16 +12344,7 @@ ${value}</textarea
                           : html`$${mentionInnerHTML}`}`;
                         break;
                     }
-                    return html`<strong
-                      class="mention"
-                      oninteractive="${javascript`
-                        tippy(this, {
-                          touch: false,
-                          content: "Mention",
-                        });
-                      `}"
-                      >$${mentionHTML}</strong
-                    >`;
+                    return html`<span class="mention">$${mentionHTML}</span>`;
                   }
                 );
 
