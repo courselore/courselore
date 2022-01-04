@@ -20,6 +20,9 @@
 ### Chat
 
 - Avatars.
+  - Use `userPartial` to do name highlight on `@mentions` widget.
+  - Test `@mentions` widget.
+  - Is the user name being highlighted in the right places (`conversationPartial`, the list of messages in a conversation, and so forth)?
   - On `@mentions` to self, the `<mark>` bleeds under the avatar.
   - `#references` in Preview aren’t working.
   - Finish using `userPartial` in every location where it belongs.

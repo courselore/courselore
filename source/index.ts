@@ -11572,17 +11572,25 @@ ${value}</textarea
         return next("validation");
 
       const users = database.all<{
+        id: number;
+        lastSeenOnlineAt: string;
+        email: string;
         name: string;
         avatar: string | null;
         avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+        biography: string | null;
         userNameSearchResultHighlight: string;
         enrollmentReference: string;
         enrollmentRole: EnrollmentRole;
       }>(
         sql`
-          SELECT "users"."name" AS "name",
-                 "users"."avatar" AS "avatar",
-                 "users"."avatarlessBackgroundColor" AS "avatarlessBackgroundColor",
+          SELECT "users"."id",
+                 "users"."lastSeenOnlineAt",
+                 "users"."email",
+                 "users"."name",
+                 "users"."avatar",
+                 "users"."avatarlessBackgroundColor",
+                 "users"."biography",
                  highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "userNameSearchResultHighlight",
                  "enrollments"."reference" AS "enrollmentReference",
                  "enrollments"."role" AS "enrollmentRole"
