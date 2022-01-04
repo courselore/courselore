@@ -14739,14 +14739,16 @@ ${value}</textarea
                                                                         <button
                                                                           class="dropdown--menu--item button button--transparent"
                                                                         >
-                                                                          $${userPartial(
-                                                                            {
-                                                                              req,
-                                                                              res,
-                                                                              name: false,
-                                                                              size: "xs",
-                                                                            }
-                                                                          )}
+                                                                          <span>
+                                                                            $${userPartial(
+                                                                              {
+                                                                                req,
+                                                                                res,
+                                                                                name: false,
+                                                                                size: "xs",
+                                                                              }
+                                                                            )}
+                                                                          </span>
                                                                           Set as
                                                                           Anonymous
                                                                           to
@@ -14763,17 +14765,19 @@ ${value}</textarea
                                                                         <button
                                                                           class="dropdown--menu--item button button--transparent"
                                                                         >
-                                                                          $${userPartial(
-                                                                            {
-                                                                              req,
-                                                                              res,
-                                                                              user: res
-                                                                                .locals
-                                                                                .user,
-                                                                              name: false,
-                                                                              size: "xs",
-                                                                            }
-                                                                          )}
+                                                                          <span>
+                                                                            $${userPartial(
+                                                                              {
+                                                                                req,
+                                                                                res,
+                                                                                user: res
+                                                                                  .locals
+                                                                                  .user,
+                                                                                name: false,
+                                                                                size: "xs",
+                                                                              }
+                                                                            )}
+                                                                          </span>
                                                                           Set as
                                                                           Signed
                                                                           by You
