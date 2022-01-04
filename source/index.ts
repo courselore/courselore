@@ -12572,27 +12572,32 @@ ${value}</textarea
     };
   })();
 
+  const previewRequestHandler: express.RequestHandler<
+    {},
+    any,
+    { content?: string },
+    {},
+    IsSignedInMiddlewareLocals
+  > = (req, res, next) => {
+    if (typeof req.body.content !== "string" || req.body.content.trim() === "")
+      return next("validation");
+    res.send(
+      partialLayout({
+        req,
+        res,
+        body: markdownProcessor({
+          req,
+          res,
+          markdown: req.body.content,
+        }).html,
+      })
+    );
+  };
+
   app.post<{}, any, { content?: string }, {}, IsSignedInMiddlewareLocals>(
     "/markdown-editor/preview",
     ...isSignedInMiddleware,
-    (req, res, next) => {
-      if (
-        typeof req.body.content !== "string" ||
-        req.body.content.trim() === ""
-      )
-        return next("validation");
-      res.send(
-        partialLayout({
-          req,
-          res,
-          body: markdownProcessor({
-            req,
-            res,
-            markdown: req.body.content,
-          }).html,
-        })
-      );
-    }
+    previewRequestHandler
   );
 
   app.post<
@@ -12604,24 +12609,7 @@ ${value}</textarea
   >(
     "/courses/:courseReference/markdown-editor/preview",
     ...isEnrolledInCourseMiddleware,
-    (req, res, next) => {
-      if (
-        typeof req.body.content !== "string" ||
-        req.body.content.trim() === ""
-      )
-        return next("validation");
-      res.send(
-        partialLayout({
-          req,
-          res,
-          body: markdownProcessor({
-            req,
-            res,
-            markdown: req.body.content,
-          }).html,
-        })
-      );
-    }
+    previewRequestHandler
   );
 
   app.get<
