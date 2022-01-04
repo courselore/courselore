@@ -20,7 +20,6 @@
 ### Chat
 
 - Avatars.
-  - Add an opt-out of `markdownProcessor` decoration so that recursive references in biographies don’t run into an infinite loop. (Coolest bug ever!)
   - `@mentions` widget styles & oninteractive (if the online indicator works, then both styles and oninteractive are working).
   - Test `@mentions` widget.
   - Is the user name being highlighted in the right places (`conversationPartial`, the list of messages in a conversation, and so forth)?
