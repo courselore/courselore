@@ -3223,7 +3223,11 @@ export default async function courselore({
       delete req.cookies.flash;
       res.clearCookie("flash", cookieOptions);
       if (flash === undefined) return undefined;
-      database.run(sql`DELETE FROM "flashes" WHERE "id" = ${flash.id}`);
+      database.run(
+        sql`
+          DELETE FROM "flashes" WHERE "id" = ${flash.id}
+        `
+      );
       return flash.content;
     },
   };
