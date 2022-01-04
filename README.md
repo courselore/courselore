@@ -356,6 +356,7 @@ $${searchResults !== undefined
 
 ### Performance
 
+- Remove static CSS from every request.
 - Cache Markdown parsing.
   - Similar to Discourse’s `rebake` task.
   - In `markdownProcessor`, decouple the computation of `mentions` from the process of decoration.
