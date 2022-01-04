@@ -2681,10 +2681,10 @@ export default async function courselore({
     req,
     res,
     user = undefined,
+    anonymous = false,
     size = "sm",
     onlineIndicator = true,
     name = true,
-    anonymous = false,
   }: {
     req: express.Request<
       {},
@@ -2695,10 +2695,10 @@ export default async function courselore({
     >;
     res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>;
     user?: AuthorEnrollment["user"];
+    anonymous?: boolean | "reveal";
     size?: "xs" | "sm" | "xl";
     onlineIndicator?: boolean;
     name?: boolean | string;
-    anonymous?: boolean | "reveal";
   }): HTML => {
     if (user === undefined) anonymous = true;
 
@@ -9706,7 +9706,6 @@ export default async function courselore({
           req,
           res,
           user: conversation.authorEnrollment.user,
-          size: "xs",
           anonymous:
             conversation.anonymousAt === null
               ? false
@@ -9714,6 +9713,7 @@ export default async function courselore({
                 conversation.authorEnrollment.id === res.locals.enrollment.id
               ? "reveal"
               : true,
+          size: "xs",
         })}
 
         <time
@@ -15325,12 +15325,7 @@ ${value}</textarea
                                                       res,
                                                       user: message
                                                         .authorEnrollment.user,
-                                                      name: highlightSearchResult(
-                                                        html`${message
-                                                          .authorEnrollment.user
-                                                          .name}`,
-                                                        req.query.search
-                                                      ),
+
                                                       anonymous:
                                                         message.anonymousAt ===
                                                         null
@@ -15346,6 +15341,12 @@ ${value}</textarea
                                                                 .enrollment.id
                                                           ? "reveal"
                                                           : true,
+                                                      name: highlightSearchResult(
+                                                        html`${message
+                                                          .authorEnrollment.user
+                                                          .name}`,
+                                                        req.query.search
+                                                      ),
                                                     })}
                                                   </div>
 
