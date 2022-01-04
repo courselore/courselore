@@ -2681,8 +2681,9 @@ export default async function courselore({
     res,
     user = undefined,
     anonymous = user === undefined,
-    onlineIndicator = true,
+    onlineIndicator = user !== undefined,
     name = true,
+    tooltip = name !== false,
     size = "sm",
   }: {
     req: express.Request<
@@ -2697,6 +2698,7 @@ export default async function courselore({
     anonymous?: boolean | "reveal";
     onlineIndicator?: boolean;
     name?: boolean | string;
+    tooltip?: boolean;
     size?: "xs" | "sm" | "xl";
   }): HTML => {
     let userAvatar = html``;
@@ -2857,82 +2859,88 @@ export default async function courselore({
             font-weight: var(--font-weight--bold);
           `}"
           oninteractive="${javascript`
-            tippy(this, {
-              touch: false,
-              interactive: true,
-              appendTo: document.body,
-              content: ${tippyContent({
-                req,
-                res,
-                content: html`
-                  <div
-                    style="${css`
-                      max-height: var(--space--56);
-                      padding: var(--space--1) var(--space--2);
-                      overflow: auto;
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--space--4);
-                    `}"
-                  >
-                    <div
-                      style="${css`
-                        display: flex;
-                        gap: var(--space--4);
-                        align-items: center;
-                      `}"
-                    >
-                      <div>
-                        $${userPartial({
-                          req,
-                          res,
-                          user,
-                          name: false,
-                          size: "xl",
-                        })}
-                      </div>
-                      <div
-                        style="${css`
-                          padding-top: var(--space--0-5);
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--space--2);
-                        `}"
-                      >
-                        <div>
-                          <div class="strong">${user.name}</div>
-                          <div class="secondary">${user.email}</div>
+            ${
+              tooltip
+                ? javascript`
+                    tippy(this, {
+                      touch: false,
+                      interactive: true,
+                      appendTo: document.body,
+                      content: ${tippyContent({
+                        req,
+                        res,
+                        content: html`
                           <div
-                            class="secondary"
                             style="${css`
-                              font-size: var(--font-size--xs);
-                              line-height: var(--line-height--xs);
+                              max-height: var(--space--56);
+                              padding: var(--space--1) var(--space--2);
+                              overflow: auto;
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--4);
                             `}"
                           >
-                            Last seen online
-                            <time
-                              datetime="${new Date(
-                                user.lastSeenOnlineAt
-                              ).toISOString()}"
-                              oninteractive="${javascript`
-                              leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                            `}"
-                            ></time>
+                            <div
+                              style="${css`
+                                display: flex;
+                                gap: var(--space--4);
+                                align-items: center;
+                              `}"
+                            >
+                              <div>
+                                $${userPartial({
+                                  req,
+                                  res,
+                                  user,
+                                  name: false,
+                                  size: "xl",
+                                })}
+                              </div>
+                              <div
+                                style="${css`
+                                  padding-top: var(--space--0-5);
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--2);
+                                `}"
+                              >
+                                <div>
+                                  <div class="strong">${user.name}</div>
+                                  <div class="secondary">${user.email}</div>
+                                  <div
+                                    class="secondary"
+                                    style="${css`
+                                      font-size: var(--font-size--xs);
+                                      line-height: var(--line-height--xs);
+                                    `}"
+                                  >
+                                    Last seen online
+                                    <time
+                                      datetime="${new Date(
+                                        user.lastSeenOnlineAt
+                                      ).toISOString()}"
+                                      oninteractive="${javascript`
+                                      leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                    `}"
+                                    ></time>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            $${user.biography === null
+                              ? html``
+                              : markdownProcessor({
+                                  req,
+                                  res,
+                                  markdown: user.biography,
+                                }).html}
                           </div>
-                        </div>
-                      </div>
-                    </div>
-                    $${user.biography === null
-                      ? html``
-                      : markdownProcessor({
-                          req,
-                          res,
-                          markdown: user.biography,
-                        }).html}
-                  </div>
-                `,
-              })},
-            });
+                        `,
+                      })},
+                    });
+                  `
+                : javascript``
+            }
           `}"
           >$${userAvatar}  $${name === true ? html`${user.name}` : name}</span
         >`;
@@ -11631,6 +11639,7 @@ ${value}</textarea
                       res,
                       user,
                       name: user.userNameSearchResultHighlight,
+                      tooltip: false,
                       size: "xs",
                     })}
                   </button>
