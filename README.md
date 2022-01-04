@@ -23,6 +23,7 @@
 
   - Fix client-side JavaScript syntax error when focusing on `markdownEditor` in conversations page.
   - Bring `partialLayout` into other places where it’ll be useful, for example, the server results of the `#references` widget.
+    - Verify that every `res.send()` is using a layout.
   - Extract into @leafac/javascript the snippet that loads a `partialLayout` result into a DOM element. (Look for `insertAdjacentHTML`: There are two occurrences.)
   - Test `@mentions` & `#references` widgets.
   - Is the user name being highlighted by search in the right places (`conversationPartial`, the list of messages in a conversation, and so forth)?
