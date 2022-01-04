@@ -2681,7 +2681,7 @@ export default async function courselore({
     req,
     res,
     user = undefined,
-    anonymous = false,
+    anonymous = user === undefined,
     onlineIndicator = true,
     name = true,
     size = "sm",
@@ -2700,8 +2700,6 @@ export default async function courselore({
     name?: boolean | string;
     size?: "xs" | "sm" | "xl";
   }): HTML => {
-    if (user === undefined) anonymous = true;
-
     let userAvatar = html``;
     if (user !== undefined && anonymous !== true) {
       if (user.avatar !== null)
@@ -12303,9 +12301,7 @@ ${value}</textarea
                         Conversation`;
                         break;
                       case "anonymous":
-                        mentionHTML = html`<span class="text--violet"
-                          >@<i class="bi bi-sunglasses"></i> Anonymous</span
-                        >`;
+                        mentionHTML = html`@$${userPartial({ req, res })}`;
                         break;
                       default:
                         const enrollmentReference = mention.split("--")[0];
