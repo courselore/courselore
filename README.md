@@ -26,7 +26,7 @@
       - `text-violet`
     - `avatar`
   - Don’t disclose emails to students.
-  - `TODO`
+  - `TODO` (see code below)
   - Add staff badge to `userPartial`.
   - Test everything in different browsers.
 
