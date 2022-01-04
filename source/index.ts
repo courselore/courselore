@@ -11472,13 +11472,19 @@ export default async function courselore({
                             const content = dropdownMenu.props.content;
                             const searchResults = content.querySelector(".search-results");
                             const search = value.slice(anchorIndex, selectionMax).trim();
-                            searchResults.innerHTML =
-                              search === ""
-                              ? ""
-                              : await (await fetch("${baseURL}/courses/${
+                            if (search === "")
+                              searchResults.innerHTML = "";
+                            else {
+                              const searchResultsDocument = new DOMParser().parseFromString(
+                                await (await fetch("${baseURL}/courses/${
                       res.locals.course.reference
-                    }/markdown-editor/" + route + "?" + new URLSearchParams({ search }))).text();
-                            leafac.evaluateElementsAttribute(searchResults);
+                    }/markdown-editor/" + route + "?" + new URLSearchParams({ search }))).text(),
+                                "text/html"
+                              );
+                              document.querySelector("head").insertAdjacentHTML("beforeend", searchResultsDocument.querySelector("head").innerHTML);
+                              searchResults.innerHTML = searchResultsDocument.querySelector("body").innerHTML;
+                              leafac.evaluateElementsAttribute(searchResults);
+                            }
                             const buttons = content.querySelectorAll(".button");
                             for (const button of buttons) button.classList.remove("hover");
                             if (buttons.length > 0) buttons[0].classList.add("hover");

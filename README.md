@@ -21,7 +21,9 @@
 
 - Avatars.
   - `@mentions` widget styles & oninteractive (if the online indicator works, then both styles and oninteractive are working).
-  - Test `@mentions` widget.
+  - Bring `partialLayout` into other places where it’ll be useful, for example, the server results of the `#references` widget.
+  - Extract into @leafac/javascript the snippet that loads a `partialLayout` result into a DOM element. (Look for `insertAdjacentHTML`: There are two occurrences.)
+  - Test `@mentions` & `#references` widgets.
   - Is the user name being highlighted in the right places (`conversationPartial`, the list of messages in a conversation, and so forth)?
   - On `@mentions` to self, the `<mark>` bleeds under the avatar.
   - Finish using `userPartial` in every location where it belongs.
