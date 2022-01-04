@@ -2682,9 +2682,9 @@ export default async function courselore({
     res,
     user = undefined,
     anonymous = false,
-    size = "sm",
     onlineIndicator = true,
     name = true,
+    size = "sm",
   }: {
     req: express.Request<
       {},
@@ -2696,9 +2696,9 @@ export default async function courselore({
     res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>;
     user?: AuthorEnrollment["user"];
     anonymous?: boolean | "reveal";
-    size?: "xs" | "sm" | "xl";
     onlineIndicator?: boolean;
     name?: boolean | string;
+    size?: "xs" | "sm" | "xl";
   }): HTML => {
     if (user === undefined) anonymous = true;
 
@@ -2890,8 +2890,8 @@ export default async function courselore({
                           req,
                           res,
                           user: user,
-                          size: "xl",
                           name: false,
+                          size: "xl",
                         })}
                       </div>
                       <div
@@ -4590,9 +4590,9 @@ export default async function courselore({
                         req,
                         res,
                         user: { ...res.locals.user, avatar: null },
-                        size: "xs",
                         onlineIndicator: false,
                         name: false,
+                        size: "xs",
                       })}
                     </button>
                   </div>
@@ -15325,7 +15325,6 @@ ${value}</textarea
                                                       res,
                                                       user: message
                                                         .authorEnrollment.user,
-
                                                       anonymous:
                                                         message.anonymousAt ===
                                                         null
