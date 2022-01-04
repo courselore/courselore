@@ -12938,10 +12938,7 @@ ${value}</textarea
                                 $${userPartial({
                                   req,
                                   res,
-                                  user: res.locals.user,
-                                  onlineIndicator: false,
                                   name: false,
-                                  anonymous: true,
                                 })}
                                 <span
                                   style="${css`
@@ -15978,10 +15975,7 @@ ${value}</textarea
                                   $${userPartial({
                                     req,
                                     res,
-                                    user: res.locals.user,
-                                    onlineIndicator: false,
                                     name: false,
-                                    anonymous: true,
                                   })}
                                   <span
                                     style="${css`
