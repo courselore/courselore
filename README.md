@@ -20,6 +20,7 @@
 ### Chat
 
 - Avatars.
+
   - Fix client-side JavaScript syntax error when focusing on `markdownEditor` in conversations page.
   - Bring `partialLayout` into other places where it’ll be useful, for example, the server results of the `#references` widget.
   - Extract into @leafac/javascript the snippet that loads a `partialLayout` result into a DOM element. (Look for `insertAdjacentHTML`: There are two occurrences.)
@@ -30,7 +31,7 @@
     - `bi-person-circle`
     - `avatar`
   - Don’t disclose emails to students.
-  - `TODO` (see code below)
+
   - Add staff badge to `userPartial`.
 
 ```js
@@ -49,7 +50,7 @@
 </span>
 ```
 
-- Test everything in different browsers.
+- `TODO` (see code below)
 
 ```js
 $${searchResults !== undefined
@@ -331,6 +332,8 @@ $${searchResults !== undefined
           `
         : html``}
 ```
+
+- Test everything in different browsers.
 
 - README
   - Description.
