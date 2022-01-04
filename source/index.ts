@@ -2660,9 +2660,14 @@ export default async function courselore({
       any,
       {},
       {},
-      Partial<TippyContentMiddlewareLocals>
+      (IsSignedInMiddlewareLocals | IsSignedOutMiddlewareLocals) &
+        Partial<TippyContentMiddlewareLocals>
     >;
-    res: express.Response<any, Partial<TippyContentMiddlewareLocals>>;
+    res: express.Response<
+      any,
+      (IsSignedInMiddlewareLocals | IsSignedOutMiddlewareLocals) &
+        Partial<TippyContentMiddlewareLocals>
+    >;
     body: HTML;
   }): HTML =>
     extractInlineStyles(html`
