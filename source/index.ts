@@ -11618,15 +11618,7 @@ ${value}</textarea
                       }--${slugify(user.name)}");
                     `}"
                   >
-                    $${user.avatar === null
-                      ? html`<i class="bi bi-person-circle"></i>`
-                      : html`
-                          <img
-                            src="${user.avatar}"
-                            alt="${user.name}"
-                            class="avatar avatar--sm avatar--vertical-align"
-                          />
-                        `}
+                    $${userPartial({ req, res, user, name: false, size: "xs" })}
                     <span>
                       $${user.userNameSearchResultHighlight}
                       <span
