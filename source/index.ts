@@ -12307,6 +12307,8 @@ ${value}</textarea
                         const enrollmentReference = mention.split("--")[0];
                         const enrollment = database.get<{
                           userId: number;
+                          userLastSeenOnlineAt: string;
+                          userEmail: string;
                           userName: string;
                           userAvatar: string | null;
                           userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
@@ -12315,6 +12317,8 @@ ${value}</textarea
                         }>(
                           sql`
                             SELECT "users"."id" AS "userId",
+                                   "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                                   "users"."email" AS "userEmail",
                                    "users"."name" AS "userName",
                                    "users"."avatar" AS "userAvatar",
                                    "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
@@ -12329,15 +12333,22 @@ ${value}</textarea
                           `
                         );
                         if (enrollment === undefined) return match;
+                        const user = {
+                          id: enrollment.userId,
+                          lastSeenOnlineAt: enrollment.userLastSeenOnlineAt,
+                          email: enrollment.userEmail,
+                          name: enrollment.userName,
+                          avatar: enrollment.userAvatar,
+                          avatarlessBackgroundColor:
+                            enrollment.userAvatarlessBackgroundColor,
+                          biography: enrollment.userBiography,
+                        };
                         mentions.add(enrollment.reference);
-                        const mentionInnerHTML = html`@$${enrollment.userAvatar ===
-                        null
-                          ? html`<i class="bi bi-person-circle"></i>`
-                          : html`<img
-                              src="${enrollment.userAvatar}"
-                              alt="${enrollment.userName}"
-                              class="avatar avatar--sm avatar--vertical-align"
-                            />`} $${enrollment.userName}`;
+                        const mentionInnerHTML = userPartial({
+                          req,
+                          res,
+                          user,
+                        });
                         mentionHTML = html`$${enrollment.userId ===
                         res.locals.user!.id
                           ? html`<mark class="mark">$${mentionInnerHTML}</mark>`
