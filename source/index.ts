@@ -12582,13 +12582,15 @@ ${value}</textarea
       )
         return next("validation");
       res.send(
-        extractInlineStyles(
-          html`<!DOCTYPE html>$${markdownProcessor({
-              req,
-              res,
-              markdown: req.body.content,
-            }).html}`
-        )
+        partialLayout({
+          req,
+          res,
+          body: markdownProcessor({
+            req,
+            res,
+            markdown: req.body.content,
+          }).html,
+        })
       );
     }
   );
@@ -12609,13 +12611,15 @@ ${value}</textarea
       )
         return next("validation");
       res.send(
-        extractInlineStyles(
-          html`<!DOCTYPE html>$${markdownProcessor({
-              req,
-              res,
-              markdown: req.body.content,
-            }).html}`
-        )
+        partialLayout({
+          req,
+          res,
+          body: markdownProcessor({
+            req,
+            res,
+            markdown: req.body.content,
+          }).html,
+        })
       );
     }
   );
