@@ -14739,9 +14739,14 @@ ${value}</textarea
                                                                         <button
                                                                           class="dropdown--menu--item button button--transparent"
                                                                         >
-                                                                          <i
-                                                                            class="bi bi-sunglasses"
-                                                                          ></i>
+                                                                          $${userPartial(
+                                                                            {
+                                                                              req,
+                                                                              res,
+                                                                              name: false,
+                                                                              size: "xs",
+                                                                            }
+                                                                          )}
                                                                           Set as
                                                                           Anonymous
                                                                           to
@@ -14758,36 +14763,20 @@ ${value}</textarea
                                                                         <button
                                                                           class="dropdown--menu--item button button--transparent"
                                                                         >
-                                                                          $${res
-                                                                            .locals
-                                                                            .user
-                                                                            .avatar ===
-                                                                          null
-                                                                            ? html`
-                                                                                <i
-                                                                                  class="bi bi-person-circle"
-                                                                                ></i>
-                                                                              `
-                                                                            : html`
-                                                                                <img
-                                                                                  src="${res
-                                                                                    .locals
-                                                                                    .user
-                                                                                    .avatar}"
-                                                                                  alt="${res
-                                                                                    .locals
-                                                                                    .user
-                                                                                    .name}"
-                                                                                  class="avatar avatar--sm avatar--vertical-align"
-                                                                                />
-                                                                              `}
+                                                                          $${userPartial(
+                                                                            {
+                                                                              req,
+                                                                              res,
+                                                                              user: res
+                                                                                .locals
+                                                                                .user,
+                                                                              name: false,
+                                                                              size: "xs",
+                                                                            }
+                                                                          )}
                                                                           Set as
                                                                           Signed
-                                                                          by
-                                                                          ${res
-                                                                            .locals
-                                                                            .user
-                                                                            .name}
+                                                                          by You
                                                                         </button>
                                                                       `}
                                                                 </form>
