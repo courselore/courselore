@@ -2700,11 +2700,11 @@ export default async function courselore({
     name?: boolean | string;
     anonymous?: boolean | "reveal";
   }): HTML => {
-    let output = html``;
+    let userAvatar = html``;
 
     if (anonymous !== true) {
       if (user.avatar !== null)
-        output = html`<img
+        userAvatar = html`<img
           src="${user.avatar}"
           alt="${user.name}"
           style="${css`
@@ -2731,7 +2731,7 @@ export default async function courselore({
           `}"
         />`;
       else
-        output = html`<svg
+        userAvatar = html`<svg
           style="${css`
             ${{
               xs: css`
@@ -2787,7 +2787,7 @@ export default async function courselore({
         </svg>`;
 
       if (onlineIndicator)
-        output = html`<span
+        userAvatar = html`<span
           style="${css`
             display: inline-grid;
             & > * {
@@ -2804,7 +2804,7 @@ export default async function courselore({
             }[size]}
           `}"
         >
-          $${output}
+          $${userAvatar}
           <span
             style="${css`
               background-color: var(--color--green--500);
@@ -2854,7 +2854,7 @@ export default async function courselore({
         </span>`;
 
       if (name !== false)
-        output = html`<span
+        userAvatar = html`<span
           style="${css`
             font-weight: var(--font-weight--bold);
           `}"
@@ -2936,12 +2936,13 @@ export default async function courselore({
               })},
             });
           `}"
-          >$${output}  $${name === true ? html`${user.name}` : name}</span
+          >$${userAvatar}  $${name === true ? html`${user.name}` : name}</span
         >`;
     }
 
+    let anonymousAvatar = html``;
     if (anonymous !== false) {
-      const anonymousAvatar = html`<span
+      anonymousAvatar = html`<span
         style="${css`
           font-weight: var(--font-weight--bold);
         `}"
@@ -2999,13 +3000,15 @@ export default async function courselore({
           </foreignObject>
         </svg>`}  Anonymous</span
       >`;
-      output =
-        anonymous === "reveal"
-          ? html`<span>$${anonymousAvatar} ($${output})</span>`
-          : anonymousAvatar;
     }
 
-    return output;
+    return anonymous === false
+      ? userAvatar
+      : anonymous === "reveal"
+      ? html`<span>$${anonymousAvatar} ($${userAvatar})</span>`
+      : anonymous === true
+      ? anonymousAvatar
+      : html``;
   };
 
   const enrollmentRoleIcon = {
