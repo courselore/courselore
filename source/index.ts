@@ -2655,8 +2655,14 @@ export default async function courselore({
     res,
     body,
   }: {
-    req: express.Request<{}, any, {}, {}, {}>;
-    res: express.Response<any, {}>;
+    req: express.Request<
+      {},
+      any,
+      {},
+      {},
+      Partial<TippyContentMiddlewareLocals>
+    >;
+    res: express.Response<any, Partial<TippyContentMiddlewareLocals>>;
     body: HTML;
   }): HTML =>
     extractInlineStyles(html`
@@ -2664,6 +2670,7 @@ export default async function courselore({
       <html>
         <body>
           $${body}
+          <div hidden>$${res.locals.tippyContent ?? []}</div>
         </body>
       </html>
     `);

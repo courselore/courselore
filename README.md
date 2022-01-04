@@ -20,7 +20,7 @@
 ### Chat
 
 - Avatars.
-  - Use `userPartial` to do name highlight on `@mentions` widget.
+  - `@mentions` widget styles & oninteractive (if the online indicator works, then both styles and oninteractive are working).
   - Test `@mentions` widget.
   - Is the user name being highlighted in the right places (`conversationPartial`, the list of messages in a conversation, and so forth)?
   - On `@mentions` to self, the `<mark>` bleeds under the avatar.
