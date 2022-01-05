@@ -17,6 +17,7 @@
 - Comprehensive search & filters.
 - Straightforward invitation & onboarding system.
 - Modern, clean interface.
+- Works great on phones & on Dark Mode.
 - Open-source & easy to self-host.
 
 ### Self-Hosting
