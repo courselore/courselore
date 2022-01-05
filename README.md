@@ -1,5 +1,6 @@
 <h1 align="center"><a href="https://courselore.org">CourseLore</a></h1>
 <h3 align="center">Communication Platform for Education</h3>
+<h3 align="center"><a href="https://courselore.org">https://courselore.org</a></h3>
 <p align="center">
 <a href="https://github.com/courselore/courselore"><img src="https://img.shields.io/badge/Source---" alt="Source"></a>
 <a href="https://www.npmjs.com/package/courselore"><img alt="Package" src="https://badge.fury.io/js/courselore.svg"></a>
@@ -18,8 +19,30 @@
 - Modern, clean interface.
 - Open-source & easy to self-host.
 
+### Self-Hosting
+
+You may use CourseLore at <https://courselore.org>, but you may prefer to run CourseLore on your own servers for maximum control and privacy. CourseLore is easy to self-host and is an excellent first project if you’re new to system administration.
+
+#### Requirements
+
+- **A server.** This is the machine that will run CourseLore. You may rent a server from a provider such as [DigitalOcean](https://www.digitalocean.com/) (this is what we use for <https://courselore.org>), [Linode](https://www.linode.com/), and so forth. You may also use a server provided by your educational institution, or a [Raspberry Pi](https://www.raspberrypi.com) that you have running in your closet.
+
+  > **Note:** You need command-line access to the server.
+
+  > **Note:** The server may run Linux, Windows, or macOS. We recommend Linux ([Ubuntu](https://ubuntu.com)).
+
+  > **Note:** CourseLore is a relatively lightweight application. Even a $5/month DigitalOcean server is enough for a couple hundred users.
+
+- **An email delivery service.** This is the service that will send emails on behalf of your server. You may use a service such as [Amazon SES](https://aws.amazon.com/ses/) (this is what we use for <https://courselore.org>), [SendGrid](https://sendgrid.com), and so forth. You may also use a email delivery service provided by your educational institution.
+
+  > **Note:** In theory your server could try delivering emails directly instead of relying on an email delivery service. In practice your emails would likely be marked as spam or even rejected by most destinations such as [Gmail](https://www.google.com/gmail/) and [Microsoft Outlook](https://outlook.live.com/). CourseLore must be able to send emails to complete the sign-up process, to send notifications, and so forth, so it’s best to rely on an email delivery service who guarantees that emails will arrive at your users’ inboxes.
+
+- **A domain.** This is a name such as `courselore.org`. You may buy a domain from providers such as [Namecheap](https://www.namecheap.com/) (this is what we use for `courselore.org`), [Amazon Route 53](https://aws.amazon.com/route53/), and so forth. You may also use a domain provided by your educational institution, for example, `my-course.educational-institution.edu`.
+
+  > **Note:** You need access to the domain’s DNS configuration to set entries such as “`my-course.educational-institution.edu` maps to the IP address of my server at `159.203.147.228`.”
+
 <details>
-<summary><h3>Roadmap</h3></summary>
+<summary><strong>Roadmap</strong></summary>
 
 #### First Public Release
 
