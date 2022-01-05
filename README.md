@@ -47,15 +47,17 @@ You may use CourseLore at <https://courselore.org>, but you may prefer to run Co
 1. [Download the latest CourseLore release for your platform](https://github.com/courselore/courselore/releases). For example, from the Linux command line:
 
    ```console
-   $ wget https://github.com/courselore/courselore/releases/download/v0.0.8/courselore--linux--v0.0.8.tgz
-   $ tar xvzf courselore--linux--v0.0.8.tgz
+   # mkdir courselore
+   # cd courselore
+   # wget https://github.com/courselore/courselore/releases/download/v0.0.8/courselore--linux--v0.0.8.tgz
+   # tar xvzf courselore--linux--v0.0.8.tgz
    ```
 
-2. Create a configuration file called `configuration.mjs` based on [`configuration/example.mjs`](configuration/example.mjs) (look for the keyword `YOUR` in that file). For example, from the Linux command line:
+2. Create a configuration file based on [`configuration/example.mjs`](configuration/example.mjs) (look for the keyword `YOUR` in that file). For example, from the Linux command line:
 
    ```console
-   $ wget -O configuration.mjs https://github.com/courselore/courselore/raw/main/configuration/example.mjs
-   $ nano configuration.mjs
+   # wget -O configuration.mjs https://github.com/courselore/courselore/raw/main/configuration/example.mjs
+   # nano configuration.mjs
    ```
 
    > **Note for Advanced Users:** CourseLore’s configuration is a JavaScript module whose default export is a function called by the `courselore` binary. The example configuration starts an [Express](https://expressjs.com) application server and a [Caddy](https://caddyserver.com) reverse-proxy & TLS certificate manager, both of which are embedded in the `courselore` binary using [`caxa`](https://github.com/leafac/caxa). But this is a pretty flexible configuration strategy that allows for endless customization, for example:
@@ -65,7 +67,16 @@ You may use CourseLore at <https://courselore.org>, but you may prefer to run Co
    > - Use a different email service provider, either via SMTP or via a proprietary API specific to your email service provider. You may use [Nodemailer](https://nodemailer.com/) or a proprietary Node.js package specific to your email service provider. You may even try to [deliver emails directly from your server instead of relying on an email delivery service](https://github.com/nodemailer/nodemailer/issues/1227) if you can include your server on the allow-list of you users’ inbox.
    > - Mount CourseLore as part of a bigger [Node.js](https://nodejs.org/en/) application. This allows you to intercept CourseLore’s requests & responses and manipulate them in any way you want.
 
-3. Configure your operating system’s service manager to start CourseLore on boot and restart CourseLore in case it crashes. Refer to [`configuration/courselore.service`](configuration/courselore.service) for an example using Ubuntu’s service manager [systemd](https://systemd.io).
+3. Configure your operating system’s service manager to start CourseLore on boot and restart CourseLore in case it crashes. For example, using Ubuntu’s service manager [systemd](https://systemd.io) with the configure we use for <https://courselore.org> at [`configuration/courselore.service`](configuration/courselore.service):
+
+   ```console
+   # wget -O /etc/systemd/system/courselore.service https://github.com/courselore/courselore/raw/main/configuration/courselore.service
+   # systemctl daemon-reload
+   # systemctl enable courselore
+   # systemctl start courselore
+   ```
+
+TODO: Updates & backups
 
 <details>
 <summary><strong>Roadmap</strong></summary>
