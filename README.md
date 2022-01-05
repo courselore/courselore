@@ -6,9 +6,22 @@
 <a href="https://github.com/courselore/courselore/actions"><img src="https://github.com/courselore/courselore/workflows/.github/workflows/main.yml/badge.svg" alt="Continuous Integration"></a>
 </p>
 
-### Roadmap
+[<img src="static/screenshot.png" alt="Screenshot" width="1072">](https://courselore.org)
 
-#### 1.0.0
+### Features
+
+- Forum & chat.
+- Best-in-class rich-text messages with Markdown & LaTeX.
+- Anonymity & private questions.
+- Comprehensive search & filters.
+- Straightforward invitation & onboarding system.
+- Modern, clean interface.
+- Open-source & easy to self-host.
+
+<details>
+<summary><h3>Roadmap</h3></summary>
+
+#### First Public Release
 
 **Soft Deadline:** 2022-01-15
 
@@ -1584,6 +1597,8 @@ $${searchResults !== undefined
   - https://yellowdig.com
   - Moodle
     - It’s a whole LMS, not a Q&A
+
+</details>
 
 </details>
 
