@@ -22,7 +22,7 @@
 
 ### Self-Hosting
 
-You may use CourseLore at <https://courselore.org>, but you may prefer to run CourseLore on your own servers for maximum control and privacy. CourseLore is easy to self-host and is an excellent first project if you’re new to system administration.
+You may use CourseLore at <https://courselore.org>, but you may prefer to run CourseLore on your own servers for maximum control and privacy. CourseLore is easy to self-host and is an excellent first project if you’re new to system administration. If you get stuck, please [open an issue](https://github.com/courselore/courselore/issues/new) including as much information as possible: What you tried, what you expected to happen, what really happened, what error messages you saw, and so forth.
 
 #### Requirements
 
@@ -41,6 +41,8 @@ You may use CourseLore at <https://courselore.org>, but you may prefer to run Co
 - **Domain.** This is a name such as `courselore.org`. You may buy a domain from providers such as [Namecheap](https://www.namecheap.com/) (this is what we use for `courselore.org`), [Amazon Route 53](https://aws.amazon.com/route53/), and so forth. You may also use a domain provided by your educational institution, for example, `my-course.educational-institution.edu`.
 
   > **Note:** You need access to the DNS configuration for the domain to set entries such as “`my-course.educational-institution.edu` maps to the IP address of my server at `159.203.147.228`.”
+
+#### DNS Setup
 
 #### Server Setup
 
