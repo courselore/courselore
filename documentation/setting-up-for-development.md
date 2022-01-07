@@ -14,7 +14,13 @@ The best way to get started is to run a pre-compiled CourseLore binary on your m
 
 > **Note:** Most Linux distributions prevent regular users from binding to network ports lower than 1024. This is a setting that [you should disable](https://github.com/small-tech/auto-encrypt/tree/a917892b93b61cd3b80a6f3919db752e2c5a9f6c#a-note-on-linux-and-the-security-farce-that-is-privileged-ports).
 
-> **Note:** CourseLore may ask for your password before running. This happens because it runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS. To accomplish this, it needs to install local TLS certificates on your operating system’s trust base. CourseLore relies on [Caddy](https://caddyserver.com) to manage this process.
+> **Note:** CourseLore may ask for your password before running. This happens because it runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS. To accomplish this, it needs to install local TLS certificates on your operating system’s trust store. CourseLore relies on [Caddy](https://caddyserver.com) to manage this process.
+
+> **Note:** Firefox may have issues with the local TLS certificate used by CourseLore because by default it uses its own trust store. There are two possible solutions for this:
+>
+> 1. Use NSS to install the TLS certificate into Firefox’s trust store.
+>
+> 2. Configure Firefox to use the operating system’s trust store by visiting `about:config` and setting `security.enterprise_roots.enabled` to `true`.
 
 ### Running from Source
 
