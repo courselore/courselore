@@ -1,12 +1,12 @@
 # Self-Hosting
 
-You may use CourseLore at <https://courselore.org>, but you may prefer to run CourseLore on your own servers for maximum privacy and control. CourseLore is easy to self-host and is an excellent first project if you’re new to system administration.
+You may use CourseLore at [`courselore.org`](https://courselore.org), but you may prefer to run CourseLore on your own servers for maximum privacy and control. CourseLore is easy to self-host and is an excellent first project if you’re new to system administration.
 
-> **Note:** If you get stuck, please [open an issue](https://github.com/courselore/courselore/issues/new) including as much information as possible: What you tried, what you expected to happen, what really happened, what error messages you saw, and so forth.
+> **Note:** If you get stuck, please [open an issue](https://github.com/courselore/courselore/issues/new) including as much information as possible: What you tried, what you expected to happen, what really happened, what error messages you ran into, and so forth.
 
 ### Requirements
 
-- **Server.** This is the machine that will run CourseLore. You may rent a server from a provider such as [DigitalOcean](https://www.digitalocean.com/) (this is what we use for <https://courselore.org>), [Linode](https://www.linode.com/), and so forth. You may also use a server provided by your educational institution, or a [Raspberry Pi](https://www.raspberrypi.com) that you have running in your closet.
+- **Server.** This is the machine that will run CourseLore. You may rent a server from a provider such as [DigitalOcean](https://www.digitalocean.com/) (this is what we use for [`courselore.org`](https://courselore.org)), [Linode](https://www.linode.com/), and so forth. You may also use a server provided by your educational institution, or a [Raspberry Pi](https://www.raspberrypi.com) that you have running in your closet.
 
   > **Note:** You need command-line access to the server.
 
@@ -14,13 +14,13 @@ You may use CourseLore at <https://courselore.org>, but you may prefer to run Co
 
   > **Note:** CourseLore is lightweight. A $5/month DigitalOcean server is enough for a couple hundred users.
 
-- **Email Delivery Service.** This is the service that will deliver emails on behalf of your server. You may use a service such as [Amazon SES](https://aws.amazon.com/ses/) (this is what we use for <https://courselore.org>), [SendGrid](https://sendgrid.com), and so forth. You may also use an email delivery service provided by your educational institution.
+- **Email Delivery Service.** This is the service that will deliver emails on behalf of your server. You may use a service such as [Amazon SES](https://aws.amazon.com/ses/) (this is what we use for [`courselore.org`](https://courselore.org)), [SendGrid](https://sendgrid.com), and so forth. You may also use an email delivery service provided by your educational institution.
 
   > **Note:** In theory your server could try delivering emails directly instead of relying on an email delivery service. CourseLore may be configured to do that, and it would be better for privacy because no data would be going through third-party services. Unfortunately, in practice your emails would likely be marked as spam or even be rejected by most destinations such as [Gmail](https://www.google.com/gmail/) and [Microsoft Outlook](https://outlook.live.com/). CourseLore must be able to send emails to complete the sign-up process, to send notifications, and so forth, so it’s best to rely on an email delivery service who guarantees that emails will arrive at your users’ inboxes.
 
 - **Domain.** This is a name such as `courselore.org`. You may buy a domain from providers such as [Namecheap](https://www.namecheap.com/) (this is what we use for `courselore.org`), [Amazon Route 53](https://aws.amazon.com/route53/), and so forth. You may also use a domain provided by your educational institution, for example, `my-course.educational-institution.edu`.
 
-  > **Note:** You need access to the DNS configuration for the domain to set entries such as “`my-course.educational-institution.edu` maps to the IP address of my server at `159.203.147.228`.”
+  > **Note:** You need access to the DNS configuration for the domain to set records such as “`my-course.educational-institution.edu` maps to the IP address of my server at `159.203.147.228`.”
 
 ### DNS Setup
 
@@ -44,9 +44,9 @@ Create an `A` Record pointing at your server’s IP address and `ALIAS` or `CNAM
    # nano configuration.mjs
    ```
 
-   > **Note for Advanced Users:** CourseLore’s configuration is a JavaScript module whose default export is a function called by the `courselore` binary. The example configuration starts an [Express](https://expressjs.com) application server and a [Caddy](https://caddyserver.com) reverse-proxy & TLS certificate manager, both of which are embedded in the `courselore` binary using [`caxa`](https://github.com/leafac/caxa). But this is a pretty flexible configuration strategy that allows for endless customization, for example:
+   > **Note for Advanced Users:** The CourseLore configuration is a JavaScript module whose default export is a function called by the `courselore` binary. The example configuration starts an [Express](https://expressjs.com) application server and a [Caddy](https://caddyserver.com) reverse-proxy & TLS certificate manager, both of which are embedded in the `courselore` binary using [`caxa`](https://github.com/leafac/caxa). But this is a pretty flexible configuration strategy that allows for endless customization, for example:
    >
-   > - Load secrets from a different source instead of hard-coding them (see an example of how to do that in the configuration we use for <https://courselore.org> at [`configuration/production.mjs`](configuration/production.mjs)).
+   > - Load secrets from a different source instead of hard-coding them (see an example of how to do that in the configuration we use for [`courselore.org`](https://courselore.org) at [`configuration/production.mjs`](../configuration/production.mjs)).
    >
    > - Use a different reverse proxy, which may be necessary if you have other applications running on the same server.
    >
@@ -54,7 +54,7 @@ Create an `A` Record pointing at your server’s IP address and `ALIAS` or `CNAM
    >
    > - Mount CourseLore as part of a larger [Node.js](https://nodejs.org/) application. This allows you to intercept CourseLore’s requests & responses and manipulate them in any way you want.
 
-3. Configure your operating system’s service manager to start CourseLore on boot and restart it in case it crashes. For example, using Ubuntu’s service manager [systemd](https://systemd.io) with the configuration we use for <https://courselore.org> at [`configuration/courselore.service`](configuration/courselore.service):
+3. Configure your operating system’s service manager to start CourseLore on boot and restart it in case it crashes. For example, using Ubuntu’s service manager [systemd](https://systemd.io) with the configuration we use for [`courselore.org`](https://courselore.org) at [`configuration/courselore.service`](configuration/courselore.service):
 
    ```console
    # wget -O /etc/systemd/system/courselore.service https://github.com/courselore/courselore/raw/main/configuration/courselore.service
