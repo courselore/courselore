@@ -125,4 +125,6 @@ If you’re using WSL, follow the Linux instructions.
    $ npm start
    ```
 
+   > **Note:** macOS imposes a limit on the number of files a process can open, but in development CourseLore needs to open more files than the default setting allows because it reloads code as soon as you change it. Increase the limit by following [these instructions](https://gist.github.com/abernix/a7619b07b687bb97ab573b0dc30928a0).
+
 </details>
