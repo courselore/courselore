@@ -253,7 +253,7 @@ You may run CourseLore on your machine and access it from a phone, which is esse
 
 <details>
 
-<summary>Option 3: Using [Localtunnel](https://localtunnel.me)</summary>
+<summary>Option 3: Using <a href="https://localtunnel.me">Localtunnel</a></summary>
 
 1. Install & run Localtunnel following the instructions on the website.
 
