@@ -4,19 +4,17 @@ CourseLore has been designed to be welcoming to new developers. It’s an excell
 
 > **Note:** If you get stuck, please [open an issue](https://github.com/courselore/courselore/issues/new) including as much information as possible: What you tried, what you expected to happen, what really happened, what error messages you ran into, and so forth.
 
-### Running Pre-Compiled Binaries Locally
+### Running a Pre-Compiled Binary Locally
 
-The best way to get started is to run a pre-compiled CourseLore binary on your machine. You may download CourseLore from two channels: The latest development versions are available as [Actions Artifacts](https://github.com/courselore/courselore/actions), and stable versions are available as [Releases](https://github.com/courselore/courselore/releases). After you downloaded CourseLore, extract it and run the `courselore` binary.
+The best way to get started is to run a pre-compiled CourseLore binary on your machine. You may download CourseLore from two channels: The latest development versions, which are available as [Actions Artifacts](https://github.com/courselore/courselore/actions); and stable versions, which are available as [Releases](https://github.com/courselore/courselore/releases). After you downloaded CourseLore, extract it and run the `courselore` binary.
 
 > **Note:** You must be signed in to GitHub to download GitHub Actions Artifacts.
 
 > **Note:** CourseLore needs some network ports to be available: 80, 443, 4000, and 4001. Stop other applications you may have running on those ports. In macOS and Linux you may find if an application is running on a network port using, for example, `lsof -i:80`.
 
-> **Note:** Most Linux distributions prevent regular users from binding to network ports lower than 1024. This is a setting that is [safe to disable](https://github.com/small-tech/auto-encrypt/tree/a917892b93b61cd3b80a6f3919db752e2c5a9f6c#a-note-on-linux-and-the-security-farce-that-is-privileged-ports).
+> **Note:** Most Linux distributions prevent regular users from binding to network ports lower than 1024. This is a setting that [you should disable](https://github.com/small-tech/auto-encrypt/tree/a917892b93b61cd3b80a6f3919db752e2c5a9f6c#a-note-on-linux-and-the-security-farce-that-is-privileged-ports).
 
 ### Running from Source
-
-Install the development tools necessary to run CourseLore from source:
 
 <details>
 <summary>Windows</summary>
