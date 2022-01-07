@@ -900,5 +900,3 @@
     - It’s a whole LMS, not a Q&A
 
 </details>
-
-</details>
