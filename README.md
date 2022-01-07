@@ -19,3 +19,8 @@
 - Modern, clean interface.
 - Works great on phones & on Dark Mode.
 - Open-source & easy to self-host.
+
+### Documentation
+
+- [**Self-Hosting**](/documentation/self-hosting.md)
+- [**Setting Up for Development**](/documentation/setting-up-for-development.md)
