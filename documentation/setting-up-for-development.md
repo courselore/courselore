@@ -133,7 +133,7 @@ If you’re using WSL, follow the Linux instructions.
 
 <details>
 
-<summary>Linux ([Ubuntu](https://ubuntu.com))</summary>
+<summary>Linux <a href="https://ubuntu.com">Ubuntu</a>)</summary>
 
 1. Install [Homebrew on Linux](https://docs.brew.sh/Homebrew-on-Linux) and the following packages:
 
