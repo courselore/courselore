@@ -1,27 +1,81 @@
 # Setting Up for Development
 
-CourseLore has been designed to be welcoming to new developers. It’s an excellent first project for people new to contributing to open-source software.
+CourseLore has been designed to be welcoming to new developers. It’s an excellent first project for people who are new to contributing to open-source software.
 
-> **Note:** If you get stuck, please [open an issue](https://github.com/courselore/courselore/issues/new) including as much information as possible: What you tried, what you expected to happen, what really happened, what error messages you saw, and so forth.
+> **Note:** If you get stuck, please [open an issue](https://github.com/courselore/courselore/issues/new) including as much information as possible: What you tried, what you expected to happen, what really happened, what error messages you ran into, and so forth.
 
 ### Running Pre-Compiled Binaries Locally
 
-The best way to get started is to run a pre-compiled CourseLore binary on your machine. You may download CourseLore from two channels: The latest development versions are available as [Actions Artifacts](https://github.com/courselore/courselore/actions), and stable versions are available as [Releases](https://github.com/courselore/courselore/releases).
+The best way to get started is to run a pre-compiled CourseLore binary on your machine. You may download CourseLore from two channels: The latest development versions are available as [Actions Artifacts](https://github.com/courselore/courselore/actions), and stable versions are available as [Releases](https://github.com/courselore/courselore/releases). After you downloaded CourseLore, extract it and run the `courselore` binary.
 
 > **Note:** You must be signed in to GitHub to download GitHub Actions Artifacts.
 
-> **Note:** CourseLore needs some network ports to be available: 80, 443, 4000, and 4001. If you have other applications bound to those network ports, you must stop them. In macOS and Linux you may find which application is bound to a network port using, for example, `lsof -i:80`.
+> **Note:** CourseLore needs some network ports to be available: 80, 443, 4000, and 4001. Stop other applications you may have running on those ports. In macOS and Linux you may find if an application is running on a network port using, for example, `lsof -i:80`.
 
 > **Note:** Most Linux distributions prevent regular users from binding to network ports lower than 1024. This is a setting that is [safe to disable](https://github.com/small-tech/auto-encrypt/tree/a917892b93b61cd3b80a6f3919db752e2c5a9f6c#a-note-on-linux-and-the-security-farce-that-is-privileged-ports).
 
 ### Running from Source
 
-1. Install the development tools.
+Install the development tools necessary to run CourseLore from source:
 
-   > **Windows**
+<details>
+<summary>Windows</summary>
+
+**Option 1: Windows Subsystem for Linux (WSL)**
+
+If you’re using WSL, follow the Linux instructions.
+
+**Option 2: Native Windows Development Environment**
+
+1. Install [Chocolatey](https://chocolatey.org) and the following packages:
+
+   ```console
+   > choco install nvm python visualstudio2022-workload-vctools vscode git
+   ```
+
+   > **Note:** You must run PowerShell as administrator for Chocolatey to work.
+
+   > **Note:** You may have to close and reopen PowerShell after installing programs such as Chocolatey and NVM for Windows before you’re able to use them.
+
+   > **Note:** Instead of using Chocolatey, you could go to the websites for the development tools and install them by hand, but Chocolatey makes installation and updates more straightforward.
+
+   > **Package Breakdown:**
    >
-   > Install [Chocolatey](https://chocolatey.org) and the following packages:
+   > - [NVM for Windows (`nvm`)](https://github.com/coreybutler/nvm-windows): A manager of multiple Node.js installations. While in theory you could install just the latest Node.js version directly from Chocolatey, in practice you’ll often need to test something in different versions of Node.js, particularly when you contribute to the packages on which CourseLore depends, so it’s better to use NVM for Windows from the beginning.
    >
-   > ```console
-   > > choco install nvm python visualstudio2019-workload-vctools vscode git
-   > ```
+   > - [Python (`python`)](https://www.python.org) and [Visual Studio C++ Build Tools (`visualstudio2022-workload-vctools`)](https://visualstudio.microsoft.com/visual-cpp-build-tools/): These tools are necessary to build native Node.js extensions written in C/C++.
+   >
+   > - [Visual Studio Code (`vscode`)](https://code.visualstudio.com): A text editor with excellent support for the programming languages used in CourseLore.
+   >
+   > - [Git (`git`)](https://git-scm.com): The version control system used by CourseLore.
+
+2. Setup Git:
+
+   - [Username](https://docs.github.com/en/get-started/getting-started-with-git/setting-your-username-in-git#setting-your-git-username-for-every-repository-on-your-computer)
+   - [Email](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-user-account/managing-email-preferences/setting-your-commit-email-address#setting-your-email-address-for-every-repository-on-your-computer)
+   - [Global `.gitignore` for files such as `.DS_Store` generated by Finder in macOS](https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files#configuring-ignored-files-for-all-repositories-on-your-computer)
+   - [SSH keys to connect to GitHub](https://docs.github.com/en/authentication/connecting-to-github-with-ssh).
+
+3. Install the latest version of Node.js with NVM for Windows:
+
+   ```console
+   > nvm install latest
+   > nvm use latest
+   ```
+
+4. Install the following Visual Studio Code extensions:
+
+   - [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode): Support for [Prettier](https://prettier.io), the code formatter used by CourseLore.
+   - [`es6-string-html`](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html): Syntax highlighting for HTML & SQL as tagged template literals in TypeScript—a feature heavily used in the CourseLore codebase.
+   - [Indentation Level Movement](https://marketplace.visualstudio.com/items?itemName=kaiwood.indentation-level-movement): Move up & down by indentation, which helps navigating on HTML.
+
+5. Clone the CourseLore codebase, install the dependencies, and run:
+
+   ```console
+   > git clone git@github.com:courselore/courselore.git
+   > cd courselore
+   > npm install
+   > npm start
+   ```
+
+</details>
