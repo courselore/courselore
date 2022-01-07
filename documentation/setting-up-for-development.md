@@ -14,6 +14,8 @@ The best way to get started is to run a pre-compiled CourseLore binary on your m
 
 > **Note:** Most Linux distributions prevent regular users from binding to network ports lower than 1024. This is a setting that [you should disable](https://github.com/small-tech/auto-encrypt/tree/a917892b93b61cd3b80a6f3919db752e2c5a9f6c#a-note-on-linux-and-the-security-farce-that-is-privileged-ports).
 
+> **Note:** CourseLore may ask for your password before running. This happens because it runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS. To accomplish this, it needs to install local TLS certificates on your operating system’s trust base. CourseLore relies on [Caddy](https://caddyserver.com) to manage this process.
+
 ### Running from Source
 
 <details>
@@ -183,3 +185,74 @@ If you’re using WSL, follow the Linux instructions.
    ```
 
 </details>
+
+### Testing on Mobile
+
+You may run CourseLore on your machine and access it from a phone, which is essential to test any user interface changes you may introduce. You may use the same procedure to test on different computers running different operating systems.
+
+#### Option 1: Using the Local Area Network (Preferred)
+
+1. Establish a network route between your development machine running CourseLore and your phone. The exact steps for accomplishing this depends on your network, but in general it’s enough to have your development machine and your phone on the same wifi.
+
+   > **iPhone + Mac Tip:** Connect an iPhone to a Mac with an USB cable and iOS & macOS will establish a route between them. In macOS you may go to System Preferences… > Sharing to find the address you should use in the browser on the iPhone.
+
+2. Send the development TLS certificates created by [Caddy](https://caddyserver.com) to the phone.
+
+   > **Example:** In the author’s development machine running macOS the certificate is found at `~/Library/Application Support/Caddy/certificates/local/leafac.local/leafac.local.crt`. It’s possible to AirDrop that file to an iPhone.
+
+   > **Note:** Certificates have a `.crt` extension. **Importantly, `.key` files are not certificates.** These files are signing keys which shouldn’t leave your development machine. Anyone with access to that file could intercept and tamper with any network traffic.
+
+3. Trust the TLS certificate on the phone.
+
+   > **Note:** The exact procedure depends on the operating system you’re running, but typically this process occurs in two steps: First **install** the certificate, then **trust** it.
+
+   > **iPhone Tip:** Certificates are configured in Settings > General > VPN & Device Management > Configuration Profile.
+
+4. Run CourseLore with the Local Area Network address, for example:
+
+   ```console
+   $ env BASE_URL=https://leafac.local npm start
+   ```
+
+   > **Note:** The address must start with `https`, not `http`. CourseLore runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS.
+
+5. Visit the address on the phone.
+
+#### Option 2: Using an SSH Tunnel through a Server That You Have Access to
+
+1. Follow the instructions from Option 1 to transfer a certificate to the phone.
+
+2. On the server that you have access to, open an SSH tunnel, for example, on Ubuntu:
+
+   - Modify `/etc/ssh/sshd_config` to include `GatewayPorts yes`.
+   - Run `ssh -NR 0.0.0.0:4001:localhost:4000 root@YOUR-SERVER.COM` and leave the terminal session open.
+
+3. Run CourseLore with the server’s address, for example:
+
+   ```console
+   $ env BASE_URL=https://YOUR-SERVER.COM:4000 npm start
+   ```
+
+   > **Note:** The address must start with `https`, not `http`. CourseLore runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS.
+
+4. Connect to the tunnel from your machine, for example:
+
+   ```console
+   ssh -NR 4001:localhost:4000 root@YOUR-SERVER.COM
+   ```
+
+5. Visit the server’s address on the phone.
+
+#### Option 3: Using [Localtunnel](https://localtunnel.me)
+
+1. Install & run Localtunnel following the instructions on the website.
+
+2. Run CourseLore with the Localtunnel address, for example:
+
+   ```console
+   $ env BASE_URL=https://THE-LOCAL-TUNNEL-ADDRESS npm start
+   ```
+
+   > **Note:** The address must start with `https`, not `http`. CourseLore runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS.
+
+3. Visit the Localtunnel address on the phone.
