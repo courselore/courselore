@@ -37,7 +37,7 @@ Create an `A` Record pointing at your server’s IP address and `ALIAS` or `CNAM
    # tar xzf courselore--linux--v0.0.8.tgz
    ```
 
-2. Create a configuration file based on [`configuration/example.mjs`](configuration/example.mjs) (look for the keyword `YOUR` in that file). For example, from the Linux command line:
+2. Create a configuration file based on [`configuration/example.mjs`](/configuration/example.mjs) (look for the keyword `YOUR` in that file). For example, from the Linux command line:
 
    ```console
    # wget -O configuration.mjs https://github.com/courselore/courselore/raw/main/configuration/example.mjs
@@ -46,7 +46,7 @@ Create an `A` Record pointing at your server’s IP address and `ALIAS` or `CNAM
 
    > **Note for Advanced Users:** The CourseLore configuration is a JavaScript module whose default export is a function called by the `courselore` binary. The example configuration starts an [Express](https://expressjs.com) application server and a [Caddy](https://caddyserver.com) reverse-proxy & TLS certificate manager, both of which are embedded in the `courselore` binary using [`caxa`](https://github.com/leafac/caxa). But this is a pretty flexible configuration strategy that allows for endless customization, for example:
    >
-   > - Load secrets from a different source instead of hard-coding them (see an example of how to do that in the configuration we use for [`courselore.org`](https://courselore.org) at [`configuration/production.mjs`](../configuration/production.mjs)).
+   > - Load secrets from a different source instead of hard-coding them (see an example of how to do that in the configuration we use for [`courselore.org`](https://courselore.org) at [`configuration/production.mjs`](/configuration/production.mjs)).
    >
    > - Use a different reverse proxy, which may be necessary if you have other applications running on the same server.
    >
@@ -54,7 +54,7 @@ Create an `A` Record pointing at your server’s IP address and `ALIAS` or `CNAM
    >
    > - Mount CourseLore as part of a larger [Node.js](https://nodejs.org/) application. This allows you to intercept CourseLore’s requests & responses and manipulate them in any way you want.
 
-3. Configure your operating system’s service manager to start CourseLore on boot and restart it in case it crashes. For example, using Ubuntu’s service manager [systemd](https://systemd.io) with the configuration we use for [`courselore.org`](https://courselore.org) at [`configuration/courselore.service`](configuration/courselore.service):
+3. Configure your operating system’s service manager to start CourseLore on boot and restart it in case it crashes. For example, using Ubuntu’s service manager [systemd](https://systemd.io) with the configuration we use for [`courselore.org`](https://courselore.org) at [`configuration/courselore.service`](/configuration/courselore.service):
 
    ```console
    # wget -O /etc/systemd/system/courselore.service https://github.com/courselore/courselore/raw/main/configuration/courselore.service
