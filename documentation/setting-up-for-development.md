@@ -37,7 +37,7 @@ If you’re using WSL, follow the Linux instructions.
 
    > **Note:** Instead of using Chocolatey, you could go to the websites for the development tools and install them by hand, but Chocolatey makes installation and updates more straightforward.
 
-   > **Package Breakdown:**
+   > **Package Breakdown**
    >
    > - [NVM for Windows (`nvm`)](https://github.com/coreybutler/nvm-windows): A manager of multiple Node.js installations. While in theory you could install just the latest Node.js version directly from Chocolatey, in practice you’ll often need to test something in different versions of Node.js, particularly when you contribute to the packages on which CourseLore depends, so it’s better to use NVM for Windows from the beginning.
    >
@@ -89,7 +89,7 @@ If you’re using WSL, follow the Linux instructions.
 
    > **Note:** Instead of using Homebrew, you could go to the websites for the development tools and install them by hand, but Homebrew makes installation and updates more straightforward.
 
-   > **Package Breakdown:**
+   > **Package Breakdown**
    >
    > - [Node Version Manager (`nvm`)](https://github.com/nvm-sh/nvm): A manager of multiple Node.js installations. While in theory you could install just the latest Node.js version directly from Homebrew, in practice you’ll often need to test something in different versions of Node.js, particularly when you contribute to the packages on which CourseLore depends, so it’s better to use Node Version Manager from the beginning.
    >
@@ -131,7 +131,7 @@ If you’re using WSL, follow the Linux instructions.
 
 <details>
 
-<summary>Linux (Ubuntu)</summary>
+<summary>Linux ([Ubuntu](https://ubuntu.com))</summary>
 
 1. Install [Homebrew on Linux](https://docs.brew.sh/Homebrew-on-Linux) and the following packages:
 
@@ -142,7 +142,7 @@ If you’re using WSL, follow the Linux instructions.
 
    > **Note:** Instead of using Homebrew, you could go to the websites for the development tools and install them by hand, but Homebrew makes installation and updates more straightforward.
 
-   > **Package Breakdown:**
+   > **Package Breakdown**
    >
    > - [Node Version Manager (`nvm`)](https://github.com/nvm-sh/nvm): A manager of multiple Node.js installations. While in theory you could install just the latest Node.js version directly from Homebrew, in practice you’ll often need to test something in different versions of Node.js, particularly when you contribute to the packages on which CourseLore depends, so it’s better to use Node Version Manager from the beginning.
    >
@@ -150,9 +150,9 @@ If you’re using WSL, follow the Linux instructions.
    >
    > - [Visual Studio Code (`code`)](https://code.visualstudio.com): A text editor with excellent support for the programming languages used in CourseLore.
 
-   > **Why Homebrew for Linux instead of `apt`?** The packages available from `apt` prioritize stability, so they run behind on the latest releases. This is desirable for keeping a long-running server stable, but isn’t desirable for development.
+   > **Why Homebrew for Linux instead of `apt` (a package manager that comes with Ubuntu)?** The packages available from `apt` prioritize stability, so they run behind on the latest releases. This is desirable for long-running servers, but not for development.
 
-   > **Why Homebrew for Linux instead of [Snap](https://snapcraft.io)?** Snaps use a constrained permissions system that [doesn’t work well with native Node.js extensions written in C/C++](https://github.com/nodejs/snap/issues/3). Note that Snaps are the best option for graphical applications such as Visual Studio Code which aren’t available in Homebrew for Linux, which is what we used in the command above.
+   > **Why Homebrew for Linux instead of [Snap](https://snapcraft.io) (another package manager that comes with Ubuntu)?** Snaps use a constrained permissions system that [doesn’t work well with native Node.js extensions written in C/C++](https://github.com/nodejs/snap/issues/3). Note that Snaps are the best option for graphical applications such as Visual Studio Code, which aren’t available in Homebrew for Linux, so in the command above we installed Visual Studio Code from Snap.
 
 2. Setup Git:
 
