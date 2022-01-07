@@ -190,7 +190,9 @@ If you’re using WSL, follow the Linux instructions.
 
 You may run CourseLore on your machine and access it from a phone, which is essential to test any user interface changes you may introduce. You may use the same procedure to test on different computers running different operating systems.
 
-#### Option 1: Using the Local Area Network (Preferred)
+<details>
+
+<summary>Option 1: Using the Local Area Network (Preferred)</summary>
 
 1. Establish a network route between your development machine running CourseLore and your phone. The exact steps for accomplishing this depends on your network, but in general it’s enough to have your development machine and your phone on the same wifi.
 
@@ -218,7 +220,11 @@ You may run CourseLore on your machine and access it from a phone, which is esse
 
 5. Visit the address on the phone.
 
-#### Option 2: Using an SSH Tunnel through a Server That You Have Access to
+</details>
+
+<details>
+
+<summary>Option 2: Using an SSH Tunnel through a Server That You Have Access to</summary>
 
 1. Follow the instructions from Option 1 to transfer a certificate to the phone.
 
@@ -243,7 +249,11 @@ You may run CourseLore on your machine and access it from a phone, which is esse
 
 5. Visit the server’s address on the phone.
 
-#### Option 3: Using [Localtunnel](https://localtunnel.me)
+</details>
+
+<details>
+
+<summary>Option 3: Using [Localtunnel](https://localtunnel.me)</summary>
 
 1. Install & run Localtunnel following the instructions on the website.
 
@@ -256,3 +266,5 @@ You may run CourseLore on your machine and access it from a phone, which is esse
    > **Note:** The address must start with `https`, not `http`. CourseLore runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS.
 
 3. Visit the Localtunnel address on the phone.
+
+</details>
