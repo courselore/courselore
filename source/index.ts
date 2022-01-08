@@ -8177,7 +8177,7 @@ export default async function courselore({
                             </div>
                           </div>
                         `,
-                      })}.cloneNode(true);
+                      })}.firstElementChild.cloneNode(true);
                       this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
                       leafac.evaluateElementsAttribute(newTag, "onmount");
                     `}"
