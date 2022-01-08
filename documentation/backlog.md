@@ -12,22 +12,6 @@
 
   - Add staff badge to `userPartial`.
 
-```js
-<span
-  class="secondary"
-  oninteractive="${javascript`
-                          tippy(this, {
-                            touch: false,
-                            content: ${JSON.stringify(
-                              lodash.capitalize(user.enrollmentRole)
-                            )},
-                          });
-                        `}"
->
-  $${enrollmentRoleIcon[user.enrollmentRole].regular}
-</span>
-```
-
 - `TODO` (see code below)
 
 ```js
