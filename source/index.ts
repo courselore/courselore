@@ -10476,7 +10476,8 @@ export default async function courselore({
                 write.hidden = true;
                 loading.hidden = false;
                 preview.hidden = true;
-                const previewDocument = new DOMParser().parseFromString(
+                leafac.mount(
+                  preview,
                   await (
                     await fetch("${baseURL}${
               res.locals.course === undefined
@@ -10489,12 +10490,8 @@ export default async function courselore({
                         content: textarea.value,
                       }),
                     })
-                  ).text(),
-                  "text/html"
+                  ).text()
                 );
-                document.querySelector("head").insertAdjacentHTML("beforeend", previewDocument.querySelector("head").innerHTML);
-                preview.innerHTML = previewDocument.querySelector("body").innerHTML;
-                leafac.evaluateElementsAttribute(preview);
                 write.hidden = true;
                 loading.hidden = true;
                 preview.hidden = false;
@@ -11474,17 +11471,13 @@ export default async function courselore({
                             const search = value.slice(anchorIndex, selectionMax).trim();
                             if (search === "")
                               searchResults.innerHTML = "";
-                            else {
-                              const searchResultsDocument = new DOMParser().parseFromString(
+                            else
+                              leafac.mount(
+                                searchResults,
                                 await (await fetch("${baseURL}/courses/${
                       res.locals.course.reference
-                    }/markdown-editor/" + route + "?" + new URLSearchParams({ search }))).text(),
-                                "text/html"
+                    }/markdown-editor/" + route + "?" + new URLSearchParams({ search }))).text()
                               );
-                              document.querySelector("head").insertAdjacentHTML("beforeend", searchResultsDocument.querySelector("head").innerHTML);
-                              searchResults.innerHTML = searchResultsDocument.querySelector("body").innerHTML;
-                              leafac.evaluateElementsAttribute(searchResults);
-                            }
                             const buttons = content.querySelectorAll(".button");
                             for (const button of buttons) button.classList.remove("hover");
                             if (buttons.length > 0) buttons[0].classList.add("hover");
