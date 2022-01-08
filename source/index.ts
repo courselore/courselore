@@ -12080,15 +12080,19 @@ ${value}</textarea
       );
 
       res.send(
-        html`
-          $${results.length === 0
-            ? html`
-                <div class="dropdown--menu--item secondary">
-                  No conversation or message found.
-                </div>
-              `
-            : results}
-        `
+        partialLayout({
+          req,
+          res,
+          body: html`
+            $${results.length === 0
+              ? html`
+                  <div class="dropdown--menu--item secondary">
+                    No conversation or message found.
+                  </div>
+                `
+              : results}
+          `,
+        })
       );
     }
   );
