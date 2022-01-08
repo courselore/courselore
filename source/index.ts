@@ -2881,6 +2881,62 @@ export default async function courselore({
               })();
             `}"
           ></span>
+
+          <svg
+            viewBox="0 0 24 24"
+            style="${css`
+              ${{
+                xs: css`
+                  width: var(--space--1-5);
+                  height: var(--space--1-5);
+                  transform: translate(20%, 20%);
+                `,
+                sm: css`
+                  width: var(--space--2);
+                  height: var(--space--2);
+                  transform: translate(20%, 20%);
+                `,
+                xl: css`
+                  width: var(--space--3);
+                  height: var(--space--3);
+                  transform: translate(-100%, -100%);
+                `,
+              }[size]}
+              justify-self: end;
+            `}"
+            oninteractive="${javascript`
+              tippy(this, {
+                touch: false,
+                content: "Staff",
+              });
+            `}"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="12"
+              style="${css`
+                fill: var(--color--pink--50);
+                @media (prefers-color-scheme: dark) {
+                  fill: var(--color--pink--900);
+                }
+              `}"
+            />
+            <foreignObject x="2" y="-2" width="20" height="20">
+              <span
+                style="${css`
+                  font-size: var(--font-size--xl);
+                  line-height: var(--line-height--xl);
+                  color: var(--color--pink--600);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--pink--300);
+                  }
+                `}"
+              >
+                <i class="bi bi-mortarboard-fill"></i>
+              </span>
+            </foreignObject>
+          </svg>
         </span>`;
 
       if (name !== false)
