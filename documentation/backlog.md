@@ -10,7 +10,6 @@
 
 - Avatars.
 
-  - On `@mentions` to self, the `<mark>` bleeds under the avatar.
   - Finish using `userPartial` in every location where it belongs.
     - `bi-person-circle`
     - `avatar`

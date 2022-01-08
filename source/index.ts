@@ -12401,7 +12401,16 @@ ${value}</textarea
                             user,
                           });
                           mentionHTML = html`$${user.id === res.locals.user!.id
-                            ? html`<mark class="mark"
+                            ? html`<mark
+                                class="mark"
+                                style="${css`
+                                  border-top-left-radius: var(
+                                    --border-radius--3xl
+                                  );
+                                  border-bottom-left-radius: var(
+                                    --border-radius--3xl
+                                  );
+                                `}"
                                 >$${mentionInnerHTML}</mark
                               >`
                             : html`$${mentionInnerHTML}`}`;
