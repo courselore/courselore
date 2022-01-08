@@ -10,8 +10,6 @@
 
 - Avatars.
 
-  - Don’t disclose emails to students.
-
   - Add staff badge to `userPartial`.
 
 ```js

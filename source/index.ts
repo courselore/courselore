@@ -2936,7 +2936,14 @@ export default async function courselore({
                               >
                                 <div>
                                   <div class="strong">${user.name}</div>
-                                  <div class="secondary">${user.email}</div>
+                                  $${res.locals.enrollment?.role === "staff" ||
+                                  res.locals.user?.id === user.id
+                                    ? html`
+                                        <div class="secondary">
+                                          ${user.email}
+                                        </div>
+                                      `
+                                    : html``}
                                   <div
                                     class="secondary"
                                     style="${css`
