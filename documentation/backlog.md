@@ -10,8 +10,6 @@
 
 - Avatars.
 
-  - Finish using `userPartial` in every location where it belongs.
-    - `avatar`
   - Don’t disclose emails to students.
 
   - Add staff badge to `userPartial`.
