@@ -11979,17 +11979,13 @@ ${value}</textarea
                         </div>
                         <div class="secondary">
                           <div>
-                            $${message.authorEnrollment.user.avatar === null
-                              ? html`<i class="bi bi-person-circle"></i>`
-                              : html`
-                                  <img
-                                    src="${message.authorEnrollment.user
-                                      .avatar}"
-                                    alt="${message.authorEnrollment.user.name}"
-                                    class="avatar avatar--sm avatar--vertical-align"
-                                  />
-                                `}
-                            $${messageRow.messageAuthorUserNameSearchResultHighlight}
+                            $${userPartial({
+                              req,
+                              res,
+                              user: message.authorEnrollment.user,
+                              name: messageRow.messageAuthorUserNameSearchResultHighlight,
+                              tooltip: false,
+                            })}
                           </div>
                           <div>
                             $${lodash.truncate(message.contentSearch, {
