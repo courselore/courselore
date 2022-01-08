@@ -10,7 +10,6 @@
 
 - Avatars.
 
-  - Test `@mentions` & `#references` widgets.
   - Is the user name being highlighted by search in the right places (`conversationPartial`, the list of messages in a conversation, and so forth)?
   - On `@mentions` to self, the `<mark>` bleeds under the avatar.
   - Finish using `userPartial` in every location where it belongs.
