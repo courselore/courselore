@@ -11546,7 +11546,7 @@ export default async function courselore({
                     `}"
                   `
                 : html``}
-              ${compact
+              $${compact
                 ? html``
                 : html`
                     onfocus="${javascript`
