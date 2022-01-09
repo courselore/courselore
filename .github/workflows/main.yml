@@ -45,8 +45,8 @@ jobs:
           name: ${{ matrix.artifact }}
           path: ${{ matrix.artifact }}
 
-  deploy:
-    if: github.ref == 'refs/heads/main'
+  deploy--production:
+    if: github.ref == 'refs/heads/production'
     # needs: [insiders-build, test]
     needs: insiders-build
     runs-on: ubuntu-latest
