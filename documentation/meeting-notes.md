@@ -1,3 +1,16 @@
+# Meeting Notes
+
+<details>
+<summary>2021-01-08</summary>
+
+- It’s a good thing that we stopped using Faker.js!
+- Finished `userPartial`.
+  - Coolest bug ever caused by a self-`@mention` in a biography leading to an infinite loop.
+- Documentation.
+- We went various parts of the application and talked about the most pressing issues.
+
+</details>
+
 <details>
 <summary>2021-12-22</summary>
 
