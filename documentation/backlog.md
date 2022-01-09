@@ -9,6 +9,10 @@
 ### Issues
 
 - Make a release for people to use this week.
+  - Test `npm install`
+  - Test binaries
+    - Development.
+    - Release.
 
 ---
 
