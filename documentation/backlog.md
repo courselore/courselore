@@ -8,14 +8,6 @@
 
 ### Issues
 
-- Make a release for people to use this week.
-  - Test `npm install`
-  - Test binaries
-    - Development.
-    - Release.
-
----
-
 - When creating course we need to add `year`, `term`, `university`, `course number`. Otherwise it will be difficult to continue using the tool for future cohorts.
 - The confirmation email goes to junk in Hopkins email. Once mark it as not junk, you can confirm the email.
 - The confirmation email in Gmail has a problem: when click on the activate link, it gives 404 error.
