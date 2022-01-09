@@ -9,7 +9,6 @@
 ### Issues
 
 - Make a release for people to use this week.
-  - Double-check that the npm package includes the `distribution/` folder (I don’t think it does, because we don’t have a `.npmignore`).
 
 ---
 
