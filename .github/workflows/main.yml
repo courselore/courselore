@@ -112,6 +112,7 @@ jobs:
           path: courselore--linux--${{ steps.tag.outputs.tag }}.tgz
       - uses: softprops/action-gh-release@v1
         with:
+          draft: true
           files: |
             courselore--windows--${{ steps.tag.outputs.tag }}.exe
             courselore--macos--${{ steps.tag.outputs.tag }}.tgz
