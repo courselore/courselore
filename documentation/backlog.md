@@ -442,6 +442,7 @@ $${searchResults !== undefined
 
 ### Markdown Editor
 
+- Press ↑ to edit previously sent message.
 - Templates for questions (like GitHub Issues).
 - Reuse answers.
 - Paste tables from Excel and have them formatted as Markdown tables.
