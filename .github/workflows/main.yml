@@ -96,45 +96,23 @@ jobs:
     needs: [build, test]
     runs-on: ubuntu-latest
     steps:
+      - run: echo "::set-output name=tag::${GITHUB_REF#refs/tags/}"
+        id: tag
       - uses: actions/download-artifact@v2
         with:
           name: courselore--windows--${{ github.sha }}.exe
+          path: courselore--windows--${{ steps.tag.outputs.tag }}.exe
       - uses: actions/download-artifact@v2
         with:
           name: courselore--macos--${{ github.sha }}.tgz
+          path: courselore--macos--${{ steps.tag.outputs.tag }}.tgz
       - uses: actions/download-artifact@v2
         with:
           name: courselore--linux--${{ github.sha }}.tgz
-      - run: echo "::set-output name=tag::${GITHUB_REF#refs/tags/}"
-        id: tag
-      - uses: actions/create-release@v1
-        id: create-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          path: courselore--linux--${{ steps.tag.outputs.tag }}.tgz
+      - uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ steps.tag.outputs.tag }}
-          release_name: Release ${{ steps.tag.outputs.tag }}
-      - uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: courselore--windows--${{ github.sha }}.exe
-          asset_name: courselore--windows--${{ steps.tag.outputs.tag }}.exe
-          asset_content_type: application/vnd.microsoft.portable-executable
-      - uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: courselore--macos--${{ github.sha }}.tgz
-          asset_name: courselore--macos--${{ steps.tag.outputs.tag }}.tgz
-          asset_content_type: application/gzip
-      - uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: courselore--linux--${{ github.sha }}.tgz
-          asset_name: courselore--linux--${{ steps.tag.outputs.tag }}.tgz
-          asset_content_type: application/gzip
+          files: |
+            courselore--windows--${{ steps.tag.outputs.tag }}.exe
+            courselore--macos--${{ steps.tag.outputs.tag }}.tgz
+            courselore--linux--${{ steps.tag.outputs.tag }}.tgz
