@@ -8,6 +8,11 @@
 
 ### Issues
 
+- Make a release for people to use this week.
+  - Double-check that the npm package includes the `distribution/` folder (I don’t think it does, because we don’t have a `.npmignore`).
+
+---
+
 - When creating course we need to add `year`, `term`, `university`, `course number`. Otherwise it will be difficult to continue using the tool for future cohorts.
 - The confirmation email goes to junk in Hopkins email. Once mark it as not junk, you can confirm the email.
 - The confirmation email in Gmail has a problem: when click on the activate link, it gives 404 error.
@@ -19,7 +24,6 @@
 
 ---
 
-- Make a release for people to use this week.
 - Ask for login on email confirmation.
 - Little button to report bugs.
 - `mailto:` doesn’t work for some people depending on their email client.
