@@ -12,7 +12,7 @@ jobs:
   #         node-version: 17
   #     - run: npm install-ci-test
 
-  insiders-build:
+  build:
     strategy:
       matrix:
         # os: [windows, macos, ubuntu]
@@ -47,8 +47,8 @@ jobs:
 
   deploy--production:
     if: github.ref == 'refs/heads/production'
-    # needs: [insiders-build, test]
-    needs: insiders-build
+    # needs: [build, test]
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: webfactory/ssh-agent@v0.5.0
@@ -95,7 +95,7 @@ jobs:
 
   # release:
   #   if: startsWith(github.ref, 'refs/tags/v')
-  #   needs: [insiders-build, test]
+  #   needs: [build, test]
   #   runs-on: ubuntu-latest
   #   steps:
   #     - uses: actions/download-artifact@v2
