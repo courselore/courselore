@@ -17,7 +17,13 @@ I added the fields to the forms for adding & editing courses. Where do you think
 Can you please talk to the Hopkins IT and add us to the allowlist? All the email we send comes from `administrator@courselore.org` via Amazon SES.
 
 > - The confirmation email in Gmail has a problem: when click on the activate link, it gives 404 error.
+
+We now redirect to the sign in page in that case instead of showing the generic 404. I also tried to find out why your browser seemed to have different cookie jars per cognito tab, but nothing came up 🤷
+
 > - There are no search/filter function in the enrollments. Use case: find people and remove them if they drop the course.
+
+
+
 > - I created tags (HW1, HW2, ...) and when I clicked on “Update Tags” I got “VALIDATION ERROR. This is an issue in CourseLore. Report to the System Administrator.” The “Report to the System Administrator” opened my email client but did not open a new mail. It didn’t show me the admin email nor had it any content to provide to the admin.
 > - There is a blocking delay e.g. when you click on “like,” it pauses for a very brief moment and then the page is functional again.
 > - Is there a way to group chats vs conversations, etc.

@@ -4329,6 +4329,32 @@ export default async function courselore({
     }
   );
 
+  app.get<
+    { emailConfirmationNonce: string },
+    HTML,
+    {},
+    {},
+    IsSignedOutMiddlewareLocals
+  >(
+    "/email-confirmation/:emailConfirmationNonce",
+    ...isSignedOutMiddleware,
+    (req, res) => {
+      Flash.set({
+        req,
+        res,
+        content: html`
+          <div class="flash--rose">Sign in to confirm your email.</div>
+        `,
+      });
+      return res.redirect(`${baseURL}/sign-in/${qs.stringify(
+        {
+          redirect: req.originalUrl,
+        },
+        { addQueryPrefix: true }
+      )}`);
+    }
+  );
+
   app.delete<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/sign-out",
     ...isSignedInMiddleware,
