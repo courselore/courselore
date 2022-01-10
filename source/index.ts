@@ -6056,6 +6056,7 @@ export default async function courselore({
                   value="${res.locals.course.institution}"
                   autocomplete="off"
                   class="input--text"
+                  placeholder="Your University"
                 />
               </label>
               <label class="label">
@@ -6066,6 +6067,7 @@ export default async function courselore({
                   value="${res.locals.course.code}"
                   autocomplete="off"
                   class="input--text"
+                  placeholder="CS 601.426"
                 />
               </label>
               <div>
@@ -17162,15 +17164,21 @@ ${value}</textarea
           )!;
         });
 
-        for (const { name, role, accentColor, enrollmentsUsers } of [
+        const year = new Date().getFullYear().toString();
+        const month = new Date().getMonth() + 1;
+        const term = month < 4 || month > 9 ? "Spring" : "Fall";
+        const institution = "Johns Hopkins University";
+        for (const { name, code, role, accentColor, enrollmentsUsers } of [
           {
             name: "Principles of Programming Languages",
+            code: "CS 601.426",
             role: enrollmentRoles[1],
             accentColor: enrollmentAccentColors[0],
             enrollmentsUsers: users.slice(0, 100),
           },
           {
             name: "Pharmacology",
+            code: "MD 401.324",
             role: enrollmentRoles[0],
             accentColor: enrollmentAccentColors[1],
             enrollmentsUsers: users.slice(50, 150),
@@ -17185,12 +17193,20 @@ ${value}</textarea
                 "createdAt",
                 "reference",
                 "name",
+                "year",
+                "term",
+                "institution",
+                "code",      
                 "nextConversationReference"
               )
               VALUES (
                 ${new Date().toISOString()},
                 ${cryptoRandomString({ length: 10, type: "numeric" })},
                 ${name},
+                ${year},
+                ${term},
+                ${institution},
+                ${code},
                 ${lodash.random(30, 50)}
               )
               RETURNING *
