@@ -8,10 +8,6 @@
 
 ### Issues
 
-- Get rid of `stripped`.
-
----
-
 > - When creating course we need to add `year`, `term`, `university`, `course number`. Otherwise it will be difficult to continue using the tool for future cohorts.
 
 I added the fields to the forms for adding & editing courses. Where do you think we should display this information on the rest of the interface?

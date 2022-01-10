@@ -6477,669 +6477,659 @@ export default async function courselore({
             $${invitations.length === 0
               ? html``
               : html`
-                  <hr class="separator" />
+                  $${invitations.map((invitation) => {
+                    const action = `${baseURL}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
+                    const isInvitationExpired = isExpired(invitation.expiresAt);
+                    const isUsed = invitation.usedAt !== null;
 
-                  <div class="stripped">
-                    $${invitations.map((invitation) => {
-                      const action = `${baseURL}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
-                      const isInvitationExpired = isExpired(
-                        invitation.expiresAt
-                      );
-                      const isUsed = invitation.usedAt !== null;
-
-                      return html`
-                        <div
-                          style="${css`
-                            display: flex;
-                            gap: var(--space--2);
-                            /*align-items: baseline;*/
-                          `}"
-                        >
-                          <div>
-                            $${invitation.email === null
-                              ? html`
-                                  <span
-                                    oninteractive="${javascript`
-                                      tippy(this, {
-                                        touch: false,
-                                        content: "Invitation Link",
-                                      });
-                                    `}"
-                                  >
-                                    <i class="bi bi-link"></i>
-                                  </span>
-                                `
-                              : html`
-                                  <span
-                                    oninteractive="${javascript`
-                                      tippy(this, {
-                                        touch: false,
-                                        content: "Invitation Email",
-                                      });
-                                    `}"
-                                  >
-                                    <i class="bi bi-envelope"></i>
-                                  </span>
-                                `}
-                          </div>
-                          <div
-                            style="${css`
-                              flex: 1;
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--space--2);
-                            `}"
-                          >
-                            $${invitation.email === null
-                              ? html`
-                                  <div>
-                                    <button
-                                      id="invitation--${invitation.reference}"
-                                      class="button button--tight button--tight--inline button--transparent strong"
-                                      oninteractive="${javascript`
-                                        this.tooltip = tippy(this, {
-                                          touch: false,
-                                          content: "See Invitation Link",
-                                        });
-                                        tippy(this, {
-                                          trigger: "click",
-                                          interactive: true,
-                                          maxWidth: "none",
-                                          content: ${(() => {
-                                            const link = `${baseURL}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
-                                            return tippyContent({
-                                              req,
-                                              res,
-                                              content: html`
-                                                <div
-                                                  style="${css`
-                                                    display: flex;
-                                                    flex-direction: column;
-                                                    gap: var(--space--2);
-                                                  `}"
-                                                >
-                                                  $${isInvitationExpired
-                                                    ? html`
-                                                        <p
-                                                          class="text--rose"
-                                                          style="${css`
-                                                            display: flex;
-                                                            gap: var(
-                                                              --space--2
-                                                            );
-                                                            justify-content: center;
-                                                          `}"
-                                                        >
-                                                          <i
-                                                            class="bi bi-calendar-x-fill"
-                                                          ></i>
-                                                          Expired
-                                                        </p>
-                                                      `
-                                                    : html``}
-                                                  <div
-                                                    style="${css`
-                                                      display: flex;
-                                                      gap: var(--space--2);
-                                                      align-items: center;
-                                                    `}"
-                                                  >
-                                                    <div>
-                                                      <a
-                                                        href="${link}"
-                                                        class="link"
-                                                        >${link}</a
-                                                      >
-                                                    </div>
-                                                    <button
-                                                      class="button button--tight button--transparent"
-                                                      oninteractive="${javascript`
-                                                        tippy(this, {
-                                                          touch: false,
-                                                          content: "Copy to Clipboard",
-                                                        });
-                                                      `}"
-                                                      onclick="${javascript`
-                                                        (async () => {
-                                                          await navigator.clipboard.writeText(${JSON.stringify(
-                                                            link
-                                                          )});
-                                                          const clipboard = this.querySelector(".clipboard");
-                                                          const check = this.querySelector(".check");
-                                                          clipboard.hidden = true;
-                                                          check.hidden = false;
-                                                          await new Promise((resolve) => { window.setTimeout(resolve, 500); });
-                                                          clipboard.hidden = false;
-                                                          check.hidden = true;
-                                                        })();
-                                                      `}"
-                                                    >
-                                                      <span class="clipboard">
-                                                        <i
-                                                          class="bi bi-clipboard"
-                                                        ></i>
-                                                      </span>
-                                                      <span
-                                                        hidden
-                                                        class="check text--green"
-                                                      >
-                                                        <i
-                                                          class="bi bi-check-lg"
-                                                        ></i>
-                                                      </span>
-                                                    </button>
-                                                  </div>
-                                                </div>
-                                              `,
-                                            });
-                                          })()},
-                                        });
-                                      `}"
-                                    >
-                                      ${"*".repeat(
-                                        6
-                                      )}${invitation.reference.slice(6)}
-                                      <i class="bi bi-chevron-down"></i>
-                                    </button>
-                                  </div>
-                                `
-                              : html`
-                                  <div>
-                                    <button
-                                      class="button button--tight button--tight--inline button--transparent"
-                                      style="${css`
-                                        display: flex;
-                                        flex-direction: column;
-                                        align-items: flex-start;
-                                        gap: var(--space--0);
-                                      `}"
-                                      oninteractive="${javascript`
-                                        tippy(this, {
-                                          trigger: "click",
-                                          interactive: true,
-                                          content: ${tippyContent({
-                                            req,
-                                            res,
-                                            content: html`
-                                              <div class="dropdown--menu">
-                                                <form
-                                                  method="POST"
-                                                  action="${action}?_method=PATCH"
-                                                >
-                                                  <input
-                                                    type="hidden"
-                                                    name="_csrf"
-                                                    value="${req.csrfToken()}"
-                                                  />
-                                                  <input
-                                                    type="hidden"
-                                                    name="resend"
-                                                    value="true"
-                                                  />
-                                                  <button
-                                                    class="dropdown--menu--item button button--transparent"
-                                                    $${isUsed
-                                                      ? html`
-                                                          type="button"
-                                                          oninteractive="${javascript`
-                                                            tippy(this, {
-                                                              theme: "rose",
-                                                              trigger: "click",
-                                                              content: "You may not resend this invitation because it’s used.",
-                                                            });
-                                                          `}"
-                                                        `
-                                                      : isInvitationExpired
-                                                      ? html`
-                                                          type="button"
-                                                          oninteractive="${javascript`
-                                                            tippy(this, {
-                                                              theme: "rose",
-                                                              trigger: "click",
-                                                              content: "You may not resend this invitation because it’s expired.",
-                                                            });
-                                                          `}"
-                                                        `
-                                                      : html``}
-                                                  >
-                                                    <i
-                                                      class="bi bi-envelope"
-                                                    ></i>
-                                                    Resend Invitation Email
-                                                  </button>
-                                                </form>
-                                              </div>
-                                            `,
-                                          })},
-                                        });
-                                      `}"
-                                    >
-                                      <div
-                                        class="strong"
-                                        style="${css`
-                                          display: flex;
-                                          align-items: baseline;
-                                          gap: var(--space--2);
-                                        `}"
-                                      >
-                                        ${invitation.name ?? invitation.email}
-                                        <i class="bi bi-chevron-down"></i>
-                                      </div>
-                                      $${invitation.name !== null
-                                        ? html`
-                                            <div class="secondary">
-                                              ${invitation.email}
-                                            </div>
-                                          `
-                                        : html``}
-                                    </button>
-                                  </div>
-                                `}
-
-                            <div
-                              style="${css`
-                                display: flex;
-                                flex-wrap: wrap;
-                                gap: var(--space--2);
-                              `}"
-                            >
-                              <div
-                                style="${css`
-                                  width: var(--space--28);
-                                  display: flex;
-                                  justify-content: flex-start;
-                                `}"
-                              >
-                                <button
-                                  class="button button--tight button--tight--inline button--transparent"
+                    return html`
+                      <div
+                        style="${css`
+                          padding-top: var(--space--4);
+                          border-top: var(--border-width--1) solid
+                            var(--color--gray--medium--200);
+                          @media (prefers-color-scheme: dark) {
+                            border-color: var(--color--gray--medium--700);
+                          }
+                          display: flex;
+                          gap: var(--space--2);
+                        `}"
+                      >
+                        <div>
+                          $${invitation.email === null
+                            ? html`
+                                <span
                                   oninteractive="${javascript`
                                     tippy(this, {
                                       touch: false,
-                                      content: "Update Role",
-                                    });
-                                    tippy(this, {
-                                      trigger: "click",
-                                      interactive: true,
-                                      content: ${tippyContent({
-                                        req,
-                                        res,
-                                        content: html`
-                                          <div class="dropdown--menu">
-                                            $${enrollmentRoles.map((role) =>
-                                              role === invitation.role
-                                                ? html``
-                                                : html`
-                                                    <form
-                                                      method="POST"
-                                                      action="${action}?_method=PATCH"
-                                                    >
-                                                      <input
-                                                        type="hidden"
-                                                        name="_csrf"
-                                                        value="${req.csrfToken()}"
-                                                      />
-                                                      <input
-                                                        type="hidden"
-                                                        name="role"
-                                                        value="${role}"
-                                                      />
-                                                      <button
-                                                        class="dropdown--menu--item button button--transparent"
-                                                        $${isUsed
-                                                          ? html`
-                                                              type="button"
-                                                              oninteractive="${javascript`
-                                                                tippy(this, {
-                                                                  theme: "rose",
-                                                                  trigger: "click",
-                                                                  content: "You may not update the role of this invitation because it’s used.",
-                                                                });
-                                                              `}"
-                                                            `
-                                                          : isInvitationExpired
-                                                          ? html`
-                                                              type="button"
-                                                              oninteractive="${javascript`
-                                                                tippy(this, {
-                                                                  theme: "rose",
-                                                                  trigger: "click",
-                                                                  content: "You may not update the role of this invitation because it’s expired.",
-                                                                });
-                                                              `}"
-                                                            `
-                                                          : html``}
-                                                      >
-                                                        $${enrollmentRoleIcon[
-                                                          role
-                                                        ].regular}
-                                                        ${lodash.capitalize(
-                                                          role
-                                                        )}
-                                                      </button>
-                                                    </form>
-                                                  `
-                                            )}
-                                          </div>
-                                        `,
-                                      })},
+                                      content: "Invitation Link",
                                     });
                                   `}"
                                 >
-                                  $${enrollmentRoleIcon[invitation.role]
-                                    .regular}
-                                  ${lodash.capitalize(invitation.role)}
-                                  <i class="bi bi-chevron-down"></i>
-                                </button>
-                              </div>
-
-                              <div
-                                style="${css`
-                                  width: var(--space--40);
-                                  display: flex;
-                                  justify-content: flex-start;
-                                `}"
-                              >
-                                $${(() => {
-                                  const updateExpirationForm = html`
-                                    <form
-                                      method="POST"
-                                      action="${action}?_method=PATCH"
-                                      novalidate
-                                      class="dropdown--menu"
+                                  <i class="bi bi-link"></i>
+                                </span>
+                              `
+                            : html`
+                                <span
+                                  oninteractive="${javascript`
+                                    tippy(this, {
+                                      touch: false,
+                                      content: "Invitation Email",
+                                    });
+                                  `}"
+                                >
+                                  <i class="bi bi-envelope"></i>
+                                </span>
+                              `}
+                        </div>
+                        <div
+                          style="${css`
+                            flex: 1;
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--2);
+                          `}"
+                        >
+                          $${invitation.email === null
+                            ? html`
+                                <div>
+                                  <button
+                                    id="invitation--${invitation.reference}"
+                                    class="button button--tight button--tight--inline button--transparent strong"
+                                    oninteractive="${javascript`
+                                      this.tooltip = tippy(this, {
+                                        touch: false,
+                                        content: "See Invitation Link",
+                                      });
+                                      tippy(this, {
+                                        trigger: "click",
+                                        interactive: true,
+                                        maxWidth: "none",
+                                        content: ${(() => {
+                                          const link = `${baseURL}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
+                                          return tippyContent({
+                                            req,
+                                            res,
+                                            content: html`
+                                              <div
+                                                style="${css`
+                                                  display: flex;
+                                                  flex-direction: column;
+                                                  gap: var(--space--2);
+                                                `}"
+                                              >
+                                                $${isInvitationExpired
+                                                  ? html`
+                                                      <p
+                                                        class="text--rose"
+                                                        style="${css`
+                                                          display: flex;
+                                                          gap: var(--space--2);
+                                                          justify-content: center;
+                                                        `}"
+                                                      >
+                                                        <i
+                                                          class="bi bi-calendar-x-fill"
+                                                        ></i>
+                                                        Expired
+                                                      </p>
+                                                    `
+                                                  : html``}
+                                                <div
+                                                  style="${css`
+                                                    display: flex;
+                                                    gap: var(--space--2);
+                                                    align-items: center;
+                                                  `}"
+                                                >
+                                                  <div>
+                                                    <a
+                                                      href="${link}"
+                                                      class="link"
+                                                      >${link}</a
+                                                    >
+                                                  </div>
+                                                  <button
+                                                    class="button button--tight button--transparent"
+                                                    oninteractive="${javascript`
+                                                      tippy(this, {
+                                                        touch: false,
+                                                        content: "Copy to Clipboard",
+                                                      });
+                                                    `}"
+                                                    onclick="${javascript`
+                                                      (async () => {
+                                                        await navigator.clipboard.writeText(${JSON.stringify(
+                                                          link
+                                                        )});
+                                                        const clipboard = this.querySelector(".clipboard");
+                                                        const check = this.querySelector(".check");
+                                                        clipboard.hidden = true;
+                                                        check.hidden = false;
+                                                        await new Promise((resolve) => { window.setTimeout(resolve, 500); });
+                                                        clipboard.hidden = false;
+                                                        check.hidden = true;
+                                                      })();
+                                                    `}"
+                                                  >
+                                                    <span class="clipboard">
+                                                      <i
+                                                        class="bi bi-clipboard"
+                                                      ></i>
+                                                    </span>
+                                                    <span
+                                                      hidden
+                                                      class="check text--green"
+                                                    >
+                                                      <i
+                                                        class="bi bi-check-lg"
+                                                      ></i>
+                                                    </span>
+                                                  </button>
+                                                </div>
+                                              </div>
+                                            `,
+                                          });
+                                        })()},
+                                      });
+                                    `}"
+                                  >
+                                    ${"*".repeat(
+                                      6
+                                    )}${invitation.reference.slice(6)}
+                                    <i class="bi bi-chevron-down"></i>
+                                  </button>
+                                </div>
+                              `
+                            : html`
+                                <div>
+                                  <button
+                                    class="button button--tight button--tight--inline button--transparent"
+                                    style="${css`
+                                      display: flex;
+                                      flex-direction: column;
+                                      align-items: flex-start;
+                                      gap: var(--space--0);
+                                    `}"
+                                    oninteractive="${javascript`
+                                      tippy(this, {
+                                        trigger: "click",
+                                        interactive: true,
+                                        content: ${tippyContent({
+                                          req,
+                                          res,
+                                          content: html`
+                                            <div class="dropdown--menu">
+                                              <form
+                                                method="POST"
+                                                action="${action}?_method=PATCH"
+                                              >
+                                                <input
+                                                  type="hidden"
+                                                  name="_csrf"
+                                                  value="${req.csrfToken()}"
+                                                />
+                                                <input
+                                                  type="hidden"
+                                                  name="resend"
+                                                  value="true"
+                                                />
+                                                <button
+                                                  class="dropdown--menu--item button button--transparent"
+                                                  $${isUsed
+                                                    ? html`
+                                                        type="button"
+                                                        oninteractive="${javascript`
+                                                          tippy(this, {
+                                                            theme: "rose",
+                                                            trigger: "click",
+                                                            content: "You may not resend this invitation because it’s used.",
+                                                          });
+                                                        `}"
+                                                      `
+                                                    : isInvitationExpired
+                                                    ? html`
+                                                        type="button"
+                                                        oninteractive="${javascript`
+                                                          tippy(this, {
+                                                            theme: "rose",
+                                                            trigger: "click",
+                                                            content: "You may not resend this invitation because it’s expired.",
+                                                          });
+                                                        `}"
+                                                      `
+                                                    : html``}
+                                                >
+                                                  <i class="bi bi-envelope"></i>
+                                                  Resend Invitation Email
+                                                </button>
+                                              </form>
+                                            </div>
+                                          `,
+                                        })},
+                                      });
+                                    `}"
+                                  >
+                                    <div
+                                      class="strong"
                                       style="${css`
+                                        display: flex;
+                                        align-items: baseline;
                                         gap: var(--space--2);
                                       `}"
                                     >
+                                      ${invitation.name ?? invitation.email}
+                                      <i class="bi bi-chevron-down"></i>
+                                    </div>
+                                    $${invitation.name !== null
+                                      ? html`
+                                          <div class="secondary">
+                                            ${invitation.email}
+                                          </div>
+                                        `
+                                      : html``}
+                                  </button>
+                                </div>
+                              `}
+
+                          <div
+                            style="${css`
+                              display: flex;
+                              flex-wrap: wrap;
+                              gap: var(--space--2);
+                            `}"
+                          >
+                            <div
+                              style="${css`
+                                width: var(--space--28);
+                                display: flex;
+                                justify-content: flex-start;
+                              `}"
+                            >
+                              <button
+                                class="button button--tight button--tight--inline button--transparent"
+                                oninteractive="${javascript`
+                                  tippy(this, {
+                                    touch: false,
+                                    content: "Update Role",
+                                  });
+                                  tippy(this, {
+                                    trigger: "click",
+                                    interactive: true,
+                                    content: ${tippyContent({
+                                      req,
+                                      res,
+                                      content: html`
+                                        <div class="dropdown--menu">
+                                          $${enrollmentRoles.map((role) =>
+                                            role === invitation.role
+                                              ? html``
+                                              : html`
+                                                  <form
+                                                    method="POST"
+                                                    action="${action}?_method=PATCH"
+                                                  >
+                                                    <input
+                                                      type="hidden"
+                                                      name="_csrf"
+                                                      value="${req.csrfToken()}"
+                                                    />
+                                                    <input
+                                                      type="hidden"
+                                                      name="role"
+                                                      value="${role}"
+                                                    />
+                                                    <button
+                                                      class="dropdown--menu--item button button--transparent"
+                                                      $${isUsed
+                                                        ? html`
+                                                            type="button"
+                                                            oninteractive="${javascript`
+                                                              tippy(this, {
+                                                                theme: "rose",
+                                                                trigger: "click",
+                                                                content: "You may not update the role of this invitation because it’s used.",
+                                                              });
+                                                            `}"
+                                                          `
+                                                        : isInvitationExpired
+                                                        ? html`
+                                                            type="button"
+                                                            oninteractive="${javascript`
+                                                              tippy(this, {
+                                                                theme: "rose",
+                                                                trigger: "click",
+                                                                content: "You may not update the role of this invitation because it’s expired.",
+                                                              });
+                                                            `}"
+                                                          `
+                                                        : html``}
+                                                    >
+                                                      $${enrollmentRoleIcon[
+                                                        role
+                                                      ].regular}
+                                                      ${lodash.capitalize(role)}
+                                                    </button>
+                                                  </form>
+                                                `
+                                          )}
+                                        </div>
+                                      `,
+                                    })},
+                                  });
+                                `}"
+                              >
+                                $${enrollmentRoleIcon[invitation.role].regular}
+                                ${lodash.capitalize(invitation.role)}
+                                <i class="bi bi-chevron-down"></i>
+                              </button>
+                            </div>
+
+                            <div
+                              style="${css`
+                                width: var(--space--40);
+                                display: flex;
+                                justify-content: flex-start;
+                              `}"
+                            >
+                              $${(() => {
+                                const updateExpirationForm = html`
+                                  <form
+                                    method="POST"
+                                    action="${action}?_method=PATCH"
+                                    novalidate
+                                    class="dropdown--menu"
+                                    style="${css`
+                                      gap: var(--space--2);
+                                    `}"
+                                  >
+                                    <input
+                                      type="hidden"
+                                      name="_csrf"
+                                      value="${req.csrfToken()}"
+                                    />
+                                    <div class="dropdown--menu--item">
                                       <input
-                                        type="hidden"
-                                        name="_csrf"
-                                        value="${req.csrfToken()}"
+                                        type="text"
+                                        name="expiresAt"
+                                        value="${new Date(
+                                          invitation.expiresAt ?? new Date()
+                                        ).toISOString()}"
+                                        required
+                                        autocomplete="off"
+                                        class="input--text"
+                                        oninteractive="${javascript`
+                                          leafac.localizeDateTimeInput(this);
+                                          (this.validators ??= []).push(() => {
+                                            if (new Date(this.value).getTime() <= Date.now())
+                                              return "Must be in the future.";
+                                          });
+                                        `}"
                                       />
-                                      <div class="dropdown--menu--item">
-                                        <input
-                                          type="text"
-                                          name="expiresAt"
-                                          value="${new Date(
-                                            invitation.expiresAt ?? new Date()
-                                          ).toISOString()}"
-                                          required
-                                          autocomplete="off"
-                                          class="input--text"
+                                    </div>
+                                    <button
+                                      class="dropdown--menu--item button button--transparent"
+                                    >
+                                      <i class="bi bi-pencil"></i>
+                                      Update Expiration Date
+                                    </button>
+                                  </form>
+                                `;
+                                const removeExpirationForm = html`
+                                  <form
+                                    method="POST"
+                                    action="${action}?_method=PATCH"
+                                    class="dropdown--menu"
+                                  >
+                                    <input
+                                      type="hidden"
+                                      name="_csrf"
+                                      value="${req.csrfToken()}"
+                                    />
+                                    <input
+                                      type="hidden"
+                                      name="removeExpiration"
+                                      value="true"
+                                    />
+                                    <button
+                                      class="dropdown--menu--item button button--transparent"
+                                    >
+                                      <i class="bi bi-calendar-minus"></i>
+                                      Remove Expiration
+                                    </button>
+                                  </form>
+                                `;
+                                const expireForm = html`
+                                  <form
+                                    method="POST"
+                                    action="${action}?_method=PATCH"
+                                    class="dropdown--menu"
+                                  >
+                                    <input
+                                      type="hidden"
+                                      name="_csrf"
+                                      value="${req.csrfToken()}"
+                                    />
+                                    <input
+                                      type="hidden"
+                                      name="expire"
+                                      value="true"
+                                    />
+                                    <button
+                                      class="dropdown--menu--item button button--transparent"
+                                    >
+                                      <i class="bi bi-calendar-x"></i>
+                                      Expire Invitation
+                                    </button>
+                                  </form>
+                                `;
+
+                                return isUsed
+                                  ? html`
+                                      <div>
+                                        <div
+                                          class="button button--tight button--tight--inline text--green"
+                                          style="${css`
+                                            cursor: default;
+                                          `}"
                                           oninteractive="${javascript`
-                                            leafac.localizeDateTimeInput(this);
-                                            (this.validators ??= []).push(() => {
-                                              if (new Date(this.value).getTime() <= Date.now())
-                                                return "Must be in the future.";
+                                            tippy(this, {
+                                              touch: false,
+                                              content: ${tippyContent({
+                                                req,
+                                                res,
+                                                content: html`
+                                                  Used
+                                                  <time
+                                                    datetime="${new Date(
+                                                      invitation.usedAt!
+                                                    ).toISOString()}"
+                                                    oninteractive="${javascript`
+                                                      leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                    `}"
+                                                  ></time>
+                                                `,
+                                              })},
                                             });
                                           `}"
-                                        />
+                                        >
+                                          <i class="bi bi-check-lg"></i>
+                                          Used
+                                        </div>
                                       </div>
-                                      <button
-                                        class="dropdown--menu--item button button--transparent"
-                                      >
-                                        <i class="bi bi-pencil"></i>
-                                        Update Expiration Date
-                                      </button>
-                                    </form>
-                                  `;
-                                  const removeExpirationForm = html`
-                                    <form
-                                      method="POST"
-                                      action="${action}?_method=PATCH"
-                                      class="dropdown--menu"
-                                    >
-                                      <input
-                                        type="hidden"
-                                        name="_csrf"
-                                        value="${req.csrfToken()}"
-                                      />
-                                      <input
-                                        type="hidden"
-                                        name="removeExpiration"
-                                        value="true"
-                                      />
-                                      <button
-                                        class="dropdown--menu--item button button--transparent"
-                                      >
-                                        <i class="bi bi-calendar-minus"></i>
-                                        Remove Expiration
-                                      </button>
-                                    </form>
-                                  `;
-                                  const expireForm = html`
-                                    <form
-                                      method="POST"
-                                      action="${action}?_method=PATCH"
-                                      class="dropdown--menu"
-                                    >
-                                      <input
-                                        type="hidden"
-                                        name="_csrf"
-                                        value="${req.csrfToken()}"
-                                      />
-                                      <input
-                                        type="hidden"
-                                        name="expire"
-                                        value="true"
-                                      />
-                                      <button
-                                        class="dropdown--menu--item button button--transparent"
-                                      >
-                                        <i class="bi bi-calendar-x"></i>
-                                        Expire Invitation
-                                      </button>
-                                    </form>
-                                  `;
-
-                                  return isUsed
-                                    ? html`
-                                        <div>
-                                          <div
-                                            class="button button--tight button--tight--inline text--green"
-                                            style="${css`
-                                              cursor: default;
-                                            `}"
-                                            oninteractive="${javascript`
-                                              tippy(this, {
-                                                touch: false,
-                                                content: ${tippyContent({
-                                                  req,
-                                                  res,
-                                                  content: html`
-                                                    Used
-                                                    <time
-                                                      datetime="${new Date(
-                                                        invitation.usedAt!
-                                                      ).toISOString()}"
-                                                      oninteractive="${javascript`
-                                                        leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                                                      `}"
-                                                    ></time>
-                                                  `,
-                                                })},
-                                              });
-                                            `}"
-                                          >
-                                            <i class="bi bi-check-lg"></i>
-                                            Used
-                                          </div>
-                                        </div>
-                                      `
-                                    : isInvitationExpired
-                                    ? html`
-                                        <div>
-                                          <button
-                                            class="button button--tight button--tight--inline button--transparent text--rose"
-                                            oninteractive="${javascript`
-                                              tippy(this, {
-                                                touch: false,
-                                                content: "Update Expiration",
-                                              });
-                                              tippy(this, {
-                                                trigger: "click",
-                                                interactive: true,
-                                                content: ${tippyContent({
-                                                  req,
-                                                  res,
-                                                  content: html`
-                                                    <div
-                                                      style="${css`
-                                                        display: flex;
-                                                        flex-direction: column;
-                                                        gap: var(--space--2);
-                                                      `}"
-                                                    >
-                                                      <h3 class="heading">
-                                                        <i
-                                                          class="bi bi-calendar-x"
-                                                        ></i>
-                                                        <span>
-                                                          Expired
-                                                          <time
-                                                            datetime="${new Date(
-                                                              invitation.expiresAt!
-                                                            ).toISOString()}"
-                                                            oninteractive="${javascript`
-                                                              leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                                                            `}"
-                                                          ></time>
-                                                        </span>
-                                                      </h3>
-                                                      $${updateExpirationForm}
-                                                      <hr
-                                                        class="dropdown--separator"
-                                                      />
-                                                      $${removeExpirationForm}
-                                                    </div>
-                                                  `,
-                                                })},
-                                              });
-                                            `}"
-                                          >
-                                            <i
-                                              class="bi bi-calendar-x-fill"
-                                            ></i>
-                                            Expired
-                                            <i class="bi bi-chevron-down"></i>
-                                          </button>
-                                        </div>
-                                      `
-                                    : invitation.expiresAt === null
-                                    ? html`
-                                        <div>
-                                          <button
-                                            class="button button--tight button--tight--inline button--transparent text--blue"
-                                            oninteractive="${javascript`
-                                              tippy(this, {
-                                                touch: false,
-                                                content: "Update Expiration",
-                                              });
-                                              tippy(this, {
-                                                trigger: "click",
-                                                interactive: true,
-                                                content: ${tippyContent({
-                                                  req,
-                                                  res,
-                                                  content: html`
-                                                    <div
-                                                      style="${css`
-                                                        padding-top: var(
-                                                          --space--2
-                                                        );
-                                                        display: flex;
-                                                        flex-direction: column;
-                                                        gap: var(--space--2);
-                                                      `}"
-                                                    >
-                                                      $${updateExpirationForm}
-                                                      <hr
-                                                        class="dropdown--separator"
-                                                      />
-                                                      $${expireForm}
-                                                    </div>
-                                                  `,
-                                                })},
-                                              });
-                                            `}"
-                                          >
-                                            <i
-                                              class="bi bi-calendar-minus-fill"
-                                            ></i>
-                                            Doesn’t Expire
-                                            <i class="bi bi-chevron-down"></i>
-                                          </button>
-                                        </div>
-                                      `
-                                    : html`
-                                        <div>
-                                          <button
-                                            class="button button--tight button--tight--inline button--transparent text--amber"
-                                            oninteractive="${javascript`
-                                              tippy(this, {
-                                                touch: false,
-                                                content: "Update Expiration",
-                                              });
-                                              tippy(this, {
-                                                trigger: "click",
-                                                interactive: true,
-                                                content: ${tippyContent({
-                                                  req,
-                                                  res,
-                                                  content: html`
-                                                    <div
-                                                      style="${css`
-                                                        display: flex;
-                                                        flex-direction: column;
-                                                        gap: var(--space--2);
-                                                      `}"
-                                                    >
-                                                      <h3 class="heading">
-                                                        <i
-                                                          class="bi bi-calendar-plus"
-                                                        ></i>
-                                                        <span>
-                                                          Expires
-                                                          <time
-                                                            datetime="${new Date(
-                                                              invitation.expiresAt
-                                                            ).toISOString()}"
-                                                            oninteractive="${javascript`
-                                                              leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                                                            `}"
-                                                          ></time>
-                                                        </span>
-                                                      </h3>
-                                                      <hr
-                                                        class="dropdown--separator"
-                                                      />
-                                                      $${updateExpirationForm}
-                                                      <hr
-                                                        class="dropdown--separator"
-                                                      />
-                                                      $${removeExpirationForm}
-                                                      $${expireForm}
-                                                    </div>
-                                                  `,
-                                                })},
-                                              });
-                                            `}"
-                                          >
-                                            <i
-                                              class="bi bi-calendar-plus-fill"
-                                            ></i>
-                                            Expires
-                                            <i class="bi bi-chevron-down"></i>
-                                          </button>
-                                        </div>
-                                      `;
-                                })()}
-                              </div>
+                                    `
+                                  : isInvitationExpired
+                                  ? html`
+                                      <div>
+                                        <button
+                                          class="button button--tight button--tight--inline button--transparent text--rose"
+                                          oninteractive="${javascript`
+                                            tippy(this, {
+                                              touch: false,
+                                              content: "Update Expiration",
+                                            });
+                                            tippy(this, {
+                                              trigger: "click",
+                                              interactive: true,
+                                              content: ${tippyContent({
+                                                req,
+                                                res,
+                                                content: html`
+                                                  <div
+                                                    style="${css`
+                                                      display: flex;
+                                                      flex-direction: column;
+                                                      gap: var(--space--2);
+                                                    `}"
+                                                  >
+                                                    <h3 class="heading">
+                                                      <i
+                                                        class="bi bi-calendar-x"
+                                                      ></i>
+                                                      <span>
+                                                        Expired
+                                                        <time
+                                                          datetime="${new Date(
+                                                            invitation.expiresAt!
+                                                          ).toISOString()}"
+                                                          oninteractive="${javascript`
+                                                            leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                          `}"
+                                                        ></time>
+                                                      </span>
+                                                    </h3>
+                                                    $${updateExpirationForm}
+                                                    <hr
+                                                      class="dropdown--separator"
+                                                    />
+                                                    $${removeExpirationForm}
+                                                  </div>
+                                                `,
+                                              })},
+                                            });
+                                          `}"
+                                        >
+                                          <i class="bi bi-calendar-x-fill"></i>
+                                          Expired
+                                          <i class="bi bi-chevron-down"></i>
+                                        </button>
+                                      </div>
+                                    `
+                                  : invitation.expiresAt === null
+                                  ? html`
+                                      <div>
+                                        <button
+                                          class="button button--tight button--tight--inline button--transparent text--blue"
+                                          oninteractive="${javascript`
+                                            tippy(this, {
+                                              touch: false,
+                                              content: "Update Expiration",
+                                            });
+                                            tippy(this, {
+                                              trigger: "click",
+                                              interactive: true,
+                                              content: ${tippyContent({
+                                                req,
+                                                res,
+                                                content: html`
+                                                  <div
+                                                    style="${css`
+                                                      padding-top: var(
+                                                        --space--2
+                                                      );
+                                                      display: flex;
+                                                      flex-direction: column;
+                                                      gap: var(--space--2);
+                                                    `}"
+                                                  >
+                                                    $${updateExpirationForm}
+                                                    <hr
+                                                      class="dropdown--separator"
+                                                    />
+                                                    $${expireForm}
+                                                  </div>
+                                                `,
+                                              })},
+                                            });
+                                          `}"
+                                        >
+                                          <i
+                                            class="bi bi-calendar-minus-fill"
+                                          ></i>
+                                          Doesn’t Expire
+                                          <i class="bi bi-chevron-down"></i>
+                                        </button>
+                                      </div>
+                                    `
+                                  : html`
+                                      <div>
+                                        <button
+                                          class="button button--tight button--tight--inline button--transparent text--amber"
+                                          oninteractive="${javascript`
+                                            tippy(this, {
+                                              touch: false,
+                                              content: "Update Expiration",
+                                            });
+                                            tippy(this, {
+                                              trigger: "click",
+                                              interactive: true,
+                                              content: ${tippyContent({
+                                                req,
+                                                res,
+                                                content: html`
+                                                  <div
+                                                    style="${css`
+                                                      display: flex;
+                                                      flex-direction: column;
+                                                      gap: var(--space--2);
+                                                    `}"
+                                                  >
+                                                    <h3 class="heading">
+                                                      <i
+                                                        class="bi bi-calendar-plus"
+                                                      ></i>
+                                                      <span>
+                                                        Expires
+                                                        <time
+                                                          datetime="${new Date(
+                                                            invitation.expiresAt
+                                                          ).toISOString()}"
+                                                          oninteractive="${javascript`
+                                                            leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                          `}"
+                                                        ></time>
+                                                      </span>
+                                                    </h3>
+                                                    <hr
+                                                      class="dropdown--separator"
+                                                    />
+                                                    $${updateExpirationForm}
+                                                    <hr
+                                                      class="dropdown--separator"
+                                                    />
+                                                    $${removeExpirationForm}
+                                                    $${expireForm}
+                                                  </div>
+                                                `,
+                                              })},
+                                            });
+                                          `}"
+                                        >
+                                          <i
+                                            class="bi bi-calendar-plus-fill"
+                                          ></i>
+                                          Expires
+                                          <i class="bi bi-chevron-down"></i>
+                                        </button>
+                                      </div>
+                                    `;
+                              })()}
                             </div>
                           </div>
                         </div>
-                      `;
-                    })}
-                  </div>
+                      </div>
+                    `;
+                  })}
                 `}
           `,
         })
@@ -8021,12 +8011,25 @@ export default async function courselore({
                   gap: var(--space--2);
                 `}"
               >
-                <div class="tags stripped">
+                <div
+                  class="tags"
+                  style="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--4);
+                  `}"
+                >
                   $${res.locals.tags.map(
                     (tag, index) => html`
                       <div
                         class="tag"
                         style="${css`
+                          padding-bottom: var(--space--4);
+                          border-bottom: var(--border-width--1) solid
+                            var(--color--gray--medium--200);
+                          @media (prefers-color-scheme: dark) {
+                            border-color: var(--color--gray--medium--700);
+                          }
                           display: flex;
                           gap: var(--space--2);
                           align-items: baseline;
