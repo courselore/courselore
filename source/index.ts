@@ -207,6 +207,10 @@ export default async function courselore({
         "createdAt" TEXT NOT NULL,
         "reference" TEXT NOT NULL UNIQUE,
         "name" TEXT NOT NULL,
+        "year" TEXT NULL,
+        "term" TEXT NULL,
+        "institution" TEXT NULL,
+        "code" TEXT NULL,
         "nextConversationReference" INTEGER NOT NULL
       );
 
@@ -3372,6 +3376,10 @@ export default async function courselore({
         id: number;
         reference: string;
         name: string;
+        year: string | null;
+        term: string | null;
+        institution: string | null;
+        code: string | null;
         nextConversationReference: number;
       };
       reference: string;
@@ -3461,6 +3469,10 @@ export default async function courselore({
           courseId: number;
           courseReference: string;
           courseName: string;
+          courseYear: string | null;
+          courseTerm: string | null;
+          courseInstitution: string | null;
+          courseCode: string | null;
           courseNextConversationReference: number;
           reference: string;
           role: EnrollmentRole;
@@ -3471,6 +3483,10 @@ export default async function courselore({
                    "courses"."id" AS "courseId",
                    "courses"."reference" AS "courseReference",
                    "courses"."name" AS "courseName",
+                   "courses"."year" AS "courseYear",
+                   "courses"."term" AS "courseTerm",
+                   "courses"."institution" AS "courseInstitution",
+                   "courses"."code" AS "courseCode",
                    "courses"."nextConversationReference" AS "courseNextConversationReference",
                    "enrollments"."reference",
                    "enrollments"."role",
@@ -3487,6 +3503,10 @@ export default async function courselore({
             id: enrollment.courseId,
             reference: enrollment.courseReference,
             name: enrollment.courseName,
+            year: enrollment.courseYear,
+            term: enrollment.courseTerm,
+            institution: enrollment.courseInstitution,
+            code: enrollment.courseCode,
             nextConversationReference:
               enrollment.courseNextConversationReference,
           },
@@ -5318,6 +5338,65 @@ export default async function courselore({
                   required
                   autocomplete="off"
                   autofocus
+                />
+              </label>
+              <div
+                style="${css`
+                  display: flex;
+                  gap: var(--space--2);
+                  & > * {
+                    flex: 1;
+                  }
+                `}"
+              >
+                <label class="label">
+                  <p class="label--text">Year</p>
+                  <input
+                    type="text"
+                    name="year"
+                    class="input--text"
+                    autocomplete="off"
+                    oninteractive="${javascript`
+                    this.defaultValue = new Date().getFullYear().toString();
+                  `}"
+                  />
+                </label>
+                <label class="label">
+                  <p class="label--text">Term</p>
+                  <input
+                    type="text"
+                    name="term"
+                    class="input--text"
+                    autocomplete="off"
+                    oninteractive="${javascript`
+                      const month = new Date().getMonth() + 1;
+                      this.defaultValue = month < 4 || month > 9 ? "Spring" : "Fall";
+                    `}"
+                  />
+                </label>
+              </div>
+              <label class="label">
+                <p class="label--text">Institution</p>
+                <input
+                  type="text"
+                  name="institution"
+                  class="input--text"
+                  autocomplete="off"
+                  placeholder="Your University"
+                  value="${res.locals.enrollments.length > 0
+                    ? res.locals.enrollments[res.locals.enrollments.length - 1]
+                        .course.institution ?? ""
+                    : ""}"
+                />
+              </label>
+              <label class="label">
+                <p class="label--text">Code</p>
+                <input
+                  type="text"
+                  name="name"
+                  class="input--text"
+                  autocomplete="off"
+                  placeholder="CS 601.426"
                 />
               </label>
               <div>
