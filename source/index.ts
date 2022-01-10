@@ -5357,8 +5357,8 @@ export default async function courselore({
                     class="input--text"
                     autocomplete="off"
                     oninteractive="${javascript`
-                    this.defaultValue = new Date().getFullYear().toString();
-                  `}"
+                      this.defaultValue = new Date().getFullYear().toString();
+                    `}"
                   />
                 </label>
                 <label class="label">
@@ -5393,7 +5393,7 @@ export default async function courselore({
                 <p class="label--text">Code</p>
                 <input
                   type="text"
-                  name="name"
+                  name="code"
                   class="input--text"
                   autocomplete="off"
                   placeholder="CS 601.426"
@@ -5414,30 +5414,59 @@ export default async function courselore({
     }
   );
 
-  app.post<{}, any, { name?: string }, {}, IsSignedInMiddlewareLocals>(
-    "/courses",
-    ...isSignedInMiddleware,
-    (req, res, next) => {
-      if (typeof req.body.name !== "string" || req.body.name.trim() === "")
-        return next("validation");
+  app.post<
+    {},
+    any,
+    {
+      name?: string;
+      year?: string;
+      term?: string;
+      institution?: string;
+      code?: string;
+    },
+    {},
+    IsSignedInMiddlewareLocals
+  >("/courses", ...isSignedInMiddleware, (req, res, next) => {
+    if (
+      typeof req.body.name !== "string" ||
+      req.body.name.trim() === "" ||
+      !["string", "undefined"].includes(typeof req.body.year) ||
+      !["string", "undefined"].includes(typeof req.body.term) ||
+      !["string", "undefined"].includes(typeof req.body.institution) ||
+      !["string", "undefined"].includes(typeof req.body.code)
+    )
+      return next("validation");
 
-      const course = database.get<{
-        id: number;
-        reference: string;
-      }>(
-        sql`
-          INSERT INTO "courses" ("createdAt", "reference", "name", "nextConversationReference")
+    const course = database.get<{
+      id: number;
+      reference: string;
+    }>(
+      sql`
+          INSERT INTO "courses" (
+            "createdAt",
+            "reference",
+            "name",
+            "year",
+            "term",
+            "institution",
+            "code",
+            "nextConversationReference"
+          )
           VALUES (
             ${new Date().toISOString()},
             ${cryptoRandomString({ length: 10, type: "numeric" })},
             ${req.body.name},
+            ${req.body.year},
+            ${req.body.term},
+            ${req.body.institution},
+            ${req.body.code},
             ${1}
           )
           RETURNING *
         `
-      )!;
-      database.run(
-        sql`
+    )!;
+    database.run(
+      sql`
           INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "role", "accentColor")
           VALUES (
             ${new Date().toISOString()},
@@ -5448,10 +5477,9 @@ export default async function courselore({
             ${defaultAccentColor(res.locals.enrollments)}
           )
         `
-      );
-      res.redirect(`${baseURL}/courses/${course.reference}`);
-    }
-  );
+    );
+    res.redirect(`${baseURL}/courses/${course.reference}`);
+  });
 
   const defaultAccentColor = (
     enrollments: IsSignedInMiddlewareLocals["enrollments"]
