@@ -1096,21 +1096,6 @@ export default async function courselore({
                 }
               }
 
-              .stripped {
-                display: flex;
-                flex-direction: column;
-                & > * {
-                  &:nth-child(odd) {
-                    background-color: var(--color--gray--medium--100);
-                    @media (prefers-color-scheme: dark) {
-                      background-color: var(--color--gray--medium--800);
-                    }
-                  }
-                  padding: var(--space--2);
-                  border-radius: var(--border-radius--lg);
-                }
-              }
-
               .menu-box {
                 background-color: var(--color--gray--medium--100);
                 @media (prefers-color-scheme: dark) {
