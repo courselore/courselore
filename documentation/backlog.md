@@ -26,7 +26,7 @@ We now redirect to the sign in page in that case instead of showing the generic 
 
 > - There are no search/filter function in the enrollments. Use case: find people and remove them if they drop the course.
 
-
+I added a filter.
 
 > - I created tags (HW1, HW2, ...) and when I clicked on “Update Tags” I got “VALIDATION ERROR. This is an issue in CourseLore. Report to the System Administrator.” The “Report to the System Administrator” opened my email client but did not open a new mail. It didn’t show me the admin email nor had it any content to provide to the admin.
 > - There is a blocking delay e.g. when you click on “like,” it pauses for a very brief moment and then the page is functional again.
