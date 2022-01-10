@@ -5442,28 +5442,28 @@ export default async function courselore({
       reference: string;
     }>(
       sql`
-          INSERT INTO "courses" (
-            "createdAt",
-            "reference",
-            "name",
-            "year",
-            "term",
-            "institution",
-            "code",
-            "nextConversationReference"
-          )
-          VALUES (
-            ${new Date().toISOString()},
-            ${cryptoRandomString({ length: 10, type: "numeric" })},
-            ${req.body.name},
-            ${req.body.year},
-            ${req.body.term},
-            ${req.body.institution},
-            ${req.body.code},
-            ${1}
-          )
-          RETURNING *
-        `
+        INSERT INTO "courses" (
+          "createdAt",
+          "reference",
+          "name",
+          "year",
+          "term",
+          "institution",
+          "code",
+          "nextConversationReference"
+        )
+        VALUES (
+          ${new Date().toISOString()},
+          ${cryptoRandomString({ length: 10, type: "numeric" })},
+          ${req.body.name},
+          ${req.body.year},
+          ${req.body.term},
+          ${req.body.institution},
+          ${req.body.code},
+          ${1}
+        )
+        RETURNING *
+      `
     )!;
     database.run(
       sql`
