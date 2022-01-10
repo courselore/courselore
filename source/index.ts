@@ -4305,7 +4305,8 @@ export default async function courselore({
           res,
           content: html`
             <div class="flash--rose">
-              This Email Confirmation Link is invalid.
+              This Email Confirmation Link is invalid or belongs to a different
+              account.
             </div>
           `,
         });
