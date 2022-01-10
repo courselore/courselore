@@ -6018,6 +6018,56 @@ export default async function courselore({
                   class="input--text"
                 />
               </label>
+              <div
+                style="${css`
+                  display: flex;
+                  gap: var(--space--2);
+                  & > * {
+                    flex: 1;
+                  }
+                `}"
+              >
+                <label class="label">
+                  <p class="label--text">Year</p>
+                  <input
+                    type="text"
+                    name="year"
+                    value="${res.locals.course.year}"
+                    autocomplete="off"
+                    class="input--text"
+                  />
+                </label>
+                <label class="label">
+                  <p class="label--text">Term</p>
+                  <input
+                    type="text"
+                    name="term"
+                    value="${res.locals.course.term}"
+                    autocomplete="off"
+                    class="input--text"
+                  />
+                </label>
+              </div>
+              <label class="label">
+                <p class="label--text">Institution</p>
+                <input
+                  type="text"
+                  name="institution"
+                  value="${res.locals.course.institution}"
+                  autocomplete="off"
+                  class="input--text"
+                />
+              </label>
+              <label class="label">
+                <p class="label--text">Code</p>
+                <input
+                  type="text"
+                  name="code"
+                  value="${res.locals.course.code}"
+                  autocomplete="off"
+                  class="input--text"
+                />
+              </label>
               <div>
                 <button
                   class="button button--full-width-on-small-screen button--blue"
@@ -6036,20 +6086,37 @@ export default async function courselore({
   app.patch<
     { courseReference: string },
     HTML,
-    { name?: string },
+    {
+      name?: string;
+      year?: string;
+      term?: string;
+      institution?: string;
+      code?: string;
+    },
     {},
     IsCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/course-information",
     ...isCourseStaffMiddleware,
     (req, res, next) => {
-      if (typeof req.body.name !== "string" || req.body.name.trim() === "")
+      if (
+        typeof req.body.name !== "string" ||
+        req.body.name.trim() === "" ||
+        !["string", "undefined"].includes(typeof req.body.year) ||
+        !["string", "undefined"].includes(typeof req.body.term) ||
+        !["string", "undefined"].includes(typeof req.body.institution) ||
+        !["string", "undefined"].includes(typeof req.body.code)
+      )
         return next("validation");
 
       database.run(
         sql`
           UPDATE "courses"
-          SET "name" = ${req.body.name}
+          SET "name" = ${req.body.name},
+              "year" = ${req.body.year},
+              "term" = ${req.body.term},
+              "institution" = ${req.body.institution},
+              "code" = ${req.body.code}
           WHERE "id" = ${res.locals.course.id}
         `
       );
