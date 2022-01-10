@@ -4346,12 +4346,14 @@ export default async function courselore({
           <div class="flash--rose">Sign in to confirm your email.</div>
         `,
       });
-      return res.redirect(`${baseURL}/sign-in/${qs.stringify(
-        {
-          redirect: req.originalUrl,
-        },
-        { addQueryPrefix: true }
-      )}`);
+      return res.redirect(
+        `${baseURL}/sign-in/${qs.stringify(
+          {
+            redirect: req.originalUrl,
+          },
+          { addQueryPrefix: true }
+        )}`
+      );
     }
   );
 
@@ -7549,6 +7551,26 @@ export default async function courselore({
               Enrollments
             </h2>
 
+            <div
+              style="${css`
+                display: flex;
+                gap: var(--space--2);
+                align-items: baseline;
+              `}"
+            >
+              <i class="bi bi-funnel"></i>
+              <input
+                type="text"
+                class="input--text"
+                placeholder="Filter…"
+                data-skip-is-modified="true"
+                oninput="${css`
+                  for (const element of document.querySelectorAll(".enrollment"))
+                    element.hidden = this.value.trim() === "" ? false : !element.querySelector(".enrollment--name").textContent.includes(this.value);
+                `}"
+              />
+            </div>
+
             <div class="stripped">
               $${enrollments.map((enrollment) => {
                 const action = `${baseURL}/courses/${res.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
@@ -7561,6 +7583,7 @@ export default async function courselore({
 
                 return html`
                   <div
+                    class="enrollment"
                     style="${css`
                       display: flex;
                       gap: var(--space--2);
@@ -7586,7 +7609,9 @@ export default async function courselore({
                       `}"
                     >
                       <div>
-                        <div class="strong">${enrollment.user.name}</div>
+                        <div class="enrollment--name strong">
+                          ${enrollment.user.name}
+                        </div>
                         <div class="secondary">${enrollment.user.email}</div>
                         <div
                           class="secondary"
