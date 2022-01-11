@@ -7540,10 +7540,23 @@ export default async function courselore({
                 class="input--text"
                 placeholder="Filter…"
                 data-skip-is-modified="true"
-                oninput="${css`
-                  /*
+                -oninput="${javascript`
                   const searchPhrases = this.value.split(/\\s+/).filter((searchPhrase) => searchPhrase.trim() !== "");
                   for (const enrollment of document.querySelectorAll(".enrollment")) {
+                    let hidden = false;
+                    for (const filterable of enrollment.querySelectorAll("[data-filterable]")) {
+                      const textContent = filterable.dataset.filterable;
+                    }
+                    enrollment.hidden = hidden;
+
+                    /*
+                    if (searchPhrases.length === 0)
+                      for (const filterable of enrollment.querySelectorAll("[data-filterable]"))
+                        filterable.innerHTML = JSON.parse(filterable.dataset.filterable);
+                    else {
+                      hidden = true;
+                    }
+
                     const enrollmentFilterableFields = enrollment.querySelector(".enrollment--filterable-fields");
                     const enrollmentFilterableFieldsName = enrollmentFilterableFields.querySelector(".enrollment--filterable-fields--name");
                     const enrollmentFilterableFieldsEmail = enrollmentFilterableFields.querySelector(".enrollment--filterable-fields--email");
@@ -7565,8 +7578,8 @@ export default async function courselore({
                       continue;
                     }
                     enrollment.hidden = true;
+                    */
                   }
-                  */
                 `}"
               />
             </label>
@@ -7615,7 +7628,7 @@ export default async function courselore({
                     <div>
                       <div
                         data-filterable="${JSON.stringify(
-                          html`${enrollment.user.name}`
+                          splitFilterable(enrollment.user.name)
                         )}"
                         class="strong"
                       >
@@ -7623,7 +7636,7 @@ export default async function courselore({
                       </div>
                       <div
                         data-filterable="${JSON.stringify(
-                          html`${enrollment.user.email}`
+                          splitFilterable(enrollment.user.email)
                         )}"
                         class="secondary"
                       >
@@ -17850,6 +17863,9 @@ ${value}</textarea
 
   const splitSearchPhrases = (search: string): string[] =>
     search.split(/\s+/).filter((searchPhrase) => searchPhrase.trim() !== "");
+
+  const splitFilterable = (filterable: string): string[] =>
+    filterable.split(/(?<=[^a-z0-9])(?=[a-z0-9])|(?<=[a-z0-9])(?=[^a-z0-9])/i);
 
   return app;
 }

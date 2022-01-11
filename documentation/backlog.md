@@ -33,6 +33,8 @@ Fixed.
 > - Is there a way to group chats vs conversations, etc.
 > - The app gets slower as you post more to it. I have 4 post, and it is getting visibly slow.
 
+- Test HTML injection on filters for enrollments
+
 ---
 
 - Ask for login on email confirmation.
