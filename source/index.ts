@@ -7540,45 +7540,27 @@ export default async function courselore({
                 class="input--text"
                 placeholder="Filter…"
                 data-skip-is-modified="true"
-                -oninput="${javascript`
-                  const searchPhrases = this.value.split(/\\s+/).filter((searchPhrase) => searchPhrase.trim() !== "");
+                oninput="${javascript`
+                  const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
                   for (const enrollment of document.querySelectorAll(".enrollment")) {
-                    let hidden = false;
-                    for (const filterable of enrollment.querySelectorAll("[data-filterable]")) {
-                      const textContent = filterable.dataset.filterable;
+                    let enrollmentHidden = filterPhrases.length > 0;
+                    for (const filterablePhrasesElement of enrollment.querySelectorAll("[data-filterable-phrases]")) {
+                      const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
+                      const filterablePhrasesElementChildren = [];
+                      for (const filterablePhrase of filterablePhrases) {
+                        let filterablePhraseElement;
+                        if (filterPhrases.some(filterPhrase => filterablePhrase.startsWith(filterPhrase))) {
+                          filterablePhraseElement = document.createElement("mark");
+                          filterablePhraseElement.classList.add("mark");
+                          enrollmentHidden = false;
+                        } else
+                          filterablePhraseElement = document.createElement("span");
+                        filterablePhraseElement.textContent = filterablePhrase;
+                        filterablePhrasesElementChildren.push(filterablePhraseElement);
+                      }
+                      filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
                     }
-                    enrollment.hidden = hidden;
-
-                    /*
-                    if (searchPhrases.length === 0)
-                      for (const filterable of enrollment.querySelectorAll("[data-filterable]"))
-                        filterable.innerHTML = JSON.parse(filterable.dataset.filterable);
-                    else {
-                      hidden = true;
-                    }
-
-                    const enrollmentFilterableFields = enrollment.querySelector(".enrollment--filterable-fields");
-                    const enrollmentFilterableFieldsName = enrollmentFilterableFields.querySelector(".enrollment--filterable-fields--name");
-                    const enrollmentFilterableFieldsEmail = enrollmentFilterableFields.querySelector(".enrollment--filterable-fields--email");
-                    const enrollmentHighlightedFilterableFields = enrollment.querySelector(".enrollment--highlighted-filterable-fields");
-                    const enrollmentHighlightedFilterableFieldsName = enrollmentFilterableFields.querySelector(".enrollment--highlighted-filterable-fields--name");
-                    const enrollmentHighlightedFilterableFieldsEmail = enrollmentFilterableFields.querySelector(".enrollment--highlighted-filterable-fields--email");
-                    const nameParts = enrollmentFilterableFieldsName.textContent.split(/\\s+/).filter((namePart) => namePart.trim() !== "");
-                    const emailParts = enrollmentFilterableFieldsEmail.textContent.split(/[^a-z0-9]+/i).filter((emailPart) => emailPart.trim() !== "");
-                    if (searchPhrases.length === 0) {
-                      enrollment.hidden = false;
-                      enrollmentFilterableFields.hidden = false;
-                      enrollmentHighlightedFilterableFields.hidden = true;
-                      continue;
-                    }
-                    if (searchPhrases.every(searchPhrase => [...nameParts, ...emailParts].some(part => part.startsWith(searchPhrase)))) {
-                      enrollment.hidden = false;
-                      enrollmentFilterableFields.hidden = true;
-                      enrollmentHighlightedFilterableFields.hidden = false;
-                      continue;
-                    }
-                    enrollment.hidden = true;
-                    */
+                    enrollment.hidden = enrollmentHidden;
                   }
                 `}"
               />
@@ -7627,16 +7609,16 @@ export default async function courselore({
                   >
                     <div>
                       <div
-                        data-filterable="${JSON.stringify(
-                          splitFilterable(enrollment.user.name)
+                        data-filterable-phrases="${JSON.stringify(
+                          splitFilterablePhrases(enrollment.user.name)
                         )}"
                         class="strong"
                       >
                         ${enrollment.user.name}
                       </div>
                       <div
-                        data-filterable="${JSON.stringify(
-                          splitFilterable(enrollment.user.email)
+                        data-filterable-phrases="${JSON.stringify(
+                          splitFilterablePhrases(enrollment.user.email)
                         )}"
                         class="secondary"
                       >
@@ -17864,7 +17846,7 @@ ${value}</textarea
   const splitSearchPhrases = (search: string): string[] =>
     search.split(/\s+/).filter((searchPhrase) => searchPhrase.trim() !== "");
 
-  const splitFilterable = (filterable: string): string[] =>
+  const splitFilterablePhrases = (filterable: string): string[] =>
     filterable.split(/(?<=[^a-z0-9])(?=[a-z0-9])|(?<=[a-z0-9])(?=[^a-z0-9])/i);
 
   return app;
