@@ -8,10 +8,8 @@
 
 ### Issues
 
-- Ask for login on email confirmation.
 - Little button to report bugs.
   - Places where we show `administratorEmail` to report bugs could be forms instead.
-- `mailto:` doesn’t work for some people depending on their email client.
 
 ### Chat
 
