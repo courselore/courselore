@@ -7541,6 +7541,7 @@ export default async function courselore({
                 placeholder="Filter…"
                 data-skip-is-modified="true"
                 oninput="${css`
+                  /*
                   const searchPhrases = this.value.split(/\\s+/).filter((searchPhrase) => searchPhrase.trim() !== "");
                   for (const enrollment of document.querySelectorAll(".enrollment")) {
                     const enrollmentFilterableFields = enrollment.querySelector(".enrollment--filterable-fields");
@@ -7565,6 +7566,7 @@ export default async function courselore({
                     }
                     enrollment.hidden = true;
                   }
+                  */
                 `}"
               />
             </label>
@@ -7611,26 +7613,21 @@ export default async function courselore({
                     `}"
                   >
                     <div>
-                      <div class="enrollment--filterable-fields">
-                        <div class="enrollment--filterable-fields--name strong">
-                          ${enrollment.user.name}
-                        </div>
-                        <div
-                          class="enrollment--filterable-fields--email secondary"
-                        >
-                          ${enrollment.user.email}
-                        </div>
+                      <div
+                        data-filterable="${JSON.stringify(
+                          html`${enrollment.user.name}`
+                        )}"
+                        class="strong"
+                      >
+                        ${enrollment.user.name}
                       </div>
                       <div
-                        class="enrollment--highlighted-filterable-fields"
-                        hidden
+                        data-filterable="${JSON.stringify(
+                          html`${enrollment.user.email}`
+                        )}"
+                        class="secondary"
                       >
-                        <div
-                          class="enrollment--highlighted-filterable-fields--name strong"
-                        ></div>
-                        <div
-                          class="enrollment--highlighted-filterable-fields--email secondary"
-                        ></div>
+                        ${enrollment.user.email}
                       </div>
                       <div
                         class="secondary"
