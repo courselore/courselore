@@ -10,8 +10,7 @@
 
 - Avatars.
 
-  - `tippyContent` should be `sideContent` of some sort, because it’s also used by the tags page.
-    - Add support for `onmount` on @leafac/javascript
+  - Add support for `onmount` on @leafac/javascript
   - Add staff badge to `userPartial`.
 
 - `TODO` (see code below)
