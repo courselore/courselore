@@ -7549,7 +7549,7 @@ export default async function courselore({
                       const filterablePhrasesElementChildren = [];
                       for (const filterablePhrase of filterablePhrases) {
                         let filterablePhraseElement;
-                        if (filterPhrases.some(filterPhrase => filterablePhrase.startsWith(filterPhrase))) {
+                        if (filterPhrases.some(filterPhrase => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
                           filterablePhraseElement = document.createElement("mark");
                           filterablePhraseElement.classList.add("mark");
                           enrollmentHidden = false;
