@@ -447,14 +447,14 @@ export default async function courselore({
       (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
         Partial<IsEnrolledInCourseMiddlewareLocals> &
         Partial<EventSourceMiddlewareLocals> &
-        Partial<TippyContentMiddlewareLocals>
+        Partial<HiddenContentMiddlewareLocals>
     >;
     res: express.Response<
       any,
       (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
         Partial<IsEnrolledInCourseMiddlewareLocals> &
         Partial<EventSourceMiddlewareLocals> &
-        Partial<TippyContentMiddlewareLocals>
+        Partial<HiddenContentMiddlewareLocals>
     >;
     head: HTML;
     extraHeaders?: HTML;
@@ -1613,7 +1613,7 @@ export default async function courselore({
                         tippy(this, {
                           trigger: "click",
                           interactive: true,
-                          content: ${tippyContent({
+                          content: ${hiddenContent({
                             req,
                             res,
                             content: html`
@@ -1683,7 +1683,7 @@ export default async function courselore({
                       tippy(this, {
                         trigger: "click",
                         interactive: true,
-                        content: ${tippyContent({
+                        content: ${hiddenContent({
                           req,
                           res,
                           content: html`
@@ -1730,7 +1730,7 @@ export default async function courselore({
                           tippy(this, {
                             trigger: "click",
                             interactive: true,
-                            content: ${tippyContent({
+                            content: ${hiddenContent({
                               req,
                               res,
                               content: html`
@@ -1957,7 +1957,7 @@ export default async function courselore({
               $${body}
             </div>
           </div>
-          <div hidden>$${res.locals.tippyContent ?? []}</div>
+          <div hidden>$${res.locals.hiddenContent ?? []}</div>
         </body>
       </html>
     `);
@@ -2118,7 +2118,7 @@ export default async function courselore({
                       tippy(this, {
                         trigger: "click",
                         interactive: true,
-                        content: ${tippyContent({
+                        content: ${hiddenContent({
                           req,
                           res,
                           content: html`
@@ -2293,7 +2293,7 @@ export default async function courselore({
                 tippy(this, {
                   trigger: "click",
                   interactive: true,
-                  content: ${tippyContent({
+                  content: ${hiddenContent({
                     req,
                     res,
                     content: html`
@@ -2415,7 +2415,7 @@ export default async function courselore({
                 tippy(this, {
                   trigger: "click",
                   interactive: true,
-                  content: ${tippyContent({
+                  content: ${hiddenContent({
                     req,
                     res,
                     content: html`
@@ -2582,7 +2582,7 @@ export default async function courselore({
                     tippy(this, {
                       trigger: "click",
                       interactive: true,
-                      content: ${tippyContent({
+                      content: ${hiddenContent({
                         req,
                         res,
                         content: html`
@@ -2695,12 +2695,12 @@ export default async function courselore({
       {},
       {},
       (IsSignedInMiddlewareLocals | IsSignedOutMiddlewareLocals) &
-        Partial<TippyContentMiddlewareLocals>
+        Partial<HiddenContentMiddlewareLocals>
     >;
     res: express.Response<
       any,
       (IsSignedInMiddlewareLocals | IsSignedOutMiddlewareLocals) &
-        Partial<TippyContentMiddlewareLocals>
+        Partial<HiddenContentMiddlewareLocals>
     >;
     body: HTML;
   }): HTML =>
@@ -2709,7 +2709,7 @@ export default async function courselore({
       <html>
         <body>
           $${body}
-          <div hidden>$${res.locals.tippyContent ?? []}</div>
+          <div hidden>$${res.locals.hiddenContent ?? []}</div>
         </body>
       </html>
     `);
@@ -2930,7 +2930,7 @@ export default async function courselore({
                       touch: false,
                       interactive: true,
                       appendTo: document.body,
-                      content: ${tippyContent({
+                      content: ${hiddenContent({
                         req,
                         res,
                         content: html`
@@ -3140,10 +3140,10 @@ export default async function courselore({
     },
   };
 
-  interface TippyContentMiddlewareLocals {
-    tippyContent?: HTML[];
+  interface HiddenContentMiddlewareLocals {
+    hiddenContent?: HTML[];
   }
-  const tippyContent = ({
+  const hiddenContent = ({
     req,
     res,
     content,
@@ -3153,14 +3153,14 @@ export default async function courselore({
       any,
       {},
       {},
-      TippyContentMiddlewareLocals & object
+      HiddenContentMiddlewareLocals & object
     >;
-    res: express.Response<any, TippyContentMiddlewareLocals & object>;
+    res: express.Response<any, HiddenContentMiddlewareLocals & object>;
     content: HTML;
   }): JavaScript => {
-    res.locals.tippyContent ??= [];
-    const id = `tippy-content--${res.locals.tippyContent.length}`;
-    res.locals.tippyContent.push(html`<div id="${id}">$${content}</div>`);
+    res.locals.hiddenContent ??= [];
+    const id = `hidden-content--${res.locals.hiddenContent.length}`;
+    res.locals.hiddenContent.push(html`<div id="${id}">$${content}</div>`);
     return javascript`document.querySelector("#${id}")`;
   };
 
@@ -4818,7 +4818,7 @@ export default async function courselore({
                       const uploadingIndicator = tippy(avatarChooser, {
                         trigger: "manual",
                         hideOnClick: false,
-                        content: ${tippyContent({
+                        content: ${hiddenContent({
                           req,
                           res,
                           content: html`
@@ -6340,7 +6340,7 @@ export default async function courselore({
                     oninteractive="${javascript`
                       tippy(this, {
                         trigger: "click",
-                        content: ${tippyContent({
+                        content: ${hiddenContent({
                           req,
                           res,
                           content: html`
@@ -6607,7 +6607,7 @@ export default async function courselore({
                                         maxWidth: "none",
                                         content: ${(() => {
                                           const link = `${baseURL}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
-                                          return tippyContent({
+                                          return hiddenContent({
                                             req,
                                             res,
                                             content: html`
@@ -6715,7 +6715,7 @@ export default async function courselore({
                                       tippy(this, {
                                         trigger: "click",
                                         interactive: true,
-                                        content: ${tippyContent({
+                                        content: ${hiddenContent({
                                           req,
                                           res,
                                           content: html`
@@ -6816,7 +6816,7 @@ export default async function courselore({
                                   tippy(this, {
                                     trigger: "click",
                                     interactive: true,
-                                    content: ${tippyContent({
+                                    content: ${hiddenContent({
                                       req,
                                       res,
                                       content: html`
@@ -6995,7 +6995,7 @@ export default async function courselore({
                                           oninteractive="${javascript`
                                             tippy(this, {
                                               touch: false,
-                                              content: ${tippyContent({
+                                              content: ${hiddenContent({
                                                 req,
                                                 res,
                                                 content: html`
@@ -7031,7 +7031,7 @@ export default async function courselore({
                                             tippy(this, {
                                               trigger: "click",
                                               interactive: true,
-                                              content: ${tippyContent({
+                                              content: ${hiddenContent({
                                                 req,
                                                 res,
                                                 content: html`
@@ -7088,7 +7088,7 @@ export default async function courselore({
                                             tippy(this, {
                                               trigger: "click",
                                               interactive: true,
-                                              content: ${tippyContent({
+                                              content: ${hiddenContent({
                                                 req,
                                                 res,
                                                 content: html`
@@ -7133,7 +7133,7 @@ export default async function courselore({
                                             tippy(this, {
                                               trigger: "click",
                                               interactive: true,
-                                              content: ${tippyContent({
+                                              content: ${hiddenContent({
                                                 req,
                                                 res,
                                                 content: html`
@@ -7726,7 +7726,7 @@ export default async function courselore({
                             tippy(this, {
                               trigger: "click",
                               interactive: true,
-                              content: ${tippyContent({
+                              content: ${hiddenContent({
                                 req,
                                 res,
                                 content: html`
@@ -7772,7 +7772,7 @@ export default async function courselore({
                                                             trigger: "click",
                                                             interactive: true,
                                                             appendTo: document.body,
-                                                            content: ${tippyContent(
+                                                            content: ${hiddenContent(
                                                               {
                                                                 req,
                                                                 res,
@@ -7892,7 +7892,7 @@ export default async function courselore({
                                       theme: "rose",
                                       trigger: "click",
                                       interactive: true,
-                                      content: ${tippyContent({
+                                      content: ${hiddenContent({
                                         req,
                                         res,
                                         content: html`
@@ -8226,7 +8226,7 @@ export default async function courselore({
                                     theme: "rose",
                                     trigger: "click",
                                     interactive: true,
-                                    content: ${tippyContent({
+                                    content: ${hiddenContent({
                                       req,
                                       res,
                                       content: html`
@@ -8372,7 +8372,7 @@ export default async function courselore({
                       });
                     `}"
                     onclick="${javascript`
-                      const newTag = ${tippyContent({
+                      const newTag = ${hiddenContent({
                         req,
                         res,
                         content: html`
@@ -10821,7 +10821,7 @@ export default async function courselore({
             }
               tippy(this, {
                 touch: false,
-                content: ${tippyContent({
+                content: ${hiddenContent({
                   req,
                   res,
                   content: html`
@@ -10885,7 +10885,7 @@ export default async function courselore({
                   tippy(this, {
                     trigger: "click",
                     interactive: true,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req,
                       res,
                       content: html`
@@ -10921,7 +10921,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+1", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req,
                       res,
                       content: html`
@@ -10952,7 +10952,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+2", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req,
                       res,
                       content: html`
@@ -10983,7 +10983,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+3", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req,
                       res,
                       content: html`
@@ -11016,7 +11016,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+b", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req,
                       res,
                       content: html`
@@ -11046,7 +11046,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+i", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req,
                       res,
                       content: html`
@@ -11076,7 +11076,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+k", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req,
                       res,
                       content: html`
@@ -11108,7 +11108,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+8", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req,
                       res,
                       content: html`
@@ -11139,7 +11139,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+7", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req,
                       res,
                       content: html`
@@ -11170,7 +11170,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+9", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req,
                       res,
                       content: html`
@@ -11203,7 +11203,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+'", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req,
                       res,
                       content: html`
@@ -11233,7 +11233,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+t", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req,
                       res,
                       content: html`
@@ -11265,7 +11265,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+d", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req,
                       res,
                       content: html`
@@ -11296,7 +11296,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+f", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req,
                       res,
                       content: html`
@@ -11329,7 +11329,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+e", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req,
                       res,
                       content: html`
@@ -11359,7 +11359,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+e", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req,
                       res,
                       content: html`
@@ -11392,7 +11392,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+e", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req,
                       res,
                       content: html`
@@ -11423,7 +11423,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+shift+e", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req,
                       res,
                       content: html`
@@ -11457,7 +11457,7 @@ export default async function courselore({
                       oninteractive="${javascript`
                         tippy(this, {
                           touch: false,
-                          content: ${tippyContent({
+                          content: ${hiddenContent({
                             req,
                             res,
                             content: html`
@@ -11481,7 +11481,7 @@ export default async function courselore({
                       oninteractive="${javascript`
                         tippy(this, {
                           touch: false,
-                          content: ${tippyContent({
+                          content: ${hiddenContent({
                             req,
                             res,
                             content: html`
@@ -11510,7 +11510,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+i", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req,
                       res,
                       content: html`
@@ -11540,7 +11540,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+k", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req,
                       res,
                       content: html`
@@ -11574,7 +11574,7 @@ export default async function courselore({
                   const uploadingIndicator = tippy(textarea, {
                     trigger: "manual",
                     hideOnClick: false,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req,
                       res,
                       content: html`
@@ -11664,7 +11664,7 @@ export default async function courselore({
                             placement: "bottom-start",
                             trigger: "manual",
                             interactive: true,
-                            content: ${tippyContent({
+                            content: ${hiddenContent({
                               req,
                               res,
                               content: html`
@@ -11721,7 +11721,7 @@ export default async function courselore({
                             placement: "bottom-start",
                             trigger: "manual",
                             interactive: true,
-                            content: ${tippyContent({
+                            content: ${hiddenContent({
                               req,
                               res,
                               content: html`
@@ -12805,7 +12805,7 @@ ${value}</textarea
                 javascript`
                   tippy(this, {
                     touch: false,
-                    content: ${tippyContent({
+                    content: ${hiddenContent({
                       req: narrowReq,
                       res: narrowRes,
                       content: html`
@@ -12839,7 +12839,7 @@ ${value}</textarea
               javascript`
                 tippy(this, {
                   touch: false,
-                  content: ${tippyContent({
+                  content: ${hiddenContent({
                     req: narrowReq,
                     res: narrowRes,
                     content: html`
@@ -13321,7 +13321,7 @@ ${value}</textarea
                       Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                       tippy(this, {
                         touch: false,
-                        content: ${tippyContent({
+                        content: ${hiddenContent({
                           req,
                           res,
                           content: html`
@@ -13887,7 +13887,7 @@ ${value}</textarea
                                     tippy(this, {
                                       trigger: "click",
                                       interactive: true,
-                                      content: ${tippyContent({
+                                      content: ${hiddenContent({
                                         req,
                                         res,
                                         content: html`
@@ -14042,7 +14042,7 @@ ${value}</textarea
                                     theme: "rose",
                                     trigger: "click",
                                     interactive: true,
-                                    content: ${tippyContent({
+                                    content: ${hiddenContent({
                                       req,
                                       res,
                                       content: html`
@@ -14177,7 +14177,7 @@ ${value}</textarea
                             tippy(this, {
                               trigger: "click",
                               interactive: true,
-                              content: ${tippyContent({
+                              content: ${hiddenContent({
                                 req,
                                 res,
                                 content: html`
@@ -14234,7 +14234,7 @@ ${value}</textarea
                                                   theme: "rose",
                                                   trigger: "click",
                                                   interactive: true,
-                                                  content: ${tippyContent({
+                                                  content: ${hiddenContent({
                                                     req,
                                                     res,
                                                     content: html`
@@ -14522,7 +14522,7 @@ ${value}</textarea
                                               tippy(this, {
                                                 trigger: "click",
                                                 interactive: true,
-                                                content: ${tippyContent({
+                                                content: ${hiddenContent({
                                                   req,
                                                   res,
                                                   content: html`
@@ -14935,7 +14935,7 @@ ${value}</textarea
                                                   tippy(this, {
                                                     trigger: "click",
                                                     interactive: true,
-                                                    content: ${tippyContent({
+                                                    content: ${hiddenContent({
                                                       req,
                                                       res,
                                                       content: html`
@@ -15189,7 +15189,7 @@ ${value}</textarea
                                                                         theme: "rose",
                                                                         trigger: "click",
                                                                         interactive: true,
-                                                                        content: ${tippyContent(
+                                                                        content: ${hiddenContent(
                                                                           {
                                                                             req,
                                                                             res,
@@ -15780,7 +15780,7 @@ ${value}</textarea
                                                   trigger: "manual",
                                                   interactive: true,
                                                   touch: false,
-                                                  content: ${tippyContent({
+                                                  content: ${hiddenContent({
                                                     req,
                                                     res,
                                                     content: html`
@@ -16052,7 +16052,7 @@ ${value}</textarea
                                                       Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                                                       tippy(this, {
                                                         touch: false,
-                                                        content: ${tippyContent(
+                                                        content: ${hiddenContent(
                                                           {
                                                             req,
                                                             res,
@@ -16255,7 +16255,7 @@ ${value}</textarea
                             oninteractive="${javascript`
                               tippy(this, {
                                 touch: false,
-                                content: ${tippyContent({
+                                content: ${hiddenContent({
                                   req,
                                   res,
                                   content: html`
@@ -16370,7 +16370,7 @@ ${value}</textarea
                         Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                         tippy(this, {
                           touch: false,
-                          content: ${tippyContent({
+                          content: ${hiddenContent({
                             req,
                             res,
                             content: html`
