@@ -3317,13 +3317,19 @@ export default async function courselore({
       );
     },
 
-    closeAll({
+    closeAllAndReopen({
       req,
       res,
+      userId,
     }: {
       req: express.Request<{}, any, {}, {}, {}>;
       res: express.Response<any, {}>;
-    }): void {},
+      userId: number;
+    }): void {
+      Session.close({ req, res });
+      database.run(sql`DELETE FROM "sessions" WHERE "user" = ${userId}`);
+      Session.open({ req, res, userId });
+    },
   };
 
   interface IsSignedOutMiddlewareLocals {}
@@ -4001,7 +4007,7 @@ export default async function courselore({
           WHERE "id" = ${userId}
         `
       )!;
-      Session.open({ req, res, userId: userId });
+      Session.closeAllAndReopen({ req, res, userId });
       Flash.set({
         req,
         res,
@@ -5168,6 +5174,7 @@ export default async function courselore({
             WHERE "id" = ${res.locals.user.id}
           `
         );
+        Session.closeAllAndReopen({ req, res, userId: res.locals.user.id });
         Flash.set({
           req,
           res,
