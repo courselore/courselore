@@ -4948,7 +4948,7 @@ export default async function courselore({
         return res
           .status(422)
           .send(
-            `Something went wrong in uploading your avatar. Please report to ${administratorEmail}.`
+            `Something went wrong in uploading your avatar. Please report to the system administrator at ${administratorEmail}.`
           );
       next(err);
     }) as express.ErrorRequestHandler<{}, any, {}, {}, {}>
@@ -17690,9 +17690,9 @@ ${value}</textarea
             </h2>
             <p>
               If you think there should be something here, please contact your
-              course staff or the
+              course staff or the system administrator at
               <a href="mailto:${administratorEmail}" class="link"
-                >system administrator</a
+                >${administratorEmail}</a
               >.
             </p>
           `,
@@ -17785,21 +17785,21 @@ ${value}</textarea
                   Please try again.
                 </p>
                 <p>
-                  If the issue persists, please report to the
+                  If the issue persists, please report to the system
+                  administrator at
                   <a href="mailto:${administratorEmail}" class="link"
-                    >system administrator</a
+                    >${administratorEmail}</a
                   >.
                 </p>
               `
             : html`
-                <p>This is an issue in CourseLore.</p>
-                <a
-                  href="mailto:${administratorEmail}"
-                  class="button button--blue"
-                >
-                  <i class="bi bi-envelope"></i>
-                  Report to the System Administrator
-                </a>
+                <p>
+                  This is an issue in CourseLore, please report to the system
+                  administrator at
+                  <a href="mailto:${administratorEmail}" class="link"
+                    >${administratorEmail}</a
+                  >.
+                </p>
               `}
         `,
       })
