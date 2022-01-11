@@ -7541,8 +7541,30 @@ export default async function courselore({
                 placeholder="Filter…"
                 data-skip-is-modified="true"
                 oninput="${css`
-                  for (const element of document.querySelectorAll(".enrollment"))
-                    element.hidden = this.value.trim() === "" ? false : !element.querySelector(".enrollment--name").textContent.includes(this.value);
+                  const searchPhrases = this.value.split(/\\s+/).filter((searchPhrase) => searchPhrase.trim() !== "");
+                  for (const enrollment of document.querySelectorAll(".enrollment")) {
+                    const enrollmentFilterableFields = enrollment.querySelector(".enrollment--filterable-fields");
+                    const enrollmentFilterableFieldsName = enrollmentFilterableFields.querySelector(".enrollment--filterable-fields--name");
+                    const enrollmentFilterableFieldsEmail = enrollmentFilterableFields.querySelector(".enrollment--filterable-fields--email");
+                    const enrollmentHighlightedFilterableFields = enrollment.querySelector(".enrollment--highlighted-filterable-fields");
+                    const enrollmentHighlightedFilterableFieldsName = enrollmentFilterableFields.querySelector(".enrollment--highlighted-filterable-fields--name");
+                    const enrollmentHighlightedFilterableFieldsEmail = enrollmentFilterableFields.querySelector(".enrollment--highlighted-filterable-fields--email");
+                    const nameParts = enrollmentFilterableFieldsName.textContent.split(/\\s+/).filter((namePart) => namePart.trim() !== "");
+                    const emailParts = enrollmentFilterableFieldsEmail.textContent.split(/[^a-z0-9]+/i).filter((emailPart) => emailPart.trim() !== "");
+                    if (searchPhrases.length === 0) {
+                      enrollment.hidden = false;
+                      enrollmentFilterableFields.hidden = false;
+                      enrollmentHighlightedFilterableFields.hidden = true;
+                      continue;
+                    }
+                    if (searchPhrases.every(searchPhrase => [...nameParts, ...emailParts].some(part => part.startsWith(searchPhrase)))) {
+                      enrollment.hidden = false;
+                      enrollmentFilterableFields.hidden = true;
+                      enrollmentHighlightedFilterableFields.hidden = false;
+                      continue;
+                    }
+                    enrollment.hidden = true;
+                  }
                 `}"
               />
             </label>
@@ -7589,10 +7611,27 @@ export default async function courselore({
                     `}"
                   >
                     <div>
-                      <div class="enrollment--name strong">
-                        ${enrollment.user.name}
+                      <div class="enrollment--filterable-fields">
+                        <div class="enrollment--filterable-fields--name strong">
+                          ${enrollment.user.name}
+                        </div>
+                        <div
+                          class="enrollment--filterable-fields--email secondary"
+                        >
+                          ${enrollment.user.email}
+                        </div>
                       </div>
-                      <div class="secondary">${enrollment.user.email}</div>
+                      <div
+                        class="enrollment--highlighted-filterable-fields"
+                        hidden
+                      >
+                        <div
+                          class="enrollment--highlighted-filterable-fields--name strong"
+                        ></div>
+                        <div
+                          class="enrollment--highlighted-filterable-fields--email secondary"
+                        ></div>
+                      </div>
                       <div
                         class="secondary"
                         style="${css`
