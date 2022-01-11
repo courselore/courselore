@@ -3316,6 +3316,14 @@ export default async function courselore({
         sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies.session}`
       );
     },
+
+    closeAll({
+      req,
+      res,
+    }: {
+      req: express.Request<{}, any, {}, {}, {}>;
+      res: express.Response<any, {}>;
+    }): void {},
   };
 
   interface IsSignedOutMiddlewareLocals {}
@@ -17143,7 +17151,7 @@ ${value}</textarea
       asyncHandler(async (req, res) => {
         const password = await argon2.hash("courselore", argon2Options);
         const name = casual.full_name;
-        const avatarIndices = lodash.shuffle([...new Array(250).keys()]);
+        const avatarIndices = lodash.shuffle(lodash.range(250));
         const demonstrationUser = database.get<{ id: number; name: string }>(
           sql`
             INSERT INTO "users" (
@@ -17554,8 +17562,10 @@ ${value}</textarea
               const content =
                 type === "chat" && Math.random() < 0.9
                   ? casual.sentences(lodash.random(1, 2))
-                  : [...new Array(lodash.random(1, 6))]
-                      .map((_) => casual.sentences(lodash.random(1, 6)))
+                  : lodash
+                      .times(lodash.random(1, 6), () =>
+                        casual.sentences(lodash.random(1, 6))
+                      )
                       .join("\n\n");
               const processedContent = markdownProcessor({
                 req,
