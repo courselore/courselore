@@ -18,7 +18,7 @@ Can you please talk to the Hopkins IT and add us to the allowlist? All the email
 
 > - The confirmation email in Gmail has a problem: when click on the activate link, it gives 404 error.
 
-We now redirect to the sign in page in that case instead of showing the generic 404. I also tried to find out why your browser seemed to have different cookie jars per cognito tab, but nothing came up 🤷
+We now redirect to the sign in page in that case. I also tried to find out why your browser seemed to have different cookie jars per cognito tab, but nothing came up 🤷
 
 > - There are no search/filter function in the enrollments. Use case: find people and remove them if they drop the course.
 

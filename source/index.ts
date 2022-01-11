@@ -7527,7 +7527,7 @@ export default async function courselore({
               Enrollments
             </h2>
 
-            <div
+            <label
               style="${css`
                 display: flex;
                 gap: var(--space--2);
@@ -7545,7 +7545,7 @@ export default async function courselore({
                     element.hidden = this.value.trim() === "" ? false : !element.querySelector(".enrollment--name").textContent.includes(this.value);
                 `}"
               />
-            </div>
+            </label>
 
             $${enrollments.map((enrollment) => {
               const action = `${baseURL}/courses/${res.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
