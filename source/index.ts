@@ -2917,7 +2917,17 @@ export default async function courselore({
               })();
             `}"
           ></span>
-          $${enrollment?.role === "staff" ? html` <span>S</span> ` : html``}
+          $${enrollment?.role === "staff"
+            ? html`
+                <span
+                  style="${css`
+                    justify-self: end;
+                  `}"
+                >
+                  S
+                </span>
+              `
+            : html``}
         </span>`;
 
       if (name !== false)
