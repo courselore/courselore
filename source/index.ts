@@ -2743,7 +2743,8 @@ export default async function courselore({
   const userPartial = ({
     req,
     res,
-    user = undefined,
+    enrollment = undefined,
+    user = enrollment?.user,
     anonymous = user === undefined,
     onlineIndicator = user !== undefined,
     name = true,
@@ -2758,6 +2759,7 @@ export default async function courselore({
       Partial<IsEnrolledInCourseMiddlewareLocals>
     >;
     res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>;
+    enrollment?: AuthorEnrollment;
     user?: AuthorEnrollment["user"];
     anonymous?: boolean | "reveal";
     onlineIndicator?: boolean;
@@ -2915,6 +2917,7 @@ export default async function courselore({
               })();
             `}"
           ></span>
+          $${enrollment?.role === "staff" ? html` <span>S</span> ` : html``}
         </span>`;
 
       if (name !== false)
@@ -2955,6 +2958,7 @@ export default async function courselore({
                                 $${userPartial({
                                   req,
                                   res,
+                                  enrollment,
                                   user,
                                   name: false,
                                   size: "xl",
@@ -7654,7 +7658,7 @@ export default async function courselore({
                     $${userPartial({
                       req,
                       res,
-                      user: enrollment.user,
+                      enrollment,
                       name: false,
                     })}
                   </div>
@@ -10057,7 +10061,7 @@ export default async function courselore({
         $${userPartial({
           req,
           res,
-          user: conversation.authorEnrollment.user,
+          enrollment: conversation.authorEnrollment,
           anonymous:
             conversation.anonymousAt === null
               ? false
@@ -11988,7 +11992,7 @@ ${value}</textarea
                       $${userPartial({
                         req,
                         res,
-                        user,
+                        enrollment,
                         name: user.userNameSearchResultHighlight,
                         tooltip: false,
                         size: "xs",
@@ -12295,7 +12299,7 @@ ${value}</textarea
                             $${userPartial({
                               req,
                               res,
-                              user: message.authorEnrollment.user,
+                              enrollment: message.authorEnrollment,
                               name: messageRow.messageAuthorUserNameSearchResultHighlight,
                               tooltip: false,
                             })}
@@ -12707,7 +12711,7 @@ ${value}</textarea
                           const mentionInnerHTML = userPartial({
                             req,
                             res,
-                            user,
+                            enrollment,
                           });
                           mentionHTML = html`$${user.id === res.locals.user!.id
                             ? html`<mark
@@ -15692,8 +15696,8 @@ ${value}</textarea
                                                     $${userPartial({
                                                       req,
                                                       res,
-                                                      user: message
-                                                        .authorEnrollment.user,
+                                                      enrollment:
+                                                        message.authorEnrollment,
                                                       anonymous:
                                                         message.anonymousAt ===
                                                         null
