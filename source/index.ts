@@ -8862,23 +8862,25 @@ export default async function courselore({
               <button
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
-                tippy(this, {
-                  touch: false,
-                  content: "Copy to Clipboard",
-                });
-              `}"
+                  tippy(this, {
+                    touch: false,
+                    content: "Copy to Clipboard",
+                  });
+                `}"
                 onclick="${javascript`
-                (async () => {
-                  await navigator.clipboard.writeText(${JSON.stringify(link)});
-                  const clipboard = this.querySelector(".clipboard");
-                  const check = this.querySelector(".check");
-                  clipboard.hidden = true;
-                  check.hidden = false;
-                  await new Promise((resolve) => { window.setTimeout(resolve, 500); });
-                  clipboard.hidden = false;
-                  check.hidden = true;
-                })();
-              `}"
+                  (async () => {
+                    await navigator.clipboard.writeText(${JSON.stringify(
+                      link
+                    )});
+                    const clipboard = this.querySelector(".clipboard");
+                    const check = this.querySelector(".check");
+                    clipboard.hidden = true;
+                    check.hidden = false;
+                    await new Promise((resolve) => { window.setTimeout(resolve, 500); });
+                    clipboard.hidden = false;
+                    check.hidden = true;
+                  })();
+                `}"
               >
                 <span class="clipboard">
                   <i class="bi bi-clipboard"></i>
