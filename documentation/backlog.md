@@ -13,7 +13,8 @@
 - Add extra course information:
   - Landing page
   - Course switcher
-  - Invitations
+  - Invitations on notification in `+` menu
+  - Invitations pages
 
 - `TODO` (see code below)
 

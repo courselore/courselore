@@ -3129,6 +3129,84 @@ export default async function courselore({
       : html``;
   };
 
+  const coursePartial = ({
+    req,
+    res,
+    course,
+    enrollment = undefined,
+  }: {
+    req: express.Request<{}, any, {}, {}, {}>;
+    res: express.Response<any, {}>;
+    course: IsSignedInMiddlewareLocals["enrollments"][number]["course"];
+    enrollment?: IsSignedInMiddlewareLocals["enrollments"][number];
+  }): HTML => html`
+    <div
+      style="${css`
+        display: flex;
+        gap: var(--space--2);
+        align-items: baseline;
+      `}"
+    >
+      <div>
+        <div
+          class="button button--tight"
+          style="${css`
+            color: var(
+              --color--${enrollment?.accentColor ?? "gray--medium"}--700
+            );
+            background-color: var(
+              --color--${enrollment?.accentColor ?? "gray--medium"}--100
+            );
+            @media (prefers-color-scheme: dark) {
+              color: var(
+                --color--${enrollment?.accentColor ?? "gray--medium"}--200
+              );
+              background-color: var(
+                --color--${enrollment?.accentColor ?? "gray--medium"}--800
+              );
+            }
+          `}"
+        >
+          <i class="bi bi-journal-text"></i>
+        </div>
+      </div>
+      <div>
+        <div class="strong">${course.name}</div>
+        <div
+          class="secondary"
+          style="${css`
+            font-size: var(--font-size--xs);
+            line-height: var(--line-height--xs);
+          `}"
+        >
+          $${[
+            [course.year, course.term],
+            [course.institution, course.code],
+          ].flatMap((row) => {
+            row = row.filter((element) => element !== undefined);
+            return row.length === 0
+              ? []
+              : [
+                  html`
+                    <div>
+                      $${row.map((element) => html`${element}`).join(" · ")}
+                    </div>
+                  `,
+                ];
+          })}
+          $${enrollment === undefined
+            ? html``
+            : html`
+                <div>
+                  $${enrollmentRoleIcon[enrollment.role]
+                    .regular} ${lodash.capitalize(enrollment.role)}
+                </div>
+              `}
+        </div>
+      </div>
+    </div>
+  `;
+
   const enrollmentRoleIcon = {
     student: {
       regular: html`<i class="bi bi-person"></i>`,
@@ -4554,83 +4632,12 @@ export default async function courselore({
                               .reference}"
                             class="menu-box--item button button--tight button--transparent"
                           >
-                            <div
-                              style="${css`
-                                display: flex;
-                                gap: var(--space--2);
-                                align-items: baseline;
-                              `}"
-                            >
-                              <div>
-                                <div
-                                  class="button button--tight"
-                                  style="${css`
-                                    color: var(
-                                      --color--${enrollment.accentColor}--700
-                                    );
-                                    background-color: var(
-                                      --color--${enrollment.accentColor}--100
-                                    );
-                                    @media (prefers-color-scheme: dark) {
-                                      color: var(
-                                        --color--${enrollment.accentColor}--200
-                                      );
-                                      background-color: var(
-                                        --color--${enrollment.accentColor}--800
-                                      );
-                                    }
-                                  `}"
-                                >
-                                  <i class="bi bi-journal-text"></i>
-                                </div>
-                              </div>
-                              <div>
-                                <div class="strong">
-                                  ${enrollment.course.name}
-                                </div>
-                                <div
-                                  class="secondary"
-                                  style="${css`
-                                    font-size: var(--font-size--xs);
-                                    line-height: var(--line-height--xs);
-                                  `}"
-                                >
-                                  $${[
-                                    [
-                                      enrollment.course.year,
-                                      enrollment.course.term,
-                                    ],
-                                    [
-                                      enrollment.course.institution,
-                                      enrollment.course.code,
-                                    ],
-                                  ].flatMap((row) => {
-                                    row = row.filter(
-                                      (element) => element !== undefined
-                                    );
-                                    return row.length === 0
-                                      ? []
-                                      : [
-                                          html`
-                                            <div>
-                                              $${row
-                                                .map(
-                                                  (element) => html`${element}`
-                                                )
-                                                .join(" · ")}
-                                            </div>
-                                          `,
-                                        ];
-                                  })}
-                                  <div>
-                                    $${enrollmentRoleIcon[enrollment.role]
-                                      .regular} ${lodash.capitalize(
-                                      enrollment.role
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
+                            $${coursePartial({
+                              req,
+                              res,
+                              course: enrollment.course,
+                              enrollment,
+                            })}
                           </a>
                         `
                     )}
