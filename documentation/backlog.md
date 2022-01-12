@@ -10,7 +10,6 @@
 
 - Avatars.
 
-  - Add support for `onmount` on @leafac/javascript
   - Add staff badge to `userPartial`.
 
 - `TODO` (see code below)

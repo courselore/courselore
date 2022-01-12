@@ -3159,9 +3159,11 @@ export default async function courselore({
     content: HTML;
   }): JavaScript => {
     res.locals.hiddenContent ??= [];
-    const id = `hidden-content--${res.locals.hiddenContent.length}`;
-    res.locals.hiddenContent.push(html`<div id="${id}">$${content}</div>`);
-    return javascript`document.querySelector("#${id}")`;
+    const className = `hidden-content--${Math.random().toString(36).slice(2)}`;
+    res.locals.hiddenContent.push(
+      html`<div class="${className}">$${content}</div>`
+    );
+    return javascript`document.querySelector(".${className}")`;
   };
 
   app.use(
