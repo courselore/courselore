@@ -374,6 +374,7 @@ $${searchResults !== undefined
 
 ### Conversations
 
+- Make the distinction between the types more prominent. Separate questions from chats in the list of conversations, for example.
 - Change the visualization of “types” a little more, for example, make announcements pop up.
   - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by staff).
