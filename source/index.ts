@@ -12687,7 +12687,8 @@ ${value}</textarea
                           break;
                         default:
                           const enrollmentReference = mention.split("--")[0];
-                          const enrollment = database.get<{
+                          const enrollmentRow = database.get<{
+                            id: number;
                             userId: number;
                             userLastSeenOnlineAt: string;
                             userEmail: string;
@@ -12696,16 +12697,19 @@ ${value}</textarea
                             userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
                             userBiography: string | null;
                             reference: string;
+                            role: EnrollmentRole;
                           }>(
                             sql`
-                              SELECT "users"."id" AS "userId",
-                                    "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                                    "users"."email" AS "userEmail",
-                                    "users"."name" AS "userName",
-                                    "users"."avatar" AS "userAvatar",
-                                    "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                                    "users"."biography" AS "userBiography",
-                                    "enrollments"."reference"
+                              SELECT "enrollments"."id",
+                                     "users"."id" AS "userId",
+                                     "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                                     "users"."email" AS "userEmail",
+                                     "users"."name" AS "userName",
+                                     "users"."avatar" AS "userAvatar",
+                                     "users"."avatarlessBackgroundColor" AS  "userAvatarlessBackgroundColor",
+                                     "users"."biography" AS "userBiography",
+                                     "enrollments"."reference",
+                                     "enrollments"."role"
                               FROM "enrollments"
                               JOIN "users" ON "enrollments"."user" = "users"."id"
                               WHERE "enrollments"."course" = ${
@@ -12714,37 +12718,42 @@ ${value}</textarea
                                     "enrollments"."reference" = ${enrollmentReference}
                             `
                           );
-                          if (enrollment === undefined) return match;
-                          const user = {
-                            id: enrollment.userId,
-                            lastSeenOnlineAt: enrollment.userLastSeenOnlineAt,
-                            email: enrollment.userEmail,
-                            name: enrollment.userName,
-                            avatar: enrollment.userAvatar,
-                            avatarlessBackgroundColor:
-                              enrollment.userAvatarlessBackgroundColor,
-                            biography: enrollment.userBiography,
+                          if (enrollmentRow === undefined) return match;
+                          const enrollment = {
+                            id: enrollmentRow.id,
+                            user: {
+                              id: enrollmentRow.userId,
+                              lastSeenOnlineAt:
+                                enrollmentRow.userLastSeenOnlineAt,
+                              email: enrollmentRow.userEmail,
+                              name: enrollmentRow.userName,
+                              avatar: enrollmentRow.userAvatar,
+                              avatarlessBackgroundColor:
+                                enrollmentRow.userAvatarlessBackgroundColor,
+                              biography: enrollmentRow.userBiography,
+                            },
+                            reference: enrollmentRow.reference,
+                            role: enrollmentRow.role,
                           };
                           mentions.add(enrollment.reference);
-                          const mentionInnerHTML = userPartial({
+                          mentionHTML = userPartial({
                             req,
                             res,
                             enrollment,
                           });
-                          mentionHTML = html`$${user.id === res.locals.user!.id
-                            ? html`<mark
-                                class="mark"
-                                style="${css`
-                                  border-top-left-radius: var(
-                                    --border-radius--3xl
-                                  );
-                                  border-bottom-left-radius: var(
-                                    --border-radius--3xl
-                                  );
-                                `}"
-                                >$${mentionInnerHTML}</mark
-                              >`
-                            : html`$${mentionInnerHTML}`}`;
+                          if (enrollment.user.id === res.locals.user!.id)
+                            mentionHTML = html`<mark
+                              class="mark"
+                              style="${css`
+                                border-top-left-radius: var(
+                                  --border-radius--3xl
+                                );
+                                border-bottom-left-radius: var(
+                                  --border-radius--3xl
+                                );
+                              `}"
+                              >$${mentionHTML}</mark
+                            >`;
                           break;
                       }
                       return html`<span class="mention">$${mentionHTML}</span>`;
