@@ -8829,13 +8829,23 @@ export default async function courselore({
               <i class="bi bi-journal-arrow-down"></i>
               Invitation
             </h2>
+            <div
+              style="${css`
+                display: flex;
+                justify-content: center;
+              `}"
+            >
+              $${coursePartial({
+                req,
+                res,
+                course: res.locals.invitation.course,
+              })}
+            </div>
+            <hr class="separator" />
             <p>
-              You tried to use an invitation for ${res.locals.course.name} but
-              you’re already enrolled.
-            </p>
-            <p>
-              If you wish to share this invitation with other people, you may
-              ask them to point their phone camera at the following QR Code:
+              You’re already enrolled. If you wish to share this invitation with
+              other people, you may ask them to point their phone camera at the
+              following QR Code:
             </p>
             $${(
               await QRCode.toString(
@@ -8883,9 +8893,18 @@ export default async function courselore({
               <i class="bi bi-journal-arrow-down"></i>
               Invitation
             </h2>
-            <p class="strong">
-              Welcome to ${res.locals.invitation.course.name}!
-            </p>
+            <div
+              style="${css`
+                display: flex;
+                justify-content: center;
+              `}"
+            >
+              $${coursePartial({
+                req,
+                res,
+                course: res.locals.invitation.course,
+              })}
+            </div>
             <form
               method="POST"
               action="${baseURL}/courses/${res.locals.invitation.course
