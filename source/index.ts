@@ -5798,6 +5798,11 @@ export default async function courselore({
         id: number;
         reference: string;
         name: string;
+        year: string | null;
+        term: string | null;
+        institution: string | null;
+        code: string | null;
+        nextConversationReference: number;
       };
       reference: string;
       email: string | null;
@@ -5820,6 +5825,11 @@ export default async function courselore({
         courseId: number;
         courseReference: string;
         courseName: string;
+        courseYear: string | null;
+        courseTerm: string | null;
+        courseInstitution: string | null;
+        courseCode: string | null;
+        courseNextConversationReference: number;
         reference: string;
         email: string | null;
         name: string | null;
@@ -5832,6 +5842,11 @@ export default async function courselore({
                  "courses"."id" AS "courseId",
                  "courses"."reference" AS "courseReference",
                  "courses"."name" AS "courseName",
+                 "courses"."year" AS "courseYear",
+                 "courses"."term" AS "courseTerm",
+                 "courses"."institution" AS "courseInstitution",
+                 "courses"."code" AS "courseCode",
+                 "courses"."nextConversationReference" AS "courseNextConversationReference",
                  "invitations"."reference",
                  "invitations"."email",
                  "invitations"."name",
@@ -5851,6 +5866,11 @@ export default async function courselore({
           id: invitation.courseId,
           reference: invitation.courseReference,
           name: invitation.courseName,
+          year: invitation.courseYear,
+          term: invitation.courseTerm,
+          institution: invitation.courseInstitution,
+          code: invitation.courseCode,
+          nextConversationReference: invitation.courseNextConversationReference,
         },
         reference: invitation.reference,
         email: invitation.email,
@@ -8952,9 +8972,18 @@ export default async function courselore({
               <i class="bi bi-journal-arrow-down"></i>
               Invitation
             </h2>
-            <p class="strong">
-              Welcome to ${res.locals.invitation.course.name}!
-            </p>
+            <div
+              style="${css`
+                display: flex;
+                justify-content: center;
+              `}"
+            >
+              $${coursePartial({
+                req,
+                res,
+                course: res.locals.invitation.course,
+              })}
+            </div>
             <div
               style="${css`
                 display: flex;
