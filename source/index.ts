@@ -2186,14 +2186,14 @@ export default async function courselore({
                                                     --color--${enrollment.accentColor}--700
                                                   );
                                                   background-color: var(
-                                                    --color--${enrollment.accentColor}--100
+                                                    --color--${enrollment.accentColor}--200
                                                   );
                                                   @media (prefers-color-scheme: dark) {
                                                     color: var(
                                                       --color--${enrollment.accentColor}--200
                                                     );
                                                     background-color: var(
-                                                      --color--${enrollment.accentColor}--800
+                                                      --color--${enrollment.accentColor}--700
                                                     );
                                                   }
                                                 `}"
@@ -2825,7 +2825,7 @@ export default async function courselore({
             style="${css`
               fill: var(--color--${user.avatarlessBackgroundColor}--200);
               @media (prefers-color-scheme: dark) {
-                fill: var(--color--${user.avatarlessBackgroundColor}--900);
+                fill: var(--color--${user.avatarlessBackgroundColor}--700);
               }
             `}"
           />
@@ -2837,9 +2837,9 @@ export default async function courselore({
               font-size: var(--font-size--2xs);
               line-height: var(--line-height--2xs);
               font-weight: var(--font-weight--black);
-              fill: var(--color--${user.avatarlessBackgroundColor}--600);
+              fill: var(--color--${user.avatarlessBackgroundColor}--700);
               @media (prefers-color-scheme: dark) {
-                fill: var(--color--${user.avatarlessBackgroundColor}--300);
+                fill: var(--color--${user.avatarlessBackgroundColor}--200);
               }
             `}"
           >
@@ -2920,7 +2920,7 @@ export default async function courselore({
                   style="${css`
                     background-color: var(--color--pink--200);
                     @media (prefers-color-scheme: dark) {
-                      background-color: var(--color--pink--900);
+                      background-color: var(--color--pink--700);
                     }
                     ${{
                       xs: css`
@@ -2954,9 +2954,9 @@ export default async function courselore({
                       style="${css`
                         font-size: var(--font-size--xl);
                         line-height: var(--line-height--xl);
-                        color: var(--color--pink--600);
+                        color: var(--color--pink--700);
                         @media (prefers-color-scheme: dark) {
-                          color: var(--color--pink--300);
+                          color: var(--color--pink--200);
                         }
                       `}"
                     >
@@ -3099,7 +3099,7 @@ export default async function courselore({
           style="${css`
             fill: var(--color--violet--200);
             @media (prefers-color-scheme: dark) {
-              fill: var(--color--violet--900);
+              fill: var(--color--violet--700);
             }
           `}"
         />
@@ -3108,9 +3108,9 @@ export default async function courselore({
             style="${css`
               font-size: var(--font-size--xl);
               line-height: var(--line-height--xl);
-              color: var(--color--violet--600);
+              color: var(--color--violet--700);
               @media (prefers-color-scheme: dark) {
-                color: var(--color--violet--300);
+                color: var(--color--violet--200);
               }
             `}"
           >
