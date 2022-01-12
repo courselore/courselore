@@ -2179,57 +2179,12 @@ export default async function courselore({
                                                 ? "button--blue"
                                                 : "button--transparent"}"
                                             >
-                                              <div
-                                                class="button button--tight"
-                                                style="${css`
-                                                  color: var(
-                                                    --color--${enrollment.accentColor}--700
-                                                  );
-                                                  background-color: var(
-                                                    --color--${enrollment.accentColor}--200
-                                                  );
-                                                  @media (prefers-color-scheme: dark) {
-                                                    color: var(
-                                                      --color--${enrollment.accentColor}--200
-                                                    );
-                                                    background-color: var(
-                                                      --color--${enrollment.accentColor}--700
-                                                    );
-                                                  }
-                                                `}"
-                                              >
-                                                <i
-                                                  class="bi bi-journal-text"
-                                                ></i>
-                                              </div>
-                                              <span>
-                                                ${enrollment.course.name}
-                                                <span
-                                                  class="secondary"
-                                                  style="${css`
-                                                    font-size: var(
-                                                      --font-size--xs
-                                                    );
-                                                    line-height: var(
-                                                      --line-height--xs
-                                                    );
-                                                  `}"
-                                                  oninteractive="${javascript`
-                                                    tippy(this, {
-                                                      touch: false,
-                                                      content: ${JSON.stringify(
-                                                        lodash.capitalize(
-                                                          enrollment.role
-                                                        )
-                                                      )},
-                                                    });
-                                                  `}"
-                                                >
-                                                  $${enrollmentRoleIcon[
-                                                    enrollment.role
-                                                  ].regular}
-                                                </span>
-                                              </span>
+                                              $${coursePartial({
+                                                req,
+                                                res,
+                                                course: enrollment.course,
+                                                enrollment,
+                                              })}
                                             </a>
                                           `
                                         )}
@@ -2252,24 +2207,6 @@ export default async function courselore({
                       `}"
                     >
                       ${res.locals.course.name}
-                      <span
-                        class="secondary"
-                        style="${css`
-                          font-size: var(--font-size--xs);
-                          line-height: var(--line-height--xs);
-                        `}"
-                        oninteractive="${javascript`
-                          tippy(this, {
-                            touch: false,
-                            content: ${JSON.stringify(
-                              lodash.capitalize(res.locals.enrollment!.role)
-                            )},
-                          });
-                        `}"
-                      >
-                        $${enrollmentRoleIcon[res.locals.enrollment!.role]
-                          .regular}
-                      </span>
                     </span>
                     <i class="bi bi-chevron-down"></i>
                   </button>
