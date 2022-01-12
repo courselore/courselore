@@ -4555,46 +4555,66 @@ export default async function courselore({
                             class="menu-box--item button button--tight button--transparent"
                           >
                             <div
-                              class="button button--tight"
                               style="${css`
-                                color: var(
-                                  --color--${enrollment.accentColor}--700
-                                );
-                                background-color: var(
-                                  --color--${enrollment.accentColor}--100
-                                );
-                                @media (prefers-color-scheme: dark) {
-                                  color: var(
-                                    --color--${enrollment.accentColor}--200
-                                  );
-                                  background-color: var(
-                                    --color--${enrollment.accentColor}--800
-                                  );
-                                }
+                                display: flex;
+                                gap: var(--space--2);
+                                align-items: baseline;
                               `}"
                             >
-                              <i class="bi bi-journal-text"></i>
+                              <div>
+                                <div
+                                  class="button button--tight"
+                                  style="${css`
+                                    color: var(
+                                      --color--${enrollment.accentColor}--700
+                                    );
+                                    background-color: var(
+                                      --color--${enrollment.accentColor}--100
+                                    );
+                                    @media (prefers-color-scheme: dark) {
+                                      color: var(
+                                        --color--${enrollment.accentColor}--200
+                                      );
+                                      background-color: var(
+                                        --color--${enrollment.accentColor}--800
+                                      );
+                                    }
+                                  `}"
+                                >
+                                  <i class="bi bi-journal-text"></i>
+                                </div>
+                              </div>
+                              <div>
+                                <div class="strong">
+                                  ${enrollment.course.name}
+                                </div>
+                                <div
+                                  class="secondary"
+                                  style="${css`
+                                    font-size: var(--font-size--xs);
+                                    line-height: var(--line-height--xs);
+                                  `}"
+                                >
+                                  <span>
+                                    $${enrollmentRoleIcon[enrollment.role]
+                                      .regular}
+                                    ${lodash.capitalize(enrollment.role)}
+                                  </span>
+                                  $${enrollment.course.year === null
+                                    ? html``
+                                    : html` · ${enrollment.course.year}`}$${enrollment
+                                    .course.term === null
+                                    ? html``
+                                    : html` · ${enrollment.course.term}`}$${enrollment
+                                    .course.institution === null
+                                    ? html``
+                                    : html` · ${enrollment.course.institution}`}$${enrollment
+                                    .course.code === null
+                                    ? html``
+                                    : html` · ${enrollment.course.code}`}
+                                </div>
+                              </div>
                             </div>
-                            <span>
-                              ${enrollment.course.name}
-                              <span
-                                class="secondary"
-                                style="${css`
-                                  font-size: var(--font-size--xs);
-                                  line-height: var(--line-height--xs);
-                                `}"
-                                oninteractive="${javascript`
-                                  tippy(this, {
-                                    touch: false,
-                                    content: ${JSON.stringify(
-                                      lodash.capitalize(enrollment.role)
-                                    )},
-                                  });
-                                `}"
-                              >
-                                $${enrollmentRoleIcon[enrollment.role].regular}
-                              </span>
-                            </span>
                           </a>
                         `
                     )}
