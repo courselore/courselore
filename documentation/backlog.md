@@ -10,7 +10,6 @@
 
 - Avatars.
 
-- Check places where we don’t need `touch:`
 - `TODO` (see code below)
 
 ```js

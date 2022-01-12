@@ -2973,7 +2973,6 @@ export default async function courselore({
               tooltip
                 ? javascript`
                     tippy(this, {
-                      touch: false,
                       interactive: true,
                       appendTo: document.body,
                       content: ${hiddenContent({
@@ -7035,7 +7034,6 @@ export default async function courselore({
                                           `}"
                                           oninteractive="${javascript`
                                             tippy(this, {
-                                              touch: false,
                                               content: ${hiddenContent({
                                                 req,
                                                 res,
@@ -12709,7 +12707,6 @@ ${value}</textarea
                           mentionHTML = html`<strong
                             oninteractive="${javascript`
                               tippy(this, {
-                                touch: false,
                                 content: "Mention",
                               });
                             `}"
@@ -14500,7 +14497,6 @@ ${value}</textarea
                                                   class="text--pink"
                                                   oninteractive="${javascript`
                                                     tippy(this, {
-                                                      touch: false,
                                                       content: "This tag is visible by staff only.",
                                                     });
                                                   `}"
@@ -14561,7 +14557,6 @@ ${value}</textarea
                                                       class="text--pink"
                                                       oninteractive="${javascript`
                                                         tippy(this, {
-                                                          touch: false,
                                                           content: "This tag is visible by staff only.",
                                                         });
                                                       `}"
@@ -15606,7 +15601,6 @@ ${value}</textarea
                                                 class="text--lime"
                                                 oninteractive="${javascript`
                                                   tippy(this, {
-                                                    touch: false,
                                                     content: ${JSON.stringify(
                                                       `Endorsed by ${
                                                         /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
@@ -15847,7 +15841,6 @@ ${value}</textarea
                                                 const dropdownMenu = tippy(dropdownMenuTarget, {
                                                   trigger: "manual",
                                                   interactive: true,
-                                                  touch: false,
                                                   content: ${hiddenContent({
                                                     req,
                                                     res,
