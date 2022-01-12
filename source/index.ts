@@ -7545,15 +7545,15 @@ export default async function courselore({
         }>(
           sql`
             SELECT "enrollments"."id",
-                  "users"."id" AS "userId",
-                  "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                  "users"."email" AS "userEmail",
-                  "users"."name" AS "userName",
-                  "users"."avatar" AS "userAvatar",
-                  "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                  "users"."biography" AS "userBiography",
-                  "enrollments"."reference",
-                  "enrollments"."role"
+                   "users"."id" AS "userId",
+                   "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                   "users"."email" AS "userEmail",
+                   "users"."name" AS "userName",
+                   "users"."avatar" AS "userAvatar",
+                   "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+                   "users"."biography" AS "userBiography",
+                   "enrollments"."reference",
+                   "enrollments"."role"
             FROM "enrollments"
             JOIN "users" ON "enrollments"."user" = "users"."id"
             WHERE "enrollments"."course" = ${res.locals.course.id}
@@ -11929,71 +11929,89 @@ ${value}</textarea
       )
         return next("validation");
 
-      const users = database.all<{
-        id: number;
-        lastSeenOnlineAt: string;
-        email: string;
-        name: string;
-        avatar: string | null;
-        avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-        biography: string | null;
-        userNameSearchResultHighlight: string;
-        enrollmentReference: string;
-        enrollmentRole: EnrollmentRole;
-      }>(
-        sql`
-          SELECT "users"."id",
-                 "users"."lastSeenOnlineAt",
-                 "users"."email",
-                 "users"."name",
-                 "users"."avatar",
-                 "users"."avatarlessBackgroundColor",
-                 "users"."biography",
+      const enrollments = database
+        .all<{
+          id: number;
+          userId: number;
+          userLastSeenOnlineAt: string;
+          userEmail: string;
+          userName: string;
+          userAvatar: string | null;
+          userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+          userBiography: string | null;
+          userNameSearchResultHighlight: string;
+          reference: string;
+          role: EnrollmentRole;
+        }>(
+          sql`
+          SELECT "enrollments"."id",
+                 "users"."id" AS "userId",
+                 "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                 "users"."email" AS "userEmail",
+                 "users"."name" AS "userName",
+                 "users"."avatar" AS "userAvatar",
+                 "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+                 "users"."biography" AS "userBiography",
                  highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "userNameSearchResultHighlight",
-                 "enrollments"."reference" AS "enrollmentReference",
-                 "enrollments"."role" AS "enrollmentRole"
-          FROM "users"
+                 "enrollments"."reference",
+                 "enrollments"."role"
+          FROM "enrollments"
+          JOIN "users" ON "enrollments"."user" = "users"."id" AND
+                          "enrollments"."course" = ${res.locals.course.id} AND
+                          "users"."id" != ${res.locals.user.id}
           JOIN "usersNameSearchIndex" ON "users"."id" = "usersNameSearchIndex"."rowid" AND
                                          "usersNameSearchIndex" MATCH ${sanitizeSearch(
                                            req.query.search,
                                            { prefix: true }
                                          )}
-          JOIN "enrollments" ON "users"."id" = "enrollments"."user" AND
-                                "enrollments"."course" = ${res.locals.course.id}
-          WHERE "users"."id" != ${res.locals.user.id}
           ORDER BY "usersNameSearchIndex"."rank" ASC,
                    "users"."name" ASC
           LIMIT 5
         `
-      );
+        )
+        .map((enrollment) => ({
+          id: enrollment.id,
+          user: {
+            id: enrollment.userId,
+            lastSeenOnlineAt: enrollment.userLastSeenOnlineAt,
+            email: enrollment.userEmail,
+            name: enrollment.userName,
+            avatar: enrollment.userAvatar,
+            avatarlessBackgroundColor: enrollment.userAvatarlessBackgroundColor,
+            biography: enrollment.userBiography,
+            nameSearchResultHighlight: enrollment.userNameSearchResultHighlight,
+          },
+          reference: enrollment.reference,
+          role: enrollment.role,
+        }));
 
       res.send(
         partialLayout({
           req,
           res,
           body: html`
-            $${users.length === 0
+            $${enrollments.length === 0
               ? html`
                   <div class="dropdown--menu--item secondary">
                     No user found.
                   </div>
                 `
-              : users.map(
-                  (user) => html`
+              : enrollments.map(
+                  (enrollment) => html`
                     <button
                       type="button"
                       class="dropdown--menu--item button button--transparent"
                       onclick="${javascript`
                         this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${
-                          user.enrollmentReference
-                        }--${slugify(user.name)}");
+                          enrollment.reference
+                        }--${slugify(enrollment.user.name)}");
                       `}"
                     >
                       $${userPartial({
                         req,
                         res,
                         enrollment,
-                        name: user.userNameSearchResultHighlight,
+                        name: enrollment.user.nameSearchResultHighlight,
                         tooltip: false,
                         size: "xs",
                       })}
