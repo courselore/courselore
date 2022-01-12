@@ -10,9 +10,6 @@
 
 - Avatars.
 
-- Add extra course information:
-  - Invitations pages
-
 - `TODO` (see code below)
 
 ```js
