@@ -2928,9 +2928,9 @@ export default async function courselore({
                     }
                     ${{
                       xs: css`
-                        width: var(--space--1-5);
-                        height: var(--space--1-5);
-                        transform: translate(20%, 20%);
+                        width: var(--space--2);
+                        height: var(--space--2);
+                        transform: translate(50%, -40%);
                       `,
                       sm: css`
                         width: var(--space--2-5);
@@ -2938,9 +2938,9 @@ export default async function courselore({
                         transform: translate(50%, -30%);
                       `,
                       xl: css`
-                        width: var(--space--3);
-                        height: var(--space--3);
-                        transform: translate(-100%, -100%);
+                        width: var(--space--5);
+                        height: var(--space--5);
+                        transform: translate(-20%, 20%);
                       `,
                     }[size]}
                     border-radius: var(--border-radius--circle);
