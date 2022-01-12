@@ -10,9 +10,6 @@
 
 - Avatars.
 
-  - Add staff badge to `userPartial`.
-    - Rename `onlineIndicator` to `decoration`.
-
 - `TODO` (see code below)
 
 ```js

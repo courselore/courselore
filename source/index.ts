@@ -2472,7 +2472,7 @@ export default async function courselore({
                 req,
                 res,
                 user: res.locals.user,
-                onlineIndicator: false,
+                decorate: false,
                 name: false,
               })}
             </button>
@@ -2746,7 +2746,7 @@ export default async function courselore({
     enrollment = undefined,
     user = enrollment?.user,
     anonymous = user === undefined,
-    onlineIndicator = user !== undefined,
+    decorate = user !== undefined,
     name = true,
     tooltip = name !== false,
     size = "sm",
@@ -2762,7 +2762,7 @@ export default async function courselore({
     enrollment?: AuthorEnrollment;
     user?: AuthorEnrollment["user"];
     anonymous?: boolean | "reveal";
-    onlineIndicator?: boolean;
+    decorate?: boolean;
     name?: boolean | string;
     tooltip?: boolean;
     size?: "xs" | "sm" | "xl";
@@ -2852,7 +2852,7 @@ export default async function courselore({
           </text>
         </svg>`;
 
-      if (onlineIndicator)
+      if (decorate)
         userAvatar = html`<span
           style="${css`
             display: inline-grid;
@@ -4783,7 +4783,7 @@ export default async function courselore({
                         req,
                         res,
                         user: { ...res.locals.user, avatar: null },
-                        onlineIndicator: false,
+                        decorate: false,
                         name: false,
                         size: "xs",
                       })}
@@ -13355,7 +13355,7 @@ ${value}</textarea
                                   req,
                                   res,
                                   user: res.locals.user,
-                                  onlineIndicator: false,
+                                  decorate: false,
                                   name: false,
                                 })}
                                 <span
@@ -15222,7 +15222,7 @@ ${value}</textarea
                                                                                 user: res
                                                                                   .locals
                                                                                   .user,
-                                                                                onlineIndicator:
+                                                                                decorate:
                                                                                   false,
                                                                                 name: false,
                                                                                 size: "xs",
@@ -16400,7 +16400,7 @@ ${value}</textarea
                                     req,
                                     res,
                                     user: res.locals.user,
-                                    onlineIndicator: false,
+                                    decorate: false,
                                     name: false,
                                   })}
                                   <span
