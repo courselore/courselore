@@ -2879,25 +2879,21 @@ export default async function courselore({
               }
               ${{
                 xs: css`
-                  width: var(--space--1-5);
-                  height: var(--space--1-5);
-                  transform: translate(20%, 20%);
+                  width: var(--space--1);
+                  height: var(--space--1);
+                  transform: translate(50%, 50%);
                 `,
                 sm: css`
-                  width: var(--space--2);
-                  height: var(--space--2);
-                  transform: translate(20%, 20%);
+                  width: var(--space--1-5);
+                  height: var(--space--1-5);
+                  transform: translate(50%, 50%);
                 `,
                 xl: css`
-                  width: var(--space--3);
-                  height: var(--space--3);
-                  transform: translate(-100%, -100%);
+                  width: var(--space--2-5);
+                  height: var(--space--2-5);
+                  transform: translate(-70%, -70%);
                 `,
               }[size]}
-              border: var(--border-width--1) solid var(--color--green--50);
-              @media (prefers-color-scheme: dark) {
-                border-color: var(--color--green--900);
-              }
               border-radius: var(--border-radius--circle);
               place-self: end;
               display: none;
@@ -2940,7 +2936,7 @@ export default async function courselore({
                       xl: css`
                         width: var(--space--5);
                         height: var(--space--5);
-                        transform: translate(-20%, 20%);
+                        transform: translate(-20%, 10%);
                       `,
                     }[size]}
                     border-radius: var(--border-radius--circle);
