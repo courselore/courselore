@@ -4595,23 +4595,39 @@ export default async function courselore({
                                     line-height: var(--line-height--xs);
                                   `}"
                                 >
-                                  <span>
+                                  $${[
+                                    [
+                                      enrollment.course.year,
+                                      enrollment.course.term,
+                                    ],
+                                    [
+                                      enrollment.course.institution,
+                                      enrollment.course.code,
+                                    ],
+                                  ].flatMap((row) => {
+                                    row = row.filter(
+                                      (element) => element !== undefined
+                                    );
+                                    return row.length === 0
+                                      ? []
+                                      : [
+                                          html`
+                                            <div>
+                                              $${row
+                                                .map(
+                                                  (element) => html`${element}`
+                                                )
+                                                .join(" · ")}
+                                            </div>
+                                          `,
+                                        ];
+                                  })}
+                                  <div>
                                     $${enrollmentRoleIcon[enrollment.role]
-                                      .regular}
-                                    ${lodash.capitalize(enrollment.role)}
-                                  </span>
-                                  $${enrollment.course.year === null
-                                    ? html``
-                                    : html` · ${enrollment.course.year}`}$${enrollment
-                                    .course.term === null
-                                    ? html``
-                                    : html` · ${enrollment.course.term}`}$${enrollment
-                                    .course.institution === null
-                                    ? html``
-                                    : html` · ${enrollment.course.institution}`}$${enrollment
-                                    .course.code === null
-                                    ? html``
-                                    : html` · ${enrollment.course.code}`}
+                                      .regular} ${lodash.capitalize(
+                                      enrollment.role
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                             </div>
