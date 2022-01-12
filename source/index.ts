@@ -3087,29 +3087,31 @@ export default async function courselore({
       `}"
     >
       <div>
-        <div
-          class="button button--tight"
-          style="${css`
-            color: var(
-              --color--${enrollment?.accentColor ?? "gray--medium"}--700
-            );
-            background-color: var(
-              --color--${enrollment?.accentColor ?? "gray--medium"}--100
-            );
-            @media (prefers-color-scheme: dark) {
-              color: var(
-                --color--${enrollment?.accentColor ?? "gray--medium"}--200
-              );
-              background-color: var(
-                --color--${enrollment?.accentColor ?? "gray--medium"}--800
-              );
-            }
-          `}"
-        >
-          $${enrollment === undefined
-            ? html`<i class="bi bi-journal-arrow-down"></i>`
-            : html`<i class="bi bi-journal-text"></i>`}
-        </div>
+        $${enrollment === undefined
+          ? html`
+              <div class="button button--tight button--tight--inline">
+                <i class="bi bi-journal-arrow-down"></i>
+              </div>
+            `
+          : html`
+              <div
+                class="button button--tight"
+                style="${css`
+                  color: var(--color--${enrollment.accentColor}--700);
+                  background-color: var(
+                    --color--${enrollment.accentColor}--100
+                  );
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--${enrollment.accentColor}--200);
+                    background-color: var(
+                      --color--${enrollment.accentColor}--800
+                    );
+                  }
+                `}"
+              >
+                <i class="bi bi-journal-text"></i>
+              </div>
+            `}
       </div>
       <div>
         <div class="strong">${course.name}</div>
