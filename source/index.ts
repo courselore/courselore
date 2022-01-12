@@ -2798,6 +2798,7 @@ export default async function courselore({
         />`;
       else
         userAvatar = html`<svg
+          viewBox="0 0 24 24"
           style="${css`
             ${{
               xs: css`
@@ -2816,7 +2817,6 @@ export default async function courselore({
               `,
             }[size]}
           `}"
-          viewBox="0 0 24 24"
         >
           <circle
             cx="12"
@@ -2919,13 +2919,59 @@ export default async function courselore({
           ></span>
           $${enrollment?.role === "staff"
             ? html`
-                <span
+                <svg
+                  viewBox="0 0 24 24"
                   style="${css`
+                    background-color: var(--color--pink--500);
+                    @media (prefers-color-scheme: dark) {
+                      background-color: var(--color--pink--600);
+                    }
+                    ${{
+                      xs: css`
+                        width: var(--space--1-5);
+                        height: var(--space--1-5);
+                        transform: translate(20%, 20%);
+                      `,
+                      sm: css`
+                        width: var(--space--2);
+                        height: var(--space--2);
+                        transform: translate(20%, 20%);
+                      `,
+                      xl: css`
+                        width: var(--space--3);
+                        height: var(--space--3);
+                        transform: translate(-100%, -100%);
+                      `,
+                    }[size]}
+                    border: var(--border-width--1) solid var(--color--pink--50);
+                    @media (prefers-color-scheme: dark) {
+                      border-color: var(--color--pink--900);
+                    }
+                    border-radius: var(--border-radius--circle);
                     justify-self: end;
                   `}"
+                  oninteractive="${javascript`
+                    tippy(this, {
+                      touch: false,
+                      content: "Staff",
+                    });
+                  `}"
                 >
-                  S
-                </span>
+                  <foreignObject x="2" y="-2" width="20" height="20">
+                    <span
+                      style="${css`
+                        font-size: var(--font-size--xl);
+                        line-height: var(--line-height--xl);
+                        color: var(--color--pink--50);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--pink--900);
+                        }
+                      `}"
+                    >
+                      <i class="bi bi-mortarboard-fill"></i>
+                    </span>
+                  </foreignObject>
+                </svg>
               `
             : html``}
         </span>`;
@@ -3034,6 +3080,7 @@ export default async function courselore({
     let anonymousAvatar = html``;
     if (anonymous !== false) {
       anonymousAvatar = html`<svg
+        viewBox="0 0 24 24"
         style="${css`
           ${{
             xs: css`
@@ -3052,7 +3099,6 @@ export default async function courselore({
             `,
           }[size]}
         `}"
-        viewBox="0 0 24 24"
       >
         <circle
           cx="12"
