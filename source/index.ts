@@ -2800,6 +2800,14 @@ export default async function courselore({
         userAvatar = html`<svg
           viewBox="0 0 24 24"
           style="${css`
+            background-color: var(
+              --color--${user.avatarlessBackgroundColor}--200
+            );
+            @media (prefers-color-scheme: dark) {
+              background-color: var(
+                --color--${user.avatarlessBackgroundColor}--700
+              );
+            }
             ${{
               xs: css`
                 width: var(--space--4);
@@ -2816,19 +2824,9 @@ export default async function courselore({
                 height: var(--space--32);
               `,
             }[size]}
+            border-radius: var(--border-radius--circle);
           `}"
         >
-          <circle
-            cx="12"
-            cy="12"
-            r="12"
-            style="${css`
-              fill: var(--color--${user.avatarlessBackgroundColor}--200);
-              @media (prefers-color-scheme: dark) {
-                fill: var(--color--${user.avatarlessBackgroundColor}--700);
-              }
-            `}"
-          />
           <text
             x="12"
             y="16"
@@ -3074,6 +3072,10 @@ export default async function courselore({
       anonymousAvatar = html`<svg
         viewBox="0 0 24 24"
         style="${css`
+          background-color: var(--color--violet--200);
+          @media (prefers-color-scheme: dark) {
+            background-color: var(--color--violet--700);
+          }
           ${{
             xs: css`
               width: var(--space--4);
@@ -3090,19 +3092,9 @@ export default async function courselore({
               height: var(--space--32);
             `,
           }[size]}
+          border-radius: var(--border-radius--circle);
         `}"
       >
-        <circle
-          cx="12"
-          cy="12"
-          r="12"
-          style="${css`
-            fill: var(--color--violet--200);
-            @media (prefers-color-scheme: dark) {
-              fill: var(--color--violet--700);
-            }
-          `}"
-        />
         <foreignObject x="2" y="-2" width="20" height="20">
           <span
             style="${css`
