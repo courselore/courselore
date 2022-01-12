@@ -2258,15 +2258,11 @@ export default async function courselore({
                                           .reference}/invitations/${invitation.reference}"
                                         class="dropdown--menu--item button button--transparent"
                                       >
-                                        <i class="bi bi-journal-arrow-down"></i>
-                                        <span>
-                                          Enroll in
-                                          <strong class="strong"
-                                            >${invitation.course.name}</strong
-                                          >
-                                          as
-                                          ${lodash.capitalize(invitation.role)}
-                                        </span>
+                                        $${coursePartial({
+                                          req,
+                                          res,
+                                          course: invitation.course,
+                                        })}
                                       </a>
                                     `
                                   )}
@@ -3110,7 +3106,9 @@ export default async function courselore({
             }
           `}"
         >
-          <i class="bi bi-journal-text"></i>
+          $${enrollment === undefined
+            ? html`<i class="bi bi-journal-arrow-down"></i>`
+            : html`<i class="bi bi-journal-text"></i>`}
         </div>
       </div>
       <div>
@@ -3471,6 +3469,11 @@ export default async function courselore({
         id: number;
         reference: string;
         name: string;
+        year: string | null;
+        term: string | null;
+        institution: string | null;
+        code: string | null;
+        nextConversationReference: number;
       };
       reference: string;
       role: EnrollmentRole;
@@ -3537,6 +3540,11 @@ export default async function courselore({
           courseId: number;
           courseReference: string;
           courseName: string;
+          courseYear: string | null;
+          courseTerm: string | null;
+          courseInstitution: string | null;
+          courseCode: string | null;
+          courseNextConversationReference: number;
           reference: string;
           role: EnrollmentRole;
         }>(
@@ -3545,6 +3553,11 @@ export default async function courselore({
                    "courses"."id" AS "courseId",
                    "courses"."reference" AS "courseReference",
                    "courses"."name" AS "courseName",
+                   "courses"."year" AS "courseYear",
+                   "courses"."term" AS "courseTerm",
+                   "courses"."institution" AS "courseInstitution",
+                   "courses"."code" AS "courseCode",
+                   "courses"."nextConversationReference" AS "courseNextConversationReference",
                    "invitations"."reference",
                    "invitations"."role"
             FROM "invitations"
@@ -3563,6 +3576,12 @@ export default async function courselore({
             id: invitation.courseId,
             reference: invitation.courseReference,
             name: invitation.courseName,
+            year: invitation.courseYear,
+            term: invitation.courseTerm,
+            institution: invitation.courseInstitution,
+            code: invitation.courseCode,
+            nextConversationReference:
+              invitation.courseNextConversationReference,
           },
           reference: invitation.reference,
           role: invitation.role,
