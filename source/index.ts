@@ -2184,6 +2184,7 @@ export default async function courselore({
                                                 res,
                                                 course: enrollment.course,
                                                 enrollment,
+                                                tight: true,
                                               })}
                                             </a>
                                           `
@@ -2262,6 +2263,7 @@ export default async function courselore({
                                           req,
                                           res,
                                           course: invitation.course,
+                                          tight: true,
                                         })}
                                       </a>
                                     `
@@ -3073,11 +3075,13 @@ export default async function courselore({
     res,
     course,
     enrollment = undefined,
+    tight = false,
   }: {
     req: express.Request<{}, any, {}, {}, {}>;
     res: express.Response<any, {}>;
     course: IsSignedInMiddlewareLocals["enrollments"][number]["course"];
     enrollment?: IsSignedInMiddlewareLocals["enrollments"][number];
+    tight?: boolean;
   }): HTML => html`
     <div
       style="${css`
@@ -3087,16 +3091,12 @@ export default async function courselore({
       `}"
     >
       <div>
-        $${enrollment === undefined
-          ? html`
-              <div class="button button--tight button--tight--inline">
-                <i class="bi bi-journal-arrow-down"></i>
-              </div>
-            `
-          : html`
-              <div
-                class="button button--tight button--tight--inline"
-                style="${css`
+        <div
+          class="button button--tight ${tight ? "button--tight--inline" : ""}"
+          style="${css`
+            ${enrollment === undefined
+              ? css``
+              : css`
                   color: var(--color--${enrollment.accentColor}--700);
                   background-color: var(
                     --color--${enrollment.accentColor}--100
@@ -3107,11 +3107,13 @@ export default async function courselore({
                       --color--${enrollment.accentColor}--800
                     );
                   }
-                `}"
-              >
-                <i class="bi bi-journal-text"></i>
-              </div>
-            `}
+                `}
+          `}"
+        >
+          $${enrollment === undefined
+            ? html`<i class="bi bi-journal-arrow-down"></i>`
+            : html`<i class="bi bi-journal-text"></i>`}
+        </div>
       </div>
       <div>
         <div class="strong">${course.name}</div>
