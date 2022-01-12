@@ -8817,6 +8817,7 @@ export default async function courselore({
     ...isEnrolledInCourseMiddleware,
     ...isInvitationUsableMiddleware,
     asyncHandler(async (req, res) => {
+      const link = `${baseURL}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`;
       res.send(
         boxLayout({
           req,
@@ -8842,11 +8843,52 @@ export default async function courselore({
               })}
             </div>
             <hr class="separator" />
+            <p class="strong">You’re already enrolled.</p>
             <p>
-              You’re already enrolled. If you wish to share this invitation with
-              other people, you may ask them to point their phone camera at the
-              following QR Code:
+              You may share this invitation with other people by asking them to
+              point their phone camera at the following QR Code:
             </p>
+
+            <div
+              style="${css`
+                display: flex;
+                gap: var(--space--2);
+                align-items: center;
+              `}"
+            >
+              <div>
+                <a href="${link}" class="link">${link}</a>
+              </div>
+              <button
+                class="button button--tight button--transparent"
+                oninteractive="${javascript`
+                tippy(this, {
+                  touch: false,
+                  content: "Copy to Clipboard",
+                });
+              `}"
+                onclick="${javascript`
+                (async () => {
+                  await navigator.clipboard.writeText(${JSON.stringify(link)});
+                  const clipboard = this.querySelector(".clipboard");
+                  const check = this.querySelector(".check");
+                  clipboard.hidden = true;
+                  check.hidden = false;
+                  await new Promise((resolve) => { window.setTimeout(resolve, 500); });
+                  clipboard.hidden = false;
+                  check.hidden = true;
+                })();
+              `}"
+              >
+                <span class="clipboard">
+                  <i class="bi bi-clipboard"></i>
+                </span>
+                <span hidden class="check text--green">
+                  <i class="bi bi-check-lg"></i>
+                </span>
+              </button>
+            </div>
+
             $${(
               await QRCode.toString(
                 `${baseURL}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`,
