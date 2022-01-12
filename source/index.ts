@@ -2800,10 +2800,12 @@ export default async function courselore({
         userAvatar = html`<svg
           viewBox="0 0 24 24"
           style="${css`
+            color: var(--color--${user.avatarlessBackgroundColor}--700);
             background-color: var(
               --color--${user.avatarlessBackgroundColor}--200
             );
             @media (prefers-color-scheme: dark) {
+              color: var(--color--${user.avatarlessBackgroundColor}--200);
               background-color: var(
                 --color--${user.avatarlessBackgroundColor}--700
               );
@@ -2835,10 +2837,7 @@ export default async function courselore({
               font-size: var(--font-size--2xs);
               line-height: var(--line-height--2xs);
               font-weight: var(--font-weight--black);
-              fill: var(--color--${user.avatarlessBackgroundColor}--700);
-              @media (prefers-color-scheme: dark) {
-                fill: var(--color--${user.avatarlessBackgroundColor}--200);
-              }
+              fill: currentColor;
             `}"
           >
             ${(() => {
@@ -2916,8 +2915,10 @@ export default async function courselore({
                 <svg
                   viewBox="0 0 24 24"
                   style="${css`
+                    color: var(--color--pink--700);
                     background-color: var(--color--pink--200);
                     @media (prefers-color-scheme: dark) {
+                      color: var(--color--pink--200);
                       background-color: var(--color--pink--700);
                     }
                     ${{
@@ -2952,10 +2953,6 @@ export default async function courselore({
                       style="${css`
                         font-size: var(--font-size--xl);
                         line-height: var(--line-height--xl);
-                        color: var(--color--pink--700);
-                        @media (prefers-color-scheme: dark) {
-                          color: var(--color--pink--200);
-                        }
                       `}"
                     >
                       <i class="bi bi-mortarboard-fill"></i>
@@ -3072,8 +3069,10 @@ export default async function courselore({
       anonymousAvatar = html`<svg
         viewBox="0 0 24 24"
         style="${css`
+          color: var(--color--violet--700);
           background-color: var(--color--violet--200);
           @media (prefers-color-scheme: dark) {
+            color: var(--color--violet--200);
             background-color: var(--color--violet--700);
           }
           ${{
@@ -3100,10 +3099,6 @@ export default async function courselore({
             style="${css`
               font-size: var(--font-size--xl);
               line-height: var(--line-height--xl);
-              color: var(--color--violet--700);
-              @media (prefers-color-scheme: dark) {
-                color: var(--color--violet--200);
-              }
             `}"
           >
             <i class="bi bi-sunglasses"></i>
