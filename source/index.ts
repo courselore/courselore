@@ -2259,8 +2259,14 @@ export default async function courselore({
                                         class="dropdown--menu--item button button--transparent"
                                       >
                                         <i class="bi bi-journal-arrow-down"></i>
-                                        Enroll in ${invitation.course.name} as
-                                        ${lodash.capitalize(invitation.role)}
+                                        <span>
+                                          Enroll in
+                                          <strong class="strong"
+                                            >${invitation.course.name}</strong
+                                          >
+                                          as
+                                          ${lodash.capitalize(invitation.role)}
+                                        </span>
                                       </a>
                                     `
                                   )}
