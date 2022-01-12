@@ -11,8 +11,6 @@
 - Avatars.
 
 - Add extra course information:
-  - Course switcher
-  - Invitations on notification in `+` menu
   - Invitations pages
 
 - `TODO` (see code below)
