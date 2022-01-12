@@ -3095,7 +3095,7 @@ export default async function courselore({
             `
           : html`
               <div
-                class="button button--tight"
+                class="button button--tight button--tight--inline"
                 style="${css`
                   color: var(--color--${enrollment.accentColor}--700);
                   background-color: var(
