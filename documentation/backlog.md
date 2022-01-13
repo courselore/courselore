@@ -10,13 +10,6 @@
 
 - Create `/about` page.
 - Test everything in different browsers & devices.
-- README
-  - Links.
-    - Production
-    - Staging
-    - Home.
-    - GitHub.
-  - Installation.
 - `position: sticky` headers (showing author name) in messages?
 - Revisit unread management:
   - Don’t store all readings, but only the latest for a given conversation.
