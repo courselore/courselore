@@ -1996,14 +1996,43 @@ export default async function courselore({
                           </h3>
                           <div class="dropdown--menu">
                             <a
-                              href="mailto:${administratorEmail}"
+                              href="mailto:${administratorEmail}${qs.stringify(
+                                {
+                                  subject: "Report an Issue",
+                                  body: dedent`
+                                    What did you try to do?
+                                    What did you expect to happen?
+                                    What really happened?
+                                    What error messages (if any) did you run into?
+
+                                    Please provide as much relevant context as possible (operating system, browser, and so forth).
+                                  `,
+                                },
+                                {
+                                  addQueryPrefix: true,
+                                }
+                              )}"
                               class="dropdown--menu--item button button--transparent"
                             >
                               <i class="bi bi-envelope"></i>
                               ${administratorEmail}
                             </a>
                             <a
-                              href="https://github.com/courselore/courselore/issues"
+                              href="https://github.com/courselore/courselore/issues/new${qs.stringify(
+                                {
+                                  body: dedent`
+                                    **What did you try to do?**
+                                    **What did you expect to happen?**
+                                    **What really happened?**
+                                    **What error messages (if any) did you run into?**
+
+                                    Please provide as much relevant context as possible (operating system, browser, and so forth).
+                                  `,
+                                },
+                                {
+                                  addQueryPrefix: true,
+                                }
+                              )}"
                               class="dropdown--menu--item button button--transparent"
                             >
                               <i class="bi bi-github"></i>
