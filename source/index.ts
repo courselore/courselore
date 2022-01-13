@@ -10322,6 +10322,31 @@ export default async function courselore({
               <div>$${searchResult.snippet}</div>
             </div>
           `
+        : message !== undefined
+        ? html`
+            <div>
+              <div>
+                $${userPartial({
+                  req,
+                  res,
+                  enrollment: message.authorEnrollment,
+                  anonymous:
+                    message.anonymousAt === null
+                      ? false
+                      : res.locals.enrollment.role === "staff" ||
+                        message.authorEnrollment.id === res.locals.enrollment.id
+                      ? "reveal"
+                      : true,
+                })}
+              </div>
+              <div>
+                $${lodash.truncate(message.contentSearch, {
+                  length: 100,
+                  separator: /\W/,
+                })}
+              </div>
+            </div>
+          `
         : html``}
     </div>
   `;
