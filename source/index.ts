@@ -10282,7 +10282,26 @@ export default async function courselore({
               )}
             </div>
           `}
-      <!-- TODO: Render search results & message. -->
+      $${searchResult?.type === "messageAuthorUserName"
+        ? html`
+            <div>
+              <div>
+                $${userPartial({
+                  req,
+                  res,
+                  enrollment: searchResult.message.authorEnrollment,
+                  name: searchResult.highlight,
+                })}
+              </div>
+              <div>
+                $${lodash.truncate(searchResult.message.contentSearch, {
+                  length: 100,
+                  separator: /\W/,
+                })}
+              </div>
+            </div>
+          `
+        : html``}
     </div>
   `;
 
