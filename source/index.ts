@@ -4217,17 +4217,17 @@ export default async function courselore({
                 res,
                 // prettier-ignore
                 value: markdown`
-### Reasons to **love** CourseLore’s message editor
+### Reasons to **Love** CourseLore’s Message Editor
 
 Easy to use even for people who never heard of [Markdown](https://guides.github.com/features/mastering-markdown/).
 
 Support for [mathematical formulas](https://katex.org/docs/supported.html):
 
-   $$
+$$
 
-   X_k = \\sum_{n=0}^{N-1} x_n \\cdot e^{-\\frac{i2\\pi}{N}kn}
+X_k = \\sum_{n=0}^{N-1} x_n \\cdot e^{-\\frac{i2\\pi}{N}kn}
 
-   $$
+$$
 
 Gorgeous [syntax highlighter](https://shiki.matsu.io/):
 
