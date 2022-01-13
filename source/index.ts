@@ -4031,7 +4031,7 @@ export default async function courselore({
                 >
                   <i class="bi bi-mortarboard-fill"></i>
                 </div>
-                <h2 class="heading--display">Made for Education</h2>
+                <h2 class="heading--display">For Education</h2>
               </div>
               <p class="secondary">
                 Anonymity. Private questions. Straightforward invitation system.
@@ -4322,7 +4322,7 @@ export default async function courselore({
             <div
               style="${css`
                 flex: 1;
-                max-width: var(--width--xl);
+                max-width: calc(min(var(--width--xl), 100%));
               `}"
             >
               $${markdownEditor({
