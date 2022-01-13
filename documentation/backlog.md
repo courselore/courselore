@@ -9,7 +9,6 @@
 ### Chat
 
 - Create `/about` page.
-- Add subject and other metadata to `mailto:` links.
 - Add `target="_blank"` to links.
   - Hard-coded links in the application.
   - Links in user-generated content.
