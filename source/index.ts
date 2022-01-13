@@ -3891,12 +3891,28 @@ export default async function courselore({
                 alt="CourseLore Main Screen"
                 width="960"
                 class="img light"
+                style="${css`
+                  background-color: transparent;
+                  border: var(--border-width--1) solid
+                    var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    border-color: var(--color--gray--medium--700);
+                  }
+                `}"
               />
               <img
                 src="/main-screen--dark.png"
                 alt="CourseLore Main Screen"
                 width="960"
                 class="img dark"
+                style="${css`
+                  background-color: transparent;
+                  border: var(--border-width--1) solid
+                    var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    border-color: var(--color--gray--medium--700);
+                  }
+                `}"
               />
             </div>
           </div>
