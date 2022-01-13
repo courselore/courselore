@@ -9,12 +9,8 @@
 ### Chat
 
 - Avatars.
-
-- `strong` on `coursePartial` doesn’t work on course switcher
-
-- `TODO` (see code below)
-- Test everything in different browsers.
-
+  - `strong` on `coursePartial` doesn’t work on course switcher
+  - Test everything in different browsers.
 - README
   - Description.
   - Links.
