@@ -10,7 +10,6 @@
 
 - Test everything in different browsers & devices.
 - README
-  - Description.
   - Links.
     - Production
     - Staging
