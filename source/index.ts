@@ -1026,13 +1026,15 @@ export default async function courselore({
                 border-radius: var(--border-radius--base);
               }
 
-              .pre {
-                code {
-                  font-family: "JetBrains Mono", var(--font-family--monospace);
-                  font-variant-ligatures: none;
-                  font-size: var(--font-size--xs);
-                  line-height: var(--line-height--xs);
-                }
+              .code,
+              .pre > code {
+                font-family: "JetBrains Mono", var(--font-family--monospace);
+                font-variant-ligatures: none;
+              }
+
+              .pre > code {
+                font-size: var(--font-size--xs);
+                line-height: var(--line-height--xs);
               }
 
               .details {
@@ -13254,6 +13256,26 @@ ${value}</textarea
               }
             }
           })(markdownElement);
+
+        for (const element of markdownElement.querySelectorAll("a")) {
+          if (element.href.startsWith(baseURL)) continue;
+          element.setAttribute("target", "_blank");
+          element.setAttribute(
+            "oninteractive",
+            javascript`
+              tippy(this, {
+                touch: false,
+                content: ${hiddenContent({
+                  req,
+                  res,
+                  content: html`
+                    External link to <code class="code">${element.href}</code>
+                  `,
+                })},
+              });
+            `
+          );
+        }
       }
 
       return {
