@@ -4215,11 +4215,34 @@ export default async function courselore({
               $${markdownEditor({
                 req,
                 res,
+                // prettier-ignore
                 value: markdown`
-HELLO
-                `,
+### Reasons to **love** CourseLore’s message editor
+
+Easy to use even for people who never heard of [Markdown](https://guides.github.com/features/mastering-markdown/).
+
+Support for [mathematical formulas](https://katex.org/docs/supported.html):
+
+   $$
+
+   X_k = \\sum_{n=0}^{N-1} x_n \\cdot e^{-\\frac{i2\\pi}{N}kn}
+
+   $$
+
+Gorgeous [syntax highlighter](https://shiki.matsu.io/):
+
+\`\`\`javascript
+import shiki from "shiki";
+
+const highlighter = await shiki.getHighlighter({
+  theme: "nord",
+});
+console.log(highlighter.codeToHtml(\`console.log("shiki");\`, "js"));
+\`\`\`
+`,
                 required: false,
                 skipIsModified: true,
+                expanded: true,
               })}
             </div>
 
@@ -11551,6 +11574,7 @@ HELLO
     required = true,
     compact = false,
     skipIsModified = false,
+    expanded = false,
   }: {
     req: express.Request<
       {},
@@ -11565,6 +11589,7 @@ HELLO
     required?: boolean;
     compact?: boolean;
     skipIsModified?: boolean;
+    expanded?: boolean;
   }): HTML => html`
     <div
       class="markdown-editor"
@@ -12504,6 +12529,10 @@ HELLO
                 ${compact
                   ? css`
                       height: var(--space--14);
+                    `
+                  : expanded
+                  ? css`
+                      height: var(--space--52);
                     `
                   : css`
                       height: var(--space--20);
