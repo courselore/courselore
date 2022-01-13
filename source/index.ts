@@ -3834,6 +3834,9 @@ export default async function courselore({
               justify-content: center;
               padding: var(--space--20) var(--space--8);
               align-items: center;
+              @media (max-width: 959px) {
+                flex-direction: column;
+              }
             `}"
           >
             <div
@@ -3953,6 +3956,10 @@ export default async function courselore({
               display: flex;
               gap: var(--space--8);
               justify-content: center;
+              @media (max-width: 1149px) {
+                flex-direction: column;
+                align-items: center;
+              }
               & > * {
                 flex: 1;
                 max-width: var(--width--sm);
@@ -4057,6 +4064,9 @@ export default async function courselore({
               justify-content: center;
               padding: var(--space--32) var(--space--8);
               align-items: center;
+              @media (max-width: 889px) {
+                flex-direction: column;
+              }
             `}"
           >
             <div
