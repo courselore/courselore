@@ -1958,6 +1958,7 @@ export default async function courselore({
                           <div class="dropdown--menu">
                             <a
                               href="https://courselore.org/about"
+                              target="_blank"
                               class="dropdown--menu--item button button--transparent"
                             >
                               <i class="bi bi-info-circle"></i>
@@ -1965,6 +1966,7 @@ export default async function courselore({
                             </a>
                             <a
                               href="https://github.com/courselore/courselore"
+                              target="_blank"
                               class="dropdown--menu--item button button--transparent"
                             >
                               <i class="bi bi-file-earmark-code"></i>
@@ -1997,6 +1999,7 @@ export default async function courselore({
                           <div class="dropdown--menu">
                             <a
                               href="${reportIssueHref}"
+                              target="_blank"
                               class="dropdown--menu--item button button--transparent"
                             >
                               <i class="bi bi-envelope"></i>
@@ -2018,6 +2021,7 @@ export default async function courselore({
                                   addQueryPrefix: true,
                                 }
                               )}"
+                              target="_blank"
                               class="dropdown--menu--item button button--transparent"
                             >
                               <i class="bi bi-github"></i>
@@ -4050,7 +4054,7 @@ export default async function courselore({
       to: user.email,
       subject: "CourseLore · Password Reset Link",
       html: html`
-        <p><a href="${link}">${link}</a></p>
+        <p><a href="${link}" target="_blank">${link}</a></p>
         <p>
           <small>
             This Password Reset Link is valid for ten minutes.<br />
@@ -4391,7 +4395,7 @@ export default async function courselore({
       html: html`
         <p>
           Please confirm your email:<br />
-          <a href="${link}">${link}</a>
+          <a href="${link}" target="_blank">${link}</a>
         </p>
       `,
     });
@@ -6015,7 +6019,7 @@ export default async function courselore({
       html: html`
         <p>
           Enroll in ${invitation.course.name}:<br />
-          <a href="${link}">${link}</a>
+          <a href="${link}" target="_blank">${link}</a>
         </p>
         $${invitation.expiresAt === null
           ? html``
@@ -18076,7 +18080,8 @@ ${value}</textarea
             <p>
               If you think there should be something here, please contact your
               course staff or the system administrator at
-              <a href="${reportIssueHref}" class="link">${administratorEmail}</a
+              <a href="${reportIssueHref}" target="_blank" class="link"
+                >${administratorEmail}</a
               >.
             </p>
           `,
@@ -18171,7 +18176,7 @@ ${value}</textarea
                 <p>
                   If the issue persists, please report to the system
                   administrator at
-                  <a href="${reportIssueHref}" class="link"
+                  <a href="${reportIssueHref}" target="_blank" class="link"
                     >${administratorEmail}</a
                   >.
                 </p>
@@ -18180,7 +18185,7 @@ ${value}</textarea
                 <p>
                   This is an issue in CourseLore, please report to the system
                   administrator at
-                  <a href="${reportIssueHref}" class="link"
+                  <a href="${reportIssueHref}" target="_blank" class="link"
                     >${administratorEmail}</a
                   >.
                 </p>
