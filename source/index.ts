@@ -3989,6 +3989,7 @@ export default async function courselore({
                     font-size: var(--font-size--3xl);
                     line-height: var(--line-height--3xl);
                     font-weight: var(--font-weight--black);
+                    text-align: left;
                   }
                 }
               }
