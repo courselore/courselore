@@ -1940,6 +1940,9 @@ export default async function courselore({
               <div>
                 <button
                   class="button button--transparent"
+                  style="${css`
+                    align-items: center;
+                  `}"
                   oninteractive="${javascript`
                     tippy(this, {
                       trigger: "click",
@@ -1977,7 +1980,7 @@ export default async function courselore({
                     });
                   `}"
                 >
-                  $${logo} CourseLore
+                  $${logo({ size: 16 /* var(--space--4) */ })} CourseLore
                 </button>
               </div>
               <div>
@@ -2093,7 +2096,7 @@ export default async function courselore({
                   align-items: center;
                 `}"
               >
-                $${logo} CourseLore
+                $${logo()} CourseLore
               </a>
             </div>
             <div
@@ -2165,7 +2168,7 @@ export default async function courselore({
               });
             `}"
           >
-            $${logo}
+            $${logo()}
           </a>
 
           <div
@@ -2649,7 +2652,7 @@ export default async function courselore({
   const logo = (() => {
     // https://www.youtube.com/watch?v=dSK-MW-zuAc
     const order = 2;
-    const size = 24; /* var(--space--6) */
+    const viewBox = 24; /* var(--space--6) */
     // Hilbert
     // let points = [
     //   [1 / 4, 1 / 4],
@@ -2676,16 +2679,13 @@ export default async function courselore({
       }
       points = [...upperLeft, ...lowerLeft, ...lowerRight, ...upperRight];
     }
-    const pointsSvg = points.map((point) =>
-      point.map((coordinate) => coordinate * size).join(" ")
-    );
-    return html`
-      <svg width="${size}" height="${size}">
+    const pathD = `M ${points
+      .map((point) => point.map((coordinate) => coordinate * viewBox).join(" "))
+      .join(" L ")} Z`;
+    return ({ size = viewBox }: { size?: number } = {}) => html`
+      <svg width="${size}" height="${size}" viewBox="0 0 ${viewBox} ${viewBox}">
         <path
-          d="M ${pointsSvg[0]} ${pointsSvg
-            .slice(1)
-            .map((pointSvg) => `L ${pointSvg}`)
-            .join(" ")} Z"
+          d="${pathD}"
           fill="none"
           stroke="currentColor"
           stroke-linecap="round"
@@ -4587,15 +4587,8 @@ export default async function courselore({
                 >
                   <h2 class="heading--display">Welcome to CourseLore!</h2>
 
-                  <div
-                    class="decorative-icon"
-                    style="${css`
-                      svg {
-                        transform: scale(6);
-                      }
-                    `}"
-                  >
-                    $${logo}
+                  <div class="decorative-icon">
+                    $${logo({ size: 144 /* var(--space--36) */ })}
                   </div>
 
                   <div class="menu-box">
