@@ -837,6 +837,10 @@ export default async function courselore({
                   justify-content: flex-start;
                 }
 
+                &.button--inline {
+                  display: inline-flex;
+                }
+
                 &.button--transparent {
                   &:not(:disabled):not(.disabled) {
                     &:hover,
@@ -4190,23 +4194,10 @@ export default async function courselore({
           >
             <div
               style="${css`
-                max-width: var(--width--3xl);
+                max-width: var(--width--xl);
               `}"
             >
-              <img
-                src="/main-screen--light-and-dark.png"
-                alt="CourseLore Main Screen Featuring Light & Dark Modes"
-                width="960"
-                class="img"
-                style="${css`
-                  background-color: transparent;
-                  border: var(--border-width--1) solid
-                    var(--color--gray--medium--200);
-                  @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--700);
-                  }
-                `}"
-              />
+              $${markdownEditor({ req, res })}
             </div>
 
             <div
@@ -4237,16 +4228,56 @@ export default async function courselore({
                   font-weight: var(--font-weight--bold);
                 `}"
               >
-                <a
-                  href="https://guides.github.com/features/mastering-markdown/"
-                  class="link"
-                  >Markdown</a
+                Markdown
+                <button
+                  type="button"
+                  class="button button--tight button--tight--inline button--inline button--transparent"
+                  style="${css`
+                    font-size: var(--font-size--base);
+                    line-height: var(--line-height--base);
+                  `}"
+                  oninteractive="${javascript`
+                      tippy(this, {
+                        trigger: "click",
+                        content: "A straightforward way to make text bold, include links, and so forth.",
+                      });
+                    `}"
                 >
-                &
-                <a href="https://katex.org/docs/supported.html" class="link"
-                  >LaTeX</a
-                >. <br />
-                Try for yourself.
+                  <i class="bi bi-info-circle"></i></button
+                >   LaTeX
+                <button
+                  type="button"
+                  class="button button--tight button--tight--inline button--inline button--transparent"
+                  style="${css`
+                    font-size: var(--font-size--base);
+                    line-height: var(--line-height--base);
+                  `}"
+                  oninteractive="${javascript`
+                    tippy(this, {
+                      trigger: "click",
+                      content: "A way to write mathematical formulas.",
+                    });
+                  `}"
+                >
+                  <i class="bi bi-info-circle"></i></button
+                >   Syntax highlighting
+                <button
+                  type="button"
+                  class="button button--tight button--tight--inline button--inline button--transparent"
+                  style="${css`
+                    font-size: var(--font-size--base);
+                    line-height: var(--line-height--base);
+                  `}"
+                  oninteractive="${javascript`
+                    tippy(this, {
+                      trigger: "click",
+                      content: "Color computer code to make it easier to read.",
+                    });
+                  `}"
+                >
+                  <i class="bi bi-info-circle"></i></button
+                > <br />
+                Try it for yourself.
               </p>
             </div>
           </div>
