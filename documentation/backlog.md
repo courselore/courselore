@@ -9,6 +9,7 @@
 ### Chat
 
 - Rename `markdownEditor` & `markdownProcessor` into `messageEditor` & `messageProcessor`.
+- Double check how footnotes work. If they depend on `id`s, then we need to namespace them.
 - Test everything in different browsers & devices.
 - `position: sticky` headers (showing author name) in messages?
 - Revisit unread management:

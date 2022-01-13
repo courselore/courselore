@@ -4109,7 +4109,7 @@ export default async function courselore({
                 `}"
               >
                 Beautiful during the day. Elegant at night. <br />
-                Always easy to use.
+                Always a joy to look at.
               </p>
             </div>
           </div>
@@ -4217,9 +4217,9 @@ export default async function courselore({
                 res,
                 // prettier-ignore
                 value: markdown`
-### Reasons to **Love** CourseLore’s Message Editor
+# Reasons to **Love** CourseLore’s Message Editor
 
-Easy to use even for people who never heard of [Markdown](https://guides.github.com/features/mastering-markdown/).
+Easy to learn for people who are new to [Markdown](https://guides.github.com/features/mastering-markdown/).
 
 Support for [mathematical formulas](https://katex.org/docs/supported.html):
 
