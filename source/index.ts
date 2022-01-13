@@ -3940,12 +3940,6 @@ export default async function courselore({
                   gap: var(--space--4);
                   align-items: center;
                   & > :first-child {
-                    color: var(--color--violet--700);
-                    background-color: var(--color--violet--200);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--violet--200);
-                      background-color: var(--color--violet--700);
-                    }
                     border-radius: var(--border-radius--circle);
                     width: var(--space--10);
                     height: var(--space--10);
@@ -3966,14 +3960,65 @@ export default async function courselore({
           >
             <div>
               <div>
-                <div>
+                <div
+                  style="${css`
+                    color: var(--color--violet--700);
+                    background-color: var(--color--violet--200);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--violet--200);
+                      background-color: var(--color--violet--700);
+                    }
+                  `}"
+                >
                   <i class="bi bi-chat-left-text"></i>
                 </div>
                 <h2 class="heading--display">Forum & Chat</h2>
               </div>
               <p class="secondary">
-                Question & Answer, Announcements, Answer Endorsements,
-                Notifications, and more!
+                Question & answer. Announcements. Answer endorsements. Notifications.
+              </p>
+            </div>
+
+            <div>
+              <div>
+                <div
+                  style="${css`
+                    color: var(--color--pink--700);
+                    background-color: var(--color--pink--200);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--pink--200);
+                      background-color: var(--color--pink--700);
+                    }
+                  `}"
+                >
+                  <i class="bi bi-mortarboard-fill"></i>
+                </div>
+                <h2 class="heading--display">Made for Education</h2>
+              </div>
+              <p class="secondary">
+                Anonymity. Private questions. Straightforward invitation system.
+              </p>
+            </div>
+
+            <div>
+              <div>
+                <div
+                  style="${css`
+                    color: var(--color--green--700);
+                    background-color: var(--color--green--200);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--green--200);
+                      background-color: var(--color--green--700);
+                    }
+                  `}"
+                >
+                  <i class="bi bi-file-earmark-code"></i>
+                </div>
+                <h2 class="heading--display">Open-Source</h2>
+              </div>
+              <p class="secondary">
+                Easy to self-host for maximum privacy & control. Welcoming to
+                first-time contributors.
               </p>
             </div>
           </div>
