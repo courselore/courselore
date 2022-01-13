@@ -8,7 +8,7 @@
 
 ### Chat
 
-- Test everything in different browsers.
+- Test everything in different browsers & devices.
 - README
   - Description.
   - Links.
