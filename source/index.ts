@@ -4071,9 +4071,8 @@ export default async function courselore({
                 align-items: center;
               `}"
             >
-              <a
-                href="${baseURL}/"
-                class="heading--display button button--transparent"
+              <p
+                class="heading--display"
                 style="${css`
                   font-size: var(--font-size--5xl);
                   line-height: var(--line-height--5xl);
@@ -4082,7 +4081,7 @@ export default async function courselore({
                 `}"
               >
                 Carefully Designed
-              </a>
+              </p>
               <p
                 class="secondary"
                 style="${css`
@@ -4094,6 +4093,89 @@ export default async function courselore({
                 Beautiful during the day. Elegant at night. <br />
                 Always easy to use.
               </p>
+            </div>
+          </div>
+
+          <div
+            style="${css`
+              background-color: var(--color--gray--medium--100);
+              @media (prefers-color-scheme: dark) {
+                background-color: var(--color--gray--medium--800);
+              }
+              display: flex;
+              gap: var(--space--14);
+              justify-content: center;
+              padding: var(--space--14) var(--space--8);
+              align-items: center;
+            `}"
+          >
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+                max-width: var(--width--prose);
+                align-items: center;
+              `}"
+            >
+              <p
+                class="heading--display"
+                style="${css`
+                  font-size: var(--font-size--5xl);
+                  line-height: var(--line-height--5xl);
+                  font-weight: var(--font-weight--black);
+                  align-items: center;
+                `}"
+              >
+                First-Class <br />
+                Mobile Support
+              </p>
+              <p
+                class="secondary"
+                style="${css`
+                  font-size: var(--font-size--lg);
+                  line-height: var(--line-height--lg);
+                  font-weight: var(--font-weight--bold);
+                `}"
+              >
+                It just works. Right from the browser. <br />
+                No nagging to install an app.
+              </p>
+            </div>
+
+            <div
+              style="${css`
+                max-width: var(--width--3xl);
+              `}"
+            >
+              <img
+                src="/main-screen--phone--light.jpeg"
+                alt="CourseLore Main Screen on Phone"
+                width="375"
+                class="img light"
+                style="${css`
+                  background-color: transparent;
+                  border: var(--border-width--1) solid
+                    var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    border-color: var(--color--gray--medium--700);
+                  }
+                `}"
+              />
+              <img
+                src="/main-screen--phone--dark.jpeg"
+                alt="CourseLore Main Screen on Phone"
+                width="375"
+                class="img dark"
+                style="${css`
+                  background-color: transparent;
+                  border: var(--border-width--1) solid
+                    var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    border-color: var(--color--gray--medium--700);
+                  }
+                `}"
+              />
             </div>
           </div>
         `,
