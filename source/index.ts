@@ -2020,8 +2020,8 @@ export default async function courselore({
                       });
                     `}"
                 >
-                  <i class="bi bi-life-preserver"></i>
-                  Help
+                  <i class="bi bi-bug"></i>
+                  Report an Issue
                 </button>
               </div>
             </div>
