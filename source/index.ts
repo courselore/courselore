@@ -1996,22 +1996,7 @@ export default async function courselore({
                           </h3>
                           <div class="dropdown--menu">
                             <a
-                              href="mailto:${administratorEmail}${qs.stringify(
-                                {
-                                  subject: "Report an Issue",
-                                  body: dedent`
-                                    What did you try to do?
-                                    What did you expect to happen?
-                                    What really happened?
-                                    What error messages (if any) did you run into?
-
-                                    Please provide as much relevant context as possible (operating system, browser, and so forth).
-                                  `,
-                                },
-                                {
-                                  addQueryPrefix: true,
-                                }
-                              )}"
+                              href="${reportIssueHref}"
                               class="dropdown--menu--item button button--transparent"
                             >
                               <i class="bi bi-envelope"></i>
@@ -3291,6 +3276,23 @@ export default async function courselore({
       select: "text--cyan",
     },
   };
+
+  const reportIssueHref = `mailto:${administratorEmail}${qs.stringify(
+    {
+      subject: "Report an Issue",
+      body: dedent`
+        What did you try to do?
+        What did you expect to happen?
+        What really happened?
+        What error messages (if any) did you run into?
+
+        Please provide as much relevant context as possible (operating system, browser, and so forth).
+      `,
+    },
+    {
+      addQueryPrefix: true,
+    }
+  )}`;
 
   interface HiddenContentMiddlewareLocals {
     hiddenContent?: HTML[];
@@ -18074,8 +18076,7 @@ ${value}</textarea
             <p>
               If you think there should be something here, please contact your
               course staff or the system administrator at
-              <a href="mailto:${administratorEmail}" class="link"
-                >${administratorEmail}</a
+              <a href="${reportIssueHref}" class="link">${administratorEmail}</a
               >.
             </p>
           `,
@@ -18170,7 +18171,7 @@ ${value}</textarea
                 <p>
                   If the issue persists, please report to the system
                   administrator at
-                  <a href="mailto:${administratorEmail}" class="link"
+                  <a href="${reportIssueHref}" class="link"
                     >${administratorEmail}</a
                   >.
                 </p>
@@ -18179,7 +18180,7 @@ ${value}</textarea
                 <p>
                   This is an issue in CourseLore, please report to the system
                   administrator at
-                  <a href="mailto:${administratorEmail}" class="link"
+                  <a href="${reportIssueHref}" class="link"
                     >${administratorEmail}</a
                   >.
                 </p>
