@@ -10301,6 +10301,27 @@ export default async function courselore({
               </div>
             </div>
           `
+        : searchResult?.type === "messageContent"
+        ? html`
+            <div>
+              <div>
+                $${userPartial({
+                  req,
+                  res,
+                  enrollment: searchResult.message.authorEnrollment,
+                  anonymous:
+                    searchResult.message.anonymousAt === null
+                      ? false
+                      : res.locals.enrollment.role === "staff" ||
+                        searchResult.message.authorEnrollment.id ===
+                          res.locals.enrollment.id
+                      ? "reveal"
+                      : true,
+                })}
+              </div>
+              <div>$${searchResult.snippet}</div>
+            </div>
+          `
         : html``}
     </div>
   `;
