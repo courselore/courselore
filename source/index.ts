@@ -1917,7 +1917,116 @@ export default async function courselore({
             >
               $${body}
             </div>
+
+            <div
+              style="${css`
+                font-size: var(--font-size--xs);
+                line-height: var(--line-height--xs);
+                background-color: var(--color--gray--medium--100);
+                @media (prefers-color-scheme: dark) {
+                  background-color: var(--color--gray--medium--800);
+                }
+                padding: var(--space--0) var(--space--4);
+                border-top: var(--border-width--1) solid
+                  var(--color--gray--medium--200);
+                @media (prefers-color-scheme: dark) {
+                  border-color: var(--color--gray--medium--700);
+                }
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+              `}"
+            >
+              <div>
+                <button
+                  class="button button--transparent"
+                  oninteractive="${javascript`
+                    tippy(this, {
+                      trigger: "click",
+                      interactive: true,
+                      content: ${hiddenContent({
+                        req,
+                        res,
+                        content: html`
+                          <div
+                            style="${css`
+                              padding: var(--space--2);
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--4);
+                            `}"
+                          >
+                            <p class="strong">
+                              Thanks for being part of CourseLore’s first
+                              semester!
+                            </p>
+                            <p>
+                              As with any new piece of software, you may find
+                              issues, or you may need help. Or may want to
+                              provide any kind of feedback. Whatever the case
+                              may be, please contact the system administrator at
+                              <a
+                                href="mailto:${administratorEmail}"
+                                class="link"
+                                >${administratorEmail}</a
+                              >.
+                            </p>
+                          </div>
+                        `,
+                      })},
+                    });
+                  `}"
+                >
+                  $${logo} CourseLore
+                </button>
+              </div>
+              <div>
+                <button
+                  class="button button--transparent"
+                  oninteractive="${javascript`
+                    tippy(this, {
+                      trigger: "click",
+                      interactive: true,
+                      content: ${hiddenContent({
+                        req,
+                        res,
+                        content: html`
+                          <div
+                            style="${css`
+                              padding: var(--space--2);
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--4);
+                            `}"
+                          >
+                            <p class="strong">
+                              Thanks for being part of CourseLore’s first
+                              semester!
+                            </p>
+                            <p>
+                              As with any new piece of software, you may find
+                              issues, or you may need help. Or may want to
+                              provide any kind of feedback. Whatever the case
+                              may be, please contact the system administrator at
+                              <a
+                                href="mailto:${administratorEmail}"
+                                class="link"
+                                >${administratorEmail}</a
+                              >.
+                            </p>
+                          </div>
+                        `,
+                      })},
+                      });
+                    `}"
+                >
+                  <i class="bi bi-life-preserver"></i>
+                  Help
+                </button>
+              </div>
+            </div>
           </div>
+
           <div hidden>$${res.locals.hiddenContent ?? []}</div>
         </body>
       </html>
