@@ -3887,10 +3887,16 @@ export default async function courselore({
               `}"
             >
               <img
-                src="/main-screen.png"
+                src="/main-screen--light.png"
                 alt="CourseLore Main Screen"
-                width="1072"
-                class="img"
+                width="960"
+                class="img light"
+              />
+              <img
+                src="/main-screen--dark.png"
+                alt="CourseLore Main Screen"
+                width="960"
+                class="img dark"
               />
             </div>
           </div>
