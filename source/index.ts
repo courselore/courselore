@@ -903,6 +903,12 @@ export default async function courselore({
                           background-color: var(--color--${color}--500);
                         }
                       }
+                      .strong {
+                        color: var(--color--${color}--50);
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--${color}--100);
+                        }
+                      }
                       .secondary,
                       [class^="text--"] {
                         color: var(--color--${color}--100);
@@ -10185,11 +10191,7 @@ export default async function courselore({
           : html``}
       </div>
 
-      <h3
-        style="${css`
-          font-weight: var(--font-weight--bold);
-        `}"
-      >
+      <h3 class="strong">
         $${searchResult?.type === "conversationTitle"
           ? searchResult.highlight
           : html`${conversation.title}`}

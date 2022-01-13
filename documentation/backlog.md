@@ -8,9 +8,7 @@
 
 ### Chat
 
-- Avatars.
-  - `strong` on `coursePartial` doesn’t work on course switcher
-  - Test everything in different browsers.
+- Test everything in different browsers.
 - README
   - Description.
   - Links.
