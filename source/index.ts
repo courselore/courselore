@@ -3830,7 +3830,7 @@ export default async function courselore({
               display: flex;
               gap: var(--space--14);
               justify-content: center;
-              padding: var(--space--14) var(--space--8);
+              padding: var(--space--20) var(--space--8);
               align-items: center;
             `}"
           >
@@ -3935,7 +3935,7 @@ export default async function courselore({
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--800);
               }
-              padding: var(--space--24) var(--space--8);
+              padding: var(--space--32) var(--space--8);
               display: flex;
               gap: var(--space--8);
               justify-content: center;
@@ -4041,7 +4041,7 @@ export default async function courselore({
               display: flex;
               gap: var(--space--14);
               justify-content: center;
-              padding: var(--space--14) var(--space--8);
+              padding: var(--space--32) var(--space--8);
               align-items: center;
             `}"
           >
@@ -4107,9 +4107,9 @@ export default async function courselore({
                 background-color: var(--color--gray--medium--800);
               }
               display: flex;
-              gap: var(--space--14);
+              gap: var(--space--24);
               justify-content: center;
-              padding: var(--space--14) var(--space--8);
+              padding: var(--space--32) var(--space--8);
               align-items: center;
             `}"
           >
@@ -4188,7 +4188,7 @@ export default async function courselore({
               display: flex;
               gap: var(--space--14);
               justify-content: center;
-              padding: var(--space--14) var(--space--8);
+              padding: var(--space--36) var(--space--8);
               align-items: center;
             `}"
           >
