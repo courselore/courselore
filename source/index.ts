@@ -966,7 +966,6 @@ export default async function courselore({
                 }
                 display: flex;
                 gap: var(--space--1);
-                flex-wrap: wrap;
               }
 
               .heading--display {
@@ -1951,29 +1950,19 @@ export default async function courselore({
                         req,
                         res,
                         content: html`
-                          <div
-                            style="${css`
-                              padding: var(--space--2);
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--space--4);
-                            `}"
-                          >
-                            <p class="strong">
-                              Thanks for being part of CourseLore’s first
-                              semester!
-                            </p>
-                            <p>
-                              As with any new piece of software, you may find
-                              issues, or you may need help. Or may want to
-                              provide any kind of feedback. Whatever the case
-                              may be, please contact the system administrator at
-                              <a
-                                href="mailto:${administratorEmail}"
-                                class="link"
-                                >${administratorEmail}</a
-                              >.
-                            </p>
+                          <h3 class="heading">
+                            $${logo({ size: 12 /* var(--space--3) */ })}
+                            CourseLore <br />
+                            Communication Platform for Education
+                          </h3>
+                          <div class="dropdown--menu">
+                            <a
+                              href="https://github.com/courselore/courselore"
+                              class="dropdown--menu--item button button--transparent"
+                            >
+                              <i class="bi bi-file-earmark-code"></i>
+                              Source Code
+                            </a>
                           </div>
                         `,
                       })},
