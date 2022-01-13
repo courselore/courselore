@@ -1037,6 +1037,17 @@ export default async function courselore({
                 line-height: var(--line-height--xs);
               }
 
+              .img {
+                background-color: var(--color--gray--medium--50);
+                @media (prefers-color-scheme: dark) {
+                  background-color: var(--color--gray--medium--50);
+                  filter: brightness(var(--brightness--90));
+                }
+                max-width: 100%;
+                height: auto;
+                border-radius: var(--border-radius--xl);
+              }
+
               .details {
                 background-color: var(--color--gray--medium--200);
                 @media (prefers-color-scheme: dark) {
@@ -1364,9 +1375,9 @@ export default async function courselore({
                 }
 
                 img {
-                  background-color: var(--color--gray--medium--100);
+                  background-color: var(--color--gray--medium--50);
                   @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--800);
+                    background-color: var(--color--gray--medium--50);
                     filter: brightness(var(--brightness--90));
                   }
                   max-width: 100%;
@@ -3816,13 +3827,14 @@ export default async function courselore({
               gap: var(--space--8);
               justify-content: center;
               padding: var(--space--8);
+              align-items: center;
             `}"
           >
             <div
               style="${css`
                 display: flex;
                 flex-direction: column;
-                gap: var(--space--8);
+                gap: var(--space--4);
                 max-width: var(--width--prose);
                 align-items: center;
               `}"
@@ -3831,14 +3843,56 @@ export default async function courselore({
                 href="${baseURL}/"
                 class="heading--display button button--transparent"
                 style="${css`
+                  font-size: var(--font-size--5xl);
+                  line-height: var(--line-height--5xl);
+                  font-weight: var(--font-weight--black);
                   align-items: center;
                 `}"
               >
-                $${logo()} CourseLore
+                $${logo({ size: 48 /* var(--space--12) */ })} CourseLore
               </a>
-              <h3 class="secondary">Communication Platform for Education</h3>
+              <h3
+                class="secondary"
+                style="${css`
+                  font-size: var(--font-size--lg);
+                  line-height: var(--line-height--lg);
+                  font-weight: var(--font-weight--bold);
+                `}"
+              >
+                Communication Platform for Education
+              </h3>
+
+              <div
+                style="${css`
+                  display: flex;
+                  gap: var(--space--4);
+                  & > * {
+                    flex: 1;
+                  }
+                `}"
+              >
+                <a href="${baseURL}/sign-up" class="button button--blue">
+                  <i class="bi bi-person-plus"></i>
+                  Sign up
+                </a>
+                <a href="${baseURL}/sign-in" class="button button--transparent">
+                  <i class="bi bi-box-arrow-in-right"></i>
+                  Sign in
+                </a>
+              </div>
             </div>
-            <div></div>
+            <div
+              style="${css`
+                max-width: var(--width--5xl);
+              `}"
+            >
+              <img
+                src="/main-screen.png"
+                alt="CourseLore Main Screen"
+                width="1072"
+                class="img"
+              />
+            </div>
           </div>
         `,
       })

@@ -7,7 +7,7 @@
 <a href="https://github.com/courselore/courselore/actions"><img src="https://github.com/courselore/courselore/workflows/.github/workflows/main.yml/badge.svg" alt="Continuous Integration"></a>
 </p>
 
-[<img src="documentation/screenshot.png" alt="Screenshot" width="1072">](https://courselore.org)
+[<img src="static/main-screen.png" alt="CourseLore Main Screen" width="1072">](https://courselore.org)
 
 ### Features
 
