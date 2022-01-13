@@ -3824,7 +3824,7 @@ export default async function courselore({
           <div
             style="${css`
               display: flex;
-              gap: var(--space--8);
+              gap: var(--space--14);
               justify-content: center;
               padding: var(--space--8);
               align-items: center;
@@ -3923,7 +3923,7 @@ export default async function courselore({
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--800);
               }
-              padding: var(--space--8);
+              padding: var(--space--12) var(--space--8);
               display: flex;
               gap: var(--space--8);
               justify-content: center;
