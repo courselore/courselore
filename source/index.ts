@@ -4320,8 +4320,8 @@ export default async function courselore({
 
             <div
               style="${css`
-                max-width: var(--width--xl);
                 flex: 1;
+                max-width: var(--width--xl);
               `}"
             >
               $${markdownEditor({
