@@ -8,7 +8,6 @@
 
 ### Chat
 
-- Create `/about` page.
 - Rename `markdownEditor` & `markdownProcessor` into `messageEditor` & `messageProcessor`.
 - Test everything in different browsers & devices.
 - `position: sticky` headers (showing author name) in messages?
