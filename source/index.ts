@@ -3873,11 +3873,11 @@ export default async function courselore({
               >
                 <a href="${baseURL}/sign-up" class="button button--blue">
                   <i class="bi bi-person-plus"></i>
-                  Sign up
+                  Sign up
                 </a>
                 <a href="${baseURL}/sign-in" class="button button--transparent">
                   <i class="bi bi-box-arrow-in-right"></i>
-                  Sign in
+                  Sign in
                 </a>
               </div>
             </div>
