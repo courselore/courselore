@@ -13880,7 +13880,8 @@ ${value}</textarea
     any,
     { content?: string },
     {},
-    IsSignedInMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+    (IsSignedInMiddlewareLocals | IsSignedOutMiddlewareLocals) &
+      Partial<IsEnrolledInCourseMiddlewareLocals>
   > = (req, res, next) => {
     if (typeof req.body.content !== "string" || req.body.content.trim() === "")
       return next("validation");
@@ -13901,6 +13902,12 @@ ${value}</textarea
   app.post<{}, any, { content?: string }, {}, IsSignedInMiddlewareLocals>(
     "/markdown-editor/preview",
     ...isSignedInMiddleware,
+    previewRequestHandler
+  );
+
+  app.post<{}, any, { content?: string }, {}, IsSignedOutMiddlewareLocals>(
+    "/markdown-editor/preview",
+    ...isSignedOutMiddleware,
     previewRequestHandler
   );
 
