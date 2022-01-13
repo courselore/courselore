@@ -4067,29 +4067,11 @@ export default async function courselore({
               @media (max-width: 889px) {
                 flex-direction: column;
               }
+              @media (min-width: 900px) {
+                flex-direction: row-reverse;
+              }
             `}"
           >
-            <div
-              style="${css`
-                max-width: var(--width--3xl);
-              `}"
-            >
-              <img
-                src="/main-screen--light-and-dark.png"
-                alt="CourseLore Main Screen Featuring Light & Dark Modes"
-                width="960"
-                class="img"
-                style="${css`
-                  background-color: transparent;
-                  border: var(--border-width--1) solid
-                    var(--color--gray--medium--200);
-                  @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--700);
-                  }
-                `}"
-              />
-            </div>
-
             <div
               style="${css`
                 display: flex;
@@ -4122,6 +4104,27 @@ export default async function courselore({
                 Always a joy to look at.
               </p>
             </div>
+
+            <div
+              style="${css`
+                max-width: var(--width--3xl);
+              `}"
+            >
+              <img
+                src="/main-screen--light-and-dark.png"
+                alt="CourseLore Main Screen Featuring Light & Dark Modes"
+                width="960"
+                class="img"
+                style="${css`
+                  background-color: transparent;
+                  border: var(--border-width--1) solid
+                    var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    border-color: var(--color--gray--medium--700);
+                  }
+                `}"
+              />
+            </div>
           </div>
 
           <div
@@ -4131,10 +4134,16 @@ export default async function courselore({
                 background-color: var(--color--gray--medium--800);
               }
               display: flex;
-              gap: var(--space--24);
               justify-content: center;
               padding: var(--space--32) var(--space--8);
               align-items: center;
+              @media (max-width: 889px) {
+                flex-direction: column;
+                gap: var(--space--14);
+              }
+              @media (min-width: 900px) {
+                gap: var(--space--24);
+              }
             `}"
           >
             <div
@@ -4214,48 +4223,14 @@ export default async function courselore({
               justify-content: center;
               padding: var(--space--36) var(--space--8);
               align-items: center;
+              @media (max-width: 859px) {
+                flex-direction: column;
+              }
+              @media (min-width: 860px) {
+                flex-direction: row-reverse;
+              }
             `}"
           >
-            <div
-              style="${css`
-                max-width: var(--width--xl);
-                flex: 1;
-              `}"
-            >
-              $${markdownEditor({
-                req,
-                res,
-                // prettier-ignore
-                value: markdown`
-# Reasons to **Love** CourseLore’s Message Editor
-
-Easy to learn for people who are new to [Markdown](https://guides.github.com/features/mastering-markdown/).
-
-Support for [mathematical formulas](https://katex.org/docs/supported.html):
-
-$$
-
-X_k = \\sum_{n=0}^{N-1} x_n \\cdot e^{-\\frac{i2\\pi}{N}kn}
-
-$$
-
-Gorgeous [syntax highlighter](https://shiki.matsu.io/):
-
-\`\`\`javascript
-import shiki from "shiki";
-
-const highlighter = await shiki.getHighlighter({
-  theme: "nord",
-});
-console.log(highlighter.codeToHtml(\`console.log("shiki");\`, "js"));
-\`\`\`
-`,
-                required: false,
-                skipIsModified: true,
-                expanded: true,
-              })}
-            </div>
-
             <div
               style="${css`
                 display: flex;
@@ -4338,6 +4313,46 @@ console.log(highlighter.codeToHtml(\`console.log("shiki");\`, "js"));
                 <br />
                 Try it for yourself.
               </p>
+            </div>
+
+            <div
+              style="${css`
+                max-width: var(--width--xl);
+                flex: 1;
+              `}"
+            >
+              $${markdownEditor({
+                req,
+                res,
+                // prettier-ignore
+                value: markdown`
+# Reasons to **Love** CourseLore’s Message Editor
+
+Easy to learn for people who are new to [Markdown](https://guides.github.com/features/mastering-markdown/).
+
+Support for [mathematical formulas](https://katex.org/docs/supported.html):
+
+$$
+
+X_k = \\sum_{n=0}^{N-1} x_n \\cdot e^{-\\frac{i2\\pi}{N}kn}
+
+$$
+
+Gorgeous [syntax highlighter](https://shiki.matsu.io/):
+
+\`\`\`javascript
+import shiki from "shiki";
+
+const highlighter = await shiki.getHighlighter({
+  theme: "nord",
+});
+console.log(highlighter.codeToHtml(\`console.log("shiki");\`, "js"));
+\`\`\`
+`,
+                required: false,
+                skipIsModified: true,
+                expanded: true,
+              })}
             </div>
           </div>
         `,
