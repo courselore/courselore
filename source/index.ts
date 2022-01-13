@@ -2010,9 +2010,20 @@ export default async function courselore({
                                 {
                                   body: dedent`
                                     **What did you try to do?**
+
+
+
                                     **What did you expect to happen?**
+
+
+
                                     **What really happened?**
+
+
+
                                     **What error messages (if any) did you run into?**
+
+
 
                                     Please provide as much relevant context as possible (operating system, browser, and so forth).
                                   `,
@@ -3286,9 +3297,20 @@ export default async function courselore({
       subject: "Report an Issue",
       body: dedent`
         What did you try to do?
+
+
+
         What did you expect to happen?
+
+
+
         What really happened?
+
+
+
         What error messages (if any) did you run into?
+
+
 
         Please provide as much relevant context as possible (operating system, browser, and so forth).
       `,
