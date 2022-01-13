@@ -3812,11 +3812,13 @@ export default async function courselore({
     })
   );
 
-  const aboutRequestHandler: express.RequestHandler<{}, any, {}, {}, {}> = (
-    req,
-    res,
-    next
-  ) => {
+  const aboutRequestHandler: express.RequestHandler<
+    {},
+    any,
+    {},
+    {},
+    Partial<IsSignedInMiddlewareLocals>
+  > = (req, res, next) => {
     res.send(
       baseLayout({
         req,
@@ -3875,14 +3877,26 @@ export default async function courselore({
                   }
                 `}"
               >
-                <a href="${baseURL}/sign-up" class="button button--blue">
-                  <i class="bi bi-person-plus"></i>
-                  Sign up
-                </a>
-                <a href="${baseURL}/sign-in" class="button button--transparent">
-                  <i class="bi bi-box-arrow-in-right"></i>
-                  Sign in
-                </a>
+                $${res.locals.user === undefined
+                  ? html`
+                      <a href="${baseURL}/sign-up" class="button button--blue">
+                        <i class="bi bi-person-plus"></i>
+                        Sign up
+                      </a>
+                      <a
+                        href="${baseURL}/sign-in"
+                        class="button button--transparent"
+                      >
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        Sign in
+                      </a>
+                    `
+                  : html`
+                      <a href="${baseURL}/" class="button button--blue">
+                        Return to CourseLore
+                        <i class="bi bi-chevron-right"></i>
+                      </a>
+                    `}
               </div>
 
               <a
@@ -4243,8 +4257,9 @@ export default async function courselore({
                       });
                     `}"
                 >
-                  <i class="bi bi-info-circle"></i></button
-                >   LaTeX
+                  <i class="bi bi-info-circle"></i>
+                </button>
+                  LaTeX
                 <button
                   type="button"
                   class="button button--tight button--tight--inline button--inline button--transparent"
@@ -4259,8 +4274,9 @@ export default async function courselore({
                     });
                   `}"
                 >
-                  <i class="bi bi-info-circle"></i></button
-                >   Syntax highlighting
+                  <i class="bi bi-info-circle"></i>
+                </button>
+                  Syntax highlighting
                 <button
                   type="button"
                   class="button button--tight button--tight--inline button--inline button--transparent"
@@ -4275,8 +4291,9 @@ export default async function courselore({
                     });
                   `}"
                 >
-                  <i class="bi bi-info-circle"></i></button
-                > <br />
+                  <i class="bi bi-info-circle"></i>
+                </button>
+                <br />
                 Try it for yourself.
               </p>
             </div>
@@ -4291,8 +4308,16 @@ export default async function courselore({
     ...isSignedOutMiddleware,
     aboutRequestHandler
   );
-
-  app.get<{}, HTML, {}, {}, {}>("/about", aboutRequestHandler);
+  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+    "/about",
+    ...isSignedInMiddleware,
+    aboutRequestHandler
+  );
+  app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
+    "/about",
+    ...isSignedOutMiddleware,
+    aboutRequestHandler
+  );
 
   app.get<{}, HTML, {}, { email?: string }, IsSignedOutMiddlewareLocals>(
     "/sign-in",
