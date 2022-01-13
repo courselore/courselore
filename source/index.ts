@@ -69,6 +69,13 @@ export default async function courselore({
 
   const app = express();
 
+  app.locals.version = JSON.parse(
+    await fs.readFile(
+      url.fileURLToPath(new URL("../package.json", import.meta.url)),
+      "utf8"
+    )
+  ).version;
+
   type UserAvatarlessBackgroundColor =
     typeof userAvatarlessBackgroundColors[number];
   const userAvatarlessBackgroundColors = [
@@ -1952,8 +1959,19 @@ export default async function courselore({
                         content: html`
                           <h3 class="heading">
                             $${logo({ size: 12 /* var(--space--3) */ })}
-                            CourseLore <br />
-                            Communication Platform for Education
+                            <span>
+                              CourseLore <br />
+                              Communication Platform for Education <br />
+                              <small
+                                class="secondary"
+                                style="${css`
+                                  font-size: var(--font-size--2xs);
+                                  line-height: var(--line-height--2xs);
+                                `}"
+                              >
+                                Version ${app.locals.version}
+                              </small>
+                            </span>
                           </h3>
                           <div class="dropdown--menu">
                             <a
@@ -2025,7 +2043,9 @@ export default async function courselore({
 
 
 
-                                    Please provide as much relevant context as possible (operating system, browser, and so forth).
+                                    Please provide as much relevant context as possible (operating system, browser, and so forth):
+
+                                    - CourseLore Version: ${app.locals.version}
                                   `,
                                 },
                                 {
@@ -3312,7 +3332,9 @@ export default async function courselore({
 
 
 
-        Please provide as much relevant context as possible (operating system, browser, and so forth).
+        Please provide as much relevant context as possible (operating system, browser, and so forth):
+
+        CourseLore Version: ${app.locals.version}
       `,
     },
     {
