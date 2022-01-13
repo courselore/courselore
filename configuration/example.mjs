@@ -1,4 +1,4 @@
-export default async (courselore, courseloreImport) => {
+export default async ({ courselore, courseloreVersion, courseloreImport }) => {
   const baseURL = "https://YOUR-DOMAIN.EDU";
   const administratorEmail = "administrator@YOUR-DOMAIN.EDU";
   if (process.argv[3] === undefined) {
@@ -64,7 +64,7 @@ export default async (courselore, courseloreImport) => {
       demonstration: true,
     });
     app.listen(4001, "127.0.0.1", () => {
-      console.log(`CourseLore/${app.locals.version} started at ${baseURL}`);
+      console.log(`CourseLore/${courseloreVersion} started at ${baseURL}`);
     });
   }
 };

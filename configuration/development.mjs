@@ -1,4 +1,4 @@
-export default async (courselore, courseloreImport) => {
+export default async ({ courselore, courseloreVersion, courseloreImport }) => {
   const baseURL = process.env.BASE_URL ?? `https://localhost:4000`;
   const administratorEmail = "development@courselore.org";
   if (process.argv[3] === undefined) {
@@ -57,7 +57,7 @@ export default async (courselore, courseloreImport) => {
       liveReload: true,
     });
     app.listen(4001, "127.0.0.1", () => {
-      console.log(`CourseLore/${app.locals.version} started at ${baseURL}`);
+      console.log(`CourseLore/${courseloreVersion} started at ${baseURL}`);
     });
   }
 };

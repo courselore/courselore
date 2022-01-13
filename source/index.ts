@@ -69,13 +69,6 @@ export default async function courselore({
 
   const app = express();
 
-  app.locals.version = JSON.parse(
-    await fs.readFile(
-      url.fileURLToPath(new URL("../package.json", import.meta.url)),
-      "utf8"
-    )
-  ).version;
-
   type UserAvatarlessBackgroundColor =
     typeof userAvatarlessBackgroundColors[number];
   const userAvatarlessBackgroundColors = [
@@ -1969,7 +1962,7 @@ export default async function courselore({
                                   line-height: var(--line-height--2xs);
                                 `}"
                               >
-                                Version ${app.locals.version}
+                                Version ${courseloreVersion}
                               </small>
                             </span>
                           </h3>
@@ -2045,7 +2038,7 @@ export default async function courselore({
 
                                     Please provide as much relevant context as possible (operating system, browser, and so forth):
 
-                                    - CourseLore Version: ${app.locals.version}
+                                    - CourseLore Version: ${courseloreVersion}
                                   `,
                                 },
                                 {
@@ -3334,7 +3327,7 @@ export default async function courselore({
 
         Please provide as much relevant context as possible (operating system, browser, and so forth):
 
-        CourseLore Version: ${app.locals.version}
+        CourseLore Version: ${courseloreVersion}
       `,
     },
     {
@@ -18285,6 +18278,16 @@ ${value}</textarea
   return app;
 }
 
+export const courseloreVersion = JSON.parse(
+  // FIXME: Remove this extra `await` & `.toString()` when updating TypeScript target so that it doesn’t complain about top-level await.
+  await (
+    await fs.readFile(
+      url.fileURLToPath(new URL("../package.json", import.meta.url)),
+      "utf8"
+    )
+  ).toString()
+).version;
+
 if (import.meta.url.endsWith(process.argv[1]))
   await (
     await import(
@@ -18294,8 +18297,8 @@ if (import.meta.url.endsWith(process.argv[1]))
           )
         : path.resolve(process.argv[2])
     )
-  ).default(
+  ).default({
     courselore,
-    async (modulePath: string) => await import(modulePath),
-    import.meta.url
-  );
+    courseloreVersion,
+    courseloreImport: async (modulePath: string) => await import(modulePath),
+  });
