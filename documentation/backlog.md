@@ -10,7 +10,6 @@
 
 - Create `/about` page.
 - Add `target="_blank"` to links.
-  - Hard-coded links in the application.
   - Links in user-generated content.
 - Test everything in different browsers & devices.
 - README
