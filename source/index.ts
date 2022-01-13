@@ -1676,113 +1676,68 @@ export default async function courselore({
                 }
               `}"
             >
-              <div
-                style="${css`
-                  justify-content: center;
-                  flex-wrap: wrap;
-                `}"
-              >
-                <div>
-                  <button
-                    class="button button--transparent"
-                    oninteractive="${javascript`
-                      tippy(this, {
-                        trigger: "click",
-                        interactive: true,
-                        content: ${hiddenContent({
-                          req,
-                          res,
-                          content: html`
-                            <div
-                              style="${css`
-                                padding: var(--space--2);
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--4);
-                              `}"
-                            >
-                              <p class="strong">
-                                Thanks for being part of CourseLore’s first
-                                semester!
-                              </p>
-                              <p>
-                                As with any new piece of software, you may find
-                                issues, or you may need help. Or may want to
-                                provide any kind of feedback. Whatever the case
-                                may be, please contact the system administrator
-                                at
-                                <a
-                                  href="mailto:${administratorEmail}"
-                                  class="link"
-                                  >${administratorEmail}</a
-                                >.
-                              </p>
-                            </div>
-                          `,
-                        })},
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-life-preserver"></i>
-                    Help
-                  </button>
-                </div>
-                $${demonstration
-                  ? html`
+              $${demonstration
+                ? html`
+                    <div
+                      style="${css`
+                        justify-content: center;
+                        flex-wrap: wrap;
+                      `}"
+                    >
                       <div>
                         <button
                           class="button button--transparent"
                           oninteractive="${javascript`
-                          tippy(this, {
-                            trigger: "click",
-                            interactive: true,
-                            content: ${hiddenContent({
-                              req,
-                              res,
-                              content: html`
-                                <div
-                                  style="${css`
-                                    padding: var(--space--2);
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--space--4);
-                                  `}"
-                                >
-                                  <p>
-                                    CourseLore is running in Demonstration Mode.
-                                    All data may be lost, including courses,
-                                    conversations, users, and so forth. Also, no
-                                    emails are actually sent.
-                                  </p>
-                                  <p>
-                                    To give you a better idea of what CourseLore
-                                    looks like in use, you may create
-                                    demonstration data.
-                                  </p>
-                                  <form
-                                    method="POST"
-                                    action="${baseURL}/demonstration-data"
+                            tippy(this, {
+                              trigger: "click",
+                              interactive: true,
+                              content: ${hiddenContent({
+                                req,
+                                res,
+                                content: html`
+                                  <div
+                                    style="${css`
+                                      padding: var(--space--2);
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--space--4);
+                                    `}"
                                   >
-                                    <input
-                                      type="hidden"
-                                      name="_csrf"
-                                      value="${req.csrfToken()}"
-                                    />
-                                    <button
-                                      class="button button--blue"
-                                      style="${css`
-                                        width: 100%;
-                                      `}"
+                                    <p>
+                                      CourseLore is running in Demonstration
+                                      Mode. All data may be lost, including
+                                      courses, conversations, users, and so
+                                      forth. Also, no emails are actually sent.
+                                    </p>
+                                    <p>
+                                      To give you a better idea of what
+                                      CourseLore looks like in use, you may
+                                      create demonstration data.
+                                    </p>
+                                    <form
+                                      method="POST"
+                                      action="${baseURL}/demonstration-data"
                                     >
-                                      <i class="bi bi-easel"></i>
-                                      Create Demonstration Data
-                                    </button>
-                                  </form>
-                                </div>
-                              `,
-                            })},
-                          });
-                        `}"
+                                      <input
+                                        type="hidden"
+                                        name="_csrf"
+                                        value="${req.csrfToken()}"
+                                      />
+                                      <button
+                                        class="button button--blue"
+                                        style="${css`
+                                          width: 100%;
+                                        `}"
+                                      >
+                                        <i class="bi bi-easel"></i>
+                                        Create Demonstration Data
+                                      </button>
+                                    </form>
+                                  </div>
+                                `,
+                              })},
+                            });
+                          `}"
                         >
                           <i class="bi bi-easel"></i>
                           Demonstration Mode
@@ -1806,9 +1761,9 @@ export default async function courselore({
                             </form>
                           `
                         : html``}
-                    `
-                  : html``}
-              </div>
+                    </div>
+                  `
+                : html``}
               $${extraHeaders}
             </div>
 
