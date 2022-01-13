@@ -4212,7 +4212,15 @@ export default async function courselore({
                 flex: 1;
               `}"
             >
-              $${markdownEditor({ req, res })}
+              $${markdownEditor({
+                req,
+                res,
+                value: markdown`
+HELLO
+                `,
+                required: false,
+                skipIsModified: true,
+              })}
             </div>
 
             <div
@@ -11542,6 +11550,7 @@ export default async function courselore({
     value = "",
     required = true,
     compact = false,
+    skipIsModified = false,
   }: {
     req: express.Request<
       {},
@@ -11555,6 +11564,7 @@ export default async function courselore({
     value?: string;
     required?: boolean;
     compact?: boolean;
+    skipIsModified?: boolean;
   }): HTML => html`
     <div
       class="markdown-editor"
@@ -12489,6 +12499,7 @@ export default async function courselore({
               name="${name}"
               $${required ? html`required` : html``}
               class="markdown-editor--write--textarea input--text input--text--textarea"
+              $${skipIsModified ? html`data-skip-is-modified="true"` : html``}
               style="${css`
                 ${compact
                   ? css`
