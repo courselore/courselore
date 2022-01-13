@@ -4178,6 +4178,78 @@ export default async function courselore({
               />
             </div>
           </div>
+
+          <div
+            style="${css`
+              display: flex;
+              gap: var(--space--14);
+              justify-content: center;
+              padding: var(--space--14) var(--space--8);
+              align-items: center;
+            `}"
+          >
+            <div
+              style="${css`
+                max-width: var(--width--3xl);
+              `}"
+            >
+              <img
+                src="/main-screen--light-and-dark.png"
+                alt="CourseLore Main Screen Featuring Light & Dark Modes"
+                width="960"
+                class="img"
+                style="${css`
+                  background-color: transparent;
+                  border: var(--border-width--1) solid
+                    var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    border-color: var(--color--gray--medium--700);
+                  }
+                `}"
+              />
+            </div>
+
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+                max-width: var(--width--prose);
+                align-items: center;
+              `}"
+            >
+              <p
+                class="heading--display"
+                style="${css`
+                  font-size: var(--font-size--5xl);
+                  line-height: var(--line-height--5xl);
+                  font-weight: var(--font-weight--black);
+                  align-items: center;
+                `}"
+              >
+                Rich-Text Messages
+              </p>
+              <p
+                class="secondary"
+                style="${css`
+                  font-size: var(--font-size--lg);
+                  line-height: var(--line-height--lg);
+                  font-weight: var(--font-weight--bold);
+                `}"
+              >
+                <a
+                  href="https://guides.github.com/features/mastering-markdown/"
+                  class="link"
+                  >Markdown</a
+                >
+                &
+                <a href="https://katex.org/docs/supported.html" class="link"
+                  >LaTeX</a
+                >. <br />
+                Try for yourself.
+              </p>
+            </div>
+          </div>
         `,
       })
     );
