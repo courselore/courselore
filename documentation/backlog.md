@@ -8,6 +8,7 @@
 
 ### Chat
 
+- Create `/about` page.
 - Test everything in different browsers & devices.
 - README
   - Links.

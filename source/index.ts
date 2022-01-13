@@ -1957,6 +1957,13 @@ export default async function courselore({
                           </h3>
                           <div class="dropdown--menu">
                             <a
+                              href="https://courselore.org/about"
+                              class="dropdown--menu--item button button--transparent"
+                            >
+                              <i class="bi bi-info-circle"></i>
+                              About
+                            </a>
+                            <a
                               href="https://github.com/courselore/courselore"
                               class="dropdown--menu--item button button--transparent"
                             >
