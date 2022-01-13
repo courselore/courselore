@@ -3797,13 +3797,61 @@ export default async function courselore({
     })
   );
 
+  const aboutRequestHandler: express.RequestHandler<{}, any, {}, {}, {}> = (
+    req,
+    res,
+    next
+  ) => {
+    res.send(
+      baseLayout({
+        req,
+        res,
+        head: html`
+          <title>CourseLore · Communication Platform for Education</title>
+        `,
+        body: html`
+          <div
+            style="${css`
+              display: flex;
+              gap: var(--space--8);
+              justify-content: center;
+              padding: var(--space--8);
+            `}"
+          >
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--8);
+                max-width: var(--width--prose);
+                align-items: center;
+              `}"
+            >
+              <a
+                href="${baseURL}/"
+                class="heading--display button button--transparent"
+                style="${css`
+                  align-items: center;
+                `}"
+              >
+                $${logo()} CourseLore
+              </a>
+              <h3 class="secondary">Communication Platform for Education</h3>
+            </div>
+            <div></div>
+          </div>
+        `,
+      })
+    );
+  };
+
   app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "/",
     ...isSignedOutMiddleware,
-    (req, res) => {
-      res.redirect(`${baseURL}/sign-in`);
-    }
+    aboutRequestHandler
   );
+
+  app.get<{}, HTML, {}, {}, {}>("/about", aboutRequestHandler);
 
   app.get<{}, HTML, {}, { email?: string }, IsSignedOutMiddlewareLocals>(
     "/sign-in",
