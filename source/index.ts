@@ -3826,7 +3826,7 @@ export default async function courselore({
               display: flex;
               gap: var(--space--14);
               justify-content: center;
-              padding: var(--space--8);
+              padding: var(--space--14) var(--space--8);
               align-items: center;
             `}"
           >
@@ -3880,6 +3880,14 @@ export default async function courselore({
                   Sign in
                 </a>
               </div>
+
+              <a
+                href="https://github.com/courselore/courselore"
+                class="button button--transparent"
+              >
+                <i class="bi bi-file-earmark-code"></i>
+                Source Code
+              </a>
             </div>
             <div
               style="${css`
@@ -3923,7 +3931,7 @@ export default async function courselore({
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--800);
               }
-              padding: var(--space--12) var(--space--8);
+              padding: var(--space--24) var(--space--8);
               display: flex;
               gap: var(--space--8);
               justify-content: center;
@@ -3975,7 +3983,8 @@ export default async function courselore({
                 <h2 class="heading--display">Forum & Chat</h2>
               </div>
               <p class="secondary">
-                Question & answer. Announcements. Answer endorsements. Notifications.
+                Question & answer. Announcements. Answer endorsements.
+                Notifications.
               </p>
             </div>
 
@@ -4019,6 +4028,71 @@ export default async function courselore({
               <p class="secondary">
                 Easy to self-host for maximum privacy & control. Welcoming to
                 first-time contributors.
+              </p>
+            </div>
+          </div>
+
+          <div
+            style="${css`
+              display: flex;
+              gap: var(--space--14);
+              justify-content: center;
+              padding: var(--space--14) var(--space--8);
+              align-items: center;
+            `}"
+          >
+            <div
+              style="${css`
+                max-width: var(--width--3xl);
+              `}"
+            >
+              <img
+                src="/main-screen--light-and-dark.png"
+                alt="CourseLore Main Screen Featuring Light & Dark Modes"
+                width="960"
+                class="img"
+                style="${css`
+                  background-color: transparent;
+                  border: var(--border-width--1) solid
+                    var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    border-color: var(--color--gray--medium--700);
+                  }
+                `}"
+              />
+            </div>
+
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+                max-width: var(--width--prose);
+                align-items: center;
+              `}"
+            >
+              <a
+                href="${baseURL}/"
+                class="heading--display button button--transparent"
+                style="${css`
+                  font-size: var(--font-size--5xl);
+                  line-height: var(--line-height--5xl);
+                  font-weight: var(--font-weight--black);
+                  align-items: center;
+                `}"
+              >
+                Carefully Designed
+              </a>
+              <p
+                class="secondary"
+                style="${css`
+                  font-size: var(--font-size--lg);
+                  line-height: var(--line-height--lg);
+                  font-weight: var(--font-weight--bold);
+                `}"
+              >
+                Beautiful during the day. Elegant at night. <br />
+                Always easy to use.
               </p>
             </div>
           </div>
