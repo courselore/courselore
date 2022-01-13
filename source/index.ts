@@ -3849,7 +3849,7 @@ export default async function courselore({
               `}"
             >
               <a
-                href="${baseURL}/"
+                href="https://courselore.org/about"
                 class="heading--display button button--transparent"
                 style="${css`
                   font-size: var(--font-size--5xl);
@@ -3954,11 +3954,14 @@ export default async function courselore({
               }
               padding: var(--space--32) var(--space--8);
               display: flex;
-              gap: var(--space--8);
               justify-content: center;
               @media (max-width: 1149px) {
                 flex-direction: column;
                 align-items: center;
+                gap: var(--space--14);
+              }
+              @media (min-width: 1150px) {
+                gap: var(--space--8);
               }
               & > * {
                 flex: 1;
