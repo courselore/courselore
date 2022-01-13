@@ -4067,7 +4067,7 @@ export default async function courselore({
               @media (max-width: 889px) {
                 flex-direction: column;
               }
-              @media (min-width: 900px) {
+              @media (min-width: 890px) {
                 flex-direction: row-reverse;
               }
             `}"
@@ -4141,7 +4141,7 @@ export default async function courselore({
                 flex-direction: column;
                 gap: var(--space--14);
               }
-              @media (min-width: 900px) {
+              @media (min-width: 890px) {
                 gap: var(--space--24);
               }
             `}"
