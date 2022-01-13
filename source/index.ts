@@ -3929,10 +3929,12 @@ export default async function courselore({
               justify-content: center;
               & > * {
                 flex: 1;
-                max-width: var(--width--md);
+                max-width: var(--width--sm);
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
+                align-items: center;
+                text-align: center;
                 & > :first-child {
                   display: flex;
                   gap: var(--space--4);
@@ -3969,6 +3971,10 @@ export default async function courselore({
                 </div>
                 <h2 class="heading--display">Forum & Chat</h2>
               </div>
+              <p class="secondary">
+                Question & Answer, Announcements, Answer Endorsements,
+                Notifications, and more!
+              </p>
             </div>
           </div>
         `,
