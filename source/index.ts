@@ -1990,29 +1990,25 @@ export default async function courselore({
                         req,
                         res,
                         content: html`
-                          <div
-                            style="${css`
-                              padding: var(--space--2);
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--space--4);
-                            `}"
-                          >
-                            <p class="strong">
-                              Thanks for being part of CourseLore’s first
-                              semester!
-                            </p>
-                            <p>
-                              As with any new piece of software, you may find
-                              issues, or you may need help. Or may want to
-                              provide any kind of feedback. Whatever the case
-                              may be, please contact the system administrator at
-                              <a
-                                href="mailto:${administratorEmail}"
-                                class="link"
-                                >${administratorEmail}</a
-                              >.
-                            </p>
+                          <h3 class="heading">
+                            <i class="bi bi-bug"></i>
+                            Report an Issue
+                          </h3>
+                          <div class="dropdown--menu">
+                            <a
+                              href="mailto:${administratorEmail}"
+                              class="dropdown--menu--item button button--transparent"
+                            >
+                              <i class="bi bi-envelope"></i>
+                              ${administratorEmail}
+                            </a>
+                            <a
+                              href="https://github.com/courselore/courselore/issues"
+                              class="dropdown--menu--item button button--transparent"
+                            >
+                              <i class="bi bi-github"></i>
+                              GitHub Issues
+                            </a>
                           </div>
                         `,
                       })},

@@ -9,6 +9,7 @@
 ### Chat
 
 - Create `/about` page.
+- Add subject and other metadata to `mailto:` links.
 - Test everything in different browsers & devices.
 - README
   - Links.
