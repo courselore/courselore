@@ -1,8 +1,4 @@
-export default async (
-  courselore,
-  courseloreImport,
-  courseloreImportMetaURL
-) => {
+export default async (courselore, courseloreImport) => {
   const baseURL = process.env.BASE_URL ?? `https://localhost:4000`;
   const administratorEmail = "development@courselore.org";
   if (process.argv[3] === undefined) {
@@ -42,15 +38,7 @@ export default async (
       });
   } else {
     const path = await courseloreImport("node:path");
-    const url = await courseloreImport("node:url");
-    const fs = (await courseloreImport("fs-extra")).default;
     const nodemailer = (await courseloreImport("nodemailer")).default;
-    const { version } = JSON.parse(
-      await fs.readFile(
-        url.fileURLToPath(new URL("../package.json", courseloreImportMetaURL)),
-        "utf8"
-      )
-    );
     const app = await courselore({
       dataDirectory: path.join(process.cwd(), "data"),
       baseURL,
@@ -69,7 +57,7 @@ export default async (
       liveReload: true,
     });
     app.listen(4001, "127.0.0.1", () => {
-      console.log(`CourseLore/${version} started at ${baseURL}`);
+      console.log(`CourseLore/${app.locals.version} started at ${baseURL}`);
     });
   }
 };
