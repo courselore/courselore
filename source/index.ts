@@ -3916,6 +3916,61 @@ export default async function courselore({
               />
             </div>
           </div>
+
+          <div
+            style="${css`
+              background-color: var(--color--gray--medium--100);
+              @media (prefers-color-scheme: dark) {
+                background-color: var(--color--gray--medium--800);
+              }
+              padding: var(--space--8);
+              display: flex;
+              gap: var(--space--8);
+              justify-content: center;
+              & > * {
+                flex: 1;
+                max-width: var(--width--md);
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+                & > :first-child {
+                  display: flex;
+                  gap: var(--space--4);
+                  align-items: center;
+                  & > :first-child {
+                    color: var(--color--violet--700);
+                    background-color: var(--color--violet--200);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--violet--200);
+                      background-color: var(--color--violet--700);
+                    }
+                    border-radius: var(--border-radius--circle);
+                    width: var(--space--10);
+                    height: var(--space--10);
+                    display: inline-flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-size: var(--font-size--xl);
+                    line-height: var(--line-height--xl);
+                  }
+                  & > :last-child {
+                    font-size: var(--font-size--3xl);
+                    line-height: var(--line-height--3xl);
+                    font-weight: var(--font-weight--black);
+                  }
+                }
+              }
+            `}"
+          >
+            <div>
+              <div>
+                <div>
+                  <i class="bi bi-chat-left-text"></i>
+                </div>
+                <h2 class="heading--display">Forum & Chat</h2>
+              </div>
+            </div>
+          </div>
         `,
       })
     );
