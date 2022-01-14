@@ -13625,8 +13625,8 @@ ${value}</textarea
         deepMerge(rehypeSanitizeDefaultSchema, {
           attributes: {
             code: ["className"],
-            span: [["className", "math-inline"]],
-            div: [["className", "math-display"]],
+            span: [["className", "math", "math-inline"]],
+            div: [["className", "math", "math-display"]],
           },
         })
       )
