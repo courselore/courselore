@@ -1,8 +1,10 @@
 # Backlog
 
 - Improve treatment of footnotes:
+  - `TODO`
   - Change icon
   - Namespace `id`s.
+- `.href`
 - Review all uses of `content` and distinguish `contentSource` and `contentProcessed`.
 - Line to separate unread messages instead of little unread indicator.
 
