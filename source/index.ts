@@ -3411,7 +3411,10 @@ export default async function courselore({
       res.type("text/event-stream").flushHeaders();
     });
 
-  const eventDestinations = new Map<express.Request, express.Response>();
+  const eventDestinations = new Set<{
+    req: express.Request;
+    res: express.Response;
+  }>();
 
   interface EventSourceMiddlewareLocals {
     eventSource: boolean;
@@ -3428,9 +3431,10 @@ export default async function courselore({
         res.locals.eventSource = true;
         return next();
       }
-      eventDestinations.set(req, res);
+      const eventDestination = { req, res };
+      eventDestinations.add(eventDestination);
       res.on("close", () => {
-        eventDestinations.delete(req);
+        eventDestinations.delete(eventDestination);
       });
       res.type("text/event-stream").flushHeaders();
     },
@@ -18080,8 +18084,8 @@ ${value}</textarea
   );
 
   const emitCourseRefresh = (courseId: number): void => {
-    for (const eventDestination of eventDestinations.values())
-      eventDestination.write(`event: refresh\ndata:\n\n`);
+    for (const { req, res } of eventDestinations)
+      res.write(`event: refresh\ndata:\n\n`);
   };
 
   const sendNotifications = ({

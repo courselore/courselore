@@ -14,9 +14,6 @@
 Turn off upload by copy paste and drag and drop
 Message editor isnt taking whole width, flex 1
 
-Event destination should be objects
-
-
 Fancy welcome email
 Trim name of course
 Chrckboxes that arent checkboxes are confusing
