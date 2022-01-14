@@ -1,16 +1,16 @@
 # Backlog
 
-- Review all uses of `content` and distinguish because `contentSource` and `contentProcessed`.
+- Review all uses of `content` and distinguish `contentSource` and `contentProcessed`.
 - Improve treatment of footnotes:
   - Change icon
   - Namespace `id`s.
-- Test everything in different browsers & devices.
 - Revisit unread management:
   - Don’t store all readings, but only the latest for a given conversation.
   - Line to separate new messages instead of little unread indicator.
   - Or maybe not, because then we can have features such as (`person ___ read this message at ___`).
   - Also, we could attach reactions to the reading, for example, likes & endorsements
     - But then we’d be associating personal data (when the reading happened) with data about messages (whether it was liked). The first should be deleted when the person leaves the course; the second shouldn’t.
+- Test everything in different browsers & devices.
 
 ### Performance
 
