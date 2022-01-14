@@ -1,7 +1,6 @@
 # Backlog
 
 - Improve treatment of footnotes:
-  - `.href`
   - `.name`
 - Review README for stuff to put on the home page and for consistency in terms of KaTeX & Shiki ordering.
 - Review all uses of `content` and distinguish `contentSource` and `contentProcessed`.
