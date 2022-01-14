@@ -24,9 +24,9 @@
 ### Performance
 
 - Remove static CSS from every request.
-- Cache Markdown parsing.
+- Cache content processing.
   - Similar to Discourse’s `rebake` task.
-  - In `markdownProcessor`, decouple the computation of `mentions` from the process of decoration.
+  - In `contentProcessor`, decouple the computation of `mentions` from the process of decoration.
     - Revisit notifications and other potential consumer of the `mentions` information, which aren’t working right now.
       - I left them broken because the decoration processes includes resolving `#234` references, which shouldn’t be processed for everyone (for example, in full-text search plain text).
 - Pagination.
@@ -117,14 +117,14 @@
 - Filter by date.
 - Show only conversations with unread messages.
 
-### Markdown Editor
+### Content Editor
 
 - Press ↑ to edit previously sent message.
 - Templates for questions (like GitHub Issues).
 - Reuse answers.
 - Paste tables from Excel and have them formatted as Markdown tables.
 
-### Markdown Processor
+### Content Processor
 
 - Code blocks don’t include the position information, so selecting text & quoting on an answer doesn’t work.
 - Emoji with the `:smile:` form.
@@ -196,13 +196,12 @@
   - Do the morphdom diff on the server (this is necessary for correctness as well; see what happens when you’re editing a message and a new message is submitted, causing a refresh).
   - Render views asynchronously.
   - Pre-render reusable CSS (for example, the design system) and move it out of every HTML.
-  - Pre-render Markdown.
   - Look for more database indices that may be necessary.
   - n+1 queries:
     - Cases:
       - `getConversation()`.
       - `getMessage()`.
-      - Treatment of @mentions in Markdown processor.
+      - Treatment of @mentions in Content processor.
       - Finding which enrollments to notify (not exactly an n+1, but we’re filtering in JavaScript what could maybe filtered in SQL (if we’re willing to use the `IN` operator)).
     - Potential solutions:
       - Single follow-up query with `IN` operator (but then you end up with a bunch of prepared statements in the cache).
