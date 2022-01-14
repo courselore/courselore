@@ -1,10 +1,6 @@
 # Backlog
 
 - Improve treatment of footnotes:
-  - Fix links
-  - `TODO`
-  - Change icon
-  - Namespace `id`s.
   - `.href`
   - `.element`
 - Review README for stuff to put on the home page and for consistency in terms of KaTeX & Shiki ordering.
