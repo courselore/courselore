@@ -4055,8 +4055,8 @@ export default async function courselore({
                 <h2 class="heading--display">Open-Source</h2>
               </div>
               <p class="secondary">
-                Easy to self-host for maximum privacy & control. Welcoming to
-                first-time contributors.
+                Easy to self-host for maximum privacy & control. <br />
+                Welcoming to first-time contributors.
               </p>
             </div>
           </div>
@@ -4297,7 +4297,7 @@ export default async function courselore({
                 >
                   <i class="bi bi-info-circle"></i>
                 </button>
-                  Syntax highlighting
+                  Syntax highlighting
                 <button
                   type="button"
                   class="button button--tight button--tight--inline button--inline button--transparent"

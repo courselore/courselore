@@ -11,9 +11,6 @@
 - Call to action at the bottom of home page.
 - Better printscreens without `lorem ipsum`.
 
-
-Double check width of mobile image on home page
-Check photos for line break issue
 Turn off upload by copy paste and drag and drop
 Message editor isnt taking whole width, flex 1
 
