@@ -3108,10 +3108,10 @@ export default async function courselore({
                             </div>
                             $${user.biography === null
                               ? html``
-                              : markdownProcessor({
+                              : contentProcessor({
                                   req,
                                   res,
-                                  markdown: user.biography,
+                                  content: user.biography,
                                 }).html}
                           </div>
                         `,
@@ -8895,10 +8895,10 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                           <details class="details">
                             <summary>Biography</summary>
                             <div>
-                              $${markdownProcessor({
+                              $${contentProcessor({
                                 req,
                                 res,
-                                markdown: enrollment.user.biography,
+                                content: enrollment.user.biography,
                               }).html}
                             </div>
                           </details>
@@ -13616,7 +13616,7 @@ ${value}</textarea
     })
   );
 
-  const markdownProcessor = await (async () => {
+  const contentProcessor = await (async () => {
     const unifiedProcessor = unified()
       .use(remarkParse)
       .use(remarkGfm)
@@ -13656,7 +13656,7 @@ ${value}</textarea
     return ({
       req,
       res,
-      markdown,
+      content,
       search = undefined,
       decorate = false,
     }: {
@@ -13668,19 +13668,19 @@ ${value}</textarea
         Partial<IsEnrolledInCourseMiddlewareLocals>
       >;
       res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>;
-      markdown: Markdown;
+      content: Markdown;
       search?: string | string[] | undefined;
       decorate?: boolean;
     }): { html: HTML; text: string; mentions: Set<string> } => {
       const mentions = new Set<string>();
 
-      const markdownElement = JSDOM.fragment(html`
+      const contentElement = JSDOM.fragment(html`
         <div class="markdown">
-          $${unifiedProcessor.processSync(markdown).toString()}
+          $${unifiedProcessor.processSync(content).toString()}
         </div>
       `).firstElementChild!;
 
-      for (const element of markdownElement.querySelectorAll(
+      for (const element of contentElement.querySelectorAll(
         "li, td, th, dt, dd"
       ))
         element.innerHTML = [...element.childNodes].some(
@@ -13690,7 +13690,7 @@ ${value}</textarea
           ? html`<div><p>$${element.innerHTML}</p></div>`
           : html`<div>$${element.innerHTML}</div>`;
 
-      for (const element of markdownElement.querySelectorAll("details")) {
+      for (const element of contentElement.querySelectorAll("details")) {
         const summaries: Node[] = [];
         const rest: Node[] = [];
         for (const child of element.childNodes)
@@ -13730,7 +13730,7 @@ ${value}</textarea
             IsEnrolledInCourseMiddlewareLocals
           >;
 
-          for (const element of markdownElement.querySelectorAll("a")) {
+          for (const element of contentElement.querySelectorAll("a")) {
             if (element.href !== element.textContent!.trim()) continue;
             const match = element.href.match(
               new RegExp(
@@ -13913,9 +13913,9 @@ ${value}</textarea
                   break;
               }
             }
-          })(markdownElement);
+          })(contentElement);
 
-          for (const element of markdownElement.querySelectorAll("a")) {
+          for (const element of contentElement.querySelectorAll("a")) {
             const hrefMatch = element.href.match(
               new RegExp(
                 `^${escapeStringRegexp(
@@ -14035,9 +14035,9 @@ ${value}</textarea
                   break;
               }
             }
-          })(markdownElement);
+          })(contentElement);
 
-        for (const element of markdownElement.querySelectorAll("a")) {
+        for (const element of contentElement.querySelectorAll("a")) {
           if (element.href.startsWith(baseURL)) continue;
           element.setAttribute("target", "_blank");
           element.setAttribute(
@@ -14059,8 +14059,8 @@ ${value}</textarea
       }
 
       return {
-        html: markdownElement.outerHTML,
-        text: markdownElement.textContent!,
+        html: contentElement.outerHTML,
+        text: contentElement.textContent!,
         mentions,
       };
     };
@@ -14080,10 +14080,10 @@ ${value}</textarea
       partialLayout({
         req,
         res,
-        body: markdownProcessor({
+        body: contentProcessor({
           req,
           res,
-          markdown: req.body.content,
+          content: req.body.content,
           decorate: res.locals.course !== undefined,
         }).html,
       })
@@ -14641,10 +14641,10 @@ ${value}</textarea
         typeof req.body.content === "string" &&
         req.body.content.trim() !== ""
       ) {
-        const processedContent = markdownProcessor({
+        const processedContent = contentProcessor({
           req,
           res,
-          markdown: req.body.content,
+          content: req.body.content,
         });
         const message = database.get<{
           id: number;
@@ -17062,10 +17062,10 @@ ${value}</textarea
                                                 });
                                               `}"
                                             >
-                                              $${markdownProcessor({
+                                              $${contentProcessor({
                                                 req,
                                                 res,
-                                                markdown: message.content,
+                                                content: message.content,
                                                 search: req.query.search,
                                                 decorate: true,
                                               }).html}
@@ -17806,10 +17806,10 @@ ${value}</textarea
       let notify = () => {};
       if (shouldAppendToMostRecentMessage) {
         const content = `${mostRecentMessage.content}\n\n${req.body.content}`;
-        const processedContent = markdownProcessor({
+        const processedContent = contentProcessor({
           req,
           res,
-          markdown: content,
+          content: content,
         });
         database.run(
           sql`
@@ -17827,10 +17827,10 @@ ${value}</textarea
           `
         );
       } else {
-        const processedContent = markdownProcessor({
+        const processedContent = contentProcessor({
           req,
           res,
-          markdown: req.body.content,
+          content: req.body.content,
         });
         database.run(
           sql`
@@ -17980,14 +17980,14 @@ ${value}</textarea
             );
         }
 
-      let processedContent: ReturnType<typeof markdownProcessor>;
+      let processedContent: ReturnType<typeof contentProcessor>;
       if (typeof req.body.content === "string")
         if (req.body.content.trim() === "") return next("validation");
         else {
-          processedContent = markdownProcessor({
+          processedContent = contentProcessor({
             req,
             res,
-            markdown: req.body.content,
+            content: req.body.content,
           });
           database.run(
             sql`
@@ -18792,10 +18792,10 @@ ${value}</textarea
                         casual.sentences(lodash.random(1, 6))
                       )
                       .join("\n\n");
-              const processedContent = markdownProcessor({
+              const processedContent = contentProcessor({
                 req,
                 res,
-                markdown: content,
+                content: content,
               });
               const message = database.get<{ id: number }>(
                 sql`
