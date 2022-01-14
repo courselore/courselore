@@ -1,7 +1,5 @@
 # Backlog
 
-### Chat
-
 - Review all uses of `content` and distinguish because `contentSource` and `contentProcessed`.
 - Improve treatment of footnotes:
   - Change icon
@@ -13,17 +11,11 @@
   - Or maybe not, because then we can have features such as (`person ___ read this message at ___`).
   - Also, we could attach reactions to the reading, for example, likes & endorsements
     - But then we’d be associating personal data (when the reading happened) with data about messages (whether it was liked). The first should be deleted when the person leaves the course; the second shouldn’t.
-- Messages display:
-  - “Truncate” long messages.
-- Scroll on new message.
-- Latency compensation when sending message.
-- Currently typing.
-- Messages features:
-  - Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
-  - Bookmarks / flags / saved items. These are personal, for example, for something you have to follow up on.
 
 ### Performance
 
+- Scroll on new message.
+- Latency compensation when sending message.
 - Remove static CSS from every request.
 - Cache content processing.
   - Similar to Discourse’s `rebake` task.
@@ -78,6 +70,10 @@
 
 ### Conversations
 
+- Currently typing (particularly on chat).
+- “Truncate” long messages (particularly on chat).
+- Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
+- Bookmarks / flags / saved items. These are personal, for example, for something you have to follow up on.
 - Make the distinction between the types more prominent. Separate questions from chats in the list of conversations, for example.
 - Change the visualization of “types” a little more, for example, make announcements pop up.
   - Improve display of endorsements & answers (on the sidebar, include number of answers).
