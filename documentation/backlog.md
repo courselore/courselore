@@ -1,13 +1,11 @@
 # Backlog
 
-- Review README for stuff to put on the home page and for consistency in terms of KaTeX & Shiki ordering.
-- Review all uses of `content` and distinguish `contentSource` and `contentProcessed`.
 - Line to separate unread messages instead of little unread indicator.
 
 ### Performance
 
 - Cache content processing.
-  - Similar to Discourse’s `rebake` task.
+  - Review all uses of `content` and distinguish `contentSource` and `contentProcessed`.
   - In `contentProcessor`, decouple the computation of `mentions` from the process of decoration.
     - Revisit notifications and other potential consumer of the `mentions` information, which aren’t working right now.
       - I left them broken because the decoration processes includes resolving `#234` references, which shouldn’t be processed for everyone (for example, in full-text search plain text).

@@ -4014,7 +4014,7 @@ export default async function courselore({
                 <h2 class="heading--display">Forum & Chat</h2>
               </div>
               <p class="secondary">
-                Question & answer. Announcements. Answer endorsements.
+                Question & answer. Announcements. Comprehensive search.
                 Notifications.
               </p>
             </div>

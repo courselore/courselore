@@ -11,14 +11,11 @@
 
 ### Features
 
-- Forum & chat.
-- Best-in-class rich-text messages with Markdown & LaTeX.
-- Anonymity & private questions.
-- Comprehensive search & filters.
-- Straightforward invitation & onboarding system.
-- Modern, clean interface.
-- Works great on phones & on Dark Mode.
-- Open-source & easy to self-host.
+- **Forum & Chat.** Question & answer. Announcements. Comprehensive search. Notifications.
+- **For Education.** Anonymity. Private questions. Straightforward invitation system.
+- **Open-Source.** Easy to self-host for maximum privacy & control. Welcoming to first-time contributors.
+- **Carefully Designed.** Dark Mode. First-class mobile support.
+- **Rich-Text Messages.** [Markdown](https://guides.github.com/features/mastering-markdown/). [LaTeX](https://katex.org/docs/supported.html). [Syntax highlighting](https://shiki.matsu.io/).
 
 ### Documentation
 
