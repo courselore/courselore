@@ -4336,6 +4336,8 @@ export default async function courselore({
                 value: markdown`
 # Reasons to **Love** CourseLore’s Message Editor
 
+Add images & attachments by simply drag-and-dropping or copy-and-pasting.
+
 Easy to learn for people who are new to [Markdown](https://guides.github.com/features/mastering-markdown/).
 
 Support for [mathematical formulas](https://katex.org/docs/supported.html):
