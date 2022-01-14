@@ -4485,6 +4485,50 @@ console.log(highlighter.codeToHtml(\`console.log("shiki");\`, "js"));
               </div>
             </div>
           </div>
+
+          <div
+            style="${css`
+              font-size: var(--font-size--xl);
+              line-height: var(--line-height--xl);
+              font-weight: var(--font-weight--bold);
+              display: flex;
+              gap: var(--space--8);
+              justify-content: center;
+              padding: var(--space--36) var(--space--8);
+              align-items: center;
+              @media (max-width: 599px) {
+                flex-direction: column;
+              }
+            `}"
+          >
+            $${res.locals.user === undefined
+              ? html`
+                  <a href="${baseURL}/sign-up" class="button button--blue">
+                    <i class="bi bi-person-plus"></i>
+                    Sign up
+                  </a>
+                  <a
+                    href="${baseURL}/sign-in"
+                    class="button button--transparent"
+                  >
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    Sign in
+                  </a>
+                `
+              : html`
+                  <a href="${baseURL}/" class="button button--blue">
+                    Return to CourseLore
+                    <i class="bi bi-chevron-right"></i>
+                  </a>
+                `}
+            <a
+              href="https://github.com/courselore/courselore"
+              class="button button--transparent"
+            >
+              <i class="bi bi-file-earmark-code"></i>
+              Source Code
+            </a>
+          </div>
         `,
       })
     );
