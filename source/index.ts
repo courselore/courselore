@@ -4363,6 +4363,128 @@ console.log(highlighter.codeToHtml(\`console.log("shiki");\`, "js"));
               })}
             </div>
           </div>
+
+          <div
+            style="${css`
+              background-color: var(--color--gray--medium--100);
+              @media (prefers-color-scheme: dark) {
+                background-color: var(--color--gray--medium--800);
+              }
+              display: flex;
+              justify-content: center;
+              padding: var(--space--32) var(--space--8);
+              align-items: center;
+              @media (max-width: 889px) {
+                flex-direction: column;
+                gap: var(--space--14);
+              }
+              @media (min-width: 890px) {
+                gap: var(--space--24);
+              }
+            `}"
+          >
+            <div
+              style="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+                max-width: var(--width--prose);
+                align-items: center;
+              `}"
+            >
+              <p
+                class="heading--display"
+                style="${css`
+                  font-size: var(--font-size--5xl);
+                  line-height: var(--line-height--5xl);
+                  font-weight: var(--font-weight--black);
+                  align-items: center;
+                `}"
+              >
+                The Team
+              </p>
+            </div>
+
+            <div
+              style="${css`
+                max-width: var(--width--sm);
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--8);
+                & > * {
+                  display: flex;
+                  gap: var(--space--4);
+                  align-items: center;
+                  & > img {
+                    width: var(--space--24);
+                    border-radius: var(--border-radius--circle);
+                  }
+                }
+              `}"
+            >
+              <div>
+                <img
+                  src="/team/scott-smith.png"
+                  alt="Dr. Scott Smith"
+                  class="img"
+                />
+                <p>
+                  <a
+                    href="https://www.cs.jhu.edu/~scott/"
+                    class="button button--tight button--tight--inline button--inline button--transparent strong"
+                  >
+                    Dr. Scott Smith
+                  </a>
+                  <br />
+                  <span class="secondary">
+                    CEO. Professor of Computer Science at The Johns Hopkins
+                    University.
+                  </span>
+                </p>
+              </div>
+
+              <div>
+                <img
+                  src="/team/ali-madooei.png"
+                  alt="Dr. Ali Madooei"
+                  class="img"
+                />
+                <p>
+                  <a
+                    href="https://www.cs.jhu.edu/faculty/ali-madooei/"
+                    class="button button--tight button--tight--inline button--inline button--transparent strong"
+                  >
+                    Dr. Ali Madooei
+                  </a>
+                  <br />
+                  <span class="secondary">
+                    Consultant. Lecturer of Computer Science at The Johns
+                    Hopkins University.
+                  </span>
+                </p>
+              </div>
+
+              <div>
+                <img
+                  src="/team/leandro-facchinetti.png"
+                  alt="Leandro Facchinetti"
+                  class="img"
+                />
+                <p>
+                  <a
+                    href="https://leafac.com"
+                    class="button button--tight button--tight--inline button--inline button--transparent strong"
+                  >
+                    Leandro Facchinetti
+                  </a>
+                  <br />
+                  <span class="secondary">
+                    Software Developer & Designer.
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
         `,
       })
     );
