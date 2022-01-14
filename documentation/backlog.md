@@ -9,15 +9,9 @@
 ### Chat
 
 - Call to action at the bottom of home page.
-- Better printscreens without `lorem ipsum`.
-
-Turn off upload by copy paste and drag and drop
-Message editor isnt taking whole width, flex 1
-
-Fancy welcome email
-Trim name of course
-Chrckboxes that arent checkboxes are confusing
-Using the javascript event loop has another issue besides not persisting: there’s no contention mechanism, which opens it up for dos attacks
+- Turn off upload by copy paste and drag and drop.
+- Message editor isnt taking whole width, flex 1.
+- Fancy up welcome email.
 
 ---
 
@@ -199,8 +193,14 @@ Using the javascript event loop has another issue besides not persisting: there�
   - https://www.sli.do
   - https://pigeonholelive.com/features-qna/
 
+### Homepage
+
+- Better printscreens without `lorem ipsum`.
+
 ### Infrastructure
 
+- Checkboxes that don’t have a visual indication may be confusing.
+- Using the JavaScript event loop for background jobs has another issue besides not persisting: there’s no contention mechanism, which opens it up for DOS attacks.
 - Right click menus on stuff.
 - Places where we show `administratorEmail` to report bugs could be forms instead.
 - Using `getConversation()` to enforce permissions may not be a great idea. It limits the number of search results in a weird way, that even leaks a bit of data. Also, it isn’t the most performant thing, probably (see point about n+1 queries). Maybe a better idea would be to `WHERE` the permissions everywhere, or use a database view.
