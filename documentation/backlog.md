@@ -9,14 +9,16 @@
 
 ### Performance
 
-- Scroll on new message.
-- Latency compensation when sending message.
-- Remove static CSS from every request.
 - Cache content processing.
   - Similar to Discourse’s `rebake` task.
   - In `contentProcessor`, decouple the computation of `mentions` from the process of decoration.
     - Revisit notifications and other potential consumer of the `mentions` information, which aren’t working right now.
       - I left them broken because the decoration processes includes resolving `#234` references, which shouldn’t be processed for everyone (for example, in full-text search plain text).
+- Live reloading:
+  - Do the morphdom on the server.
+  - Scroll on new message.
+  - Latency compensation when sending message.
+- Remove static CSS from every request.
 - Pagination.
   - Messages in conversation.
   - Conversations on sidebar.
