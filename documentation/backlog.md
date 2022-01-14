@@ -7,7 +7,6 @@
   - Change icon
   - Namespace `id`s.
 - Test everything in different browsers & devices.
-- `position: sticky` headers (showing author name) in messages?
 - Revisit unread management:
   - Don’t store all readings, but only the latest for a given conversation.
   - Line to separate new messages instead of little unread indicator.
@@ -90,6 +89,7 @@
 - Assign questions to CAs.
 - Scroll the conversations list to the current conversation doesn’t work on mobile.
 - Save drafts of conversations you’re creating.
+- `position: sticky` headers (showing author name) in messages?
 
 ### Anonymity
 
