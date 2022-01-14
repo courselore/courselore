@@ -8,6 +8,25 @@
 
 ### Chat
 
+- Call to action at the bottom of home page.
+- Better printscreens without `lorem ipsum`.
+
+
+Double check width of mobile image on home page
+Check photos for line break issue
+Turn off upload by copy paste and drag and drop
+Message editor isnt taking whole width, flex 1
+
+Event destination should be objects
+
+
+Fancy welcome email
+Trim name of course
+Chrckboxes that arent checkboxes are confusing
+Using the javascript event loop has another issue besides not persisting: there’s no contention mechanism, which opens it up for dos attacks
+
+---
+
 - Rename `markdownEditor` & `markdownProcessor` into `messageEditor` & `messageProcessor`.
 - Double check how footnotes work. If they depend on `id`s, then we need to namespace them.
 - Test everything in different browsers & devices.
@@ -188,6 +207,7 @@
 
 ### Infrastructure
 
+- Right click menus on stuff.
 - Places where we show `administratorEmail` to report bugs could be forms instead.
 - Using `getConversation()` to enforce permissions may not be a great idea. It limits the number of search results in a weird way, that even leaks a bit of data. Also, it isn’t the most performant thing, probably (see point about n+1 queries). Maybe a better idea would be to `WHERE` the permissions everywhere, or use a database view.
 - Performance:
