@@ -15,8 +15,6 @@ import { Database, sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
 import { css, extractInlineStyles } from "@leafac/css";
 import javascript, { JavaScript } from "@leafac/javascript";
-type Markdown = string;
-import markdown from "tagged-template-noop";
 import dedent from "dedent";
 
 import { unified } from "unified";
@@ -1238,7 +1236,7 @@ export default async function courselore({
                 }
               }
 
-              .markdown {
+              .content--processed {
                 &,
                 div,
                 figure,
@@ -3111,7 +3109,7 @@ export default async function courselore({
                               : contentProcessor({
                                   req,
                                   res,
-                                  content: user.biography,
+                                  contentSource: user.biography,
                                 }).html}
                           </div>
                         `,
@@ -4332,33 +4330,32 @@ export default async function courselore({
               $${contentEditor({
                 req,
                 res,
-                // prettier-ignore
-                value: markdown`
-# Reasons to **Love** CourseLore’s Message Editor
+                value: dedent`
+                  # Reasons to **Love** CourseLore’s Message Editor
 
-**Easy** to learn for people who are new to [Markdown](https://guides.github.com/features/mastering-markdown/).
+                  **Easy** to learn for people who are new to [Markdown](https://guides.github.com/features/mastering-markdown/).
 
-Support for [mathematical formulas](https://katex.org/docs/supported.html):
+                  Support for [mathematical formulas](https://katex.org/docs/supported.html):
 
-$$
+                  $$
 
-X_k = \\sum_{n=0}^{N-1} x_n \\cdot e^{-\\frac{i2\\pi}{N}kn}
+                  X_k = \sum_{n=0}^{N-1} x_n \cdot e^{-\frac{i2\pi}{N}kn}
 
-$$
+                  $$
 
-Gorgeous [syntax highlighter](https://shiki.matsu.io/):
+                  Gorgeous [syntax highlighter](https://shiki.matsu.io/):
 
-\`\`\`javascript
-import shiki from "shiki";
+                  \`\`\`javascript
+                  import shiki from "shiki";
 
-const highlighter = await shiki.getHighlighter({
-  theme: "nord",
-});
-console.log(highlighter.codeToHtml(\`console.log("shiki");\`, "js"));
-\`\`\`
+                  const highlighter = await shiki.getHighlighter({
+                    theme: "nord",
+                  });
+                  console.log(highlighter.codeToHtml(\`console.log("shiki");\`, "js"));
+                  \`\`\`
 
-Add images & attachments by simply drag-and-dropping or copy-and-pasting.
-`,
+                  Add images & attachments by simply drag-and-dropping or copy-and-pasting.
+                `,
                 required: false,
                 skipIsModified: true,
                 expanded: true,
@@ -8898,7 +8895,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                               $${contentProcessor({
                                 req,
                                 res,
-                                content: enrollment.user.biography,
+                                contentSource: enrollment.user.biography,
                               }).html}
                             </div>
                           </details>
@@ -13550,14 +13547,14 @@ ${value}</textarea
       for (const attachment of attachments) {
         if (attachment.truncated)
           return res.status(413).send(
-            markdown`
-<!-- Failed to upload: Attachments must be smaller than 10MB. -->
-            `.trim()
+            dedent`
+              <!-- Failed to upload: Attachments must be smaller than 10MB. -->
+            `
           );
         attachment.name = filenamify(attachment.name, { replacement: "-" });
         if (attachment.name.trim() === "") return next("validation");
       }
-      const attachmentsMarkdowns: Markdown[] = [];
+      const attachmentsContentSources: string[] = [];
       for (const attachment of attachments) {
         const folder = cryptoRandomString({
           length: 20,
@@ -13579,8 +13576,8 @@ ${value}</textarea
               throw new Error("Metadata unavailable");
             const maximumWidth = 1152; /* var(--width--6xl) */
             if (metadata.width <= maximumWidth) {
-              attachmentsMarkdowns.push(
-                markdown`<img src="${href}" alt="${attachment.name}" width="${
+              attachmentsContentSources.push(
+                `<img src="${href}" alt="${attachment.name}" width="${
                   metadata.density < 100 ? metadata.width / 2 : metadata.width
                 }" />`
               );
@@ -13599,8 +13596,8 @@ ${value}</textarea
               .toFile(
                 path.join(dataDirectory, `files/${folder}/${nameThumbnail}`)
               );
-            attachmentsMarkdowns.push(
-              markdown`[<img src="${baseURL}/files/${folder}/${encodeURIComponent(
+            attachmentsContentSources.push(
+              `[<img src="${baseURL}/files/${folder}/${encodeURIComponent(
                 nameThumbnail
               )}" alt="${attachment.name}" width="${
                 maximumWidth / 2
@@ -13610,9 +13607,9 @@ ${value}</textarea
           } catch (error) {
             console.error(error);
           }
-        attachmentsMarkdowns.push(markdown`[${attachment.name}](${href})`);
+        attachmentsContentSources.push(`[${attachment.name}](${href})`);
       }
-      res.send(attachmentsMarkdowns.join("\n\n"));
+      res.send(attachmentsContentSources.join("\n\n"));
     })
   );
 
@@ -13656,7 +13653,7 @@ ${value}</textarea
     return ({
       req,
       res,
-      content,
+      contentSource,
       search = undefined,
       decorate = false,
     }: {
@@ -13668,15 +13665,15 @@ ${value}</textarea
         Partial<IsEnrolledInCourseMiddlewareLocals>
       >;
       res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>;
-      content: Markdown;
+      contentSource: string;
       search?: string | string[] | undefined;
       decorate?: boolean;
     }): { html: HTML; text: string; mentions: Set<string> } => {
       const mentions = new Set<string>();
 
       const contentElement = JSDOM.fragment(html`
-        <div class="markdown">
-          $${unifiedProcessor.processSync(content).toString()}
+        <div class="content--processed">
+          $${unifiedProcessor.processSync(contentSource).toString()}
         </div>
       `).firstElementChild!;
 
@@ -14083,7 +14080,7 @@ ${value}</textarea
         body: contentProcessor({
           req,
           res,
-          content: req.body.content,
+          contentSource: req.body.content,
           decorate: res.locals.course !== undefined,
         }).html,
       })
@@ -14644,7 +14641,7 @@ ${value}</textarea
         const processedContent = contentProcessor({
           req,
           res,
-          content: req.body.content,
+          contentSource: req.body.content,
         });
         const message = database.get<{
           id: number;
@@ -17065,7 +17062,7 @@ ${value}</textarea
                                               $${contentProcessor({
                                                 req,
                                                 res,
-                                                content: message.content,
+                                                contentSource: message.content,
                                                 search: req.query.search,
                                                 decorate: true,
                                               }).html}
@@ -17809,7 +17806,7 @@ ${value}</textarea
         const processedContent = contentProcessor({
           req,
           res,
-          content: content,
+          contentSource: content,
         });
         database.run(
           sql`
@@ -17830,7 +17827,7 @@ ${value}</textarea
         const processedContent = contentProcessor({
           req,
           res,
-          content: req.body.content,
+          contentSource: req.body.content,
         });
         database.run(
           sql`
@@ -17987,7 +17984,7 @@ ${value}</textarea
           processedContent = contentProcessor({
             req,
             res,
-            content: req.body.content,
+            contentSource: req.body.content,
           });
           database.run(
             sql`
@@ -18795,7 +18792,7 @@ ${value}</textarea
               const processedContent = contentProcessor({
                 req,
                 res,
-                content: content,
+                contentSource: content,
               });
               const message = database.get<{ id: number }>(
                 sql`
