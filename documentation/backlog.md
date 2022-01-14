@@ -3,7 +3,9 @@
 ### Chat
 
 - Review all uses of `content` and distinguish because `contentSource` and `contentProcessed`.
-- Double check how footnotes work. If they depend on `id`s, then we need to namespace them.
+- Improve treatment of footnotes:
+  - Change icon
+  - Namespace `id`s.
 - Test everything in different browsers & devices.
 - `position: sticky` headers (showing author name) in messages?
 - Revisit unread management:
