@@ -125,6 +125,7 @@
 
 ### Content Processor
 
+- `.katex` is overflowing in the `y` axis unnecessarily. (See, for example, the example we give on the home page.)
 - Code blocks don’t include the position information, so selecting text & quoting on an answer doesn’t work.
 - Emoji with the `:smile:` form.
 - Proxy hotlinked images (particularly if served with HTTP because of insecure content): https://github.com/atmos/camo
