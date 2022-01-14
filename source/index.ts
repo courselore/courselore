@@ -13761,8 +13761,9 @@ ${value}</textarea
           >;
 
           for (const element of contentElement.querySelectorAll("a")) {
-            if (element.href !== element.textContent!.trim()) continue;
-            const match = element.href.match(
+            const href = element.getAttribute("href");
+            if (href !== element.textContent!.trim()) continue;
+            const match = href.match(
               new RegExp(
                 `^${escapeStringRegexp(
                   baseURL
@@ -13946,7 +13947,9 @@ ${value}</textarea
           })(contentElement);
 
           for (const element of contentElement.querySelectorAll("a")) {
-            const hrefMatch = element.href.match(
+            const href = element.getAttribute("href");
+            if (href === null) continue;
+            const hrefMatch = href.match(
               new RegExp(
                 `^${escapeStringRegexp(
                   baseURL
