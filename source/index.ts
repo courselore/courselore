@@ -12619,26 +12619,9 @@ console.log(highlighter.codeToHtml(\`console.log("shiki");\`, "js"));
                       `,
                     })},
                   });
-                  ${
-                    res.locals.user === undefined
-                      ? javascript`
-                          tippy(this, {
-                            trigger: "click",
-                            theme: "rose",
-                            content: "You must sign in to upload images.",
-                          });
-                        `
-                      : javascript``
-                  }
                 `}"
                 onclick="${javascript`
-                  ${
-                    res.locals.user === undefined
-                      ? javascript``
-                      : javascript`
-                          this.closest(".markdown-editor").querySelector(".attachments").click();
-                        `
-                  }
+                  this.closest(".markdown-editor").querySelector(".attachments").click();
                 `}"
               >
                 <i class="bi bi-image"></i>
@@ -12666,26 +12649,9 @@ console.log(highlighter.codeToHtml(\`console.log("shiki");\`, "js"));
                       `,
                     })},
                   });
-                  ${
-                    res.locals.user === undefined
-                      ? javascript`
-                          tippy(this, {
-                            trigger: "click",
-                            theme: "rose",
-                            content: "You must sign in to upload attachments.",
-                          });
-                        `
-                      : javascript``
-                  }
                 `}"
                 onclick="${javascript`
-                  ${
-                    res.locals.user === undefined
-                      ? javascript``
-                      : javascript`
-                          this.closest(".markdown-editor").querySelector(".attachments").click();
-                        `
-                  }
+                  this.closest(".markdown-editor").querySelector(".attachments").click();
                 `}"
               >
                 <i class="bi bi-paperclip"></i>
