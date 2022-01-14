@@ -1,11 +1,10 @@
 # Backlog
 
-- Review all uses of `content` and distinguish `contentSource` and `contentProcessed`.
 - Improve treatment of footnotes:
   - Change icon
   - Namespace `id`s.
+- Review all uses of `content` and distinguish `contentSource` and `contentProcessed`.
 - Line to separate unread messages instead of little unread indicator.
-- Test everything in different browsers & devices.
 
 ### Performance
 
@@ -23,6 +22,7 @@
   - Messages in conversation.
   - Conversations on sidebar.
 - Test with thousands of messages.
+- Test everything in different browsers & devices.
 
 ### Advanced Access Control
 
