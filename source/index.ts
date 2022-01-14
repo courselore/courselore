@@ -12712,7 +12712,7 @@ console.log(highlighter.codeToHtml(\`console.log("shiki");\`, "js"));
                             onHidden: () => {
                               tooltip.destroy();
                             },
-                            content: "You must sign in to upload.",
+                            content: "You must sign in to upload files.",
                           });
                         `
                       : javascript``
