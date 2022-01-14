@@ -2,7 +2,6 @@
 
 ### Chat
 
-- Turn off upload by copy paste and drag and drop.
 - Message editor isnt taking whole width, flex 1.
 - Fancy up welcome email.
 
