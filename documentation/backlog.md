@@ -1,11 +1,5 @@
 # Backlog
 
-### First Public Release
-
-**Soft Deadline:** 2022-01-15
-
-**Hard Deadline:** 2022-02-01
-
 ### Chat
 
 - Call to action at the bottom of home page.
@@ -61,6 +55,7 @@
 - A course about CourseLore for collecting feedback.
   - Put invitation link on the page somewhere.
 - Create separate staging & production versions.
+- Edit self-hosting document to remove “we’re still in beta” note.
 
 ### Users
 
