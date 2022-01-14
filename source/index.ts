@@ -15921,16 +15921,58 @@ ${value}</textarea
                               $${messages.map(
                                 (message) =>
                                   html`
+                                    $${message === firstUnreadMessage &&
+                                    message !== messages[0]
+                                      ? html`
+                                          <div
+                                            style="${css`
+                                              margin: var(--space--2)
+                                                var(--space--0);
+                                              display: flex;
+                                              gap: var(--space--4);
+                                              align-items: center;
+                                            `}"
+                                          >
+                                            <hr
+                                              class="separator"
+                                              style="${css`
+                                                flex: 1;
+                                                border-color: var(
+                                                  --color--rose--600
+                                                );
+                                                @media (prefers-color-scheme: dark) {
+                                                  border-color: var(
+                                                    --color--rose--500
+                                                  );
+                                                }
+                                              `}"
+                                            />
+                                            <span class="heading text--rose">
+                                              New
+                                            </span>
+                                            <hr
+                                              class="separator"
+                                              style="${css`
+                                                flex: 1;
+                                                border-color: var(
+                                                  --color--rose--600
+                                                );
+                                                @media (prefers-color-scheme: dark) {
+                                                  border-color: var(
+                                                    --color--rose--500
+                                                  );
+                                                }
+                                              `}"
+                                            />
+                                          </div>
+                                        `
+                                      : html``}
                                     $${res.locals.conversation.type === "chat"
                                       ? html`
                                           <div
                                             hidden
-                                            class="date-separator secondary"
+                                            class="date-separator"
                                             style="${css`
-                                              font-size: var(--font-size--xs);
-                                              line-height: var(
-                                                --line-height--xs
-                                              );
                                               margin: var(--space--2)
                                                 var(--space--0);
                                               display: flex;
@@ -15948,6 +15990,7 @@ ${value}</textarea
                                               datetime="${new Date(
                                                 message.createdAt
                                               ).toISOString()}"
+                                              class="heading secondary"
                                               oninteractive="${javascript`
                                                 const element = this;
                                                 leafac.relativizeDateElement(element);
@@ -16796,143 +16839,94 @@ ${value}</textarea
 
                                             <div
                                               style="${css`
-                                                display: grid;
-                                                & > * {
-                                                  grid-area: 1 / 1;
-                                                }
+                                                display: flex;
+                                                gap: var(--space--2);
                                               `}"
                                             >
-                                              $${message.reading === null
-                                                ? html`
-                                                    <button
-                                                      class="button button--tight button--tight--inline button--blue"
-                                                      style="${css`
-                                                        width: var(--space--2);
-                                                        height: var(--space--2);
-                                                        @media (max-width: 629px) {
-                                                          transform: translate(
-                                                            var(--space---2),
-                                                            var(--space--2-5)
-                                                          );
-                                                        }
-                                                        @media (min-width: 630px) {
-                                                          transform: translate(
-                                                            var(--space---3-5),
-                                                            var(--space--2-5)
-                                                          );
-                                                        }
-                                                        transition-property: var(
-                                                          --transition-property--base
-                                                        );
-                                                      `}"
-                                                      oninteractive="${javascript`
-                                                        tippy(this, {
-                                                          touch: false,
-                                                          content: "Unread Message",
-                                                        });
-                                                        window.setTimeout(() => { this.click(); }, 2000);
-                                                      `}"
-                                                      onclick="${javascript`
-                                                        this.style.opacity = 0;
-                                                        window.setTimeout(() => { this.remove(); }, 500);
-                                                      `}"
-                                                    ></button>
-                                                  `
-                                                : html``}
-
                                               <div
+                                                class="secondary"
                                                 style="${css`
+                                                  font-size: var(
+                                                    --font-size--xs
+                                                  );
+                                                  line-height: var(
+                                                    --line-height--xs
+                                                  );
+                                                  flex: 1;
                                                   display: flex;
-                                                  gap: var(--space--2);
+                                                  flex-wrap: wrap;
+                                                  align-items: baseline;
+                                                  column-gap: var(--space--4);
+                                                  row-gap: var(--space--2);
                                                 `}"
                                               >
                                                 <div
-                                                  class="secondary"
+                                                  class="strong"
                                                   style="${css`
                                                     font-size: var(
-                                                      --font-size--xs
+                                                      --font-size--sm
                                                     );
                                                     line-height: var(
-                                                      --line-height--xs
+                                                      --line-height--sm
                                                     );
-                                                    flex: 1;
-                                                    display: flex;
-                                                    flex-wrap: wrap;
-                                                    align-items: baseline;
-                                                    column-gap: var(--space--4);
-                                                    row-gap: var(--space--2);
                                                   `}"
                                                 >
-                                                  <div
-                                                    class="strong"
-                                                    style="${css`
-                                                      font-size: var(
-                                                        --font-size--sm
-                                                      );
-                                                      line-height: var(
-                                                        --line-height--sm
-                                                      );
-                                                    `}"
-                                                  >
-                                                    $${userPartial({
-                                                      req,
-                                                      res,
-                                                      enrollment:
-                                                        message.authorEnrollment,
-                                                      anonymous:
-                                                        message.anonymousAt ===
-                                                        null
-                                                          ? false
-                                                          : res.locals
-                                                              .enrollment
-                                                              .role ===
-                                                              "staff" ||
-                                                            message
-                                                              .authorEnrollment
-                                                              .id ===
-                                                              res.locals
-                                                                .enrollment.id
-                                                          ? "reveal"
-                                                          : true,
-                                                      name: highlightSearchResult(
-                                                        html`${message
-                                                          .authorEnrollment.user
-                                                          .name}`,
-                                                        req.query.search
-                                                      ),
-                                                    })}
-                                                  </div>
-
-                                                  <time
-                                                    datetime="${new Date(
-                                                      message.createdAt
-                                                    ).toISOString()}"
-                                                    oninteractive="${javascript`
-                                                      leafac.relativizeDateTimeElement(this, { capitalize: true });
-                                                    `}"
-                                                  ></time>
-
-                                                  $${message.updatedAt !== null
-                                                    ? html`
-                                                        <div>
-                                                          Updated
-                                                          <time
-                                                            datetime="${new Date(
-                                                              message.updatedAt
-                                                            ).toISOString()}"
-                                                            oninteractive="${javascript`
-                                                              leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                                                            `}"
-                                                          ></time>
-                                                        </div>
-                                                      `
-                                                    : html``}
+                                                  $${userPartial({
+                                                    req,
+                                                    res,
+                                                    enrollment:
+                                                      message.authorEnrollment,
+                                                    anonymous:
+                                                      message.anonymousAt ===
+                                                      null
+                                                        ? false
+                                                        : res.locals.enrollment
+                                                            .role === "staff" ||
+                                                          message
+                                                            .authorEnrollment
+                                                            .id ===
+                                                            res.locals
+                                                              .enrollment.id
+                                                        ? "reveal"
+                                                        : true,
+                                                    name: highlightSearchResult(
+                                                      html`${message
+                                                        .authorEnrollment.user
+                                                        .name}`,
+                                                      req.query.search
+                                                    ),
+                                                  })}
                                                 </div>
 
-                                                $${headers.length === 0
-                                                  ? actions
+                                                <time
+                                                  datetime="${new Date(
+                                                    message.createdAt
+                                                  ).toISOString()}"
+                                                  oninteractive="${javascript`
+                                                    leafac.relativizeDateTimeElement(this, { capitalize: true });
+                                                  `}"
+                                                ></time>
+
+                                                $${message.updatedAt !== null
+                                                  ? html`
+                                                      <div>
+                                                        Updated
+                                                        <time
+                                                          datetime="${new Date(
+                                                            message.updatedAt
+                                                          ).toISOString()}"
+                                                          oninteractive="${javascript`
+                                                            leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                          `}"
+                                                        ></time>
+                                                      </div>
+                                                    `
                                                   : html``}
                                               </div>
+
+                                              $${headers.length === 0
+                                                ? actions
+                                                : html``}
                                             </div>
                                           `;
                                         })()}
