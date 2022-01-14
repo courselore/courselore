@@ -13717,15 +13717,11 @@ ${value}</textarea
       for (const element of contentElement.querySelectorAll("[id]"))
         element.id += `--${namespace}`;
       for (const element of contentElement.querySelectorAll("[href]")) {
-        const href = element.getAttribute("href")!;
+        let href = element.getAttribute("href")!;
         if (href.startsWith("#")) {
-          element.setAttribute(
-            "href",
-            `#user-content-${href.slice(1)}--${namespace}`
-          );
-          continue;
-        }
-        if (!href.startsWith(baseURL)) {
+          href = `#user-content-${href.slice(1)}--${namespace}`;
+          element.setAttribute("href", href);
+        } else if (!href.startsWith(baseURL)) {
           element.setAttribute("target", "_blank");
           element.setAttribute(
             "oninteractive",
@@ -13743,6 +13739,11 @@ ${value}</textarea
             `
           );
         }
+        if (
+          href.startsWith("#user-content-user-content-fnref-") &&
+          element.innerHTML === "↩"
+        )
+          element.innerHTML = html`<i class="bi bi-arrow-return-left"></i>`;
       }
 
       if (decorate) {
