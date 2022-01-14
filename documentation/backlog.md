@@ -2,7 +2,8 @@
 
 ### Chat
 
-- Rename `markdownEditor` & `markdownProcessor` into `messageEditor` & `messageProcessor`.
+- Rename `markdownEditor` & `markdownProcessor` into `contentEditorPartial` & `contentProcessor`.
+  - `markdown`.
 - Double check how footnotes work. If they depend on `id`s, then we need to namespace them.
 - Test everything in different browsers & devices.
 - `position: sticky` headers (showing author name) in messages?

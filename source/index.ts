@@ -4329,7 +4329,7 @@ export default async function courselore({
                 max-width: calc(min(var(--width--xl), 100%));
               `}"
             >
-              $${markdownEditor({
+              $${contentEditor({
                 req,
                 res,
                 // prettier-ignore
@@ -5825,7 +5825,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
 
               <div class="label">
                 <p class="label--text">Biography</p>
-                $${markdownEditor({
+                $${contentEditor({
                   req,
                   res,
                   name: "biography",
@@ -11767,7 +11767,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
     };
   };
 
-  const markdownEditor = ({
+  const contentEditor = ({
     req,
     res,
     name = "content",
@@ -11793,7 +11793,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
     expanded?: boolean;
   }): HTML => html`
     <div
-      class="markdown-editor"
+      class="content-editor"
       style="${css`
         min-width: var(--space--0);
       `}"
@@ -11833,14 +11833,14 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
         <label>
           <input
             type="radio"
-            name="markdown-editor--mode"
+            name="content-editor--mode"
             checked
             data-skip-is-modified="true"
-            class="markdown-editor--button--write visually-hidden"
+            class="content-editor--button--write visually-hidden"
             onclick="${javascript`
-              this.closest(".markdown-editor").querySelector(".markdown-editor--write").hidden = false;
-              this.closest(".markdown-editor").querySelector(".markdown-editor--loading").hidden = true;
-              this.closest(".markdown-editor").querySelector(".markdown-editor--preview").hidden = true;
+              this.closest(".content-editor").querySelector(".content-editor--write").hidden = false;
+              this.closest(".content-editor").querySelector(".content-editor--loading").hidden = true;
+              this.closest(".content-editor").querySelector(".content-editor--preview").hidden = true;
             `}"
           />
           <span class="button button--transparent">
@@ -11851,14 +11851,14 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
         <label>
           <input
             type="radio"
-            name="markdown-editor--mode"
+            name="content-editor--mode"
             data-skip-is-modified="true"
-            class="markdown-editor--button--preview visually-hidden"
+            class="content-editor--button--preview visually-hidden"
             onclick="${javascript`
               (async () => {
-                const write = this.closest(".markdown-editor").querySelector(".markdown-editor--write");
-                const loading = this.closest(".markdown-editor").querySelector(".markdown-editor--loading");
-                const preview = this.closest(".markdown-editor").querySelector(".markdown-editor--preview");
+                const write = this.closest(".content-editor").querySelector(".content-editor--write");
+                const loading = this.closest(".content-editor").querySelector(".content-editor--loading");
+                const preview = this.closest(".content-editor").querySelector(".content-editor--preview");
                 const textarea = write.querySelector("textarea");
                 ${
                   required
@@ -11889,7 +11889,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
               res.locals.course === undefined
                 ? ""
                 : `/courses/${res.locals.course.reference}`
-            }/markdown-editor/preview", {
+            }/content-editor/preview", {
                       method: "POST",
                       body: new URLSearchParams({
                         _csrf: ${JSON.stringify(req.csrfToken())},
@@ -11911,7 +11911,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
               compact
                 ? javascript``
                 : javascript`
-                    Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+p", () => { this.click(); return false; });
+                    Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+p", () => { this.click(); return false; });
                   `
             }
               tippy(this, {
@@ -11946,7 +11946,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
           border-radius: var(--border-radius--lg);
         `}"
       >
-        <div class="markdown-editor--write">
+        <div class="content-editor--write">
           <div
             $${compact ? html`hidden` : html``}
             style="${css`
@@ -12013,7 +12013,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 type="button"
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+1", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+1", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
                     content: ${hiddenContent({
@@ -12033,7 +12033,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
                   element.focus();
                 `}"
@@ -12044,7 +12044,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 type="button"
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+2", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+2", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
                     content: ${hiddenContent({
@@ -12064,7 +12064,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
                   element.focus();
                 `}"
@@ -12075,7 +12075,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 type="button"
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+3", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+3", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
                     content: ${hiddenContent({
@@ -12095,7 +12095,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
                   element.focus();
                 `}"
@@ -12108,7 +12108,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 type="button"
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+b", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+b", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
                     content: ${hiddenContent({
@@ -12127,7 +12127,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, "**");
                   element.focus();
                 `}"
@@ -12138,7 +12138,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 type="button"
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+i", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+i", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
                     content: ${hiddenContent({
@@ -12157,7 +12157,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, "_");
                   element.focus();
                 `}"
@@ -12168,7 +12168,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 type="button"
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+k", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+k", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
                     content: ${hiddenContent({
@@ -12187,7 +12187,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, "[", "](https://example.com)");
                   element.focus();
                 `}"
@@ -12200,7 +12200,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 type="button"
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+8", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+8", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
                     content: ${hiddenContent({
@@ -12220,7 +12220,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- ", "\\n\\n");
                   element.focus();
                 `}"
@@ -12231,7 +12231,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 type="button"
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+7", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+7", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
                     content: ${hiddenContent({
@@ -12251,7 +12251,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "1. ", "\\n\\n");
                   element.focus();
                 `}"
@@ -12262,7 +12262,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 type="button"
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+9", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+9", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
                     content: ${hiddenContent({
@@ -12282,7 +12282,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ", "\\n\\n");
                   element.focus();
                 `}"
@@ -12295,7 +12295,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 type="button"
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+'", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+'", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
                     content: ${hiddenContent({
@@ -12314,7 +12314,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> ", "\\n\\n");
                   element.focus();
                 `}"
@@ -12325,7 +12325,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 type="button"
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+t", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+t", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
                     content: ${hiddenContent({
@@ -12345,7 +12345,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   const gapLength = element.selectionEnd - element.selectionStart + 2;
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "| ", " |  |\\n|" + "-".repeat(gapLength) + "|--|\\n|" + " ".repeat(gapLength) + "|  |\\n\\n");
                   element.focus();
@@ -12357,7 +12357,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 type="button"
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+d", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+d", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
                     content: ${hiddenContent({
@@ -12377,7 +12377,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>", "</summary>\\n\\nContent\\n\\n</details>\\n\\n");
                   element.focus();
                 `}"
@@ -12388,7 +12388,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 type="button"
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+f", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+f", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
                     content: ${hiddenContent({
@@ -12408,7 +12408,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, "[^", "<identifier>]\\n\\n[^<identifier>]: <footnote>");
                   element.focus();
                 `}"
@@ -12421,7 +12421,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 type="button"
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+e", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+e", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
                     content: ${hiddenContent({
@@ -12440,7 +12440,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, "\`");
                   element.focus();
                 `}"
@@ -12451,7 +12451,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 type="button"
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+e", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+e", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
                     content: ${hiddenContent({
@@ -12471,7 +12471,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`language\\n", "\\n\`\`\`\\n\\n");
                   element.focus();
                 `}"
@@ -12484,7 +12484,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 type="button"
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+e", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+e", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
                     content: ${hiddenContent({
@@ -12504,7 +12504,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, "$");
                   element.focus();
                 `}"
@@ -12515,7 +12515,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 type="button"
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+alt+shift+e", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+shift+e", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
                     content: ${hiddenContent({
@@ -12535,7 +12535,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                   });
                 `}"
                 onclick="${javascript`
-                  const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
                   element.focus();
                 `}"
@@ -12563,7 +12563,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                         }); 
                       `}"
                       onclick="${javascript`
-                        const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                        const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                         textFieldEdit.wrapSelection(element, "@", "");
                         element.focus();
                       `}"
@@ -12587,7 +12587,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                         });
                       `}"
                       onclick="${javascript`
-                        const element = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                        const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                         textFieldEdit.wrapSelection(element, "#", "");
                         element.focus();
                       `}"
@@ -12602,7 +12602,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 type="button"
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+i", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+i", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
                     content: ${hiddenContent({
@@ -12623,7 +12623,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                   });
                 `}"
                 onclick="${javascript`
-                  this.closest(".markdown-editor").querySelector(".attachments").click();
+                  this.closest(".content-editor").querySelector(".attachments").click();
                 `}"
               >
                 <i class="bi bi-image"></i>
@@ -12632,7 +12632,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 type="button"
                 class="button button--tight button--transparent"
                 oninteractive="${javascript`
-                  Mousetrap(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea")).bind("mod+shift+k", () => { this.click(); return false; });
+                  Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+k", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
                     content: ${hiddenContent({
@@ -12653,7 +12653,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                   });
                 `}"
                 onclick="${javascript`
-                  this.closest(".markdown-editor").querySelector(".attachments").click();
+                  this.closest(".content-editor").querySelector(".attachments").click();
                 `}"
               >
                 <i class="bi bi-paperclip"></i>
@@ -12665,7 +12665,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 hidden
                 data-skip-is-modified="true"
                 oninteractive="${javascript`
-                  const textarea = this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea");
+                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   const uploadingIndicator = tippy(textarea, {
                     trigger: "manual",
                     hideOnClick: false,
@@ -12693,7 +12693,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                     textarea.disabled = true;
                     for (const file of fileList) body.append("attachments", file);
                     this.value = "";
-                    const response = await (await fetch("${baseURL}/markdown-editor/attachments", {
+                    const response = await (await fetch("${baseURL}/content-editor/attachments", {
                       method: "POST",
                       body,
                     })).text();
@@ -12706,7 +12706,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                     ${
                       res.locals.user === undefined
                         ? javascript`
-                            const tooltip = tippy(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea"), {
+                            const tooltip = tippy(this.closest(".content-editor").querySelector(".content-editor--write--textarea"), {
                               trigger: "manual",
                               theme: "rose",
                               showOnCreate: true,
@@ -12738,7 +12738,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
             `}"
           >
             <div
-              class="markdown-editor--write--textarea--dropdown-menu-target"
+              class="content-editor--write--textarea--dropdown-menu-target"
               style="${css`
                 width: var(--space--0);
                 height: var(--line-height--sm);
@@ -12748,7 +12748,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
             <textarea
               name="${name}"
               $${required ? html`required` : html``}
-              class="markdown-editor--write--textarea input--text input--text--textarea"
+              class="content-editor--write--textarea input--text input--text--textarea"
               $${skipIsModified ? html`data-skip-is-modified="true"` : html``}
               style="${css`
                 ${compact
@@ -12778,8 +12778,8 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
               $${res.locals.course !== undefined
                 ? html`
                     oninteractive="${javascript`
-                      const markdownEditor = this.closest(".markdown-editor");
-                      const dropdownMenuTarget = markdownEditor.querySelector(".markdown-editor--write--textarea--dropdown-menu-target");
+                      const contentEditor = this.closest(".content-editor");
+                      const dropdownMenuTarget = contentEditor.querySelector(".content-editor--write--textarea--dropdown-menu-target");
                       const dropdownMenus = [
                         {
                           trigger: "@",
@@ -12809,7 +12809,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                                       type="button"
                                       class="dropdown--menu--item button button--transparent"
                                       onclick="${javascript`
-                                        this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("everyone");
+                                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("everyone");
                                       `}"
                                     >
                                       Everyone in the Conversation
@@ -12818,7 +12818,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                                       type="button"
                                       class="dropdown--menu--item button button--transparent"
                                       onclick="${javascript`
-                                        this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("staff");
+                                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("staff");
                                       `}"
                                     >
                                       Staff in the Conversation
@@ -12827,7 +12827,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                                       type="button"
                                       class="dropdown--menu--item button button--transparent"
                                       onclick="${javascript`
-                                        this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("students");
+                                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("students");
                                       `}"
                                     >
                                       Students in the Conversation
@@ -12911,7 +12911,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                                 searchResults,
                                 await (await fetch("${baseURL}/courses/${
                       res.locals.course.reference
-                    }/markdown-editor/" + route + "?" + new URLSearchParams({ search }))).text()
+                    }/content-editor/" + route + "?" + new URLSearchParams({ search }))).text()
                               );
                             const buttons = content.querySelectorAll(".button");
                             for (const button of buttons) button.classList.remove("hover");
@@ -12990,7 +12990,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
               ondrop="${javascript`
                 event.preventDefault();
                 this.classList.remove("drag");
-                this.closest(".markdown-editor").querySelector(".attachments").upload(event.dataTransfer.files);
+                this.closest(".content-editor").querySelector(".attachments").upload(event.dataTransfer.files);
               `}"
               ondragleave="${javascript`
                 this.classList.remove("drag");
@@ -12998,7 +12998,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
               onpaste="${javascript`
                 if (event.clipboardData.files.length === 0) return;
                 event.preventDefault();
-                this.closest(".markdown-editor").querySelector(".attachments").upload(event.clipboardData.files);
+                this.closest(".content-editor").querySelector(".attachments").upload(event.clipboardData.files);
               `}"
             >
 ${value}</textarea
@@ -13008,7 +13008,7 @@ ${value}</textarea
 
         <div
           hidden
-          class="markdown-editor--loading strong"
+          class="content-editor--loading strong"
           style="${css`
             padding: var(--space--4);
             display: flex;
@@ -13022,7 +13022,7 @@ ${value}</textarea
 
         <div
           hidden
-          class="markdown-editor--preview"
+          class="content-editor--preview"
           style="${css`
             padding: var(--space--4);
           `}"
@@ -13038,7 +13038,7 @@ ${value}</textarea
     { search?: string },
     IsEnrolledInCourseMiddlewareLocals
   >(
-    "/courses/:courseReference/markdown-editor/mention-user-search",
+    "/courses/:courseReference/content-editor/mention-user-search",
     ...isEnrolledInCourseMiddleware,
     (req, res, next) => {
       if (
@@ -13120,7 +13120,7 @@ ${value}</textarea
                       type="button"
                       class="dropdown--menu--item button button--transparent"
                       onclick="${javascript`
-                        this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${
+                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${
                           enrollment.reference
                         }--${slugify(enrollment.user.name)}");
                       `}"
@@ -13149,7 +13149,7 @@ ${value}</textarea
     { search?: string },
     IsEnrolledInCourseMiddlewareLocals
   >(
-    "/courses/:courseReference/markdown-editor/refer-to-conversation-or-message-search",
+    "/courses/:courseReference/content-editor/refer-to-conversation-or-message-search",
     ...isEnrolledInCourseMiddleware,
     (req, res, next) => {
       if (
@@ -13191,7 +13191,7 @@ ${value}</textarea
                         type="button"
                         class="dropdown--menu--item button button--transparent"
                         onclick="${javascript`
-                          this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
+                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
                         `}"
                       >
                         <span>
@@ -13258,7 +13258,7 @@ ${value}</textarea
                           type="button"
                           class="dropdown--menu--item button button--transparent"
                           onclick="${javascript`
-                            this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
+                            this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
                           `}"
                         >
                           <div>
@@ -13292,7 +13292,7 @@ ${value}</textarea
                 type="button"
                 class="dropdown--menu--item button button--transparent"
                 onclick="${javascript`
-                  this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
+                  this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
                 `}"
               >
                 <span>
@@ -13345,7 +13345,7 @@ ${value}</textarea
                       type="button"
                       class="dropdown--menu--item button button--transparent"
                       onclick="${javascript`
-                        this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
+                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
                       `}"
                     >
                       <span>
@@ -13420,7 +13420,7 @@ ${value}</textarea
                       type="button"
                       class="dropdown--menu--item button button--transparent"
                       onclick="${javascript`
-                        this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
+                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
                       `}"
                     >
                       <div>
@@ -13501,7 +13501,7 @@ ${value}</textarea
                       type="button"
                       class="dropdown--menu--item button button--transparent"
                       onclick="${javascript`
-                        this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
+                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
                       `}"
                     >
                       <div>
@@ -13540,7 +13540,7 @@ ${value}</textarea
   );
 
   app.post<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
-    "/markdown-editor/attachments",
+    "/content-editor/attachments",
     ...isSignedInMiddleware,
     asyncHandler(async (req, res, next) => {
       if (req.files?.attachments === undefined) return next("validation");
@@ -14091,13 +14091,13 @@ ${value}</textarea
   };
 
   app.post<{}, any, { content?: string }, {}, IsSignedInMiddlewareLocals>(
-    "/markdown-editor/preview",
+    "/content-editor/preview",
     ...isSignedInMiddleware,
     previewRequestHandler
   );
 
   app.post<{}, any, { content?: string }, {}, IsSignedOutMiddlewareLocals>(
-    "/markdown-editor/preview",
+    "/content-editor/preview",
     ...isSignedOutMiddleware,
     previewRequestHandler
   );
@@ -14109,7 +14109,7 @@ ${value}</textarea
     {},
     IsEnrolledInCourseMiddlewareLocals
   >(
-    "/courses/:courseReference/markdown-editor/preview",
+    "/courses/:courseReference/content-editor/preview",
     ...isEnrolledInCourseMiddleware,
     previewRequestHandler
   );
@@ -14344,7 +14344,7 @@ ${value}</textarea
                   />
                 </div>
 
-                $${markdownEditor({ req, res })}
+                $${contentEditor({ req, res })}
                 $${res.locals.tags.length === 0
                   ? html``
                   : html`
@@ -14495,7 +14495,7 @@ ${value}</textarea
                   <button
                     class="button button--full-width-on-small-screen button--blue"
                     oninteractive="${javascript`
-                      Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
+                      Mousetrap(this.closest("form").querySelector(".content-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                       tippy(this, {
                         touch: false,
                         content: ${hiddenContent({
@@ -16171,8 +16171,8 @@ ${value}</textarea
                                                             onclick="${javascript`
                                                               const content = JSON.parse(this.closest("[data-content]").dataset.content);
                                                               const newMessage = document.querySelector(".new-message");
-                                                              newMessage.querySelector(".markdown-editor--button--write").click();
-                                                              const element = newMessage.querySelector(".markdown-editor--write--textarea");
+                                                              newMessage.querySelector(".content-editor--button--write").click();
+                                                              const element = newMessage.querySelector(".content-editor--write--textarea");
                                                               textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
                                                                 message.anonymousAt ===
                                                                 null
@@ -16995,8 +16995,8 @@ ${value}</textarea
                                                             const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
                                                             const content = JSON.parse(anchorElement.closest("[data-content]").dataset.content);
                                                             const newMessage = document.querySelector(".new-message");
-                                                            newMessage.querySelector(".markdown-editor--button--write").click();
-                                                            const element = newMessage.querySelector(".markdown-editor--write--textarea");
+                                                            newMessage.querySelector(".content-editor--button--write").click();
+                                                            const element = newMessage.querySelector(".content-editor--write--textarea");
                                                             textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
                                                               message.anonymousAt ===
                                                               null
@@ -17201,7 +17201,7 @@ ${value}</textarea
                                                   name="_csrf"
                                                   value="${req.csrfToken()}"
                                                 />
-                                                $${markdownEditor({
+                                                $${contentEditor({
                                                   req,
                                                   res,
                                                   value: message.content,
@@ -17222,7 +17222,7 @@ ${value}</textarea
                                                   <button
                                                     class="button button--blue"
                                                     oninteractive="${javascript`
-                                                      Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
+                                                      Mousetrap(this.closest("form").querySelector(".content-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                                                       tippy(this, {
                                                         touch: false,
                                                         content: ${hiddenContent(
@@ -17403,10 +17403,10 @@ ${value}</textarea
                         : css``}
                     `}"
                     oninteractive="${javascript`
-                      leafac.saveFormInputValue(this.querySelector(".markdown-editor--write--textarea"), "new-message");
+                      leafac.saveFormInputValue(this.querySelector(".content-editor--write--textarea"), "new-message");
                     `}"
                   >
-                    $${markdownEditor({
+                    $${contentEditor({
                       req,
                       res,
                       compact: res.locals.conversation.type === "chat",
@@ -17540,7 +17540,7 @@ ${value}</textarea
                     <button
                       class="button button--full-width-on-small-screen button--blue"
                       oninteractive="${javascript`
-                        Mousetrap(this.closest("form").querySelector(".markdown-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
+                        Mousetrap(this.closest("form").querySelector(".content-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                         tippy(this, {
                           touch: false,
                           content: ${hiddenContent({
