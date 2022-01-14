@@ -12683,6 +12683,7 @@ console.log(highlighter.codeToHtml(\`console.log("shiki");\`, "js"));
                     })},
                   });
                   this.upload = async (fileList) => {
+                    if (this.errorIfNotSignedIn()) return;
                     const body = new FormData();
                     body.append("_csrf", ${JSON.stringify(req.csrfToken())});
                     tippy.hideAll();
@@ -12699,24 +12700,29 @@ console.log(highlighter.codeToHtml(\`console.log("shiki");\`, "js"));
                     textFieldEdit.wrapSelection(textarea, response, "");
                     textarea.focus();
                   };
+                  this.errorIfNotSignedIn = () => {
+                    ${
+                      res.locals.user === undefined
+                        ? javascript`
+                            const tooltip = tippy(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea"), {
+                              trigger: "manual",
+                              theme: "rose",
+                              showOnCreate: true,
+                              onHidden: () => {
+                                tooltip.destroy();
+                              },
+                              content: "You must sign in to upload files.",
+                            });
+                            return true;
+                          `
+                        : javascript`
+                            return false;
+                          `
+                    }
+                  };
                 `}"
                 onclick="${javascript`
-                  ${
-                    res.locals.user === undefined
-                      ? javascript`
-                          event.preventDefault();
-                          const tooltip = tippy(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea"), {
-                            trigger: "manual",
-                            theme: "rose",
-                            showOnCreate: true,
-                            onHidden: () => {
-                              tooltip.destroy();
-                            },
-                            content: "You must sign in to upload files.",
-                          });
-                        `
-                      : javascript``
-                  }
+                  if (this.errorIfNotSignedIn()) event.preventDefault();
                 `}"
                 onchange="${javascript`
                   this.upload(this.files);
