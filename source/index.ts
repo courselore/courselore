@@ -13716,22 +13716,20 @@ ${value}</textarea
       const namespace = Math.random().toString(36).slice(2);
       for (const element of contentElement.querySelectorAll("[id]"))
         element.id += `--${namespace}`;
-      for (const element of contentElement.querySelectorAll(`[href^="#"]`))
-        element.setAttribute(
-          "href",
-          `${element.getAttribute("href")}--${namespace}`
-        );
-      for (const element of contentElement.querySelectorAll("a")) {
-        const href = element.getAttribute("href");
-        if (
-          href === null ||
-          [baseURL, "#"].some((prefix) => href.startsWith(prefix))
-        )
+      for (const element of contentElement.querySelectorAll("[href]")) {
+        const href = element.getAttribute("href")!;
+        if (href.startsWith("#")) {
+          element.setAttribute(
+            "href",
+            `#user-content-${href.slice(1)}--${namespace}`
+          );
           continue;
-        element.setAttribute("target", "_blank");
-        element.setAttribute(
-          "oninteractive",
-          javascript`
+        }
+        if (!href.startsWith(baseURL)) {
+          element.setAttribute("target", "_blank");
+          element.setAttribute(
+            "oninteractive",
+            javascript`
               tippy(this, {
                 touch: false,
                 content: ${hiddenContent({
@@ -13743,7 +13741,8 @@ ${value}</textarea
                 })},
               });
             `
-        );
+          );
+        }
       }
 
       if (decorate) {
