@@ -13713,8 +13713,6 @@ ${value}</textarea
         element.replaceChildren(summaries[0], wrapper);
       }
 
-      /*
-      TODO:
       const namespace = Math.random().toString(36).slice(2);
       for (const element of contentElement.querySelectorAll("[id]"))
         element.id += `--${namespace}`;
@@ -13723,7 +13721,30 @@ ${value}</textarea
           "href",
           `${element.getAttribute("href")}--${namespace}`
         );
-      */
+      for (const element of contentElement.querySelectorAll("a")) {
+        const href = element.getAttribute("href");
+        if (
+          href === null ||
+          [baseURL, "#"].some((prefix) => href.startsWith(prefix))
+        )
+          continue;
+        element.setAttribute("target", "_blank");
+        element.setAttribute(
+          "oninteractive",
+          javascript`
+              tippy(this, {
+                touch: false,
+                content: ${hiddenContent({
+                  req,
+                  res,
+                  content: html`
+                    External link to <code class="code">${href}</code>
+                  `,
+                })},
+              });
+            `
+        );
+      }
 
       if (decorate) {
         if (res.locals.course !== undefined) {
@@ -14045,31 +14066,6 @@ ${value}</textarea
               }
             }
           })(contentElement);
-
-        for (const element of contentElement.querySelectorAll("a")) {
-          const href = element.getAttribute("href");
-          if (
-            href === null ||
-            [baseURL, "#"].some((prefix) => href.startsWith(prefix))
-          )
-            continue;
-          element.setAttribute("target", "_blank");
-          element.setAttribute(
-            "oninteractive",
-            javascript`
-              tippy(this, {
-                touch: false,
-                content: ${hiddenContent({
-                  req,
-                  res,
-                  content: html`
-                    External link to <code class="code">${href}</code>
-                  `,
-                })},
-              });
-            `
-          );
-        }
       }
 
       return {
