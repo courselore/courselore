@@ -10905,10 +10905,10 @@ export default async function courselore({
                                             });
                                           `}"
                                             onclick="${javascript`
-                                            event.preventDefault();
-                                            fetch(this.closest("a").href);
-                                            this.remove();
-                                          `}"
+                                              event.preventDefault();
+                                              fetch(this.closest("a").getAttribute("href"));
+                                              this.remove();
+                                            `}"
                                           >
                                             ${unreadCount}
                                           </button>
