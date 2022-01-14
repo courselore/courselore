@@ -1,7 +1,6 @@
 # Backlog
 
 - Improve treatment of footnotes:
-  - Put stuff related to KaTeX first, and to Shiki second (following what we do on the home page).
   - Review README for stuff to put on the home page and for consistency in terms of KaTeX & Shiki ordering.
   - `TODO`
   - Change icon

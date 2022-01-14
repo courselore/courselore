@@ -27,9 +27,9 @@ import rehypeSanitize, {
   defaultSchema as rehypeSanitizeDefaultSchema,
 } from "rehype-sanitize";
 import deepMerge from "deepmerge";
+import rehypeKatex from "rehype-katex";
 import rehypeShiki from "@leafac/rehype-shiki";
 import * as shiki from "shiki";
-import rehypeKatex from "rehype-katex";
 import { visit as unistUtilVisit } from "unist-util-visit";
 import rehypeStringify from "rehype-stringify";
 import { JSDOM } from "jsdom";
@@ -13630,13 +13630,13 @@ ${value}</textarea
           },
         })
       )
+      .use(rehypeKatex, { maxSize: 25, maxExpand: 10, output: "html" })
       .use(rehypeShiki, {
         highlighter: {
           light: await shiki.getHighlighter({ theme: "light-plus" }),
           dark: await shiki.getHighlighter({ theme: "dark-plus" }),
         },
       })
-      .use(rehypeKatex, { maxSize: 25, maxExpand: 10, output: "html" })
       .use(() => (tree) => {
         unistUtilVisit(tree, (node) => {
           if (
