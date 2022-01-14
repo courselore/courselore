@@ -4844,8 +4844,7 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
         <p>
           <small>
             This Password Reset Link is valid for ten minutes.<br />
-            If you didn’t request this Password Reset Link, you may ignore this
-            email.
+            You may ignore this Password Reset Link if you didn’t request it.
           </small>
         </p>
       `,
@@ -6812,7 +6811,8 @@ Add images & attachments by simply drag-and-dropping or copy-and-pasting.
           : html`
               <p>
                 <small>
-                  Expires at ${new Date(invitation.expiresAt).toISOString()}.
+                  This invitation is valid until
+                  ${new Date(invitation.expiresAt).toISOString()}.
                 </small>
               </p>
             `}
