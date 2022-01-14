@@ -2,10 +2,6 @@
 
 ### Chat
 
-- Fancy up welcome email.
-
----
-
 - Rename `markdownEditor` & `markdownProcessor` into `messageEditor` & `messageProcessor`.
 - Double check how footnotes work. If they depend on `id`s, then we need to namespace them.
 - Test everything in different browsers & devices.
