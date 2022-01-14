@@ -1,7 +1,5 @@
 # Backlog
 
-- Line to separate unread messages instead of little unread indicator.
-
 ### Performance
 
 - Cache content processing.
