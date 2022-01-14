@@ -12700,6 +12700,24 @@ console.log(highlighter.codeToHtml(\`console.log("shiki");\`, "js"));
                     textarea.focus();
                   };
                 `}"
+                onclick="${javascript`
+                  ${
+                    res.locals.user === undefined
+                      ? javascript`
+                          event.preventDefault();
+                          const tooltip = tippy(this.closest(".markdown-editor").querySelector(".markdown-editor--write--textarea"), {
+                            trigger: "manual",
+                            theme: "rose",
+                            showOnCreate: true,
+                            onHidden: () => {
+                              tooltip.destroy();
+                            },
+                            content: "You must sign in to upload.",
+                          });
+                        `
+                      : javascript``
+                  }
+                `}"
                 onchange="${javascript`
                   this.upload(this.files);
                 `}"
