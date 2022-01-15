@@ -3,9 +3,7 @@
 ### Last Preparations
 
 - Cache content processing.
-`/about` should redirect to `courselore.org`.
   - The basics:
-    - Review all uses of `content`.
     - `"messages"."contentSource"` TEST
     - `"messages"."contentHTML"` TEST
     - Test quote & reply
