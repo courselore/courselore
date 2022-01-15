@@ -120,7 +120,7 @@ export default async function courselore({
       avatar: null,
       avatarlessBackgroundColor: "rose",
       biographySource: null,
-      biographyHTML: null,
+      biographyPreprocessed: null,
     },
     reference: null,
     role: null,
@@ -158,7 +158,7 @@ export default async function courselore({
         "avatar" TEXT NULL,
         "avatarlessBackgroundColor" TEXT NOT NULL,
         "biographySource" TEXT NULL,
-        "biographyHTML" TEXT NULL,
+        "biographyPreprocessed" TEXT NULL,
         "emailNotifications" TEXT NOT NULL
       );
       CREATE VIRTUAL TABLE "usersNameSearchIndex" USING fts5(
@@ -327,7 +327,7 @@ export default async function courselore({
         "anonymousAt" TEXT NULL,
         "answerAt" TEXT NULL,
         "contentSource" TEXT NOT NULL,
-        "contentHTML" TEXT NOT NULL,
+        "contentPreprocessed" TEXT NOT NULL,
         "contentSearch" TEXT NOT NULL,
         UNIQUE ("conversation", "reference")
       );
@@ -3107,7 +3107,7 @@ export default async function courselore({
                                 </div>
                               </div>
                             </div>
-                            $${user.biographyHTML ?? html``}
+                            $${user.biographyPreprocessed ?? html``}
                           </div>
                         `,
                       })},
@@ -3615,7 +3615,7 @@ export default async function courselore({
       avatar: string | null;
       avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
       biographySource: string | null;
-      biographyHTML: HTML | null;
+      biographyPreprocessed: HTML | null;
       emailNotifications: UserEmailNotifications;
     };
     invitations: {
@@ -3671,7 +3671,7 @@ export default async function courselore({
         avatar: string | null;
         avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
         biographySource: string | null;
-        biographyHTML: HTML | null;
+        biographyPreprocessed: HTML | null;
         emailNotifications: UserEmailNotifications;
       }>(
         sql`
@@ -3684,7 +3684,7 @@ export default async function courselore({
                  "avatar",
                  "avatarlessBackgroundColor",
                  "biographySource",
-                 "biographyHTML",
+                 "biographyPreprocessed",
                  "emailNotifications"
           FROM "users"
           WHERE "id" = ${userId}
@@ -5883,7 +5883,7 @@ export default async function courselore({
             "biographySource" = ${
               req.body.biography.trim() === "" ? null : req.body.biography
             },
-            "biographyHTML" = ${
+            "biographyPreprocessed" = ${
               req.body.biography.trim() === ""
                 ? null
                 : processContent({
@@ -8496,7 +8496,7 @@ export default async function courselore({
           userAvatar: string | null;
           userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
           userBiographySource: string | null;
-          userBiographyHTML: HTML | null;
+          userBiographyPreprocessed: HTML | null;
           reference: string;
           role: EnrollmentRole;
         }>(
@@ -8509,7 +8509,7 @@ export default async function courselore({
                    "users"."avatar" AS "userAvatar",
                    "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
                    "users"."biographySource" AS "userBiographySource",
-                   "users"."biographyHTML" AS "userBiographyHTML",
+                   "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
                    "enrollments"."reference",
                    "enrollments"."role"
             FROM "enrollments"
@@ -8528,7 +8528,7 @@ export default async function courselore({
             avatar: enrollment.userAvatar,
             avatarlessBackgroundColor: enrollment.userAvatarlessBackgroundColor,
             biographySource: enrollment.userBiographySource,
-            biographyHTML: enrollment.userBiographyHTML,
+            biographyPreprocessed: enrollment.userBiographyPreprocessed,
           },
           reference: enrollment.reference,
           role: enrollment.role,
@@ -8911,11 +8911,11 @@ export default async function courselore({
                       </div>
                     </div>
 
-                    $${enrollment.user.biographyHTML !== null
+                    $${enrollment.user.biographyPreprocessed !== null
                       ? html`
                           <details class="details">
                             <summary>Biography</summary>
-                            <div>$${enrollment.user.biographyHTML}</div>
+                            <div>$${enrollment.user.biographyPreprocessed}</div>
                           </details>
                         `
                       : html``}
@@ -11249,7 +11249,7 @@ export default async function courselore({
           avatar: string | null;
           avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
           biographySource: string | null;
-          biographyHTML: HTML | null;
+          biographyPreprocessed: HTML | null;
         };
         reference: string;
         role: EnrollmentRole;
@@ -11308,7 +11308,7 @@ export default async function courselore({
       authorUserAvatar: string | null;
       authorUserAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
       authorUserBiographySource: string | null;
-      authorUserBiographyHTML: HTML | null;
+      authorUserBiographyPreprocessed: HTML | null;
       authorEnrollmentReference: string | null;
       authorEnrollmentRole: EnrollmentRole | null;
       anonymousAt: string | null;
@@ -11332,7 +11332,7 @@ export default async function courselore({
                "authorUser"."avatar" AS "authorUserAvatar",
                "authorUser"."avatarlessBackgroundColor" AS "authorUserAvatarlessBackgroundColor",
                "authorUser"."biographySource" AS "authorUserBiographySource",
-               "authorUser"."biographyHTML" AS "authorUserBiographyHTML",
+               "authorUser"."biographyPreprocessed" AS "authorUserBiographyPreprocessed",
                "authorEnrollment"."reference" AS "authorEnrollmentReference",
                "authorEnrollment"."role" AS "authorEnrollmentRole",
                "conversations"."anonymousAt",
@@ -11393,7 +11393,8 @@ export default async function courselore({
                 avatarlessBackgroundColor:
                   conversationRow.authorUserAvatarlessBackgroundColor,
                 biographySource: conversationRow.authorUserBiographySource,
-                biographyHTML: conversationRow.authorUserBiographyHTML,
+                biographyPreprocessed:
+                  conversationRow.authorUserBiographyPreprocessed,
               },
               reference: conversationRow.authorEnrollmentReference,
               role: conversationRow.authorEnrollmentRole,
@@ -11472,7 +11473,7 @@ export default async function courselore({
               userAvatar: string | null;
               userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
               userBiographySource: string | null;
-              userBiographyHTML: HTML | null;
+              userBiographyPreprocessed: HTML | null;
               enrollmentReference: string | null;
               enrollmentRole: EnrollmentRole | null;
             }>(
@@ -11486,7 +11487,7 @@ export default async function courselore({
                        "users"."avatar" AS "userAvatar",
                        "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
                        "users"."biographySource" AS "userBiographySource",
-                       "users"."biographyHTML" AS "userBiographyHTML",
+                       "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
                        "enrollments"."reference" AS "enrollmentReference",
                        "enrollments"."role" AS "enrollmentRole"
                 FROM "endorsements"
@@ -11519,7 +11520,8 @@ export default async function courselore({
                         avatarlessBackgroundColor:
                           endorsement.userAvatarlessBackgroundColor,
                         biographySource: endorsement.userBiographySource,
-                        biographyHTML: endorsement.userBiographyHTML,
+                        biographyPreprocessed:
+                          endorsement.userBiographyPreprocessed,
                       },
                       reference: endorsement.enrollmentReference,
                       role: endorsement.enrollmentRole,
@@ -11557,7 +11559,7 @@ export default async function courselore({
         anonymousAt: string | null;
         answerAt: string | null;
         contentSource: string;
-        contentHTML: HTML;
+        contentPreprocessed: HTML;
         contentSearch: string;
         reading: { id: number } | null;
         endorsements: {
@@ -11583,13 +11585,13 @@ export default async function courselore({
       authorUserAvatar: string | null;
       authorUserAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
       authorUserBiographySource: string | null;
-      authorUserBiographyHTML: HTML | null;
+      authorUserBiographyPreprocessed: HTML | null;
       authorEnrollmentReference: EnrollmentRole | null;
       authorEnrollmentRole: EnrollmentRole | null;
       anonymousAt: string | null;
       answerAt: string | null;
       contentSource: string;
-      contentHTML: HTML;
+      contentPreprocessed: HTML;
       contentSearch: string;
       readingId: number | null;
     }>(
@@ -11606,13 +11608,13 @@ export default async function courselore({
                "authorUser"."avatar" AS "authorUserAvatar",
                "authorUser"."avatarlessBackgroundColor" AS "authorUserAvatarlessBackgroundColor",
                "authorUser"."biographySource" AS "authorUserBiographySource",
-               "authorUser"."biographyHTML" AS "authorUserBiographyHTML",
+               "authorUser"."biographyPreprocessed" AS "authorUserBiographyPreprocessed",
                "authorEnrollment"."reference" AS "authorEnrollmentReference",
                "authorEnrollment"."role" AS "authorEnrollmentRole",
                "messages"."anonymousAt",
                "messages"."answerAt",
                "messages"."contentSource",
-               "messages"."contentHTML",
+               "messages"."contentPreprocessed",
                "messages"."contentSearch",
                "readings"."id" AS "readingId"
         FROM "messages"
@@ -11651,7 +11653,8 @@ export default async function courselore({
                 avatarlessBackgroundColor:
                   messageRow.authorUserAvatarlessBackgroundColor,
                 biographySource: messageRow.authorUserBiographySource,
-                biographyHTML: messageRow.authorUserBiographyHTML,
+                biographyPreprocessed:
+                  messageRow.authorUserBiographyPreprocessed,
               },
               reference: messageRow.authorEnrollmentReference,
               role: messageRow.authorEnrollmentRole,
@@ -11660,7 +11663,7 @@ export default async function courselore({
       anonymousAt: messageRow.anonymousAt,
       answerAt: messageRow.answerAt,
       contentSource: messageRow.contentSource,
-      contentHTML: messageRow.contentHTML,
+      contentPreprocessed: messageRow.contentPreprocessed,
       contentSearch: messageRow.contentSearch,
       reading:
         messageRow.readingId === null ? null : { id: messageRow.readingId },
@@ -11677,7 +11680,7 @@ export default async function courselore({
         userAvatar: string | null;
         userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
         userBiographySource: string | null;
-        userBiographyHTML: HTML | null;
+        userBiographyPreprocessed: HTML | null;
         enrollmentReference: string | null;
         enrollmentRole: EnrollmentRole | null;
       }>(
@@ -11691,7 +11694,7 @@ export default async function courselore({
                 "users"."avatar" AS "userAvatar",
                 "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
                 "users"."biographySource" AS "userBiographySource",
-                "users"."biographyHTML" AS "userBiographyHTML",
+                "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
                 "enrollments"."reference" AS "enrollmentReference",
                 "enrollments"."role" AS "enrollmentRole"
           FROM "endorsements"
@@ -11723,7 +11726,7 @@ export default async function courselore({
                   avatarlessBackgroundColor:
                     endorsement.userAvatarlessBackgroundColor,
                   biographySource: endorsement.userBiographySource,
-                  biographyHTML: endorsement.userBiographyHTML,
+                  biographyPreprocessed: endorsement.userBiographyPreprocessed,
                 },
                 reference: endorsement.enrollmentReference,
                 role: endorsement.enrollmentRole,
@@ -11742,7 +11745,7 @@ export default async function courselore({
         userAvatar: string | null;
         userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
         userBiographySource: string | null;
-        userBiographyHTML: HTML | null;
+        userBiographyPreprocessed: HTML | null;
         enrollmentReference: string | null;
         enrollmentRole: EnrollmentRole | null;
       }>(
@@ -11756,7 +11759,7 @@ export default async function courselore({
                 "users"."avatar" AS "userAvatar",
                 "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
                 "users"."biographySource" AS "userBiographySource",
-                "users"."biographyHTML" AS "userBiographyHTML",
+                "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
                 "enrollments"."reference" AS "enrollmentReference",
                 "enrollments"."role" AS "enrollmentRole"
           FROM "likes"
@@ -11787,7 +11790,7 @@ export default async function courselore({
                   avatar: like.userAvatar,
                   avatarlessBackgroundColor: like.userAvatarlessBackgroundColor,
                   biographySource: like.userBiographySource,
-                  biographyHTML: like.userBiographyHTML,
+                  biographyPreprocessed: like.userBiographyPreprocessed,
                 },
                 reference: like.enrollmentReference,
                 role: like.enrollmentRole,
@@ -13092,7 +13095,7 @@ ${contentSource}</textarea
           userAvatar: string | null;
           userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
           userBiographySource: string | null;
-          userBiographyHTML: HTML | null;
+          userBiographyPreprocessed: HTML | null;
           userNameSearchResultHighlight: string;
           reference: string;
           role: EnrollmentRole;
@@ -13106,7 +13109,7 @@ ${contentSource}</textarea
                  "users"."avatar" AS "userAvatar",
                  "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
                  "users"."biographySource" AS "userBiographySource",
-                 "users"."biographyHTML" AS "userBiographyHTML",
+                 "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
                  highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "userNameSearchResultHighlight",
                  "enrollments"."reference",
                  "enrollments"."role"
@@ -13134,7 +13137,7 @@ ${contentSource}</textarea
             avatar: enrollment.userAvatar,
             avatarlessBackgroundColor: enrollment.userAvatarlessBackgroundColor,
             biographySource: enrollment.userBiographySource,
-            biographyHTML: enrollment.userBiographyHTML,
+            biographyPreprocessed: enrollment.userBiographyPreprocessed,
             nameSearchResultHighlight: enrollment.userNameSearchResultHighlight,
           },
           reference: enrollment.reference,
@@ -13729,16 +13732,16 @@ ${contentSource}</textarea
   const decorateContent = ({
     req,
     res,
-    contentHTML,
+    contentPreprocessed,
     search = undefined,
   }: {
     req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
-    contentHTML: HTML;
+    contentPreprocessed: HTML;
     search?: string | string[] | undefined;
   }): HTML => {
     const contentElement = JSDOM.fragment(html`
-      <div class="content">$${contentHTML}</div>
+      <div class="content">$${contentPreprocessed}</div>
     `).firstElementChild!;
 
     for (const element of contentElement.querySelectorAll("li, td, th, dt, dd"))
@@ -13889,7 +13892,7 @@ ${contentSource}</textarea
                       userAvatar: string | null;
                       userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
                       userBiographySource: string | null;
-                      userBiographyHTML: HTML | null;
+                      userBiographyPreprocessed: HTML | null;
                       reference: string;
                       role: EnrollmentRole;
                     }>(
@@ -13902,7 +13905,7 @@ ${contentSource}</textarea
                                 "users"."avatar" AS "userAvatar",
                                 "users"."avatarlessBackgroundColor" AS  "userAvatarlessBackgroundColor",
                                 "users"."biographySource" AS "userBiographySource",
-                                "users"."biographyHTML" AS "userBiographyHTML",
+                                "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
                                 "enrollments"."reference",
                                 "enrollments"."role"
                         FROM "enrollments"
@@ -13925,7 +13928,8 @@ ${contentSource}</textarea
                         avatarlessBackgroundColor:
                           enrollmentRow.userAvatarlessBackgroundColor,
                         biographySource: enrollmentRow.userBiographySource,
-                        biographyHTML: enrollmentRow.userBiographyHTML,
+                        biographyPreprocessed:
+                          enrollmentRow.userBiographyPreprocessed,
                       },
                       reference: enrollmentRow.reference,
                       role: enrollmentRow.role,
@@ -14705,7 +14709,7 @@ ${contentSource}</textarea
               "authorEnrollment",
               "anonymousAt",
               "contentSource",
-              "contentHTML",
+              "contentPreprocessed",
               "contentSearch"
             )
             VALUES (
@@ -17107,7 +17111,7 @@ ${contentSource}</textarea
                                                 /* TODO: decorate contentSource: message.content,
                                               search: req.query.search,
                                               decorate: true, */
-                                                /* TODO: REVIEW THE TYPES OF decorateContent({search}) */ message.contentHTML
+                                                /* TODO: REVIEW THE TYPES OF decorateContent({search}) */ message.contentPreprocessed
                                               }
                                             </div>
                                           </div>
@@ -17856,7 +17860,7 @@ ${contentSource}</textarea
           sql`
             UPDATE "messages"
             SET "contentSource" = ${contentSource},
-                "contentHTML" = ${processedContent.html},
+                "contentPreprocessed" = ${processedContent.html},
                 "contentSearch" = ${processedContent.search}
             WHERE "id" = ${mostRecentMessage.id}
           `
@@ -17894,7 +17898,7 @@ ${contentSource}</textarea
               "anonymousAt",
               "answerAt",
               "contentSource",
-              "contentHTML",
+              "contentPreprocessed",
               "contentSearch"
             )
             VALUES (
@@ -18036,7 +18040,7 @@ ${contentSource}</textarea
           sql`
             UPDATE "messages"
             SET "contentSource" = ${req.body.content},
-                "contentHTML" = ${processedContent.html},
+                "contentPreprocessed" = ${processedContent.html},
                 "contentSearch" = ${processedContent.search},
                 "updatedAt" = ${new Date().toISOString()}
             WHERE "id" = ${res.locals.message.id}
@@ -18435,7 +18439,7 @@ ${contentSource}</textarea
               "avatar",
               "avatarlessBackgroundColor",
               "biographySource",
-              "biographyHTML",
+              "biographyPreprocessed",
               "emailNotifications"
             )
             VALUES (
@@ -18484,7 +18488,7 @@ ${contentSource}</textarea
                 "avatar",
                 "avatarlessBackgroundColor",
                 "biographySource",
-                "biographyHTML",
+                "biographyPreprocessed",
                 "emailNotifications"
               )
               VALUES (
@@ -18864,7 +18868,7 @@ ${contentSource}</textarea
                     "anonymousAt",
                     "answerAt",
                     "contentSource",
-                    "contentHTML",
+                    "contentPreprocessed",
                     "contentSearch"
                   )
                   VALUES (
