@@ -13784,17 +13784,17 @@ ${contentSource}</textarea
           element.setAttribute(
             "oninteractive",
             javascript`
-            tippy(this, {
-              touch: false,
-              content: ${hiddenContent({
-                req,
-                res,
-                content: html`
-                  External link to <code class="code">${href}</code>
-                `,
-              })},
-            });
-          `
+              tippy(this, {
+                touch: false,
+                content: ${hiddenContent({
+                  req,
+                  res,
+                  content: html`
+                    External link to <code class="code">${href}</code>
+                  `,
+                })},
+              });
+            `
           );
         }
         if (
