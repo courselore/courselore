@@ -1,22 +1,41 @@
 # Backlog
 
-### Performance
+### Last Preparations
 
+- CSS management
+  - Confirm that JSDOM is the bottleneck.
+  - Try and make JSDOM faster.
+  - Explore https://nodejs.org/api/async_context.html
+  - Use `res.locals` to collect CSS.
+  - Remove static CSS from every request.
 - Cache content processing.
   - Review all uses of `content` and distinguish `contentSource` and `contentProcessed`.
   - In `contentProcessor`, decouple the computation of `mentions` from the process of decoration.
     - Revisit notifications and other potential consumer of the `mentions` information, which aren’t working right now.
       - I left them broken because the decoration processes includes resolving `#234` references, which shouldn’t be processed for everyone (for example, in full-text search plain text).
+  - Fix notifications.
+- Commit to the database schema.
+- Skim over the codebase.
+- Test everything in different browsers & devices.
+
+### Release
+
+- Create separate staging & production versions.
+- A course about CourseLore for collecting feedback.
+  - Put invitation link on the page somewhere.
+- Edit self-hosting document to remove “we’re still in beta” note.
+- Notify Zach.
+
+### Performance
+
 - Live reloading:
   - Do the morphdom on the server.
   - Scroll on new message.
   - Latency compensation when sending message.
-- Remove static CSS from every request.
 - Pagination.
   - Messages in conversation.
   - Conversations on sidebar.
-- Test with thousands of messages.
-- Test everything in different browsers & devices.
+  - Test with thousands of messages.
 
 ### Advanced Access Control
 
@@ -26,13 +45,6 @@
   - Some groups are available only to students, while others only to staff.
   - People assign themselves to groups.
 - Add mentions like `@group-3`.
-
-### Release
-
-- A course about CourseLore for collecting feedback.
-  - Put invitation link on the page somewhere.
-- Create separate staging & production versions.
-- Edit self-hosting document to remove “we’re still in beta” note.
 
 ### Users
 
@@ -61,6 +73,7 @@
 
 ### Conversations
 
+- Streamlining the creation of DMs.
 - Currently typing (particularly on chat).
 - “Truncate” long messages (particularly on chat).
 - Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
