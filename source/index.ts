@@ -4054,7 +4054,7 @@ export default async function courselore({
                 >
                   <i class="bi bi-file-earmark-code"></i>
                 </div>
-                <h2 class="heading--display">Open-Source</h2>
+                <h2 class="heading--display">Open Source</h2>
               </div>
               <p class="secondary">
                 Easy to self-host for maximum privacy & control. <br />

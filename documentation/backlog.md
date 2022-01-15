@@ -7,7 +7,7 @@
   - Try and make JSDOM faster.
   - Explore https://nodejs.org/api/async_context.html
   - Use `res.locals` to collect CSS.
-  - Remove static CSS from every request.
+  - Remove static CSS (the design system) from every request.
 - Cache content processing.
   - Review all uses of `content` and distinguish `contentSource` and `contentProcessed`.
   - In `contentProcessor`, decouple the computation of `mentions` from the process of decoration.
@@ -22,6 +22,7 @@
 - Create separate staging & production versions.
 - A course about CourseLore for collecting feedback.
   - Put invitation link on the page somewhere.
+- Announce deletion of Slack.
 - Edit self-hosting document to remove “we’re still in beta” note.
 - Notify Zach.
 
@@ -30,7 +31,7 @@
 - Live reloading:
   - Do the morphdom on the server.
   - Scroll on new message.
-  - Latency compensation when sending message.
+  - Latency compensation when sending messages & pressing “like”.
 - Pagination.
   - Messages in conversation.
   - Conversations on sidebar.
