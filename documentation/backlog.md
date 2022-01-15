@@ -7,7 +7,7 @@
     - **Revisit notifications and other potential consumer of the `mentions` information, which aren’t working right now.**
       - I left them broken because the decoration processes includes resolving `#234` references, which shouldn’t be processed for everyone (for example, in full-text search plain text).
     - `TODO`
-    - Test `@mention` and `#references`, which should resume working.
+    - Test notifications, `@mention`, and `#references`, which should have resumed working.
 - Investigate performance issue on the browser when you leave the tab open for a long time.
   - It seems that the server isn’t affected, because when I close the browser tab, the performance on the machine is back to normal.
   - It doesn’t seem to be related to live-reloading, or other development features, because it also happens in `courselore.org`.
