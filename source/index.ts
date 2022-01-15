@@ -3107,7 +3107,14 @@ export default async function courselore({
                                 </div>
                               </div>
                             </div>
-                            $${user.biographyPreprocessed ?? html``}
+                            $${user.biographyPreprocessed !== null
+                              ? processContent({
+                                  req,
+                                  res,
+                                  type: "preprocessed",
+                                  content: user.biographyPreprocessed,
+                                })
+                              : html``}
                           </div>
                         `,
                       })},
@@ -8916,7 +8923,12 @@ export default async function courselore({
                       ? html`
                           <details class="details">
                             <summary>Biography</summary>
-                            <div>$${enrollment.user.biographyPreprocessed}</div>
+                            $${processContent({
+                              req,
+                              res,
+                              type: "preprocessed",
+                              content: enrollment.user.biographyPreprocessed,
+                            })}
                           </details>
                         `
                       : html``}
@@ -13714,12 +13726,12 @@ ${contentSource}</textarea
       type: "source" | "preprocessed";
       content: string;
       decorate?: boolean;
-      search?: string | string[];
+      search?: string | string[] | undefined;
     }): {
-      preprocessed?: HTML;
-      search?: string;
+      preprocessed: HTML | undefined;
+      search: string | undefined;
       processed: HTML;
-      mentions?: Set<string>;
+      mentions: Set<string> | undefined;
     } => {
       const contentElement = JSDOM.fragment(html`
         <div class="content">
@@ -17138,12 +17150,15 @@ ${contentSource}</textarea
                                                 });
                                               `}"
                                             >
-                                              $${
-                                                /* TODO: decorate contentSource: message.content,
-                                              search: req.query.search,
-                                              decorate: true, */
-                                                /* TODO: REVIEW THE TYPES OF decorateContent({search}) */ message.contentPreprocessed
-                                              }
+                                              $${processContent({
+                                                req,
+                                                res,
+                                                type: "preprocessed",
+                                                content:
+                                                  message.contentPreprocessed,
+                                                decorate: true,
+                                                search: req.query.search,
+                                              })}
                                             </div>
                                           </div>
 
