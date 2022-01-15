@@ -147,6 +147,7 @@
 - Lightbox modal for resized images.
 - Lightbox for code blocks (“click for more”, full screen, and selective wrap or not long lines).
 - Add support for videos: Sanitization, dimensions, and so forth.
+- Footnotes in biographies don’t work, because biographies appear multiple times on a page, and their `id`s and `href`s aren’t namespaced separately.
 
 ### Pagination
 
