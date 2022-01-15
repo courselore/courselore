@@ -5886,7 +5886,7 @@ export default async function courselore({
             "biographyHTML" = ${
               req.body.biography.trim() === ""
                 ? null
-                : contentProcessor({
+                : processContent({
                     req,
                     res,
                     contentSource: req.body.biography,
@@ -13654,7 +13654,7 @@ ${contentSource}</textarea
     })
   );
 
-  const contentProcessor = await (async () => {
+  const processContent = await (async () => {
     const unifiedProcessor = unified()
       .use(remarkParse)
       .use(remarkGfm)
@@ -14138,7 +14138,7 @@ ${contentSource}</textarea
       partialLayout({
         req,
         res,
-        body: contentProcessor({
+        body: processContent({
           req,
           res,
           contentSource: req.body.content,
@@ -14699,7 +14699,7 @@ ${contentSource}</textarea
         typeof req.body.content === "string" &&
         req.body.content.trim() !== ""
       ) {
-        const processedContent = contentProcessor({
+        const processedContent = processContent({
           req,
           res,
           contentSource: req.body.content,
@@ -17857,7 +17857,7 @@ ${contentSource}</textarea
       let notify = () => {};
       if (shouldAppendToMostRecentMessage) {
         const contentSource = `${mostRecentMessage.contentSource}\n\n${req.body.content}`;
-        const processedContent = contentProcessor({
+        const processedContent = processContent({
           req,
           res,
           contentSource,
@@ -17879,7 +17879,7 @@ ${contentSource}</textarea
           `
         );
       } else {
-        const processedContent = contentProcessor({
+        const processedContent = processContent({
           req,
           res,
           contentSource: req.body.content,
@@ -18034,10 +18034,10 @@ ${contentSource}</textarea
             );
         }
 
-      let processedContent: ReturnType<typeof contentProcessor>;
+      let processedContent: ReturnType<typeof processContent>;
       if (typeof req.body.content === "string") {
         if (req.body.content.trim() === "") return next("validation");
-        processedContent = contentProcessor({
+        processedContent = processContent({
           req,
           res,
           contentSource: req.body.content,
@@ -18465,7 +18465,7 @@ ${contentSource}</textarea
               ${lodash.sample(userAvatarlessBackgroundColors)},
               ${biographySource},
               ${
-                contentProcessor({ req, res, contentSource: biographySource })
+                processContent({ req, res, contentSource: biographySource })
                   .html
               },
               ${"none"}
@@ -18521,7 +18521,7 @@ ${contentSource}</textarea
                 ${lodash.sample(userAvatarlessBackgroundColors)},
                 ${biographySource},
                 ${
-                  contentProcessor({ req, res, contentSource: biographySource })
+                  processContent({ req, res, contentSource: biographySource })
                     .html
                 },
                 ${"none"}
@@ -18858,7 +18858,7 @@ ${contentSource}</textarea
                         casual.sentences(lodash.random(1, 6))
                       )
                       .join("\n\n");
-              const processedContent = contentProcessor({
+              const processedContent = processContent({
                 req,
                 res,
                 contentSource,
