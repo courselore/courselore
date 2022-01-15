@@ -28,8 +28,10 @@
 
 ### Performance
 
+- Investigate performance issue on the browser when you leave the tab open for a long time.
 - Live reloading:
   - Do the morphdom on the server.
+    - **This is necessary for correctness as well; see what happens when you’re editing a message and a new message is submitted, causing a refresh.**
   - Scroll on new message.
   - Latency compensation when sending messages & pressing “like”.
 - Pagination.
@@ -62,7 +64,6 @@
 
 ### Courses
 
-- How do we show the extra course information: year, term, institution, and code?
 - Different course states, for example, archived.
 - Remove course entirely.
 - Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
@@ -76,13 +77,12 @@
 
 ### Conversations
 
+- Scroll the conversations list to the current conversation doesn’t work on mobile.
 - Streamlining the creation of DMs.
-- Currently typing (particularly on chat).
-- “Truncate” long messages (particularly on chat).
 - Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
 - Bookmarks / flags / saved items. These are personal, for example, for something you have to follow up on.
 - Make the distinction between the types more prominent. Separate questions from chats in the list of conversations, for example.
-- Change the visualization of “types” a little more, for example, make announcements pop up.
+  - Change the visualization of “types” a little more, for example, make announcements pop up.
   - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by staff).
   - Let original question asker approve an answer.
@@ -90,9 +90,13 @@
 - Modify the order of tags.
 - Different states: Open vs archived.
 - Assign questions to CAs.
-- Scroll the conversations list to the current conversation doesn’t work on mobile.
 - Save drafts of conversations you’re creating.
 - `position: sticky` headers (showing author name) in messages?
+
+### Chat
+
+- Currently typing.
+- “Truncate” long messages.
 
 ### Anonymity
 
@@ -101,7 +105,6 @@
 
 ### Notifications
 
-- Have a little red dot next to the course names for courses that have unread messages.
 - Delay sending notifications for a little bit to give the person a chance to update or delete the message.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
 - Add different notification badges for when you’re @mentioned.
@@ -131,8 +134,8 @@
 
 ### Content Processor
 
+- The “quote” button on code blocks is showing up in the wrong place.
 - `.katex` is overflowing in the `y` axis unnecessarily. (See, for example, the example we give on the home page.)
-- Code blocks don’t include the position information, so selecting text & quoting on an answer doesn’t work.
 - Emoji with the `:smile:` form.
 - Proxy hotlinked images (particularly if served with HTTP because of insecure content): https://github.com/atmos/camo
 - Reference on more features ideas: <https://github.com/gjtorikian/html-pipeline>
@@ -191,17 +194,17 @@
 
 - Better printscreens without `lorem ipsum`.
 
-### Infrastructure
+### Interface Details
 
 - Checkboxes that don’t have a visual indication may be confusing.
 - Using the JavaScript event loop for background jobs has another issue besides not persisting: there’s no contention mechanism, which opens it up for DOS attacks.
 - Right click menus on stuff.
 - Places where we show `administratorEmail` to report bugs could be forms instead.
+
+### Infrastructure
+
 - Using `getConversation()` to enforce permissions may not be a great idea. It limits the number of search results in a weird way, that even leaks a bit of data. Also, it isn’t the most performant thing, probably (see point about n+1 queries). Maybe a better idea would be to `WHERE` the permissions everywhere, or use a database view.
 - Performance:
-  - Do the morphdom diff on the server (this is necessary for correctness as well; see what happens when you’re editing a message and a new message is submitted, causing a refresh).
-  - Render views asynchronously.
-  - Pre-render reusable CSS (for example, the design system) and move it out of every HTML.
   - Look for more database indices that may be necessary.
   - n+1 queries:
     - Cases:
@@ -218,7 +221,6 @@
     - Jobs don’t persist if you stop the server and they haven’t have the chance of completing. This affects email delivery, notifications, and so forth.
     - If too many jobs are fired at once, there’s no protection in place, and it may exhaust resources.
 - `try.courselore.org` (reference https://moodle.org/demo)
-- Live updates: Try to come up with a solution that doesn’t require you requesting the page again, instead, just send the data in the first place.
 - Rate limiting.
 - Database transactions:
   - One transaction per request?
@@ -247,7 +249,10 @@
   ```
   - https://github.com/gajus/http-terminator
 - Helmet.
-- Auto-updater for self-hosted.
+- Extract the infrastructure for running the project into a package:
+  - The snippet in `index.ts`.
+  - Some common things from `configuration/*.js`.
+  - Auto-updater.
 - Backups.
   - For us, as system administrators.
   - For users, who may want to migrate data from a hosted version to another.
@@ -1756,16 +1761,17 @@ $$
 
 ### Documentation
 
-- How to self-host.
-  - Create `download.courselore.org`.
-  - “One-click deployment”
-    - DigitalOcean.
-    - Linode.
-    - Amazon.
-    - Google Cloud.
-    - Microsoft Azure.
-    - https://sandstorm.io.
-- How to contribute to the project.
+- Videos
+  - Application demonstration.
+  - How to self-host.
+  - How to setup for development.
+- “One-click deployment”
+  - DigitalOcean.
+  - Linode.
+  - Amazon.
+  - Google Cloud.
+  - Microsoft Azure.
+  - https://sandstorm.io.
 
 ### Marketing
 
