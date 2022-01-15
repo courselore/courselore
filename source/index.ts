@@ -17872,20 +17872,22 @@ ${contentSource}</textarea
           res.locals.conversation.nextMessageReference - 1
         ),
       });
-      const shouldAppendToMostRecentMessage =
+      let processedContent: ReturnType<typeof processContent>;
+      let messageReference: string;
+      if (
         res.locals.conversation.type === "chat" &&
         mostRecentMessage !== undefined &&
         res.locals.enrollment.id === mostRecentMessage.authorEnrollment.id &&
         new Date().getTime() - new Date(mostRecentMessage.createdAt).getTime() <
-          5 * 60 * 1000;
-
-      let maybeSendNotifications: Function | undefined;
-      if (shouldAppendToMostRecentMessage) {
+          5 * 60 * 1000
+      ) {
         const contentSource = `${mostRecentMessage.contentSource}\n\n${req.body.content}`;
-        const processedContent = processContent({
+        processedContent = processContent({
           req,
           res,
+          type: "source",
           content: contentSource,
+          decorate: true,
         });
         database.run(
           sql`
@@ -17903,11 +17905,14 @@ ${contentSource}</textarea
                   "enrollment" != ${res.locals.enrollment.id}
           `
         );
+        messageReference = mostRecentMessage.reference;
       } else {
-        const processedContent = processContent({
+        processedContent = processContent({
           req,
           res,
+          type: "source",
           content: req.body.content,
+          decorate: true,
         });
         database.run(
           sql`
@@ -17956,20 +17961,7 @@ ${contentSource}</textarea
             )
           `
         );
-        maybeSendNotifications = () => {
-          sendNotifications({
-            req,
-            res,
-            conversation: res.locals.conversation,
-            message: getMessage({
-              req,
-              res,
-              conversation: res.locals.conversation,
-              messageReference: message.reference,
-            })!,
-            mentions: processedContent.mentions,
-          });
-        };
+        messageReference = message.reference;
       }
 
       res.redirect(
@@ -17978,7 +17970,18 @@ ${contentSource}</textarea
 
       emitCourseRefresh(res.locals.course.id);
 
-      maybeSendNotifications?.();
+      sendNotifications({
+        req,
+        res,
+        conversation: res.locals.conversation,
+        message: getMessage({
+          req,
+          res,
+          conversation: res.locals.conversation,
+          messageReference,
+        })!,
+        mentions: processedContent.mentions!,
+      });
     }
   );
 
@@ -18065,7 +18068,9 @@ ${contentSource}</textarea
         processedContent = processContent({
           req,
           res,
+          type: "source",
           content: req.body.content,
+          decorate: true,
         });
         database.run(
           sql`
@@ -18092,13 +18097,13 @@ ${contentSource}</textarea
 
       emitCourseRefresh(res.locals.course.id);
 
-      if (typeof req.body.content === "string")
+      if (processedContent! !== undefined)
         sendNotifications({
           req,
           res,
           conversation: res.locals.conversation,
           message: res.locals.message,
-          mentions: processedContent!.mentions,
+          mentions: processedContent.mentions!,
         });
     }
   );
@@ -18490,8 +18495,12 @@ ${contentSource}</textarea
               ${lodash.sample(userAvatarlessBackgroundColors)},
               ${biographySource},
               ${
-                processContent({ req, res, content: biographySource })
-                  .preprocessed
+                processContent({
+                  req,
+                  res,
+                  type: "source",
+                  content: biographySource,
+                }).preprocessed
               },
               ${"none"}
             )
@@ -18549,6 +18558,7 @@ ${contentSource}</textarea
                   processContent({
                     req,
                     res,
+                    type: "source",
                     content: biographySource,
                   }).preprocessed
                 },
@@ -18889,7 +18899,9 @@ ${contentSource}</textarea
               const processedContent = processContent({
                 req,
                 res,
+                type: "source",
                 content: contentSource,
+                decorate: true,
               });
               const message = database.get<{ id: number }>(
                 sql`
