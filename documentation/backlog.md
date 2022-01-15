@@ -3,9 +3,10 @@
 ### Last Preparations
 
 - Cache content processing.
-  - Review all uses of `content` and distinguish `contentSource` and `contentProcessed`.
+  - The basics:
     - `"messages"."contentSource"`
     - `"messages"."contentHTML"`
+    - Review all uses of `content`.
   - In `contentProcessor`, decouple the computation of `mentions` from the process of decoration.
     - **Revisit notifications and other potential consumer of the `mentions` information, which aren’t working right now.**
       - I left them broken because the decoration processes includes resolving `#234` references, which shouldn’t be processed for everyone (for example, in full-text search plain text).
