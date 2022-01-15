@@ -13817,6 +13817,7 @@ ${contentSource}</textarea
             any,
             IsEnrolledInCourseMiddlewareLocals
           >;
+
           for (const element of contentElement.querySelectorAll("a")) {
             const href = element.getAttribute("href");
             if (href !== element.textContent!.trim()) continue;
