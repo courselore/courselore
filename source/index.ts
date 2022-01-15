@@ -3113,7 +3113,7 @@ export default async function courselore({
                                   res,
                                   type: "preprocessed",
                                   content: user.biographyPreprocessed,
-                                })
+                                }).processed
                               : html``}
                           </div>
                         `,
@@ -8928,7 +8928,7 @@ export default async function courselore({
                               res,
                               type: "preprocessed",
                               content: enrollment.user.biographyPreprocessed,
-                            })}
+                            }).processed}
                           </details>
                         `
                       : html``}
@@ -17158,7 +17158,7 @@ ${contentSource}</textarea
                                                   message.contentPreprocessed,
                                                 decorate: true,
                                                 search: req.query.search,
-                                              })}
+                                              }).processed}
                                             </div>
                                           </div>
 
