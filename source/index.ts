@@ -13806,17 +13806,7 @@ ${contentSource}</textarea
     contentHTML: HTML;
     search?: string | string[] | undefined;
   }): HTML => {
-    const narrowReq = req as express.Request<
-      {},
-      any,
-      {},
-      {},
-      IsEnrolledInCourseMiddlewareLocals
-    >;
-    const narrowRes = res as express.Response<
-      any,
-      IsEnrolledInCourseMiddlewareLocals
-    >;
+    const contentElement = JSDOM.fragment(contentHTML).firstElementChild!;
 
     for (const element of contentElement.querySelectorAll("a")) {
       const href = element.getAttribute("href");
@@ -13833,8 +13823,8 @@ ${contentSource}</textarea
         match.slice(1);
       if (courseReference !== res.locals.course.reference) continue;
       const conversation = getConversation({
-        req: narrowReq,
-        res: narrowRes,
+        req,
+        res,
         conversationReference,
       });
       if (conversation === undefined) continue;
@@ -13843,8 +13833,8 @@ ${contentSource}</textarea
         continue;
       }
       const message = getMessage({
-        req: narrowReq,
-        res: narrowRes,
+        req,
+        res,
         conversation,
         messageReference,
       });
@@ -13966,8 +13956,8 @@ ${contentSource}</textarea
               /(?<!\w)#(\d+)(?:\/(\d+))?(?!\w)/g,
               (match, conversationReference, messageReference) => {
                 const conversation = getConversation({
-                  req: narrowReq,
-                  res: narrowRes,
+                  req,
+                  res,
                   conversationReference,
                 });
                 if (conversation === undefined) return match;
@@ -13979,8 +13969,8 @@ ${contentSource}</textarea
                     >${match}</a
                   >`;
                 const message = getMessage({
-                  req: narrowReq,
-                  res: narrowRes,
+                  req,
+                  res,
                   conversation,
                   messageReference,
                 });
@@ -14029,8 +14019,8 @@ ${contentSource}</textarea
       )
         continue;
       const conversation = getConversation({
-        req: narrowReq,
-        res: narrowRes,
+        req,
+        res,
         conversationReference: hrefConversationReference,
       });
       if (conversation === undefined) continue;
@@ -14041,8 +14031,8 @@ ${contentSource}</textarea
             tippy(this, {
               touch: false,
               content: ${hiddenContent({
-                req: narrowReq,
-                res: narrowRes,
+                req,
+                res,
                 content: html`
                   <div
                     style="${css`
@@ -14050,8 +14040,8 @@ ${contentSource}</textarea
                     `}"
                   >
                     $${conversationPartial({
-                      req: narrowReq,
-                      res: narrowRes,
+                      req,
+                      res,
                       conversation,
                     })}
                   </div>
@@ -14063,8 +14053,8 @@ ${contentSource}</textarea
         continue;
       }
       const message = getMessage({
-        req: narrowReq,
-        res: narrowRes,
+        req,
+        res,
         conversation,
         messageReference: hrefMessageReference,
       });
@@ -14075,8 +14065,8 @@ ${contentSource}</textarea
           tippy(this, {
             touch: false,
             content: ${hiddenContent({
-              req: narrowReq,
-              res: narrowRes,
+              req,
+              res,
               content: html`
                 <div
                   style="${css`
@@ -14087,8 +14077,8 @@ ${contentSource}</textarea
                   `}"
                 >
                   $${conversationPartial({
-                    req: narrowReq,
-                    res: narrowRes,
+                    req,
+                    res,
                     conversation,
                     message,
                   })}
@@ -17117,7 +17107,8 @@ ${contentSource}</textarea
                                               $${
                                                 /* TODO: decorate contentSource: message.content,
                                               search: req.query.search,
-                                              decorate: true, */ message.contentHTML
+                                              decorate: true, */
+                                                /* TODO: REVIEW THE TYPES OF decorateContent({search}) */ message.contentHTML
                                               }
                                             </div>
                                           </div>
