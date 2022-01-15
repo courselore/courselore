@@ -4,8 +4,6 @@
 
 - Cache content processing.
   - Review all uses of `content` and distinguish `contentSource` and `contentProcessed`.
-    - `"users"."biographySource"`
-    - `"users"."biographyHTML"`
     - `"messages"."contentSource"`
     - `"messages"."contentHTML"`
   - In `contentProcessor`, decouple the computation of `mentions` from the process of decoration.
