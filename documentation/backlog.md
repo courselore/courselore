@@ -2,17 +2,23 @@
 
 ### Last Preparations
 
+- Cache content processing.
+  - Review all uses of `content` and distinguish `contentSource` and `contentProcessed`.
+  - In `contentProcessor`, decouple the computation of `mentions` from the process of decoration.
+    - **Revisit notifications and other potential consumer of the `mentions` information, which aren’t working right now.**
+      - I left them broken because the decoration processes includes resolving `#234` references, which shouldn’t be processed for everyone (for example, in full-text search plain text).
+- Investigate performance issue on the browser when you leave the tab open for a long time.
+- Live reloading:
+  - Do the morphdom on the server.
+    - **This is necessary for correctness as well; see what happens when you’re editing a message and a new message is submitted, causing a refresh.**
+  - Scroll on new message.
+  - Latency compensation when sending messages & pressing “like”.
 - CSS management
   - Confirm that JSDOM is the bottleneck.
   - Try and make JSDOM faster.
   - Explore https://nodejs.org/api/async_context.html
   - Use `res.locals` to collect CSS.
   - Remove static CSS (the design system) from every request.
-- Cache content processing.
-  - Review all uses of `content` and distinguish `contentSource` and `contentProcessed`.
-  - In `contentProcessor`, decouple the computation of `mentions` from the process of decoration.
-    - **Revisit notifications and other potential consumer of the `mentions` information, which aren’t working right now.**
-      - I left them broken because the decoration processes includes resolving `#234` references, which shouldn’t be processed for everyone (for example, in full-text search plain text).
 - Commit to the database schema.
 - Skim over the codebase.
 - Test everything in different browsers & devices.
@@ -28,12 +34,6 @@
 
 ### Performance
 
-- Investigate performance issue on the browser when you leave the tab open for a long time.
-- Live reloading:
-  - Do the morphdom on the server.
-    - **This is necessary for correctness as well; see what happens when you’re editing a message and a new message is submitted, causing a refresh.**
-  - Scroll on new message.
-  - Latency compensation when sending messages & pressing “like”.
 - Pagination.
   - Messages in conversation.
   - Conversations on sidebar.
