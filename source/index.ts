@@ -5889,6 +5889,7 @@ export default async function courselore({
                 : processContent({
                     req,
                     res,
+                    type: "source",
                     content: req.body.biography,
                   }).preprocessed
             }
@@ -14161,9 +14162,10 @@ ${contentSource}</textarea
         body: processContent({
           req,
           res,
+          type: "source",
           content: req.body.content,
-          decorate: res.locals.course !== undefined,
-        }).preprocessed,
+          decorate: true,
+        }).processed,
       })
     );
   };
@@ -14661,7 +14663,7 @@ ${contentSource}</textarea
           WHERE "id" = ${res.locals.course.id}
         `
       );
-      const conversation = database.get<{
+      const conversationRow = database.get<{
         id: number;
         reference: string;
         type: ConversationType;
@@ -14704,7 +14706,7 @@ ${contentSource}</textarea
             INSERT INTO "taggings" ("createdAt", "conversation", "tag")
             VALUES (
               ${new Date().toISOString()},
-              ${conversation.id},
+              ${conversationRow.id},
               ${
                 res.locals.tags.find(
                   (existingTag) => existingTag.reference === tagReference
@@ -14714,7 +14716,7 @@ ${contentSource}</textarea
           `
         );
 
-      let sendNotificationsIfNecessary = () => {};
+      let maybeSendNotifications: Function | undefined;
       if (
         typeof req.body.content === "string" &&
         req.body.content.trim() !== ""
@@ -14722,7 +14724,9 @@ ${contentSource}</textarea
         const processedContent = processContent({
           req,
           res,
+          type: "source",
           content: req.body.content,
+          decorate: true,
         });
         const message = database.get<{
           id: number;
@@ -14741,7 +14745,7 @@ ${contentSource}</textarea
             )
             VALUES (
               ${new Date().toISOString()},
-              ${conversation.id},
+              ${conversationRow.id},
               ${"1"},
               ${res.locals.enrollment.id},
               ${req.body.isAnonymous ? new Date().toISOString() : null},
@@ -14763,23 +14767,23 @@ ${contentSource}</textarea
           `
         );
 
-        sendNotificationsIfNecessary = () => {
-          const completeConversation = getConversation({
+        maybeSendNotifications = () => {
+          const conversation = getConversation({
             req,
             res,
-            conversationReference: conversation.reference,
+            conversationReference: conversationRow.reference,
           })!;
           sendNotifications({
             req,
             res,
-            conversation: completeConversation,
+            conversation,
             message: getMessage({
               req,
               res,
-              conversation: completeConversation,
+              conversation,
               messageReference: message.reference,
             })!,
-            mentions: processedContent.mentions,
+            mentions: processedContent.mentions!,
           });
         };
       }
@@ -14790,7 +14794,7 @@ ${contentSource}</textarea
 
       emitCourseRefresh(res.locals.course.id);
 
-      sendNotificationsIfNecessary();
+      maybeSendNotifications?.();
     }
   );
 
@@ -17875,7 +17879,7 @@ ${contentSource}</textarea
         new Date().getTime() - new Date(mostRecentMessage.createdAt).getTime() <
           5 * 60 * 1000;
 
-      let notify = () => {};
+      let maybeSendNotifications: Function | undefined;
       if (shouldAppendToMostRecentMessage) {
         const contentSource = `${mostRecentMessage.contentSource}\n\n${req.body.content}`;
         const processedContent = processContent({
@@ -17952,7 +17956,7 @@ ${contentSource}</textarea
             )
           `
         );
-        notify = () => {
+        maybeSendNotifications = () => {
           sendNotifications({
             req,
             res,
@@ -17974,7 +17978,7 @@ ${contentSource}</textarea
 
       emitCourseRefresh(res.locals.course.id);
 
-      notify();
+      maybeSendNotifications?.();
     }
   );
 
