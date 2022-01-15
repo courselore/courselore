@@ -13975,8 +13975,8 @@ ${contentSource}</textarea
                     /(?<!\w)#(\d+)(?:\/(\d+))?(?!\w)/g,
                     (match, conversationReference, messageReference) => {
                       const conversation = getConversation({
-                        req,
-                        res,
+                        req: narrowReq,
+                        res: narrowRes,
                         conversationReference,
                       });
                       if (conversation === undefined) return match;
@@ -13988,8 +13988,8 @@ ${contentSource}</textarea
                           >${match}</a
                         >`;
                       const message = getMessage({
-                        req,
-                        res,
+                        req: narrowReq,
+                        res: narrowRes,
                         conversation,
                         messageReference,
                       });
@@ -14040,8 +14040,8 @@ ${contentSource}</textarea
             )
               continue;
             const conversation = getConversation({
-              req,
-              res,
+              req: narrowReq,
+              res: narrowRes,
               conversationReference: hrefConversationReference,
             });
             if (conversation === undefined) continue;
@@ -14052,8 +14052,8 @@ ${contentSource}</textarea
                   tippy(this, {
                     touch: false,
                     content: ${hiddenContent({
-                      req,
-                      res,
+                      req: narrowReq,
+                      res: narrowRes,
                       content: html`
                         <div
                           style="${css`
@@ -14061,8 +14061,8 @@ ${contentSource}</textarea
                           `}"
                         >
                           $${conversationPartial({
-                            req,
-                            res,
+                            req: narrowReq,
+                            res: narrowRes,
                             conversation,
                           })}
                         </div>
@@ -14074,8 +14074,8 @@ ${contentSource}</textarea
               continue;
             }
             const message = getMessage({
-              req,
-              res,
+              req: narrowReq,
+              res: narrowRes,
               conversation,
               messageReference: hrefMessageReference,
             });
@@ -14086,8 +14086,8 @@ ${contentSource}</textarea
                 tippy(this, {
                   touch: false,
                   content: ${hiddenContent({
-                    req,
-                    res,
+                    req: narrowReq,
+                    res: narrowRes,
                     content: html`
                       <div
                         style="${css`
@@ -14098,8 +14098,8 @@ ${contentSource}</textarea
                         `}"
                       >
                         $${conversationPartial({
-                          req,
-                          res,
+                          req: narrowReq,
+                          res: narrowRes,
                           conversation,
                           message,
                         })}
