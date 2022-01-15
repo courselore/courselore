@@ -4415,6 +4415,7 @@ export default async function courselore({
                   gap: var(--space--4);
                   align-items: center;
                   & > img {
+                    background-color: transparent;
                     width: var(--space--24);
                     border-radius: var(--border-radius--circle);
                   }
