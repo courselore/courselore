@@ -13804,7 +13804,7 @@ ${contentSource}</textarea
           element.innerHTML = html`<i class="bi bi-arrow-return-left"></i>`;
       }
 
-      if (res.locals.course !== undefined && decorate) {
+      if (decorate && res.locals.course !== undefined) {
         const narrowReq = req as express.Request<
           {},
           any,
@@ -13850,6 +13850,7 @@ ${contentSource}</textarea
           element.textContent = `#${conversation.reference}/${message.reference}`;
         }
 
+        mentions = new Set();
         (function processTree(node: Node): void {
           processNode();
           if (node.hasChildNodes())
@@ -13875,7 +13876,7 @@ ${contentSource}</textarea
                       case "everyone":
                       case "staff":
                       case "students":
-                        mentions.add(mention);
+                        mentions!.add(mention);
                         mentionHTML = html`<strong
                           oninteractive="${javascript`
                             tippy(this, {
@@ -13943,7 +13944,7 @@ ${contentSource}</textarea
                           reference: enrollmentRow.reference,
                           role: enrollmentRow.role,
                         };
-                        mentions.add(enrollment.reference);
+                        mentions!.add(enrollment.reference);
                         mentionHTML = userPartial({
                           req,
                           res,
@@ -14107,7 +14108,7 @@ ${contentSource}</textarea
         }
       }
 
-      if (search !== undefined)
+      if (decorate && search !== undefined)
         (function processTree(node: Node): void {
           processNode();
           if (node.hasChildNodes())
@@ -14130,8 +14131,8 @@ ${contentSource}</textarea
 
       return {
         preprocessed: contentPreprocessed,
-        processed: contentElement.outerHTML,
         search: contentSearch,
+        processed: contentElement.outerHTML,
         mentions,
       };
     };
