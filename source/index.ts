@@ -13699,6 +13699,7 @@ ${contentSource}</textarea
       res,
       type,
       content,
+      decorate = false,
       search = undefined,
     }: {
       req: express.Request<
@@ -13711,12 +13712,13 @@ ${contentSource}</textarea
       res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>;
       type: "source" | "preprocessed";
       content: string;
-      search?: string | string[] | undefined;
+      decorate?: boolean;
+      search?: string | string[];
     }): {
-      preprocessed: HTML;
+      preprocessed?: HTML;
+      search?: string;
       processed: HTML;
-      search: string;
-      mentions: Set<string>;
+      mentions?: Set<string>;
     } => {
       const contentElement = JSDOM.fragment(html`
         <div class="content">
@@ -13728,18 +13730,10 @@ ${contentSource}</textarea
         </div>
       `).firstElementChild!;
       const contentPreprocessed =
-        type === "source"
-          ? contentElement.innerHTML
-          : type === "preprocessed"
-          ? content
-          : html``;
+        type === "source" ? contentElement.innerHTML : undefined;
       const contentSearch =
-        type === "source"
-          ? contentElement.textContent!
-          : type === "preprocessed"
-          ? ""
-          : "";
-      const mentions = new Set<string>();
+        type === "source" ? contentElement.textContent! : undefined;
+      let mentions: Set<string> | undefined;
 
       for (const element of contentElement.querySelectorAll(
         "li, td, th, dt, dd"
@@ -13810,290 +13804,307 @@ ${contentSource}</textarea
           element.innerHTML = html`<i class="bi bi-arrow-return-left"></i>`;
       }
 
-      for (const element of contentElement.querySelectorAll("a")) {
-        const href = element.getAttribute("href");
-        if (href !== element.textContent!.trim()) continue;
-        const match = href.match(
-          new RegExp(
-            `^${escapeStringRegexp(
-              baseURL
-            )}/courses/(\\d+)/conversations/(\\d+)(?:#message--(\\d+))?$`
-          )
-        );
-        if (match === null) continue;
-        const [courseReference, conversationReference, messageReference] =
-          match.slice(1);
-        if (courseReference !== res.locals.course.reference) continue;
-        const conversation = getConversation({
-          req,
-          res,
-          conversationReference,
-        });
-        if (conversation === undefined) continue;
-        if (messageReference === undefined) {
-          element.textContent = `#${conversation.reference}`;
-          continue;
-        }
-        const message = getMessage({
-          req,
-          res,
-          conversation,
-          messageReference,
-        });
-        if (message === undefined) continue;
-        element.textContent = `#${conversation.reference}/${message.reference}`;
-      }
-
-      (function processTree(node: Node): void {
-        processNode();
-        if (node.hasChildNodes())
-          for (const childNode of node.childNodes) processTree(childNode);
-        function processNode() {
-          switch (node.nodeType) {
-            case node.TEXT_NODE:
-              const parentElement = node.parentElement;
-              if (
-                parentElement === null ||
-                parentElement.closest("a, code, .mention, .reference") !== null
-              )
-                return;
-              let newNodeHTML = html`${node.textContent}`;
-
-              newNodeHTML = newNodeHTML.replace(
-                /(?<!\w)@(everyone|staff|students|anonymous|[0-9a-z-]+)(?!\w)/gi,
-                (match, mention) => {
-                  mention = mention.toLowerCase();
-                  let mentionHTML: HTML;
-                  switch (mention) {
-                    case "everyone":
-                    case "staff":
-                    case "students":
-                      mentions.add(mention);
-                      mentionHTML = html`<strong
-                        oninteractive="${javascript`
-                        tippy(this, {
-                          content: "Mention",
-                        });
-                      `}"
-                        >${lodash.capitalize(mention)} in the
-                        Conversation</strong
-                      >`;
-                      break;
-                    case "anonymous":
-                      mentionHTML = userPartial({ req, res });
-                      break;
-                    default:
-                      const enrollmentReference = mention.split("--")[0];
-                      const enrollmentRow = database.get<{
-                        id: number;
-                        userId: number;
-                        userLastSeenOnlineAt: string;
-                        userEmail: string;
-                        userName: string;
-                        userAvatar: string | null;
-                        userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-                        userBiographySource: string | null;
-                        userBiographyPreprocessed: HTML | null;
-                        reference: string;
-                        role: EnrollmentRole;
-                      }>(
-                        sql`
-                        SELECT "enrollments"."id",
-                                "users"."id" AS "userId",
-                                "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                                "users"."email" AS "userEmail",
-                                "users"."name" AS "userName",
-                                "users"."avatar" AS "userAvatar",
-                                "users"."avatarlessBackgroundColor" AS  "userAvatarlessBackgroundColor",
-                                "users"."biographySource" AS "userBiographySource",
-                                "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                                "enrollments"."reference",
-                                "enrollments"."role"
-                        FROM "enrollments"
-                        JOIN "users" ON "enrollments"."user" = "users"."id"
-                        WHERE "enrollments"."course" = ${
-                          res.locals.course!.id
-                        } AND
-                              "enrollments"."reference" = ${enrollmentReference}
-                      `
-                      );
-                      if (enrollmentRow === undefined) return match;
-                      const enrollment = {
-                        id: enrollmentRow.id,
-                        user: {
-                          id: enrollmentRow.userId,
-                          lastSeenOnlineAt: enrollmentRow.userLastSeenOnlineAt,
-                          email: enrollmentRow.userEmail,
-                          name: enrollmentRow.userName,
-                          avatar: enrollmentRow.userAvatar,
-                          avatarlessBackgroundColor:
-                            enrollmentRow.userAvatarlessBackgroundColor,
-                          biographySource: enrollmentRow.userBiographySource,
-                          biographyPreprocessed:
-                            enrollmentRow.userBiographyPreprocessed,
-                        },
-                        reference: enrollmentRow.reference,
-                        role: enrollmentRow.role,
-                      };
-                      mentions.add(enrollment.reference);
-                      mentionHTML = userPartial({
-                        req,
-                        res,
-                        enrollment,
-                      });
-                      if (enrollment.user.id === res.locals.user!.id)
-                        mentionHTML = html`<mark
-                          class="mark"
-                          style="${css`
-                            border-top-left-radius: var(--border-radius--3xl);
-                            border-bottom-left-radius: var(
-                              --border-radius--3xl
-                            );
-                          `}"
-                          >$${mentionHTML}</mark
-                        >`;
-                      break;
-                  }
-                  return html`<span class="mention">$${mentionHTML}</span>`;
-                }
-              );
-
-              newNodeHTML = newNodeHTML.replace(
-                /(?<!\w)#(\d+)(?:\/(\d+))?(?!\w)/g,
-                (match, conversationReference, messageReference) => {
-                  const conversation = getConversation({
-                    req,
-                    res,
-                    conversationReference,
-                  });
-                  if (conversation === undefined) return match;
-                  if (messageReference === undefined)
-                    return html`<a
-                      class="reference"
-                      href="${baseURL}/courses/${res.locals.course!
-                        .reference}/conversations/${conversation.reference}"
-                      >${match}</a
-                    >`;
-                  const message = getMessage({
-                    req,
-                    res,
-                    conversation,
-                    messageReference,
-                  });
-                  if (message === undefined) return match;
-                  return html`<a
-                    class="reference"
-                    href="${baseURL}/courses/${res.locals.course!
-                      .reference}/conversations/${conversation.reference}#message--${message.reference}"
-                    >${match}</a
-                  >`;
-                }
-              );
-
-              parentElement.replaceChild(JSDOM.fragment(newNodeHTML), node);
-              break;
+      if (res.locals.course !== undefined && decorate) {
+        const narrowReq = req as express.Request<
+          {},
+          any,
+          {},
+          {},
+          IsEnrolledInCourseMiddlewareLocals
+        >;
+        const narrowRes = res as express.Response<
+          any,
+          Partial<IsEnrolledInCourseMiddlewareLocals>
+        >;
+        for (const element of contentElement.querySelectorAll("a")) {
+          const href = element.getAttribute("href");
+          if (href !== element.textContent!.trim()) continue;
+          const match = href.match(
+            new RegExp(
+              `^${escapeStringRegexp(
+                baseURL
+              )}/courses/(\\d+)/conversations/(\\d+)(?:#message--(\\d+))?$`
+            )
+          );
+          if (match === null) continue;
+          const [courseReference, conversationReference, messageReference] =
+            match.slice(1);
+          if (courseReference !== res.locals.course.reference) continue;
+          const conversation = getConversation({
+            req: narrowReq,
+            res: narrowRes,
+            conversationReference,
+          });
+          if (conversation === undefined) continue;
+          if (messageReference === undefined) {
+            element.textContent = `#${conversation.reference}`;
+            continue;
           }
+          const message = getMessage({
+            req: narrowReq,
+            res: narrowRes,
+            conversation,
+            messageReference,
+          });
+          if (message === undefined) continue;
+          element.textContent = `#${conversation.reference}/${message.reference}`;
         }
-      })(contentElement);
 
-      for (const element of contentElement.querySelectorAll("a")) {
-        const href = element.getAttribute("href");
-        if (href === null) continue;
-        const hrefMatch = href.match(
-          new RegExp(
-            `^${escapeStringRegexp(
-              baseURL
-            )}/courses/(\\d+)/conversations/(\\d+)(?:#message--(\\d+))?$`
-          )
-        );
-        if (hrefMatch === null) continue;
-        const [
-          hrefCourseReference,
-          hrefConversationReference,
-          hrefMessageReference,
-        ] = hrefMatch.slice(1);
-        if (hrefCourseReference !== res.locals.course.reference) continue;
-        const textContentMatch = element
-          .textContent!.trim()
-          .match(/^#(\d+)(?:\/(\d+))?$/);
-        if (textContentMatch === null) continue;
-        const [textContentConversationReference, textContentMessageReference] =
-          textContentMatch.slice(1);
-        if (
-          hrefConversationReference !== textContentConversationReference ||
-          hrefMessageReference !== textContentMessageReference
-        )
-          continue;
-        const conversation = getConversation({
-          req,
-          res,
-          conversationReference: hrefConversationReference,
-        });
-        if (conversation === undefined) continue;
-        if (hrefMessageReference === undefined) {
-          element.setAttribute(
-            "oninteractive",
-            javascript`
-            tippy(this, {
-              touch: false,
-              content: ${hiddenContent({
-                req,
-                res,
-                content: html`
-                  <div
-                    style="${css`
-                      padding: var(--space--2);
-                    `}"
-                  >
-                    $${conversationPartial({
+        (function processTree(node: Node): void {
+          processNode();
+          if (node.hasChildNodes())
+            for (const childNode of node.childNodes) processTree(childNode);
+          function processNode() {
+            switch (node.nodeType) {
+              case node.TEXT_NODE:
+                const parentElement = node.parentElement;
+                if (
+                  parentElement === null ||
+                  parentElement.closest("a, code, .mention, .reference") !==
+                    null
+                )
+                  return;
+                let newNodeHTML = html`${node.textContent}`;
+
+                newNodeHTML = newNodeHTML.replace(
+                  /(?<!\w)@(everyone|staff|students|anonymous|[0-9a-z-]+)(?!\w)/gi,
+                  (match, mention) => {
+                    mention = mention.toLowerCase();
+                    let mentionHTML: HTML;
+                    switch (mention) {
+                      case "everyone":
+                      case "staff":
+                      case "students":
+                        mentions.add(mention);
+                        mentionHTML = html`<strong
+                          oninteractive="${javascript`
+                            tippy(this, {
+                              content: "Mention",
+                            });
+                          `}"
+                          >${lodash.capitalize(mention)} in the
+                          Conversation</strong
+                        >`;
+                        break;
+                      case "anonymous":
+                        mentionHTML = userPartial({ req, res });
+                        break;
+                      default:
+                        const enrollmentReference = mention.split("--")[0];
+                        const enrollmentRow = database.get<{
+                          id: number;
+                          userId: number;
+                          userLastSeenOnlineAt: string;
+                          userEmail: string;
+                          userName: string;
+                          userAvatar: string | null;
+                          userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+                          userBiographySource: string | null;
+                          userBiographyPreprocessed: HTML | null;
+                          reference: string;
+                          role: EnrollmentRole;
+                        }>(
+                          sql`
+                            SELECT "enrollments"."id",
+                                    "users"."id" AS "userId",
+                                    "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                                    "users"."email" AS "userEmail",
+                                    "users"."name" AS "userName",
+                                    "users"."avatar" AS "userAvatar",
+                                    "users"."avatarlessBackgroundColor" AS  "userAvatarlessBackgroundColor",
+                                    "users"."biographySource" AS "userBiographySource",
+                                    "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+                                    "enrollments"."reference",
+                                    "enrollments"."role"
+                            FROM "enrollments"
+                            JOIN "users" ON "enrollments"."user" = "users"."id"
+                            WHERE "enrollments"."course" = ${
+                              res.locals.course!.id
+                            } AND
+                                  "enrollments"."reference" = ${enrollmentReference}
+                          `
+                        );
+                        if (enrollmentRow === undefined) return match;
+                        const enrollment = {
+                          id: enrollmentRow.id,
+                          user: {
+                            id: enrollmentRow.userId,
+                            lastSeenOnlineAt:
+                              enrollmentRow.userLastSeenOnlineAt,
+                            email: enrollmentRow.userEmail,
+                            name: enrollmentRow.userName,
+                            avatar: enrollmentRow.userAvatar,
+                            avatarlessBackgroundColor:
+                              enrollmentRow.userAvatarlessBackgroundColor,
+                            biographySource: enrollmentRow.userBiographySource,
+                            biographyPreprocessed:
+                              enrollmentRow.userBiographyPreprocessed,
+                          },
+                          reference: enrollmentRow.reference,
+                          role: enrollmentRow.role,
+                        };
+                        mentions.add(enrollment.reference);
+                        mentionHTML = userPartial({
+                          req,
+                          res,
+                          enrollment,
+                        });
+                        if (enrollment.user.id === res.locals.user!.id)
+                          mentionHTML = html`<mark
+                            class="mark"
+                            style="${css`
+                              border-top-left-radius: var(--border-radius--3xl);
+                              border-bottom-left-radius: var(
+                                --border-radius--3xl
+                              );
+                            `}"
+                            >$${mentionHTML}</mark
+                          >`;
+                        break;
+                    }
+                    return html`<span class="mention">$${mentionHTML}</span>`;
+                  }
+                );
+
+                newNodeHTML = newNodeHTML.replace(
+                  /(?<!\w)#(\d+)(?:\/(\d+))?(?!\w)/g,
+                  (match, conversationReference, messageReference) => {
+                    const conversation = getConversation({
+                      req,
+                      res,
+                      conversationReference,
+                    });
+                    if (conversation === undefined) return match;
+                    if (messageReference === undefined)
+                      return html`<a
+                        class="reference"
+                        href="${baseURL}/courses/${res.locals.course!
+                          .reference}/conversations/${conversation.reference}"
+                        >${match}</a
+                      >`;
+                    const message = getMessage({
                       req,
                       res,
                       conversation,
-                    })}
-                  </div>
-                `,
-              })},
-            });
-          `
+                      messageReference,
+                    });
+                    if (message === undefined) return match;
+                    return html`<a
+                      class="reference"
+                      href="${baseURL}/courses/${res.locals.course!
+                        .reference}/conversations/${conversation.reference}#message--${message.reference}"
+                      >${match}</a
+                    >`;
+                  }
+                );
+
+                parentElement.replaceChild(JSDOM.fragment(newNodeHTML), node);
+                break;
+            }
+          }
+        })(contentElement);
+
+        for (const element of contentElement.querySelectorAll("a")) {
+          const href = element.getAttribute("href");
+          if (href === null) continue;
+          const hrefMatch = href.match(
+            new RegExp(
+              `^${escapeStringRegexp(
+                baseURL
+              )}/courses/(\\d+)/conversations/(\\d+)(?:#message--(\\d+))?$`
+            )
           );
-          continue;
-        }
-        const message = getMessage({
-          req,
-          res,
-          conversation,
-          messageReference: hrefMessageReference,
-        });
-        if (message === undefined) continue;
-        element.setAttribute(
-          "oninteractive",
-          javascript`
-          tippy(this, {
-            touch: false,
-            content: ${hiddenContent({
-              req,
-              res,
-              content: html`
-                <div
-                  style="${css`
-                    padding: var(--space--2);
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--2);
-                  `}"
-                >
-                  $${conversationPartial({
+          if (hrefMatch === null) continue;
+          const [
+            hrefCourseReference,
+            hrefConversationReference,
+            hrefMessageReference,
+          ] = hrefMatch.slice(1);
+          if (hrefCourseReference !== res.locals.course.reference) continue;
+          const textContentMatch = element
+            .textContent!.trim()
+            .match(/^#(\d+)(?:\/(\d+))?$/);
+          if (textContentMatch === null) continue;
+          const [
+            textContentConversationReference,
+            textContentMessageReference,
+          ] = textContentMatch.slice(1);
+          if (
+            hrefConversationReference !== textContentConversationReference ||
+            hrefMessageReference !== textContentMessageReference
+          )
+            continue;
+          const conversation = getConversation({
+            req,
+            res,
+            conversationReference: hrefConversationReference,
+          });
+          if (conversation === undefined) continue;
+          if (hrefMessageReference === undefined) {
+            element.setAttribute(
+              "oninteractive",
+              javascript`
+                tippy(this, {
+                  touch: false,
+                  content: ${hiddenContent({
                     req,
                     res,
-                    conversation,
-                    message,
-                  })}
-                </div>
-              `,
-            })},
+                    content: html`
+                      <div
+                        style="${css`
+                          padding: var(--space--2);
+                        `}"
+                      >
+                        $${conversationPartial({
+                          req,
+                          res,
+                          conversation,
+                        })}
+                      </div>
+                    `,
+                  })},
+                });
+              `
+            );
+            continue;
+          }
+          const message = getMessage({
+            req,
+            res,
+            conversation,
+            messageReference: hrefMessageReference,
           });
-        `
-        );
+          if (message === undefined) continue;
+          element.setAttribute(
+            "oninteractive",
+            javascript`
+              tippy(this, {
+                touch: false,
+                content: ${hiddenContent({
+                  req,
+                  res,
+                  content: html`
+                    <div
+                      style="${css`
+                        padding: var(--space--2);
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--2);
+                      `}"
+                    >
+                      $${conversationPartial({
+                        req,
+                        res,
+                        conversation,
+                        message,
+                      })}
+                    </div>
+                  `,
+                })},
+              });
+            `
+          );
+        }
       }
 
       if (search !== undefined)

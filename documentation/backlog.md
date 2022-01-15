@@ -2,6 +2,8 @@
 
 ### Last Preparations
 
+- Clean `| undefined`
+
 - Cache content processing.
   - In `contentProcessor`, decouple the computation of `mentions` from the process of decoration.
     - **Revisit notifications and other potential consumer of the `mentions` information, which aren’t working right now.**
