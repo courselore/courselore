@@ -4330,7 +4330,7 @@ export default async function courselore({
               $${contentEditor({
                 req,
                 res,
-                value: dedent`
+                contentSource: dedent`
                   # Reasons to **Love** CourseLore’s Message Editor
 
                   **Easy** to learn for people who are new to [Markdown](https://guides.github.com/features/mastering-markdown/).
@@ -5838,7 +5838,7 @@ export default async function courselore({
                   req,
                   res,
                   name: "biography",
-                  value: res.locals.user.biographySource ?? "",
+                  contentSource: res.locals.user.biographySource ?? "",
                   required: false,
                 })}
               </div>
@@ -11806,7 +11806,7 @@ export default async function courselore({
     req,
     res,
     name = "content",
-    value = "",
+    contentSource = "",
     required = true,
     compact = false,
     skipIsModified = false,
@@ -11821,7 +11821,7 @@ export default async function courselore({
     >;
     res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>;
     name?: string;
-    value?: string;
+    contentSource?: string;
     required?: boolean;
     compact?: boolean;
     skipIsModified?: boolean;
@@ -13036,7 +13036,7 @@ export default async function courselore({
                 this.closest(".content-editor").querySelector(".attachments").upload(event.clipboardData.files);
               `}"
             >
-${value}</textarea
+${contentSource}</textarea
             >
           </div>
         </div>
@@ -17254,7 +17254,8 @@ ${value}</textarea
                                                 $${contentEditor({
                                                   req,
                                                   res,
-                                                  value: message.contentSource,
+                                                  contentSource:
+                                                    message.contentSource,
                                                   compact:
                                                     res.locals.conversation
                                                       .type === "chat",
