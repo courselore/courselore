@@ -326,7 +326,8 @@ export default async function courselore({
         "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
         "anonymousAt" TEXT NULL,
         "answerAt" TEXT NULL,
-        "content" TEXT NOT NULL,
+        "contentSource" TEXT NOT NULL,
+        "contentHTML" TEXT NOT NULL,
         "contentSearch" TEXT NOT NULL,
         UNIQUE ("conversation", "reference")
       );
@@ -1238,7 +1239,7 @@ export default async function courselore({
                 }
               }
 
-              .content--processed {
+              .content {
                 &,
                 div,
                 figure,
@@ -9580,11 +9581,11 @@ export default async function courselore({
                     type="button"
                     class="button button--tight button--tight--inline button--transparent"
                     oninteractive="${javascript`
-                        tippy(this, {
-                          trigger: "click",
-                          content: "A bar with the accent color appears at the top of pages related to this course to help you differentiate between courses.",
-                        });
-                      `}"
+                      tippy(this, {
+                        trigger: "click",
+                        content: "A bar with the accent color appears at the top of pages related to this course to help you differentiate between courses.",
+                      });
+                    `}"
                   >
                     <i class="bi bi-info-circle"></i>
                   </button>
@@ -11544,7 +11545,8 @@ export default async function courselore({
         authorEnrollment: AuthorEnrollment;
         anonymousAt: string | null;
         answerAt: string | null;
-        content: string;
+        contentSource: string;
+        contentHTML: HTML;
         contentSearch: string;
         reading: { id: number } | null;
         endorsements: {
@@ -11575,7 +11577,8 @@ export default async function courselore({
       authorEnrollmentRole: EnrollmentRole | null;
       anonymousAt: string | null;
       answerAt: string | null;
-      content: string;
+      contentSource: string;
+      contentHTML: HTML;
       contentSearch: string;
       readingId: number | null;
     }>(
@@ -11597,7 +11600,8 @@ export default async function courselore({
                "authorEnrollment"."role" AS "authorEnrollmentRole",
                "messages"."anonymousAt",
                "messages"."answerAt",
-               "messages"."content",
+               "messages"."contentSource",
+               "messages"."contentHTML",
                "messages"."contentSearch",
                "readings"."id" AS "readingId"
         FROM "messages"
@@ -11644,7 +11648,8 @@ export default async function courselore({
           : noLongerEnrolledEnrollment,
       anonymousAt: messageRow.anonymousAt,
       answerAt: messageRow.answerAt,
-      content: messageRow.content,
+      contentSource: messageRow.contentSource,
+      contentHTML: messageRow.contentHTML,
       contentSearch: messageRow.contentSearch,
       reading:
         messageRow.readingId === null ? null : { id: messageRow.readingId },
@@ -13697,7 +13702,7 @@ ${value}</textarea
       const mentions = new Set<string>();
 
       const contentElement = JSDOM.fragment(html`
-        <div class="content--processed">
+        <div class="content">
           $${unifiedProcessor.processSync(contentSource).toString()}
         </div>
       `).firstElementChild!;
@@ -14691,8 +14696,6 @@ ${value}</textarea
         const message = database.get<{
           id: number;
           reference: string;
-          anonymousAt: string | null;
-          contentSearch: string;
         }>(
           sql`
             INSERT INTO "messages" (
@@ -14701,7 +14704,8 @@ ${value}</textarea
               "reference",
               "authorEnrollment",
               "anonymousAt",
-              "content",
+              "contentSource",
+              "contentHTML",
               "contentSearch"
             )
             VALUES (
@@ -14711,6 +14715,7 @@ ${value}</textarea
               ${res.locals.enrollment.id},
               ${req.body.isAnonymous ? new Date().toISOString() : null},
               ${req.body.content},
+              ${processedContent.html},
               ${processedContent.text}
             )
             RETURNING *
@@ -16045,8 +16050,8 @@ ${value}</textarea
 
                                     <div
                                       id="message--${message.reference}"
-                                      data-content="${JSON.stringify(
-                                        message.content
+                                      data-content-source="${JSON.stringify(
+                                        message.contentSource
                                       )}"
                                       class="message"
                                       style="${css`
@@ -16254,7 +16259,7 @@ ${value}</textarea
                                                           <button
                                                             class="dropdown--menu--item button button--transparent"
                                                             onclick="${javascript`
-                                                              const content = JSON.parse(this.closest("[data-content]").dataset.content);
+                                                              const content = JSON.parse(this.closest("[data-content-source]").dataset.contentSource);
                                                               const newMessage = document.querySelector(".new-message");
                                                               newMessage.querySelector(".content-editor--button--write").click();
                                                               const element = newMessage.querySelector(".content-editor--write--textarea");
@@ -17029,7 +17034,7 @@ ${value}</textarea
                                                             const focusPosition = JSON.parse(focusElement.dataset.position);
                                                             const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
                                                             const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
-                                                            const content = JSON.parse(anchorElement.closest("[data-content]").dataset.content);
+                                                            const content = JSON.parse(anchorElement.closest("[data-content-source]").dataset.contentSource);
                                                             const newMessage = document.querySelector(".new-message");
                                                             newMessage.querySelector(".content-editor--button--write").click();
                                                             const element = newMessage.querySelector(".content-editor--write--textarea");
@@ -17098,13 +17103,11 @@ ${value}</textarea
                                                 });
                                               `}"
                                             >
-                                              $${contentProcessor({
-                                                req,
-                                                res,
-                                                contentSource: message.content,
-                                                search: req.query.search,
-                                                decorate: true,
-                                              }).html}
+                                              $${
+                                                /* TODO: decorate contentSource: message.content,
+                                              search: req.query.search,
+                                              decorate: true, */ message.contentHTML
+                                              }
                                             </div>
                                           </div>
 
@@ -17240,7 +17243,7 @@ ${value}</textarea
                                                 $${contentEditor({
                                                   req,
                                                   res,
-                                                  value: message.content,
+                                                  value: message.contentSource,
                                                   compact:
                                                     res.locals.conversation
                                                       .type === "chat",
@@ -17841,16 +17844,17 @@ ${value}</textarea
 
       let notify = () => {};
       if (shouldAppendToMostRecentMessage) {
-        const content = `${mostRecentMessage.content}\n\n${req.body.content}`;
+        const contentSource = `${mostRecentMessage.contentSource}\n\n${req.body.content}`;
         const processedContent = contentProcessor({
           req,
           res,
-          contentSource: content,
+          contentSource,
         });
         database.run(
           sql`
             UPDATE "messages"
-            SET "content" = ${content},
+            SET "contentSource" = ${contentSource},
+                "contentHTML" = ${processedContent.html},
                 "contentSearch" = ${processedContent.text}
             WHERE "id" = ${mostRecentMessage.id}
           `
@@ -17887,7 +17891,8 @@ ${value}</textarea
               "authorEnrollment",
               "anonymousAt",
               "answerAt",
-              "content",
+              "contentSource",
+              "contentHTML",
               "contentSearch"
             )
             VALUES (
@@ -17898,6 +17903,7 @@ ${value}</textarea
               ${req.body.isAnonymous ? new Date().toISOString() : null},
               ${req.body.isAnswer ? new Date().toISOString() : null},
               ${req.body.content},
+              ${processedContent.html},
               ${processedContent.text}
             )
             RETURNING *
@@ -18017,31 +18023,31 @@ ${value}</textarea
         }
 
       let processedContent: ReturnType<typeof contentProcessor>;
-      if (typeof req.body.content === "string")
+      if (typeof req.body.content === "string") {
         if (req.body.content.trim() === "") return next("validation");
-        else {
-          processedContent = contentProcessor({
-            req,
-            res,
-            contentSource: req.body.content,
-          });
-          database.run(
-            sql`
-              UPDATE "messages"
-              SET "content" = ${req.body.content},
-                  "contentSearch" = ${processedContent.text},
-                  "updatedAt" = ${new Date().toISOString()}
-              WHERE "id" = ${res.locals.message.id}
-            `
-          );
-          database.run(
-            sql`
-              UPDATE "conversations"
-              SET "updatedAt" = ${new Date().toISOString()}
-              WHERE "id" = ${res.locals.conversation.id}
-            `
-          );
-        }
+        processedContent = contentProcessor({
+          req,
+          res,
+          contentSource: req.body.content,
+        });
+        database.run(
+          sql`
+            UPDATE "messages"
+            SET "contentSource" = ${req.body.content},
+                "contentHTML" = ${processedContent.html},
+                "contentSearch" = ${processedContent.text},
+                "updatedAt" = ${new Date().toISOString()}
+            WHERE "id" = ${res.locals.message.id}
+          `
+        );
+        database.run(
+          sql`
+            UPDATE "conversations"
+            SET "updatedAt" = ${new Date().toISOString()}
+            WHERE "id" = ${res.locals.conversation.id}
+          `
+        );
+      }
 
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
@@ -18413,7 +18419,7 @@ ${value}</textarea
         const password = await argon2.hash("courselore", argon2Options);
         const name = casual.full_name;
         const avatarIndices = lodash.shuffle(lodash.range(250));
-        const biography = casual.sentences(lodash.random(5, 7));
+        const biographySource = casual.sentences(lodash.random(5, 7));
         const demonstrationUser = database.get<{ id: number; name: string }>(
           sql`
             INSERT INTO "users" (
@@ -18445,8 +18451,11 @@ ${value}</textarea
               ${html`${name}`},
               ${`${baseURL}/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`},
               ${lodash.sample(userAvatarlessBackgroundColors)},
-              ${biography},
-              ${contentProcessor({ req, res, contentSource: biography }).html},
+              ${biographySource},
+              ${
+                contentProcessor({ req, res, contentSource: biographySource })
+                  .html
+              },
               ${"none"}
             )
             RETURNING *
@@ -18455,7 +18464,7 @@ ${value}</textarea
 
         const users = lodash.times(150, () => {
           const name = casual.full_name;
-          const biography = casual.sentences(lodash.random(5, 7));
+          const biographySource = casual.sentences(lodash.random(5, 7));
           return database.get<{
             id: number;
             email: string;
@@ -18498,9 +18507,10 @@ ${value}</textarea
                     : null
                 },
                 ${lodash.sample(userAvatarlessBackgroundColors)},
-                ${biography},
+                ${biographySource},
                 ${
-                  contentProcessor({ req, res, contentSource: biography }).html
+                  contentProcessor({ req, res, contentSource: biographySource })
+                    .html
                 },
                 ${"none"}
               )
@@ -18828,7 +18838,7 @@ ${value}</textarea
               messageReference++
             ) {
               const messageCreatedAt = messageCreatedAts[messageReference - 1];
-              const content =
+              const contentSource =
                 type === "chat" && Math.random() < 0.9
                   ? casual.sentences(lodash.random(1, 2))
                   : lodash
@@ -18839,7 +18849,7 @@ ${value}</textarea
               const processedContent = contentProcessor({
                 req,
                 res,
-                contentSource: content,
+                contentSource,
               });
               const message = database.get<{ id: number }>(
                 sql`
@@ -18851,7 +18861,8 @@ ${value}</textarea
                     "authorEnrollment",
                     "anonymousAt",
                     "answerAt",
-                    "content",
+                    "contentSource",
+                    "contentHTML",
                     "contentSearch"
                   )
                   VALUES (
@@ -18885,7 +18896,8 @@ ${value}</textarea
                         : null
                     },
                     ${Math.random() < 0.5 ? new Date().toISOString() : null},
-                    ${content},
+                    ${contentSource},
+                    ${processedContent.html},
                     ${processedContent.text}
                   )
                   RETURNING *

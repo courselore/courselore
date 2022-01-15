@@ -3,14 +3,22 @@
 ### Last Preparations
 
 - Cache content processing.
+`/about` should redirect to `courselore.org`.
   - The basics:
-    - `"messages"."contentSource"`
-    - `"messages"."contentHTML"`
     - Review all uses of `content`.
+    - `"messages"."contentSource"` TEST
+    - `"messages"."contentHTML"` TEST
+    - Test quote & reply
+    - Test `@mention` and `#references`, which should **not** be working.
+    - `contentEditor({ ◊value -> contentSource◊ })`
+    - `contentEditor(): ◊text -> search◊`
+    - `TODO`
   - In `contentProcessor`, decouple the computation of `mentions` from the process of decoration.
     - **Revisit notifications and other potential consumer of the `mentions` information, which aren’t working right now.**
       - I left them broken because the decoration processes includes resolving `#234` references, which shouldn’t be processed for everyone (for example, in full-text search plain text).
 - Investigate performance issue on the browser when you leave the tab open for a long time.
+  - It seems that the server isn’t affected, because when I close the browser tab, the performance on the machine is back to normal.
+  - It doesn’t seem to be related to live-reloading, or other development features, because it also happens in `courselore.org`.
 - Live reloading:
   - Do the morphdom on the server.
     - **This is necessary for correctness as well; see what happens when you’re editing a message and a new message is submitted, causing a refresh.**
@@ -44,6 +52,7 @@
 - Investigate other potential bottlenecks:
   - `html` tagged template literal.
   - Synchronous stuff that could be async.
+- Don’t pre-load the `edit` form for messages. Instead, load the `contentSource` from the `data-content-source` that’s already used by the quoting mechanism.
 
 ### Advanced Access Control
 
