@@ -4,7 +4,7 @@
 
 - Cache content processing.
   - The basics:
-    - `contentEditor(): ◊text -> search◊`
+    - `contentProcessor(): ◊text -> search◊`
     - `TODO`
   - In `contentProcessor`, decouple the computation of `mentions` from the process of decoration.
     - **Revisit notifications and other potential consumer of the `mentions` information, which aren’t working right now.**
