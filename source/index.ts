@@ -14696,7 +14696,7 @@ ${contentSource}</textarea
         typeof req.body.content === "string" &&
         req.body.content.trim() !== ""
       ) {
-        const preprocessedContent = processContent({
+        const processedContent = processContent({
           req,
           res,
           contentSource: req.body.content,
@@ -14723,8 +14723,8 @@ ${contentSource}</textarea
               ${res.locals.enrollment.id},
               ${req.body.isAnonymous ? new Date().toISOString() : null},
               ${req.body.content},
-              ${preprocessedContent.preprocessed},
-              ${preprocessedContent.search}
+              ${processedContent.preprocessed},
+              ${processedContent.search}
             )
             RETURNING *
           `
@@ -14756,7 +14756,7 @@ ${contentSource}</textarea
               conversation: completeConversation,
               messageReference: message.reference,
             })!,
-            mentions: preprocessedContent.mentions,
+            mentions: processedContent.mentions,
           });
         };
       }
@@ -17855,7 +17855,7 @@ ${contentSource}</textarea
       let notify = () => {};
       if (shouldAppendToMostRecentMessage) {
         const contentSource = `${mostRecentMessage.contentSource}\n\n${req.body.content}`;
-        const preprocessedContent = processContent({
+        const processedContent = processContent({
           req,
           res,
           contentSource,
@@ -17864,8 +17864,8 @@ ${contentSource}</textarea
           sql`
             UPDATE "messages"
             SET "contentSource" = ${contentSource},
-                "contentPreprocessed" = ${preprocessedContent.preprocessed},
-                "contentSearch" = ${preprocessedContent.search}
+                "contentPreprocessed" = ${processedContent.preprocessed},
+                "contentSearch" = ${processedContent.search}
             WHERE "id" = ${mostRecentMessage.id}
           `
         );
@@ -17877,7 +17877,7 @@ ${contentSource}</textarea
           `
         );
       } else {
-        const preprocessedContent = processContent({
+        const processedContent = processContent({
           req,
           res,
           contentSource: req.body.content,
@@ -17913,8 +17913,8 @@ ${contentSource}</textarea
               ${req.body.isAnonymous ? new Date().toISOString() : null},
               ${req.body.isAnswer ? new Date().toISOString() : null},
               ${req.body.content},
-              ${preprocessedContent.preprocessed},
-              ${preprocessedContent.search}
+              ${processedContent.preprocessed},
+              ${processedContent.search}
             )
             RETURNING *
           `
@@ -17940,7 +17940,7 @@ ${contentSource}</textarea
               conversation: res.locals.conversation,
               messageReference: message.reference,
             })!,
-            mentions: preprocessedContent.mentions,
+            mentions: processedContent.mentions,
           });
         };
       }
@@ -18032,10 +18032,10 @@ ${contentSource}</textarea
             );
         }
 
-      let preprocessedContent: ReturnType<typeof processContent>;
+      let processedContent: ReturnType<typeof processContent>;
       if (typeof req.body.content === "string") {
         if (req.body.content.trim() === "") return next("validation");
-        preprocessedContent = processContent({
+        processedContent = processContent({
           req,
           res,
           contentSource: req.body.content,
@@ -18044,8 +18044,8 @@ ${contentSource}</textarea
           sql`
             UPDATE "messages"
             SET "contentSource" = ${req.body.content},
-                "contentPreprocessed" = ${preprocessedContent.preprocessed},
-                "contentSearch" = ${preprocessedContent.search},
+                "contentPreprocessed" = ${processedContent.preprocessed},
+                "contentSearch" = ${processedContent.search},
                 "updatedAt" = ${new Date().toISOString()}
             WHERE "id" = ${res.locals.message.id}
           `
@@ -18071,7 +18071,7 @@ ${contentSource}</textarea
           res,
           conversation: res.locals.conversation,
           message: res.locals.message,
-          mentions: preprocessedContent!.mentions,
+          mentions: processedContent!.mentions,
         });
     }
   );
@@ -18859,7 +18859,7 @@ ${contentSource}</textarea
                         casual.sentences(lodash.random(1, 6))
                       )
                       .join("\n\n");
-              const preprocessedContent = processContent({
+              const processedContent = processContent({
                 req,
                 res,
                 contentSource,
@@ -18910,8 +18910,8 @@ ${contentSource}</textarea
                     },
                     ${Math.random() < 0.5 ? new Date().toISOString() : null},
                     ${contentSource},
-                    ${preprocessedContent.preprocessed},
-                    ${preprocessedContent.search}
+                    ${processedContent.preprocessed},
+                    ${processedContent.search}
                   )
                   RETURNING *
                 `
