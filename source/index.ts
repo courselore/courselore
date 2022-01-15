@@ -13714,42 +13714,6 @@ ${contentSource}</textarea
         </div>
       `).firstElementChild!;
 
-      for (const element of contentElement.querySelectorAll(
-        "li, td, th, dt, dd"
-      ))
-        element.innerHTML = [...element.childNodes].some(
-          (node) =>
-            node.nodeType === node.TEXT_NODE && node.textContent!.trim() !== ""
-        )
-          ? html`<div><p>$${element.innerHTML}</p></div>`
-          : html`<div>$${element.innerHTML}</div>`;
-
-      for (const element of contentElement.querySelectorAll("details")) {
-        const summaries: Node[] = [];
-        const rest: Node[] = [];
-        for (const child of element.childNodes)
-          (child.nodeType === child.ELEMENT_NODE &&
-          (child as Element).tagName.toLowerCase() === "summary"
-            ? summaries
-            : rest
-          ).push(child);
-        switch (summaries.length) {
-          case 0:
-            summaries.push(
-              JSDOM.fragment(html`<summary>See More</summary>`)
-                .firstElementChild!
-            );
-            break;
-          case 1:
-            break;
-          default:
-            continue;
-        }
-        const wrapper = JSDOM.fragment(html`<div></div>`).firstElementChild!;
-        wrapper.replaceChildren(...rest);
-        element.replaceChildren(summaries[0], wrapper);
-      }
-
       if (res.locals.course !== undefined) {
         // TODO: Collect mentions.
       }
@@ -13774,6 +13738,39 @@ ${contentSource}</textarea
     search?: string | string[] | undefined;
   }): HTML => {
     const contentElement = JSDOM.fragment(contentHTML).firstElementChild!;
+
+    for (const element of contentElement.querySelectorAll("li, td, th, dt, dd"))
+      element.innerHTML = [...element.childNodes].some(
+        (node) =>
+          node.nodeType === node.TEXT_NODE && node.textContent!.trim() !== ""
+      )
+        ? html`<div><p>$${element.innerHTML}</p></div>`
+        : html`<div>$${element.innerHTML}</div>`;
+
+    for (const element of contentElement.querySelectorAll("details")) {
+      const summaries: Node[] = [];
+      const rest: Node[] = [];
+      for (const child of element.childNodes)
+        (child.nodeType === child.ELEMENT_NODE &&
+        (child as Element).tagName.toLowerCase() === "summary"
+          ? summaries
+          : rest
+        ).push(child);
+      switch (summaries.length) {
+        case 0:
+          summaries.push(
+            JSDOM.fragment(html`<summary>See More</summary>`).firstElementChild!
+          );
+          break;
+        case 1:
+          break;
+        default:
+          continue;
+      }
+      const wrapper = JSDOM.fragment(html`<div></div>`).firstElementChild!;
+      wrapper.replaceChildren(...rest);
+      element.replaceChildren(summaries[0], wrapper);
+    }
 
     const namespace = Math.random().toString(36).slice(2);
     for (const element of contentElement.querySelectorAll("[id]"))
