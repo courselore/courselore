@@ -2,7 +2,6 @@
 
 ### Last Preparations
 
-- Test `@mention`, and `#references`, which should have resumed working.
 - Notifications
   - Test.
   - Do you get emails for **every** message on an announcement, or just the first one?
