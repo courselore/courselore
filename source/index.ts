@@ -5889,7 +5889,7 @@ export default async function courselore({
                 : processContent({
                     req,
                     res,
-                    contentSource: req.body.biography,
+                    content: req.body.biography,
                   }).preprocessed
             }
         WHERE "id" = ${res.locals.user.id}
@@ -13697,7 +13697,7 @@ ${contentSource}</textarea
     return ({
       req,
       res,
-      contentSource,
+      content,
     }: {
       req: express.Request<
         {},
@@ -13707,7 +13707,7 @@ ${contentSource}</textarea
         Partial<IsEnrolledInCourseMiddlewareLocals>
       >;
       res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>;
-      contentSource: string;
+      content: string;
     }): {
       preprocessed: HTML;
       search: string;
@@ -13717,7 +13717,7 @@ ${contentSource}</textarea
 
       const contentElement = JSDOM.fragment(html`
         <div class="content">
-          $${unifiedProcessor.processSync(contentSource).toString()}
+          $${unifiedProcessor.processSync(content).toString()}
         </div>
       `).firstElementChild!;
 
@@ -14138,7 +14138,7 @@ ${contentSource}</textarea
         body: processContent({
           req,
           res,
-          contentSource: req.body.content,
+          content: req.body.content,
           decorate: res.locals.course !== undefined,
         }).preprocessed,
       })
@@ -14699,7 +14699,7 @@ ${contentSource}</textarea
         const processedContent = processContent({
           req,
           res,
-          contentSource: req.body.content,
+          content: req.body.content,
         });
         const message = database.get<{
           id: number;
@@ -17858,7 +17858,7 @@ ${contentSource}</textarea
         const processedContent = processContent({
           req,
           res,
-          contentSource,
+          content: contentSource,
         });
         database.run(
           sql`
@@ -17880,7 +17880,7 @@ ${contentSource}</textarea
         const processedContent = processContent({
           req,
           res,
-          contentSource: req.body.content,
+          content: req.body.content,
         });
         database.run(
           sql`
@@ -18038,7 +18038,7 @@ ${contentSource}</textarea
         processedContent = processContent({
           req,
           res,
-          contentSource: req.body.content,
+          content: req.body.content,
         });
         database.run(
           sql`
@@ -18463,7 +18463,7 @@ ${contentSource}</textarea
               ${lodash.sample(userAvatarlessBackgroundColors)},
               ${biographySource},
               ${
-                processContent({ req, res, contentSource: biographySource })
+                processContent({ req, res, content: biographySource })
                   .preprocessed
               },
               ${"none"}
@@ -18522,7 +18522,7 @@ ${contentSource}</textarea
                   processContent({
                     req,
                     res,
-                    contentSource: biographySource,
+                    content: biographySource,
                   }).preprocessed
                 },
                 ${"none"}
@@ -18862,7 +18862,7 @@ ${contentSource}</textarea
               const processedContent = processContent({
                 req,
                 res,
-                contentSource,
+                content: contentSource,
               });
               const message = database.get<{ id: number }>(
                 sql`
