@@ -119,7 +119,8 @@ export default async function courselore({
       name: "No Longer Enrolled",
       avatar: null,
       avatarlessBackgroundColor: "rose",
-      biography: null,
+      biographySource: null,
+      biographyHTML: null,
     },
     reference: null,
     role: null,
@@ -156,7 +157,8 @@ export default async function courselore({
         "nameSearch" TEXT NOT NULL,
         "avatar" TEXT NULL,
         "avatarlessBackgroundColor" TEXT NOT NULL,
-        "biography" TEXT NULL,
+        "biographySource" TEXT NULL,
+        "biographyHTML" TEXT NULL,
         "emailNotifications" TEXT NOT NULL
       );
       CREATE VIRTUAL TABLE "usersNameSearchIndex" USING fts5(
@@ -3104,13 +3106,7 @@ export default async function courselore({
                                 </div>
                               </div>
                             </div>
-                            $${user.biography === null
-                              ? html``
-                              : contentProcessor({
-                                  req,
-                                  res,
-                                  contentSource: user.biography,
-                                }).html}
+                            $${user.biographyHTML ?? html``}
                           </div>
                         `,
                       })},
@@ -3617,7 +3613,8 @@ export default async function courselore({
       name: string;
       avatar: string | null;
       avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-      biography: string | null;
+      biographySource: string | null;
+      biographyHTML: HTML | null;
       emailNotifications: UserEmailNotifications;
     };
     invitations: {
@@ -3672,7 +3669,8 @@ export default async function courselore({
         name: string;
         avatar: string | null;
         avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-        biography: string | null;
+        biographySource: string | null;
+        biographyHTML: HTML | null;
         emailNotifications: UserEmailNotifications;
       }>(
         sql`
@@ -3684,7 +3682,8 @@ export default async function courselore({
                  "name",
                  "avatar",
                  "avatarlessBackgroundColor",
-                 "biography",
+                 "biographySource",
+                 "biographyHTML",
                  "emailNotifications"
           FROM "users"
           WHERE "id" = ${userId}
@@ -5827,7 +5826,7 @@ export default async function courselore({
                   req,
                   res,
                   name: "biography",
-                  value: res.locals.user.biography ?? "",
+                  value: res.locals.user.biographySource ?? "",
                   required: false,
                 })}
               </div>
@@ -5869,8 +5868,17 @@ export default async function courselore({
             "avatar" = ${
               req.body.avatar.trim() === "" ? null : req.body.avatar
             },
-            "biography" = ${
+            "biographySource" = ${
               req.body.biography.trim() === "" ? null : req.body.biography
+            },
+            "biographyHTML" = ${
+              req.body.biography.trim() === ""
+                ? null
+                : contentProcessor({
+                    req,
+                    res,
+                    contentSource: req.body.biography,
+                  }).html
             }
         WHERE "id" = ${res.locals.user.id}
       `
@@ -8475,7 +8483,8 @@ export default async function courselore({
           userName: string;
           userAvatar: string | null;
           userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-          userBiography: string | null;
+          userBiographySource: string | null;
+          userBiographyHTML: HTML | null;
           reference: string;
           role: EnrollmentRole;
         }>(
@@ -8487,7 +8496,8 @@ export default async function courselore({
                    "users"."name" AS "userName",
                    "users"."avatar" AS "userAvatar",
                    "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                   "users"."biography" AS "userBiography",
+                   "users"."biographySource" AS "userBiographySource",
+                   "users"."biographyHTML" AS "userBiographyHTML",
                    "enrollments"."reference",
                    "enrollments"."role"
             FROM "enrollments"
@@ -8505,7 +8515,8 @@ export default async function courselore({
             name: enrollment.userName,
             avatar: enrollment.userAvatar,
             avatarlessBackgroundColor: enrollment.userAvatarlessBackgroundColor,
-            biography: enrollment.userBiography,
+            biographySource: enrollment.userBiographySource,
+            biographyHTML: enrollment.userBiographyHTML,
           },
           reference: enrollment.reference,
           role: enrollment.role,
@@ -8888,17 +8899,11 @@ export default async function courselore({
                       </div>
                     </div>
 
-                    $${enrollment.user.biography !== null
+                    $${enrollment.user.biographyHTML !== null
                       ? html`
                           <details class="details">
                             <summary>Biography</summary>
-                            <div>
-                              $${contentProcessor({
-                                req,
-                                res,
-                                contentSource: enrollment.user.biography,
-                              }).html}
-                            </div>
+                            <div>$${enrollment.user.biographyHTML}</div>
                           </details>
                         `
                       : html``}
@@ -11231,7 +11236,8 @@ export default async function courselore({
           name: string;
           avatar: string | null;
           avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-          biography: string | null;
+          biographySource: string | null;
+          biographyHTML: HTML | null;
         };
         reference: string;
         role: EnrollmentRole;
@@ -11289,7 +11295,8 @@ export default async function courselore({
       authorUserName: string | null;
       authorUserAvatar: string | null;
       authorUserAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
-      authorUserBiography: string | null;
+      authorUserBiographySource: string | null;
+      authorUserBiographyHTML: HTML | null;
       authorEnrollmentReference: string | null;
       authorEnrollmentRole: EnrollmentRole | null;
       anonymousAt: string | null;
@@ -11312,7 +11319,8 @@ export default async function courselore({
                "authorUser"."name" AS "authorUserName",
                "authorUser"."avatar" AS "authorUserAvatar",
                "authorUser"."avatarlessBackgroundColor" AS "authorUserAvatarlessBackgroundColor",
-               "authorUser"."biography" AS "authorUserBiography",
+               "authorUser"."biographySource" AS "authorUserBiographySource",
+               "authorUser"."biographyHTML" AS "authorUserBiographyHTML",
                "authorEnrollment"."reference" AS "authorEnrollmentReference",
                "authorEnrollment"."role" AS "authorEnrollmentRole",
                "conversations"."anonymousAt",
@@ -11372,7 +11380,8 @@ export default async function courselore({
                 avatar: conversationRow.authorUserAvatar,
                 avatarlessBackgroundColor:
                   conversationRow.authorUserAvatarlessBackgroundColor,
-                biography: conversationRow.authorUserBiography,
+                biographySource: conversationRow.authorUserBiographySource,
+                biographyHTML: conversationRow.authorUserBiographyHTML,
               },
               reference: conversationRow.authorEnrollmentReference,
               role: conversationRow.authorEnrollmentRole,
@@ -11450,7 +11459,8 @@ export default async function courselore({
               userName: string | null;
               userAvatar: string | null;
               userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
-              userBiography: string | null;
+              userBiographySource: string | null;
+              userBiographyHTML: HTML | null;
               enrollmentReference: string | null;
               enrollmentRole: EnrollmentRole | null;
             }>(
@@ -11463,7 +11473,8 @@ export default async function courselore({
                        "users"."name" AS "userName",
                        "users"."avatar" AS "userAvatar",
                        "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                       "users"."biography" AS "userBiography",      
+                       "users"."biographySource" AS "userBiographySource",
+                       "users"."biographyHTML" AS "userBiographyHTML",
                        "enrollments"."reference" AS "enrollmentReference",
                        "enrollments"."role" AS "enrollmentRole"
                 FROM "endorsements"
@@ -11495,7 +11506,8 @@ export default async function courselore({
                         avatar: endorsement.userAvatar,
                         avatarlessBackgroundColor:
                           endorsement.userAvatarlessBackgroundColor,
-                        biography: endorsement.userBiography,
+                        biographySource: endorsement.userBiographySource,
+                        biographyHTML: endorsement.userBiographyHTML,
                       },
                       reference: endorsement.enrollmentReference,
                       role: endorsement.enrollmentRole,
@@ -11557,7 +11569,8 @@ export default async function courselore({
       authorUserName: string | null;
       authorUserAvatar: string | null;
       authorUserAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
-      authorUserBiography: string | null;
+      authorUserBiographySource: string | null;
+      authorUserBiographyHTML: HTML | null;
       authorEnrollmentReference: EnrollmentRole | null;
       authorEnrollmentRole: EnrollmentRole | null;
       anonymousAt: string | null;
@@ -11578,7 +11591,8 @@ export default async function courselore({
                "authorUser"."name" AS "authorUserName",
                "authorUser"."avatar" AS "authorUserAvatar",
                "authorUser"."avatarlessBackgroundColor" AS "authorUserAvatarlessBackgroundColor",
-               "authorUser"."biography" AS "authorUserBiography",
+               "authorUser"."biographySource" AS "authorUserBiographySource",
+               "authorUser"."biographyHTML" AS "authorUserBiographyHTML",
                "authorEnrollment"."reference" AS "authorEnrollmentReference",
                "authorEnrollment"."role" AS "authorEnrollmentRole",
                "messages"."anonymousAt",
@@ -11621,7 +11635,8 @@ export default async function courselore({
                 avatar: messageRow.authorUserAvatar,
                 avatarlessBackgroundColor:
                   messageRow.authorUserAvatarlessBackgroundColor,
-                biography: messageRow.authorUserBiography,
+                biographySource: messageRow.authorUserBiographySource,
+                biographyHTML: messageRow.authorUserBiographyHTML,
               },
               reference: messageRow.authorEnrollmentReference,
               role: messageRow.authorEnrollmentRole,
@@ -11645,7 +11660,8 @@ export default async function courselore({
         userName: string | null;
         userAvatar: string | null;
         userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
-        userBiography: string | null;
+        userBiographySource: string | null;
+        userBiographyHTML: HTML | null;
         enrollmentReference: string | null;
         enrollmentRole: EnrollmentRole | null;
       }>(
@@ -11658,7 +11674,8 @@ export default async function courselore({
                 "users"."name" AS "userName",
                 "users"."avatar" AS "userAvatar",
                 "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                "users"."biography" AS "userBiography",
+                "users"."biographySource" AS "userBiographySource",
+                "users"."biographyHTML" AS "userBiographyHTML",
                 "enrollments"."reference" AS "enrollmentReference",
                 "enrollments"."role" AS "enrollmentRole"
           FROM "endorsements"
@@ -11689,7 +11706,8 @@ export default async function courselore({
                   avatar: endorsement.userAvatar,
                   avatarlessBackgroundColor:
                     endorsement.userAvatarlessBackgroundColor,
-                  biography: endorsement.userBiography,
+                  biographySource: endorsement.userBiographySource,
+                  biographyHTML: endorsement.userBiographyHTML,
                 },
                 reference: endorsement.enrollmentReference,
                 role: endorsement.enrollmentRole,
@@ -11707,7 +11725,8 @@ export default async function courselore({
         userName: string | null;
         userAvatar: string | null;
         userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
-        userBiography: string | null;
+        userBiographySource: string | null;
+        userBiographyHTML: HTML | null;
         enrollmentReference: string | null;
         enrollmentRole: EnrollmentRole | null;
       }>(
@@ -11720,7 +11739,8 @@ export default async function courselore({
                 "users"."name" AS "userName",
                 "users"."avatar" AS "userAvatar",
                 "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                "users"."biography" AS "userBiography",
+                "users"."biographySource" AS "userBiographySource",
+                "users"."biographyHTML" AS "userBiographyHTML",
                 "enrollments"."reference" AS "enrollmentReference",
                 "enrollments"."role" AS "enrollmentRole"
           FROM "likes"
@@ -11750,7 +11770,8 @@ export default async function courselore({
                   name: like.userName,
                   avatar: like.userAvatar,
                   avatarlessBackgroundColor: like.userAvatarlessBackgroundColor,
-                  biography: like.userBiography,
+                  biographySource: like.userBiographySource,
+                  biographyHTML: like.userBiographyHTML,
                 },
                 reference: like.enrollmentReference,
                 role: like.enrollmentRole,
@@ -13054,7 +13075,8 @@ ${value}</textarea
           userName: string;
           userAvatar: string | null;
           userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-          userBiography: string | null;
+          userBiographySource: string | null;
+          userBiographyHTML: HTML | null;
           userNameSearchResultHighlight: string;
           reference: string;
           role: EnrollmentRole;
@@ -13067,7 +13089,8 @@ ${value}</textarea
                  "users"."name" AS "userName",
                  "users"."avatar" AS "userAvatar",
                  "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                 "users"."biography" AS "userBiography",
+                 "users"."biographySource" AS "userBiographySource",
+                 "users"."biographyHTML" AS "userBiographyHTML",
                  highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "userNameSearchResultHighlight",
                  "enrollments"."reference",
                  "enrollments"."role"
@@ -13094,7 +13117,8 @@ ${value}</textarea
             name: enrollment.userName,
             avatar: enrollment.userAvatar,
             avatarlessBackgroundColor: enrollment.userAvatarlessBackgroundColor,
-            biography: enrollment.userBiography,
+            biographySource: enrollment.userBiographySource,
+            biographyHTML: enrollment.userBiographyHTML,
             nameSearchResultHighlight: enrollment.userNameSearchResultHighlight,
           },
           reference: enrollment.reference,
@@ -13844,7 +13868,8 @@ ${value}</textarea
                             userName: string;
                             userAvatar: string | null;
                             userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-                            userBiography: string | null;
+                            userBiographySource: string | null;
+                            userBiographyHTML: HTML | null;
                             reference: string;
                             role: EnrollmentRole;
                           }>(
@@ -13856,7 +13881,8 @@ ${value}</textarea
                                      "users"."name" AS "userName",
                                      "users"."avatar" AS "userAvatar",
                                      "users"."avatarlessBackgroundColor" AS  "userAvatarlessBackgroundColor",
-                                     "users"."biography" AS "userBiography",
+                                     "users"."biographySource" AS "userBiographySource",
+                                     "users"."biographyHTML" AS "userBiographyHTML",
                                      "enrollments"."reference",
                                      "enrollments"."role"
                               FROM "enrollments"
@@ -13879,7 +13905,9 @@ ${value}</textarea
                               avatar: enrollmentRow.userAvatar,
                               avatarlessBackgroundColor:
                                 enrollmentRow.userAvatarlessBackgroundColor,
-                              biography: enrollmentRow.userBiography,
+                              biographySource:
+                                enrollmentRow.userBiographySource,
+                              biographyHTML: enrollmentRow.userBiographyHTML,
                             },
                             reference: enrollmentRow.reference,
                             role: enrollmentRow.role,
@@ -18385,6 +18413,7 @@ ${value}</textarea
         const password = await argon2.hash("courselore", argon2Options);
         const name = casual.full_name;
         const avatarIndices = lodash.shuffle(lodash.range(250));
+        const biography = casual.sentences(lodash.random(5, 7));
         const demonstrationUser = database.get<{ id: number; name: string }>(
           sql`
             INSERT INTO "users" (
@@ -18397,7 +18426,8 @@ ${value}</textarea
               "nameSearch",
               "avatar",
               "avatarlessBackgroundColor",
-              "biography",
+              "biographySource",
+              "biographyHTML",
               "emailNotifications"
             )
             VALUES (
@@ -18415,7 +18445,8 @@ ${value}</textarea
               ${html`${name}`},
               ${`${baseURL}/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`},
               ${lodash.sample(userAvatarlessBackgroundColors)},
-              ${casual.sentences(lodash.random(5, 7))},
+              ${biography},
+              ${contentProcessor({ req, res, contentSource: biography }).html},
               ${"none"}
             )
             RETURNING *
@@ -18424,6 +18455,7 @@ ${value}</textarea
 
         const users = lodash.times(150, () => {
           const name = casual.full_name;
+          const biography = casual.sentences(lodash.random(5, 7));
           return database.get<{
             id: number;
             email: string;
@@ -18440,7 +18472,8 @@ ${value}</textarea
                 "nameSearch",
                 "avatar",
                 "avatarlessBackgroundColor",
-                "biography",
+                "biographySource",
+                "biographyHTML",
                 "emailNotifications"
               )
               VALUES (
@@ -18465,7 +18498,10 @@ ${value}</textarea
                     : null
                 },
                 ${lodash.sample(userAvatarlessBackgroundColors)},
-                ${casual.sentences(lodash.random(5, 7))},
+                ${biography},
+                ${
+                  contentProcessor({ req, res, contentSource: biography }).html
+                },
                 ${"none"}
               )
               RETURNING *
