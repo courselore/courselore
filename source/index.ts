@@ -4534,109 +4534,120 @@ export default async function courselore({
     );
   };
 
+  const signInRequestHandler: express.RequestHandler<
+    {},
+    HTML,
+    {},
+    { email?: string },
+    IsSignedOutMiddlewareLocals
+  > = (req, res) => {
+    res.send(
+      boxLayout({
+        req,
+        res,
+        head: html`
+          <title>
+            Sign in · CourseLore · Communication Platform for Education
+          </title>
+        `,
+        body: html`
+          <form
+            method="POST"
+            action="${baseURL}/sign-in${qs.stringify(req.query, {
+              addQueryPrefix: true,
+            })}"
+            novalidate
+            style="${css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--4);
+            `}"
+          >
+            <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+            <label class="label">
+              <p class="label--text">Email</p>
+              <input
+                type="email"
+                name="email"
+                placeholder="you@educational-institution.edu"
+                value="${req.query.email ?? ""}"
+                required
+                autofocus
+                class="input--text"
+                data-skip-is-modified="true"
+              />
+            </label>
+            <label class="label">
+              <p class="label--text">Password</p>
+              <input
+                type="password"
+                name="password"
+                required
+                class="input--text"
+                data-skip-is-modified="true"
+              />
+            </label>
+            <button class="button button--blue">
+              <i class="bi bi-box-arrow-in-right"></i>
+              Sign in
+            </button>
+          </form>
+          <div
+            style="${css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--2);
+            `}"
+          >
+            <p>
+              Don’t have an account?
+              <a
+                href="${baseURL}/sign-up${qs.stringify(req.query, {
+                  addQueryPrefix: true,
+                })}"
+                class="link"
+                >Sign up</a
+              >.
+            </p>
+            <p>
+              Forgot your password?
+              <a
+                href="${baseURL}/reset-password${qs.stringify(req.query, {
+                  addQueryPrefix: true,
+                })}"
+                class="link"
+                >Reset password</a
+              >.
+            </p>
+          </div>
+        `,
+      })
+    );
+  };
+
+  const isCanonicalServer = baseURL === "https://courselore.org";
   app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "/",
     ...isSignedOutMiddleware,
-    aboutRequestHandler
+    isCanonicalServer ? aboutRequestHandler : signInRequestHandler
   );
-  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
-    "/about",
-    ...isSignedInMiddleware,
-    aboutRequestHandler
-  );
-  app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
-    "/about",
-    ...isSignedOutMiddleware,
-    aboutRequestHandler
-  );
+  if (isCanonicalServer || process.env.NODE_ENV !== "production") {
+    app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+      "/about",
+      ...isSignedInMiddleware,
+      aboutRequestHandler
+    );
+    app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
+      "/about",
+      ...isSignedOutMiddleware,
+      aboutRequestHandler
+    );
+  }
 
   app.get<{}, HTML, {}, { email?: string }, IsSignedOutMiddlewareLocals>(
     "/sign-in",
     ...isSignedOutMiddleware,
-    (req, res) => {
-      res.send(
-        boxLayout({
-          req,
-          res,
-          head: html`
-            <title>
-              Sign in · CourseLore · Communication Platform for Education
-            </title>
-          `,
-          body: html`
-            <form
-              method="POST"
-              action="${baseURL}/sign-in${qs.stringify(req.query, {
-                addQueryPrefix: true,
-              })}"
-              novalidate
-              style="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-              `}"
-            >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-              <label class="label">
-                <p class="label--text">Email</p>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="you@educational-institution.edu"
-                  value="${req.query.email ?? ""}"
-                  required
-                  autofocus
-                  class="input--text"
-                  data-skip-is-modified="true"
-                />
-              </label>
-              <label class="label">
-                <p class="label--text">Password</p>
-                <input
-                  type="password"
-                  name="password"
-                  required
-                  class="input--text"
-                  data-skip-is-modified="true"
-                />
-              </label>
-              <button class="button button--blue">
-                <i class="bi bi-box-arrow-in-right"></i>
-                Sign in
-              </button>
-            </form>
-            <div
-              style="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--2);
-              `}"
-            >
-              <p>
-                Don’t have an account?
-                <a
-                  href="${baseURL}/sign-up${qs.stringify(req.query, {
-                    addQueryPrefix: true,
-                  })}"
-                  class="link"
-                  >Sign up</a
-                >.
-              </p>
-              <p>
-                Forgot your password?
-                <a
-                  href="${baseURL}/reset-password${qs.stringify(req.query, {
-                    addQueryPrefix: true,
-                  })}"
-                  class="link"
-                  >Reset password</a
-                >.
-              </p>
-            </div>
-          `,
-        })
-      );
-    }
+    signInRequestHandler
   );
 
   app.post<
