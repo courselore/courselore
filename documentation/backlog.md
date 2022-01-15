@@ -6,6 +6,7 @@
   - In `contentProcessor`, decouple the computation of `mentions` from the process of decoration.
     - **Revisit notifications and other potential consumer of the `mentions` information, which aren’t working right now.**
       - I left them broken because the decoration processes includes resolving `#234` references, which shouldn’t be processed for everyone (for example, in full-text search plain text).
+    - Also on notifications: Do you get emails for **every** message on an announcement, or just the first one?
     - `TODO`
     - Test notifications, `@mention`, and `#references`, which should have resumed working.
 - Investigate performance issue on the browser when you leave the tab open for a long time.
@@ -20,6 +21,7 @@
   - Confirm that JSDOM is the bottleneck.
   - Try and make JSDOM faster.
   - Explore https://nodejs.org/api/async_context.html
+  - Explore rehype instead of JSDOM for @leafac/css
   - Use `res.locals` to collect CSS.
   - Remove static CSS (the design system) from every request.
 - Commit to the database schema.
@@ -147,7 +149,7 @@
 - Lightbox modal for resized images.
 - Lightbox for code blocks (“click for more”, full screen, and selective wrap or not long lines).
 - Add support for videos: Sanitization, dimensions, and so forth.
-- Footnotes in biographies don’t work, because biographies appear multiple times on a page, and their `id`s and `href`s aren’t namespaced separately.
+- In biographies, `id`s and `href`s aren’t namespaced, so things like footnotes don’t work.
 
 ### Pagination
 

@@ -13736,7 +13736,7 @@ ${contentSource}</textarea
         switch (summaries.length) {
           case 0:
             summaries.push(
-              JSDOM.fragment(html`<summary>Details</summary>`)
+              JSDOM.fragment(html`<summary>See More</summary>`)
                 .firstElementChild!
             );
             break;
@@ -13748,39 +13748,6 @@ ${contentSource}</textarea
         const wrapper = JSDOM.fragment(html`<div></div>`).firstElementChild!;
         wrapper.replaceChildren(...rest);
         element.replaceChildren(summaries[0], wrapper);
-      }
-
-      const namespace = Math.random().toString(36).slice(2);
-      for (const element of contentElement.querySelectorAll("[id]"))
-        element.id += `--${namespace}`;
-      for (const element of contentElement.querySelectorAll("[href]")) {
-        let href = element.getAttribute("href")!;
-        if (href.startsWith("#")) {
-          href = `#user-content-${href.slice(1)}--${namespace}`;
-          element.setAttribute("href", href);
-        } else if (!href.startsWith(baseURL)) {
-          element.setAttribute("target", "_blank");
-          element.setAttribute(
-            "oninteractive",
-            javascript`
-              tippy(this, {
-                touch: false,
-                content: ${hiddenContent({
-                  req,
-                  res,
-                  content: html`
-                    External link to <code class="code">${href}</code>
-                  `,
-                })},
-              });
-            `
-          );
-        }
-        if (
-          href.startsWith("#user-content-user-content-fnref-") &&
-          element.innerHTML === "↩"
-        )
-          element.innerHTML = html`<i class="bi bi-arrow-return-left"></i>`;
       }
 
       if (res.locals.course !== undefined) {
@@ -13807,6 +13774,39 @@ ${contentSource}</textarea
     search?: string | string[] | undefined;
   }): HTML => {
     const contentElement = JSDOM.fragment(contentHTML).firstElementChild!;
+
+    const namespace = Math.random().toString(36).slice(2);
+    for (const element of contentElement.querySelectorAll("[id]"))
+      element.id += `--${namespace}`;
+    for (const element of contentElement.querySelectorAll("[href]")) {
+      let href = element.getAttribute("href")!;
+      if (href.startsWith("#")) {
+        href = `#user-content-${href.slice(1)}--${namespace}`;
+        element.setAttribute("href", href);
+      } else if (!href.startsWith(baseURL)) {
+        element.setAttribute("target", "_blank");
+        element.setAttribute(
+          "oninteractive",
+          javascript`
+            tippy(this, {
+              touch: false,
+              content: ${hiddenContent({
+                req,
+                res,
+                content: html`
+                  External link to <code class="code">${href}</code>
+                `,
+              })},
+            });
+          `
+        );
+      }
+      if (
+        href.startsWith("#user-content-user-content-fnref-") &&
+        element.innerHTML === "↩"
+      )
+        element.innerHTML = html`<i class="bi bi-arrow-return-left"></i>`;
+    }
 
     for (const element of contentElement.querySelectorAll("a")) {
       const href = element.getAttribute("href");
