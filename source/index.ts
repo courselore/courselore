@@ -13737,7 +13737,9 @@ ${contentSource}</textarea
     contentHTML: HTML;
     search?: string | string[] | undefined;
   }): HTML => {
-    const contentElement = JSDOM.fragment(contentHTML).firstElementChild!;
+    const contentElement = JSDOM.fragment(html`
+      <div class="content">$${contentHTML}</div>
+    `).firstElementChild!;
 
     for (const element of contentElement.querySelectorAll("li, td, th, dt, dd"))
       element.innerHTML = [...element.childNodes].some(
