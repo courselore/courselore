@@ -5890,7 +5890,7 @@ export default async function courselore({
                     req,
                     res,
                     contentSource: req.body.biography,
-                  }).html
+                  }).preprocessed
             }
         WHERE "id" = ${res.locals.user.id}
       `
@@ -13708,7 +13708,11 @@ ${contentSource}</textarea
       >;
       res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>;
       contentSource: string;
-    }): { html: HTML; search: string; mentions: Set<string> } => {
+    }): {
+      preprocessed: HTML;
+      search: string;
+      mentions: Set<string>;
+    } => {
       const mentions = new Set<string>();
 
       const contentElement = JSDOM.fragment(html`
@@ -13722,7 +13726,7 @@ ${contentSource}</textarea
       }
 
       return {
-        html: contentElement.outerHTML,
+        preprocessed: contentElement.outerHTML,
         search: contentElement.textContent!,
         mentions,
       };
@@ -14136,7 +14140,7 @@ ${contentSource}</textarea
           res,
           contentSource: req.body.content,
           decorate: res.locals.course !== undefined,
-        }).html,
+        }).preprocessed,
       })
     );
   };
@@ -14719,7 +14723,7 @@ ${contentSource}</textarea
               ${res.locals.enrollment.id},
               ${req.body.isAnonymous ? new Date().toISOString() : null},
               ${req.body.content},
-              ${preprocessedContent.html},
+              ${preprocessedContent.preprocessed},
               ${preprocessedContent.search}
             )
             RETURNING *
@@ -17860,7 +17864,7 @@ ${contentSource}</textarea
           sql`
             UPDATE "messages"
             SET "contentSource" = ${contentSource},
-                "contentPreprocessed" = ${preprocessedContent.html},
+                "contentPreprocessed" = ${preprocessedContent.preprocessed},
                 "contentSearch" = ${preprocessedContent.search}
             WHERE "id" = ${mostRecentMessage.id}
           `
@@ -17909,7 +17913,7 @@ ${contentSource}</textarea
               ${req.body.isAnonymous ? new Date().toISOString() : null},
               ${req.body.isAnswer ? new Date().toISOString() : null},
               ${req.body.content},
-              ${preprocessedContent.html},
+              ${preprocessedContent.preprocessed},
               ${preprocessedContent.search}
             )
             RETURNING *
@@ -18040,7 +18044,7 @@ ${contentSource}</textarea
           sql`
             UPDATE "messages"
             SET "contentSource" = ${req.body.content},
-                "contentPreprocessed" = ${preprocessedContent.html},
+                "contentPreprocessed" = ${preprocessedContent.preprocessed},
                 "contentSearch" = ${preprocessedContent.search},
                 "updatedAt" = ${new Date().toISOString()}
             WHERE "id" = ${res.locals.message.id}
@@ -18460,7 +18464,7 @@ ${contentSource}</textarea
               ${biographySource},
               ${
                 preprocessContent({ req, res, contentSource: biographySource })
-                  .html
+                  .preprocessed
               },
               ${"none"}
             )
@@ -18519,7 +18523,7 @@ ${contentSource}</textarea
                     req,
                     res,
                     contentSource: biographySource,
-                  }).html
+                  }).preprocessed
                 },
                 ${"none"}
               )
@@ -18906,7 +18910,7 @@ ${contentSource}</textarea
                     },
                     ${Math.random() < 0.5 ? new Date().toISOString() : null},
                     ${contentSource},
-                    ${preprocessedContent.html},
+                    ${preprocessedContent.preprocessed},
                     ${preprocessedContent.search}
                   )
                   RETURNING *
