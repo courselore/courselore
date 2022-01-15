@@ -2,16 +2,15 @@
 
 ### Last Preparations
 
-- Clean `| undefined`
-
 - Cache content processing.
+    - Revisit:
+      - `processed`.
+    - `TODO`
+  - Clean `| undefined`
   - In `contentProcessor`, decouple the computation of `mentions` from the process of decoration.
     - **Revisit notifications and other potential consumer of the `mentions` information, which aren’t working right now.**
       - I left them broken because the decoration processes includes resolving `#234` references, which shouldn’t be processed for everyone (for example, in full-text search plain text).
     - Also on notifications: Do you get emails for **every** message on an announcement, or just the first one?
-    - Revisit:
-      - `processed`.
-    - `TODO`
     - Test notifications, `@mention`, and `#references`, which should have resumed working.
 - Investigate performance issue on the browser when you leave the tab open for a long time.
   - It seems that the server isn’t affected, because when I close the browser tab, the performance on the machine is back to normal.
