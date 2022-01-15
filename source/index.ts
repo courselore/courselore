@@ -13655,7 +13655,7 @@ ${contentSource}</textarea
   );
 
   const processContent = await (async () => {
-    const unifiedProcessor = unified()
+    const processMarkdown = unified()
       .use(remarkParse)
       .use(remarkGfm)
       .use(remarkMath)
@@ -13714,7 +13714,7 @@ ${contentSource}</textarea
 
       const contentElement = JSDOM.fragment(html`
         <div class="content">
-          $${unifiedProcessor.processSync(contentSource).toString()}
+          $${processMarkdown.processSync(contentSource).toString()}
         </div>
       `).firstElementChild!;
 
