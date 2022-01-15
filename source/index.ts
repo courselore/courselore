@@ -13709,7 +13709,7 @@ ${contentSource}</textarea
       contentSource: string;
       search?: string | string[] | undefined;
       decorate?: boolean;
-    }): { html: HTML; text: string; mentions: Set<string> } => {
+    }): { html: HTML; search: string; mentions: Set<string> } => {
       const mentions = new Set<string>();
 
       const contentElement = JSDOM.fragment(html`
@@ -14118,7 +14118,7 @@ ${contentSource}</textarea
 
       return {
         html: contentElement.outerHTML,
-        text: contentElement.textContent!,
+        search: contentElement.textContent!,
         mentions,
       };
     };
@@ -14727,7 +14727,7 @@ ${contentSource}</textarea
               ${req.body.isAnonymous ? new Date().toISOString() : null},
               ${req.body.content},
               ${processedContent.html},
-              ${processedContent.text}
+              ${processedContent.search}
             )
             RETURNING *
           `
@@ -17867,7 +17867,7 @@ ${contentSource}</textarea
             UPDATE "messages"
             SET "contentSource" = ${contentSource},
                 "contentHTML" = ${processedContent.html},
-                "contentSearch" = ${processedContent.text}
+                "contentSearch" = ${processedContent.search}
             WHERE "id" = ${mostRecentMessage.id}
           `
         );
@@ -17916,7 +17916,7 @@ ${contentSource}</textarea
               ${req.body.isAnswer ? new Date().toISOString() : null},
               ${req.body.content},
               ${processedContent.html},
-              ${processedContent.text}
+              ${processedContent.search}
             )
             RETURNING *
           `
@@ -18047,7 +18047,7 @@ ${contentSource}</textarea
             UPDATE "messages"
             SET "contentSource" = ${req.body.content},
                 "contentHTML" = ${processedContent.html},
-                "contentSearch" = ${processedContent.text},
+                "contentSearch" = ${processedContent.search},
                 "updatedAt" = ${new Date().toISOString()}
             WHERE "id" = ${res.locals.message.id}
           `
@@ -18910,7 +18910,7 @@ ${contentSource}</textarea
                     ${Math.random() < 0.5 ? new Date().toISOString() : null},
                     ${contentSource},
                     ${processedContent.html},
-                    ${processedContent.text}
+                    ${processedContent.search}
                   )
                   RETURNING *
                 `
