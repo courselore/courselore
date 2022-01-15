@@ -11,9 +11,8 @@
 - Cache content processing.
   - Review all uses of `content` and distinguish `contentSource` and `contentProcessed`.
   - In `contentProcessor`, decouple the computation of `mentions` from the process of decoration.
-    - Revisit notifications and other potential consumer of the `mentions` information, which aren’t working right now.
+    - **Revisit notifications and other potential consumer of the `mentions` information, which aren’t working right now.**
       - I left them broken because the decoration processes includes resolving `#234` references, which shouldn’t be processed for everyone (for example, in full-text search plain text).
-  - Fix notifications.
 - Commit to the database schema.
 - Skim over the codebase.
 - Test everything in different browsers & devices.
@@ -36,6 +35,9 @@
   - Messages in conversation.
   - Conversations on sidebar.
   - Test with thousands of messages.
+- Investigate other potential bottlenecks:
+  - `html` tagged template literal.
+  - Synchronous stuff that could be async.
 
 ### Advanced Access Control
 
