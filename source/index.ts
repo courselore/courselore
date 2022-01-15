@@ -14716,7 +14716,7 @@ ${contentSource}</textarea
           `
         );
 
-      let maybeSendNotifications: Function | undefined;
+      let maybeSendNotifications: (() => void) | undefined;
       if (
         typeof req.body.content === "string" &&
         req.body.content.trim() !== ""
