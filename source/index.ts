@@ -14716,12 +14716,13 @@ ${contentSource}</textarea
           `
         );
 
-      let maybeSendNotifications: (() => void) | undefined;
+      let processedContent: ReturnType<typeof processContent>;
+      let messageReference: string;
       if (
         typeof req.body.content === "string" &&
         req.body.content.trim() !== ""
       ) {
-        const processedContent = processContent({
+        processedContent = processContent({
           req,
           res,
           type: "source",
@@ -14766,26 +14767,7 @@ ${contentSource}</textarea
             )
           `
         );
-
-        maybeSendNotifications = () => {
-          const conversation = getConversation({
-            req,
-            res,
-            conversationReference: conversationRow.reference,
-          })!;
-          sendNotifications({
-            req,
-            res,
-            conversation,
-            message: getMessage({
-              req,
-              res,
-              conversation,
-              messageReference: message.reference,
-            })!,
-            mentions: processedContent.mentions!,
-          });
-        };
+        messageReference = message.reference;
       }
 
       res.redirect(
@@ -14794,7 +14776,25 @@ ${contentSource}</textarea
 
       emitCourseRefresh(res.locals.course.id);
 
-      maybeSendNotifications?.();
+      if (processedContent! !== undefined && messageReference! !== undefined) {
+        const conversation = getConversation({
+          req,
+          res,
+          conversationReference: conversationRow.reference,
+        })!;
+        sendNotifications({
+          req,
+          res,
+          conversation,
+          message: getMessage({
+            req,
+            res,
+            conversation,
+            messageReference,
+          })!,
+          mentions: processedContent.mentions!,
+        });
+      }
     }
   );
 
