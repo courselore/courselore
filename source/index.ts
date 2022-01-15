@@ -14692,7 +14692,7 @@ ${contentSource}</textarea
         typeof req.body.content === "string" &&
         req.body.content.trim() !== ""
       ) {
-        const processedContent = preprocessContent({
+        const preprocessedContent = preprocessContent({
           req,
           res,
           contentSource: req.body.content,
@@ -14719,8 +14719,8 @@ ${contentSource}</textarea
               ${res.locals.enrollment.id},
               ${req.body.isAnonymous ? new Date().toISOString() : null},
               ${req.body.content},
-              ${processedContent.html},
-              ${processedContent.search}
+              ${preprocessedContent.html},
+              ${preprocessedContent.search}
             )
             RETURNING *
           `
@@ -14752,7 +14752,7 @@ ${contentSource}</textarea
               conversation: completeConversation,
               messageReference: message.reference,
             })!,
-            mentions: processedContent.mentions,
+            mentions: preprocessedContent.mentions,
           });
         };
       }
@@ -17851,7 +17851,7 @@ ${contentSource}</textarea
       let notify = () => {};
       if (shouldAppendToMostRecentMessage) {
         const contentSource = `${mostRecentMessage.contentSource}\n\n${req.body.content}`;
-        const processedContent = preprocessContent({
+        const preprocessedContent = preprocessContent({
           req,
           res,
           contentSource,
@@ -17860,8 +17860,8 @@ ${contentSource}</textarea
           sql`
             UPDATE "messages"
             SET "contentSource" = ${contentSource},
-                "contentPreprocessed" = ${processedContent.html},
-                "contentSearch" = ${processedContent.search}
+                "contentPreprocessed" = ${preprocessedContent.html},
+                "contentSearch" = ${preprocessedContent.search}
             WHERE "id" = ${mostRecentMessage.id}
           `
         );
@@ -17873,7 +17873,7 @@ ${contentSource}</textarea
           `
         );
       } else {
-        const processedContent = preprocessContent({
+        const preprocessedContent = preprocessContent({
           req,
           res,
           contentSource: req.body.content,
@@ -17909,8 +17909,8 @@ ${contentSource}</textarea
               ${req.body.isAnonymous ? new Date().toISOString() : null},
               ${req.body.isAnswer ? new Date().toISOString() : null},
               ${req.body.content},
-              ${processedContent.html},
-              ${processedContent.search}
+              ${preprocessedContent.html},
+              ${preprocessedContent.search}
             )
             RETURNING *
           `
@@ -17936,7 +17936,7 @@ ${contentSource}</textarea
               conversation: res.locals.conversation,
               messageReference: message.reference,
             })!,
-            mentions: processedContent.mentions,
+            mentions: preprocessedContent.mentions,
           });
         };
       }
@@ -18028,10 +18028,10 @@ ${contentSource}</textarea
             );
         }
 
-      let processedContent: ReturnType<typeof preprocessContent>;
+      let preprocessedContent: ReturnType<typeof preprocessContent>;
       if (typeof req.body.content === "string") {
         if (req.body.content.trim() === "") return next("validation");
-        processedContent = preprocessContent({
+        preprocessedContent = preprocessContent({
           req,
           res,
           contentSource: req.body.content,
@@ -18040,8 +18040,8 @@ ${contentSource}</textarea
           sql`
             UPDATE "messages"
             SET "contentSource" = ${req.body.content},
-                "contentPreprocessed" = ${processedContent.html},
-                "contentSearch" = ${processedContent.search},
+                "contentPreprocessed" = ${preprocessedContent.html},
+                "contentSearch" = ${preprocessedContent.search},
                 "updatedAt" = ${new Date().toISOString()}
             WHERE "id" = ${res.locals.message.id}
           `
@@ -18067,7 +18067,7 @@ ${contentSource}</textarea
           res,
           conversation: res.locals.conversation,
           message: res.locals.message,
-          mentions: processedContent!.mentions,
+          mentions: preprocessedContent!.mentions,
         });
     }
   );
@@ -18515,8 +18515,11 @@ ${contentSource}</textarea
                 ${lodash.sample(userAvatarlessBackgroundColors)},
                 ${biographySource},
                 ${
-                  preprocessContent({ req, res, contentSource: biographySource })
-                    .html
+                  preprocessContent({
+                    req,
+                    res,
+                    contentSource: biographySource,
+                  }).html
                 },
                 ${"none"}
               )
@@ -18852,7 +18855,7 @@ ${contentSource}</textarea
                         casual.sentences(lodash.random(1, 6))
                       )
                       .join("\n\n");
-              const processedContent = preprocessContent({
+              const preprocessedContent = preprocessContent({
                 req,
                 res,
                 contentSource,
@@ -18903,8 +18906,8 @@ ${contentSource}</textarea
                     },
                     ${Math.random() < 0.5 ? new Date().toISOString() : null},
                     ${contentSource},
-                    ${processedContent.html},
-                    ${processedContent.search}
+                    ${preprocessedContent.html},
+                    ${preprocessedContent.search}
                   )
                   RETURNING *
                 `

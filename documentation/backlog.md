@@ -8,9 +8,7 @@
       - I left them broken because the decoration processes includes resolving `#234` references, which shouldn’t be processed for everyone (for example, in full-text search plain text).
     - Also on notifications: Do you get emails for **every** message on an announcement, or just the first one?
     - Revisit:
-      - `processContent`.
-      - `biographyHTML`.
-      - `contentHTML`.
+      - `processed`.
     - `TODO`
     - Test notifications, `@mention`, and `#references`, which should have resumed working.
 - Investigate performance issue on the browser when you leave the tab open for a long time.
