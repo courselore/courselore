@@ -6,7 +6,6 @@
 - A course about CourseLore for collecting feedback.
   - Put invitation link on the page somewhere.
 - Announce deletion of Slack.
-- Edit self-hosting document to remove “we’re still in beta” note.
 - Notify Zach.
 
 ### Next Week
@@ -28,6 +27,7 @@
   - It doesn’t seem to be related to live-reloading, or other development features, because it also happens in `courselore.org`.
 - Skim over the codebase.
 - Test everything in different browsers & devices.
+- Edit self-hosting document to remove “we’re still in beta” note.
 
 ### Performance
 
