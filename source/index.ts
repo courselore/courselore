@@ -17983,6 +17983,8 @@ ${contentSource}</textarea
         res.locals.conversation.type === "chat" &&
         mostRecentMessage !== undefined &&
         res.locals.enrollment.id === mostRecentMessage.authorEnrollment.id &&
+        mostRecentMessage.anonymousAt === null &&
+        !req.body.isAnonymous &&
         new Date().getTime() - new Date(mostRecentMessage.createdAt).getTime() <
           5 * 60 * 1000
       ) {

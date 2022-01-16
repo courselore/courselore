@@ -2,7 +2,6 @@
 
 ### Linda’s Notes
 
-- Anonymity isn’t respected on appending to recent message.
 - `userPartial` do `noLongerEnrolled`
 - Make breadcrumbs clickable.
 - The anonymity button isn’t as clear as it should be.
