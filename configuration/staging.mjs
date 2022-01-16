@@ -1,5 +1,5 @@
 export default async ({ courselore, courseloreVersion, courseloreImport }) => {
-  const baseURL = "https://courselore.org";
+  const baseURL = "https://try.courselore.org";
   const administratorEmail = "administrator@courselore.org";
   if (process.argv[3] === undefined) {
     const url = await courseloreImport("node:url");
@@ -29,10 +29,6 @@ export default async ({ courselore, courseloreVersion, courseloreImport }) => {
             reverse_proxy 127.0.0.1:4001
             encode zstd gzip
           }
-    
-          www.courselore.org, courselore.com, www.courselore.com {
-            redir https://courselore.org{uri}
-          }
         `,
       }),
     ];
@@ -43,14 +39,7 @@ export default async ({ courselore, courseloreVersion, courseloreImport }) => {
       });
   } else {
     const url = await courseloreImport("node:url");
-    const fs = (await courseloreImport("fs-extra")).default;
     const nodemailer = (await courseloreImport("nodemailer")).default;
-    const secrets = JSON.parse(
-      await fs.readFile(
-        url.fileURLToPath(new URL("./secrets.json", import.meta.url)),
-        "utf8"
-      )
-    );
     const app = await courselore({
       dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
       baseURL,
@@ -58,16 +47,15 @@ export default async ({ courselore, courseloreVersion, courseloreImport }) => {
       sendMail: (() => {
         const transporter = nodemailer.createTransport(
           {
-            host: secrets.smtp.host,
-            auth: {
-              user: secrets.smtp.username,
-              pass: secrets.smtp.password,
-            },
+            jsonTransport: true,
           },
           { from: `"CourseLore" <${administratorEmail}>` }
         );
-        return async (mailOptions) => await transporter.sendMail(mailOptions);
+        return async (mailOptions) => {
+          console.log(await transporter.sendMail(mailOptions));
+        };
       })(),
+      demonstration: true,
     });
     app.listen(4001, "127.0.0.1", () => {
       console.log(`CourseLore/${courseloreVersion} started at ${baseURL}`);
