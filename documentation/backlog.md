@@ -1,5 +1,17 @@
 # Backlog
 
+### Linda’s Notes
+
+- Homepage:
+  - Bigger title or smaller hero image.
+- `coursePartial` detect `""`.
+- Clipboard isn’t a term that people understand.
+- Have a link from conversation creation to tags.
+- Anonymity isn’t respected on appending to recent message.
+- `userPartial` do `noLongerEnrolled`
+- Make breadcrumbs clickable.
+- The anonymity button isn’t as clear as it should be.
+
 ### Last Preparations
 
 - Retest notifications
