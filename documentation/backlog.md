@@ -2,8 +2,6 @@
 
 ### Linda’s Notes
 
-- Homepage:
-  - Bigger title or smaller hero image.
 - `coursePartial` detect `""`.
 - Clipboard isn’t a term that people understand.
 - Have a link from conversation creation to tags.

@@ -4201,7 +4201,7 @@ export default async function courselore({
               <img
                 src="/main-screen--phone--light.jpeg"
                 alt="CourseLore Main Screen on Phone"
-                width="375"
+                width="300"
                 class="img light"
                 style="${css`
                   background-color: transparent;
@@ -4215,7 +4215,7 @@ export default async function courselore({
               <img
                 src="/main-screen--phone--dark.jpeg"
                 alt="CourseLore Main Screen on Phone"
-                width="375"
+                width="300"
                 class="img dark"
                 style="${css`
                   background-color: transparent;
