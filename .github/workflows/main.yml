@@ -71,7 +71,7 @@ jobs:
           rsync -a configuration/courselore.service root@try.courselore.org:/etc/systemd/system/courselore.service
 
           ssh root@try.courselore.org << "EOF"
-          rm courselore/data/courselore.db
+          mv courselore/data/courselore.db courselore/data/courselore--$(date +"%Y-%m-%d--%H-%M-%S").db || true
           systemctl daemon-reload
           systemctl enable courselore
           systemctl restart courselore
