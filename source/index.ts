@@ -3251,7 +3251,7 @@ export default async function courselore({
             [course.year, course.term],
             [course.institution, course.code],
           ].flatMap((row) => {
-            row = row.filter((element) => element !== undefined);
+            row = row.filter((element) => element !== null);
             return row.length === 0
               ? []
               : [
@@ -6476,10 +6476,27 @@ export default async function courselore({
           ${new Date().toISOString()},
           ${cryptoRandomString({ length: 10, type: "numeric" })},
           ${req.body.name},
-          ${req.body.year},
-          ${req.body.term},
-          ${req.body.institution},
-          ${req.body.code},
+          ${
+            typeof req.body.year === "string" && req.body.year.trim() !== ""
+              ? req.body.year
+              : null
+          },
+          ${
+            typeof req.body.term === "string" && req.body.term.trim() !== ""
+              ? req.body.term
+              : null
+          },
+          ${
+            typeof req.body.institution === "string" &&
+            req.body.institution.trim() !== ""
+              ? req.body.institution
+              : null
+          },
+          ${
+            typeof req.body.code === "string" && req.body.code.trim() !== ""
+              ? req.body.code
+              : null
+          },
           ${1}
         )
         RETURNING *
@@ -7073,7 +7090,7 @@ export default async function courselore({
                   <input
                     type="text"
                     name="year"
-                    value="${res.locals.course.year}"
+                    value="${res.locals.course.year ?? ""}"
                     autocomplete="off"
                     class="input--text"
                   />
@@ -7083,7 +7100,7 @@ export default async function courselore({
                   <input
                     type="text"
                     name="term"
-                    value="${res.locals.course.term}"
+                    value="${res.locals.course.term ?? ""}"
                     autocomplete="off"
                     class="input--text"
                   />
@@ -7094,7 +7111,7 @@ export default async function courselore({
                 <input
                   type="text"
                   name="institution"
-                  value="${res.locals.course.institution}"
+                  value="${res.locals.course.institution ?? ""}"
                   autocomplete="off"
                   class="input--text"
                   placeholder="Your University"
@@ -7105,7 +7122,7 @@ export default async function courselore({
                 <input
                   type="text"
                   name="code"
-                  value="${res.locals.course.code}"
+                  value="${res.locals.course.code ?? ""}"
                   autocomplete="off"
                   class="input--text"
                   placeholder="CS 601.426"
@@ -7156,10 +7173,27 @@ export default async function courselore({
         sql`
           UPDATE "courses"
           SET "name" = ${req.body.name},
-              "year" = ${req.body.year},
-              "term" = ${req.body.term},
-              "institution" = ${req.body.institution},
-              "code" = ${req.body.code}
+              "year" = ${
+                typeof req.body.year === "string" && req.body.year.trim() !== ""
+                  ? req.body.year
+                  : null
+              },
+              "term" = ${
+                typeof req.body.term === "string" && req.body.term.trim() !== ""
+                  ? req.body.term
+                  : null
+              },
+              "institution" = ${
+                typeof req.body.institution === "string" &&
+                req.body.institution.trim() !== ""
+                  ? req.body.institution
+                  : null
+              },
+              "code" = ${
+                typeof req.body.code === "string" && req.body.code.trim() !== ""
+                  ? req.body.code
+                  : null
+              }
           WHERE "id" = ${res.locals.course.id}
         `
       );

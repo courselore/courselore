@@ -2,7 +2,6 @@
 
 ### Linda’s Notes
 
-- `coursePartial` detect `""`.
 - Clipboard isn’t a term that people understand.
 - Have a link from conversation creation to tags.
 - Anonymity isn’t respected on appending to recent message.
