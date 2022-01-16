@@ -2,7 +2,7 @@
 
 ### Linda’s Notes
 
-- Have a link from conversation creation to tags.
+- Have a button to “Apply Filters”.
 - Anonymity isn’t respected on appending to recent message.
 - `userPartial` do `noLongerEnrolled`
 - Make breadcrumbs clickable.
@@ -204,6 +204,7 @@
 
 ### Interface Details
 
+- When adding tags with the “Manage Tags” button (from the “Create a New Conversation” form or from the “Tags” button on a conversation), have a way to load the new tags without losing progress.
 - Add a `max-height` to the course switcher (what if you have many courses?).
 - Checkboxes that don’t have a visual indication may be confusing.
 - Using the JavaScript event loop for background jobs has another issue besides not persisting: there’s no contention mechanism, which opens it up for DOS attacks.

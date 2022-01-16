@@ -14467,7 +14467,8 @@ ${contentSource}</textarea
                 </div>
 
                 $${contentEditor({ req, res })}
-                $${res.locals.tags.length === 0
+                $${res.locals.tags.length === 0 &&
+                res.locals.enrollment.role !== "staff"
                   ? html``
                   : html`
                       <div class="label">
@@ -14485,6 +14486,28 @@ ${contentSource}</textarea
                           >
                             <i class="bi bi-info-circle"></i>
                           </button>
+                          $${res.locals.tags.length > 0 &&
+                          res.locals.enrollment.role === "staff"
+                            ? html`
+                                <div
+                                  style="${css`
+                                    flex: 1;
+                                    display: flex;
+                                    justify-content: flex-end;
+                                  `}"
+                                >
+                                  <a
+                                    href="${baseURL}/courses/${res.locals.course
+                                      .reference}/settings/tags"
+                                    target="_blank"
+                                    class="button button--tight button--tight--inline button--transparent secondary"
+                                  >
+                                    <i class="bi bi-sliders"></i>
+                                    Manage Tags
+                                  </a>
+                                </div>
+                              `
+                            : html``}
                         </div>
                         <div
                           style="${css`
@@ -14494,51 +14517,66 @@ ${contentSource}</textarea
                             row-gap: var(--space--2);
                           `}"
                         >
-                          $${res.locals.tags.map(
-                            (tag) => html`
-                              <div
-                                style="${css`
-                                  display: flex;
-                                  gap: var(--space--2);
-                                `}"
-                              >
-                                <label
-                                  class="button button--tight button--tight--inline button--transparent"
+                          $${res.locals.tags.length === 0 &&
+                          res.locals.enrollment.role === "staff"
+                            ? html`
+                                <a
+                                  href="${baseURL}/courses/${res.locals.course
+                                    .reference}/settings/tags"
+                                  target="_blank"
+                                  class="button button--tight button--tight--inline button--inline button--transparent secondary"
                                 >
-                                  <input
-                                    type="checkbox"
-                                    name="tagsReferences[]"
-                                    value="${tag.reference}"
-                                    required
-                                    class="visually-hidden input--radio-or-checkbox--multilabel"
-                                  />
-                                  <span>
-                                    <i class="bi bi-tag"></i>
-                                    ${tag.name}
-                                  </span>
-                                  <span class="text--teal">
-                                    <i class="bi bi-tag-fill"></i>
-                                    ${tag.name}
-                                  </span>
-                                </label>
-                                $${tag.staffOnlyAt !== null
-                                  ? html`
-                                      <span
-                                        class="text--pink"
-                                        oninteractive="${javascript`
+                                  <i class="bi bi-sliders"></i>
+                                  Create the First Tag
+                                </a>
+                              `
+                            : res.locals.tags.map(
+                                (tag) => html`
+                                  <div
+                                    style="${css`
+                                      display: flex;
+                                      gap: var(--space--2);
+                                    `}"
+                                  >
+                                    <label
+                                      class="button button--tight button--tight--inline button--transparent"
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        name="tagsReferences[]"
+                                        value="${tag.reference}"
+                                        required
+                                        class="visually-hidden input--radio-or-checkbox--multilabel"
+                                      />
+                                      <span>
+                                        <i class="bi bi-tag"></i>
+                                        ${tag.name}
+                                      </span>
+                                      <span class="text--teal">
+                                        <i class="bi bi-tag-fill"></i>
+                                        ${tag.name}
+                                      </span>
+                                    </label>
+                                    $${tag.staffOnlyAt !== null
+                                      ? html`
+                                          <span
+                                            class="text--pink"
+                                            oninteractive="${javascript`
                                           tippy(this, {
                                             touch: false,
                                             content: "This tag is visible by staff only.",
                                           });
                                         `}"
-                                      >
-                                        <i class="bi bi-mortarboard-fill"></i>
-                                      </span>
-                                    `
-                                  : html``}
-                              </div>
-                            `
-                          )}
+                                          >
+                                            <i
+                                              class="bi bi-mortarboard-fill"
+                                            ></i>
+                                          </span>
+                                        `
+                                      : html``}
+                                  </div>
+                                `
+                              )}
                         </div>
                       </div>
                     `}
@@ -15892,6 +15930,23 @@ ${contentSource}</textarea
                                                             </form>
                                                           `
                                                         )}
+                                                      $${res.locals.enrollment
+                                                        .role === "staff"
+                                                        ? html`
+                                                            <a
+                                                              href="${baseURL}/courses/${res
+                                                                .locals.course
+                                                                .reference}/settings/tags"
+                                                              target="_blank"
+                                                              class="dropdown--menu--item button button--transparent"
+                                                            >
+                                                              <i
+                                                                class="bi bi-sliders"
+                                                              ></i>
+                                                              Manage Tags
+                                                            </a>
+                                                          `
+                                                        : html``}
                                                     </div>
                                                   `,
                                                 })},
@@ -15899,6 +15954,7 @@ ${contentSource}</textarea
                                             `}"
                                           >
                                             <i class="bi bi-tags-fill"></i>
+                                            Tags
                                           </button>
                                         </div>
                                       `
