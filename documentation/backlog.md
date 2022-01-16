@@ -2,7 +2,6 @@
 
 ### Linda’s Notes
 
-- Have a button to “Apply Filters”.
 - Anonymity isn’t respected on appending to recent message.
 - `userPartial` do `noLongerEnrolled`
 - Make breadcrumbs clickable.

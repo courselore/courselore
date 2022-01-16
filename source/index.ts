@@ -10812,6 +10812,12 @@ export default async function courselore({
                             </div>
                           </div>
                         `}
+                    <button
+                      class="button button--tight button--tight--inline button--transparent"
+                    >
+                      <i class="bi bi-funnel"></i>
+                      Apply Filters
+                    </button>
                   </div>
                 </form>
 
