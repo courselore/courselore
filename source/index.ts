@@ -4377,16 +4377,10 @@ export default async function courselore({
                 background-color: var(--color--gray--medium--800);
               }
               display: flex;
-              justify-content: center;
+              flex-direction: column;
               padding: var(--space--32) var(--space--8);
               align-items: center;
-              @media (max-width: 889px) {
-                flex-direction: column;
-                gap: var(--space--14);
-              }
-              @media (min-width: 890px) {
-                gap: var(--space--24);
-              }
+              gap: var(--space--14);
             `}"
           >
             <div
@@ -4398,7 +4392,7 @@ export default async function courselore({
                 align-items: center;
               `}"
             >
-              <p
+              <h2
                 class="heading--display"
                 style="${css`
                   font-size: var(--font-size--5xl);
@@ -4408,19 +4402,21 @@ export default async function courselore({
                 `}"
               >
                 The Team
-              </p>
+              </h2>
             </div>
 
             <div
               style="${css`
-                max-width: var(--width--sm);
                 display: flex;
-                flex-direction: column;
-                gap: var(--space--8);
+                gap: var(--space--14);
+                @media (max-width: 1289px) {
+                  flex-direction: column;
+                }
                 & > * {
                   display: flex;
                   gap: var(--space--4);
                   align-items: center;
+                  max-width: var(--width--sm);
                   & > img {
                     background-color: transparent;
                     width: var(--space--24);
