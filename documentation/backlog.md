@@ -2,6 +2,7 @@
 
 ### Release
 
+- Test the moving of the database file in staging.
 - Create separate staging & production versions.
 - A course about CourseLore for collecting feedback.
   - Put invitation link on the page somewhere.

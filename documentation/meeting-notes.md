@@ -1,6 +1,33 @@
 # Meeting Notes
 
 <details>
+<summary>2021-01-16</summary>
+
+- Infrastructure is in place.
+  - Production server.
+  - `try.courselore.org`
+  - New homepage.
+- We have a first self-hoster that’s happy with the process & the documentation.
+  - He wasn’t put off by the recommendation to use Homebrew, for example.
+- User interface:
+  - Added extra course information (year, term, institution, and code).
+  - Added redirect to login when trying to confirm email but logged out.
+  - Added a filter to Course Settings > Enrollments.
+  - Made more explicit the administrator’s email in case the `mailto:` protocol doesn’t work.
+  - “Help” button
+  - Link from conversation creation to tag management.
+  - Made password updates close all other sessions, in case a password is compromised or an attacker is using session fixation.
+  - Fixed refreshing ids, so that things like footnotes work.
+  - Added a decoration to the `userPartial` to highlight staff.
+  - Changed the display of new messages: Instead of a blue dot next to each new message (à la Mail.app), have a bar on top of the first new message (à la Discord). Started the investigation of which parts to optimize first.
+  - Fixed glitches related to tooltips on live updates.
+  - Fixed the treatment of people who are no longer enrolled.
+- Performance:
+  - Cache preprocessed messages.
+
+</details>
+
+<details>
 <summary>2021-01-08</summary>
 
 - It’s a good thing that we stopped using Faker.js!
