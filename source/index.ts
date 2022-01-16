@@ -534,11 +534,11 @@ export default async function courselore({
                             await response.text(),
                             "text/html"
                           );
-                        leafac.evaluateElementsAttribute(refreshedDocument);
                         document.head.append(
                           ...refreshedDocument.head.querySelectorAll("style")
                         );
                         morphdom(document.body, refreshedDocument.body);
+                        leafac.evaluateElementsAttribute(document);
                         break;
 
                       case 404:
