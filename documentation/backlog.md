@@ -2,21 +2,11 @@
 
 ### Last Preparations
 
-- Investigate performance issue on the browser when you leave the tab open for a long time.
-  - It seems that the server isn’t affected, because when I close the browser tab, the performance on the machine is back to normal.
-  - It doesn’t seem to be related to live-reloading, or other development features, because it also happens in `courselore.org`.
 - Live reloading:
   - Do the morphdom on the server.
     - **This is necessary for correctness as well; see what happens when you’re editing a message and a new message is submitted, causing a refresh.**
   - Scroll on new message.
   - Latency compensation when sending messages & pressing “like”.
-- CSS management
-  - Confirm that JSDOM is the bottleneck.
-  - Try and make JSDOM faster.
-  - Explore https://nodejs.org/api/async_context.html
-  - Explore rehype instead of JSDOM for @leafac/css
-  - Use `res.locals` to collect CSS.
-  - Remove static CSS (the design system) from every request.
 - Commit to the database schema.
 - Skim over the codebase.
 - Test everything in different browsers & devices.
@@ -29,6 +19,19 @@
 - Announce deletion of Slack.
 - Edit self-hosting document to remove “we’re still in beta” note.
 - Notify Zach.
+
+### Next Week
+
+- Investigate performance issue on the browser when you leave the tab open for a long time.
+  - It seems that the server isn’t affected, because when I close the browser tab, the performance on the machine is back to normal.
+  - It doesn’t seem to be related to live-reloading, or other development features, because it also happens in `courselore.org`.
+- CSS management
+  - Confirm that JSDOM is the bottleneck.
+  - Try and make JSDOM faster.
+  - Explore https://nodejs.org/api/async_context.html
+  - Explore rehype instead of JSDOM for @leafac/css
+  - Use `res.locals` to collect CSS.
+  - Remove static CSS (the design system) from every request.
 
 ### Performance
 
