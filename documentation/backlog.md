@@ -4,7 +4,7 @@
 
 - Live reloading:
   - Do the morphdom on the server.
-    - **This is necessary for correctness as well; see what happens when you’re editing a message and a new message is submitted, causing a refresh.**
+    - **This is necessary for correctness as well; see what happens when you’re editing a message (not writing a new one, because we use localStorage to remember that one) and a new message is submitted, causing a refresh.**
   - Scroll on new message.
   - Latency compensation when sending messages & pressing “like”.
 - Commit to the database schema.
