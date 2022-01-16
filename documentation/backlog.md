@@ -1,9 +1,5 @@
 # Backlog
 
-### Last Preparations
-
-- Commit to the database schema.
-
 ### Release
 
 - Create separate staging & production versions.
