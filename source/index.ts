@@ -3921,7 +3921,7 @@ export default async function courselore({
             </div>
             <div
               style="${css`
-                max-width: var(--width--5xl);
+                max-width: var(--width--3xl);
               `}"
             >
               <img
