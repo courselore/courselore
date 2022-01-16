@@ -7,6 +7,8 @@
 
 ### Next Week
 
+- Investigate why link from Slack to CourseLore doesn’t send cookies.
+- On `/sign-in` and `/sign-up`, redirect instead of 404 in case already signed in.
 - CSS management
   - Confirm that JSDOM is the bottleneck.
   - Try and make JSDOM faster.

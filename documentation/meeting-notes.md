@@ -3,6 +3,7 @@
 <details>
 <summary>2021-01-16</summary>
 
+- I’m able to reproduce the weird missing cookie mystery with a link from Slack. But I still don’t know what causes it.
 - Infrastructure is in place.
   - Production server.
   - `try.courselore.org`
