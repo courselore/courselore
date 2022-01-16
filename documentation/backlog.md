@@ -1,11 +1,5 @@
 # Backlog
 
-### Linda’s Notes
-
-- `userPartial` do `noLongerEnrolled`
-- Make breadcrumbs clickable.
-- The anonymity button isn’t as clear as it should be.
-
 ### Last Preparations
 
 - Retest notifications
@@ -202,6 +196,8 @@
 
 ### Interface Details
 
+- Make breadcrumbs (for example, under “User Settings”) clickable (they should expose the navigation menu, just like what happens in Visual Studio Code).
+- The anonymity button isn’t as clear as it should be.
 - When adding tags with the “Manage Tags” button (from the “Create a New Conversation” form or from the “Tags” button on a conversation), have a way to load the new tags without losing progress.
 - Add a `max-height` to the course switcher (what if you have many courses?).
 - Checkboxes that don’t have a visual indication may be confusing.
@@ -211,6 +207,7 @@
 
 ### Infrastructure
 
+- Let @leafac/html eat interpolated `null`s and `undefined`s and `[objects]`.
 - Using `getConversation()` to enforce permissions may not be a great idea. It limits the number of search results in a weird way, that even leaks a bit of data. Also, it isn’t the most performant thing, probably (see point about n+1 queries). Maybe a better idea would be to `WHERE` the permissions everywhere, or use a database view.
 - Performance:
   - Look for more database indices that may be necessary.

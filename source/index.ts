@@ -109,23 +109,6 @@ export default async function courselore({
     "pink",
   ] as const;
 
-  type NoLongerEnrolledEnrollment = typeof noLongerEnrolledEnrollment;
-  const noLongerEnrolledEnrollment = {
-    id: null,
-    user: {
-      id: null,
-      lastSeenOnlineAt: "0000-01-01T00:00:00.000Z",
-      email: null,
-      name: "No Longer Enrolled",
-      avatar: null,
-      avatarlessBackgroundColor: "rose",
-      biographySource: null,
-      biographyPreprocessed: null,
-    },
-    reference: null,
-    role: null,
-  } as const;
-
   type ConversationType = typeof conversationTypes[number];
   const conversationTypes = [
     "announcement",
@@ -2807,7 +2790,11 @@ export default async function courselore({
     req,
     res,
     enrollment = undefined,
-    user = enrollment?.user,
+    user = enrollment === undefined
+      ? undefined
+      : enrollment === "no-longer-enrolled"
+      ? "no-longer-enrolled"
+      : enrollment.user,
     anonymous = user === undefined,
     decorate = user !== undefined,
     name = true,
@@ -2823,7 +2810,7 @@ export default async function courselore({
     >;
     res: express.Response<any, Partial<IsEnrolledInCourseMiddlewareLocals>>;
     enrollment?: AuthorEnrollment;
-    user?: AuthorEnrollment["user"];
+    user?: AuthorEnrollmentUser | "no-longer-enrolled";
     anonymous?: boolean | "reveal";
     decorate?: boolean;
     name?: boolean | string;
@@ -2832,7 +2819,47 @@ export default async function courselore({
   }): HTML => {
     let userAvatar = html``;
     if (user !== undefined && anonymous !== true) {
-      if (user.avatar !== null)
+      if (user === "no-longer-enrolled")
+        userAvatar = html`<svg
+          viewBox="0 0 24 24"
+          style="${css`
+            color: var(--color--rose--700);
+            background-color: var(--color--rose--200);
+            @media (prefers-color-scheme: dark) {
+              color: var(--color--rose--200);
+              background-color: var(--color--rose--700);
+            }
+            ${{
+              xs: css`
+                width: var(--space--4);
+                height: var(--space--4);
+                vertical-align: var(--space---1);
+              `,
+              sm: css`
+                width: var(--space--6);
+                height: var(--space--6);
+                vertical-align: var(--space---1-5);
+              `,
+              xl: css`
+                width: var(--space--32);
+                height: var(--space--32);
+              `,
+            }[size]}
+            border-radius: var(--border-radius--circle);
+          `}"
+        >
+          <foreignObject x="2" y="-2" width="24" height="24">
+            <span
+              style="${css`
+                font-size: var(--font-size--xl);
+                line-height: var(--line-height--xl);
+              `}"
+            >
+              <i class="bi bi-emoji-smile-upside-down"></i>
+            </span>
+          </foreignObject>
+        </svg>`;
+      else if (user.avatar !== null)
         userAvatar = html`<img
           src="${user.avatar}"
           alt="${user.name}"
@@ -2912,7 +2939,11 @@ export default async function courselore({
           </text>
         </svg>`;
 
-      if (decorate)
+      if (
+        decorate &&
+        user !== "no-longer-enrolled" &&
+        enrollment !== "no-longer-enrolled"
+      )
         userAvatar = html`<span
           style="${css`
             display: inline-grid;
@@ -2973,7 +3004,7 @@ export default async function courselore({
               })();
             `}"
           ></span>
-          $${enrollment?.role === "staff"
+          $${enrollment !== undefined && enrollment.role === "staff"
             ? html`
                 <svg
                   viewBox="0 0 24 24"
@@ -3011,7 +3042,7 @@ export default async function courselore({
                     });
                   `}"
                 >
-                  <foreignObject x="2" y="-2" width="20" height="20">
+                  <foreignObject x="2" y="-2" width="24" height="24">
                     <span
                       style="${css`
                         font-size: var(--font-size--xl);
@@ -3078,36 +3109,50 @@ export default async function courselore({
                                 `}"
                               >
                                 <div>
-                                  <div class="strong">${user.name}</div>
-                                  $${res.locals.enrollment?.role === "staff" ||
-                                  res.locals.user?.id === user.id
+                                  <div class="strong">
+                                    ${user === "no-longer-enrolled"
+                                      ? "No Longer Enrolled"
+                                      : user.name}
+                                  </div>
+                                  $${user !== "no-longer-enrolled" &&
+                                  (res.locals.enrollment?.role === "staff" ||
+                                    res.locals.user?.id === user.id)
                                     ? html`
                                         <div class="secondary">
                                           ${user.email}
                                         </div>
                                       `
                                     : html``}
-                                  <div
-                                    class="secondary"
-                                    style="${css`
-                                      font-size: var(--font-size--xs);
-                                      line-height: var(--line-height--xs);
-                                    `}"
-                                  >
-                                    Last seen online
-                                    <time
-                                      datetime="${new Date(
-                                        user.lastSeenOnlineAt
-                                      ).toISOString()}"
-                                      oninteractive="${javascript`
-                                      leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                                    `}"
-                                    ></time>
-                                  </div>
+                                  $${user === "no-longer-enrolled"
+                                    ? html`
+                                        <div class="secondary">
+                                          This person has left the course.
+                                        </div>
+                                      `
+                                    : html`
+                                        <div
+                                          class="secondary"
+                                          style="${css`
+                                            font-size: var(--font-size--xs);
+                                            line-height: var(--line-height--xs);
+                                          `}"
+                                        >
+                                          Last seen online
+                                          <time
+                                            datetime="${new Date(
+                                              user.lastSeenOnlineAt
+                                            ).toISOString()}"
+                                            oninteractive="${javascript`
+                                              leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                            `}"
+                                          ></time>
+                                        </div>
+                                      `}
                                 </div>
                               </div>
                             </div>
-                            $${user.biographyPreprocessed !== null
+                            $${user !== "no-longer-enrolled" &&
+                            user.biographyPreprocessed !== null
                               ? processContent({
                                   req,
                                   res,
@@ -3123,7 +3168,11 @@ export default async function courselore({
                 : javascript``
             }
           `}"
-          >$${userAvatar}  $${name === true ? html`${user.name}` : name}</span
+          >$${userAvatar}  $${name === true
+            ? html`${user === "no-longer-enrolled"
+                ? "No Longer Enrolled"
+                : user.name}`
+            : name}</span
         >`;
     }
 
@@ -3157,7 +3206,7 @@ export default async function courselore({
           border-radius: var(--border-radius--circle);
         `}"
       >
-        <foreignObject x="2" y="-2" width="20" height="20">
+        <foreignObject x="2" y="-2" width="24" height="24">
           <span
             style="${css`
               font-size: var(--font-size--xl);
@@ -11147,7 +11196,8 @@ export default async function courselore({
           res,
           enrollment: conversation.authorEnrollment,
           anonymous:
-            conversation.anonymousAt === null
+            conversation.anonymousAt === null ||
+            conversation.authorEnrollment === "no-longer-enrolled"
               ? false
               : res.locals.enrollment.role === "staff" ||
                 conversation.authorEnrollment.id === res.locals.enrollment.id
@@ -11246,7 +11296,9 @@ export default async function courselore({
                   res,
                   enrollment: searchResult.message.authorEnrollment,
                   anonymous:
-                    searchResult.message.anonymousAt === null
+                    searchResult.message.anonymousAt === null ||
+                    searchResult.message.authorEnrollment ===
+                      "no-longer-enrolled"
                       ? false
                       : res.locals.enrollment.role === "staff" ||
                         searchResult.message.authorEnrollment.id ===
@@ -11267,7 +11319,8 @@ export default async function courselore({
                   res,
                   enrollment: message.authorEnrollment,
                   anonymous:
-                    message.anonymousAt === null
+                    message.anonymousAt === null ||
+                    message.authorEnrollment === "no-longer-enrolled"
                       ? false
                       : res.locals.enrollment.role === "staff" ||
                         message.authorEnrollment.id === res.locals.enrollment.id
@@ -11287,23 +11340,24 @@ export default async function courselore({
     </div>
   `;
 
+  type AuthorEnrollmentUser = {
+    id: number;
+    lastSeenOnlineAt: string;
+    email: string;
+    name: string;
+    avatar: string | null;
+    avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+    biographySource: string | null;
+    biographyPreprocessed: HTML | null;
+  };
   type AuthorEnrollment =
     | {
         id: number;
-        user: {
-          id: number;
-          lastSeenOnlineAt: string;
-          email: string;
-          name: string;
-          avatar: string | null;
-          avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-          biographySource: string | null;
-          biographyPreprocessed: HTML | null;
-        };
+        user: AuthorEnrollmentUser;
         reference: string;
         role: EnrollmentRole;
       }
-    | NoLongerEnrolledEnrollment;
+    | "no-longer-enrolled";
 
   const getConversation = ({
     req,
@@ -11448,7 +11502,7 @@ export default async function courselore({
               reference: conversationRow.authorEnrollmentReference,
               role: conversationRow.authorEnrollmentRole,
             }
-          : noLongerEnrolledEnrollment,
+          : ("no-longer-enrolled" as const),
       anonymousAt: conversationRow.anonymousAt,
       type: conversationRow.type,
       pinnedAt: conversationRow.pinnedAt,
@@ -11575,7 +11629,7 @@ export default async function courselore({
                       reference: endorsement.enrollmentReference,
                       role: endorsement.enrollmentRole,
                     }
-                  : noLongerEnrolledEnrollment,
+                  : ("no-longer-enrolled" as const),
             }))
         : [];
 
@@ -11708,7 +11762,7 @@ export default async function courselore({
               reference: messageRow.authorEnrollmentReference,
               role: messageRow.authorEnrollmentRole,
             }
-          : noLongerEnrolledEnrollment,
+          : ("no-longer-enrolled" as const),
       anonymousAt: messageRow.anonymousAt,
       answerAt: messageRow.answerAt,
       contentSource: messageRow.contentSource,
@@ -11780,7 +11834,7 @@ export default async function courselore({
                 reference: endorsement.enrollmentReference,
                 role: endorsement.enrollmentRole,
               }
-            : noLongerEnrolledEnrollment,
+            : ("no-longer-enrolled" as const),
       }));
 
     const likes = database
@@ -11844,7 +11898,7 @@ export default async function courselore({
                 reference: like.enrollmentReference,
                 role: like.enrollmentRole,
               }
-            : noLongerEnrolledEnrollment,
+            : ("no-longer-enrolled" as const),
       }));
 
     return {
@@ -14959,7 +15013,8 @@ ${contentSource}</textarea
     res: express.Response<any, IsConversationAccessibleMiddlewareLocals>;
   }): boolean =>
     res.locals.enrollment.role === "staff" ||
-    res.locals.conversation.authorEnrollment.id === res.locals.enrollment.id;
+    (res.locals.conversation.authorEnrollment !== "no-longer-enrolled" &&
+      res.locals.conversation.authorEnrollment.id === res.locals.enrollment.id);
 
   interface MayEditConversationMiddlewareLocals
     extends IsConversationAccessibleMiddlewareLocals {}
@@ -15025,7 +15080,8 @@ ${contentSource}</textarea
     message: MessageExistsMiddlewareLocals["message"];
   }) =>
     res.locals.enrollment.role === "staff" ||
-    message.authorEnrollment.id === res.locals.enrollment.id;
+    (message.authorEnrollment !== "no-longer-enrolled" &&
+      message.authorEnrollment.id === res.locals.enrollment.id);
 
   interface MayEditMessageMiddlewareLocals
     extends MessageExistsMiddlewareLocals {}
@@ -16401,27 +16457,38 @@ ${contentSource}</textarea
                                                               const newMessage = document.querySelector(".new-message");
                                                               newMessage.querySelector(".content-editor--button--write").click();
                                                               const element = newMessage.querySelector(".content-editor--write--textarea");
-                                                              textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
-                                                                message.anonymousAt ===
-                                                                null
-                                                                  ? `${
-                                                                      message
-                                                                        .authorEnrollment
-                                                                        .reference
-                                                                    }--${slugify(
-                                                                      message
-                                                                        .authorEnrollment
-                                                                        .user
-                                                                        .name
-                                                                    )}`
-                                                                  : `anonymous`
-                                                              }" + " · #" + ${JSON.stringify(
+                                                              textFieldEdit.wrapSelection(
+                                                                element,
+                                                                ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
+                                                                  message.authorEnrollment ===
+                                                                  "no-longer-enrolled"
+                                                                    ? javascript``
+                                                                    : javascript`
+                                                                      "@${
+                                                                        message.anonymousAt ===
+                                                                        null
+                                                                          ? `${
+                                                                              message
+                                                                                .authorEnrollment
+                                                                                .reference
+                                                                            }--${slugify(
+                                                                              message
+                                                                                .authorEnrollment
+                                                                                .user
+                                                                                .name
+                                                                            )}`
+                                                                          : `anonymous`
+                                                                      } · " +
+                                                                    `
+                                                                } "#" + ${JSON.stringify(
                                                               res.locals
                                                                 .conversation
                                                                 .reference
                                                             )} + "/" + ${JSON.stringify(
                                                               message.reference
-                                                            )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n", "");
+                                                            )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n",
+                                                                ""
+                                                              );
                                                               element.focus();
                                                               tippy.hideAll();
                                                             `}"
@@ -16457,7 +16524,9 @@ ${contentSource}</textarea
                                                             Permanent Link
                                                           </button>
 
-                                                          $${message
+                                                          $${message.authorEnrollment !==
+                                                            "no-longer-enrolled" &&
+                                                          message
                                                             .authorEnrollment
                                                             .id ===
                                                             res.locals
@@ -16782,8 +16851,10 @@ ${contentSource}</textarea
                                             const isEndorsed =
                                               message.endorsements.some(
                                                 (endorsement) =>
+                                                  endorsement.enrollment !==
+                                                    "no-longer-enrolled" &&
                                                   endorsement.enrollment.id ===
-                                                  res.locals.enrollment.id
+                                                    res.locals.enrollment.id
                                               );
 
                                             headers.push(html`
@@ -16816,37 +16887,46 @@ ${contentSource}</textarea
                                                             touch: false,
                                                             content: ${JSON.stringify(
                                                               `Remove Endorsement${
-                                                                message
-                                                                  .endorsements
-                                                                  .length > 1
+                                                                message.endorsements.filter(
+                                                                  (
+                                                                    endorsement
+                                                                  ) =>
+                                                                    endorsement.enrollment !==
+                                                                      "no-longer-enrolled" &&
+                                                                    endorsement
+                                                                      .enrollment
+                                                                      .id !==
+                                                                      res.locals
+                                                                        .enrollment
+                                                                        .id
+                                                                ).length > 0
                                                                   ? ` (Also endorsed by ${
                                                                       /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
                                                                         Intl as any
                                                                       ).ListFormat(
                                                                         "en"
                                                                       ).format(
-                                                                        message.endorsements
-                                                                          .filter(
-                                                                            (
-                                                                              endorsement
-                                                                            ) =>
-                                                                              endorsement
-                                                                                .enrollment
-                                                                                .id !==
+                                                                        message.endorsements.flatMap(
+                                                                          (
+                                                                            endorsement
+                                                                          ) =>
+                                                                            endorsement.enrollment !==
+                                                                              "no-longer-enrolled" &&
+                                                                            endorsement
+                                                                              .enrollment
+                                                                              .id !==
                                                                               res
                                                                                 .locals
                                                                                 .enrollment
                                                                                 .id
-                                                                          )
-                                                                          .map(
-                                                                            (
-                                                                              endorsement
-                                                                            ) =>
-                                                                              endorsement
-                                                                                .enrollment
-                                                                                .user
-                                                                                .name
-                                                                          )
+                                                                              ? [
+                                                                                  endorsement
+                                                                                    .enrollment
+                                                                                    .user
+                                                                                    .name,
+                                                                                ]
+                                                                              : []
+                                                                        )
                                                                       )
                                                                     })`
                                                                   : ``
@@ -16876,8 +16956,11 @@ ${contentSource}</textarea
                                                       />
                                                       <button
                                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--lime"
-                                                        $${message.endorsements
-                                                          .length === 0
+                                                        $${message.endorsements.filter(
+                                                          (endorsement) =>
+                                                            endorsement.enrollment !==
+                                                            "no-longer-enrolled"
+                                                        ).length === 0
                                                           ? html``
                                                           : html`
                                                               oninteractive="${javascript`
@@ -16890,14 +16973,19 @@ ${contentSource}</textarea
                                                                       ).ListFormat(
                                                                         "en"
                                                                       ).format(
-                                                                        message.endorsements.map(
+                                                                        message.endorsements.flatMap(
                                                                           (
                                                                             endorsement
                                                                           ) =>
-                                                                            endorsement
-                                                                              .enrollment
-                                                                              .user
-                                                                              .name
+                                                                            endorsement.enrollment ===
+                                                                            "no-longer-enrolled"
+                                                                              ? []
+                                                                              : [
+                                                                                  endorsement
+                                                                                    .enrollment
+                                                                                    .user
+                                                                                    .name,
+                                                                                ]
                                                                         )
                                                                       )
                                                                     })`
@@ -16931,32 +17019,53 @@ ${contentSource}</textarea
                                           } else if (
                                             res.locals.conversation.type ===
                                               "question" &&
-                                            message.authorEnrollment.role !==
-                                              "staff" &&
+                                            (message.authorEnrollment ===
+                                              "no-longer-enrolled" ||
+                                              message.authorEnrollment.role !==
+                                                "staff") &&
                                             message.endorsements.length > 0
                                           )
                                             headers.push(html`
                                               <div
                                                 class="text--lime"
                                                 oninteractive="${javascript`
-                                                  tippy(this, {
-                                                    content: ${JSON.stringify(
-                                                      `Endorsed by ${
-                                                        /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                                          Intl as any
-                                                        ).ListFormat(
-                                                          "en"
-                                                        ).format(
-                                                          message.endorsements.map(
-                                                            (endorsement) =>
-                                                              endorsement
-                                                                .enrollment.user
-                                                                .name
-                                                          )
-                                                        )
-                                                      }`
-                                                    )},
-                                                  });
+                                                  ${
+                                                    message.endorsements.filter(
+                                                      (endorsement) =>
+                                                        endorsement.enrollment !==
+                                                        "no-longer-enrolled"
+                                                    ).length > 0
+                                                      ? javascript`
+                                                          tippy(this, {
+                                                            content: ${JSON.stringify(
+                                                              `Endorsed by ${
+                                                                /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                                  Intl as any
+                                                                ).ListFormat(
+                                                                  "en"
+                                                                ).format(
+                                                                  message.endorsements.flatMap(
+                                                                    (
+                                                                      endorsement
+                                                                    ) =>
+                                                                      endorsement.enrollment ===
+                                                                      "no-longer-enrolled"
+                                                                        ? []
+                                                                        : [
+                                                                            endorsement
+                                                                              .enrollment
+                                                                              .user
+                                                                              .name,
+                                                                          ]
+                                                                  )
+                                                                )
+                                                              }`
+                                                            )},
+                                                          });
+                                                        `
+                                                      : javascript``
+                                                  }
+                                                  
                                                 `}"
                                               >
                                                 <i class="bi bi-award"></i>
@@ -17049,7 +17158,9 @@ ${contentSource}</textarea
                                                       message.authorEnrollment,
                                                     anonymous:
                                                       message.anonymousAt ===
-                                                      null
+                                                        null ||
+                                                      message.authorEnrollment ===
+                                                        "no-longer-enrolled"
                                                         ? false
                                                         : res.locals.enrollment
                                                             .role === "staff" ||
@@ -17060,12 +17171,16 @@ ${contentSource}</textarea
                                                               .enrollment.id
                                                         ? "reveal"
                                                         : true,
-                                                    name: highlightSearchResult(
-                                                      html`${message
-                                                        .authorEnrollment.user
-                                                        .name}`,
-                                                      req.query.search
-                                                    ),
+                                                    name:
+                                                      message.authorEnrollment ===
+                                                      "no-longer-enrolled"
+                                                        ? undefined
+                                                        : highlightSearchResult(
+                                                            html`${message
+                                                              .authorEnrollment
+                                                              .user.name}`,
+                                                            req.query.search
+                                                          ),
                                                   })}
                                                 </div>
 
@@ -17175,26 +17290,38 @@ ${contentSource}</textarea
                                                             const newMessage = document.querySelector(".new-message");
                                                             newMessage.querySelector(".content-editor--button--write").click();
                                                             const element = newMessage.querySelector(".content-editor--write--textarea");
-                                                            textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> @${
-                                                              message.anonymousAt ===
-                                                              null
-                                                                ? `${
-                                                                    message
-                                                                      .authorEnrollment
-                                                                      .reference
-                                                                  }--${slugify(
-                                                                    message
-                                                                      .authorEnrollment
-                                                                      .user.name
-                                                                  )}`
-                                                                : `anonymous`
-                                                            }" + " · #" + ${JSON.stringify(
+                                                            textFieldEdit.wrapSelection(
+                                                              element,
+                                                              ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
+                                                                message.authorEnrollment ===
+                                                                "no-longer-enrolled"
+                                                                  ? javascript``
+                                                                  : javascript`
+                                                                    "@${
+                                                                      message.anonymousAt ===
+                                                                      null
+                                                                        ? `${
+                                                                            message
+                                                                              .authorEnrollment
+                                                                              .reference
+                                                                          }--${slugify(
+                                                                            message
+                                                                              .authorEnrollment
+                                                                              .user
+                                                                              .name
+                                                                          )}`
+                                                                        : `anonymous`
+                                                                    } · " +
+                                                                  `
+                                                              } "#" + ${JSON.stringify(
                                                             res.locals
                                                               .conversation
                                                               .reference
                                                           )} + "/" + ${JSON.stringify(
                                                             message.reference
-                                                          )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n", "");
+                                                          )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n",
+                                                              ""
+                                                            );
                                                             element.focus();
                                                           `}"
                                                         >
@@ -17257,8 +17384,10 @@ ${contentSource}</textarea
 
                                             const isLiked = message.likes.some(
                                               (like) =>
+                                                like.enrollment !==
+                                                  "no-longer-enrolled" &&
                                                 like.enrollment.id ===
-                                                res.locals.enrollment.id
+                                                  res.locals.enrollment.id
                                             );
                                             const likesCount =
                                               message.likes.length;
@@ -17982,6 +18111,7 @@ ${contentSource}</textarea
       if (
         res.locals.conversation.type === "chat" &&
         mostRecentMessage !== undefined &&
+        mostRecentMessage.authorEnrollment !== "no-longer-enrolled" &&
         res.locals.enrollment.id === mostRecentMessage.authorEnrollment.id &&
         mostRecentMessage.anonymousAt === null &&
         !req.body.isAnonymous &&
@@ -18135,6 +18265,7 @@ ${contentSource}</textarea
       if (typeof req.body.isAnonymous === "string")
         if (
           !["true", "false"].includes(req.body.isAnonymous) ||
+          res.locals.message.authorEnrollment === "no-longer-enrolled" ||
           res.locals.message.authorEnrollment.role === "staff" ||
           res.locals.conversation.staffOnlyAt !== null ||
           (req.body.isAnonymous === "true" &&
@@ -18258,7 +18389,9 @@ ${contentSource}</textarea
     (req, res, next) => {
       if (
         res.locals.message.likes.some(
-          (like) => like.enrollment.id === res.locals.enrollment.id
+          (like) =>
+            like.enrollment !== "no-longer-enrolled" &&
+            like.enrollment.id === res.locals.enrollment.id
         )
       )
         return next("validation");
@@ -18297,7 +18430,9 @@ ${contentSource}</textarea
     ...messageExistsMiddleware,
     (req, res, next) => {
       const like = res.locals.message.likes.find(
-        (like) => like.enrollment.id === res.locals.enrollment.id
+        (like) =>
+          like.enrollment !== "no-longer-enrolled" &&
+          like.enrollment.id === res.locals.enrollment.id
       );
       if (like === undefined) return next("validation");
 
@@ -18337,7 +18472,8 @@ ${contentSource}</textarea
     res.locals.conversation.type === "question" &&
     message.reference !== "1" &&
     message.answerAt !== null &&
-    message.authorEnrollment.role !== "staff";
+    (message.authorEnrollment === "no-longer-enrolled" ||
+      message.authorEnrollment.role !== "staff");
 
   interface MayEndorseMessageMiddlewareLocals
     extends MessageExistsMiddlewareLocals {}
@@ -18377,6 +18513,7 @@ ${contentSource}</textarea
       if (
         res.locals.message.endorsements.some(
           (endorsement) =>
+            endorsement.enrollment !== "no-longer-enrolled" &&
             endorsement.enrollment.id === res.locals.enrollment.id
         )
       )
@@ -18416,7 +18553,9 @@ ${contentSource}</textarea
     ...mayEndorseMessageMiddleware,
     (req, res, next) => {
       const endorsement = res.locals.message.endorsements.find(
-        (endorsement) => endorsement.enrollment.id === res.locals.enrollment.id
+        (endorsement) =>
+          endorsement.enrollment !== "no-longer-enrolled" &&
+          endorsement.enrollment.id === res.locals.enrollment.id
       );
       if (endorsement === undefined) return next("validation");
 
@@ -18466,8 +18605,15 @@ ${contentSource}</textarea
                "enrollments"."reference",
                "enrollments"."role"
         FROM "enrollments"
-        JOIN "users" ON "enrollments"."user" = "users"."id" AND
-                        "users"."id" != ${message.authorEnrollment.user.id} AND
+        JOIN "users" ON "enrollments"."user" = "users"."id"
+                        $${
+                          message.authorEnrollment === "no-longer-enrolled"
+                            ? sql``
+                            : sql`
+                                AND
+                                "users"."id" != ${message.authorEnrollment.user.id}
+                              `
+                        } AND
                         "users"."emailConfirmedAt" IS NOT NULL AND
                         "users"."emailNotifications" != 'none'
         LEFT JOIN "notificationDeliveries" ON "enrollments"."id" = "notificationDeliveries"."enrollment" AND
@@ -18519,7 +18665,9 @@ ${contentSource}</textarea
             <a
               href="${baseURL}/courses/${res.locals.course
                 .reference}/conversations/${conversation.reference}#message--${message.reference}"
-              >${message.anonymousAt !== null
+              >${conversation.authorEnrollment === "no-longer-enrolled"
+                ? "Someone who is no longer enrolled"
+                : message.anonymousAt !== null
                 ? `Anonymous ${
                     enrollment.role === "staff" ||
                     enrollment.userId === res.locals.user.id
@@ -19045,6 +19193,8 @@ ${contentSource}</textarea
                     ${
                       messageReference === 1
                         ? conversation.authorEnrollment
+                        : Math.random() < 0.05
+                        ? null
                         : lodash.sample(enrollments)!.id
                     },
                     ${
