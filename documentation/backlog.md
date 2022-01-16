@@ -205,6 +205,7 @@
 
 ### Interface Details
 
+- Add a `max-height` to the course switcher (what if you have many courses?).
 - Checkboxes that don’t have a visual indication may be confusing.
 - Using the JavaScript event loop for background jobs has another issue besides not persisting: there’s no contention mechanism, which opens it up for DOS attacks.
 - Right click menus on stuff.

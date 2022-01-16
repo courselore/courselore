@@ -7655,7 +7655,7 @@ export default async function courselore({
                                                     oninteractive="${javascript`
                                                       tippy(this, {
                                                         touch: false,
-                                                        content: "Copy to Clipboard",
+                                                        content: "Copy Link",
                                                       });
                                                     `}"
                                                     onclick="${javascript`
@@ -7663,19 +7663,19 @@ export default async function courselore({
                                                         await navigator.clipboard.writeText(${JSON.stringify(
                                                           link
                                                         )});
-                                                        const clipboard = this.querySelector(".clipboard");
+                                                        const stickies = this.querySelector(".stickies");
                                                         const check = this.querySelector(".check");
-                                                        clipboard.hidden = true;
+                                                        stickies.hidden = true;
                                                         check.hidden = false;
                                                         await new Promise((resolve) => { window.setTimeout(resolve, 500); });
-                                                        clipboard.hidden = false;
+                                                        stickies.hidden = false;
                                                         check.hidden = true;
                                                       })();
                                                     `}"
                                                   >
-                                                    <span class="clipboard">
+                                                    <span class="stickies">
                                                       <i
-                                                        class="bi bi-clipboard"
+                                                        class="bi bi-stickies"
                                                       ></i>
                                                     </span>
                                                     <span
@@ -9809,7 +9809,7 @@ export default async function courselore({
                     oninteractive="${javascript`
                       tippy(this, {
                         touch: false,
-                        content: "Copy to Clipboard",
+                        content: "Copy Link",
                       });
                     `}"
                     onclick="${javascript`
@@ -9817,18 +9817,18 @@ export default async function courselore({
                         await navigator.clipboard.writeText(${JSON.stringify(
                           link
                         )});
-                        const clipboard = this.querySelector(".clipboard");
+                        const stickies = this.querySelector(".stickies");
                         const check = this.querySelector(".check");
-                        clipboard.hidden = true;
+                        stickies.hidden = true;
                         check.hidden = false;
                         await new Promise((resolve) => { window.setTimeout(resolve, 500); });
-                        clipboard.hidden = false;
+                        stickies.hidden = false;
                         check.hidden = true;
                       })();
                     `}"
                   >
-                    <span class="clipboard">
-                      <i class="bi bi-clipboard"></i>
+                    <span class="stickies">
+                      <i class="bi bi-stickies"></i>
                     </span>
                     <span hidden class="check text--green">
                       <i class="bi bi-check-lg"></i>
@@ -15507,8 +15507,7 @@ ${contentSource}</textarea
                                       `}"
                                     >
                                       <i class="bi bi-link"></i>
-                                      Copy Conversation Permanent Link to
-                                      Clipboard
+                                      Copy Conversation Permanent Link
                                     </button>
                                     $${mayEditConversation({ req, res })
                                       ? html`
@@ -16393,8 +16392,7 @@ ${contentSource}</textarea
                                                               class="bi bi-link"
                                                             ></i>
                                                             Copy Message
-                                                            Permanent Link to
-                                                            Clipboard
+                                                            Permanent Link
                                                           </button>
 
                                                           $${message
