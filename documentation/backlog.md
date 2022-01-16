@@ -3,10 +3,7 @@
 ### Release
 
 - Test the moving of the database file in staging.
-- A course about CourseLore for collecting feedback.
-  - Put invitation link on the page somewhere.
-- Announce deletion of Slack.
-- Notify Zach.
+- Include the link to Meta CourseLore on the “Report an Issue” menu.
 
 ### Next Week
 
