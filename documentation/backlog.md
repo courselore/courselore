@@ -2,7 +2,7 @@
 
 ### Notes
 
-- Change cookies’ same-site policy from strict to lax
+- Confirm that the `Lax` policy fixes the issue.
 - Sprinkle links of Meta course & try.courselore.org
 - `coursePartial` is sometimes used in contexts that aren’t `button`s, so be mindful of cursor change on icon.
 - Chat goes blank when you send a message.
