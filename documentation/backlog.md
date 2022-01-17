@@ -2,7 +2,6 @@
 
 ### Notes
 
-- Silence Caddy noise logs.
 - Content editor:
   - When you select multiple lines and click on the list options, turn each line into a list item.
   - Add more placeholders to things like tables to help explain how to use them.
