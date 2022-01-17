@@ -16,8 +16,8 @@ export default async ({ courselore, courseloreVersion, courseloreImport }) => {
       ),
       execa("caddy", ["run", "--config", "-", "--adapter", "caddyfile"], {
         preferLocal: true,
-        stdout: "inherit",
-        stderr: "inherit",
+        stdout: "ignore",
+        stderr: "ignore",
         input: caddyfile`
           {
             admin off
