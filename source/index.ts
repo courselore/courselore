@@ -18681,12 +18681,7 @@ ${contentSource}</textarea
 
           <hr />
 
-          <blockquote>
-            $${lodash.truncate(message.contentSearch, {
-              length: 1000,
-              separator: /\W/,
-            })}
-          </blockquote>
+          $${message.contentPreprocessed}
 
           <hr />
 
