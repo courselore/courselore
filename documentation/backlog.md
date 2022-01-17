@@ -2,9 +2,10 @@
 
 ### Notes
 
-  - Remove special cases like confirmation emails that are already doing that.
-  - Look for instances of `isSignedOutMiddleware`.
-  - If you’re already signed in, make `/sign-in` and `/sign-up` redirect you.
+- Capitalization:
+  - `Password Reset Link`
+  - `Email Confirmation Link`
+  - Look for `Link` in general.
 - Fix confirmation email glitches.
   - Change cookies’ same-site policy from strict to lax
 - Sprinkle links of Meta course & try.courselore.org

@@ -4677,29 +4677,45 @@ export default async function courselore({
     );
   };
 
-  const isCanonicalServer = baseURL === "https://courselore.org";
+  const canonicalBaseURL = "https://courselore.org";
   app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "/",
     ...isSignedOutMiddleware,
-    isCanonicalServer ? aboutRequestHandler : signInRequestHandler
+    baseURL === canonicalBaseURL ? aboutRequestHandler : signInRequestHandler
   );
-  if (isCanonicalServer || process.env.NODE_ENV !== "production") {
-    app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
-      "/about",
-      ...isSignedInMiddleware,
-      aboutRequestHandler
-    );
-    app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
-      "/about",
-      ...isSignedOutMiddleware,
-      aboutRequestHandler
-    );
-  }
 
-  app.get<{}, HTML, {}, { email?: string }, IsSignedOutMiddlewareLocals>(
+  const shouldDisplayAbout =
+    baseURL === canonicalBaseURL || process.env.NODE_ENV !== "production";
+  app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
+    "/about",
+    ...isSignedOutMiddleware,
+    shouldDisplayAbout
+      ? aboutRequestHandler
+      : (req, res) => {
+          res.redirect(`${canonicalBaseURL}/about`);
+        }
+  );
+  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+    "/about",
+    ...isSignedInMiddleware,
+    shouldDisplayAbout
+      ? aboutRequestHandler
+      : (req, res) => {
+          res.redirect(`${canonicalBaseURL}/about`);
+        }
+  );
+
+  app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "/sign-in",
     ...isSignedOutMiddleware,
     signInRequestHandler
+  );
+  app.get<{}, HTML, {}, { redirect?: string }, IsSignedInMiddlewareLocals>(
+    "/sign-in",
+    ...isSignedInMiddleware,
+    (req, res) => {
+      res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
+    }
   );
 
   app.post<
@@ -4786,9 +4802,8 @@ export default async function courselore({
     },
   };
 
-  app.get<{}, HTML, {}, { email?: string }, IsSignedOutMiddlewareLocals>(
+  app.get<{}, HTML, {}, { email?: string }, {}>(
     "/reset-password",
-    ...isSignedOutMiddleware,
     (req, res) => {
       res.send(
         boxLayout({
@@ -4865,99 +4880,90 @@ export default async function courselore({
     }
   );
 
-  app.post<
-    {},
-    HTML,
-    { email?: string; resend?: "true" },
-    {},
-    IsSignedOutMiddlewareLocals
-  >("/reset-password", ...isSignedOutMiddleware, (req, res, next) => {
-    if (
-      typeof req.body.email !== "string" ||
-      req.body.email.match(emailRegExp) === null
-    )
-      return next("validation");
+  app.post<{}, HTML, { email?: string; resend?: "true" }, {}, {}>(
+    "/reset-password",
+    (req, res, next) => {
+      if (
+        typeof req.body.email !== "string" ||
+        req.body.email.match(emailRegExp) === null
+      )
+        return next("validation");
 
-    const user = database.get<{ id: number; email: string }>(
-      sql`SELECT "id", "email" FROM "users" WHERE "email" = ${req.body.email}`
-    );
-    if (user === undefined) {
-      Flash.set({
-        req,
-        res,
-        content: html`<div class="flash--rose">Email not found.</div>`,
+      const user = database.get<{ id: number; email: string }>(
+        sql`SELECT "id", "email" FROM "users" WHERE "email" = ${req.body.email}`
+      );
+      if (user === undefined) {
+        Flash.set({
+          req,
+          res,
+          content: html`<div class="flash--rose">Email not found.</div>`,
+        });
+        return res.redirect(
+          `${baseURL}/reset-password${qs.stringify(req.query, {
+            addQueryPrefix: true,
+          })}`
+        );
+      }
+
+      const link = `${baseURL}/reset-password/${PasswordReset.create(
+        user.id
+      )}${qs.stringify(req.query, { addQueryPrefix: true })}`;
+      sendMail({
+        to: user.email,
+        subject: "CourseLore · Password Reset Link",
+        html: html`
+          <p><a href="${link}" target="_blank">${link}</a></p>
+          <p>
+            <small>
+              This Password Reset Link is valid for ten minutes.<br />
+              You may ignore this Password Reset Link if you didn’t request it.
+            </small>
+          </p>
+        `,
       });
-      return res.redirect(
-        `${baseURL}/reset-password${qs.stringify(req.query, {
-          addQueryPrefix: true,
-        })}`
+      if (req.body.resend === "true")
+        Flash.set({
+          req,
+          res,
+          content: html`<div class="flash--green">Email resent.</div>`,
+        });
+      res.send(
+        boxLayout({
+          req,
+          res,
+          head: html`
+            <title>
+              Reset Password · CourseLore · Communication Platform for Education
+            </title>
+          `,
+          body: html`
+            <p>
+              To continue resetting your password, please follow the Password
+              Reset Link that was sent to
+              <strong class="strong">${req.body.email}</strong>.
+            </p>
+            <form
+              method="POST"
+              action="${baseURL}/reset-password${qs.stringify(req.query, {
+                addQueryPrefix: true,
+              })}"
+            >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+              <input type="hidden" name="email" value="${req.body.email}" />
+              <input type="hidden" name="resend" value="true" />
+              <p>
+                Didn’t receive the email? Already checked your spam folder?
+                <button class="link">Resend</button>.
+              </p>
+            </form>
+          `,
+        })
       );
     }
+  );
 
-    const link = `${baseURL}/reset-password/${PasswordReset.create(
-      user.id
-    )}${qs.stringify(req.query, { addQueryPrefix: true })}`;
-    sendMail({
-      to: user.email,
-      subject: "CourseLore · Password Reset Link",
-      html: html`
-        <p><a href="${link}" target="_blank">${link}</a></p>
-        <p>
-          <small>
-            This Password Reset Link is valid for ten minutes.<br />
-            You may ignore this Password Reset Link if you didn’t request it.
-          </small>
-        </p>
-      `,
-    });
-    if (req.body.resend === "true")
-      Flash.set({
-        req,
-        res,
-        content: html`<div class="flash--green">Email resent.</div>`,
-      });
-    res.send(
-      boxLayout({
-        req,
-        res,
-        head: html`
-          <title>
-            Reset Password · CourseLore · Communication Platform for Education
-          </title>
-        `,
-        body: html`
-          <p>
-            To continue resetting your password, please follow the Password
-            Reset Link that was sent to ${req.body.email}.
-          </p>
-          <form
-            method="POST"
-            action="${baseURL}/reset-password${qs.stringify(req.query, {
-              addQueryPrefix: true,
-            })}"
-          >
-            <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-            <input type="hidden" name="email" value="${req.body.email}" />
-            <input type="hidden" name="resend" value="true" />
-            <p>
-              Didn’t receive the email? Already checked your spam folder?
-              <button class="link">Resend</button>.
-            </p>
-          </form>
-        `,
-      })
-    );
-  });
-
-  app.get<
-    { passwordResetNonce: string },
-    HTML,
-    {},
-    {},
-    IsSignedOutMiddlewareLocals
-  >(
+  app.get<{ passwordResetNonce: string }, HTML, {}, {}, {}>(
     "/reset-password/:passwordResetNonce",
-    ...isSignedOutMiddleware,
     (req, res) => {
       const userId = PasswordReset.get(req.params.passwordResetNonce);
       if (userId === undefined) {
@@ -5039,10 +5045,9 @@ export default async function courselore({
     HTML,
     { password?: string },
     { redirect?: string },
-    IsSignedOutMiddlewareLocals
+    {}
   >(
     "/reset-password/:passwordResetNonce",
-    ...isSignedOutMiddleware,
     asyncHandler(async (req, res, next) => {
       if (
         typeof req.body.password !== "string" ||
@@ -5204,6 +5209,13 @@ export default async function courselore({
       })
     );
   });
+  app.get<{}, HTML, {}, { redirect?: string }, IsSignedInMiddlewareLocals>(
+    "/sign-up",
+    ...isSignedInMiddleware,
+    (req, res) => {
+      res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
+    }
+  );
 
   const argon2Options = {
     type: argon2.argon2id,
@@ -5398,34 +5410,6 @@ export default async function courselore({
         `,
       });
       return res.redirect(`${baseURL}/`);
-    }
-  );
-
-  app.get<
-    { emailConfirmationNonce: string },
-    HTML,
-    {},
-    {},
-    IsSignedOutMiddlewareLocals
-  >(
-    "/email-confirmation/:emailConfirmationNonce",
-    ...isSignedOutMiddleware,
-    (req, res) => {
-      Flash.set({
-        req,
-        res,
-        content: html`
-          <div class="flash--rose">Sign in to confirm your email.</div>
-        `,
-      });
-      return res.redirect(
-        `${baseURL}/sign-in/${qs.stringify(
-          {
-            redirect: req.originalUrl,
-          },
-          { addQueryPrefix: true }
-        )}`
-      );
     }
   );
 
@@ -10098,6 +10082,36 @@ export default async function courselore({
                 Sign in
               </a>
             </div>
+          `,
+        })
+      );
+    }
+  );
+
+  app.get<
+    { courseReference: string; invitationReference: string },
+    HTML,
+    {},
+    {},
+    {}
+  >(
+    "/courses/:courseReference/invitations/:invitationReference",
+    (req, res) => {
+      res.send(
+        boxLayout({
+          req,
+          res,
+          head: html` <title>Invitation · CourseLore</title> `,
+          body: html`
+            <h2 class="heading">
+              <i class="bi bi-journal-arrow-down"></i>
+              Invitation
+            </h2>
+
+            <p>
+              This invitation is invalid or expired. Please contact your course
+              staff.
+            </p>
           `,
         })
       );
@@ -19273,16 +19287,6 @@ ${contentSource}</textarea
     "*",
     ...isSignedOutMiddleware,
     (req, res) => {
-      Flash.set({
-        req,
-        res,
-        content: html`
-          <div class="flash--rose">
-            Either this page doesn’t exist, or you must sign in or sign up to
-            see it.
-          </div>
-        `,
-      });
       res.redirect(
         `${baseURL}/sign-in${qs.stringify(
           {
