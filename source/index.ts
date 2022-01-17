@@ -18665,16 +18665,16 @@ ${contentSource}</textarea
             <a
               href="${baseURL}/courses/${res.locals.course
                 .reference}/conversations/${conversation.reference}#message--${message.reference}"
-              >${conversation.authorEnrollment === "no-longer-enrolled"
+              >${message.authorEnrollment === "no-longer-enrolled"
                 ? "Someone who is no longer enrolled"
                 : message.anonymousAt !== null
                 ? `Anonymous ${
                     enrollment.role === "staff" ||
                     enrollment.userId === res.locals.user.id
-                      ? `(${conversation.authorEnrollment.user.name})`
+                      ? `(${message.authorEnrollment.user.name})`
                       : ""
                   }`
-                : conversation.authorEnrollment.user.name}
+                : message.authorEnrollment.user.name}
               says</a
             >:
           </p>

@@ -1,14 +1,24 @@
 # Meeting Notes
 
 <details>
+<summary>2021-01-22</summary>
+
+- Progress from last week that we didn’t have the time to talk about:
+  - Added a decoration to the `userPartial` to highlight staff.
+  - Changed the display of new messages: Instead of a blue dot next to each new message (à la Mail.app), have a bar on top of the first new message (à la Discord). Started the investigation of which parts to optimize first.
+  - Fixed glitches related to tooltips on live updates.
+  - Fixed the treatment of people who are no longer enrolled.
+
+</details>
+
+<details>
 <summary>2021-01-16</summary>
 
-- I’m able to reproduce the weird missing cookie mystery with a link from Slack. But I still don’t know what causes it.
 - Infrastructure is in place.
   - Production server.
   - `try.courselore.org`
   - New homepage.
-- We have a first self-hoster that’s happy with the process & the documentation.
+- We have a first person self-hosting who’s happy with the process & the documentation.
   - He wasn’t put off by the recommendation to use Homebrew, for example.
 - User interface:
   - Added extra course information (year, term, institution, and code).
@@ -19,12 +29,14 @@
   - Link from conversation creation to tag management.
   - Made password updates close all other sessions, in case a password is compromised or an attacker is using session fixation.
   - Fixed refreshing ids, so that things like footnotes work.
+- Performance:
+  - Cache preprocessed messages: 10% improvement.
+  - Investigated other issues that should be 50% improvement, but haven’t implemented.
+- Progress we didn’t have time to talk about:
   - Added a decoration to the `userPartial` to highlight staff.
   - Changed the display of new messages: Instead of a blue dot next to each new message (à la Mail.app), have a bar on top of the first new message (à la Discord). Started the investigation of which parts to optimize first.
   - Fixed glitches related to tooltips on live updates.
   - Fixed the treatment of people who are no longer enrolled.
-- Performance:
-  - Cache preprocessed messages.
 
 </details>
 

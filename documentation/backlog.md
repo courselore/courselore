@@ -1,5 +1,23 @@
 # Backlog
 
+### Notes
+
+- Change email notifications to include HTML, instead of just text.
+- Change signed out 404 page to redirect you to sign-in directly.
+  - Remove special cases like confirmation emails that are already doing that.
+  - Look for instances of `isSignedOutMiddleware`.
+- Fix confirmation email glitches.
+  - Change cookies’ same-site policy from strict to lax
+  - If you’re already signed in, make `/sign-in` and `/sign-up` redirect you.
+- Sprinkle links of Meta course & try.courselore.org
+- `coursePartial` is sometimes used in contexts that aren’t `button`s, so be mindful of cursor change on icon.
+- Chat goes blank when you send a message.
+  - This happens because I load the chat hidden to prevent a flash of unstyled content, but I’m not reruning the `oninteractive` (I did that to fix the tooltips).
+- Make QR more prominent
+- On new course: Change link from “Invite People” to “Configure Course”.
+- Editing a message on a chat shows the compact editor. It should show the complete one.
+- Tooltip for keyboard shortcuts: Do operating system detection.
+
 ### Release
 
 - Test the moving of the database file in staging.
@@ -193,6 +211,7 @@
 
 ### Interface Details
 
+- Have some kind of guide for the first time you enter the system, or the first time you create a course, and that sort of thing.
 - Make breadcrumbs (for example, under “User Settings”) clickable (they should expose the navigation menu, just like what happens in Visual Studio Code).
 - The anonymity button isn’t as clear as it should be.
 - When adding tags with the “Manage Tags” button (from the “Create a New Conversation” form or from the “Tags” button on a conversation), have a way to load the new tags without losing progress.
