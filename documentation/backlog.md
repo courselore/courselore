@@ -3,7 +3,9 @@
 ### Notes
 
 - Confirm that the `Lax` policy fixes the issue.
+- Confirm the moving of the database file in staging.
 - Sprinkle links of Meta course & try.courselore.org
+  - Include the link to Meta CourseLore on the “Report an Issue” menu.
 - `coursePartial` is sometimes used in contexts that aren’t `button`s, so be mindful of cursor change on icon.
 - Chat goes blank when you send a message.
   - This happens because I load the chat hidden to prevent a flash of unstyled content, but I’m not reruning the `oninteractive` (I did that to fix the tooltips).
@@ -11,11 +13,6 @@
 - On new course: Change link from “Invite People” to “Configure Course”.
 - Editing a message on a chat shows the compact editor. It should show the complete one.
 - Tooltip for keyboard shortcuts: Do operating system detection.
-
-### Release
-
-- Test the moving of the database file in staging.
-- Include the link to Meta CourseLore on the “Report an Issue” menu.
 
 ### Next Week
 
