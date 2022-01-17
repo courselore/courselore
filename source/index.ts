@@ -3438,9 +3438,9 @@ export default async function courselore({
     domain: new URL(baseURL).hostname,
     httpOnly: true,
     path: new URL(baseURL).pathname,
-    sameSite: true,
+    sameSite: "lax",
     secure: true,
-  };
+  } as const;
   app.use(express.urlencoded({ extended: true }));
   app.use(
     expressFileUpload({
