@@ -2,12 +2,7 @@
 
 ### Notes
 
-- Capitalization:
-  - `Password Reset Link`
-  - `Email Confirmation Link`
-  - Look for `Link` in general.
-- Fix confirmation email glitches.
-  - Change cookies’ same-site policy from strict to lax
+- Change cookies’ same-site policy from strict to lax
 - Sprinkle links of Meta course & try.courselore.org
 - `coursePartial` is sometimes used in contexts that aren’t `button`s, so be mindful of cursor change on icon.
 - Chat goes blank when you send a message.

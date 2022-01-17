@@ -4915,8 +4915,8 @@ export default async function courselore({
           <p><a href="${link}" target="_blank">${link}</a></p>
           <p>
             <small>
-              This Password Reset Link is valid for ten minutes.<br />
-              You may ignore this Password Reset Link if you didn’t request it.
+              This password reset link is valid for ten minutes.<br />
+              You may ignore this password reset link if you didn’t request it.
             </small>
           </p>
         `,
@@ -4938,8 +4938,8 @@ export default async function courselore({
           `,
           body: html`
             <p>
-              To continue resetting your password, please follow the Password
-              Reset Link that was sent to
+              To continue resetting your password, please follow the password
+              reset link that was sent to
               <strong class="strong">${req.body.email}</strong>.
             </p>
             <form
@@ -4972,7 +4972,7 @@ export default async function courselore({
           res,
           content: html`
             <div class="flash--rose">
-              This Password Reset Link is invalid or expired.
+              This password reset link is invalid or expired.
             </div>
           `,
         });
@@ -5388,7 +5388,7 @@ export default async function courselore({
           res,
           content: html`
             <div class="flash--rose">
-              This Email Confirmation Link is invalid or belongs to a different
+              This email confirmation link is invalid or belongs to a different
               account.
             </div>
           `,
