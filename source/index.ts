@@ -19269,6 +19269,31 @@ ${contentSource}</textarea
       process.exit(0);
     });
 
+  app.all<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
+    "*",
+    ...isSignedOutMiddleware,
+    (req, res) => {
+      Flash.set({
+        req,
+        res,
+        content: html`
+          <div class="flash--rose">
+            Either this page doesn’t exist, or you must sign in or sign up to
+            see it.
+          </div>
+        `,
+      });
+      res.redirect(
+        `${baseURL}/sign-in${qs.stringify(
+          {
+            redirect: req.originalUrl,
+          },
+          { addQueryPrefix: true }
+        )}`
+      );
+    }
+  );
+
   app.all<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "*",
     ...isSignedInMiddleware,
@@ -19290,64 +19315,6 @@ ${contentSource}</textarea
                 >${administratorEmail}</a
               >.
             </p>
-          `,
-        })
-      );
-    }
-  );
-
-  app.all<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
-    "*",
-    ...isSignedOutMiddleware,
-    (req, res) => {
-      res.status(404).send(
-        boxLayout({
-          req,
-          res,
-          head: html`<title>404 Not Found · CourseLore</title>`,
-          body: html`
-            <h2 class="heading">
-              <i class="bi bi-question-diamond"></i>
-              404 Not Found
-            </h2>
-            <p>
-              Either this page doesn’t exist, or you must sign in or sign up to
-              see it.
-            </p>
-            <div
-              style="${css`
-                display: flex;
-                gap: var(--space--4);
-                & > * {
-                  flex: 1;
-                }
-              `}"
-            >
-              <a
-                href="${baseURL}/sign-up${qs.stringify(
-                  {
-                    redirect: req.originalUrl,
-                  },
-                  { addQueryPrefix: true }
-                )}"
-                class="button button--blue"
-              >
-                <i class="bi bi-person-plus"></i>
-                Sign up
-              </a>
-              <a
-                href="${baseURL}/sign-in${qs.stringify(
-                  {
-                    redirect: req.originalUrl,
-                  },
-                  { addQueryPrefix: true }
-                )}"
-                class="button button--transparent"
-              >
-                <i class="bi bi-box-arrow-in-right"></i>
-                Sign in
-              </a>
-            </div>
           `,
         })
       );

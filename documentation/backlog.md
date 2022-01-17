@@ -2,12 +2,11 @@
 
 ### Notes
 
-- Change signed out 404 page to redirect you to sign-in directly.
   - Remove special cases like confirmation emails that are already doing that.
   - Look for instances of `isSignedOutMiddleware`.
+  - If you’re already signed in, make `/sign-in` and `/sign-up` redirect you.
 - Fix confirmation email glitches.
   - Change cookies’ same-site policy from strict to lax
-  - If you’re already signed in, make `/sign-in` and `/sign-up` redirect you.
 - Sprinkle links of Meta course & try.courselore.org
 - `coursePartial` is sometimes used in contexts that aren’t `button`s, so be mindful of cursor change on icon.
 - Chat goes blank when you send a message.
