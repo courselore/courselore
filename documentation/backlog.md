@@ -2,7 +2,6 @@
 
 ### Notes
 
-- Change email notifications to include HTML, instead of just text.
 - Silence Caddy noise logs.
 - Content editor:
   - When you select multiple lines and click on the list options, turn each line into a list item.
