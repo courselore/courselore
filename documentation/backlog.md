@@ -2,9 +2,6 @@
 
 ### Notes
 
-- Content editor:
-  - When you select multiple lines and click on the list options, turn each line into a list item.
-  - Add more placeholders to things like tables to help explain how to use them.
 - Change signed out 404 page to redirect you to sign-in directly.
   - Remove special cases like confirmation emails that are already doing that.
   - Look for instances of `isSignedOutMiddleware`.
@@ -144,6 +141,9 @@
 
 ### Content Editor
 
+- Content editor:
+  - When you select multiple lines and click on the list options, turn each line into a list item.
+  - Add more placeholders to things like tables to help explain how to use them.
 - Press ↑ to edit previously sent message.
 - Templates for questions (like GitHub Issues).
 - Reuse answers.
