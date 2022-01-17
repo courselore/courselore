@@ -2,6 +2,7 @@
 
 ### Notes
 
+- Find out why I received the same notification multiple times.
 - Confirm that the `Lax` policy fixes the issue.
 - Confirm the moving of the database file in staging.
 - Sprinkle links of Meta course & try.courselore.org
