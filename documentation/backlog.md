@@ -1,6 +1,7 @@
 # Backlog
 
 - Confirmation email must include `req.query.redirect`.
+  - In `sendConfirmationEmail`, don’t use `Session.get`, which tries to write headers to an HTTP request that’s already answered.
   - Keyword parameters including `{req, res}`
   - Send emails after the request-response cycle
   - Names to check
