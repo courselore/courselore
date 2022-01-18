@@ -2,6 +2,8 @@
 
 ### Notes
 
+- Overflowing text on mobile: Invitation link on `/settings/invitations` page.
+- Confirmation email must include `req.query.redirect`.
 - Find out why I received the same notification multiple times.
 - Confirm that the `Lax` policy fixes the issue.
 - Confirm the moving of the database file in staging.
