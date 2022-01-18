@@ -1,9 +1,14 @@
 # Backlog
 
-### Notes
-
-- Overflowing text on mobile: Invitation link on `/settings/invitations` page.
 - Confirmation email must include `req.query.redirect`.
+  - Keyword parameters including `{req, res}`
+  - Send emails after the request-response cycle
+  - Names to check
+    - `sendConfirmationEmail`
+    - `sendInvitationEmail`
+    - `sendNotifications`
+    - `sendMail`
+- Overflowing text on mobile: Invitation link on `/settings/invitations` page.
 - Find out why I received the same notification multiple times.
 - Confirm that the `Lax` policy fixes the issue.
 - Confirm the moving of the database file in staging.
@@ -17,9 +22,6 @@
 - Editing a message on a chat shows the compact editor. It should show the complete one.
 - Tooltip for keyboard shortcuts: Do operating system detection.
 - Change the design of chats so that it’s easier to tell messages apart. Right now @mentions and messages look too much alike. Maybe use the Slack/Discord/GitHub solution of moving the avatar into the margin.
-
-### Next Week
-
 - Investigate why link from Slack to CourseLore doesn’t send cookies.
 - On `/sign-in` and `/sign-up`, redirect instead of 404 in case already signed in.
 - CSS management
@@ -34,6 +36,7 @@
     - **This is necessary for correctness as well; see what happens when you’re editing a message (not writing a new one, because we use localStorage to remember that one) and a new message is submitted, causing a refresh.**
   - Scroll on new message.
   - Latency compensation when sending messages & pressing “like”.
+  - Maybe the approach of just calling `app(req, res)` won’t pan out. In that case, make sure to look for `foldRight`, where a similar strategy is used: maybe we’ll want to do something else there as well (options include using `Session.get()` to retrieve the user from scratch, or passing a `user: {id: number; email: string}` explicitly).
 - Investigate performance issue on the browser when you leave the tab open for a long time.
   - It seems that the server isn’t affected, because when I close the browser tab, the performance on the machine is back to normal.
   - It doesn’t seem to be related to live-reloading, or other development features, because it also happens in `courselore.org`.

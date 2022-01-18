@@ -1813,7 +1813,12 @@ export default async function courselore({
                     >
                       <form
                         method="POST"
-                        action="${baseURL}/resend-confirmation-email"
+                        action="${baseURL}/resend-confirmation-email${qs.stringify(
+                          {
+                            redirect: req.originalUrl,
+                          },
+                          { addQueryPrefix: true }
+                        )}"
                       >
                         <input
                           type="hidden"
@@ -5224,10 +5229,21 @@ export default async function courselore({
     parallelism: 1,
   };
 
-  const sendConfirmationEmail = async (user: {
-    id: number;
-    email: string;
+  const sendConfirmationEmail = async ({
+    req,
+    res,
+  }: {
+    req: express.Request<{}, any, {}, {}, {}>;
+    res: express.Response<any, {}>;
   }): Promise<nodemailer.SentMessageInfo> => {
+    const user = database.get<{ id: number; email: string }>(
+      sql`
+        SELECT "id", "email"
+        FROM "users"
+        WHERE "id" = ${Session.get({ req, res })!}
+      `
+    )!;
+
     database.run(
       sql`
         DELETE FROM "emailConfirmations" WHERE "user" = ${user.id}
@@ -5246,7 +5262,15 @@ export default async function courselore({
         RETURNING *
       `
     )!;
-    const link = `${baseURL}/email-confirmation/${emailConfirmation.nonce}`;
+
+    const link = `${baseURL}/email-confirmation/${
+      emailConfirmation.nonce
+    }${qs.stringify(
+      {
+        redirect: req.originalUrl,
+      },
+      { addQueryPrefix: true }
+    )}`;
     await sendMail({
       to: user.email,
       subject: "Welcome to CourseLore!",
@@ -5279,6 +5303,7 @@ export default async function courselore({
         req.body.password.length < 8
       )
         return next("validation");
+
       if (
         database.get<{ exists: number }>(
           sql`
@@ -5299,6 +5324,7 @@ export default async function courselore({
           })}`
         );
       }
+
       const user = database.get<{ id: number; email: string; name: string }>(
         sql`
           INSERT INTO "users" (
@@ -5326,9 +5352,11 @@ export default async function courselore({
           RETURNING *
         `
       )!;
-      sendConfirmationEmail(user);
+
       Session.open({ req, res, userId: user.id });
       res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
+
+      sendConfirmationEmail({ req, res });
     })
   );
 
@@ -5347,7 +5375,6 @@ export default async function courselore({
         return res.redirect(`${baseURL}/`);
       }
 
-      sendConfirmationEmail(res.locals.user);
       Flash.set({
         req,
         res,
@@ -5356,6 +5383,8 @@ export default async function courselore({
         `,
       });
       res.redirect(`${baseURL}/`);
+
+      sendConfirmationEmail({ req, res });
     }
   );
 
@@ -6130,6 +6159,7 @@ export default async function courselore({
         req.body.currentPassword.trim() === ""
       )
         return next("validation");
+
       if (
         !(await argon2.verify(
           res.locals.user.password,
@@ -6143,6 +6173,8 @@ export default async function courselore({
         });
         return res.redirect(`${baseURL}/settings/update-email-and-password`);
       }
+
+      let shouldSendConfirmationEmail = false;
       if (typeof req.body.email === "string") {
         if (req.body.email.match(emailRegExp) === null)
           return next("validation");
@@ -6171,7 +6203,6 @@ export default async function courselore({
             WHERE "id" = ${res.locals.user.id}
           `
         );
-        sendConfirmationEmail(res.locals.user);
         Flash.set({
           req,
           res,
@@ -6179,6 +6210,7 @@ export default async function courselore({
             <div class="flash--green">Email updated successfully.</div>
           `,
         });
+        shouldSendConfirmationEmail = true;
       }
 
       if (typeof req.body.newPassword === "string") {
@@ -6207,7 +6239,10 @@ export default async function courselore({
           `,
         });
       }
+
       res.redirect(`${baseURL}/settings/update-email-and-password`);
+
+      if (shouldSendConfirmationEmail) sendConfirmationEmail({ req, res });
     })
   );
 
