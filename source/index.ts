@@ -5372,7 +5372,7 @@ export default async function courselore({
             <div class="flash--rose">Email already confirmed.</div>
           `,
         });
-        return res.redirect(`${baseURL}/`);
+        return res.redirect("back");
       }
 
       Flash.set({
@@ -5382,7 +5382,7 @@ export default async function courselore({
           <div class="flash--green">Confirmation email resent.</div>
         `,
       });
-      res.redirect(`${baseURL}/`);
+      res.redirect("back");
 
       sendConfirmationEmail({ req, res });
     }
@@ -5392,7 +5392,7 @@ export default async function courselore({
     { emailConfirmationNonce: string },
     HTML,
     {},
-    {},
+    { redirect?: string },
     IsSignedInMiddlewareLocals
   >(
     "/email-confirmation/:emailConfirmationNonce",
@@ -5422,7 +5422,7 @@ export default async function courselore({
             </div>
           `,
         });
-        return res.redirect(`${baseURL}/`);
+        return res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
       }
       database.run(
         sql`
@@ -5438,7 +5438,7 @@ export default async function courselore({
           <div class="flash--green">Email confirmed successfully.</div>
         `,
       });
-      return res.redirect(`${baseURL}/`);
+      res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
     }
   );
 
@@ -19333,10 +19333,12 @@ ${contentSource}</textarea
     }
   );
 
-  app.all<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+  app.all<{}, HTML, {}, { redirect?: string }, IsSignedInMiddlewareLocals>(
     "*",
     ...isSignedInMiddleware,
     (req, res) => {
+      if (typeof req.query.redirect === "string")
+        res.redirect(`${baseURL}${req.query.redirect}`);
       res.status(404).send(
         boxLayout({
           req,
