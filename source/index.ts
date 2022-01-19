@@ -6911,14 +6911,18 @@ export default async function courselore({
     },
   ];
 
-  const sendInvitationEmail = async (
-    invitation: InvitationExistsMiddlewareLocals["invitation"] & {
-      email: string;
-    }
-  ): Promise<nodemailer.SentMessageInfo> => {
+  const sendInvitationEmail = async ({
+    req,
+    res,
+    invitation,
+  }: {
+    req: express.Request<{}, any, {}, {}, {}>;
+    res: express.Response<any, {}>;
+    invitation: InvitationExistsMiddlewareLocals["invitation"];
+  }): Promise<nodemailer.SentMessageInfo> => {
     const link = `${baseURL}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
-    await sendMail({
-      to: invitation.email,
+    return await sendMail({
+      to: invitation.email!,
       subject: `Enroll in ${invitation.course.name}`,
       html: html`
         <p>
@@ -8304,6 +8308,8 @@ export default async function courselore({
       )
         return next("validation");
 
+      const invitationEmailsToSend: InvitationExistsMiddlewareLocals["invitation"][] =
+        [];
       switch (req.body.type) {
         case "link":
           const invitation = database.get<{ reference: string }>(
@@ -8441,7 +8447,7 @@ export default async function courselore({
               `
             )!;
 
-            sendInvitationEmail({
+            invitationEmailsToSend.push({
               ...invitation,
               course: res.locals.course,
             });
@@ -8460,6 +8466,13 @@ export default async function courselore({
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/settings/invitations`
       );
+
+      for (const invitation of invitationEmailsToSend)
+        sendInvitationEmail({
+          req,
+          res,
+          invitation,
+        });
     }
   );
 
@@ -8481,19 +8494,13 @@ export default async function courselore({
     (req, res, next) => {
       if (res.locals.invitation.usedAt !== null) return next("validation");
 
+      let shouldResendInvitationEmail = false;
       if (req.body.resend === "true") {
         if (
           isExpired(res.locals.invitation.expiresAt) ||
           res.locals.invitation.email === null
         )
           return next("validation");
-
-        sendInvitationEmail(
-          res.locals.invitation as typeof res.locals.invitation & {
-            email: string;
-          }
-        );
-
         Flash.set({
           req,
           res,
@@ -8503,6 +8510,7 @@ export default async function courselore({
             </div>
           `,
         });
+        shouldResendInvitationEmail = true;
       }
 
       if (req.body.role !== undefined) {
@@ -8591,6 +8599,13 @@ export default async function courselore({
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/settings/invitations`
       );
+
+      if (shouldResendInvitationEmail)
+        sendInvitationEmail({
+          req,
+          res,
+          invitation: res.locals.invitation,
+        });
     }
   );
 

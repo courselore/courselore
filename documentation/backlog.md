@@ -1,10 +1,11 @@
 # Backlog
 
 - Confirmation email must include `req.query.redirect`.
-  - Keyword parameters including `{req, res}`
-  - Send emails after the request-response cycle
+  - Things to check
+    - Keyword parameters including `{req, res}`
+    - Send emails after the request-response cycle
+    - Auxiliary email senders are actually returning what they promise
   - Names to check
-    - `sendInvitationEmail`
     - `sendNotifications`
     - `sendMail`
 - Overflowing text on mobile: Invitation link on `/settings/invitations` page.
