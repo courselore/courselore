@@ -14919,13 +14919,11 @@ ${contentSource}</textarea
           `
         );
 
-      let processedContent: ReturnType<typeof processContent>;
-      let messageReference: string;
       if (
         typeof req.body.content === "string" &&
         req.body.content.trim() !== ""
       ) {
-        processedContent = processContent({
+        const processedContent = processContent({
           req,
           res,
           type: "source",
@@ -14970,16 +14968,6 @@ ${contentSource}</textarea
             )
           `
         );
-        messageReference = message.reference;
-      }
-
-      res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.course.nextConversationReference}`
-      );
-
-      emitCourseRefresh(res.locals.course.id);
-
-      if (processedContent! !== undefined && messageReference! !== undefined) {
         const conversation = getConversation({
           req,
           res,
@@ -14993,11 +14981,17 @@ ${contentSource}</textarea
             req,
             res,
             conversation,
-            messageReference,
+            messageReference: message.reference,
           })!,
           mentions: processedContent.mentions!,
         });
       }
+
+      res.redirect(
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.course.nextConversationReference}`
+      );
+
+      emitCourseRefresh(res.locals.course.id);
     }
   );
 
@@ -18263,13 +18257,6 @@ ${contentSource}</textarea
         );
         messageReference = message.reference;
       }
-
-      res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.conversation.nextMessageReference}`
-      );
-
-      emitCourseRefresh(res.locals.course.id);
-
       sendNotifications({
         req,
         res,
@@ -18282,6 +18269,12 @@ ${contentSource}</textarea
         })!,
         mentions: processedContent.mentions!,
       });
+
+      res.redirect(
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.conversation.nextMessageReference}`
+      );
+
+      emitCourseRefresh(res.locals.course.id);
     }
   );
 
@@ -18363,10 +18356,9 @@ ${contentSource}</textarea
             );
         }
 
-      let processedContent: ReturnType<typeof processContent>;
       if (typeof req.body.content === "string") {
         if (req.body.content.trim() === "") return next("validation");
-        processedContent = processContent({
+        const processedContent = processContent({
           req,
           res,
           type: "source",
@@ -18390,15 +18382,6 @@ ${contentSource}</textarea
             WHERE "id" = ${res.locals.conversation.id}
           `
         );
-      }
-
-      res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
-      );
-
-      emitCourseRefresh(res.locals.course.id);
-
-      if (processedContent! !== undefined)
         sendNotifications({
           req,
           res,
@@ -18406,6 +18389,13 @@ ${contentSource}</textarea
           message: res.locals.message,
           mentions: processedContent.mentions!,
         });
+      }
+
+      res.redirect(
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
+      );
+
+      emitCourseRefresh(res.locals.course.id);
     }
   );
 
@@ -18651,7 +18641,7 @@ ${contentSource}</textarea
     conversation: NonNullable<ReturnType<typeof getConversation>>;
     message: NonNullable<ReturnType<typeof getMessage>>;
     mentions: Set<string>;
-  }): void => {
+  }): Promise<void> => {
     let enrollments = database.all<{
       id: number;
       userId: number;

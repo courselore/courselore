@@ -1,10 +1,5 @@
 # Backlog
 
-- Confirmation email must include `req.query.redirect`.
-  - Things to check
-    - Don’t necessarily send emails after the request-response cycle
-  - Names to check
-    - `sendNotifications`
 - Overflowing text on mobile: Invitation link on `/settings/invitations` page.
 - Find out why I received the same notification multiple times.
 - Confirm that the `Lax` policy fixes the issue.
