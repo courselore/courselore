@@ -33,7 +33,7 @@
     "@leafac/css": "^0.2.11",
     "@leafac/express-async-handler": "^0.0.1",
     "@leafac/html": "^3.0.0",
-    "@leafac/javascript": "^0.1.9",
+    "@leafac/javascript": "^0.1.10",
     "@leafac/rehype-shiki": "^2.1.1",
     "@leafac/sqlite": "^2.0.2",
     "@sindresorhus/slugify": "^2.1.0",

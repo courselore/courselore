@@ -1,5 +1,6 @@
 # Backlog
 
+- Tooltip for keyboard shortcuts: Do operating system detection.
 - Overflowing text on mobile: Invitation link on `/settings/invitations` page.
 - Find out why I received the same notification multiple times.
 - Sprinkle links of Meta course & try.courselore.org
@@ -10,7 +11,6 @@
 - Make QR more prominent
 - On new course: Change link from “Invite People” to “Configure Course”.
 - Editing a message on a chat shows the compact editor. It should show the complete one.
-- Tooltip for keyboard shortcuts: Do operating system detection.
 - Change the design of chats so that it’s easier to tell messages apart. Right now @mentions and messages look too much alike. Maybe use the Slack/Discord/GitHub solution of moving the avatar into the margin.
 - CSS management
   - Confirm that JSDOM is the bottleneck.
