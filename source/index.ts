@@ -5349,15 +5349,15 @@ export default async function courselore({
         `
       )!;
 
-      Session.open({ req, res, userId: user.id });
-      res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
-
       sendConfirmationEmail({
         req,
         res,
         userId: user.id,
         userEmail: user.email,
       });
+
+      Session.open({ req, res, userId: user.id });
+      res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
     })
   );
 
@@ -5376,6 +5376,13 @@ export default async function courselore({
         return res.redirect("back");
       }
 
+      sendConfirmationEmail({
+        req,
+        res,
+        userId: res.locals.user.id,
+        userEmail: res.locals.user.email,
+      });
+
       Flash.set({
         req,
         res,
@@ -5384,13 +5391,6 @@ export default async function courselore({
         `,
       });
       res.redirect("back");
-
-      sendConfirmationEmail({
-        req,
-        res,
-        userId: res.locals.user.id,
-        userEmail: res.locals.user.email,
-      });
     }
   );
 
@@ -6180,7 +6180,6 @@ export default async function courselore({
         return res.redirect(`${baseURL}/settings/update-email-and-password`);
       }
 
-      let userEmail: string | undefined;
       if (typeof req.body.email === "string") {
         if (req.body.email.match(emailRegExp) === null)
           return next("validation");
@@ -6209,6 +6208,12 @@ export default async function courselore({
             WHERE "id" = ${res.locals.user.id}
           `
         );
+        sendConfirmationEmail({
+          req,
+          res,
+          userId: res.locals.user.id,
+          userEmail: req.body.email,
+        });
         Flash.set({
           req,
           res,
@@ -6216,7 +6221,6 @@ export default async function courselore({
             <div class="flash--green">Email updated successfully.</div>
           `,
         });
-        userEmail = req.body.email;
       }
 
       if (typeof req.body.newPassword === "string") {
@@ -6247,14 +6251,6 @@ export default async function courselore({
       }
 
       res.redirect(`${baseURL}/settings/update-email-and-password`);
-
-      if (userEmail)
-        sendConfirmationEmail({
-          req,
-          res,
-          userId: res.locals.user.id,
-          userEmail,
-        });
     })
   );
 
