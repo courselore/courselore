@@ -2,7 +2,6 @@
 
 - Overflowing text on mobile: Invitation link on `/settings/invitations` page.
 - Find out why I received the same notification multiple times.
-- Confirm that the `Lax` policy fixes the issue.
 - Sprinkle links of Meta course & try.courselore.org
   - Include the link to Meta CourseLore on the “Report an Issue” menu.
 - `coursePartial` is sometimes used in contexts that aren’t `button`s, so be mindful of cursor change on icon.
