@@ -1,5 +1,13 @@
 # Backlog
 
+- CSS management
+  - Confirm that JSDOM is the bottleneck.
+  - Try and make JSDOM faster.
+  - Explore https://nodejs.org/api/async_context.html
+  - Explore rehype instead of JSDOM for @leafac/css
+  - Use `res.locals` to collect CSS.
+    - Do we not need `hiddenContent`?
+  - Remove static CSS (the design system) from every request.
 - Overflowing text on mobile: Invitation link on `/settings/invitations` page.
 - Find out why I received the same notification multiple times.
 - Sprinkle links of Meta course & try.courselore.org
@@ -11,19 +19,13 @@
 - On new course: Change link from “Invite People” to “Configure Course”.
 - Editing a message on a chat shows the compact editor. It should show the complete one.
 - Change the design of chats so that it’s easier to tell messages apart. Right now @mentions and messages look too much alike. Maybe use the Slack/Discord/GitHub solution of moving the avatar into the margin.
-- CSS management
-  - Confirm that JSDOM is the bottleneck.
-  - Try and make JSDOM faster.
-  - Explore https://nodejs.org/api/async_context.html
-  - Explore rehype instead of JSDOM for @leafac/css
-  - Use `res.locals` to collect CSS.
-  - Remove static CSS (the design system) from every request.
 - Live reloading:
   - Do the morphdom on the server.
     - **This is necessary for correctness as well; see what happens when you’re editing a message (not writing a new one, because we use localStorage to remember that one) and a new message is submitted, causing a refresh.**
   - Scroll on new message.
   - Latency compensation when sending messages & pressing “like”.
   - Maybe the approach of just calling `app(req, res)` won’t pan out. In that case, make sure to look for `foldRight`, where a similar strategy is used: maybe we’ll want to do something else there as well (options include using `Session.get()` to retrieve the user from scratch, or passing a `user: {id: number; email: string}` explicitly).
+  - On chats (which need to scroll to the bottom), do something to prevent flash of unstyled content. (I commented out the previous hack, look for `TODO`).
 - Investigate performance issue on the browser when you leave the tab open for a long time.
   - It seems that the server isn’t affected, because when I close the browser tab, the performance on the machine is back to normal.
   - It doesn’t seem to be related to live-reloading, or other development features, because it also happens in `courselore.org`.

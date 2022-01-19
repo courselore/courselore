@@ -16293,7 +16293,7 @@ ${contentSource}</textarea
                     style="${css`
                       ${shouldScroll
                         ? css`
-                            visibility: hidden;
+                            /* TODO: Do something to prevent flash of unstyled content. visibility: hidden; */
                           `
                         : css``}
                       ${res.locals.conversation.type === "chat"
