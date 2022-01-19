@@ -12,8 +12,6 @@
 - Editing a message on a chat shows the compact editor. It should show the complete one.
 - Tooltip for keyboard shortcuts: Do operating system detection.
 - Change the design of chats so that it’s easier to tell messages apart. Right now @mentions and messages look too much alike. Maybe use the Slack/Discord/GitHub solution of moving the avatar into the margin.
-- Investigate why link from Slack to CourseLore doesn’t send cookies.
-- On `/sign-in` and `/sign-up`, redirect instead of 404 in case already signed in.
 - CSS management
   - Confirm that JSDOM is the bottleneck.
   - Try and make JSDOM faster.
