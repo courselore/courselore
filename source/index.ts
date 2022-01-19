@@ -5232,21 +5232,17 @@ export default async function courselore({
   const sendConfirmationEmail = async ({
     req,
     res,
+    userId,
+    userEmail,
   }: {
     req: express.Request<{}, any, {}, {}, {}>;
     res: express.Response<any, {}>;
+    userId: number;
+    userEmail: string;
   }): Promise<nodemailer.SentMessageInfo> => {
-    const user = database.get<{ id: number; email: string }>(
-      sql`
-        SELECT "id", "email"
-        FROM "users"
-        WHERE "id" = ${Session.get({ req, res })!}
-      `
-    )!;
-
     database.run(
       sql`
-        DELETE FROM "emailConfirmations" WHERE "user" = ${user.id}
+        DELETE FROM "emailConfirmations" WHERE "user" = ${userId}
       `
     );
     const emailConfirmation = database.get<{
@@ -5256,7 +5252,7 @@ export default async function courselore({
         INSERT INTO "emailConfirmations" ("createdAt", "user", "nonce")
         VALUES (
           ${new Date().toISOString()},
-          ${user.id},
+          ${userId},
           ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
         )
         RETURNING *
@@ -5271,8 +5267,8 @@ export default async function courselore({
       },
       { addQueryPrefix: true }
     )}`;
-    await sendMail({
-      to: user.email,
+    return await sendMail({
+      to: userEmail,
       subject: "Welcome to CourseLore!",
       html: html`
         <p>
@@ -5325,7 +5321,7 @@ export default async function courselore({
         );
       }
 
-      const user = database.get<{ id: number; email: string; name: string }>(
+      const user = database.get<{ id: number; email: string }>(
         sql`
           INSERT INTO "users" (
             "createdAt",
@@ -5356,14 +5352,19 @@ export default async function courselore({
       Session.open({ req, res, userId: user.id });
       res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
 
-      sendConfirmationEmail({ req, res });
+      sendConfirmationEmail({
+        req,
+        res,
+        userId: user.id,
+        userEmail: user.email,
+      });
     })
   );
 
   app.post<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/resend-confirmation-email",
     ...isSignedInMiddleware,
-    (req, res, next) => {
+    (req, res) => {
       if (res.locals.user.emailConfirmedAt !== null) {
         Flash.set({
           req,
@@ -5384,7 +5385,12 @@ export default async function courselore({
       });
       res.redirect("back");
 
-      sendConfirmationEmail({ req, res });
+      sendConfirmationEmail({
+        req,
+        res,
+        userId: res.locals.user.id,
+        userEmail: res.locals.user.email,
+      });
     }
   );
 
@@ -6174,7 +6180,7 @@ export default async function courselore({
         return res.redirect(`${baseURL}/settings/update-email-and-password`);
       }
 
-      let shouldSendConfirmationEmail = false;
+      let userEmail: string | undefined;
       if (typeof req.body.email === "string") {
         if (req.body.email.match(emailRegExp) === null)
           return next("validation");
@@ -6210,7 +6216,7 @@ export default async function courselore({
             <div class="flash--green">Email updated successfully.</div>
           `,
         });
-        shouldSendConfirmationEmail = true;
+        userEmail = req.body.email;
       }
 
       if (typeof req.body.newPassword === "string") {
@@ -6242,7 +6248,13 @@ export default async function courselore({
 
       res.redirect(`${baseURL}/settings/update-email-and-password`);
 
-      if (shouldSendConfirmationEmail) sendConfirmationEmail({ req, res });
+      if (userEmail)
+        sendConfirmationEmail({
+          req,
+          res,
+          userId: res.locals.user.id,
+          userEmail,
+        });
     })
   );
 
