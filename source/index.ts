@@ -12125,8 +12125,16 @@ export default async function courselore({
                   res,
                   content: html`
                     <span class="keyboard-shortcut">
-                      Ctrl+Shift+P or
-                      <span class="keyboard-shortcut--cluster"
+                      <span
+                        oninteractive="${javascript`
+                          this.hidden = leafac.isAppleDevice;
+                        `}"
+                        >Ctrl+Shift+P</span
+                      ><span
+                        class="keyboard-shortcut--cluster"
+                        oninteractive="${javascript`
+                          this.hidden = !leafac.isAppleDevice;
+                        `}"
                         ><i class="bi bi-shift"></i
                         ><i class="bi bi-command"></i>P</span
                       >
@@ -12226,8 +12234,16 @@ export default async function courselore({
                       content: html`
                         Heading 1
                         <span class="keyboard-shortcut">
-                          (Ctrl+Alt+1 or
-                          <span class="keyboard-shortcut--cluster"
+                          (<span
+                            oninteractive="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+Alt+1</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            oninteractive="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
                             ><i class="bi bi-alt"></i
                             ><i class="bi bi-command"></i>1</span
                           >)
@@ -12257,8 +12273,16 @@ export default async function courselore({
                       content: html`
                         Heading 2
                         <span class="keyboard-shortcut">
-                          (Ctrl+Alt+2 or
-                          <span class="keyboard-shortcut--cluster"
+                          (<span
+                            oninteractive="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+Alt+2</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            oninteractive="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
                             ><i class="bi bi-alt"></i
                             ><i class="bi bi-command"></i>2</span
                           >)
@@ -12288,8 +12312,16 @@ export default async function courselore({
                       content: html`
                         Heading 3
                         <span class="keyboard-shortcut">
-                          (Ctrl+Alt+3 or
-                          <span class="keyboard-shortcut--cluster"
+                          (<span
+                            oninteractive="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+Alt+3</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            oninteractive="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
                             ><i class="bi bi-alt"></i
                             ><i class="bi bi-command"></i>3</span
                           >)
@@ -12321,8 +12353,16 @@ export default async function courselore({
                       content: html`
                         Bold
                         <span class="keyboard-shortcut">
-                          (Ctrl+B or
-                          <span class="keyboard-shortcut--cluster"
+                          (<span
+                            oninteractive="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+B</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            oninteractive="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
                             ><i class="bi bi-command"></i>B</span
                           >)
                         </span>
@@ -12351,8 +12391,16 @@ export default async function courselore({
                       content: html`
                         Italic
                         <span class="keyboard-shortcut">
-                          (Ctrl+I or
-                          <span class="keyboard-shortcut--cluster"
+                          (<span
+                            oninteractive="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+I</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            oninteractive="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
                             ><i class="bi bi-command"></i>I</span
                           >)
                         </span>
@@ -12381,8 +12429,16 @@ export default async function courselore({
                       content: html`
                         Link
                         <span class="keyboard-shortcut">
-                          (Ctrl+K or
-                          <span class="keyboard-shortcut--cluster"
+                          (<span
+                            oninteractive="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+K</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            oninteractive="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
                             ><i class="bi bi-command"></i>K</span
                           >)
                         </span>
@@ -12413,8 +12469,16 @@ export default async function courselore({
                       content: html`
                         Bulleted List
                         <span class="keyboard-shortcut">
-                          (Ctrl+Shift+8 or
-                          <span class="keyboard-shortcut--cluster"
+                          (<span
+                            oninteractive="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+Shift+8</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            oninteractive="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
                             ><i class="bi bi-shift"></i
                             ><i class="bi bi-command"></i>8</span
                           >)
@@ -12444,8 +12508,16 @@ export default async function courselore({
                       content: html`
                         Numbered List
                         <span class="keyboard-shortcut">
-                          (Ctrl+Shift+7 or
-                          <span class="keyboard-shortcut--cluster"
+                          (<span
+                            oninteractive="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+Shift+7</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            oninteractive="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
                             ><i class="bi bi-shift"></i
                             ><i class="bi bi-command"></i>7</span
                           >)
@@ -12475,8 +12547,16 @@ export default async function courselore({
                       content: html`
                         Checklist
                         <span class="keyboard-shortcut">
-                          (Ctrl+Shift+9 or
-                          <span class="keyboard-shortcut--cluster"
+                          (<span
+                            oninteractive="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+Shift+9</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            oninteractive="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
                             ><i class="bi bi-shift"></i
                             ><i class="bi bi-command"></i>9</span
                           >)
@@ -12508,8 +12588,16 @@ export default async function courselore({
                       content: html`
                         Quote
                         <span class="keyboard-shortcut">
-                          (Ctrl+' or
-                          <span class="keyboard-shortcut--cluster"
+                          (<span
+                            oninteractive="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+'</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            oninteractive="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
                             ><i class="bi bi-command"></i>'</span
                           >)
                         </span>
@@ -12538,8 +12626,16 @@ export default async function courselore({
                       content: html`
                         Table
                         <span class="keyboard-shortcut">
-                          (Ctrl+Alt+T or
-                          <span class="keyboard-shortcut--cluster"
+                          (<span
+                            oninteractive="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+Alt+T</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            oninteractive="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
                             ><i class="bi bi-alt"></i
                             ><i class="bi bi-command"></i>T</span
                           >)
@@ -12570,8 +12666,16 @@ export default async function courselore({
                       content: html`
                         Disclosure
                         <span class="keyboard-shortcut">
-                          (Ctrl+Shift+D or
-                          <span class="keyboard-shortcut--cluster"
+                          (<span
+                            oninteractive="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+Shift+D</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            oninteractive="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
                             ><i class="bi bi-shift"></i
                             ><i class="bi bi-command"></i>D</span
                           >)
@@ -12601,8 +12705,16 @@ export default async function courselore({
                       content: html`
                         Footnote
                         <span class="keyboard-shortcut">
-                          (Ctrl+Shift+F or
-                          <span class="keyboard-shortcut--cluster"
+                          (<span
+                            oninteractive="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+Shift+F</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            oninteractive="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
                             ><i class="bi bi-shift"></i
                             ><i class="bi bi-command"></i>F</span
                           >)
@@ -12634,8 +12746,16 @@ export default async function courselore({
                       content: html`
                         Inline Code
                         <span class="keyboard-shortcut">
-                          (Ctrl+E or
-                          <span class="keyboard-shortcut--cluster"
+                          (<span
+                            oninteractive="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+E</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            oninteractive="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
                             ><i class="bi bi-command"></i>E</span
                           >)
                         </span>
@@ -12664,8 +12784,16 @@ export default async function courselore({
                       content: html`
                         Code Block
                         <span class="keyboard-shortcut">
-                          (Ctrl+Shift+E or
-                          <span class="keyboard-shortcut--cluster"
+                          (<span
+                            oninteractive="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+Shift+E</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            oninteractive="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
                             ><i class="bi bi-shift"></i
                             ><i class="bi bi-command"></i>E</span
                           >)
@@ -12697,8 +12825,16 @@ export default async function courselore({
                       content: html`
                         Inline Equation
                         <span class="keyboard-shortcut">
-                          (Ctrl+Alt+E or
-                          <span class="keyboard-shortcut--cluster"
+                          (<span
+                            oninteractive="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+Alt+E</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            oninteractive="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
                             ><i class="bi bi-alt"></i
                             ><i class="bi bi-command"></i>E</span
                           >)
@@ -12728,8 +12864,16 @@ export default async function courselore({
                       content: html`
                         Equation Block
                         <span class="keyboard-shortcut">
-                          (Ctrl+Alt+Shift+E or
-                          <span class="keyboard-shortcut--cluster"
+                          (<span
+                            oninteractive="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+Alt+Shift+E</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            oninteractive="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
                             ><i class="bi bi-shift"></i><i class="bi bi-alt"></i
                             ><i class="bi bi-command"></i>E</span
                           >)
@@ -12815,8 +12959,16 @@ export default async function courselore({
                       content: html`
                         Image
                         <span class="keyboard-shortcut">
-                          (Ctrl+Shift+I or
-                          <span class="keyboard-shortcut--cluster"
+                          (<span
+                            oninteractive="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+Shift+I</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            oninteractive="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
                             ><i class="bi bi-shift"></i
                             ><i class="bi bi-command"></i>I</span
                           >
@@ -12845,8 +12997,16 @@ export default async function courselore({
                       content: html`
                         Attachment
                         <span class="keyboard-shortcut">
-                          (Ctrl+Shift+K or
-                          <span class="keyboard-shortcut--cluster"
+                          (<span
+                            oninteractive="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+Shift+K</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            oninteractive="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
                             ><i class="bi bi-shift"></i
                             ><i class="bi bi-command"></i>K</span
                           >
@@ -14786,8 +14946,16 @@ ${contentSource}</textarea
                           res,
                           content: html`
                             <span class="keyboard-shortcut">
-                              Ctrl+Enter or
-                              <span class="keyboard-shortcut--cluster"
+                              <span
+                                oninteractive="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+Enter</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                oninteractive="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
                                 ><i class="bi bi-command"></i
                                 ><i class="bi bi-arrow-return-left"></i
                               ></span>
@@ -17600,9 +17768,16 @@ ${contentSource}</textarea
                                                               <span
                                                                 class="keyboard-shortcut"
                                                               >
-                                                                Ctrl+Enter or
                                                                 <span
+                                                                  oninteractive="${javascript`
+                                                                    this.hidden = leafac.isAppleDevice;
+                                                                  `}"
+                                                                  >Ctrl+Enter</span
+                                                                ><span
                                                                   class="keyboard-shortcut--cluster"
+                                                                  oninteractive="${javascript`
+                                                                    this.hidden = !leafac.isAppleDevice;
+                                                                  `}"
                                                                   ><i
                                                                     class="bi bi-command"
                                                                   ></i
@@ -17801,8 +17976,16 @@ ${contentSource}</textarea
                                   content: html`
                                     Send Message
                                     <span class="keyboard-shortcut">
-                                      Ctrl+Enter or
-                                      <span class="keyboard-shortcut--cluster"
+                                      <span
+                                        oninteractive="${javascript`
+                                          this.hidden = leafac.isAppleDevice;
+                                        `}"
+                                        >Ctrl+Enter</span
+                                      ><span
+                                        class="keyboard-shortcut--cluster"
+                                        oninteractive="${javascript`
+                                          this.hidden = !leafac.isAppleDevice;
+                                        `}"
                                         ><i class="bi bi-command"></i
                                         ><i class="bi bi-arrow-return-left"></i
                                       ></span>
@@ -17915,8 +18098,16 @@ ${contentSource}</textarea
                             res,
                             content: html`
                               <span class="keyboard-shortcut">
-                                Ctrl+Enter or
-                                <span class="keyboard-shortcut--cluster"
+                                <span
+                                  oninteractive="${javascript`
+                                    this.hidden = leafac.isAppleDevice;
+                                  `}"
+                                  >Ctrl+Enter</span
+                                ><span
+                                  class="keyboard-shortcut--cluster"
+                                  oninteractive="${javascript`
+                                    this.hidden = !leafac.isAppleDevice;
+                                  `}"
                                   ><i class="bi bi-command"></i
                                   ><i class="bi bi-arrow-return-left"></i
                                 ></span>

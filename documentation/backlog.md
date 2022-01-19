@@ -1,6 +1,5 @@
 # Backlog
 
-- Tooltip for keyboard shortcuts: Do operating system detection.
 - Overflowing text on mobile: Invitation link on `/settings/invitations` page.
 - Find out why I received the same notification multiple times.
 - Sprinkle links of Meta course & try.courselore.org
