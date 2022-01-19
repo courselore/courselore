@@ -18648,7 +18648,7 @@ ${contentSource}</textarea
       res.write(`event: refresh\ndata:\n\n`);
   };
 
-  const sendNotifications = ({
+  const sendNotifications = async ({
     req,
     res,
     conversation,
@@ -18729,7 +18729,7 @@ ${contentSource}</textarea
       );
 
     for (const enrollment of enrollments) {
-      sendMail({
+      await sendMail({
         to: enrollment.userEmail,
         subject: `${conversation.title} · ${res.locals.course.name} · CourseLore`,
         html: html`
