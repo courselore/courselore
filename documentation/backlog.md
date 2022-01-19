@@ -6,7 +6,6 @@
   - Names to check
     - `sendInvitationEmail`
     - `sendNotifications`
-    - `sendMail`
 - Overflowing text on mobile: Invitation link on `/settings/invitations` page.
 - Find out why I received the same notification multiple times.
 - Confirm that the `Lax` policy fixes the issue.
