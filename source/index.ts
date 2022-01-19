@@ -19350,7 +19350,7 @@ ${contentSource}</textarea
     ...isSignedInMiddleware,
     (req, res) => {
       if (typeof req.query.redirect === "string")
-        res.redirect(`${baseURL}${req.query.redirect}`);
+        return res.redirect(`${baseURL}${req.query.redirect}`);
       res.status(404).send(
         boxLayout({
           req,
