@@ -8304,8 +8304,6 @@ export default async function courselore({
       )
         return next("validation");
 
-      const invitationEmailsToSend: InvitationExistsMiddlewareLocals["invitation"][] =
-        [];
       switch (req.body.type) {
         case "link":
           const invitation = database.get<{ reference: string }>(
@@ -8443,9 +8441,13 @@ export default async function courselore({
               `
             )!;
 
-            invitationEmailsToSend.push({
-              ...invitation,
-              course: res.locals.course,
+            sendInvitationEmail({
+              req,
+              res,
+              invitation: {
+                ...invitation,
+                course: res.locals.course,
+              },
             });
           }
 
@@ -8462,13 +8464,6 @@ export default async function courselore({
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/settings/invitations`
       );
-
-      for (const invitation of invitationEmailsToSend)
-        sendInvitationEmail({
-          req,
-          res,
-          invitation,
-        });
     }
   );
 
@@ -8490,13 +8485,17 @@ export default async function courselore({
     (req, res, next) => {
       if (res.locals.invitation.usedAt !== null) return next("validation");
 
-      let shouldResendInvitationEmail = false;
       if (req.body.resend === "true") {
         if (
           isExpired(res.locals.invitation.expiresAt) ||
           res.locals.invitation.email === null
         )
           return next("validation");
+        sendInvitationEmail({
+          req,
+          res,
+          invitation: res.locals.invitation,
+        });
         Flash.set({
           req,
           res,
@@ -8506,7 +8505,6 @@ export default async function courselore({
             </div>
           `,
         });
-        shouldResendInvitationEmail = true;
       }
 
       if (req.body.role !== undefined) {
@@ -8595,13 +8593,6 @@ export default async function courselore({
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/settings/invitations`
       );
-
-      if (shouldResendInvitationEmail)
-        sendInvitationEmail({
-          req,
-          res,
-          invitation: res.locals.invitation,
-        });
     }
   );
 

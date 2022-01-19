@@ -4,7 +4,6 @@
   - Things to check
     - Don’t necessarily send emails after the request-response cycle
   - Names to check
-    - `sendInvitationEmail`
     - `sendNotifications`
 - Overflowing text on mobile: Invitation link on `/settings/invitations` page.
 - Find out why I received the same notification multiple times.
