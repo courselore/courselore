@@ -3,11 +3,11 @@
 - Confirmation email must include `req.query.redirect`.
   - Things to check
     - Keyword parameters including `{req, res}`
-    - Send emails after the request-response cycle
-    - Auxiliary email senders are actually returning what they promise
+    - Don’t necessarily send emails after the request-response cycle
   - Names to check
+    - `sendConfirmationEmail`
+    - `sendInvitationEmail`
     - `sendNotifications`
-    - `sendMail`
 - Overflowing text on mobile: Invitation link on `/settings/invitations` page.
 - Find out why I received the same notification multiple times.
 - Confirm that the `Lax` policy fixes the issue.
