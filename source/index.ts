@@ -13,7 +13,7 @@ import qs from "qs";
 
 import { Database, sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
-import { css, extractInlineStyles } from "@leafac/css";
+import { localCSS, globalCSS, processCSS, css } from "@leafac/css";
 import javascript, { JavaScript } from "@leafac/javascript";
 import dedent from "dedent";
 
@@ -444,7 +444,7 @@ export default async function courselore({
     extraHeaders?: HTML;
     body: HTML;
   }): HTML =>
-    extractInlineStyles(html`
+    /* TODO: extractInlineStyles */(html`
       <!DOCTYPE html>
       <html lang="en">
         <head>
@@ -2755,7 +2755,7 @@ export default async function courselore({
     >;
     body: HTML;
   }): HTML =>
-    extractInlineStyles(html`
+    /* TODO: extractInlineStyles */(html`
       <!DOCTYPE html>
       <html>
         <body>
