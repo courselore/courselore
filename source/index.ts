@@ -2722,12 +2722,16 @@ export default async function courselore({
     req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
     res: express.Response<any, BaseMiddlewareLocals>;
     body: HTML;
-  }): HTML => /* TODO: extractInlineStyles */ html`
+  }): HTML => html`
     <!DOCTYPE html>
     <html>
+      <head>
+        <style>
+          $${res.locals.localCSS}
+        </style>
+      </head>
       <body>
-        $${body}
-        <div hidden>$${res.locals.hiddenContent ?? []}</div>
+        $${body}$${res.locals.HTMLForJavaScript}
       </body>
     </html>
   `;
