@@ -1,13 +1,10 @@
 # Backlog
 
 - CSS management
-  - Confirm that JSDOM is the bottleneck.
   - Try and make JSDOM faster.
-  - Explore https://nodejs.org/api/async_context.html
-  - Explore rehype instead of JSDOM for @leafac/css
   - Use `res.locals` to collect CSS.
-    - Do we not need `hiddenContent`?
   - Remove static CSS (the design system) from every request.
+- Write a function to determine if processing the message is even necessary. Most messages don’t use extra features and could skip JSDOM entirely.
 - Overflowing text on mobile: Invitation link on `/settings/invitations` page.
 - Find out why I received the same notification multiple times.
 - Sprinkle links of Meta course & try.courselore.org
