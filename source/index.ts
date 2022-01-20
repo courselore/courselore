@@ -3403,9 +3403,10 @@ export default async function courselore({
     localCSS: ReturnType<typeof localCSS>;
     HTMLForJavaScript: ReturnType<typeof HTMLForJavaScript>;
   }
-  app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res) => {
+  app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
     res.locals.localCSS = localCSS();
     res.locals.HTMLForJavaScript = HTMLForJavaScript();
+    next();
   });
 
   if (liveReload)
