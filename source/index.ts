@@ -2723,7 +2723,13 @@ export default async function courselore({
     </html>
   `;
 
-  const spinner = html`
+  const spinner = ({
+    req,
+    res,
+  }: {
+    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+    res: express.Response<any, BaseMiddlewareLocals>;
+  }): HTML => html`
     <svg
       width="20"
       height="20"
@@ -5763,7 +5769,7 @@ export default async function courselore({
                                 gap: var(--space--2);
                               `)}"
                             >
-                              $${spinner} Uploading…
+                              $${spinner({ req, res })} Uploading…
                             </div>
                           `
                         )},
@@ -12893,7 +12899,7 @@ export default async function courselore({
                             gap: var(--space--2);
                           `)}"
                         >
-                          $${spinner} Uploading…
+                          $${spinner({ req, res })} Uploading…
                         </div>
                       `
                     )},
@@ -13226,7 +13232,7 @@ ${contentSource}</textarea
             gap: var(--space--2);
           `)}"
         >
-          $${spinner} Loading…
+          $${spinner({ req, res })} Loading…
         </div>
 
         <div
