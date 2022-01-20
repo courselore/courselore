@@ -15,7 +15,7 @@ import qs from "qs";
 import { Database, sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
 import { CSS, localCSS, globalCSS, processCSS, css } from "@leafac/css";
-import { JavaScript, HTMLForJavaScript, javascript } from "@leafac/javascript";
+import { HTMLForJavaScript, javascript } from "@leafac/javascript";
 import dedent from "dedent";
 
 import { unified } from "unified";
@@ -442,120 +442,8 @@ export default async function courselore({
     head: HTML;
     extraHeaders?: HTML;
     body: HTML;
-  }): HTML => /* TODO: extractInlineStyles */ html`
-    <!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="UTF-8" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1"
-        />
-        <meta
-          name="description"
-          content="Communication Platform for Education"
-        />
-
-        <link rel="stylesheet" href="${baseURL}${globalCSSPath}" />
-        $${["public-sans", "jetbrains-mono"].flatMap((family) =>
-          [
-            "100",
-            "200",
-            "300",
-            "400",
-            "500",
-            "600",
-            "700",
-            "800",
-            "900",
-          ].flatMap((weight) =>
-            ["", "-italic"].map(
-              (style) => html`
-                <link
-                  rel="stylesheet"
-                  href="${baseURL}/node_modules/@fontsource/${family}/${weight}${style}.css"
-                />
-              `
-            )
-          )
-        )}
-        <link
-          rel="stylesheet"
-          href="${baseURL}/node_modules/bootstrap-icons/font/bootstrap-icons.css"
-        />
-        <link
-          rel="stylesheet"
-          href="${baseURL}/node_modules/katex/dist/katex.min.css"
-        />
-        <script src="${baseURL}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
-        <script src="${baseURL}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
-        <link
-          rel="stylesheet"
-          href="${baseURL}/node_modules/tippy.js/dist/svg-arrow.css"
-        />
-        <link
-          rel="stylesheet"
-          href="${baseURL}/node_modules/tippy.js/dist/border.css"
-        />
-        <script type="module">
-          import * as textFieldEdit from "${baseURL}/node_modules/text-field-edit/index.js";
-          window.textFieldEdit = textFieldEdit;
-        </script>
-        <script src="${baseURL}/node_modules/mousetrap/mousetrap.min.js"></script>
-        <script src="${baseURL}/node_modules/textarea-caret/index.js"></script>
-        <script src="${baseURL}/node_modules/scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js"></script>
-        <script src="${baseURL}/node_modules/@leafac/javascript/browser.js"></script>
-        <script>
-          leafac.evaluateOnInteractive();
-          leafac.customFormValidation();
-          leafac.warnAboutLosingInputs();
-          leafac.disableButtonsOnSubmit();
-          leafac.tippySetDefaultProps();
-          ${liveReload
-            ? javascript`
-                  leafac.liveReload();
-                `
-            : javascript``};
-        </script>
-
-        $${res?.locals.eventSource
-          ? html`
-              <script src="${baseURL}/node_modules/morphdom/dist/morphdom-umd.min.js"></script>
-
-              <script>
-                const eventSource = new EventSource(window.location.href);
-                eventSource.addEventListener("refresh", async () => {
-                  const response = await fetch(window.location.href);
-                  switch (response.status) {
-                    case 200:
-                      const refreshedDocument = new DOMParser().parseFromString(
-                        await response.text(),
-                        "text/html"
-                      );
-                      document.head.append(
-                        ...refreshedDocument.head.querySelectorAll("style")
-                      );
-                      morphdom(document.body, refreshedDocument.body);
-                      leafac.evaluateElementsAttribute(document);
-                      break;
-
-                    case 404:
-                      alert(
-                        "This page has been removed.\\n\\nYou’ll be redirected now."
-                      );
-                      window.location.href = $${JSON.stringify(baseURL)};
-                      break;
-
-                    default:
-                      console.error(response);
-                      break;
-                  }
-                });
-              </script>
-            `
-          : html``}
-        $${head}
-      </head>
+  }): HTML => {
+    const baseLayoutBody = html`
       <body
         style="${css`
           font-family: "Public Sans", var(--font-family--sans-serif);
@@ -581,8 +469,8 @@ export default async function courselore({
             overflow: hidden;
           `}"
           onscroll="${javascript`
-            this.scroll(0, 0);
-          `}"
+              this.scroll(0, 0);
+            `}"
         >
           $${res.locals.enrollment === undefined
             ? html``
@@ -608,46 +496,46 @@ export default async function courselore({
                       flex: 1;
                     `}"
                     oninteractive="${javascript`
-                      tippy(this, {
-                        touch: false,
-                        content: "What’s This?",
-                      });
-                      tippy(this, {
-                        trigger: "click",
-                        interactive: true,
-                        content: ${hiddenContent({
-                          req,
-                          res,
-                          content: html`
-                            <div
-                              style="${css`
-                                padding: var(--space--2);
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--4);
-                              `}"
-                            >
-                              <p>
-                                This bar with an accent color appears at the top
-                                of pages related to this course to help you
-                                differentiate between courses.
-                              </p>
-                              <a
-                                class="button button--blue"
-                                href="${baseURL}/courses/${res.locals.course!
-                                  .reference}/settings/your-enrollment"
+                        tippy(this, {
+                          touch: false,
+                          content: "What’s This?",
+                        });
+                        tippy(this, {
+                          trigger: "click",
+                          interactive: true,
+                          content: ${hiddenContent({
+                            req,
+                            res,
+                            content: html`
+                              <div
                                 style="${css`
-                                  width: 100%;
+                                  padding: var(--space--2);
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--4);
                                 `}"
                               >
-                                <i class="bi bi-palette"></i>
-                                Update Accent Color
-                              </a>
-                            </div>
-                          `,
-                        })},
-                      });
-                    `}"
+                                <p>
+                                  This bar with an accent color appears at the
+                                  top of pages related to this course to help
+                                  you differentiate between courses.
+                                </p>
+                                <a
+                                  class="button button--blue"
+                                  href="${baseURL}/courses/${res.locals.course!
+                                    .reference}/settings/your-enrollment"
+                                  style="${css`
+                                    width: 100%;
+                                  `}"
+                                >
+                                  <i class="bi bi-palette"></i>
+                                  Update Accent Color
+                                </a>
+                              </div>
+                            `,
+                          })},
+                        });
+                      `}"
                   ></button>
                 </div>
               `}
@@ -684,56 +572,56 @@ export default async function courselore({
                       <button
                         class="button button--transparent"
                         oninteractive="${javascript`
-                          tippy(this, {
-                            trigger: "click",
-                            interactive: true,
-                            content: ${hiddenContent({
-                              req,
-                              res,
-                              content: html`
-                                <div
-                                  style="${css`
-                                    padding: var(--space--2);
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--space--4);
-                                  `}"
-                                >
-                                  <p>
-                                    CourseLore is running in Demonstration Mode.
-                                    All data may be lost, including courses,
-                                    conversations, users, and so forth. Also, no
-                                    emails are actually sent.
-                                  </p>
-                                  <p>
-                                    To give you a better idea of what CourseLore
-                                    looks like in use, you may create
-                                    demonstration data.
-                                  </p>
-                                  <form
-                                    method="POST"
-                                    action="${baseURL}/demonstration-data"
+                            tippy(this, {
+                              trigger: "click",
+                              interactive: true,
+                              content: ${hiddenContent({
+                                req,
+                                res,
+                                content: html`
+                                  <div
+                                    style="${css`
+                                      padding: var(--space--2);
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--space--4);
+                                    `}"
                                   >
-                                    <input
-                                      type="hidden"
-                                      name="_csrf"
-                                      value="${req.csrfToken()}"
-                                    />
-                                    <button
-                                      class="button button--blue"
-                                      style="${css`
-                                        width: 100%;
-                                      `}"
+                                    <p>
+                                      CourseLore is running in Demonstration
+                                      Mode. All data may be lost, including
+                                      courses, conversations, users, and so
+                                      forth. Also, no emails are actually sent.
+                                    </p>
+                                    <p>
+                                      To give you a better idea of what
+                                      CourseLore looks like in use, you may
+                                      create demonstration data.
+                                    </p>
+                                    <form
+                                      method="POST"
+                                      action="${baseURL}/demonstration-data"
                                     >
-                                      <i class="bi bi-easel"></i>
-                                      Create Demonstration Data
-                                    </button>
-                                  </form>
-                                </div>
-                              `,
-                            })},
-                          });
-                        `}"
+                                      <input
+                                        type="hidden"
+                                        name="_csrf"
+                                        value="${req.csrfToken()}"
+                                      />
+                                      <button
+                                        class="button button--blue"
+                                        style="${css`
+                                          width: 100%;
+                                        `}"
+                                      >
+                                        <i class="bi bi-easel"></i>
+                                        Create Demonstration Data
+                                      </button>
+                                    </form>
+                                  </div>
+                                `,
+                              })},
+                            });
+                          `}"
                       >
                         <i class="bi bi-easel"></i>
                         Demonstration Mode
@@ -897,8 +785,8 @@ export default async function courselore({
                         margin-right: var(--space--3);
                       `}"
                       onclick="${javascript`
-                        this.closest(".flash").remove();
-                      `}"
+                          this.closest(".flash").remove();
+                        `}"
                     >
                       <i class="bi bi-x-circle"></i>
                     </button>
@@ -941,51 +829,51 @@ export default async function courselore({
                   align-items: center;
                 `}"
                 oninteractive="${javascript`
-                  tippy(this, {
-                    trigger: "click",
-                    interactive: true,
-                    content: ${hiddenContent({
-                      req,
-                      res,
-                      content: html`
-                        <h3 class="heading">
-                          $${logo({ size: 12 /* var(--space--3) */ })}
-                          <span>
-                            CourseLore <br />
-                            Communication Platform for Education <br />
-                            <small
-                              class="secondary"
-                              style="${css`
-                                font-size: var(--font-size--2xs);
-                                line-height: var(--line-height--2xs);
-                              `}"
+                    tippy(this, {
+                      trigger: "click",
+                      interactive: true,
+                      content: ${hiddenContent({
+                        req,
+                        res,
+                        content: html`
+                          <h3 class="heading">
+                            $${logo({ size: 12 /* var(--space--3) */ })}
+                            <span>
+                              CourseLore <br />
+                              Communication Platform for Education <br />
+                              <small
+                                class="secondary"
+                                style="${css`
+                                  font-size: var(--font-size--2xs);
+                                  line-height: var(--line-height--2xs);
+                                `}"
+                              >
+                                Version ${courseloreVersion}
+                              </small>
+                            </span>
+                          </h3>
+                          <div class="dropdown--menu">
+                            <a
+                              href="https://courselore.org/about"
+                              target="_blank"
+                              class="dropdown--menu--item button button--transparent"
                             >
-                              Version ${courseloreVersion}
-                            </small>
-                          </span>
-                        </h3>
-                        <div class="dropdown--menu">
-                          <a
-                            href="https://courselore.org/about"
-                            target="_blank"
-                            class="dropdown--menu--item button button--transparent"
-                          >
-                            <i class="bi bi-info-circle"></i>
-                            About
-                          </a>
-                          <a
-                            href="https://github.com/courselore/courselore"
-                            target="_blank"
-                            class="dropdown--menu--item button button--transparent"
-                          >
-                            <i class="bi bi-file-earmark-code"></i>
-                            Source Code
-                          </a>
-                        </div>
-                      `,
-                    })},
-                  });
-                `}"
+                              <i class="bi bi-info-circle"></i>
+                              About
+                            </a>
+                            <a
+                              href="https://github.com/courselore/courselore"
+                              target="_blank"
+                              class="dropdown--menu--item button button--transparent"
+                            >
+                              <i class="bi bi-file-earmark-code"></i>
+                              Source Code
+                            </a>
+                          </div>
+                        `,
+                      })},
+                    });
+                  `}"
               >
                 $${logo({ size: 16 /* var(--space--4) */ })} CourseLore
               </button>
@@ -994,66 +882,66 @@ export default async function courselore({
               <button
                 class="button button--transparent"
                 oninteractive="${javascript`
-                  tippy(this, {
-                    trigger: "click",
-                    interactive: true,
-                    content: ${hiddenContent({
-                      req,
-                      res,
-                      content: html`
-                        <h3 class="heading">
-                          <i class="bi bi-bug"></i>
-                          Report an Issue
-                        </h3>
-                        <div class="dropdown--menu">
-                          <a
-                            href="${reportIssueHref}"
-                            target="_blank"
-                            class="dropdown--menu--item button button--transparent"
-                          >
-                            <i class="bi bi-envelope"></i>
-                            ${administratorEmail}
-                          </a>
-                          <a
-                            href="https://github.com/courselore/courselore/issues/new${qs.stringify(
-                              {
-                                body: dedent`
-                                  **What did you try to do?**
+                    tippy(this, {
+                      trigger: "click",
+                      interactive: true,
+                      content: ${hiddenContent({
+                        req,
+                        res,
+                        content: html`
+                          <h3 class="heading">
+                            <i class="bi bi-bug"></i>
+                            Report an Issue
+                          </h3>
+                          <div class="dropdown--menu">
+                            <a
+                              href="${reportIssueHref}"
+                              target="_blank"
+                              class="dropdown--menu--item button button--transparent"
+                            >
+                              <i class="bi bi-envelope"></i>
+                              ${administratorEmail}
+                            </a>
+                            <a
+                              href="https://github.com/courselore/courselore/issues/new${qs.stringify(
+                                {
+                                  body: dedent`
+                                    **What did you try to do?**
 
 
 
-                                  **What did you expect to happen?**
+                                    **What did you expect to happen?**
 
 
 
-                                  **What really happened?**
+                                    **What really happened?**
 
 
 
-                                  **What error messages (if any) did you run into?**
+                                    **What error messages (if any) did you run into?**
 
 
 
-                                  Please provide as much relevant context as possible (operating system, browser, and so forth):
+                                    Please provide as much relevant context as possible (operating system, browser, and so forth):
 
-                                  - CourseLore Version: ${courseloreVersion}
-                                `,
-                              },
-                              {
-                                addQueryPrefix: true,
-                              }
-                            )}"
-                            target="_blank"
-                            class="dropdown--menu--item button button--transparent"
-                          >
-                            <i class="bi bi-github"></i>
-                            GitHub Issues
-                          </a>
-                        </div>
-                      `,
-                    })},
-                    });
-                  `}"
+                                    - CourseLore Version: ${courseloreVersion}
+                                  `,
+                                },
+                                {
+                                  addQueryPrefix: true,
+                                }
+                              )}"
+                              target="_blank"
+                              class="dropdown--menu--item button button--transparent"
+                            >
+                              <i class="bi bi-github"></i>
+                              GitHub Issues
+                            </a>
+                          </div>
+                        `,
+                      })},
+                      });
+                    `}"
               >
                 <i class="bi bi-bug"></i>
                 Report an Issue
@@ -1062,10 +950,131 @@ export default async function courselore({
           </div>
         </div>
 
-        <div hidden>$${res.locals.hiddenContent ?? []}</div>
+        $${res.locals.HTMLForJavaScript}
       </body>
-    </html>
-  `;
+    `;
+    return html`
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1"
+          />
+          <meta
+            name="description"
+            content="Communication Platform for Education"
+          />
+
+          <link rel="stylesheet" href="${baseURL}${globalCSSPath}" />
+          $${["public-sans", "jetbrains-mono"].flatMap((family) =>
+            [
+              "100",
+              "200",
+              "300",
+              "400",
+              "500",
+              "600",
+              "700",
+              "800",
+              "900",
+            ].flatMap((weight) =>
+              ["", "-italic"].map(
+                (style) => html`
+                  <link
+                    rel="stylesheet"
+                    href="${baseURL}/node_modules/@fontsource/${family}/${weight}${style}.css"
+                  />
+                `
+              )
+            )
+          )}
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/bootstrap-icons/font/bootstrap-icons.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/katex/dist/katex.min.css"
+          />
+          <script src="${baseURL}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
+          <script src="${baseURL}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/tippy.js/dist/svg-arrow.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/tippy.js/dist/border.css"
+          />
+          <script type="module">
+            import * as textFieldEdit from "${baseURL}/node_modules/text-field-edit/index.js";
+            window.textFieldEdit = textFieldEdit;
+          </script>
+          <script src="${baseURL}/node_modules/mousetrap/mousetrap.min.js"></script>
+          <script src="${baseURL}/node_modules/textarea-caret/index.js"></script>
+          <script src="${baseURL}/node_modules/scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js"></script>
+          <script src="${baseURL}/node_modules/@leafac/javascript/browser.js"></script>
+          <script>
+            leafac.evaluateOnInteractive();
+            leafac.customFormValidation();
+            leafac.warnAboutLosingInputs();
+            leafac.disableButtonsOnSubmit();
+            leafac.tippySetDefaultProps();
+            ${liveReload
+              ? javascript`
+                  leafac.liveReload();
+                `
+              : javascript``};
+          </script>
+
+          $${res?.locals.eventSource
+            ? html`
+                <script src="${baseURL}/node_modules/morphdom/dist/morphdom-umd.min.js"></script>
+
+                <script>
+                  const eventSource = new EventSource(window.location.href);
+                  eventSource.addEventListener("refresh", async () => {
+                    const response = await fetch(window.location.href);
+                    switch (response.status) {
+                      case 200:
+                        const refreshedDocument =
+                          new DOMParser().parseFromString(
+                            await response.text(),
+                            "text/html"
+                          );
+                        document.head.append(
+                          ...refreshedDocument.head.querySelectorAll("style")
+                        );
+                        morphdom(document.body, refreshedDocument.body);
+                        leafac.evaluateElementsAttribute(document);
+                        break;
+
+                      case 404:
+                        alert(
+                          "This page has been removed.\\n\\nYou’ll be redirected now."
+                        );
+                        window.location.href = $${JSON.stringify(baseURL)};
+                        break;
+
+                      default:
+                        console.error(response);
+                        break;
+                    }
+                  });
+                </script>
+              `
+            : html``}
+          <style>
+            $${res.locals.localCSS}
+          </style>
+          $${head}
+        </head>
+        $${baseLayoutBody}
+      </html>
+    `;
+  };
 
   const globalCSSProcessed = processCSS(css`
     ${globalCSS}
