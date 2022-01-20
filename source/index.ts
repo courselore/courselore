@@ -3829,7 +3829,7 @@ export default async function courselore({
     any,
     {},
     {},
-    Partial<IsSignedInMiddlewareLocals>
+    BaseMiddlewareLocals & Partial<IsSignedInMiddlewareLocals>
   > = (req, res, next) => {
     res.send(
       baseLayout({
