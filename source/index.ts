@@ -603,10 +603,10 @@ export default async function courselore({
                                       value="${req.csrfToken()}"
                                     />
                                     <button
-                                      class="button button--blue"
-                                      style="${css`
+                                      class="button button--blue ${res.locals
+                                        .localCSS(css`
                                         width: 100%;
-                                      `}"
+                                      `)}"
                                     >
                                       <i class="bi bi-easel"></i>
                                       Create Demonstration Data
@@ -650,7 +650,7 @@ export default async function courselore({
           res.locals.user.emailConfirmedAt === null
             ? html`
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     color: var(--color--amber--700);
                     background-color: var(--color--amber--100);
                     @media (prefers-color-scheme: dark) {
@@ -681,14 +681,14 @@ export default async function courselore({
                         }
                       }
                     }
-                  `}"
+                  `)}"
                 >
                   <div
-                    style="${css`
+                    class="${res.locals.localCSS(css`
                       flex: 1;
                       max-width: var(--width--prose);
                       text-align: center;
-                    `}"
+                    `)}"
                   >
                     <form
                       method="POST"
@@ -719,8 +719,7 @@ export default async function courselore({
               ? html``
               : html`
                   <div
-                    class="flash"
-                    style="${css`
+                    class="flash ${res.locals.localCSS(css`
                       display: grid;
                       & > * {
                         grid-area: 1 / 1;
@@ -768,17 +767,17 @@ export default async function courselore({
                           }
                         `
                       )}
-                    `}"
+                    `)}"
                   >
                     $${flash}
                     <button
-                      class="button button--tight button--tight--inline button--transparent"
-                      style="${css`
+                      class="button button--tight button--tight--inline button--transparent ${res
+                        .locals.localCSS(css`
                         justify-self: end;
                         align-self: start;
                         margin-top: var(--space--0-5);
                         margin-right: var(--space--3);
-                      `}"
+                      `)}"
                       onclick="${javascript`
                         this.closest(".flash").remove();
                       `}"
@@ -790,16 +789,16 @@ export default async function courselore({
           })()}
 
           <div
-            style="${css`
+            class="${res.locals.localCSS(css`
               flex: 1;
               overflow: auto;
-            `}"
+            `)}"
           >
             $${body}
           </div>
 
           <div
-            style="${css`
+            class="${res.locals.localCSS(css`
               font-size: var(--font-size--xs);
               line-height: var(--line-height--xs);
               background-color: var(--color--gray--medium--100);
@@ -815,14 +814,13 @@ export default async function courselore({
               display: flex;
               justify-content: center;
               flex-wrap: wrap;
-            `}"
+            `)}"
           >
             <div>
               <button
-                class="button button--transparent"
-                style="${css`
+                class="button button--transparent ${res.locals.localCSS(css`
                   align-items: center;
-                `}"
+                `)}"
                 oninteractive="${javascript`
                   tippy(this, {
                     trigger: "click",
@@ -835,11 +833,10 @@ export default async function courselore({
                             CourseLore <br />
                             Communication Platform for Education <br />
                             <small
-                              class="secondary"
-                              style="${css`
+                              class="secondary ${res.locals.localCSS(css`
                                 font-size: var(--font-size--2xs);
                                 line-height: var(--line-height--2xs);
-                              `}"
+                              `)}"
                             >
                               Version ${courseloreVersion}
                             </small>
@@ -2084,42 +2081,42 @@ export default async function courselore({
       head,
       body: html`
         <div
-          style="${css`
+          class="${res.locals.localCSS(css`
             min-width: 100%;
             min-height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-          `}"
+          `)}"
         >
           <div
-            style="${css`
+            class="${res.locals.localCSS(css`
               flex: 1;
               max-width: var(--width--sm);
               margin: var(--space--4);
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
-            `}"
+            `)}"
           >
             <div
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 justify-content: center;
-              `}"
+              `)}"
             >
               <a
                 href="${baseURL}/"
-                class="heading--display button button--transparent"
-                style="${css`
+                class="heading--display button button--transparent ${res.locals
+                  .localCSS(css`
                   align-items: center;
-                `}"
+                `)}"
               >
                 $${logo()} CourseLore
               </a>
             </div>
             <div
-              style="${css`
+              class="${res.locals.localCSS(css`
                 background-color: var(--color--gray--medium--100);
                 @media (prefers-color-scheme: dark) {
                   background-color: var(--color--gray--medium--800);
@@ -2129,7 +2126,7 @@ export default async function courselore({
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
-              `}"
+              `)}"
             >
               $${body}
             </div>
@@ -2170,12 +2167,12 @@ export default async function courselore({
       head,
       extraHeaders: html`
         <div
-          style="${css`
+          class="${res.locals.localCSS(css`
             padding-top: var(--space--1);
             padding-bottom: var(--space--1);
             gap: var(--space--4);
             align-items: center;
-          `}"
+          `)}"
         >
           <a
             href="${baseURL}/"
@@ -2191,21 +2188,21 @@ export default async function courselore({
           </a>
 
           <div
-            style="${css`
+            class="${res.locals.localCSS(css`
               font-size: var(--font-size--sm);
               line-height: var(--line-height--sm);
               flex: 1;
               min-width: var(--width--0);
-            `}"
+            `)}"
           >
             $${res.locals.course === undefined
               ? html``
               : html`
                   <button
-                    class="button button--tight button--tight--inline button--transparent strong"
-                    style="${css`
+                    class="button button--tight button--tight--inline button--transparent strong ${res
+                      .locals.localCSS(css`
                       max-width: 100%;
-                    `}"
+                    `)}"
                     oninteractive="${javascript`
                       tippy(this, {
                         trigger: "click",
@@ -2213,11 +2210,11 @@ export default async function courselore({
                         content: ${res.locals.HTMLForJavaScript(
                           html`
                             <div
-                              style="${css`
+                              class="${res.locals.localCSS(css`
                                 display: flex;
                                 flex-direction: column;
                                 gap: var(--space--2);
-                              `}"
+                              `)}"
                             >
                               <div>
                                 <h3 class="heading">
@@ -2291,11 +2288,11 @@ export default async function courselore({
                   >
                     <i class="bi bi-journal-text"></i>
                     <span
-                      style="${css`
+                      class="${res.locals.localCSS(css`
                         white-space: nowrap;
                         overflow: hidden;
                         text-overflow: ellipsis;
-                      `}"
+                      `)}"
                     >
                       ${res.locals.course.name}
                     </span>
@@ -2324,11 +2321,11 @@ export default async function courselore({
                   content: ${res.locals.HTMLForJavaScript(
                     html`
                       <div
-                        style="${css`
+                        class="${res.locals.localCSS(css`
                           display: flex;
                           flex-direction: column;
                           gap: var(--space--2);
-                        `}"
+                        `)}"
                       >
                         $${res.locals.invitations!.length === 0
                           ? html``
@@ -2388,15 +2385,15 @@ export default async function courselore({
               `}"
             >
               <div
-                style="${css`
+                class="${res.locals.localCSS(css`
                   display: grid;
                   & > * {
                     grid-area: 1 / 1;
                   }
-                `}"
+                `)}"
               >
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     font-size: var(--font-size--xl);
                     line-height: var(--line-height--xl);
                     font-weight: var(--font-weight--bold);
@@ -2404,7 +2401,7 @@ export default async function courselore({
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                  `}"
+                  `)}"
                 >
                   +
                 </div>
@@ -2412,7 +2409,7 @@ export default async function courselore({
                   ? html``
                   : html`
                       <div
-                        style="${css`
+                        class="${res.locals.localCSS(css`
                           background-color: var(--color--rose--500);
                           @media (prefers-color-scheme: dark) {
                             background-color: var(--color--rose--600);
@@ -2422,7 +2419,7 @@ export default async function courselore({
                           border-radius: var(--border-radius--circle);
                           justify-self: end;
                           transform: translateY(50%);
-                        `}"
+                        `)}"
                       ></div>
                     `}
               </div>
@@ -2431,11 +2428,11 @@ export default async function courselore({
 
           <div>
             <button
-              class="button button--tight button--tight--inline button--transparent"
-              style="${css`
+              class="button button--tight button--tight--inline button--transparent ${res
+                .locals.localCSS(css`
                 padding: var(--space--1);
                 border-radius: var(--border-radius--circle);
-              `}"
+              `)}"
               oninteractive="${javascript`
                 tippy(this, {
                   touch: false,
@@ -2447,16 +2444,16 @@ export default async function courselore({
                   content: ${res.locals.HTMLForJavaScript(
                     html`
                       <div
-                        style="${css`
+                        class="${res.locals.localCSS(css`
                           display: flex;
                           flex-direction: column;
                           gap: var(--space--2);
-                        `}"
+                        `)}"
                       >
                         <div
-                          style="${css`
+                          class="${res.locals.localCSS(css`
                             padding: var(--space--0) var(--space--2);
-                          `}"
+                          `)}"
                         >
                           <p class="strong">${res.locals.user.name}</p>
                           <p class="secondary">${res.locals.user.email}</p>
@@ -2541,13 +2538,13 @@ export default async function courselore({
       head,
       body: html`
         <div
-          style="${css`
+          class="${res.locals.localCSS(css`
             display: flex;
             justify-content: center;
-          `}"
+          `)}"
         >
           <div
-            style="${css`
+            class="${res.locals.localCSS(css`
               flex: 1;
               min-width: var(--width--0);
               max-width: var(--width--prose);
@@ -2555,7 +2552,7 @@ export default async function courselore({
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
-            `}"
+            `)}"
           >
             $${body}
           </div>
@@ -2596,12 +2593,12 @@ export default async function courselore({
           ? html``
           : html`
               <div
-                style="${css`
+                class="${res.locals.localCSS(css`
                   justify-content: center;
                   @media (min-width: 700px) {
                     display: none;
                   }
-                `}"
+                `)}"
               >
                 <button
                   class="button button--transparent"
@@ -2622,35 +2619,35 @@ export default async function courselore({
             `,
       body: html`
         <div
-          style="${css`
+          class="${res.locals.localCSS(css`
             padding: var(--space--4);
             display: flex;
             justify-content: center;
             gap: var(--space--8);
-          `}"
+          `)}"
         >
           $${menu === html``
             ? html``
             : html`
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     @media (max-width: 699px) {
                       display: none;
                     }
-                  `}"
+                  `)}"
                 >
                   <div class="menu-box">$${menu}</div>
                 </div>
               `}
           <div
-            style="${css`
+            class="${res.locals.localCSS(css`
               flex: 1;
               min-width: var(--width--0);
               max-width: var(--width--prose);
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
-            `}"
+            `)}"
           >
             $${body}
           </div>
@@ -2730,24 +2727,24 @@ export default async function courselore({
     <svg
       width="20"
       height="20"
-      style="${css`
-        animation: var(--animation--spin);
-      `}"
       fill="none"
       stroke="currentColor"
       stroke-width="4"
+      class="${res.locals.localCSS(css`
+        animation: var(--animation--spin);
+      `)}"
     >
       <path
         d="M 2 10 A 8 8 0 0 0 18 10 A 8 8 0 0 0 2 10"
-        style="${css`
+        class="${res.locals.localCSS(css`
           opacity: var(--opacity--25);
-        `}"
+        `)}"
       />
       <path
         d="M 2 10 A 8 8 0 0 0 15.5 15.5"
-        style="${css`
+        class="${res.locals.localCSS(css`
           opacity: var(--opacity--75);
-        `}"
+        `)}"
       />
     </svg>
   `;
@@ -2791,7 +2788,7 @@ export default async function courselore({
       if (user === "no-longer-enrolled")
         userAvatar = html`<svg
           viewBox="0 0 24 24"
-          style="${css`
+          class="${res.locals.localCSS(css`
             color: var(--color--rose--700);
             background-color: var(--color--rose--200);
             @media (prefers-color-scheme: dark) {
@@ -2815,14 +2812,14 @@ export default async function courselore({
               `,
             }[size]}
             border-radius: var(--border-radius--circle);
-          `}"
+          `)}"
         >
           <foreignObject x="2" y="-2" width="24" height="24">
             <span
-              style="${css`
+              class="${res.locals.localCSS(css`
                 font-size: var(--font-size--xl);
                 line-height: var(--line-height--xl);
-              `}"
+              `)}"
             >
               <i class="bi bi-emoji-smile-upside-down"></i>
             </span>
@@ -2832,7 +2829,7 @@ export default async function courselore({
         userAvatar = html`<img
           src="${user.avatar}"
           alt="${user.name}"
-          style="${css`
+          class="${res.locals.localCSS(css`
             ${{
               xs: css`
                 width: var(--space--4);
@@ -2853,12 +2850,12 @@ export default async function courselore({
             @media (prefers-color-scheme: dark) {
               filter: brightness(var(--brightness--90));
             }
-          `}"
+          `)}"
         />`;
       else
         userAvatar = html`<svg
           viewBox="0 0 24 24"
-          style="${css`
+          class="${res.locals.localCSS(css`
             color: var(--color--${user.avatarlessBackgroundColor}--700);
             background-color: var(
               --color--${user.avatarlessBackgroundColor}--200
@@ -2886,18 +2883,18 @@ export default async function courselore({
               `,
             }[size]}
             border-radius: var(--border-radius--circle);
-          `}"
+          `)}"
         >
           <text
             x="12"
             y="16"
             text-anchor="middle"
-            style="${css`
+            class="${res.locals.localCSS(css`
               font-size: var(--font-size--2xs);
               line-height: var(--line-height--2xs);
               font-weight: var(--font-weight--black);
               fill: currentColor;
-            `}"
+            `)}"
           >
             ${(() => {
               const nameParts = user.name.split(/\s+/);
@@ -2914,7 +2911,7 @@ export default async function courselore({
         enrollment !== "no-longer-enrolled"
       )
         userAvatar = html`<span
-          style="${css`
+          class="${res.locals.localCSS(css`
             display: inline-grid;
             & > * {
               grid-area: 1 / 1;
@@ -2928,11 +2925,11 @@ export default async function courselore({
               `,
               xl: css``,
             }[size]}
-          `}"
+          `)}"
         >
           $${userAvatar}
           <span
-            style="${css`
+            class="${res.locals.localCSS(css`
               background-color: var(--color--green--500);
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--green--600);
@@ -2957,7 +2954,7 @@ export default async function courselore({
               border-radius: var(--border-radius--circle);
               place-self: end;
               display: none;
-            `}"
+            `)}"
             oninteractive="${javascript`
               const element = this;
               const lastSeenOnlineAt = ${new Date(
@@ -2977,7 +2974,7 @@ export default async function courselore({
             ? html`
                 <svg
                   viewBox="0 0 24 24"
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     color: var(--color--pink--700);
                     background-color: var(--color--pink--200);
                     @media (prefers-color-scheme: dark) {
@@ -3003,7 +3000,7 @@ export default async function courselore({
                     }[size]}
                     border-radius: var(--border-radius--circle);
                     justify-self: end;
-                  `}"
+                  `)}"
                   oninteractive="${javascript`
                     tippy(this, {
                       touch: false,
@@ -3013,10 +3010,10 @@ export default async function courselore({
                 >
                   <foreignObject x="2" y="-2" width="24" height="24">
                     <span
-                      style="${css`
+                      class="${res.locals.localCSS(css`
                         font-size: var(--font-size--xl);
                         line-height: var(--line-height--xl);
-                      `}"
+                      `)}"
                     >
                       <i class="bi bi-mortarboard-fill"></i>
                     </span>
@@ -3028,9 +3025,9 @@ export default async function courselore({
 
       if (name !== false)
         userAvatar = html`<span
-          style="${css`
+          class="${res.locals.localCSS(css`
             font-weight: var(--font-weight--bold);
-          `}"
+          `)}"
           oninteractive="${javascript`
             ${
               tooltip
@@ -3041,21 +3038,21 @@ export default async function courselore({
                       content: ${res.locals.HTMLForJavaScript(
                         html`
                           <div
-                            style="${css`
+                            class="${res.locals.localCSS(css`
                               max-height: var(--space--56);
                               padding: var(--space--1) var(--space--2);
                               overflow: auto;
                               display: flex;
                               flex-direction: column;
                               gap: var(--space--4);
-                            `}"
+                            `)}"
                           >
                             <div
-                              style="${css`
+                              class="${res.locals.localCSS(css`
                                 display: flex;
                                 gap: var(--space--4);
                                 align-items: center;
-                              `}"
+                              `)}"
                             >
                               <div>
                                 $${userPartial({
@@ -3068,12 +3065,12 @@ export default async function courselore({
                                 })}
                               </div>
                               <div
-                                style="${css`
+                                class="${res.locals.localCSS(css`
                                   padding-top: var(--space--0-5);
                                   display: flex;
                                   flex-direction: column;
                                   gap: var(--space--2);
-                                `}"
+                                `)}"
                               >
                                 <div>
                                   <div class="strong">
@@ -3098,11 +3095,11 @@ export default async function courselore({
                                       `
                                     : html`
                                         <div
-                                          class="secondary"
-                                          style="${css`
+                                          class="secondary ${res.locals
+                                            .localCSS(css`
                                             font-size: var(--font-size--xs);
                                             line-height: var(--line-height--xs);
-                                          `}"
+                                          `)}"
                                         >
                                           Last seen online
                                           <time
@@ -3147,7 +3144,7 @@ export default async function courselore({
     if (anonymous !== false) {
       anonymousAvatar = html`<svg
         viewBox="0 0 24 24"
-        style="${css`
+        class="${res.locals.localCSS(css`
           color: var(--color--violet--700);
           background-color: var(--color--violet--200);
           @media (prefers-color-scheme: dark) {
@@ -3171,14 +3168,14 @@ export default async function courselore({
             `,
           }[size]}
           border-radius: var(--border-radius--circle);
-        `}"
+        `)}"
       >
         <foreignObject x="2" y="-2" width="24" height="24">
           <span
-            style="${css`
+            class="${res.locals.localCSS(css`
               font-size: var(--font-size--xl);
               line-height: var(--line-height--xl);
-            `}"
+            `)}"
           >
             <i class="bi bi-sunglasses"></i>
           </span>
@@ -3187,9 +3184,9 @@ export default async function courselore({
 
       if (name !== false)
         anonymousAvatar = html`<span
-          style="${css`
+          class="${res.locals.localCSS(css`
             font-weight: var(--font-weight--bold);
-          `}"
+          `)}"
           oninteractive="${javascript`
             tippy(this, {
               touch: false,
@@ -3216,23 +3213,24 @@ export default async function courselore({
     enrollment = undefined,
     tight = false,
   }: {
-    req: express.Request<{}, any, {}, {}, {}>;
-    res: express.Response<any, {}>;
+    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+    res: express.Response<any, BaseMiddlewareLocals>;
     course: IsSignedInMiddlewareLocals["enrollments"][number]["course"];
     enrollment?: IsSignedInMiddlewareLocals["enrollments"][number];
     tight?: boolean;
   }): HTML => html`
     <div
-      style="${css`
+      class="${res.locals.localCSS(css`
         display: flex;
         gap: var(--space--2);
         align-items: baseline;
-      `}"
+      `)}"
     >
       <div>
         <div
-          class="button button--tight ${tight ? "button--tight--inline" : ""}"
-          style="${css`
+          class="button button--tight ${tight
+            ? "button--tight--inline"
+            : ""} ${res.locals.localCSS(css`
             ${enrollment === undefined
               ? css``
               : css`
@@ -3247,7 +3245,7 @@ export default async function courselore({
                     );
                   }
                 `}
-          `}"
+          `)}"
         >
           $${enrollment === undefined
             ? html`<i class="bi bi-journal-arrow-down"></i>`
@@ -3257,11 +3255,10 @@ export default async function courselore({
       <div>
         <div class="strong">${course.name}</div>
         <div
-          class="secondary"
-          style="${css`
+          class="secondary ${res.locals.localCSS(css`
             font-size: var(--font-size--xs);
             line-height: var(--line-height--xs);
-          `}"
+          `)}"
         >
           $${[
             [course.year, course.term],
@@ -3453,8 +3450,8 @@ export default async function courselore({
       res,
       content,
     }: {
-      req: express.Request<{}, any, {}, {}, {}>;
-      res: express.Response<any, {}>;
+      req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+      res: express.Response<any, BaseMiddlewareLocals>;
       content: HTML;
     }): void {
       const flash = database.get<{ nonce: string }>(
@@ -3479,8 +3476,8 @@ export default async function courselore({
       req,
       res,
     }: {
-      req: express.Request<{}, any, {}, {}, {}>;
-      res: express.Response<any, {}>;
+      req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+      res: express.Response<any, BaseMiddlewareLocals>;
     }): HTML | undefined {
       if (req.cookies.flash === undefined) return undefined;
       const flash = database.get<{
@@ -3509,8 +3506,8 @@ export default async function courselore({
       res,
       userId,
     }: {
-      req: express.Request<{}, any, {}, {}, {}>;
-      res: express.Response<any, {}>;
+      req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+      res: express.Response<any, BaseMiddlewareLocals>;
       userId: number;
     }): void {
       const session = database.get<{
@@ -3537,8 +3534,8 @@ export default async function courselore({
       req,
       res,
     }: {
-      req: express.Request<{}, any, {}, {}, {}>;
-      res: express.Response<any, {}>;
+      req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+      res: express.Response<any, BaseMiddlewareLocals>;
     }): number | undefined {
       if (req.cookies.session === undefined) return undefined;
       const session = database.get<{
@@ -3574,8 +3571,8 @@ export default async function courselore({
       req,
       res,
     }: {
-      req: express.Request<{}, any, {}, {}, {}>;
-      res: express.Response<any, {}>;
+      req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+      res: express.Response<any, BaseMiddlewareLocals>;
     }): void {
       if (req.cookies.session === undefined) return;
       delete req.cookies.session;
@@ -3590,8 +3587,8 @@ export default async function courselore({
       res,
       userId,
     }: {
-      req: express.Request<{}, any, {}, {}, {}>;
-      res: express.Response<any, {}>;
+      req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+      res: express.Response<any, BaseMiddlewareLocals>;
       userId: number;
     }): void {
       Session.close({ req, res });
@@ -3840,7 +3837,7 @@ export default async function courselore({
         `,
         body: html`
           <div
-            style="${css`
+            class="${res.locals.localCSS(css`
               display: flex;
               gap: var(--space--14);
               justify-content: center;
@@ -3849,48 +3846,47 @@ export default async function courselore({
               @media (max-width: 959px) {
                 flex-direction: column;
               }
-            `}"
+            `)}"
           >
             <div
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
                 max-width: var(--width--prose);
                 align-items: center;
-              `}"
+              `)}"
             >
               <a
                 href="https://courselore.org/about"
-                class="heading--display button button--transparent"
-                style="${css`
+                class="heading--display button button--transparent ${res.locals
+                  .localCSS(css`
                   font-size: var(--font-size--5xl);
                   line-height: var(--line-height--5xl);
                   font-weight: var(--font-weight--black);
                   align-items: center;
-                `}"
+                `)}"
               >
                 $${logo({ size: 48 /* var(--space--12) */ })} CourseLore
               </a>
               <h3
-                class="secondary"
-                style="${css`
+                class="secondary ${res.locals.localCSS(css`
                   font-size: var(--font-size--lg);
                   line-height: var(--line-height--lg);
                   font-weight: var(--font-weight--bold);
-                `}"
+                `)}"
               >
                 Communication Platform for Education
               </h3>
 
               <div
-                style="${css`
+                class="${res.locals.localCSS(css`
                   display: flex;
                   gap: var(--space--4);
                   & > * {
                     flex: 1;
                   }
-                `}"
+                `)}"
               >
                 $${res.locals.user === undefined
                   ? html`
@@ -3923,43 +3919,41 @@ export default async function courselore({
               </a>
             </div>
             <div
-              style="${css`
+              class="${res.locals.localCSS(css`
                 max-width: var(--width--3xl);
-              `}"
+              `)}"
             >
               <img
                 src="/main-screen--light.png"
                 alt="CourseLore Main Screen"
                 width="960"
-                class="img light"
-                style="${css`
+                class="img light ${res.locals.localCSS(css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
                     var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--gray--medium--700);
                   }
-                `}"
+                `)}"
               />
               <img
                 src="/main-screen--dark.png"
                 alt="CourseLore Main Screen"
                 width="960"
-                class="img dark"
-                style="${css`
+                class="img dark ${res.locals.localCSS(css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
                     var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--gray--medium--700);
                   }
-                `}"
+                `)}"
               />
             </div>
           </div>
 
           <div
-            style="${css`
+            class="${res.locals.localCSS(css`
               background-color: var(--color--gray--medium--100);
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--800);
@@ -4005,19 +3999,19 @@ export default async function courselore({
                   }
                 }
               }
-            `}"
+            `)}"
           >
             <div>
               <div>
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     color: var(--color--violet--700);
                     background-color: var(--color--violet--200);
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--violet--200);
                       background-color: var(--color--violet--700);
                     }
-                  `}"
+                  `)}"
                 >
                   <i class="bi bi-chat-left-text"></i>
                 </div>
@@ -4032,14 +4026,14 @@ export default async function courselore({
             <div>
               <div>
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     color: var(--color--pink--700);
                     background-color: var(--color--pink--200);
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--pink--200);
                       background-color: var(--color--pink--700);
                     }
-                  `}"
+                  `)}"
                 >
                   <i class="bi bi-mortarboard-fill"></i>
                 </div>
@@ -4053,14 +4047,14 @@ export default async function courselore({
             <div>
               <div>
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     color: var(--color--green--700);
                     background-color: var(--color--green--200);
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--green--200);
                       background-color: var(--color--green--700);
                     }
-                  `}"
+                  `)}"
                 >
                   <i class="bi bi-file-earmark-code"></i>
                 </div>
@@ -4074,7 +4068,7 @@ export default async function courselore({
           </div>
 
           <div
-            style="${css`
+            class="${res.locals.localCSS(css`
               display: flex;
               gap: var(--space--14);
               justify-content: center;
@@ -4086,35 +4080,33 @@ export default async function courselore({
               @media (min-width: 890px) {
                 flex-direction: row-reverse;
               }
-            `}"
+            `)}"
           >
             <div
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
                 max-width: var(--width--prose);
                 align-items: center;
-              `}"
+              `)}"
             >
               <p
-                class="heading--display"
-                style="${css`
+                class="heading--display ${res.locals.localCSS(css`
                   font-size: var(--font-size--5xl);
                   line-height: var(--line-height--5xl);
                   font-weight: var(--font-weight--black);
                   align-items: center;
-                `}"
+                `)}"
               >
                 Carefully Designed
               </p>
               <p
-                class="secondary"
-                style="${css`
+                class="secondary ${res.locals.localCSS(css`
                   font-size: var(--font-size--lg);
                   line-height: var(--line-height--lg);
                   font-weight: var(--font-weight--bold);
-                `}"
+                `)}"
               >
                 Beautiful during the day. Elegant at night. <br />
                 Always a joy to look at.
@@ -4122,29 +4114,28 @@ export default async function courselore({
             </div>
 
             <div
-              style="${css`
+              class="${res.locals.localCSS(css`
                 max-width: var(--width--3xl);
-              `}"
+              `)}"
             >
               <img
                 src="/main-screen--light-and-dark.png"
                 alt="CourseLore Main Screen Featuring Light & Dark Modes"
                 width="960"
-                class="img"
-                style="${css`
+                class="img ${res.locals.localCSS(css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
                     var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--gray--medium--700);
                   }
-                `}"
+                `)}"
               />
             </div>
           </div>
 
           <div
-            style="${css`
+            class="${res.locals.localCSS(css`
               background-color: var(--color--gray--medium--100);
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--800);
@@ -4160,36 +4151,34 @@ export default async function courselore({
               @media (min-width: 890px) {
                 gap: var(--space--24);
               }
-            `}"
+            `)}"
           >
             <div
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
                 max-width: var(--width--prose);
                 align-items: center;
-              `}"
+              `)}"
             >
               <p
-                class="heading--display"
-                style="${css`
+                class="heading--display ${res.locals.localCSS(css`
                   font-size: var(--font-size--5xl);
                   line-height: var(--line-height--5xl);
                   font-weight: var(--font-weight--black);
                   align-items: center;
-                `}"
+                `)}"
               >
                 First-Class <br />
                 Mobile Support
               </p>
               <p
-                class="secondary"
-                style="${css`
+                class="secondary ${res.locals.localCSS(css`
                   font-size: var(--font-size--lg);
                   line-height: var(--line-height--lg);
                   font-weight: var(--font-weight--bold);
-                `}"
+                `)}"
               >
                 It just works. Right from the browser. <br />
                 No nagging to install an app.
@@ -4197,43 +4186,41 @@ export default async function courselore({
             </div>
 
             <div
-              style="${css`
+              class="${res.locals.localCSS(css`
                 max-width: var(--width--3xl);
-              `}"
+              `)}"
             >
               <img
                 src="/main-screen--phone--light.jpeg"
                 alt="CourseLore Main Screen on Phone"
                 width="300"
-                class="img light"
-                style="${css`
+                class="img light ${res.locals.localCSS(css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
                     var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--gray--medium--700);
                   }
-                `}"
+                `)}"
               />
               <img
                 src="/main-screen--phone--dark.jpeg"
                 alt="CourseLore Main Screen on Phone"
                 width="300"
-                class="img dark"
-                style="${css`
+                class="img dark ${res.locals.localCSS(css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
                     var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--gray--medium--700);
                   }
-                `}"
+                `)}"
               />
             </div>
           </div>
 
           <div
-            style="${css`
+            class="${res.locals.localCSS(css`
               display: flex;
               gap: var(--space--14);
               justify-content: center;
@@ -4245,61 +4232,59 @@ export default async function courselore({
               @media (min-width: 860px) {
                 flex-direction: row-reverse;
               }
-            `}"
+            `)}"
           >
             <div
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
                 max-width: var(--width--prose);
                 align-items: center;
-              `}"
+              `)}"
             >
               <p
-                class="heading--display"
-                style="${css`
+                class="heading--display ${res.locals.localCSS(css`
                   font-size: var(--font-size--5xl);
                   line-height: var(--line-height--5xl);
                   font-weight: var(--font-weight--black);
                   align-items: center;
-                `}"
+                `)}"
               >
                 Rich-Text Messages
               </p>
               <p
-                class="secondary"
-                style="${css`
+                class="secondary ${res.locals.localCSS(css`
                   font-size: var(--font-size--lg);
                   line-height: var(--line-height--lg);
                   font-weight: var(--font-weight--bold);
-                `}"
+                `)}"
               >
                 Markdown
                 <button
                   type="button"
-                  class="button button--tight button--tight--inline button--inline button--transparent"
-                  style="${css`
+                  class="button button--tight button--tight--inline button--inline button--transparent ${res
+                    .locals.localCSS(css`
                     font-size: var(--font-size--base);
                     line-height: var(--line-height--base);
-                  `}"
+                  `)}"
                   oninteractive="${javascript`
-                      tippy(this, {
-                        trigger: "click",
-                        content: "A straightforward way to make text bold, include links, and so forth.",
-                      });
-                    `}"
+                    tippy(this, {
+                      trigger: "click",
+                      content: "A straightforward way to make text bold, include links, and so forth.",
+                    });
+                  `}"
                 >
                   <i class="bi bi-info-circle"></i>
                 </button>
                   LaTeX
                 <button
                   type="button"
-                  class="button button--tight button--tight--inline button--inline button--transparent"
-                  style="${css`
+                  class="button button--tight button--tight--inline button--inline button--transparent ${res
+                    .locals.localCSS(css`
                     font-size: var(--font-size--base);
                     line-height: var(--line-height--base);
-                  `}"
+                  `)}"
                   oninteractive="${javascript`
                     tippy(this, {
                       trigger: "click",
@@ -4312,11 +4297,11 @@ export default async function courselore({
                   Syntax highlighting
                 <button
                   type="button"
-                  class="button button--tight button--tight--inline button--inline button--transparent"
-                  style="${css`
+                  class="button button--tight button--tight--inline button--inline button--transparent ${res
+                    .locals.localCSS(css`
                     font-size: var(--font-size--base);
                     line-height: var(--line-height--base);
-                  `}"
+                  `)}"
                   oninteractive="${javascript`
                     tippy(this, {
                       trigger: "click",
@@ -4332,10 +4317,10 @@ export default async function courselore({
             </div>
 
             <div
-              style="${css`
+              class="${res.locals.localCSS(css`
                 flex: 1;
                 max-width: calc(min(var(--width--xl), 100%));
-              `}"
+              `)}"
             >
               $${contentEditor({
                 req,
@@ -4374,7 +4359,7 @@ export default async function courselore({
           </div>
 
           <div
-            style="${css`
+            class="${res.locals.localCSS(css`
               background-color: var(--color--gray--medium--100);
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--800);
@@ -4384,32 +4369,31 @@ export default async function courselore({
               padding: var(--space--32) var(--space--8);
               align-items: center;
               gap: var(--space--14);
-            `}"
+            `)}"
           >
             <div
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
                 max-width: var(--width--prose);
                 align-items: center;
-              `}"
+              `)}"
             >
               <h2
-                class="heading--display"
-                style="${css`
+                class="heading--display ${res.locals.localCSS(css`
                   font-size: var(--font-size--5xl);
                   line-height: var(--line-height--5xl);
                   font-weight: var(--font-weight--black);
                   align-items: center;
-                `}"
+                `)}"
               >
                 The Team
               </h2>
             </div>
 
             <div
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 gap: var(--space--14);
                 @media (max-width: 1289px) {
@@ -4426,7 +4410,7 @@ export default async function courselore({
                     border-radius: var(--border-radius--circle);
                   }
                 }
-              `}"
+              `)}"
             >
               <div>
                 <img
@@ -4493,7 +4477,7 @@ export default async function courselore({
           </div>
 
           <div
-            style="${css`
+            class="${res.locals.localCSS(css`
               font-size: var(--font-size--xl);
               line-height: var(--line-height--xl);
               font-weight: var(--font-weight--bold);
@@ -4505,7 +4489,7 @@ export default async function courselore({
               @media (max-width: 599px) {
                 flex-direction: column;
               }
-            `}"
+            `)}"
           >
             $${res.locals.user === undefined
               ? html`
@@ -4563,11 +4547,11 @@ export default async function courselore({
               addQueryPrefix: true,
             })}"
             novalidate
-            style="${css`
+            class="${res.locals.localCSS(css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
-            `}"
+            `)}"
           >
             <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
             <label class="label">
@@ -4599,11 +4583,11 @@ export default async function courselore({
             </button>
           </form>
           <div
-            style="${css`
+            class="${res.locals.localCSS(css`
               display: flex;
               flex-direction: column;
               gap: var(--space--2);
-            `}"
+            `)}"
           >
             <p>
               Don’t have an account?
@@ -4775,11 +4759,11 @@ export default async function courselore({
                 addQueryPrefix: true,
               })}"
               novalidate
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
-              `}"
+              `)}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <label class="label">
@@ -4801,11 +4785,11 @@ export default async function courselore({
               </button>
             </form>
             <div
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--2);
-              `}"
+              `)}"
             >
               <p>
                 Don’t have an account?
@@ -4955,11 +4939,11 @@ export default async function courselore({
                 userId
               )}${qs.stringify(req.query, { addQueryPrefix: true })}"
               novalidate
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
-              `}"
+              `)}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <label class="label">
@@ -5076,11 +5060,11 @@ export default async function courselore({
               addQueryPrefix: true,
             })}"
             novalidate
-            style="${css`
+            class="${res.locals.localCSS(css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
-            `}"
+            `)}"
           >
             <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
             <label class="label">
@@ -5135,11 +5119,11 @@ export default async function courselore({
             </button>
           </form>
           <div
-            style="${css`
+            class="${res.locals.localCSS(css`
               display: flex;
               flex-direction: column;
               gap: var(--space--2);
-            `}"
+            `)}"
           >
             <p>
               Already have an account account?
@@ -5187,8 +5171,8 @@ export default async function courselore({
     userId,
     userEmail,
   }: {
-    req: express.Request<{}, any, {}, {}, {}>;
-    res: express.Response<any, {}>;
+    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+    res: express.Response<any, BaseMiddlewareLocals>;
     userId: number;
     userEmail: string;
   }): Promise<nodemailer.SentMessageInfo> => {
@@ -5422,12 +5406,12 @@ export default async function courselore({
               head: html`<title>CourseLore</title>`,
               body: html`
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--4);
                     align-items: center;
-                  `}"
+                  `)}"
                 >
                   <h2 class="heading--display">Welcome to CourseLore!</h2>
 
@@ -5483,12 +5467,12 @@ export default async function courselore({
               head: html`<title>CourseLore</title>`,
               body: html`
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--4);
                     align-items: center;
-                  `}"
+                  `)}"
                 >
                   <div class="decorative-icon">
                     <i class="bi bi-journal-text"></i>
@@ -5619,25 +5603,24 @@ export default async function courselore({
               method="POST"
               action="${baseURL}/settings/profile?_method=PATCH"
               novalidate
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
-              `}"
+              `)}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <div
-                style="${css`
+                class="${res.locals.localCSS(css`
                   display: flex;
                   gap: var(--space--4);
                   @media (max-width: 400px) {
                     flex-direction: column;
                   }
-                `}"
+                `)}"
               >
                 <div
-                  class="avatar-chooser"
-                  style="${css`
+                  class="avatar-chooser ${res.locals.localCSS(css`
                     display: flex;
                     justify-content: center;
                     align-items: center;
@@ -5645,7 +5628,7 @@ export default async function courselore({
                       width: var(--space--32);
                       height: var(--space--32);
                     }
-                  `}"
+                  `)}"
                   ondragover="${javascript`
                     event.preventDefault();
                   `}"
@@ -5660,8 +5643,8 @@ export default async function courselore({
                   >
                     <button
                       type="button"
-                      class="button button--transparent"
-                      style="${css`
+                      class="button button--transparent ${res.locals
+                        .localCSS(css`
                         transform: scale(8)
                           translate(
                             calc(var(--space---px) + 50% + var(--space---px)),
@@ -5670,7 +5653,7 @@ export default async function courselore({
                         padding: var(--space--px);
                         margin: var(--space---px);
                         border-radius: var(--border-radius--circle);
-                      `}"
+                      `)}"
                       oninteractive="${javascript`
                         tippy(this, {
                           touch: false,
@@ -5692,24 +5675,23 @@ export default async function courselore({
                     </button>
                   </div>
                   <div
-                    class="avatar-chooser--filled"
                     $${res.locals.user.avatar === null ? html`hidden` : html``}
-                    style="${css`
+                    class="avatar-chooser--filled ${res.locals.localCSS(css`
                       display: grid;
                       & > * {
                         grid-area: 1 / 1;
                         position: relative;
                       }
-                    `}"
+                    `)}"
                   >
                     <button
                       type="button"
-                      class="button button--transparent"
-                      style="${css`
+                      class="button button--transparent ${res.locals
+                        .localCSS(css`
                         padding: var(--space--2);
                         margin: var(--space---2);
                         border-radius: var(--border-radius--circle);
-                      `}"
+                      `)}"
                       oninteractive="${javascript`
                         tippy(this, {
                           touch: false,
@@ -5723,17 +5705,16 @@ export default async function courselore({
                       <img
                         src="${res.locals.user.avatar ?? ""}"
                         alt="Avatar"
-                        style="${css`
+                        class="${res.locals.localCSS(css`
                           width: 100%;
                           height: 100%;
                           border-radius: var(--border-radius--circle);
-                        `}"
+                        `)}"
                       />
                     </button>
                     <button
                       type="button"
-                      class="button button--rose"
-                      style="${css`
+                      class="button button--rose ${res.locals.localCSS(css`
                         place-self: end;
                         width: var(--font-size--2xl);
                         height: var(--font-size--2xl);
@@ -5741,7 +5722,7 @@ export default async function courselore({
                         border-radius: var(--border-radius--circle);
                         transform: translate(-20%, -20%);
                         align-items: center;
-                      `}"
+                      `)}"
                       oninteractive="${javascript`
                         tippy(this, {
                           theme: "rose",
@@ -5777,10 +5758,10 @@ export default async function courselore({
                         content: ${res.locals.HTMLForJavaScript(
                           html`
                             <div
-                              style="${css`
+                              class="${res.locals.localCSS(css`
                                 display: flex;
                                 gap: var(--space--2);
-                              `}"
+                              `)}"
                             >
                               $${spinner} Uploading…
                             </div>
@@ -5833,12 +5814,12 @@ export default async function courselore({
                 </div>
 
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     flex: 1;
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--4);
-                  `}"
+                  `)}"
                 >
                   <label class="label">
                     <p class="label--text">Name</p>
@@ -5974,7 +5955,7 @@ export default async function courselore({
             `Something went wrong in uploading your avatar. Please report to the system administrator at ${administratorEmail}.`
           );
       next(err);
-    }) as express.ErrorRequestHandler<{}, any, {}, {}, {}>
+    }) as express.ErrorRequestHandler<{}, any, {}, {}, BaseMiddlewareLocals>
   );
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
@@ -6000,11 +5981,11 @@ export default async function courselore({
               method="POST"
               action="${baseURL}/settings/update-email-and-password?_method=PATCH"
               novalidate
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
-              `}"
+              `)}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <label class="label">
@@ -6044,11 +6025,11 @@ export default async function courselore({
               method="POST"
               action="${baseURL}/settings/update-email-and-password?_method=PATCH"
               novalidate
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
-              `}"
+              `)}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <label class="label">
@@ -6227,19 +6208,19 @@ export default async function courselore({
               method="POST"
               action="${baseURL}/settings/notifications-preferences?_method=PATCH"
               novalidate
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
-              `}"
+              `)}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <div class="label">
                 <p class="label--text">Email Notifications</p>
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     display: flex;
-                  `}"
+                  `)}"
                 >
                   <label class="button button--tight button--tight--inline">
                     <input
@@ -6256,9 +6237,9 @@ export default async function courselore({
                   </label>
                 </div>
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     display: flex;
-                  `}"
+                  `)}"
                 >
                   <label class="button button--tight button--tight--inline">
                     <input
@@ -6276,9 +6257,9 @@ export default async function courselore({
                   </label>
                 </div>
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     display: flex;
-                  `}"
+                  `)}"
                 >
                   <label class="button button--tight button--tight--inline">
                     <input
@@ -6368,11 +6349,11 @@ export default async function courselore({
               method="POST"
               action="${baseURL}/courses"
               novalidate
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
-              `}"
+              `)}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <label class="label">
@@ -6387,13 +6368,13 @@ export default async function courselore({
                 />
               </label>
               <div
-                style="${css`
+                class="${res.locals.localCSS(css`
                   display: flex;
                   gap: var(--space--2);
                   & > * {
                     flex: 1;
                   }
-                `}"
+                `)}"
               >
                 <label class="label">
                   <p class="label--text">Year</p>
@@ -6672,12 +6653,12 @@ export default async function courselore({
             head: html`<title>${res.locals.course.name} · CourseLore</title>`,
             body: html`
               <div
-                style="${css`
+                class="${res.locals.localCSS(css`
                   display: flex;
                   flex-direction: column;
                   gap: var(--space--4);
                   align-items: center;
-                `}"
+                `)}"
               >
                 <h2 class="heading--display">
                   Welcome to ${res.locals.course.name}!
@@ -6862,8 +6843,8 @@ export default async function courselore({
     res,
     invitation,
   }: {
-    req: express.Request<{}, any, {}, {}, {}>;
-    res: express.Response<any, {}>;
+    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+    res: express.Response<any, BaseMiddlewareLocals>;
     invitation: InvitationExistsMiddlewareLocals["invitation"];
   }): Promise<nodemailer.SentMessageInfo> => {
     const link = `${baseURL}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
@@ -7088,11 +7069,11 @@ export default async function courselore({
               action="${baseURL}/courses/${res.locals.course
                 .reference}/settings/course-information?_method=PATCH"
               novalidate
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
-              `}"
+              `)}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <label class="label">
@@ -7107,13 +7088,13 @@ export default async function courselore({
                 />
               </label>
               <div
-                style="${css`
+                class="${res.locals.localCSS(css`
                   display: flex;
                   gap: var(--space--2);
                   & > * {
                     flex: 1;
                   }
-                `}"
+                `)}"
               >
                 <label class="label">
                   <p class="label--text">Year</p>
@@ -7294,20 +7275,20 @@ export default async function courselore({
               action="${baseURL}/courses/${res.locals.course
                 .reference}/settings/invitations"
               novalidate
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
-              `}"
+              `)}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <div class="label">
                 <p class="label--text">Type</p>
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     display: flex;
                     gap: var(--space--8);
-                  `}"
+                  `)}"
                 >
                   <label
                     class="button button--tight button--tight--inline button--transparent"
@@ -7374,12 +7355,12 @@ export default async function courselore({
                         content: ${res.locals.HTMLForJavaScript(
                           html`
                             <div
-                              style="${css`
+                              class="${res.locals.localCSS(css`
                                 padding: var(--space--2);
                                 display: flex;
                                 flex-direction: column;
                                 gap: var(--space--2);
-                              `}"
+                              `)}"
                             >
                               <p>
                                 Emails must be separated by commas and/or
@@ -7404,10 +7385,10 @@ export default async function courselore({
                   name="emails"
                   required
                   disabled
-                  class="input--text input--text--textarea"
-                  style="${css`
+                  class="input--text input--text--textarea ${res.locals
+                    .localCSS(css`
                     height: var(--space--32);
-                  `}"
+                  `)}"
                   oninteractive="${javascript`
                     (this.validators ??= []).push(() => {
                       const emails = [];
@@ -7440,10 +7421,10 @@ export default async function courselore({
               <div class="label">
                 <p class="label--text">Role</p>
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     display: flex;
                     gap: var(--space--8);
-                  `}"
+                  `)}"
                 >
                   $${enrollmentRoles.map(
                     (role) =>
@@ -7475,9 +7456,9 @@ export default async function courselore({
               <div class="label">
                 <p class="label--text">Expiration</p>
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     display: flex;
-                  `}"
+                  `)}"
                 >
                   <label
                     class="button button--tight button--tight--inline button--transparent"
@@ -7573,7 +7554,7 @@ export default async function courselore({
 
                     return html`
                       <div
-                        style="${css`
+                        class="${res.locals.localCSS(css`
                           padding-top: var(--space--4);
                           border-top: var(--border-width--1) solid
                             var(--color--gray--medium--200);
@@ -7582,7 +7563,7 @@ export default async function courselore({
                           }
                           display: flex;
                           gap: var(--space--2);
-                        `}"
+                        `)}"
                       >
                         <div>
                           $${invitation.email === null
@@ -7612,12 +7593,12 @@ export default async function courselore({
                               `}
                         </div>
                         <div
-                          style="${css`
+                          class="${res.locals.localCSS(css`
                             flex: 1;
                             display: flex;
                             flex-direction: column;
                             gap: var(--space--2);
-                          `}"
+                          `)}"
                         >
                           $${invitation.email === null
                             ? html`
@@ -7639,21 +7620,22 @@ export default async function courselore({
                                           return res.locals.HTMLForJavaScript(
                                             html`
                                               <div
-                                                style="${css`
+                                                class="${res.locals
+                                                  .localCSS(css`
                                                   display: flex;
                                                   flex-direction: column;
                                                   gap: var(--space--2);
-                                                `}"
+                                                `)}"
                                               >
                                                 $${isInvitationExpired
                                                   ? html`
                                                       <p
-                                                        class="text--rose"
-                                                        style="${css`
+                                                        class="text--rose ${res
+                                                          .locals.localCSS(css`
                                                           display: flex;
                                                           gap: var(--space--2);
                                                           justify-content: center;
-                                                        `}"
+                                                        `)}"
                                                       >
                                                         <i
                                                           class="bi bi-calendar-x-fill"
@@ -7663,11 +7645,12 @@ export default async function courselore({
                                                     `
                                                   : html``}
                                                 <div
-                                                  style="${css`
+                                                  class="${res.locals
+                                                    .localCSS(css`
                                                     display: flex;
                                                     gap: var(--space--2);
                                                     align-items: center;
-                                                  `}"
+                                                  `)}"
                                                 >
                                                   <div>
                                                     <a
@@ -7731,13 +7714,13 @@ export default async function courselore({
                             : html`
                                 <div>
                                   <button
-                                    class="button button--tight button--tight--inline button--transparent"
-                                    style="${css`
+                                    class="button button--tight button--tight--inline button--transparent ${res
+                                      .locals.localCSS(css`
                                       display: flex;
                                       flex-direction: column;
                                       align-items: flex-start;
                                       gap: var(--space--0);
-                                    `}"
+                                    `)}"
                                     oninteractive="${javascript`
                                       tippy(this, {
                                         trigger: "click",
@@ -7796,12 +7779,11 @@ export default async function courselore({
                                     `}"
                                   >
                                     <div
-                                      class="strong"
-                                      style="${css`
+                                      class="strong ${res.locals.localCSS(css`
                                         display: flex;
                                         align-items: baseline;
                                         gap: var(--space--2);
-                                      `}"
+                                      `)}"
                                     >
                                       ${invitation.name ?? invitation.email}
                                       <i class="bi bi-chevron-down"></i>
@@ -7818,18 +7800,18 @@ export default async function courselore({
                               `}
 
                           <div
-                            style="${css`
+                            class="${res.locals.localCSS(css`
                               display: flex;
                               flex-wrap: wrap;
                               gap: var(--space--2);
-                            `}"
+                            `)}"
                           >
                             <div
-                              style="${css`
+                              class="${res.locals.localCSS(css`
                                 width: var(--space--28);
                                 display: flex;
                                 justify-content: flex-start;
-                              `}"
+                              `)}"
                             >
                               <button
                                 class="button button--tight button--tight--inline button--transparent"
@@ -7909,11 +7891,11 @@ export default async function courselore({
                             </div>
 
                             <div
-                              style="${css`
+                              class="${res.locals.localCSS(css`
                                 width: var(--space--40);
                                 display: flex;
                                 justify-content: flex-start;
-                              `}"
+                              `)}"
                             >
                               $${(() => {
                                 const updateExpirationForm = html`
@@ -7921,10 +7903,10 @@ export default async function courselore({
                                     method="POST"
                                     action="${action}?_method=PATCH"
                                     novalidate
-                                    class="dropdown--menu"
-                                    style="${css`
+                                    class="dropdown--menu ${res.locals
+                                      .localCSS(css`
                                       gap: var(--space--2);
-                                    `}"
+                                    `)}"
                                   >
                                     <input
                                       type="hidden"
@@ -8011,10 +7993,10 @@ export default async function courselore({
                                   ? html`
                                       <div>
                                         <div
-                                          class="button button--tight button--tight--inline text--green"
-                                          style="${css`
+                                          class="button button--tight button--tight--inline text--green ${res
+                                            .locals.localCSS(css`
                                             cursor: default;
-                                          `}"
+                                          `)}"
                                           oninteractive="${javascript`
                                             tippy(this, {
                                               content: ${res.locals.HTMLForJavaScript(
@@ -8054,11 +8036,12 @@ export default async function courselore({
                                               content: ${res.locals.HTMLForJavaScript(
                                                 html`
                                                   <div
-                                                    style="${css`
+                                                    class="${res.locals
+                                                      .localCSS(css`
                                                       display: flex;
                                                       flex-direction: column;
                                                       gap: var(--space--2);
-                                                    `}"
+                                                    `)}"
                                                   >
                                                     <h3 class="heading">
                                                       <i
@@ -8109,14 +8092,15 @@ export default async function courselore({
                                               content: ${res.locals.HTMLForJavaScript(
                                                 html`
                                                   <div
-                                                    style="${css`
+                                                    class="${res.locals
+                                                      .localCSS(css`
                                                       padding-top: var(
                                                         --space--2
                                                       );
                                                       display: flex;
                                                       flex-direction: column;
                                                       gap: var(--space--2);
-                                                    `}"
+                                                    `)}"
                                                   >
                                                     $${updateExpirationForm}
                                                     <hr
@@ -8152,11 +8136,12 @@ export default async function courselore({
                                               content: ${res.locals.HTMLForJavaScript(
                                                 html`
                                                   <div
-                                                    style="${css`
+                                                    class="${res.locals
+                                                      .localCSS(css`
                                                       display: flex;
                                                       flex-direction: column;
                                                       gap: var(--space--2);
-                                                    `}"
+                                                    `)}"
                                                   >
                                                     <h3 class="heading">
                                                       <i
@@ -8260,12 +8245,12 @@ export default async function courselore({
             content: html`
               <div class="flash--green">
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     display: flex;
                     justify-content: center;
                     align-items: baseline;
                     gap: var(--space--4);
-                  `}"
+                  `)}"
                 >
                   Invitation created successfully.
                   <button
@@ -8607,11 +8592,11 @@ export default async function courselore({
             </h2>
 
             <label
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 gap: var(--space--2);
                 align-items: baseline;
-              `}"
+              `)}"
             >
               <i class="bi bi-funnel"></i>
               <input
@@ -8655,8 +8640,7 @@ export default async function courselore({
 
               return html`
                 <div
-                  class="enrollment"
-                  style="${css`
+                  class="enrollment ${res.locals.localCSS(css`
                     padding-top: var(--space--2);
                     border-top: var(--border-width--1) solid
                       var(--color--gray--medium--200);
@@ -8665,7 +8649,7 @@ export default async function courselore({
                     }
                     display: flex;
                     gap: var(--space--2);
-                  `}"
+                  `)}"
                 >
                   <div>
                     $${userPartial({
@@ -8677,14 +8661,14 @@ export default async function courselore({
                   </div>
 
                   <div
-                    style="${css`
+                    class="${res.locals.localCSS(css`
                       flex: 1;
                       margin-top: var(--space--0-5);
                       display: flex;
                       flex-direction: column;
                       gap: var(--space--2);
                       min-width: var(--space--0);
-                    `}"
+                    `)}"
                   >
                     <div>
                       <div
@@ -8704,10 +8688,9 @@ export default async function courselore({
                         ${enrollment.user.email}
                       </div>
                       <div
-                        class="secondary"
-                        style="${css`
+                        class="secondary ${res.locals.localCSS(css`
                           font-size: var(--font-size--xs);
-                        `}"
+                        `)}"
                       >
                         Last seen online
                         <time
@@ -8722,18 +8705,18 @@ export default async function courselore({
                     </div>
 
                     <div
-                      style="${css`
+                      class="${res.locals.localCSS(css`
                         display: flex;
                         flex-wrap: wrap;
                         gap: var(--space--2);
-                      `}"
+                      `)}"
                     >
                       <div
-                        style="${css`
+                        class="${res.locals.localCSS(css`
                           width: var(--space--28);
                           display: flex;
                           justify-content: flex-start;
-                        `}"
+                        `)}"
                       >
                         <button
                           class="button button--tight button--tight--inline button--transparent"
@@ -8794,7 +8777,9 @@ export default async function courselore({
                                                                 <form
                                                                   method="POST"
                                                                   action="${action}?_method=PATCH"
-                                                                  style="${css`
+                                                                  class="${res
+                                                                    .locals
+                                                                    .localCSS(css`
                                                                     padding: var(
                                                                       --space--2
                                                                     );
@@ -8803,7 +8788,7 @@ export default async function courselore({
                                                                     gap: var(
                                                                       --space--4
                                                                     );
-                                                                  `}"
+                                                                  `)}"
                                                                 >
                                                                   <input
                                                                     type="hidden"
@@ -8824,11 +8809,13 @@ export default async function courselore({
                                                                   </p>
                                                                   <p>
                                                                     <strong
-                                                                      style="${css`
+                                                                      class="${res
+                                                                        .locals
+                                                                        .localCSS(css`
                                                                         font-weight: var(
                                                                           --font-weight--bold
                                                                         );
-                                                                      `}"
+                                                                      `)}"
                                                                     >
                                                                       You may
                                                                       not undo
@@ -8874,11 +8861,11 @@ export default async function courselore({
                       </div>
 
                       <div
-                        style="${css`
+                        class="${res.locals.localCSS(css`
                           width: var(--space--8);
                           display: flex;
                           justify-content: flex-start;
-                        `}"
+                        `)}"
                       >
                         <button
                           class="button button--tight button--tight--inline button--transparent"
@@ -8907,12 +8894,12 @@ export default async function courselore({
                                           <form
                                             method="POST"
                                             action="${action}?_method=DELETE"
-                                            style="${css`
+                                            class="${res.locals.localCSS(css`
                                               padding: var(--space--2);
                                               display: flex;
                                               flex-direction: column;
                                               gap: var(--space--4);
-                                            `}"
+                                            `)}"
                                           >
                                             <input
                                               type="hidden"
@@ -8928,11 +8915,12 @@ export default async function courselore({
                                             </p>
                                             <p>
                                               <strong
-                                                style="${css`
+                                                class="${res.locals
+                                                  .localCSS(css`
                                                   font-weight: var(
                                                     --font-weight--bold
                                                   );
-                                                `}"
+                                                `)}"
                                               >
                                                 You may not undo this action!
                                               </strong>
@@ -9075,12 +9063,12 @@ export default async function courselore({
             $${res.locals.tags.length === 0
               ? html`
                   <div
-                    style="${css`
+                    class="${res.locals.localCSS(css`
                       display: flex;
                       flex-direction: column;
                       gap: var(--space--2);
                       align-items: center;
-                    `}"
+                    `)}"
                   >
                     <div class="decorative-icon">
                       <i class="bi bi-tags"></i>
@@ -9095,33 +9083,31 @@ export default async function courselore({
               action="${baseURL}/courses/${res.locals.course
                 .reference}/settings/tags?_method=PUT"
               novalidate
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
-              `}"
+              `)}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <div
-                style="${css`
+                class="${res.locals.localCSS(css`
                   display: flex;
                   flex-direction: column;
                   gap: var(--space--2);
-                `}"
+                `)}"
               >
                 <div
-                  class="tags"
-                  style="${css`
+                  class="tags ${res.locals.localCSS(css`
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--4);
-                  `}"
+                  `)}"
                 >
                   $${res.locals.tags.map(
                     (tag, index) => html`
                       <div
-                        class="tag"
-                        style="${css`
+                        class="tag ${res.locals.localCSS(css`
                           padding-bottom: var(--space--4);
                           border-bottom: var(--border-width--1) solid
                             var(--color--gray--medium--200);
@@ -9131,7 +9117,7 @@ export default async function courselore({
                           display: flex;
                           gap: var(--space--2);
                           align-items: baseline;
-                        `}"
+                        `)}"
                       >
                         <input
                           type="hidden"
@@ -9149,12 +9135,12 @@ export default async function courselore({
                           <i class="bi bi-tag-fill"></i>
                         </div>
                         <div
-                          style="${css`
+                          class="${res.locals.localCSS(css`
                             flex: 1;
                             display: flex;
                             flex-direction: column;
                             gap: var(--space--2);
-                          `}"
+                          `)}"
                         >
                           <input
                             type="text"
@@ -9165,17 +9151,17 @@ export default async function courselore({
                             autocomplete="off"
                           />
                           <div
-                            style="${css`
+                            class="${res.locals.localCSS(css`
                               display: flex;
                               flex-wrap: wrap;
                               column-gap: var(--space--4);
                               row-gap: var(--space--2);
-                            `}"
+                            `)}"
                           >
                             <div
-                              style="${css`
+                              class="${res.locals.localCSS(css`
                                 width: var(--space--40);
-                              `}"
+                              `)}"
                             >
                               <label
                                 class="button button--tight button--tight--inline button--justify-start button--transparent"
@@ -9214,11 +9200,11 @@ export default async function courselore({
                               </label>
                             </div>
                             <div
-                              style="${css`
+                              class="${res.locals.localCSS(css`
                                 .tag.deleted & {
                                   display: none;
                                 }
-                              `}"
+                              `)}"
                             >
                               <button
                                 type="button"
@@ -9236,13 +9222,13 @@ export default async function courselore({
                                     content: ${res.locals.HTMLForJavaScript(
                                       html`
                                         <div
-                                          style="${css`
+                                          class="${res.locals.localCSS(css`
                                             padding: var(--space--2)
                                               var(--space--0);
                                             display: flex;
                                             flex-direction: column;
                                             gap: var(--space--4);
-                                          `}"
+                                          `)}"
                                         >
                                           <p>
                                             Are you sure you want to remove this
@@ -9250,11 +9236,11 @@ export default async function courselore({
                                           </p>
                                           <p>
                                             <strong
-                                              style="${css`
+                                              class="${res.locals.localCSS(css`
                                                 font-weight: var(
                                                   --font-weight--bold
                                                 );
-                                              `}"
+                                              `)}"
                                             >
                                               The tag will be removed from all
                                               conversations and you may not undo
@@ -9294,11 +9280,11 @@ export default async function courselore({
                               </button>
                             </div>
                             <div
-                              style="${css`
+                              class="${res.locals.localCSS(css`
                                 .tag:not(.deleted) & {
                                   display: none;
                                 }
-                              `}"
+                              `)}"
                             >
                               <button
                                 type="button"
@@ -9362,10 +9348,10 @@ export default async function courselore({
                   )}
                 </div>
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     display: flex;
                     justify-content: center;
-                  `}"
+                  `)}"
                 >
                   <button
                     type="button"
@@ -9380,23 +9366,22 @@ export default async function courselore({
                       const newTag = ${res.locals.HTMLForJavaScript(
                         html`
                           <div
-                            class="tag"
-                            style="${css`
+                            class="tag ${res.locals.localCSS(css`
                               display: flex;
                               gap: var(--space--2);
                               align-items: baseline;
-                            `}"
+                            `)}"
                           >
                             <div class="text--teal">
                               <i class="bi bi-tag-fill"></i>
                             </div>
                             <div
-                              style="${css`
+                              class="${res.locals.localCSS(css`
                                 flex: 1;
                                 display: flex;
                                 flex-direction: column;
                                 gap: var(--space--2);
-                              `}"
+                              `)}"
                             >
                               <input
                                 type="text"
@@ -9412,17 +9397,17 @@ export default async function courselore({
                                 `}"
                               />
                               <div
-                                style="${css`
+                                class="${res.locals.localCSS(css`
                                   display: flex;
                                   flex-wrap: wrap;
                                   column-gap: var(--space--4);
                                   row-gap: var(--space--2);
-                                `}"
+                                `)}"
                               >
                                 <div
-                                  style="${css`
+                                  class="${res.locals.localCSS(css`
                                     width: var(--space--40);
-                                  `}"
+                                  `)}"
                                 >
                                   <label
                                     class="button button--tight button--tight--inline button--justify-start button--transparent"
@@ -9622,11 +9607,11 @@ export default async function courselore({
               action="${baseURL}/courses/${res.locals.course
                 .reference}/settings/your-enrollment?_method=PATCH"
               novalidate
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
-              `}"
+              `)}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <div class="label">
@@ -9646,11 +9631,11 @@ export default async function courselore({
                   </button>
                 </div>
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     margin-top: var(--space--1);
                     display: flex;
                     gap: var(--space--2);
-                  `}"
+                  `)}"
                 >
                   $${enrollmentAccentColors.map(
                     (accentColor) => html`
@@ -9662,8 +9647,7 @@ export default async function courselore({
                         $${accentColor === res.locals.enrollment.accentColor
                           ? html`checked`
                           : html``}
-                        class="input--radio"
-                        style="${css`
+                        class="input--radio ${res.locals.localCSS(css`
                           background-color: var(--color--${accentColor}--500);
                           &:hover,
                           &:focus-within {
@@ -9686,7 +9670,7 @@ export default async function courselore({
                               );
                             }
                           }
-                        `}"
+                        `)}"
                       />
                     `
                   )}
@@ -9766,10 +9750,10 @@ export default async function courselore({
               Invitation
             </h2>
             <div
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 justify-content: center;
-              `}"
+              `)}"
             >
               $${coursePartial({
                 req,
@@ -9786,20 +9770,19 @@ export default async function courselore({
 
             <div>
               <div
-                style="${css`
+                class="${res.locals.localCSS(css`
                   display: flex;
                   gap: var(--space--2);
                   align-items: baseline;
-                `}"
+                `)}"
               >
                 <input
                   type="text"
                   readonly
                   value="${link}"
-                  class="input--text"
-                  style="${css`
+                  class="input--text ${res.locals.localCSS(css`
                     flex: 1;
-                  `}"
+                  `)}"
                   onfocus="${javascript`
                     this.select();
                   `}"
@@ -9887,10 +9870,10 @@ export default async function courselore({
               Invitation
             </h2>
             <div
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 justify-content: center;
-              `}"
+              `)}"
             >
               $${coursePartial({
                 req,
@@ -9905,10 +9888,9 @@ export default async function courselore({
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <button
-                class="button button--blue"
-                style="${css`
+                class="button button--blue ${res.locals.localCSS(css`
                   width: 100%;
-                `}"
+                `)}"
               >
                 <i class="bi bi-journal-arrow-down"></i>
                 Enroll as ${lodash.capitalize(res.locals.invitation.role)}
@@ -9985,10 +9967,10 @@ export default async function courselore({
               Invitation
             </h2>
             <div
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 justify-content: center;
-              `}"
+              `)}"
             >
               $${coursePartial({
                 req,
@@ -9997,13 +9979,13 @@ export default async function courselore({
               })}
             </div>
             <div
-              style="${css`
+              class="${res.locals.localCSS(css`
                 display: flex;
                 gap: var(--space--4);
                 & > * {
                   flex: 1;
                 }
-              `}"
+              `)}"
             >
               <a
                 href="${baseURL}/sign-up${qs.stringify(
@@ -10364,12 +10346,12 @@ export default async function courselore({
           ? html``
           : html`
               <div
-                style="${css`
+                class="${res.locals.localCSS(css`
                   justify-content: center;
                   @media (min-width: 900px) {
                     display: none;
                   }
-                `}"
+                `)}"
               >
                 <button
                   class="button button--transparent"
@@ -10389,7 +10371,7 @@ export default async function courselore({
       `,
       body: html`
         <div
-          style="${css`
+          class="${res.locals.localCSS(css`
             width: 100%;
             height: 100%;
             display: flex;
@@ -10398,14 +10380,13 @@ export default async function courselore({
                 display: none;
               }
             }
-          `}"
+          `)}"
         >
           <div
             class="conversation--layout--sidebar ${onlyConversationLayoutSidebarOnSmallScreen ||
             req.query.conversationLayoutSidebarOpenOnSmallScreen === "true"
               ? ""
-              : "hidden-on-small-screen"}"
-            style="${css`
+              : "hidden-on-small-screen"} ${res.locals.localCSS(css`
               background-color: var(--color--gray--medium--100);
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--800);
@@ -10422,19 +10403,19 @@ export default async function courselore({
                   border-color: var(--color--gray--medium--700);
                 }
               }
-            `}"
+            `)}"
           >
             <div
-              style="${css`
+              class="${res.locals.localCSS(css`
                 margin: var(--space--4);
                 @media (max-width: 899px) {
                   display: flex;
                   justify-content: center;
                 }
-              `}"
+              `)}"
             >
               <div
-                style="${css`
+                class="${res.locals.localCSS(css`
                   display: flex;
                   flex-direction: column;
                   gap: var(--space--2);
@@ -10443,13 +10424,13 @@ export default async function courselore({
                     min-width: var(--width--0);
                     max-width: var(--width--prose);
                   }
-                `}"
+                `)}"
               >
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     display: flex;
                     justify-content: center;
-                  `}"
+                  `)}"
                 >
                   <a
                     href="${baseURL}/courses/${res.locals.course
@@ -10471,13 +10452,13 @@ export default async function courselore({
                 <form
                   novalidate
                   data-skip-is-modified="true"
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     font-size: var(--font-size--xs);
                     line-height: var(--line-height--xs);
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--1);
-                  `}"
+                  `)}"
                 >
                   <input
                     type="hidden"
@@ -10490,11 +10471,11 @@ export default async function courselore({
                     value="false"
                   />
                   <div
-                    style="${css`
+                    class="${res.locals.localCSS(css`
                       display: flex;
                       gap: var(--space--2);
                       align-items: center;
-                    `}"
+                    `)}"
                   >
                     <input
                       type="text"
@@ -10541,9 +10522,9 @@ export default async function courselore({
                   </div>
 
                   <div
-                    style="${css`
+                    class="${res.locals.localCSS(css`
                       display: flex;
-                    `}"
+                    `)}"
                   >
                     <label
                       class="button button--tight button--tight--inline button--transparent"
@@ -10574,22 +10555,21 @@ export default async function courselore({
 
                   <div
                     $${req.query.filters === undefined ? html`hidden` : html``}
-                    class="filters"
-                    style="${css`
+                    class="filters ${res.locals.localCSS(css`
                       display: flex;
                       flex-direction: column;
                       gap: var(--space--2);
-                    `}"
+                    `)}"
                   >
                     <div class="label">
                       <p class="label--text">Type</p>
                       <div
-                        style="${css`
+                        class="${res.locals.localCSS(css`
                           display: flex;
                           flex-wrap: wrap;
                           column-gap: var(--space--6);
                           row-gap: var(--space--2);
-                        `}"
+                        `)}"
                       >
                         $${conversationTypes.map(
                           (conversationType) => html`
@@ -10643,12 +10623,12 @@ export default async function courselore({
                         </button>
                       </div>
                       <div
-                        style="${css`
+                        class="${res.locals.localCSS(css`
                           display: flex;
                           flex-wrap: wrap;
                           column-gap: var(--space--6);
                           row-gap: var(--space--2);
-                        `}"
+                        `)}"
                       >
                         <label
                           class="button button--tight button--tight--inline button--transparent"
@@ -10704,12 +10684,12 @@ export default async function courselore({
                     <div class="label">
                       <p class="label--text">Visibility</p>
                       <div
-                        style="${css`
+                        class="${res.locals.localCSS(css`
                           display: flex;
                           flex-wrap: wrap;
                           column-gap: var(--space--6);
                           row-gap: var(--space--2);
-                        `}"
+                        `)}"
                       >
                         <label
                           class="button button--tight button--tight--inline button--transparent"
@@ -10782,20 +10762,20 @@ export default async function courselore({
                               </button>
                             </div>
                             <div
-                              style="${css`
+                              class="${res.locals.localCSS(css`
                                 display: flex;
                                 flex-wrap: wrap;
                                 column-gap: var(--space--6);
                                 row-gap: var(--space--2);
-                              `}"
+                              `)}"
                             >
                               $${res.locals.tags.map(
                                 (tag) => html`
                                   <div
-                                    style="${css`
+                                    class="${res.locals.localCSS(css`
                                       display: flex;
                                       gap: var(--space--2);
-                                    `}"
+                                    `)}"
                                   >
                                     <label
                                       class="button button--tight button--tight--inline button--transparent"
@@ -10857,11 +10837,11 @@ export default async function courselore({
                       <hr class="separator" />
 
                       <div
-                        style="${css`
+                        class="${res.locals.localCSS(css`
                           display: flex;
                           flex-direction: column;
                           align-items: center;
-                        `}"
+                        `)}"
                       >
                         <div class="decorative-icon">
                           <i class="bi bi-chat-left-text"></i>
@@ -10884,10 +10864,10 @@ export default async function courselore({
                               method="POST"
                               action="${baseURL}/courses/${res.locals.course
                                 .reference}/conversations/mark-all-conversations-as-read"
-                              style="${css`
+                              class="${res.locals.localCSS(css`
                                 display: flex;
                                 justify-content: flex-end;
-                              `}"
+                              `)}"
                             >
                               <input
                                 type="hidden"
@@ -10895,11 +10875,11 @@ export default async function courselore({
                                 value="${req.csrfToken()}"
                               />
                               <button
-                                class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                style="${css`
+                                class="button button--tight button--tight--inline button--tight-gap button--transparent ${res
+                                  .locals.localCSS(css`
                                   font-size: var(--font-size--xs);
                                   line-height: var(--line-height--xs);
-                                `}"
+                                `)}"
                               >
                                 <i class="bi bi-check-all"></i>
                                 Mark All Conversations as Read
@@ -10915,10 +10895,9 @@ export default async function courselore({
                               conversation.id === res.locals.conversation?.id;
                             return html`
                               <hr
-                                class="separator"
-                                style="${css`
+                                class="separator ${res.locals.localCSS(css`
                                   margin: var(--space---px) var(--space--0);
-                                `}"
+                                `)}"
                               />
                               <a
                                 href="${baseURL}/courses/${res.locals.course
@@ -10934,8 +10913,8 @@ export default async function courselore({
                                   : ``}"
                                 class="button ${isSelected
                                   ? "button--blue"
-                                  : "button--transparent"}"
-                                style="${css`
+                                  : "button--transparent"} ${res.locals
+                                  .localCSS(css`
                                   width: calc(
                                     var(--space--2) + 100% + var(--space--2)
                                   );
@@ -10950,7 +10929,7 @@ export default async function courselore({
                                         }
                                       `
                                     : css``}
-                                `}"
+                                `)}"
                                 $${isSelected &&
                                 req.query.scrollToConversation !== "false"
                                   ? html`
@@ -10961,9 +10940,9 @@ export default async function courselore({
                                   : html``}
                               >
                                 <div
-                                  style="${css`
+                                  class="${res.locals.localCSS(css`
                                     flex: 1;
-                                  `}"
+                                  `)}"
                                 >
                                   $${conversationPartial({
                                     req,
@@ -10973,11 +10952,11 @@ export default async function courselore({
                                   })}
                                 </div>
                                 <div
-                                  style="${css`
+                                  class="${res.locals.localCSS(css`
                                     width: var(--space--4);
                                     display: flex;
                                     justify-content: flex-end;
-                                  `}"
+                                  `)}"
                                 >
                                   $${(() => {
                                     const unreadCount =
@@ -10989,19 +10968,19 @@ export default async function courselore({
                                       ? html``
                                       : html`
                                           <button
-                                            class="button button--tight button--blue"
-                                            style="${css`
+                                            class="button button--tight button--blue ${res
+                                              .locals.localCSS(css`
                                               font-size: var(--font-size--2xs);
                                               line-height: var(
                                                 --line-height--2xs
                                               );
-                                            `}"
+                                            `)}"
                                             oninteractive="${javascript`
-                                            tippy(this, {
-                                              touch: false,
-                                              content: "Mark as Read",
-                                            });
-                                          `}"
+                                              tippy(this, {
+                                                touch: false,
+                                                content: "Mark as Read",
+                                              });
+                                            `}"
                                             onclick="${javascript`
                                               event.preventDefault();
                                               fetch(this.closest("a").getAttribute("href"));
@@ -11027,14 +11006,13 @@ export default async function courselore({
             class="conversation--layout--main ${onlyConversationLayoutSidebarOnSmallScreen ||
             req.query.conversationLayoutSidebarOpenOnSmallScreen === "true"
               ? "hidden-on-small-screen"
-              : ""}"
-            style="${css`
+              : ""} ${res.locals.localCSS(css`
               overflow: auto;
               flex: 1;
-            `}"
+            `)}"
           >
             <div
-              style="${css`
+              class="${res.locals.localCSS(css`
                 @media (max-width: 899px) {
                   display: flex;
                   justify-content: center;
@@ -11050,13 +11028,13 @@ export default async function courselore({
                         margin-left: var(--space--8);
                       }
                     `}
-              `}"
+              `)}"
             >
               $${mainIsAScrollingPane
                 ? body
                 : html`
                     <div
-                      style="${css`
+                      class="${res.locals.localCSS(css`
                         min-width: var(--width--0);
                         max-width: var(--width--prose);
                         display: flex;
@@ -11065,7 +11043,7 @@ export default async function courselore({
                         @media (max-width: 899px) {
                           flex: 1;
                         }
-                      `}"
+                      `)}"
                     >
                       $${body}
                     </div>
@@ -11105,14 +11083,14 @@ export default async function courselore({
     message?: NonNullable<ReturnType<typeof getMessage>>;
   }): HTML => html`
     <div
-      style="${css`
+      class="${res.locals.localCSS(css`
         display: flex;
         flex-direction: column;
         gap: var(--space--1);
-      `}"
+      `)}"
     >
       <div
-        style="${css`
+        class="${res.locals.localCSS(css`
           font-size: var(--font-size--xs);
           line-height: var(--line-height--xs);
           display: flex;
@@ -11124,7 +11102,7 @@ export default async function courselore({
             display: flex;
             gap: var(--space--1);
           }
-        `}"
+        `)}"
       >
         <div class="${conversationTypeTextColor[conversation.type].display}">
           $${conversationTypeIcon[conversation.type].fill}
@@ -11163,15 +11141,14 @@ export default async function courselore({
       </h3>
 
       <div
-        class="secondary"
-        style="${css`
+        class="secondary ${res.locals.localCSS(css`
           font-size: var(--font-size--xs);
           line-height: var(--line-height--xs);
           display: flex;
           flex-wrap: wrap;
           column-gap: var(--space--3);
           row-gap: var(--space--0-5);
-        `}"
+        `)}"
       >
         $${userPartial({
           req,
@@ -11211,7 +11188,7 @@ export default async function courselore({
         ? html``
         : html`
             <div
-              style="${css`
+              class="${res.locals.localCSS(css`
                 font-size: var(--font-size--xs);
                 line-height: var(--line-height--xs);
                 display: flex;
@@ -11223,7 +11200,7 @@ export default async function courselore({
                   display: flex;
                   gap: var(--space--1);
                 }
-              `}"
+              `)}"
             >
               $${conversation.taggings.map(
                 (tagging) => html`
@@ -11919,14 +11896,13 @@ export default async function courselore({
     expanded?: boolean;
   }): HTML => html`
     <div
-      class="content-editor"
-      style="${css`
+      class="content-editor ${res.locals.localCSS(css`
         min-width: var(--space--0);
-      `}"
+      `)}"
     >
       <div
         $${compact ? html`hidden` : html``}
-        style="${css`
+        class="${res.locals.localCSS(css`
           display: flex;
           gap: var(--space--1);
 
@@ -11954,7 +11930,7 @@ export default async function courselore({
               background-color: var(--color--gray--medium--700);
             }
           }
-        `}"
+        `)}"
       >
         <label>
           <input
@@ -12070,18 +12046,18 @@ export default async function courselore({
         </label>
       </div>
       <div
-        style="${css`
+        class="${res.locals.localCSS(css`
           background-color: var(--color--gray--medium--100);
           @media (prefers-color-scheme: dark) {
             background-color: var(--color--gray--medium--800);
           }
           border-radius: var(--border-radius--lg);
-        `}"
+        `)}"
       >
         <div class="content-editor--write">
           <div
             $${compact ? html`hidden` : html``}
-            style="${css`
+            class="${res.locals.localCSS(css`
               padding: var(--space--1) var(--space--0);
               margin: var(--space--0) var(--space--3);
               overflow-x: auto;
@@ -12098,7 +12074,7 @@ export default async function courselore({
                 }
                 margin-left: var(--space--0-5);
               }
-            `}"
+            `)}"
           >
             <div>
               <button
@@ -12912,10 +12888,10 @@ export default async function courselore({
                     content: ${res.locals.HTMLForJavaScript(
                       html`
                         <div
-                          style="${css`
+                          class="${res.locals.localCSS(css`
                             display: flex;
                             gap: var(--space--2);
-                          `}"
+                          `)}"
                         >
                           $${spinner} Uploading…
                         </div>
@@ -12971,24 +12947,24 @@ export default async function courselore({
             </div>
           </div>
           <div
-            style="${css`
+            class="${res.locals.localCSS(css`
               position: relative;
-            `}"
+            `)}"
           >
             <div
-              class="content-editor--write--textarea--dropdown-menu-target"
-              style="${css`
+              class="content-editor--write--textarea--dropdown-menu-target ${res
+                .locals.localCSS(css`
                 width: var(--space--0);
                 height: var(--line-height--sm);
                 position: absolute;
-              `}"
+              `)}"
             ></div>
             <textarea
               name="${name}"
               $${required ? html`required` : html``}
-              class="content-editor--write--textarea input--text input--text--textarea"
               $${skipIsModified ? html`data-skip-is-modified="true"` : html``}
-              style="${css`
+              class="content-editor--write--textarea input--text input--text--textarea ${res
+                .locals.localCSS(css`
                 ${compact
                   ? css`
                       height: var(--space--14);
@@ -13012,7 +12988,7 @@ export default async function courselore({
                     background-color: var(--color--blue--900);
                   }
                 }
-              `}"
+              `)}"
               $${res.locals.course !== undefined
                 ? html`
                     oninteractive="${javascript`
@@ -13029,11 +13005,11 @@ export default async function courselore({
                             content: ${res.locals.HTMLForJavaScript(
                               html`
                                 <div
-                                  style="${css`
+                                  class="${res.locals.localCSS(css`
                                     width: var(--space--56);
                                     max-height: var(--space--44);
                                     overflow: auto;
-                                  `}"
+                                  `)}"
                                 >
                                   <p class="heading">
                                     <i class="bi bi-at"></i>
@@ -13084,11 +13060,11 @@ export default async function courselore({
                             content: ${res.locals.HTMLForJavaScript(
                               html`
                                 <div
-                                  style="${css`
+                                  class="${res.locals.localCSS(css`
                                     width: var(--space--72);
                                     max-height: var(--space--44);
                                     overflow: auto;
-                                  `}"
+                                  `)}"
                                 >
                                   <p class="heading">
                                     <i class="bi bi-hash"></i>
@@ -13242,24 +13218,22 @@ ${contentSource}</textarea
 
         <div
           hidden
-          class="content-editor--loading strong"
-          style="${css`
+          class="content-editor--loading strong ${res.locals.localCSS(css`
             padding: var(--space--4);
             display: flex;
             justify-content: center;
             align-items: center;
             gap: var(--space--2);
-          `}"
+          `)}"
         >
           $${spinner} Loading…
         </div>
 
         <div
           hidden
-          class="content-editor--preview"
-          style="${css`
+          class="content-editor--preview ${res.locals.localCSS(css`
             padding: var(--space--4);
-          `}"
+          `)}"
         ></div>
       </div>
     </div>
@@ -14150,15 +14124,14 @@ ${contentSource}</textarea
                           });
                           if (enrollment.user.id === res.locals.user!.id)
                             mentionHTML = html`<mark
-                              class="mark"
-                              style="${css`
+                              class="mark ${res.locals.localCSS(css`
                                 border-top-left-radius: var(
                                   --border-radius--3xl
                                 );
                                 border-bottom-left-radius: var(
                                   --border-radius--3xl
                                 );
-                              `}"
+                              `)}"
                               >$${mentionHTML}</mark
                             >`;
                           break;
@@ -14250,9 +14223,9 @@ ${contentSource}</textarea
                     content: ${res.locals.HTMLForJavaScript(
                       html`
                         <div
-                          style="${css`
+                          class="${res.locals.localCSS(css`
                             padding: var(--space--2);
-                          `}"
+                          `)}"
                         >
                           $${conversationPartial({
                             req: narrowReq,
@@ -14282,12 +14255,12 @@ ${contentSource}</textarea
                   content: ${res.locals.HTMLForJavaScript(
                     html`
                       <div
-                        style="${css`
+                        class="${res.locals.localCSS(css`
                           padding: var(--space--2);
                           display: flex;
                           flex-direction: column;
                           gap: var(--space--2);
-                        `}"
+                        `)}"
                       >
                         $${conversationPartial({
                           req: narrowReq,
@@ -14419,23 +14392,23 @@ ${contentSource}</textarea
                 action="${baseURL}/courses/${res.locals.course
                   .reference}/conversations"
                 novalidate
-                style="${css`
+                class="${res.locals.localCSS(css`
                   display: flex;
                   flex-direction: column;
                   gap: var(--space--4);
-                `}"
+                `)}"
               >
                 <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
 
                 <div class="label">
                   <p class="label--text">Type</p>
                   <div
-                    style="${css`
+                    class="${res.locals.localCSS(css`
                       display: flex;
                       flex-wrap: wrap;
                       column-gap: var(--space--8);
                       row-gap: var(--space--2);
-                    `}"
+                    `)}"
                   >
                     $${res.locals.conversationTypes.map(
                       (conversationType) => html`
@@ -14474,20 +14447,19 @@ ${contentSource}</textarea
                 </div>
 
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     display: flex;
                     flex-wrap: wrap;
                     column-gap: var(--space--8);
                     row-gap: var(--space--4);
-                  `}"
+                  `)}"
                 >
                   $${res.locals.enrollment.role === "staff"
                     ? html`
                         <div
-                          class="label"
-                          style="${css`
+                          class="label ${res.locals.localCSS(css`
                             width: var(--space--24);
-                          `}"
+                          `)}"
                         >
                           <div class="label--text">
                             Pin
@@ -14505,9 +14477,9 @@ ${contentSource}</textarea
                             </button>
                           </div>
                           <div
-                            style="${css`
+                            class="${res.locals.localCSS(css`
                               display: flex;
-                            `}"
+                            `)}"
                           >
                             <label
                               class="button button--tight button--tight--inline button--transparent"
@@ -14547,16 +14519,15 @@ ${contentSource}</textarea
                     : html``}
 
                   <div
-                    class="label"
-                    style="${css`
+                    class="label ${res.locals.localCSS(css`
                       width: var(--space--40);
-                    `}"
+                    `)}"
                   >
                     <p class="label--text">Visibility</p>
                     <div
-                      style="${css`
+                      class="${res.locals.localCSS(css`
                         display: flex;
-                      `}"
+                      `)}"
                     >
                       <label
                         class="button button--tight button--tight--inline button--transparent"
@@ -14637,11 +14608,11 @@ ${contentSource}</textarea
                           res.locals.enrollment.role === "staff"
                             ? html`
                                 <div
-                                  style="${css`
+                                  class="${res.locals.localCSS(css`
                                     flex: 1;
                                     display: flex;
                                     justify-content: flex-end;
-                                  `}"
+                                  `)}"
                                 >
                                   <a
                                     href="${baseURL}/courses/${res.locals.course
@@ -14657,12 +14628,12 @@ ${contentSource}</textarea
                             : html``}
                         </div>
                         <div
-                          style="${css`
+                          class="${res.locals.localCSS(css`
                             display: flex;
                             flex-wrap: wrap;
                             column-gap: var(--space--8);
                             row-gap: var(--space--2);
-                          `}"
+                          `)}"
                         >
                           $${res.locals.tags.length === 0 &&
                           res.locals.enrollment.role === "staff"
@@ -14680,10 +14651,10 @@ ${contentSource}</textarea
                             : res.locals.tags.map(
                                 (tag) => html`
                                   <div
-                                    style="${css`
+                                    class="${res.locals.localCSS(css`
                                       display: flex;
                                       gap: var(--space--2);
-                                    `}"
+                                    `)}"
                                   >
                                     <label
                                       class="button button--tight button--tight--inline button--transparent"
@@ -14733,9 +14704,9 @@ ${contentSource}</textarea
                       <div class="anonymity label">
                         <p class="label--text">Anonymity</p>
                         <div
-                          style="${css`
+                          class="${res.locals.localCSS(css`
                             display: flex;
-                          `}"
+                          `)}"
                         >
                           <label
                             class="button button--tight button--tight--inline button--transparent"
@@ -14762,9 +14733,9 @@ ${contentSource}</textarea
                                   name: false,
                                 })}
                                 <span
-                                  style="${css`
+                                  class="${res.locals.localCSS(css`
                                     margin-left: var(--space--1);
-                                  `}"
+                                  `)}"
                                 >
                                   Signed by You
                                 </span>
@@ -14785,9 +14756,9 @@ ${contentSource}</textarea
                                   name: false,
                                 })}
                                 <span
-                                  style="${css`
+                                  class="${res.locals.localCSS(css`
                                     margin-left: var(--space--1);
-                                  `}"
+                                  `)}"
                                 >
                                   Anonymous to Other Students
                                 </span>
@@ -15248,16 +15219,15 @@ ${contentSource}</textarea
           mainIsAScrollingPane: res.locals.conversation.type === "chat",
           body: html`
             <div
-              style="${css`
+              class="${res.locals.localCSS(css`
                 flex: 1;
                 display: flex;
                 flex-direction: column;
                 min-width: var(--space--0);
-              `}"
+              `)}"
             >
               <div
-                class="conversation--header"
-                style="${css`
+                class="conversation--header ${res.locals.localCSS(css`
                   padding-bottom: var(--space--2);
                   border-bottom: var(--border-width--1) solid
                     var(--color--gray--medium--200);
@@ -15278,10 +15248,10 @@ ${contentSource}</textarea
                         }
                       `
                     : css``}
-                `}"
+                `)}"
               >
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     ${res.locals.conversation.type === "chat"
                       ? css`
                           flex: 1;
@@ -15293,29 +15263,29 @@ ${contentSource}</textarea
                           }
                         `
                       : css``}
-                  `}"
+                  `)}"
                 >
                   $${res.locals.conversation.type === "chat"
                     ? html`
                         <button
-                          class="conversation--header--compact button button--tight button--tight--inline button--transparent strong"
-                          style="${css`
+                          class="conversation--header--compact button button--tight button--tight--inline button--transparent strong ${res
+                            .locals.localCSS(css`
                             max-width: calc(100% + var(--space--2));
                             margin-top: var(--space---2);
-                          `}"
+                          `)}"
                           onclick="${javascript`
                             this.closest(".conversation--header").querySelector(".conversation--header--compact").hidden = true;
                             this.closest(".conversation--header").querySelector(".conversation--header--full").hidden = false;
                           `}"
                         >
                           <span
-                            style="${css`
+                            class="${res.locals.localCSS(css`
                               flex: 1;
                               text-align: left;
                               white-space: nowrap;
                               overflow: hidden;
                               text-overflow: ellipsis;
-                            `}"
+                            `)}"
                           >
                             $${highlightSearchResult(
                               html`${res.locals.conversation.title}`,
@@ -15331,23 +15301,22 @@ ${contentSource}</textarea
                     $${res.locals.conversation.type === "chat"
                       ? html`hidden`
                       : html``}
-                    class="conversation--header--full"
-                    style="${css`
+                    class="conversation--header--full ${res.locals.localCSS(css`
                       display: flex;
                       flex-direction: column;
                       gap: var(--space--1);
-                    `}"
+                    `)}"
                   >
                     <div
-                      style="${css`
+                      class="${res.locals.localCSS(css`
                         font-size: var(--font-size--xs);
                         line-height: var(--line-height--xs);
                         display: flex;
                         gap: var(--space--4);
-                      `}"
+                      `)}"
                     >
                       <div
-                        style="${css`
+                        class="${res.locals.localCSS(css`
                           flex: 1;
                           display: flex;
                           flex-wrap: wrap;
@@ -15358,7 +15327,7 @@ ${contentSource}</textarea
                             display: flex;
                             gap: var(--space--1);
                           }
-                        `}"
+                        `)}"
                       >
                         $${mayEditConversation({ req, res })
                           ? html`
@@ -15537,12 +15506,12 @@ ${contentSource}</textarea
                                             .reference}/conversations/${res
                                             .locals.conversation
                                             .reference}?_method=PATCH"
-                                          style="${css`
+                                          class="${res.locals.localCSS(css`
                                             padding: var(--space--2);
                                             display: flex;
                                             flex-direction: column;
                                             gap: var(--space--4);
-                                          `}"
+                                          `)}"
                                         >
                                           <input
                                             type="hidden"
@@ -15564,11 +15533,12 @@ ${contentSource}</textarea
                                                 </p>
                                                 <p>
                                                   <strong
-                                                    style="${css`
+                                                    class="${res.locals
+                                                      .localCSS(css`
                                                       font-weight: var(
                                                         --font-weight--bold
                                                       );
-                                                    `}"
+                                                    `)}"
                                                   >
                                                     Students who already
                                                     participated in the
@@ -15598,11 +15568,12 @@ ${contentSource}</textarea
                                                 </p>
                                                 <p>
                                                   <strong
-                                                    style="${css`
+                                                    class="${res.locals
+                                                      .localCSS(css`
                                                       font-weight: var(
                                                         --font-weight--bold
                                                       );
-                                                    `}"
+                                                    `)}"
                                                   >
                                                     Ensure that people involved
                                                     in the conversation consent
@@ -15637,11 +15608,10 @@ ${contentSource}</textarea
                           : res.locals.conversation.staffOnlyAt !== null
                           ? html`
                               <div
-                                class="text--pink"
-                                style="${css`
+                                class="text--pink ${res.locals.localCSS(css`
                                   display: flex;
                                   gap: var(--space--1);
-                                `}"
+                                `)}"
                               >
                                 <i class="bi bi-mortarboard-fill"></i>
                                 Visible by Staff Only
@@ -15724,14 +15694,15 @@ ${contentSource}</textarea
                                                           .reference}/conversations/${res
                                                           .locals.conversation
                                                           .reference}?_method=DELETE"
-                                                        style="${css`
+                                                        class="${res.locals
+                                                          .localCSS(css`
                                                           padding: var(
                                                             --space--2
                                                           );
                                                           display: flex;
                                                           flex-direction: column;
                                                           gap: var(--space--4);
-                                                        `}"
+                                                        `)}"
                                                       >
                                                         <input
                                                           type="hidden"
@@ -15745,11 +15716,12 @@ ${contentSource}</textarea
                                                         </p>
                                                         <p>
                                                           <strong
-                                                            style="${css`
+                                                            class="${res.locals
+                                                              .localCSS(css`
                                                               font-weight: var(
                                                                 --font-weight--bold
                                                               );
-                                                            `}"
+                                                            `)}"
                                                           >
                                                             You may not undo
                                                             this action!
@@ -15787,11 +15759,10 @@ ${contentSource}</textarea
                     </div>
 
                     <h2
-                      class="title--show strong"
-                      style="${css`
+                      class="title--show strong ${res.locals.localCSS(css`
                         font-size: var(--font-size--lg);
                         line-height: var(--line-height--lg);
-                      `}"
+                      `)}"
                     >
                       $${highlightSearchResult(
                         html`${res.locals.conversation.title}`,
@@ -15808,12 +15779,11 @@ ${contentSource}</textarea
                               .conversation.reference}?_method=PATCH"
                             novalidate
                             hidden
-                            class="title--edit"
-                            style="${css`
+                            class="title--edit ${res.locals.localCSS(css`
                               display: flex;
                               gap: var(--space--2);
                               align-items: center;
-                            `}"
+                            `)}"
                           >
                             <input
                               type="hidden"
@@ -15829,10 +15799,10 @@ ${contentSource}</textarea
                               class="input--text"
                             />
                             <button
-                              class="button button--tight button--tight--inline button--transparent text--green"
-                              style="${css`
+                              class="button button--tight button--tight--inline button--transparent text--green ${res
+                                .locals.localCSS(css`
                                 flex: 1;
-                              `}"
+                              `)}"
                               oninteractive="${javascript`
                                 tippy(this, {
                                   theme: "green",
@@ -15867,7 +15837,7 @@ ${contentSource}</textarea
                       ? html``
                       : html`
                           <div
-                            style="${css`
+                            class="${res.locals.localCSS(css`
                               font-size: var(--font-size--xs);
                               line-height: var(--line-height--xs);
                               display: flex;
@@ -15879,7 +15849,7 @@ ${contentSource}</textarea
                                 display: flex;
                                 gap: var(--space--1);
                               }
-                            `}"
+                            `)}"
                           >
                             $${mayEditConversation({ req, res })
                               ? html`
@@ -15888,10 +15858,10 @@ ${contentSource}</textarea
                                     ? html`
                                         <div>
                                           <button
-                                            class="button button--tight button--tight--inline button--tight-gap text--teal disabled"
-                                            style="${css`
+                                            class="button button--tight button--tight--inline button--tight-gap text--teal disabled ${res
+                                              .locals.localCSS(css`
                                               text-align: left;
-                                            `}"
+                                            `)}"
                                             oninteractive="${javascript`
                                               tippy(this, {
                                                 theme: "rose",
@@ -15933,10 +15903,10 @@ ${contentSource}</textarea
                                                 .reference}/conversations/${res
                                                 .locals.conversation
                                                 .reference}/taggings?_method=DELETE"
-                                              style="${css`
+                                              class="${res.locals.localCSS(css`
                                                 display: flex;
                                                 gap: var(--space--2);
-                                              `}"
+                                              `)}"
                                             >
                                               <input
                                                 type="hidden"
@@ -15949,10 +15919,10 @@ ${contentSource}</textarea
                                                 value="${tagging.tag.reference}"
                                               />
                                               <button
-                                                class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal"
-                                                style="${css`
+                                                class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal ${res
+                                                  .locals.localCSS(css`
                                                   text-align: left;
-                                                `}"
+                                                `)}"
                                                 oninteractive="${javascript`
                                                   tippy(this, {
                                                     theme: "rose",
@@ -16002,13 +15972,13 @@ ${contentSource}</textarea
                                                 content: ${res.locals.HTMLForJavaScript(
                                                   html`
                                                     <div
-                                                      class="dropdown--menu"
-                                                      style="${css`
+                                                      class="dropdown--menu ${res
+                                                        .locals.localCSS(css`
                                                         max-height: var(
                                                           --space--40
                                                         );
                                                         overflow: auto;
-                                                      `}"
+                                                      `)}"
                                                     >
                                                       $${res.locals.tags
                                                         .filter(
@@ -16142,7 +16112,7 @@ ${contentSource}</textarea
 
                 return html`
                   <div
-                    style="${css`
+                    class="${res.locals.localCSS(css`
                       ${shouldScroll
                         ? css`
                             /* TODO: Do something to prevent flash of unstyled content. visibility: hidden; */
@@ -16163,7 +16133,7 @@ ${contentSource}</textarea
                             }
                           `
                         : css``}
-                    `}"
+                    `)}"
                     oninteractive="${javascript`
                       ${
                         shouldScroll
@@ -16182,7 +16152,7 @@ ${contentSource}</textarea
                     `}"
                   >
                     <div
-                      style="${css`
+                      class="${res.locals.localCSS(css`
                         ${res.locals.conversation.type === "chat"
                           ? css`
                               flex: 1;
@@ -16190,18 +16160,18 @@ ${contentSource}</textarea
                               max-width: var(--width--prose);
                             `
                           : css``}
-                      `}"
+                      `)}"
                     >
                       $${messages.length === 0
                         ? html`
                             <div
-                              style="${css`
+                              class="${res.locals.localCSS(css`
                                 padding: var(--space--4) var(--space--0);
                                 display: flex;
                                 flex-direction: column;
                                 gap: var(--space--4);
                                 align-items: center;
-                              `}"
+                              `)}"
                             >
                               <div class="decorative-icon">
                                 <i class="bi bi-chat-left-text"></i>
@@ -16215,13 +16185,13 @@ ${contentSource}</textarea
                           `
                         : html`
                             <div
-                              style="${css`
+                              class="${res.locals.localCSS(css`
                                 ${res.locals.conversation.type === "chat"
                                   ? css`
                                       padding: var(--space--4) var(--space--0);
                                     `
                                   : css``}
-                              `}"
+                              `)}"
                             >
                               $${messages.map(
                                 (message) =>
@@ -16230,17 +16200,17 @@ ${contentSource}</textarea
                                     message !== messages[0]
                                       ? html`
                                           <div
-                                            style="${css`
+                                            class="${res.locals.localCSS(css`
                                               margin: var(--space--2)
                                                 var(--space--0);
                                               display: flex;
                                               gap: var(--space--4);
                                               align-items: center;
-                                            `}"
+                                            `)}"
                                           >
                                             <hr
-                                              class="separator"
-                                              style="${css`
+                                              class="separator ${res.locals
+                                                .localCSS(css`
                                                 flex: 1;
                                                 border-color: var(
                                                   --color--rose--600
@@ -16250,14 +16220,14 @@ ${contentSource}</textarea
                                                     --color--rose--500
                                                   );
                                                 }
-                                              `}"
+                                              `)}"
                                             />
                                             <span class="heading text--rose">
                                               New
                                             </span>
                                             <hr
-                                              class="separator"
-                                              style="${css`
+                                              class="separator ${res.locals
+                                                .localCSS(css`
                                                 flex: 1;
                                                 border-color: var(
                                                   --color--rose--600
@@ -16267,7 +16237,7 @@ ${contentSource}</textarea
                                                     --color--rose--500
                                                   );
                                                 }
-                                              `}"
+                                              `)}"
                                             />
                                           </div>
                                         `
@@ -16276,20 +16246,20 @@ ${contentSource}</textarea
                                       ? html`
                                           <div
                                             hidden
-                                            class="date-separator"
-                                            style="${css`
+                                            class="date-separator ${res.locals
+                                              .localCSS(css`
                                               margin: var(--space--2)
                                                 var(--space--0);
                                               display: flex;
                                               gap: var(--space--4);
                                               align-items: center;
-                                            `}"
+                                            `)}"
                                           >
                                             <hr
-                                              class="separator"
-                                              style="${css`
+                                              class="separator ${res.locals
+                                                .localCSS(css`
                                                 flex: 1;
-                                              `}"
+                                              `)}"
                                             />
                                             <time
                                               datetime="${new Date(
@@ -16310,10 +16280,10 @@ ${contentSource}</textarea
                                               `}"
                                             ></time>
                                             <hr
-                                              class="separator"
-                                              style="${css`
+                                              class="separator ${res.locals
+                                                .localCSS(css`
                                                 flex: 1;
-                                              `}"
+                                              `)}"
                                             />
                                           </div>
                                         `
@@ -16324,8 +16294,7 @@ ${contentSource}</textarea
                                       data-content-source="${JSON.stringify(
                                         message.contentSource
                                       )}"
-                                      class="message"
-                                      style="${css`
+                                      class="message ${res.locals.localCSS(css`
                                         ${res.locals.conversation.type ===
                                         "chat"
                                           ? css``
@@ -16341,7 +16310,7 @@ ${contentSource}</textarea
                                                 );
                                               }
                                             `}
-                                      `}"
+                                      `)}"
                                       oninteractive="${javascript`
                                         ${
                                           shouldScrollToFirstUnreadMessage &&
@@ -16355,7 +16324,7 @@ ${contentSource}</textarea
                                       `}"
                                     >
                                       <div
-                                        style="${css`
+                                        class="${res.locals.localCSS(css`
                                           padding: var(--space--2);
                                           ${res.locals.conversation.type ===
                                           "chat"
@@ -16428,14 +16397,14 @@ ${contentSource}</textarea
                                                 }
                                               `
                                             : css``}
-                                        `}"
+                                        `)}"
                                       >
                                         $${(() => {
                                           const actions = html`
                                             <div>
                                               <button
-                                                class="button button--tight button--tight--inline button--transparent secondary"
-                                                style="${css`
+                                                class="button button--tight button--tight--inline button--transparent secondary ${res
+                                                  .locals.localCSS(css`
                                                   font-size: var(
                                                     --font-size--xs
                                                   );
@@ -16462,7 +16431,7 @@ ${contentSource}</textarea
                                                         }
                                                       `
                                                     : css``}
-                                                `}"
+                                                `)}"
                                                 oninteractive="${javascript`
                                                   tippy(this, {
                                                     touch: false,
@@ -16642,11 +16611,13 @@ ${contentSource}</textarea
                                                                           class="dropdown--menu--item button button--transparent"
                                                                         >
                                                                           <span
-                                                                            style="${css`
+                                                                            class="${res
+                                                                              .locals
+                                                                              .localCSS(css`
                                                                               margin-left: var(
                                                                                 --space---0-5
                                                                               );
-                                                                            `}"
+                                                                            `)}"
                                                                           >
                                                                             $${userPartial(
                                                                               {
@@ -16674,11 +16645,13 @@ ${contentSource}</textarea
                                                                           class="dropdown--menu--item button button--transparent"
                                                                         >
                                                                           <span
-                                                                            style="${css`
+                                                                            class="${res
+                                                                              .locals
+                                                                              .localCSS(css`
                                                                               margin-left: var(
                                                                                 --space---0-5
                                                                               );
-                                                                            `}"
+                                                                            `)}"
                                                                           >
                                                                             $${userPartial(
                                                                               {
@@ -16746,7 +16719,9 @@ ${contentSource}</textarea
                                                                                 .locals
                                                                                 .conversation
                                                                                 .reference}/messages/${message.reference}?_method=DELETE"
-                                                                              style="${css`
+                                                                              class="${res
+                                                                                .locals
+                                                                                .localCSS(css`
                                                                                 padding: var(
                                                                                   --space--2
                                                                                 );
@@ -16755,7 +16730,7 @@ ${contentSource}</textarea
                                                                                 gap: var(
                                                                                   --space--4
                                                                                 );
-                                                                              `}"
+                                                                              `)}"
                                                                             >
                                                                               <input
                                                                                 type="hidden"
@@ -16775,11 +16750,13 @@ ${contentSource}</textarea
                                                                               </p>
                                                                               <p>
                                                                                 <strong
-                                                                                  style="${css`
+                                                                                  class="${res
+                                                                                    .locals
+                                                                                    .localCSS(css`
                                                                                     font-weight: var(
                                                                                       --font-weight--bold
                                                                                     );
-                                                                                  `}"
+                                                                                  `)}"
                                                                                 >
                                                                                   You
                                                                                   may
@@ -17154,7 +17131,8 @@ ${contentSource}</textarea
                                               ? html``
                                               : html`
                                                   <div
-                                                    style="${css`
+                                                    class="${res.locals
+                                                      .localCSS(css`
                                                       font-size: var(
                                                         --font-size--xs
                                                       );
@@ -17163,10 +17141,11 @@ ${contentSource}</textarea
                                                       );
                                                       display: flex;
                                                       gap: var(--space--4);
-                                                    `}"
+                                                    `)}"
                                                   >
                                                     <div
-                                                      style="${css`
+                                                      class="${res.locals
+                                                        .localCSS(css`
                                                         flex: 1;
                                                         display: flex;
                                                         flex-wrap: wrap;
@@ -17180,7 +17159,7 @@ ${contentSource}</textarea
                                                           display: flex;
                                                           gap: var(--space--1);
                                                         }
-                                                      `}"
+                                                      `)}"
                                                     >
                                                       $${headers}
                                                     </div>
@@ -17189,14 +17168,14 @@ ${contentSource}</textarea
                                                 `}
 
                                             <div
-                                              style="${css`
+                                              class="${res.locals.localCSS(css`
                                                 display: flex;
                                                 gap: var(--space--2);
-                                              `}"
+                                              `)}"
                                             >
                                               <div
-                                                class="secondary"
-                                                style="${css`
+                                                class="secondary ${res.locals
+                                                  .localCSS(css`
                                                   font-size: var(
                                                     --font-size--xs
                                                   );
@@ -17209,18 +17188,18 @@ ${contentSource}</textarea
                                                   align-items: baseline;
                                                   column-gap: var(--space--4);
                                                   row-gap: var(--space--2);
-                                                `}"
+                                                `)}"
                                               >
                                                 <div
-                                                  class="strong"
-                                                  style="${css`
+                                                  class="strong ${res.locals
+                                                    .localCSS(css`
                                                     font-size: var(
                                                       --font-size--sm
                                                     );
                                                     line-height: var(
                                                       --line-height--sm
                                                     );
-                                                  `}"
+                                                  `)}"
                                                 >
                                                   $${userPartial({
                                                     req,
@@ -17289,26 +17268,26 @@ ${contentSource}</textarea
                                         })()}
 
                                         <div
-                                          class="message--show"
-                                          style="${css`
+                                          class="message--show ${res.locals
+                                            .localCSS(css`
                                             display: flex;
                                             flex-direction: column;
                                             gap: var(--space--2);
-                                          `}"
+                                          `)}"
                                         >
                                           <div
-                                            class="message--show--content-area"
-                                            style="${css`
+                                            class="message--show--content-area ${res
+                                              .locals.localCSS(css`
                                               position: relative;
-                                            `}"
+                                            `)}"
                                           >
                                             <div
-                                              class="message--show--content-area--dropdown-menu-target"
-                                              style="${css`
+                                              class="message--show--content-area--dropdown-menu-target ${res
+                                                .locals.localCSS(css`
                                                 width: var(--space--0);
                                                 height: var(--line-height--sm);
                                                 position: absolute;
-                                              `}"
+                                              `)}"
                                             ></div>
                                             <div
                                               class="message--show--content-area--content"
@@ -17535,7 +17514,8 @@ ${contentSource}</textarea
                                               ? html``
                                               : html`
                                                   <div
-                                                    style="${css`
+                                                    class="${res.locals
+                                                      .localCSS(css`
                                                       font-size: var(
                                                         --font-size--xs
                                                       );
@@ -17548,7 +17528,7 @@ ${contentSource}</textarea
                                                         --space--8
                                                       );
                                                       row-gap: var(--space--1);
-                                                    `}"
+                                                    `)}"
                                                   >
                                                     $${content}
                                                   </div>
@@ -17567,12 +17547,12 @@ ${contentSource}</textarea
                                                   .reference}/messages/${message.reference}?_method=PATCH"
                                                 novalidate
                                                 hidden
-                                                class="message--edit"
-                                                style="${css`
+                                                class="message--edit ${res
+                                                  .locals.localCSS(css`
                                                   display: flex;
                                                   flex-direction: column;
                                                   gap: var(--space--2);
-                                                `}"
+                                                `)}"
                                               >
                                                 <input
                                                   type="hidden"
@@ -17590,13 +17570,14 @@ ${contentSource}</textarea
                                                 })}
 
                                                 <div
-                                                  style="${css`
+                                                  class="${res.locals
+                                                    .localCSS(css`
                                                     display: flex;
                                                     gap: var(--space--2);
                                                     @media (max-width: 400px) {
                                                       flex-direction: column;
                                                     }
-                                                  `}"
+                                                  `)}"
                                                 >
                                                   <button
                                                     class="button button--blue"
@@ -17667,7 +17648,7 @@ ${contentSource}</textarea
                   .reference}/conversations/${res.locals.conversation
                   .reference}/messages"
                 novalidate
-                style="${css`
+                class="${res.locals.localCSS(css`
                   ${res.locals.conversation.type === "chat"
                     ? css`
                         padding-right: var(--space--4);
@@ -17684,7 +17665,7 @@ ${contentSource}</textarea
                     : css`
                         padding-top: var(--space--4);
                       `}
-                `}"
+                `)}"
                 $${res.locals.conversation.type === "chat"
                   ? html`
                       onsubmit="${javascript`
@@ -17698,7 +17679,7 @@ ${contentSource}</textarea
                   : html``}
               >
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     display: flex;
                     flex-direction: column;
                     ${res.locals.conversation.type === "chat"
@@ -17711,7 +17692,7 @@ ${contentSource}</textarea
                       : css`
                           gap: var(--space--4);
                         `}
-                  `}"
+                  `)}"
                 >
                   <input
                     type="hidden"
@@ -17724,9 +17705,9 @@ ${contentSource}</textarea
                         <div class="label">
                           <p class="label--text">Type</p>
                           <div
-                            style="${css`
+                            class="${res.locals.localCSS(css`
                               display: flex;
-                            `}"
+                            `)}"
                           >
                             <label
                               class="button button--tight button--tight--inline button--transparent"
@@ -17769,8 +17750,7 @@ ${contentSource}</textarea
                     : html``}
 
                   <div
-                    class="new-message"
-                    style="${css`
+                    class="new-message ${res.locals.localCSS(css`
                       display: grid;
                       & > * {
                         grid-area: 1 / 1;
@@ -17783,7 +17763,7 @@ ${contentSource}</textarea
                             }
                           `
                         : css``}
-                    `}"
+                    `)}"
                     oninteractive="${javascript`
                       leafac.saveFormInputValue(this.querySelector(".content-editor--write--textarea"), "new-message");
                     `}"
@@ -17796,8 +17776,8 @@ ${contentSource}</textarea
                     $${res.locals.conversation.type === "chat"
                       ? html`
                           <button
-                            class="button button--blue"
-                            style="${css`
+                            class="button button--blue ${res.locals
+                              .localCSS(css`
                               position: relative;
                               place-self: end;
                               width: var(--font-size--2xl);
@@ -17806,7 +17786,7 @@ ${contentSource}</textarea
                               border-radius: var(--border-radius--circle);
                               margin: var(--space--1);
                               align-items: center;
-                            `}"
+                            `)}"
                             oninteractive="${javascript`
                               tippy(this, {
                                 touch: false,
@@ -17834,12 +17814,11 @@ ${contentSource}</textarea
                             `}"
                           >
                             <i
-                              class="bi bi-send"
-                              style="${css`
+                              class="bi bi-send ${res.locals.localCSS(css`
                                 position: relative;
                                 top: var(--space--px);
                                 right: var(--space--px);
-                              `}"
+                              `)}"
                             ></i>
                           </button>
                         `
@@ -17855,9 +17834,9 @@ ${contentSource}</textarea
                             ? html``
                             : html`<p class="label--text">Anonymity</p>`}
                           <div
-                            style="${css`
+                            class="${res.locals.localCSS(css`
                               display: flex;
-                            `}"
+                            `)}"
                           >
                             <label
                               class="button button--tight button--tight--inline button--transparent"
@@ -17884,9 +17863,9 @@ ${contentSource}</textarea
                                     name: false,
                                   })}
                                   <span
-                                    style="${css`
+                                    class="${res.locals.localCSS(css`
                                       margin-left: var(--space--1);
-                                    `}"
+                                    `)}"
                                   >
                                     Signed by You
                                   </span>
@@ -17907,9 +17886,9 @@ ${contentSource}</textarea
                                     name: false,
                                   })}
                                   <span
-                                    style="${css`
+                                    class="${res.locals.localCSS(css`
                                       margin-left: var(--space--1);
-                                    `}"
+                                    `)}"
                                   >
                                     Anonymous to Other Students
                                   </span>
