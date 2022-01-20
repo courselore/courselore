@@ -429,17 +429,15 @@ export default async function courselore({
       any,
       {},
       {},
-      (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
+      BaseMiddlewareLocals &
         Partial<IsEnrolledInCourseMiddlewareLocals> &
-        Partial<EventSourceMiddlewareLocals> &
-        Partial<HiddenContentMiddlewareLocals>
+        Partial<EventSourceMiddlewareLocals>
     >;
     res: express.Response<
       any,
-      (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
+      BaseMiddlewareLocals &
         Partial<IsEnrolledInCourseMiddlewareLocals> &
-        Partial<EventSourceMiddlewareLocals> &
-        Partial<HiddenContentMiddlewareLocals>
+        Partial<EventSourceMiddlewareLocals>
     >;
     head: HTML;
     extraHeaders?: HTML;
@@ -2067,13 +2065,13 @@ export default async function courselore({
       any,
       {},
       {},
-      (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
+      BaseMiddlewareLocals &
         Partial<IsEnrolledInCourseMiddlewareLocals> &
         Partial<EventSourceMiddlewareLocals>
     >;
     res: express.Response<
       any,
-      (IsSignedOutMiddlewareLocals | IsSignedInMiddlewareLocals) &
+      BaseMiddlewareLocals &
         Partial<IsEnrolledInCourseMiddlewareLocals> &
         Partial<EventSourceMiddlewareLocals>
     >;
@@ -2721,19 +2719,8 @@ export default async function courselore({
     res,
     body,
   }: {
-    req: express.Request<
-      {},
-      any,
-      {},
-      {},
-      (IsSignedInMiddlewareLocals | IsSignedOutMiddlewareLocals) &
-        Partial<HiddenContentMiddlewareLocals>
-    >;
-    res: express.Response<
-      any,
-      (IsSignedInMiddlewareLocals | IsSignedOutMiddlewareLocals) &
-        Partial<HiddenContentMiddlewareLocals>
-    >;
+    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+    res: express.Response<any, BaseMiddlewareLocals>;
     body: HTML;
   }): HTML => /* TODO: extractInlineStyles */ html`
     <!DOCTYPE html>
@@ -14444,8 +14431,7 @@ ${contentSource}</textarea
     any,
     { content?: string },
     {},
-    (IsSignedInMiddlewareLocals | IsSignedOutMiddlewareLocals) &
-      Partial<IsEnrolledInCourseMiddlewareLocals>
+    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
   > = (req, res, next) => {
     if (typeof req.body.content !== "string" || req.body.content.trim() === "")
       return next("validation");
