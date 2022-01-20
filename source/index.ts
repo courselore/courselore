@@ -445,7 +445,7 @@ export default async function courselore({
   }): HTML => {
     const baseLayoutBody = html`
       <body
-        style="${css`
+        class="${res.locals.localCSS(css`
           font-family: "Public Sans", var(--font-family--sans-serif);
           font-size: var(--font-size--sm);
           line-height: var(--line-height--sm);
@@ -455,7 +455,7 @@ export default async function courselore({
             color: var(--color--gray--medium--200);
             background-color: var(--color--gray--medium--900);
           }
-        `}"
+        `)}"
       >
         <div
           style="${css`
