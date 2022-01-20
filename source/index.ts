@@ -458,7 +458,7 @@ export default async function courselore({
         `)}"
       >
         <div
-          style="${css`
+          class="${res.locals.localCSS(css`
             position: absolute;
             top: 0;
             right: 0;
@@ -467,7 +467,7 @@ export default async function courselore({
             display: flex;
             flex-direction: column;
             overflow: hidden;
-          `}"
+          `)}"
           onscroll="${javascript`
             this.scroll(0, 0);
           `}"
@@ -476,14 +476,13 @@ export default async function courselore({
             ? html``
             : html`
                 <div
-                  style="${css`
+                  class="${res.locals.localCSS(css`
                     height: var(--border-width--8);
                     display: flex;
-                  `}"
+                  `)}"
                 >
                   <button
-                    class="button"
-                    style="${css`
+                    class="button ${res.locals.localCSS(css`
                       background-color: var(
                         --color--${res.locals.enrollment.accentColor}--500
                       );
@@ -494,7 +493,7 @@ export default async function courselore({
                       }
                       border-radius: var(--border-radius--none);
                       flex: 1;
-                    `}"
+                    `)}"
                     oninteractive="${javascript`
                       tippy(this, {
                         touch: false,
@@ -506,12 +505,12 @@ export default async function courselore({
                         content: ${res.locals.HTMLForJavaScript(
                           html`
                             <div
-                              style="${css`
+                              class="${res.locals.localCSS(css`
                                 padding: var(--space--2);
                                 display: flex;
                                 flex-direction: column;
                                 gap: var(--space--4);
-                              `}"
+                              `)}"
                             >
                               <p>
                                 This bar with an accent color appears at the top
@@ -519,12 +518,12 @@ export default async function courselore({
                                 differentiate between courses.
                               </p>
                               <a
-                                class="button button--blue"
+                                class="button button--blue ${res.locals
+                                  .localCSS(css`
+                                  width: 100%;
+                                `)}"
                                 href="${baseURL}/courses/${res.locals.course!
                                   .reference}/settings/your-enrollment"
-                                style="${css`
-                                  width: 100%;
-                                `}"
                               >
                                 <i class="bi bi-palette"></i>
                                 Update Accent Color
@@ -538,7 +537,7 @@ export default async function courselore({
                 </div>
               `}
           <div
-            style="${css`
+            class="${res.locals.localCSS(css`
               font-size: var(--font-size--xs);
               line-height: var(--line-height--xs);
               background-color: var(--color--gray--medium--100);
@@ -556,15 +555,15 @@ export default async function courselore({
                 }
                 display: flex;
               }
-            `}"
+            `)}"
           >
             $${demonstration
               ? html`
                   <div
-                    style="${css`
+                    class="${res.locals.localCSS(css`
                       justify-content: center;
                       flex-wrap: wrap;
-                    `}"
+                    `)}"
                   >
                     <div>
                       <button
@@ -576,12 +575,12 @@ export default async function courselore({
                             content: ${res.locals.HTMLForJavaScript(
                               html`
                                 <div
-                                  style="${css`
+                                  class="${res.locals.localCSS(css`
                                     padding: var(--space--2);
                                     display: flex;
                                     flex-direction: column;
                                     gap: var(--space--4);
-                                  `}"
+                                  `)}"
                                 >
                                   <p>
                                     CourseLore is running in Demonstration Mode.
