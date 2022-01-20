@@ -14,7 +14,7 @@ import qs from "qs";
 
 import { Database, sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
-import { localCSS, globalCSS, processCSS, css } from "@leafac/css";
+import { CSS, localCSS, globalCSS, processCSS, css } from "@leafac/css";
 import javascript, { JavaScript } from "@leafac/javascript";
 import dedent from "dedent";
 
@@ -2052,7 +2052,7 @@ export default async function courselore({
     .createHash("sha256")
     .update(globalCSS)
     .digest("hex")}.css`;
-  app.get(globalCSSPath, (req, res) => {
+  app.get<{}, CSS, {}, {}, {}>(globalCSSPath, (req, res) => {
     res.type("css").send(globalCSSProcessed);
   });
 
@@ -3414,11 +3414,11 @@ export default async function courselore({
     return javascript`document.querySelector(".${className}")`;
   };
 
-  app.use(
+  app.use<{}, any, {}, {}, {}>(
     express.static(url.fileURLToPath(new URL("../static", import.meta.url)))
   );
-  app.use(methodOverride("_method"));
-  app.use(cookieParser());
+  app.use<{}, any, {}, {}, {}>(methodOverride("_method"));
+  app.use<{}, any, {}, {}, {}>(cookieParser());
   const cookieOptions = {
     domain: new URL(baseURL).hostname,
     httpOnly: true,
@@ -3426,14 +3426,14 @@ export default async function courselore({
     sameSite: "lax",
     secure: true,
   } as const;
-  app.use(express.urlencoded({ extended: true }));
-  app.use(
+  app.use<{}, any, {}, {}, {}>(express.urlencoded({ extended: true }));
+  app.use<{}, any, {}, {}, {}>(
     expressFileUpload({
       createParentPath: true,
       limits: { fileSize: 10 * 1024 * 1024 },
     })
   );
-  app.use(
+  app.use<{}, any, {}, {}, {}>(
     csurf({
       cookie: {
         ...cookieOptions,
@@ -19537,7 +19537,7 @@ ${contentSource}</textarea
     }
   );
 
-  app.use(((err, req, res, next) => {
+  app.use<{}, HTML, {}, {}, {}>(((err, req, res, next) => {
     console.error(err);
     const isCSRF = err.code === "EBADCSRFTOKEN";
     const isValidation = err === "validation";
