@@ -3388,32 +3388,6 @@ export default async function courselore({
     }
   )}`;
 
-  interface HiddenContentMiddlewareLocals {
-    hiddenContent?: HTML[];
-  }
-  const hiddenContent = ({
-    req,
-    res,
-    content,
-  }: {
-    req: express.Request<
-      {},
-      any,
-      {},
-      {},
-      HiddenContentMiddlewareLocals & object
-    >;
-    res: express.Response<any, HiddenContentMiddlewareLocals & object>;
-    content: HTML;
-  }): JavaScript => {
-    res.locals.hiddenContent ??= [];
-    const className = `hidden-content--${Math.random().toString(36).slice(2)}`;
-    res.locals.hiddenContent.push(
-      html`<div class="${className}">$${content}</div>`
-    );
-    return javascript`document.querySelector(".${className}")`;
-  };
-
   app.use<{}, any, {}, {}, {}>(
     express.static(url.fileURLToPath(new URL("../static", import.meta.url)))
   );
