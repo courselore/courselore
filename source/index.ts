@@ -469,8 +469,8 @@ export default async function courselore({
             overflow: hidden;
           `}"
           onscroll="${javascript`
-              this.scroll(0, 0);
-            `}"
+            this.scroll(0, 0);
+          `}"
         >
           $${res.locals.enrollment === undefined
             ? html``
@@ -496,44 +496,44 @@ export default async function courselore({
                       flex: 1;
                     `}"
                     oninteractive="${javascript`
-                        tippy(this, {
-                          touch: false,
-                          content: "What’s This?",
-                        });
-                        tippy(this, {
-                          trigger: "click",
-                          interactive: true,
-                          content: ${res.locals.HTMLForJavaScript(
-                            html`
-                              <div
+                      tippy(this, {
+                        touch: false,
+                        content: "What’s This?",
+                      });
+                      tippy(this, {
+                        trigger: "click",
+                        interactive: true,
+                        content: ${res.locals.HTMLForJavaScript(
+                          html`
+                            <div
+                              style="${css`
+                                padding: var(--space--2);
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--4);
+                              `}"
+                            >
+                              <p>
+                                This bar with an accent color appears at the top
+                                of pages related to this course to help you
+                                differentiate between courses.
+                              </p>
+                              <a
+                                class="button button--blue"
+                                href="${baseURL}/courses/${res.locals.course!
+                                  .reference}/settings/your-enrollment"
                                 style="${css`
-                                  padding: var(--space--2);
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--4);
+                                  width: 100%;
                                 `}"
                               >
-                                <p>
-                                  This bar with an accent color appears at the
-                                  top of pages related to this course to help
-                                  you differentiate between courses.
-                                </p>
-                                <a
-                                  class="button button--blue"
-                                  href="${baseURL}/courses/${res.locals.course!
-                                    .reference}/settings/your-enrollment"
-                                  style="${css`
-                                    width: 100%;
-                                  `}"
-                                >
-                                  <i class="bi bi-palette"></i>
-                                  Update Accent Color
-                                </a>
-                              </div>
-                            `
-                          )},
-                        });
-                      `}"
+                                <i class="bi bi-palette"></i>
+                                Update Accent Color
+                              </a>
+                            </div>
+                          `
+                        )},
+                      });
+                    `}"
                   ></button>
                 </div>
               `}
@@ -570,54 +570,54 @@ export default async function courselore({
                       <button
                         class="button button--transparent"
                         oninteractive="${javascript`
-                            tippy(this, {
-                              trigger: "click",
-                              interactive: true,
-                              content: ${res.locals.HTMLForJavaScript(
-                                html`
-                                  <div
-                                    style="${css`
-                                      padding: var(--space--2);
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--space--4);
-                                    `}"
+                          tippy(this, {
+                            trigger: "click",
+                            interactive: true,
+                            content: ${res.locals.HTMLForJavaScript(
+                              html`
+                                <div
+                                  style="${css`
+                                    padding: var(--space--2);
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--space--4);
+                                  `}"
+                                >
+                                  <p>
+                                    CourseLore is running in Demonstration Mode.
+                                    All data may be lost, including courses,
+                                    conversations, users, and so forth. Also, no
+                                    emails are actually sent.
+                                  </p>
+                                  <p>
+                                    To give you a better idea of what CourseLore
+                                    looks like in use, you may create
+                                    demonstration data.
+                                  </p>
+                                  <form
+                                    method="POST"
+                                    action="${baseURL}/demonstration-data"
                                   >
-                                    <p>
-                                      CourseLore is running in Demonstration
-                                      Mode. All data may be lost, including
-                                      courses, conversations, users, and so
-                                      forth. Also, no emails are actually sent.
-                                    </p>
-                                    <p>
-                                      To give you a better idea of what
-                                      CourseLore looks like in use, you may
-                                      create demonstration data.
-                                    </p>
-                                    <form
-                                      method="POST"
-                                      action="${baseURL}/demonstration-data"
+                                    <input
+                                      type="hidden"
+                                      name="_csrf"
+                                      value="${req.csrfToken()}"
+                                    />
+                                    <button
+                                      class="button button--blue"
+                                      style="${css`
+                                        width: 100%;
+                                      `}"
                                     >
-                                      <input
-                                        type="hidden"
-                                        name="_csrf"
-                                        value="${req.csrfToken()}"
-                                      />
-                                      <button
-                                        class="button button--blue"
-                                        style="${css`
-                                          width: 100%;
-                                        `}"
-                                      >
-                                        <i class="bi bi-easel"></i>
-                                        Create Demonstration Data
-                                      </button>
-                                    </form>
-                                  </div>
-                                `
-                              )},
-                            });
-                          `}"
+                                      <i class="bi bi-easel"></i>
+                                      Create Demonstration Data
+                                    </button>
+                                  </form>
+                                </div>
+                              `
+                            )},
+                          });
+                        `}"
                       >
                         <i class="bi bi-easel"></i>
                         Demonstration Mode
@@ -781,8 +781,8 @@ export default async function courselore({
                         margin-right: var(--space--3);
                       `}"
                       onclick="${javascript`
-                          this.closest(".flash").remove();
-                        `}"
+                        this.closest(".flash").remove();
+                      `}"
                     >
                       <i class="bi bi-x-circle"></i>
                     </button>
@@ -825,49 +825,49 @@ export default async function courselore({
                   align-items: center;
                 `}"
                 oninteractive="${javascript`
-                    tippy(this, {
-                      trigger: "click",
-                      interactive: true,
-                      content: ${res.locals.HTMLForJavaScript(
-                        html`
-                          <h3 class="heading">
-                            $${logo({ size: 12 /* var(--space--3) */ })}
-                            <span>
-                              CourseLore <br />
-                              Communication Platform for Education <br />
-                              <small
-                                class="secondary"
-                                style="${css`
-                                  font-size: var(--font-size--2xs);
-                                  line-height: var(--line-height--2xs);
-                                `}"
-                              >
-                                Version ${courseloreVersion}
-                              </small>
-                            </span>
-                          </h3>
-                          <div class="dropdown--menu">
-                            <a
-                              href="https://courselore.org/about"
-                              target="_blank"
-                              class="dropdown--menu--item button button--transparent"
+                  tippy(this, {
+                    trigger: "click",
+                    interactive: true,
+                    content: ${res.locals.HTMLForJavaScript(
+                      html`
+                        <h3 class="heading">
+                          $${logo({ size: 12 /* var(--space--3) */ })}
+                          <span>
+                            CourseLore <br />
+                            Communication Platform for Education <br />
+                            <small
+                              class="secondary"
+                              style="${css`
+                                font-size: var(--font-size--2xs);
+                                line-height: var(--line-height--2xs);
+                              `}"
                             >
-                              <i class="bi bi-info-circle"></i>
-                              About
-                            </a>
-                            <a
-                              href="https://github.com/courselore/courselore"
-                              target="_blank"
-                              class="dropdown--menu--item button button--transparent"
-                            >
-                              <i class="bi bi-file-earmark-code"></i>
-                              Source Code
-                            </a>
-                          </div>
-                        `
-                      )},
-                    });
-                  `}"
+                              Version ${courseloreVersion}
+                            </small>
+                          </span>
+                        </h3>
+                        <div class="dropdown--menu">
+                          <a
+                            href="https://courselore.org/about"
+                            target="_blank"
+                            class="dropdown--menu--item button button--transparent"
+                          >
+                            <i class="bi bi-info-circle"></i>
+                            About
+                          </a>
+                          <a
+                            href="https://github.com/courselore/courselore"
+                            target="_blank"
+                            class="dropdown--menu--item button button--transparent"
+                          >
+                            <i class="bi bi-file-earmark-code"></i>
+                            Source Code
+                          </a>
+                        </div>
+                      `
+                    )},
+                  });
+                `}"
               >
                 $${logo({ size: 16 /* var(--space--4) */ })} CourseLore
               </button>
@@ -876,64 +876,64 @@ export default async function courselore({
               <button
                 class="button button--transparent"
                 oninteractive="${javascript`
-                    tippy(this, {
-                      trigger: "click",
-                      interactive: true,
-                      content: ${res.locals.HTMLForJavaScript(
-                        html`
-                          <h3 class="heading">
-                            <i class="bi bi-bug"></i>
-                            Report an Issue
-                          </h3>
-                          <div class="dropdown--menu">
-                            <a
-                              href="${reportIssueHref}"
-                              target="_blank"
-                              class="dropdown--menu--item button button--transparent"
-                            >
-                              <i class="bi bi-envelope"></i>
-                              ${administratorEmail}
-                            </a>
-                            <a
-                              href="https://github.com/courselore/courselore/issues/new${qs.stringify(
-                                {
-                                  body: dedent`
-                                    **What did you try to do?**
+                  tippy(this, {
+                    trigger: "click",
+                    interactive: true,
+                    content: ${res.locals.HTMLForJavaScript(
+                      html`
+                        <h3 class="heading">
+                          <i class="bi bi-bug"></i>
+                          Report an Issue
+                        </h3>
+                        <div class="dropdown--menu">
+                          <a
+                            href="${reportIssueHref}"
+                            target="_blank"
+                            class="dropdown--menu--item button button--transparent"
+                          >
+                            <i class="bi bi-envelope"></i>
+                            ${administratorEmail}
+                          </a>
+                          <a
+                            href="https://github.com/courselore/courselore/issues/new${qs.stringify(
+                              {
+                                body: dedent`
+                                  **What did you try to do?**
 
 
 
-                                    **What did you expect to happen?**
+                                  **What did you expect to happen?**
 
 
 
-                                    **What really happened?**
+                                  **What really happened?**
 
 
 
-                                    **What error messages (if any) did you run into?**
+                                  **What error messages (if any) did you run into?**
 
 
 
-                                    Please provide as much relevant context as possible (operating system, browser, and so forth):
+                                  Please provide as much relevant context as possible (operating system, browser, and so forth):
 
-                                    - CourseLore Version: ${courseloreVersion}
-                                  `,
-                                },
-                                {
-                                  addQueryPrefix: true,
-                                }
-                              )}"
-                              target="_blank"
-                              class="dropdown--menu--item button button--transparent"
-                            >
-                              <i class="bi bi-github"></i>
-                              GitHub Issues
-                            </a>
-                          </div>
-                        `
-                      )},
-                      });
-                    `}"
+                                  - CourseLore Version: ${courseloreVersion}
+                                `,
+                              },
+                              {
+                                addQueryPrefix: true,
+                              }
+                            )}"
+                            target="_blank"
+                            class="dropdown--menu--item button button--transparent"
+                          >
+                            <i class="bi bi-github"></i>
+                            GitHub Issues
+                          </a>
+                        </div>
+                      `
+                    )},
+                    });
+                  `}"
               >
                 <i class="bi bi-bug"></i>
                 Report an Issue
