@@ -3,7 +3,7 @@
 - CSS management
   - `TODO`
   - Use `res.locals` to collect CSS.
-  - Remove static CSS (the design system) from every request.
+  - Move `hiddenContent` to a library.
 - Try and load fonts without so many requests.
 - Write a function to determine if processing the message is even necessary. Most messages don’t use extra features and could skip JSDOM entirely.
 - Overflowing text on mobile: Invitation link on `/settings/invitations` page.

@@ -2,6 +2,7 @@
 
 import path from "node:path";
 import url from "node:url";
+import crypto from "node:crypto";
 
 import express from "express";
 import methodOverride from "method-override";
@@ -443,1637 +444,1617 @@ export default async function courselore({
     head: HTML;
     extraHeaders?: HTML;
     body: HTML;
-  }): HTML =>
-    /* TODO: extractInlineStyles */(html`
-      <!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta charset="UTF-8" />
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, maximum-scale=1"
-          />
-          <meta
-            name="description"
-            content="Communication Platform for Education"
-          />
+  }): HTML => /* TODO: extractInlineStyles */ html`
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1"
+        />
+        <meta
+          name="description"
+          content="Communication Platform for Education"
+        />
 
-          $${["public-sans", "jetbrains-mono"].flatMap((family) =>
-            [
-              "100",
-              "200",
-              "300",
-              "400",
-              "500",
-              "600",
-              "700",
-              "800",
-              "900",
-            ].flatMap((weight) =>
-              ["", "-italic"].map(
-                (style) => html`
-                  <link
-                    rel="stylesheet"
-                    href="${baseURL}/node_modules/@fontsource/${family}/${weight}${style}.css"
-                  />
-                `
-              )
+        <link rel="stylesheet" href="${baseURL}${globalCSSPath}" />
+        $${["public-sans", "jetbrains-mono"].flatMap((family) =>
+          [
+            "100",
+            "200",
+            "300",
+            "400",
+            "500",
+            "600",
+            "700",
+            "800",
+            "900",
+          ].flatMap((weight) =>
+            ["", "-italic"].map(
+              (style) => html`
+                <link
+                  rel="stylesheet"
+                  href="${baseURL}/node_modules/@fontsource/${family}/${weight}${style}.css"
+                />
+              `
             )
-          )}
-          <link
-            rel="stylesheet"
-            href="${baseURL}/node_modules/bootstrap-icons/font/bootstrap-icons.css"
-          />
-          <link
-            rel="stylesheet"
-            href="${baseURL}/node_modules/katex/dist/katex.min.css"
-          />
-          <script src="${baseURL}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
-          <script src="${baseURL}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
-          <link
-            rel="stylesheet"
-            href="${baseURL}/node_modules/tippy.js/dist/svg-arrow.css"
-          />
-          <link
-            rel="stylesheet"
-            href="${baseURL}/node_modules/tippy.js/dist/border.css"
-          />
-          <script type="module">
-            import * as textFieldEdit from "${baseURL}/node_modules/text-field-edit/index.js";
-            window.textFieldEdit = textFieldEdit;
-          </script>
-          <script src="${baseURL}/node_modules/mousetrap/mousetrap.min.js"></script>
-          <script src="${baseURL}/node_modules/textarea-caret/index.js"></script>
-          <script src="${baseURL}/node_modules/scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js"></script>
-          <script src="${baseURL}/node_modules/@leafac/javascript/browser.js"></script>
-          <script>
-            leafac.evaluateOnInteractive();
-            leafac.customFormValidation();
-            leafac.warnAboutLosingInputs();
-            leafac.disableButtonsOnSubmit();
-            leafac.tippySetDefaultProps();
-            ${liveReload
-              ? javascript`
+          )
+        )}
+        <link
+          rel="stylesheet"
+          href="${baseURL}/node_modules/bootstrap-icons/font/bootstrap-icons.css"
+        />
+        <link
+          rel="stylesheet"
+          href="${baseURL}/node_modules/katex/dist/katex.min.css"
+        />
+        <script src="${baseURL}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
+        <script src="${baseURL}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
+        <link
+          rel="stylesheet"
+          href="${baseURL}/node_modules/tippy.js/dist/svg-arrow.css"
+        />
+        <link
+          rel="stylesheet"
+          href="${baseURL}/node_modules/tippy.js/dist/border.css"
+        />
+        <script type="module">
+          import * as textFieldEdit from "${baseURL}/node_modules/text-field-edit/index.js";
+          window.textFieldEdit = textFieldEdit;
+        </script>
+        <script src="${baseURL}/node_modules/mousetrap/mousetrap.min.js"></script>
+        <script src="${baseURL}/node_modules/textarea-caret/index.js"></script>
+        <script src="${baseURL}/node_modules/scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js"></script>
+        <script src="${baseURL}/node_modules/@leafac/javascript/browser.js"></script>
+        <script>
+          leafac.evaluateOnInteractive();
+          leafac.customFormValidation();
+          leafac.warnAboutLosingInputs();
+          leafac.disableButtonsOnSubmit();
+          leafac.tippySetDefaultProps();
+          ${liveReload
+            ? javascript`
                   leafac.liveReload();
                 `
-              : javascript``};
-          </script>
+            : javascript``};
+        </script>
 
-          $${res?.locals.eventSource
-            ? html`
-                <script src="${baseURL}/node_modules/morphdom/dist/morphdom-umd.min.js"></script>
+        $${res?.locals.eventSource
+          ? html`
+              <script src="${baseURL}/node_modules/morphdom/dist/morphdom-umd.min.js"></script>
 
-                <script>
-                  const eventSource = new EventSource(window.location.href);
-                  eventSource.addEventListener("refresh", async () => {
-                    const response = await fetch(window.location.href);
-                    switch (response.status) {
-                      case 200:
-                        const refreshedDocument =
-                          new DOMParser().parseFromString(
-                            await response.text(),
-                            "text/html"
-                          );
-                        document.head.append(
-                          ...refreshedDocument.head.querySelectorAll("style")
-                        );
-                        morphdom(document.body, refreshedDocument.body);
-                        leafac.evaluateElementsAttribute(document);
-                        break;
+              <script>
+                const eventSource = new EventSource(window.location.href);
+                eventSource.addEventListener("refresh", async () => {
+                  const response = await fetch(window.location.href);
+                  switch (response.status) {
+                    case 200:
+                      const refreshedDocument = new DOMParser().parseFromString(
+                        await response.text(),
+                        "text/html"
+                      );
+                      document.head.append(
+                        ...refreshedDocument.head.querySelectorAll("style")
+                      );
+                      morphdom(document.body, refreshedDocument.body);
+                      leafac.evaluateElementsAttribute(document);
+                      break;
 
-                      case 404:
-                        alert(
-                          "This page has been removed.\\n\\nYou’ll be redirected now."
-                        );
-                        window.location.href = $${JSON.stringify(baseURL)};
-                        break;
+                    case 404:
+                      alert(
+                        "This page has been removed.\\n\\nYou’ll be redirected now."
+                      );
+                      window.location.href = $${JSON.stringify(baseURL)};
+                      break;
 
-                      default:
-                        console.error(response);
-                        break;
-                    }
-                  });
-                </script>
-              `
-            : html``}
-          $${head}
-        </head>
-        <body
+                    default:
+                      console.error(response);
+                      break;
+                  }
+                });
+              </script>
+            `
+          : html``}
+        $${head}
+      </head>
+      <body
+        style="${css`
+          font-family: "Public Sans", var(--font-family--sans-serif);
+          font-size: var(--font-size--sm);
+          line-height: var(--line-height--sm);
+          color: var(--color--gray--medium--700);
+          background-color: var(--color--gray--medium--50);
+          @media (prefers-color-scheme: dark) {
+            color: var(--color--gray--medium--200);
+            background-color: var(--color--gray--medium--900);
+          }
+        `}"
+      >
+        <div
           style="${css`
-            font-family: "Public Sans", var(--font-family--sans-serif);
-            font-size: var(--font-size--sm);
-            line-height: var(--line-height--sm);
-            color: var(--color--gray--medium--700);
-            background-color: var(--color--gray--medium--50);
-            @media (prefers-color-scheme: dark) {
-              color: var(--color--gray--medium--200);
-              background-color: var(--color--gray--medium--900);
-            }
-
-            @at-root {
-              .label {
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--1);
-
-                .label--text {
-                  font-size: var(--font-size--xs);
-                  line-height: var(--line-height--xs);
-                  font-weight: var(--font-weight--bold);
-                  display: flex;
-                  gap: var(--space--2);
-                }
-              }
-
-              .input--text {
-                background-color: var(--color--gray--medium--200);
-                --color--box-shadow: var(--color--blue--400);
-                &::placeholder {
-                  color: var(--color--gray--medium--400);
-                }
-                &:disabled,
-                &.disabled {
-                  color: var(--color--gray--medium--500);
-                  -webkit-text-fill-color: var(--color--gray--medium--500);
-                  background-color: var(--color--gray--medium--300);
-                }
-                @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--gray--medium--700);
-                  --color--box-shadow: var(--color--blue--600);
-                  &::placeholder {
-                    color: var(--color--gray--medium--500);
-                  }
-                  &:disabled,
-                  &.disabled {
-                    color: var(--color--gray--medium--400);
-                    -webkit-text-fill-color: var(--color--gray--medium--400);
-                    background-color: var(--color--gray--medium--600);
-                  }
-                }
-                width: 100%;
-                display: block;
-                padding: var(--space--2) var(--space--4);
-                border-radius: var(--border-radius--md);
-                &:focus-within {
-                  box-shadow: var(--border-width--0) var(--border-width--0)
-                    var(--border-width--0) var(--border-width--2)
-                    var(--color--box-shadow);
-                }
-                transition-property: var(--transition-property--box-shadow);
-                transition-duration: var(--transition-duration--150);
-                transition-timing-function: var(
-                  --transition-timing-function--in-out
-                );
-                &.input--text--textarea {
-                  border-radius: var(--border-radius--lg);
-                }
-              }
-
-              .input--radio {
-                background-color: var(--color--gray--medium--200);
-                &:hover,
-                &:focus-within {
-                  background-color: var(--color--gray--medium--300);
-                }
-                &:active {
-                  background-color: var(--color--gray--medium--400);
-                }
-                &:checked {
-                  background-color: var(--color--blue--600);
-                  &:hover,
-                  &:focus-within {
-                    background-color: var(--color--blue--500);
-                  }
-                  &:active {
-                    background-color: var(--color--blue--700);
-                  }
-                }
-                @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--gray--medium--700);
-                  &:hover,
-                  &:focus-within {
-                    background-color: var(--color--gray--medium--600);
-                  }
-                  &:active {
-                    background-color: var(--color--gray--medium--500);
-                  }
-                  &:checked {
-                    background-color: var(--color--blue--700);
-                    &:hover,
-                    &:focus-within {
-                      background-color: var(--color--blue--600);
-                    }
-                    &:active {
-                      background-color: var(--color--blue--800);
-                    }
-                  }
-                }
-                width: var(--space--3-5);
-                height: var(--space--3-5);
-                border-radius: var(--border-radius--circle);
-                position: relative;
-                top: var(--space---0-5);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                cursor: pointer;
-                transition-property: var(--transition-property--colors);
-                transition-duration: var(--transition-duration--150);
-                transition-timing-function: var(
-                  --transition-timing-function--in-out
-                );
-
-                &::before {
-                  content: "";
-                  background-color: var(--color--gray--medium--50);
-                  @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--200);
-                  }
-                  display: block;
-                  width: var(--space--1-5);
-                  height: var(--space--1-5);
-                  border-radius: var(--border-radius--circle);
-                  transition-property: var(--transition-property--transform);
-                  transition-duration: var(--transition-duration--150);
-                  transition-timing-function: var(
-                    --transition-timing-function--in-out
-                  );
-                }
-                &:not(:checked)::before {
-                  transform: scale(var(--scale--0));
-                }
-              }
-
-              .input--checkbox {
-                background-color: var(--color--gray--medium--200);
-                &:hover,
-                &:focus-within {
-                  background-color: var(--color--gray--medium--300);
-                }
-                &:active {
-                  background-color: var(--color--gray--medium--400);
-                }
-                &:checked {
-                  background-color: var(--color--blue--600);
-                  &:hover,
-                  &:focus-within {
-                    background-color: var(--color--blue--500);
-                  }
-                  &:active {
-                    background-color: var(--color--blue--700);
-                  }
-                }
-                @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--gray--medium--700);
-                  &:hover,
-                  &:focus-within {
-                    background-color: var(--color--gray--medium--600);
-                  }
-                  &:active {
-                    background-color: var(--color--gray--medium--500);
-                  }
-                  &:checked {
-                    background-color: var(--color--blue--700);
-                    &:hover,
-                    &:focus-within {
-                      background-color: var(--color--blue--600);
-                    }
-                    &:active {
-                      background-color: var(--color--blue--800);
-                    }
-                  }
-                }
-                width: var(--space--8);
-                padding: var(--space--0-5);
-                border-radius: var(--border-radius--full);
-                position: relative;
-                top: calc(var(--space--0-5) * 1.5);
-                &::after {
-                  content: "";
-                  background-color: var(--color--gray--medium--50);
-                  @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--200);
-                  }
-                  width: var(--space--3);
-                  height: var(--space--3);
-                  border-radius: var(--border-radius--circle);
-                  display: block;
-                  transition-property: var(--transition-property--all);
-                  transition-duration: var(--transition-duration--150);
-                  transition-timing-function: var(
-                    --transition-timing-function--in-out
-                  );
-                }
-                &:checked::after {
-                  margin-left: var(--space--4);
-                }
-                transition-property: var(--transition-property--colors);
-                transition-duration: var(--transition-duration--150);
-                transition-timing-function: var(
-                  --transition-timing-function--in-out
-                );
-              }
-
-              .input--radio-or-checkbox--multilabel {
-                & ~ * {
-                  display: flex;
-                  gap: var(--space--2);
-                }
-                &:not(:checked) + * + *,
-                &:checked + * {
-                  display: none;
-                }
-              }
-
-              .button {
-                padding: var(--space--1) var(--space--4);
-                border-radius: var(--border-radius--md);
-                display: flex;
-                gap: var(--space--2);
-                justify-content: center;
-                align-items: baseline;
-                transition-property: var(--transition-property--colors);
-                transition-duration: var(--transition-duration--150);
-                transition-timing-function: var(
-                  --transition-timing-function--in-out
-                );
-                cursor: pointer;
-
-                &.button--tight {
-                  padding: var(--space--0-5) var(--space--1);
-
-                  &.button--tight--inline {
-                    margin: var(--space---0-5) var(--space---1);
-                  }
-                }
-
-                &.button--tight-gap {
-                  gap: var(--space--1);
-                }
-
-                &.button--full-width-on-small-screen {
-                  @media (max-width: 400px) {
-                    width: 100%;
-                  }
-                }
-
-                &.button--justify-start {
-                  justify-content: flex-start;
-                }
-
-                &.button--inline {
-                  display: inline-flex;
-                }
-
-                &.button--transparent {
-                  &:not(:disabled):not(.disabled) {
-                    &:hover,
-                    &:focus-within,
-                    &.hover {
-                      background-color: var(--color--gray--medium--200);
-                    }
-                    &:active {
-                      background-color: var(--color--gray--medium--300);
-                    }
-                    @media (prefers-color-scheme: dark) {
-                      &:hover,
-                      &:focus-within,
-                      &.hover {
-                        background-color: var(--color--gray--medium--700);
-                      }
-                      &:active {
-                        background-color: var(--color--gray--medium--600);
-                      }
-                    }
-                  }
-                  &:disabled,
-                  &.disabled {
-                    color: var(--color--gray--medium--500);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--gray--medium--400);
-                    }
-                  }
-                }
-
-                ${["blue", "green", "rose"].map(
-                  (color) => css`
-                    &.button--${color} {
-                      color: var(--color--${color}--50);
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+          `}"
+          onscroll="${javascript`
+            this.scroll(0, 0);
+          `}"
+        >
+          $${res.locals.enrollment === undefined
+            ? html``
+            : html`
+                <div
+                  style="${css`
+                    height: var(--border-width--8);
+                    display: flex;
+                  `}"
+                >
+                  <button
+                    class="button"
+                    style="${css`
+                      background-color: var(
+                        --color--${res.locals.enrollment.accentColor}--500
+                      );
                       @media (prefers-color-scheme: dark) {
-                        color: var(--color--${color}--100);
+                        background-color: var(
+                          --color--${res.locals.enrollment.accentColor}--600
+                        );
                       }
-                      &:not(:disabled):not(.disabled) {
-                        background-color: var(--color--${color}--600);
-                        &:hover,
-                        &:focus-within,
-                        &.hover {
-                          background-color: var(--color--${color}--500);
-                        }
-                        &:active {
-                          background-color: var(--color--${color}--700);
-                        }
-                        @media (prefers-color-scheme: dark) {
-                          background-color: var(--color--${color}--800);
-                          &:hover,
-                          &:focus-within,
-                          &.hover {
-                            background-color: var(--color--${color}--700);
-                          }
-                          &:active {
-                            background-color: var(--color--${color}--900);
-                          }
-                        }
-                      }
-                      &:disabled,
-                      &.disabled {
-                        background-color: var(--color--${color}--300);
-                        @media (prefers-color-scheme: dark) {
-                          background-color: var(--color--${color}--500);
-                        }
-                      }
-                      .strong {
-                        color: var(--color--${color}--50);
-                        @media (prefers-color-scheme: dark) {
-                          color: var(--color--${color}--100);
-                        }
-                      }
-                      .secondary,
-                      [class^="text--"] {
-                        color: var(--color--${color}--100);
-                        @media (prefers-color-scheme: dark) {
-                          color: var(--color--${color}--200);
-                        }
-                      }
-                    }
-                  `
-                )}
+                      border-radius: var(--border-radius--none);
+                      flex: 1;
+                    `}"
+                    oninteractive="${javascript`
+                      tippy(this, {
+                        touch: false,
+                        content: "What’s This?",
+                      });
+                      tippy(this, {
+                        trigger: "click",
+                        interactive: true,
+                        content: ${hiddenContent({
+                          req,
+                          res,
+                          content: html`
+                            <div
+                              style="${css`
+                                padding: var(--space--2);
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--4);
+                              `}"
+                            >
+                              <p>
+                                This bar with an accent color appears at the top
+                                of pages related to this course to help you
+                                differentiate between courses.
+                              </p>
+                              <a
+                                class="button button--blue"
+                                href="${baseURL}/courses/${res.locals.course!
+                                  .reference}/settings/your-enrollment"
+                                style="${css`
+                                  width: 100%;
+                                `}"
+                              >
+                                <i class="bi bi-palette"></i>
+                                Update Accent Color
+                              </a>
+                            </div>
+                          `,
+                        })},
+                      });
+                    `}"
+                  ></button>
+                </div>
+              `}
+          <div
+            style="${css`
+              font-size: var(--font-size--xs);
+              line-height: var(--line-height--xs);
+              background-color: var(--color--gray--medium--100);
+              @media (prefers-color-scheme: dark) {
+                background-color: var(--color--gray--medium--800);
               }
-
-              .link {
-                text-decoration: underline;
-                color: var(--color--blue--600);
-                &:hover,
-                &:focus-within {
-                  color: var(--color--blue--500);
-                }
-                &:active {
-                  color: var(--color--blue--700);
-                }
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--blue--500);
-                  &:hover,
-                  &:focus-within {
-                    color: var(--color--blue--400);
-                  }
-                  &:active {
-                    color: var(--color--blue--600);
-                  }
-                }
-                transition-property: var(--transition-property--colors);
-                transition-duration: var(--transition-duration--150);
-                transition-timing-function: var(
-                  --transition-timing-function--in-out
-                );
-                cursor: pointer;
-              }
-
-              :disabled,
-              .disabled {
-                cursor: not-allowed;
-              }
-
-              .heading {
-                font-size: var(--font-size--2xs);
-                line-height: var(--line-height--2xs);
-                font-weight: var(--font-weight--bold);
-                text-transform: uppercase;
-                letter-spacing: var(--letter-spacing--widest);
-                color: var(--color--gray--medium--600);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--400);
-                }
-                display: flex;
-                gap: var(--space--1);
-              }
-
-              .heading--display {
-                font-size: var(--font-size--xl);
-                line-height: var(--line-height--xl);
-                font-weight: var(--font-weight--bold);
-                text-align: center;
-                color: var(--color--gray--medium--800);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--100);
-                }
-              }
-
-              .strong {
-                font-weight: var(--font-weight--bold);
-                color: var(--color--gray--medium--800);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--100);
-                }
-              }
-
-              .secondary {
-                color: var(--color--gray--medium--500);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--400);
-                }
-              }
-
-              ${[
-                "blue",
-                "green",
-                "rose",
-                "pink",
-                "amber",
-                "teal",
-                "lime",
-                "emerald",
-                "fuchsia",
-                "cyan",
-              ].map(
-                (color) => css`
-                  .text--${color} {
-                    color: var(--color--${color}--600);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--${color}--500);
-                    }
-                  }
-                `
-              )}
-
-              .mark {
-                color: var(--color--amber--700);
-                background-color: var(--color--amber--200);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--amber--200);
-                  background-color: var(--color--amber--700);
-                }
-                border-radius: var(--border-radius--base);
-              }
-
-              .code,
-              .pre > code {
-                font-family: "JetBrains Mono", var(--font-family--monospace);
-                font-variant-ligatures: none;
-              }
-
-              .pre > code {
-                font-size: var(--font-size--xs);
-                line-height: var(--line-height--xs);
-              }
-
-              .img {
-                background-color: var(--color--gray--medium--50);
-                @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--gray--medium--50);
-                  filter: brightness(var(--brightness--90));
-                }
-                max-width: 100%;
-                height: auto;
-                border-radius: var(--border-radius--xl);
-              }
-
-              .details {
-                background-color: var(--color--gray--medium--200);
-                @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--gray--medium--700);
-                }
-                border-radius: var(--border-radius--xl);
-                summary {
-                  &:hover,
-                  &:focus-within {
-                    background-color: var(--color--gray--medium--300);
-                  }
-                  @media (prefers-color-scheme: dark) {
-                    &:hover,
-                    &:focus-within {
-                      background-color: var(--color--gray--medium--600);
-                    }
-                  }
-                  padding: var(--space--2) var(--space--4);
-                  border-radius: var(--border-radius--xl);
-                  transition-property: var(--transition-property--colors);
-                  transition-duration: var(--transition-duration--150);
-                  transition-timing-function: var(
-                    --transition-timing-function--in-out
-                  );
-                  cursor: pointer;
-                  &::before {
-                    content: "\\f275";
-                    font-family: bootstrap-icons !important;
-                    font-size: var(--font-size--xs);
-                    line-height: var(--line-height--xs);
-                    margin-right: var(--space--2);
-                  }
-                }
-                &[open] > summary::before {
-                  content: "\\f273";
-                }
-                & > div:last-child {
-                  padding: var(--space--4);
-                }
-              }
-
-              .decorative-icon {
-                font-size: var(--font-size--9xl);
-                line-height: var(--line-height--9xl);
-                color: var(--color--gray--medium--300);
-                background-color: var(--color--gray--medium--100);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--600);
-                  background-color: var(--color--gray--medium--800);
-                }
-                width: var(--space--48);
-                height: var(--space--48);
-                border-radius: var(--border-radius--circle);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-              }
-
-              .separator {
-                border-top: var(--border-width--1) solid
+              display: flex;
+              flex-direction: column;
+              & > * {
+                padding: var(--space--0) var(--space--4);
+                border-bottom: var(--border-width--1) solid
                   var(--color--gray--medium--200);
                 @media (prefers-color-scheme: dark) {
                   border-color: var(--color--gray--medium--700);
                 }
-              }
-
-              .menu-box {
-                background-color: var(--color--gray--medium--100);
-                @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--gray--medium--800);
-                }
-                padding: var(--space--2);
-                border-radius: var(--border-radius--lg);
                 display: flex;
-                flex-direction: column;
-                gap: var(--space--2);
-
-                .menu-box--item {
-                  justify-content: flex-start;
-                }
               }
-
-              .tippy-box {
-                font-size: var(--font-size--sm);
-                line-height: var(--line-height--sm);
-                --background-color: var(--color--gray--medium--100);
-                --border-color: var(--color--gray--medium--400);
-                @media (prefers-color-scheme: dark) {
-                  --background-color: var(--color--gray--medium--800);
-                  --border-color: var(--color--gray--medium--400);
-                }
-                color: inherit;
-                background-color: var(--background-color);
-                border: var(--border-width--1) solid var(--border-color);
-                border-radius: var(--border-radius--md);
-                & > .tippy-svg-arrow > svg {
-                  &:first-child {
-                    fill: var(--border-color);
-                  }
-                  &:last-child {
-                    fill: var(--background-color);
-                  }
-                }
-
-                .tippy-content {
-                  padding: var(--space--1) var(--space--2);
-                }
-
-                .heading {
-                  padding: var(--space--1) var(--space--2);
-                }
-
-                .keyboard-shortcut {
-                  font-size: var(--font-size--xs);
-                  line-height: var(--line-height--xs);
-                  color: var(--color--gray--medium--500);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--medium--400);
-                  }
-
-                  .keyboard-shortcut--cluster {
-                    letter-spacing: var(--letter-spacing--widest);
-                  }
-                }
-
-                .dropdown--menu {
-                  display: flex;
-                  flex-direction: column;
-
-                  .dropdown--menu--item {
-                    text-align: left;
-                    width: 100%;
-                    padding-left: var(--space--2);
-                    padding-right: var(--space--2);
-                    justify-content: flex-start;
-                  }
-                }
-
-                .dropdown--separator {
-                  border-top: var(--border-width--1) solid
-                    var(--color--gray--medium--200);
-                  @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--700);
-                  }
-                  margin: var(--space--0) var(--space--2);
-                }
-
-                ${["green", "rose"].map(
-                  (color) => css`
-                    &[data-theme~="${color}"] {
-                      color: var(--color--${color}--700);
-                      --background-color: var(--color--${color}--100);
-                      --border-color: var(--color--${color}--200);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--${color}--200);
-                        --background-color: var(--color--${color}--900);
-                        --border-color: var(--color--${color}--800);
-                      }
-                    }
-                  `
-                )}
-
-                &[data-theme~="validation--error"] {
-                  color: var(--color--rose--700);
-                  --background-color: var(--color--rose--100);
-                  --border-color: var(--color--rose--200);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--rose--200);
-                    --background-color: var(--color--rose--900);
-                    --border-color: var(--color--rose--800);
-                  }
-                }
-              }
-
-              .dark {
-                display: none !important;
-              }
-              @media (prefers-color-scheme: dark) {
-                .light {
-                  display: none !important;
-                }
-                .dark {
-                  display: block !important;
-                }
-              }
-
-              .content {
-                &,
-                div,
-                figure,
-                blockquote {
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                }
-
-                h1,
-                h2,
-                h3,
-                h4,
-                h5,
-                h6 {
-                  margin-top: var(--space--4);
-                }
-
-                h1 {
-                  color: var(--color--gray--medium--800);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--medium--100);
-                  }
-                }
-
-                h1,
-                h2,
-                h3 {
-                  font-size: var(--font-size--base);
-                  line-height: var(--line-height--base);
-                }
-
-                h1,
-                h4,
-                h5,
-                h6 {
-                  font-weight: var(--font-weight--bold);
-                }
-
-                h2 {
-                  font-style: italic;
-                }
-
-                b,
-                strong {
-                  font-weight: var(--font-weight--bold);
-                  color: var(--color--gray--medium--800);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--medium--100);
-                  }
-                }
-
-                i:not(.bi),
-                em {
-                  font-style: italic;
-                  color: var(--color--gray--medium--800);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--medium--100);
-                  }
-                }
-
-                a {
-                  text-decoration: underline;
-                  color: var(--color--blue--600);
-                  &:hover,
-                  &:focus-within {
-                    color: var(--color--blue--500);
-                  }
-                  &:active {
-                    color: var(--color--blue--700);
-                  }
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--blue--500);
-                    &:hover,
-                    &:focus-within {
-                      color: var(--color--blue--400);
-                    }
-                    &:active {
-                      color: var(--color--blue--600);
-                    }
-                  }
-                  transition-property: var(--transition-property--colors);
-                  transition-duration: var(--transition-duration--150);
-                  transition-timing-function: var(
-                    --transition-timing-function--in-out
-                  );
-                  cursor: pointer;
-                }
-
-                pre {
-                  padding: var(--space--4);
-                  border-radius: var(--border-radius--xl);
-                  overflow-x: auto;
-                  & > code {
-                    font-size: var(--font-size--xs);
-                    line-height: var(--line-height--xs);
-                    overflow-wrap: normal;
-                  }
-                }
-
-                code,
-                tt,
-                kbd,
-                samp {
-                  font-family: "JetBrains Mono", var(--font-family--monospace);
-                  font-variant-ligatures: none;
-                }
-
-                del {
-                  text-decoration: line-through;
-                  color: var(--color--rose--600);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--rose--500);
-                  }
-                }
-
-                ins {
-                  color: var(--color--green--600);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--green--500);
-                  }
-                }
-
-                sup,
-                sub {
-                  position: relative;
-                  font-size: var(--font-size--2xs);
-                  line-height: var(--space--0);
-                  vertical-align: baseline;
-                }
-
-                sup {
-                  top: var(--space---1);
-                }
-
-                sub {
-                  bottom: var(--space---1);
-                }
-
-                img {
-                  background-color: var(--color--gray--medium--50);
-                  @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--50);
-                    filter: brightness(var(--brightness--90));
-                  }
-                  max-width: 100%;
-                  height: auto;
-                  border-radius: var(--border-radius--xl);
-                }
-
-                hr {
-                  border-top: var(--border-width--1) solid
-                    var(--color--gray--medium--200);
-                  @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--700);
-                  }
-                }
-
-                ol {
-                  padding-left: var(--space--8);
-                  & > li {
-                    list-style: decimal;
-                    &::marker {
-                      color: var(--color--gray--medium--500);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--gray--medium--400);
-                      }
-                    }
-                  }
-                }
-
-                ul {
-                  padding-left: var(--space--8);
-                  & > li {
-                    list-style: disc;
-                    &::marker {
-                      color: var(--color--gray--medium--500);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--gray--medium--400);
-                      }
-                    }
-                  }
-                }
-
-                table {
-                  border-collapse: collapse;
-                  display: block;
-                  caption {
-                    font-size: var(--font-size--xs);
-                    line-height: var(--line-height--xs);
-                    font-weight: var(--font-weight--bold);
-                  }
-                  th,
-                  td {
-                    padding: var(--space--1) var(--space--3);
-                    border-top: var(--border-width--1) solid
-                      var(--color--gray--medium--200);
-                    @media (prefers-color-scheme: dark) {
-                      border-color: var(--color--gray--medium--700);
-                    }
-                  }
-                  th {
-                    font-weight: var(--font-weight--bold);
-                    color: var(--color--gray--medium--800);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--gray--medium--100);
-                    }
-                  }
-                }
-
-                blockquote {
-                  padding-left: var(--space--4);
-                  border-left: var(--border-width--4) solid
-                    var(--color--gray--medium--200);
-                  @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--700);
-                  }
-                }
-
-                dl {
-                  dt {
-                    font-weight: var(--font-weight--bold);
-                    color: var(--color--gray--medium--800);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--gray--medium--100);
-                    }
-                  }
-                  dd {
-                    padding-left: var(--space--4);
-                  }
-                }
-
-                var {
-                  font-style: italic;
-                }
-
-                s,
-                strike {
-                  text-decoration: line-through;
-                }
-
-                details {
-                  background-color: var(--color--gray--medium--200);
-                  @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--700);
-                  }
-                  border-radius: var(--border-radius--xl);
-                  summary {
-                    &:hover,
-                    &:focus-within {
-                      background-color: var(--color--gray--medium--300);
-                    }
-                    @media (prefers-color-scheme: dark) {
-                      &:hover,
-                      &:focus-within {
-                        background-color: var(--color--gray--medium--600);
-                      }
-                    }
-                    padding: var(--space--2) var(--space--4);
-                    border-radius: var(--border-radius--xl);
-                    transition-property: var(--transition-property--colors);
-                    transition-duration: var(--transition-duration--150);
-                    transition-timing-function: var(
-                      --transition-timing-function--in-out
-                    );
-                    cursor: pointer;
-                    &::before {
-                      content: "\\f275";
-                      font-family: bootstrap-icons !important;
-                      font-size: var(--font-size--xs);
-                      line-height: var(--line-height--xs);
-                      margin-right: var(--space--2);
-                    }
-                  }
-                  &[open] > summary::before {
-                    content: "\\f273";
-                  }
-                  & > div:last-child {
-                    padding: var(--space--4);
-                  }
-                }
-
-                figure {
-                  figcaption {
-                    font-size: var(--font-size--xs);
-                    line-height: var(--line-height--xs);
-                    font-weight: var(--font-weight--bold);
-                  }
-                }
-
-                abbr {
-                  text-decoration: underline dotted;
-                  cursor: help;
-                }
-
-                dfn {
-                  font-weight: var(--font-weight--bold);
-                }
-
-                mark {
-                  color: var(--color--amber--700);
-                  background-color: var(--color--amber--200);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--amber--200);
-                    background-color: var(--color--amber--700);
-                  }
-                  border-radius: var(--border-radius--base);
-                }
-
-                small {
-                  font-size: var(--font-size--xs);
-                  line-height: var(--line-height--xs);
-                }
-
-                input[type="checkbox"] {
-                  font-size: var(--font-size--2xs);
-                  line-height: var(--line-height--2xs);
-                  color: var(--color--transparent);
-                  background-color: var(--color--gray--medium--200);
-                  &:checked {
-                    color: var(--color--blue--50);
-                    background-color: var(--color--blue--600);
-                  }
-                  @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--700);
-                    &:checked {
-                      color: var(--color--blue--200);
-                      background-color: var(--color--blue--700);
-                    }
-                  }
-                  width: var(--space--3-5);
-                  height: var(--space--3-5);
-                  border-radius: var(--border-radius--base);
-                  margin-right: var(--space--1);
-                  display: inline-flex;
-                  justify-content: center;
-                  align-items: center;
-                  &::before {
-                    content: "\\f633";
-                    font-family: bootstrap-icons !important;
-                  }
-                }
-
-                .katex {
-                  overflow: auto;
-                }
-              }
-            }
-          `}"
-        >
-          <div
-            style="${css`
-              position: absolute;
-              top: 0;
-              right: 0;
-              bottom: 0;
-              left: 0;
-              display: flex;
-              flex-direction: column;
-              overflow: hidden;
-            `}"
-            onscroll="${javascript`
-              this.scroll(0, 0);
             `}"
           >
-            $${res.locals.enrollment === undefined
-              ? html``
-              : html`
-                  <div
-                    style="${css`
-                      height: var(--border-width--8);
-                      display: flex;
-                    `}"
-                  >
-                    <button
-                      class="button"
-                      style="${css`
-                        background-color: var(
-                          --color--${res.locals.enrollment.accentColor}--500
-                        );
-                        @media (prefers-color-scheme: dark) {
-                          background-color: var(
-                            --color--${res.locals.enrollment.accentColor}--600
-                          );
-                        }
-                        border-radius: var(--border-radius--none);
-                        flex: 1;
-                      `}"
-                      oninteractive="${javascript`
-                        tippy(this, {
-                          touch: false,
-                          content: "What’s This?",
-                        });
-                        tippy(this, {
-                          trigger: "click",
-                          interactive: true,
-                          content: ${hiddenContent({
-                            req,
-                            res,
-                            content: html`
-                              <div
-                                style="${css`
-                                  padding: var(--space--2);
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--4);
-                                `}"
-                              >
-                                <p>
-                                  This bar with an accent color appears at the
-                                  top of pages related to this course to help
-                                  you differentiate between courses.
-                                </p>
-                                <a
-                                  class="button button--blue"
-                                  href="${baseURL}/courses/${res.locals.course!
-                                    .reference}/settings/your-enrollment"
-                                  style="${css`
-                                    width: 100%;
-                                  `}"
-                                >
-                                  <i class="bi bi-palette"></i>
-                                  Update Accent Color
-                                </a>
-                              </div>
-                            `,
-                          })},
-                        });
-                      `}"
-                    ></button>
-                  </div>
-                `}
-            <div
-              style="${css`
-                font-size: var(--font-size--xs);
-                line-height: var(--line-height--xs);
-                background-color: var(--color--gray--medium--100);
-                @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--gray--medium--800);
-                }
-                display: flex;
-                flex-direction: column;
-                & > * {
-                  padding: var(--space--0) var(--space--4);
-                  border-bottom: var(--border-width--1) solid
-                    var(--color--gray--medium--200);
-                  @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--700);
-                  }
-                  display: flex;
-                }
-              `}"
-            >
-              $${demonstration
-                ? html`
-                    <div
-                      style="${css`
-                        justify-content: center;
-                        flex-wrap: wrap;
-                      `}"
-                    >
-                      <div>
-                        <button
-                          class="button button--transparent"
-                          oninteractive="${javascript`
-                            tippy(this, {
-                              trigger: "click",
-                              interactive: true,
-                              content: ${hiddenContent({
-                                req,
-                                res,
-                                content: html`
-                                  <div
-                                    style="${css`
-                                      padding: var(--space--2);
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--space--4);
-                                    `}"
-                                  >
-                                    <p>
-                                      CourseLore is running in Demonstration
-                                      Mode. All data may be lost, including
-                                      courses, conversations, users, and so
-                                      forth. Also, no emails are actually sent.
-                                    </p>
-                                    <p>
-                                      To give you a better idea of what
-                                      CourseLore looks like in use, you may
-                                      create demonstration data.
-                                    </p>
-                                    <form
-                                      method="POST"
-                                      action="${baseURL}/demonstration-data"
-                                    >
-                                      <input
-                                        type="hidden"
-                                        name="_csrf"
-                                        value="${req.csrfToken()}"
-                                      />
-                                      <button
-                                        class="button button--blue"
-                                        style="${css`
-                                          width: 100%;
-                                        `}"
-                                      >
-                                        <i class="bi bi-easel"></i>
-                                        Create Demonstration Data
-                                      </button>
-                                    </form>
-                                  </div>
-                                `,
-                              })},
-                            });
-                          `}"
-                        >
-                          <i class="bi bi-easel"></i>
-                          Demonstration Mode
-                        </button>
-                      </div>
-                      $${process.env.NODE_ENV !== "production"
-                        ? html`
-                            <form
-                              method="POST"
-                              action="${baseURL}/turn-off?_method=DELETE"
-                            >
-                              <input
-                                type="hidden"
-                                name="_csrf"
-                                value="${req.csrfToken()}"
-                              />
-                              <button class="button button--transparent">
-                                <i class="bi bi-power"></i>
-                                Turn off
-                              </button>
-                            </form>
-                          `
-                        : html``}
-                    </div>
-                  `
-                : html``}
-              $${extraHeaders}
-            </div>
-
-            $${res.locals.user !== undefined &&
-            res.locals.user.emailConfirmedAt === null
+            $${demonstration
               ? html`
                   <div
                     style="${css`
-                      color: var(--color--amber--700);
-                      background-color: var(--color--amber--100);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--amber--200);
-                        background-color: var(--color--amber--900);
-                      }
-                      padding: var(--space--1) var(--space--10);
-                      display: flex;
                       justify-content: center;
-
-                      .link {
-                        color: var(--color--amber--600);
-                        &:hover,
-                        &:focus-within {
-                          color: var(--color--amber--500);
-                        }
-                        &:active {
-                          color: var(--color--amber--700);
-                        }
-                        @media (prefers-color-scheme: dark) {
-                          color: var(--color--amber--100);
-                          &:hover,
-                          &:focus-within {
-                            color: var(--color--amber--50);
-                          }
-                          &:active {
-                            color: var(--color--amber--200);
-                          }
-                        }
-                      }
+                      flex-wrap: wrap;
                     `}"
                   >
-                    <div
-                      style="${css`
-                        flex: 1;
-                        max-width: var(--width--prose);
-                        text-align: center;
-                      `}"
-                    >
-                      <form
-                        method="POST"
-                        action="${baseURL}/resend-confirmation-email${qs.stringify(
-                          {
-                            redirect: req.originalUrl,
-                          },
-                          { addQueryPrefix: true }
-                        )}"
+                    <div>
+                      <button
+                        class="button button--transparent"
+                        oninteractive="${javascript`
+                          tippy(this, {
+                            trigger: "click",
+                            interactive: true,
+                            content: ${hiddenContent({
+                              req,
+                              res,
+                              content: html`
+                                <div
+                                  style="${css`
+                                    padding: var(--space--2);
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--space--4);
+                                  `}"
+                                >
+                                  <p>
+                                    CourseLore is running in Demonstration Mode.
+                                    All data may be lost, including courses,
+                                    conversations, users, and so forth. Also, no
+                                    emails are actually sent.
+                                  </p>
+                                  <p>
+                                    To give you a better idea of what CourseLore
+                                    looks like in use, you may create
+                                    demonstration data.
+                                  </p>
+                                  <form
+                                    method="POST"
+                                    action="${baseURL}/demonstration-data"
+                                  >
+                                    <input
+                                      type="hidden"
+                                      name="_csrf"
+                                      value="${req.csrfToken()}"
+                                    />
+                                    <button
+                                      class="button button--blue"
+                                      style="${css`
+                                        width: 100%;
+                                      `}"
+                                    >
+                                      <i class="bi bi-easel"></i>
+                                      Create Demonstration Data
+                                    </button>
+                                  </form>
+                                </div>
+                              `,
+                            })},
+                          });
+                        `}"
                       >
-                        <input
-                          type="hidden"
-                          name="_csrf"
-                          value="${req.csrfToken()}"
-                        />
-                        Please confirm your email by following the link sent to
-                        ${res.locals.user.email}.<br />
-                        Didn’t receive the email? Already checked your spam
-                        folder? <button class="link">Resend</button>.
-                      </form>
+                        <i class="bi bi-easel"></i>
+                        Demonstration Mode
+                      </button>
                     </div>
+                    $${process.env.NODE_ENV !== "production"
+                      ? html`
+                          <form
+                            method="POST"
+                            action="${baseURL}/turn-off?_method=DELETE"
+                          >
+                            <input
+                              type="hidden"
+                              name="_csrf"
+                              value="${req.csrfToken()}"
+                            />
+                            <button class="button button--transparent">
+                              <i class="bi bi-power"></i>
+                              Turn off
+                            </button>
+                          </form>
+                        `
+                      : html``}
                   </div>
                 `
               : html``}
-            $${(() => {
-              const flash = Flash.get({ req, res });
-              return flash === undefined
-                ? html``
-                : html`
-                    <div
-                      class="flash"
-                      style="${css`
-                        display: grid;
-                        & > * {
-                          grid-area: 1 / 1;
+            $${extraHeaders}
+          </div>
+
+          $${res.locals.user !== undefined &&
+          res.locals.user.emailConfirmedAt === null
+            ? html`
+                <div
+                  style="${css`
+                    color: var(--color--amber--700);
+                    background-color: var(--color--amber--100);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--amber--200);
+                      background-color: var(--color--amber--900);
+                    }
+                    padding: var(--space--1) var(--space--10);
+                    display: flex;
+                    justify-content: center;
+
+                    .link {
+                      color: var(--color--amber--600);
+                      &:hover,
+                      &:focus-within {
+                        color: var(--color--amber--500);
+                      }
+                      &:active {
+                        color: var(--color--amber--700);
+                      }
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--amber--100);
+                        &:hover,
+                        &:focus-within {
+                          color: var(--color--amber--50);
                         }
-                        ${["green", "rose"].map(
-                          (color) => css`
-                            .flash--${color} {
+                        &:active {
+                          color: var(--color--amber--200);
+                        }
+                      }
+                    }
+                  `}"
+                >
+                  <div
+                    style="${css`
+                      flex: 1;
+                      max-width: var(--width--prose);
+                      text-align: center;
+                    `}"
+                  >
+                    <form
+                      method="POST"
+                      action="${baseURL}/resend-confirmation-email${qs.stringify(
+                        {
+                          redirect: req.originalUrl,
+                        },
+                        { addQueryPrefix: true }
+                      )}"
+                    >
+                      <input
+                        type="hidden"
+                        name="_csrf"
+                        value="${req.csrfToken()}"
+                      />
+                      Please confirm your email by following the link sent to
+                      ${res.locals.user.email}.<br />
+                      Didn’t receive the email? Already checked your spam
+                      folder? <button class="link">Resend</button>.
+                    </form>
+                  </div>
+                </div>
+              `
+            : html``}
+          $${(() => {
+            const flash = Flash.get({ req, res });
+            return flash === undefined
+              ? html``
+              : html`
+                  <div
+                    class="flash"
+                    style="${css`
+                      display: grid;
+                      & > * {
+                        grid-area: 1 / 1;
+                      }
+                      ${["green", "rose"].map(
+                        (color) => css`
+                          .flash--${color} {
+                            &,
+                            & + .button--transparent {
+                              color: var(--color--${color}--700);
+                            }
+                            background-color: var(--color--${color}--100);
+                            & + .button--transparent {
+                              &:hover,
+                              &:focus-within {
+                                background-color: var(--color--${color}--200);
+                              }
+                              &:active {
+                                background-color: var(--color--${color}--300);
+                              }
+                            }
+                            @media (prefers-color-scheme: dark) {
                               &,
                               & + .button--transparent {
-                                color: var(--color--${color}--700);
+                                color: var(--color--${color}--200);
                               }
-                              background-color: var(--color--${color}--100);
+                              background-color: var(--color--${color}--900);
                               & + .button--transparent {
                                 &:hover,
                                 &:focus-within {
-                                  background-color: var(--color--${color}--200);
+                                  background-color: var(--color--${color}--800);
                                 }
                                 &:active {
-                                  background-color: var(--color--${color}--300);
+                                  background-color: var(--color--${color}--700);
                                 }
-                              }
-                              @media (prefers-color-scheme: dark) {
-                                &,
-                                & + .button--transparent {
-                                  color: var(--color--${color}--200);
-                                }
-                                background-color: var(--color--${color}--900);
-                                & + .button--transparent {
-                                  &:hover,
-                                  &:focus-within {
-                                    background-color: var(
-                                      --color--${color}--800
-                                    );
-                                  }
-                                  &:active {
-                                    background-color: var(
-                                      --color--${color}--700
-                                    );
-                                  }
-                                }
-                              }
-                              padding: var(--space--1) var(--space--10);
-                              display: flex;
-                              justify-content: center;
-                              & > * {
-                                flex: 1;
-                                max-width: var(--width--prose);
                               }
                             }
-                          `
-                        )}
+                            padding: var(--space--1) var(--space--10);
+                            display: flex;
+                            justify-content: center;
+                            & > * {
+                              flex: 1;
+                              max-width: var(--width--prose);
+                            }
+                          }
+                        `
+                      )}
+                    `}"
+                  >
+                    $${flash}
+                    <button
+                      class="button button--tight button--tight--inline button--transparent"
+                      style="${css`
+                        justify-self: end;
+                        align-self: start;
+                        margin-top: var(--space--0-5);
+                        margin-right: var(--space--3);
+                      `}"
+                      onclick="${javascript`
+                        this.closest(".flash").remove();
                       `}"
                     >
-                      $${flash}
-                      <button
-                        class="button button--tight button--tight--inline button--transparent"
-                        style="${css`
-                          justify-self: end;
-                          align-self: start;
-                          margin-top: var(--space--0-5);
-                          margin-right: var(--space--3);
-                        `}"
-                        onclick="${javascript`
-                          this.closest(".flash").remove();
-                        `}"
-                      >
-                        <i class="bi bi-x-circle"></i>
-                      </button>
-                    </div>
-                  `;
-            })()}
+                      <i class="bi bi-x-circle"></i>
+                    </button>
+                  </div>
+                `;
+          })()}
 
-            <div
-              style="${css`
-                flex: 1;
-                overflow: auto;
-              `}"
-            >
-              $${body}
-            </div>
-
-            <div
-              style="${css`
-                font-size: var(--font-size--xs);
-                line-height: var(--line-height--xs);
-                background-color: var(--color--gray--medium--100);
-                @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--gray--medium--800);
-                }
-                padding: var(--space--0) var(--space--4);
-                border-top: var(--border-width--1) solid
-                  var(--color--gray--medium--200);
-                @media (prefers-color-scheme: dark) {
-                  border-color: var(--color--gray--medium--700);
-                }
-                display: flex;
-                justify-content: center;
-                flex-wrap: wrap;
-              `}"
-            >
-              <div>
-                <button
-                  class="button button--transparent"
-                  style="${css`
-                    align-items: center;
-                  `}"
-                  oninteractive="${javascript`
-                    tippy(this, {
-                      trigger: "click",
-                      interactive: true,
-                      content: ${hiddenContent({
-                        req,
-                        res,
-                        content: html`
-                          <h3 class="heading">
-                            $${logo({ size: 12 /* var(--space--3) */ })}
-                            <span>
-                              CourseLore <br />
-                              Communication Platform for Education <br />
-                              <small
-                                class="secondary"
-                                style="${css`
-                                  font-size: var(--font-size--2xs);
-                                  line-height: var(--line-height--2xs);
-                                `}"
-                              >
-                                Version ${courseloreVersion}
-                              </small>
-                            </span>
-                          </h3>
-                          <div class="dropdown--menu">
-                            <a
-                              href="https://courselore.org/about"
-                              target="_blank"
-                              class="dropdown--menu--item button button--transparent"
-                            >
-                              <i class="bi bi-info-circle"></i>
-                              About
-                            </a>
-                            <a
-                              href="https://github.com/courselore/courselore"
-                              target="_blank"
-                              class="dropdown--menu--item button button--transparent"
-                            >
-                              <i class="bi bi-file-earmark-code"></i>
-                              Source Code
-                            </a>
-                          </div>
-                        `,
-                      })},
-                    });
-                  `}"
-                >
-                  $${logo({ size: 16 /* var(--space--4) */ })} CourseLore
-                </button>
-              </div>
-              <div>
-                <button
-                  class="button button--transparent"
-                  oninteractive="${javascript`
-                    tippy(this, {
-                      trigger: "click",
-                      interactive: true,
-                      content: ${hiddenContent({
-                        req,
-                        res,
-                        content: html`
-                          <h3 class="heading">
-                            <i class="bi bi-bug"></i>
-                            Report an Issue
-                          </h3>
-                          <div class="dropdown--menu">
-                            <a
-                              href="${reportIssueHref}"
-                              target="_blank"
-                              class="dropdown--menu--item button button--transparent"
-                            >
-                              <i class="bi bi-envelope"></i>
-                              ${administratorEmail}
-                            </a>
-                            <a
-                              href="https://github.com/courselore/courselore/issues/new${qs.stringify(
-                                {
-                                  body: dedent`
-                                    **What did you try to do?**
-
-
-
-                                    **What did you expect to happen?**
-
-
-
-                                    **What really happened?**
-
-
-
-                                    **What error messages (if any) did you run into?**
-
-
-
-                                    Please provide as much relevant context as possible (operating system, browser, and so forth):
-
-                                    - CourseLore Version: ${courseloreVersion}
-                                  `,
-                                },
-                                {
-                                  addQueryPrefix: true,
-                                }
-                              )}"
-                              target="_blank"
-                              class="dropdown--menu--item button button--transparent"
-                            >
-                              <i class="bi bi-github"></i>
-                              GitHub Issues
-                            </a>
-                          </div>
-                        `,
-                      })},
-                      });
-                    `}"
-                >
-                  <i class="bi bi-bug"></i>
-                  Report an Issue
-                </button>
-              </div>
-            </div>
+          <div
+            style="${css`
+              flex: 1;
+              overflow: auto;
+            `}"
+          >
+            $${body}
           </div>
 
-          <div hidden>$${res.locals.hiddenContent ?? []}</div>
-        </body>
-      </html>
-    `);
+          <div
+            style="${css`
+              font-size: var(--font-size--xs);
+              line-height: var(--line-height--xs);
+              background-color: var(--color--gray--medium--100);
+              @media (prefers-color-scheme: dark) {
+                background-color: var(--color--gray--medium--800);
+              }
+              padding: var(--space--0) var(--space--4);
+              border-top: var(--border-width--1) solid
+                var(--color--gray--medium--200);
+              @media (prefers-color-scheme: dark) {
+                border-color: var(--color--gray--medium--700);
+              }
+              display: flex;
+              justify-content: center;
+              flex-wrap: wrap;
+            `}"
+          >
+            <div>
+              <button
+                class="button button--transparent"
+                style="${css`
+                  align-items: center;
+                `}"
+                oninteractive="${javascript`
+                  tippy(this, {
+                    trigger: "click",
+                    interactive: true,
+                    content: ${hiddenContent({
+                      req,
+                      res,
+                      content: html`
+                        <h3 class="heading">
+                          $${logo({ size: 12 /* var(--space--3) */ })}
+                          <span>
+                            CourseLore <br />
+                            Communication Platform for Education <br />
+                            <small
+                              class="secondary"
+                              style="${css`
+                                font-size: var(--font-size--2xs);
+                                line-height: var(--line-height--2xs);
+                              `}"
+                            >
+                              Version ${courseloreVersion}
+                            </small>
+                          </span>
+                        </h3>
+                        <div class="dropdown--menu">
+                          <a
+                            href="https://courselore.org/about"
+                            target="_blank"
+                            class="dropdown--menu--item button button--transparent"
+                          >
+                            <i class="bi bi-info-circle"></i>
+                            About
+                          </a>
+                          <a
+                            href="https://github.com/courselore/courselore"
+                            target="_blank"
+                            class="dropdown--menu--item button button--transparent"
+                          >
+                            <i class="bi bi-file-earmark-code"></i>
+                            Source Code
+                          </a>
+                        </div>
+                      `,
+                    })},
+                  });
+                `}"
+              >
+                $${logo({ size: 16 /* var(--space--4) */ })} CourseLore
+              </button>
+            </div>
+            <div>
+              <button
+                class="button button--transparent"
+                oninteractive="${javascript`
+                  tippy(this, {
+                    trigger: "click",
+                    interactive: true,
+                    content: ${hiddenContent({
+                      req,
+                      res,
+                      content: html`
+                        <h3 class="heading">
+                          <i class="bi bi-bug"></i>
+                          Report an Issue
+                        </h3>
+                        <div class="dropdown--menu">
+                          <a
+                            href="${reportIssueHref}"
+                            target="_blank"
+                            class="dropdown--menu--item button button--transparent"
+                          >
+                            <i class="bi bi-envelope"></i>
+                            ${administratorEmail}
+                          </a>
+                          <a
+                            href="https://github.com/courselore/courselore/issues/new${qs.stringify(
+                              {
+                                body: dedent`
+                                  **What did you try to do?**
+
+
+
+                                  **What did you expect to happen?**
+
+
+
+                                  **What really happened?**
+
+
+
+                                  **What error messages (if any) did you run into?**
+
+
+
+                                  Please provide as much relevant context as possible (operating system, browser, and so forth):
+
+                                  - CourseLore Version: ${courseloreVersion}
+                                `,
+                              },
+                              {
+                                addQueryPrefix: true,
+                              }
+                            )}"
+                            target="_blank"
+                            class="dropdown--menu--item button button--transparent"
+                          >
+                            <i class="bi bi-github"></i>
+                            GitHub Issues
+                          </a>
+                        </div>
+                      `,
+                    })},
+                    });
+                  `}"
+              >
+                <i class="bi bi-bug"></i>
+                Report an Issue
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div hidden>$${res.locals.hiddenContent ?? []}</div>
+      </body>
+    </html>
+  `;
+
+  const globalCSSProcessed = processCSS(css`
+    ${globalCSS}
+
+    .label {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space--1);
+
+      .label--text {
+        font-size: var(--font-size--xs);
+        line-height: var(--line-height--xs);
+        font-weight: var(--font-weight--bold);
+        display: flex;
+        gap: var(--space--2);
+      }
+    }
+
+    .input--text {
+      background-color: var(--color--gray--medium--200);
+      --color--box-shadow: var(--color--blue--400);
+      &::placeholder {
+        color: var(--color--gray--medium--400);
+      }
+      &:disabled,
+      &.disabled {
+        color: var(--color--gray--medium--500);
+        -webkit-text-fill-color: var(--color--gray--medium--500);
+        background-color: var(--color--gray--medium--300);
+      }
+      @media (prefers-color-scheme: dark) {
+        background-color: var(--color--gray--medium--700);
+        --color--box-shadow: var(--color--blue--600);
+        &::placeholder {
+          color: var(--color--gray--medium--500);
+        }
+        &:disabled,
+        &.disabled {
+          color: var(--color--gray--medium--400);
+          -webkit-text-fill-color: var(--color--gray--medium--400);
+          background-color: var(--color--gray--medium--600);
+        }
+      }
+      width: 100%;
+      display: block;
+      padding: var(--space--2) var(--space--4);
+      border-radius: var(--border-radius--md);
+      &:focus-within {
+        box-shadow: var(--border-width--0) var(--border-width--0)
+          var(--border-width--0) var(--border-width--2) var(--color--box-shadow);
+      }
+      transition-property: var(--transition-property--box-shadow);
+      transition-duration: var(--transition-duration--150);
+      transition-timing-function: var(--transition-timing-function--in-out);
+      &.input--text--textarea {
+        border-radius: var(--border-radius--lg);
+      }
+    }
+
+    .input--radio {
+      background-color: var(--color--gray--medium--200);
+      &:hover,
+      &:focus-within {
+        background-color: var(--color--gray--medium--300);
+      }
+      &:active {
+        background-color: var(--color--gray--medium--400);
+      }
+      &:checked {
+        background-color: var(--color--blue--600);
+        &:hover,
+        &:focus-within {
+          background-color: var(--color--blue--500);
+        }
+        &:active {
+          background-color: var(--color--blue--700);
+        }
+      }
+      @media (prefers-color-scheme: dark) {
+        background-color: var(--color--gray--medium--700);
+        &:hover,
+        &:focus-within {
+          background-color: var(--color--gray--medium--600);
+        }
+        &:active {
+          background-color: var(--color--gray--medium--500);
+        }
+        &:checked {
+          background-color: var(--color--blue--700);
+          &:hover,
+          &:focus-within {
+            background-color: var(--color--blue--600);
+          }
+          &:active {
+            background-color: var(--color--blue--800);
+          }
+        }
+      }
+      width: var(--space--3-5);
+      height: var(--space--3-5);
+      border-radius: var(--border-radius--circle);
+      position: relative;
+      top: var(--space---0-5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition-property: var(--transition-property--colors);
+      transition-duration: var(--transition-duration--150);
+      transition-timing-function: var(--transition-timing-function--in-out);
+
+      &::before {
+        content: "";
+        background-color: var(--color--gray--medium--50);
+        @media (prefers-color-scheme: dark) {
+          background-color: var(--color--gray--medium--200);
+        }
+        display: block;
+        width: var(--space--1-5);
+        height: var(--space--1-5);
+        border-radius: var(--border-radius--circle);
+        transition-property: var(--transition-property--transform);
+        transition-duration: var(--transition-duration--150);
+        transition-timing-function: var(--transition-timing-function--in-out);
+      }
+      &:not(:checked)::before {
+        transform: scale(var(--scale--0));
+      }
+    }
+
+    .input--checkbox {
+      background-color: var(--color--gray--medium--200);
+      &:hover,
+      &:focus-within {
+        background-color: var(--color--gray--medium--300);
+      }
+      &:active {
+        background-color: var(--color--gray--medium--400);
+      }
+      &:checked {
+        background-color: var(--color--blue--600);
+        &:hover,
+        &:focus-within {
+          background-color: var(--color--blue--500);
+        }
+        &:active {
+          background-color: var(--color--blue--700);
+        }
+      }
+      @media (prefers-color-scheme: dark) {
+        background-color: var(--color--gray--medium--700);
+        &:hover,
+        &:focus-within {
+          background-color: var(--color--gray--medium--600);
+        }
+        &:active {
+          background-color: var(--color--gray--medium--500);
+        }
+        &:checked {
+          background-color: var(--color--blue--700);
+          &:hover,
+          &:focus-within {
+            background-color: var(--color--blue--600);
+          }
+          &:active {
+            background-color: var(--color--blue--800);
+          }
+        }
+      }
+      width: var(--space--8);
+      padding: var(--space--0-5);
+      border-radius: var(--border-radius--full);
+      position: relative;
+      top: calc(var(--space--0-5) * 1.5);
+      &::after {
+        content: "";
+        background-color: var(--color--gray--medium--50);
+        @media (prefers-color-scheme: dark) {
+          background-color: var(--color--gray--medium--200);
+        }
+        width: var(--space--3);
+        height: var(--space--3);
+        border-radius: var(--border-radius--circle);
+        display: block;
+        transition-property: var(--transition-property--all);
+        transition-duration: var(--transition-duration--150);
+        transition-timing-function: var(--transition-timing-function--in-out);
+      }
+      &:checked::after {
+        margin-left: var(--space--4);
+      }
+      transition-property: var(--transition-property--colors);
+      transition-duration: var(--transition-duration--150);
+      transition-timing-function: var(--transition-timing-function--in-out);
+    }
+
+    .input--radio-or-checkbox--multilabel {
+      & ~ * {
+        display: flex;
+        gap: var(--space--2);
+      }
+      &:not(:checked) + * + *,
+      &:checked + * {
+        display: none;
+      }
+    }
+
+    .button {
+      padding: var(--space--1) var(--space--4);
+      border-radius: var(--border-radius--md);
+      display: flex;
+      gap: var(--space--2);
+      justify-content: center;
+      align-items: baseline;
+      transition-property: var(--transition-property--colors);
+      transition-duration: var(--transition-duration--150);
+      transition-timing-function: var(--transition-timing-function--in-out);
+      cursor: pointer;
+
+      &.button--tight {
+        padding: var(--space--0-5) var(--space--1);
+
+        &.button--tight--inline {
+          margin: var(--space---0-5) var(--space---1);
+        }
+      }
+
+      &.button--tight-gap {
+        gap: var(--space--1);
+      }
+
+      &.button--full-width-on-small-screen {
+        @media (max-width: 400px) {
+          width: 100%;
+        }
+      }
+
+      &.button--justify-start {
+        justify-content: flex-start;
+      }
+
+      &.button--inline {
+        display: inline-flex;
+      }
+
+      &.button--transparent {
+        &:not(:disabled):not(.disabled) {
+          &:hover,
+          &:focus-within,
+          &.hover {
+            background-color: var(--color--gray--medium--200);
+          }
+          &:active {
+            background-color: var(--color--gray--medium--300);
+          }
+          @media (prefers-color-scheme: dark) {
+            &:hover,
+            &:focus-within,
+            &.hover {
+              background-color: var(--color--gray--medium--700);
+            }
+            &:active {
+              background-color: var(--color--gray--medium--600);
+            }
+          }
+        }
+        &:disabled,
+        &.disabled {
+          color: var(--color--gray--medium--500);
+          @media (prefers-color-scheme: dark) {
+            color: var(--color--gray--medium--400);
+          }
+        }
+      }
+
+      ${["blue", "green", "rose"].map(
+        (color) => css`
+          &.button--${color} {
+            color: var(--color--${color}--50);
+            @media (prefers-color-scheme: dark) {
+              color: var(--color--${color}--100);
+            }
+            &:not(:disabled):not(.disabled) {
+              background-color: var(--color--${color}--600);
+              &:hover,
+              &:focus-within,
+              &.hover {
+                background-color: var(--color--${color}--500);
+              }
+              &:active {
+                background-color: var(--color--${color}--700);
+              }
+              @media (prefers-color-scheme: dark) {
+                background-color: var(--color--${color}--800);
+                &:hover,
+                &:focus-within,
+                &.hover {
+                  background-color: var(--color--${color}--700);
+                }
+                &:active {
+                  background-color: var(--color--${color}--900);
+                }
+              }
+            }
+            &:disabled,
+            &.disabled {
+              background-color: var(--color--${color}--300);
+              @media (prefers-color-scheme: dark) {
+                background-color: var(--color--${color}--500);
+              }
+            }
+            .strong {
+              color: var(--color--${color}--50);
+              @media (prefers-color-scheme: dark) {
+                color: var(--color--${color}--100);
+              }
+            }
+            .secondary,
+            [class^="text--"] {
+              color: var(--color--${color}--100);
+              @media (prefers-color-scheme: dark) {
+                color: var(--color--${color}--200);
+              }
+            }
+          }
+        `
+      )}
+    }
+
+    .link {
+      text-decoration: underline;
+      color: var(--color--blue--600);
+      &:hover,
+      &:focus-within {
+        color: var(--color--blue--500);
+      }
+      &:active {
+        color: var(--color--blue--700);
+      }
+      @media (prefers-color-scheme: dark) {
+        color: var(--color--blue--500);
+        &:hover,
+        &:focus-within {
+          color: var(--color--blue--400);
+        }
+        &:active {
+          color: var(--color--blue--600);
+        }
+      }
+      transition-property: var(--transition-property--colors);
+      transition-duration: var(--transition-duration--150);
+      transition-timing-function: var(--transition-timing-function--in-out);
+      cursor: pointer;
+    }
+
+    :disabled,
+    .disabled {
+      cursor: not-allowed;
+    }
+
+    .heading {
+      font-size: var(--font-size--2xs);
+      line-height: var(--line-height--2xs);
+      font-weight: var(--font-weight--bold);
+      text-transform: uppercase;
+      letter-spacing: var(--letter-spacing--widest);
+      color: var(--color--gray--medium--600);
+      @media (prefers-color-scheme: dark) {
+        color: var(--color--gray--medium--400);
+      }
+      display: flex;
+      gap: var(--space--1);
+    }
+
+    .heading--display {
+      font-size: var(--font-size--xl);
+      line-height: var(--line-height--xl);
+      font-weight: var(--font-weight--bold);
+      text-align: center;
+      color: var(--color--gray--medium--800);
+      @media (prefers-color-scheme: dark) {
+        color: var(--color--gray--medium--100);
+      }
+    }
+
+    .strong {
+      font-weight: var(--font-weight--bold);
+      color: var(--color--gray--medium--800);
+      @media (prefers-color-scheme: dark) {
+        color: var(--color--gray--medium--100);
+      }
+    }
+
+    .secondary {
+      color: var(--color--gray--medium--500);
+      @media (prefers-color-scheme: dark) {
+        color: var(--color--gray--medium--400);
+      }
+    }
+
+    ${[
+      "blue",
+      "green",
+      "rose",
+      "pink",
+      "amber",
+      "teal",
+      "lime",
+      "emerald",
+      "fuchsia",
+      "cyan",
+    ].map(
+      (color) => css`
+        .text--${color} {
+          color: var(--color--${color}--600);
+          @media (prefers-color-scheme: dark) {
+            color: var(--color--${color}--500);
+          }
+        }
+      `
+    )}
+
+    .mark {
+      color: var(--color--amber--700);
+      background-color: var(--color--amber--200);
+      @media (prefers-color-scheme: dark) {
+        color: var(--color--amber--200);
+        background-color: var(--color--amber--700);
+      }
+      border-radius: var(--border-radius--base);
+    }
+
+    .code,
+    .pre > code {
+      font-family: "JetBrains Mono", var(--font-family--monospace);
+      font-variant-ligatures: none;
+    }
+
+    .pre > code {
+      font-size: var(--font-size--xs);
+      line-height: var(--line-height--xs);
+    }
+
+    .img {
+      background-color: var(--color--gray--medium--50);
+      @media (prefers-color-scheme: dark) {
+        background-color: var(--color--gray--medium--50);
+        filter: brightness(var(--brightness--90));
+      }
+      max-width: 100%;
+      height: auto;
+      border-radius: var(--border-radius--xl);
+    }
+
+    .details {
+      background-color: var(--color--gray--medium--200);
+      @media (prefers-color-scheme: dark) {
+        background-color: var(--color--gray--medium--700);
+      }
+      border-radius: var(--border-radius--xl);
+      summary {
+        &:hover,
+        &:focus-within {
+          background-color: var(--color--gray--medium--300);
+        }
+        @media (prefers-color-scheme: dark) {
+          &:hover,
+          &:focus-within {
+            background-color: var(--color--gray--medium--600);
+          }
+        }
+        padding: var(--space--2) var(--space--4);
+        border-radius: var(--border-radius--xl);
+        transition-property: var(--transition-property--colors);
+        transition-duration: var(--transition-duration--150);
+        transition-timing-function: var(--transition-timing-function--in-out);
+        cursor: pointer;
+        &::before {
+          content: "\\f275";
+          font-family: bootstrap-icons !important;
+          font-size: var(--font-size--xs);
+          line-height: var(--line-height--xs);
+          margin-right: var(--space--2);
+        }
+      }
+      &[open] > summary::before {
+        content: "\\f273";
+      }
+      & > div:last-child {
+        padding: var(--space--4);
+      }
+    }
+
+    .decorative-icon {
+      font-size: var(--font-size--9xl);
+      line-height: var(--line-height--9xl);
+      color: var(--color--gray--medium--300);
+      background-color: var(--color--gray--medium--100);
+      @media (prefers-color-scheme: dark) {
+        color: var(--color--gray--medium--600);
+        background-color: var(--color--gray--medium--800);
+      }
+      width: var(--space--48);
+      height: var(--space--48);
+      border-radius: var(--border-radius--circle);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .separator {
+      border-top: var(--border-width--1) solid var(--color--gray--medium--200);
+      @media (prefers-color-scheme: dark) {
+        border-color: var(--color--gray--medium--700);
+      }
+    }
+
+    .menu-box {
+      background-color: var(--color--gray--medium--100);
+      @media (prefers-color-scheme: dark) {
+        background-color: var(--color--gray--medium--800);
+      }
+      padding: var(--space--2);
+      border-radius: var(--border-radius--lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space--2);
+
+      .menu-box--item {
+        justify-content: flex-start;
+      }
+    }
+
+    .tippy-box {
+      font-size: var(--font-size--sm);
+      line-height: var(--line-height--sm);
+      --background-color: var(--color--gray--medium--100);
+      --border-color: var(--color--gray--medium--400);
+      @media (prefers-color-scheme: dark) {
+        --background-color: var(--color--gray--medium--800);
+        --border-color: var(--color--gray--medium--400);
+      }
+      color: inherit;
+      background-color: var(--background-color);
+      border: var(--border-width--1) solid var(--border-color);
+      border-radius: var(--border-radius--md);
+      & > .tippy-svg-arrow > svg {
+        &:first-child {
+          fill: var(--border-color);
+        }
+        &:last-child {
+          fill: var(--background-color);
+        }
+      }
+
+      .tippy-content {
+        padding: var(--space--1) var(--space--2);
+      }
+
+      .heading {
+        padding: var(--space--1) var(--space--2);
+      }
+
+      .keyboard-shortcut {
+        font-size: var(--font-size--xs);
+        line-height: var(--line-height--xs);
+        color: var(--color--gray--medium--500);
+        @media (prefers-color-scheme: dark) {
+          color: var(--color--gray--medium--400);
+        }
+
+        .keyboard-shortcut--cluster {
+          letter-spacing: var(--letter-spacing--widest);
+        }
+      }
+
+      .dropdown--menu {
+        display: flex;
+        flex-direction: column;
+
+        .dropdown--menu--item {
+          text-align: left;
+          width: 100%;
+          padding-left: var(--space--2);
+          padding-right: var(--space--2);
+          justify-content: flex-start;
+        }
+      }
+
+      .dropdown--separator {
+        border-top: var(--border-width--1) solid var(--color--gray--medium--200);
+        @media (prefers-color-scheme: dark) {
+          border-color: var(--color--gray--medium--700);
+        }
+        margin: var(--space--0) var(--space--2);
+      }
+
+      ${["green", "rose"].map(
+        (color) => css`
+          &[data-theme~="${color}"] {
+            color: var(--color--${color}--700);
+            --background-color: var(--color--${color}--100);
+            --border-color: var(--color--${color}--200);
+            @media (prefers-color-scheme: dark) {
+              color: var(--color--${color}--200);
+              --background-color: var(--color--${color}--900);
+              --border-color: var(--color--${color}--800);
+            }
+          }
+        `
+      )}
+
+      &[data-theme~="validation--error"] {
+        color: var(--color--rose--700);
+        --background-color: var(--color--rose--100);
+        --border-color: var(--color--rose--200);
+        @media (prefers-color-scheme: dark) {
+          color: var(--color--rose--200);
+          --background-color: var(--color--rose--900);
+          --border-color: var(--color--rose--800);
+        }
+      }
+    }
+
+    .dark {
+      display: none !important;
+    }
+    @media (prefers-color-scheme: dark) {
+      .light {
+        display: none !important;
+      }
+      .dark {
+        display: block !important;
+      }
+    }
+
+    .content {
+      &,
+      div,
+      figure,
+      blockquote {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space--4);
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        margin-top: var(--space--4);
+      }
+
+      h1 {
+        color: var(--color--gray--medium--800);
+        @media (prefers-color-scheme: dark) {
+          color: var(--color--gray--medium--100);
+        }
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-size: var(--font-size--base);
+        line-height: var(--line-height--base);
+      }
+
+      h1,
+      h4,
+      h5,
+      h6 {
+        font-weight: var(--font-weight--bold);
+      }
+
+      h2 {
+        font-style: italic;
+      }
+
+      b,
+      strong {
+        font-weight: var(--font-weight--bold);
+        color: var(--color--gray--medium--800);
+        @media (prefers-color-scheme: dark) {
+          color: var(--color--gray--medium--100);
+        }
+      }
+
+      i:not(.bi),
+      em {
+        font-style: italic;
+        color: var(--color--gray--medium--800);
+        @media (prefers-color-scheme: dark) {
+          color: var(--color--gray--medium--100);
+        }
+      }
+
+      a {
+        text-decoration: underline;
+        color: var(--color--blue--600);
+        &:hover,
+        &:focus-within {
+          color: var(--color--blue--500);
+        }
+        &:active {
+          color: var(--color--blue--700);
+        }
+        @media (prefers-color-scheme: dark) {
+          color: var(--color--blue--500);
+          &:hover,
+          &:focus-within {
+            color: var(--color--blue--400);
+          }
+          &:active {
+            color: var(--color--blue--600);
+          }
+        }
+        transition-property: var(--transition-property--colors);
+        transition-duration: var(--transition-duration--150);
+        transition-timing-function: var(--transition-timing-function--in-out);
+        cursor: pointer;
+      }
+
+      pre {
+        padding: var(--space--4);
+        border-radius: var(--border-radius--xl);
+        overflow-x: auto;
+        & > code {
+          font-size: var(--font-size--xs);
+          line-height: var(--line-height--xs);
+          overflow-wrap: normal;
+        }
+      }
+
+      code,
+      tt,
+      kbd,
+      samp {
+        font-family: "JetBrains Mono", var(--font-family--monospace);
+        font-variant-ligatures: none;
+      }
+
+      del {
+        text-decoration: line-through;
+        color: var(--color--rose--600);
+        @media (prefers-color-scheme: dark) {
+          color: var(--color--rose--500);
+        }
+      }
+
+      ins {
+        color: var(--color--green--600);
+        @media (prefers-color-scheme: dark) {
+          color: var(--color--green--500);
+        }
+      }
+
+      sup,
+      sub {
+        position: relative;
+        font-size: var(--font-size--2xs);
+        line-height: var(--space--0);
+        vertical-align: baseline;
+      }
+
+      sup {
+        top: var(--space---1);
+      }
+
+      sub {
+        bottom: var(--space---1);
+      }
+
+      img {
+        background-color: var(--color--gray--medium--50);
+        @media (prefers-color-scheme: dark) {
+          background-color: var(--color--gray--medium--50);
+          filter: brightness(var(--brightness--90));
+        }
+        max-width: 100%;
+        height: auto;
+        border-radius: var(--border-radius--xl);
+      }
+
+      hr {
+        border-top: var(--border-width--1) solid var(--color--gray--medium--200);
+        @media (prefers-color-scheme: dark) {
+          border-color: var(--color--gray--medium--700);
+        }
+      }
+
+      ol {
+        padding-left: var(--space--8);
+        & > li {
+          list-style: decimal;
+          &::marker {
+            color: var(--color--gray--medium--500);
+            @media (prefers-color-scheme: dark) {
+              color: var(--color--gray--medium--400);
+            }
+          }
+        }
+      }
+
+      ul {
+        padding-left: var(--space--8);
+        & > li {
+          list-style: disc;
+          &::marker {
+            color: var(--color--gray--medium--500);
+            @media (prefers-color-scheme: dark) {
+              color: var(--color--gray--medium--400);
+            }
+          }
+        }
+      }
+
+      table {
+        border-collapse: collapse;
+        display: block;
+        caption {
+          font-size: var(--font-size--xs);
+          line-height: var(--line-height--xs);
+          font-weight: var(--font-weight--bold);
+        }
+        th,
+        td {
+          padding: var(--space--1) var(--space--3);
+          border-top: var(--border-width--1) solid
+            var(--color--gray--medium--200);
+          @media (prefers-color-scheme: dark) {
+            border-color: var(--color--gray--medium--700);
+          }
+        }
+        th {
+          font-weight: var(--font-weight--bold);
+          color: var(--color--gray--medium--800);
+          @media (prefers-color-scheme: dark) {
+            color: var(--color--gray--medium--100);
+          }
+        }
+      }
+
+      blockquote {
+        padding-left: var(--space--4);
+        border-left: var(--border-width--4) solid
+          var(--color--gray--medium--200);
+        @media (prefers-color-scheme: dark) {
+          border-color: var(--color--gray--medium--700);
+        }
+      }
+
+      dl {
+        dt {
+          font-weight: var(--font-weight--bold);
+          color: var(--color--gray--medium--800);
+          @media (prefers-color-scheme: dark) {
+            color: var(--color--gray--medium--100);
+          }
+        }
+        dd {
+          padding-left: var(--space--4);
+        }
+      }
+
+      var {
+        font-style: italic;
+      }
+
+      s,
+      strike {
+        text-decoration: line-through;
+      }
+
+      details {
+        background-color: var(--color--gray--medium--200);
+        @media (prefers-color-scheme: dark) {
+          background-color: var(--color--gray--medium--700);
+        }
+        border-radius: var(--border-radius--xl);
+        summary {
+          &:hover,
+          &:focus-within {
+            background-color: var(--color--gray--medium--300);
+          }
+          @media (prefers-color-scheme: dark) {
+            &:hover,
+            &:focus-within {
+              background-color: var(--color--gray--medium--600);
+            }
+          }
+          padding: var(--space--2) var(--space--4);
+          border-radius: var(--border-radius--xl);
+          transition-property: var(--transition-property--colors);
+          transition-duration: var(--transition-duration--150);
+          transition-timing-function: var(--transition-timing-function--in-out);
+          cursor: pointer;
+          &::before {
+            content: "\\f275";
+            font-family: bootstrap-icons !important;
+            font-size: var(--font-size--xs);
+            line-height: var(--line-height--xs);
+            margin-right: var(--space--2);
+          }
+        }
+        &[open] > summary::before {
+          content: "\\f273";
+        }
+        & > div:last-child {
+          padding: var(--space--4);
+        }
+      }
+
+      figure {
+        figcaption {
+          font-size: var(--font-size--xs);
+          line-height: var(--line-height--xs);
+          font-weight: var(--font-weight--bold);
+        }
+      }
+
+      abbr {
+        text-decoration: underline dotted;
+        cursor: help;
+      }
+
+      dfn {
+        font-weight: var(--font-weight--bold);
+      }
+
+      mark {
+        color: var(--color--amber--700);
+        background-color: var(--color--amber--200);
+        @media (prefers-color-scheme: dark) {
+          color: var(--color--amber--200);
+          background-color: var(--color--amber--700);
+        }
+        border-radius: var(--border-radius--base);
+      }
+
+      small {
+        font-size: var(--font-size--xs);
+        line-height: var(--line-height--xs);
+      }
+
+      input[type="checkbox"] {
+        font-size: var(--font-size--2xs);
+        line-height: var(--line-height--2xs);
+        color: var(--color--transparent);
+        background-color: var(--color--gray--medium--200);
+        &:checked {
+          color: var(--color--blue--50);
+          background-color: var(--color--blue--600);
+        }
+        @media (prefers-color-scheme: dark) {
+          background-color: var(--color--gray--medium--700);
+          &:checked {
+            color: var(--color--blue--200);
+            background-color: var(--color--blue--700);
+          }
+        }
+        width: var(--space--3-5);
+        height: var(--space--3-5);
+        border-radius: var(--border-radius--base);
+        margin-right: var(--space--1);
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        &::before {
+          content: "\\f633";
+          font-family: bootstrap-icons !important;
+        }
+      }
+
+      .katex {
+        overflow: auto;
+      }
+    }
+  `);
+  const globalCSSPath = `/global--${crypto
+    .createHash("sha256")
+    .update(globalCSS)
+    .digest("hex")}.css`;
+  app.get(globalCSSPath, (req, res) => {
+    res.type("css").send(globalCSSProcessed);
+  });
 
   const boxLayout = ({
     req,
@@ -2754,16 +2735,15 @@ export default async function courselore({
         Partial<HiddenContentMiddlewareLocals>
     >;
     body: HTML;
-  }): HTML =>
-    /* TODO: extractInlineStyles */(html`
-      <!DOCTYPE html>
-      <html>
-        <body>
-          $${body}
-          <div hidden>$${res.locals.hiddenContent ?? []}</div>
-        </body>
-      </html>
-    `);
+  }): HTML => /* TODO: extractInlineStyles */ html`
+    <!DOCTYPE html>
+    <html>
+      <body>
+        $${body}
+        <div hidden>$${res.locals.hiddenContent ?? []}</div>
+      </body>
+    </html>
+  `;
 
   const spinner = html`
     <svg
