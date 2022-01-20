@@ -3,6 +3,7 @@
 - CSS management
   - Use `res.locals` to collect CSS.
   - Remove static CSS (the design system) from every request.
+- Try and load fonts without so many requests.
 - Write a function to determine if processing the message is even necessary. Most messages don’t use extra features and could skip JSDOM entirely.
 - Overflowing text on mobile: Invitation link on `/settings/invitations` page.
 - Find out why I received the same notification multiple times.
