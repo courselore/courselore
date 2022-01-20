@@ -503,7 +503,7 @@ export default async function courselore({
                         tippy(this, {
                           trigger: "click",
                           interactive: true,
-                          content: ${hiddenContent({
+                          content: ${res.locals.HTMLForJavaScript({
                             req,
                             res,
                             content: html`
@@ -575,7 +575,7 @@ export default async function courselore({
                             tippy(this, {
                               trigger: "click",
                               interactive: true,
-                              content: ${hiddenContent({
+                              content: ${res.locals.HTMLForJavaScript({
                                 req,
                                 res,
                                 content: html`
@@ -832,7 +832,7 @@ export default async function courselore({
                     tippy(this, {
                       trigger: "click",
                       interactive: true,
-                      content: ${hiddenContent({
+                      content: ${res.locals.HTMLForJavaScript({
                         req,
                         res,
                         content: html`
@@ -885,7 +885,7 @@ export default async function courselore({
                     tippy(this, {
                       trigger: "click",
                       interactive: true,
-                      content: ${hiddenContent({
+                      content: ${res.locals.HTMLForJavaScript({
                         req,
                         res,
                         content: html`
@@ -2219,7 +2219,7 @@ export default async function courselore({
                       tippy(this, {
                         trigger: "click",
                         interactive: true,
-                        content: ${hiddenContent({
+                        content: ${res.locals.HTMLForJavaScript({
                           req,
                           res,
                           content: html`
@@ -2332,7 +2332,7 @@ export default async function courselore({
                 tippy(this, {
                   trigger: "click",
                   interactive: true,
-                  content: ${hiddenContent({
+                  content: ${res.locals.HTMLForJavaScript({
                     req,
                     res,
                     content: html`
@@ -2457,7 +2457,7 @@ export default async function courselore({
                 tippy(this, {
                   trigger: "click",
                   interactive: true,
-                  content: ${hiddenContent({
+                  content: ${res.locals.HTMLForJavaScript({
                     req,
                     res,
                     content: html`
@@ -2624,7 +2624,7 @@ export default async function courselore({
                     tippy(this, {
                       trigger: "click",
                       interactive: true,
-                      content: ${hiddenContent({
+                      content: ${res.locals.HTMLForJavaScript({
                         req,
                         res,
                         content: html`
@@ -3054,7 +3054,7 @@ export default async function courselore({
                     tippy(this, {
                       interactive: true,
                       appendTo: document.body,
-                      content: ${hiddenContent({
+                      content: ${res.locals.HTMLForJavaScript({
                         req,
                         res,
                         content: html`
@@ -5791,7 +5791,7 @@ export default async function courselore({
                       const uploadingIndicator = tippy(avatarChooser, {
                         trigger: "manual",
                         hideOnClick: false,
-                        content: ${hiddenContent({
+                        content: ${res.locals.HTMLForJavaScript({
                           req,
                           res,
                           content: html`
@@ -7390,7 +7390,7 @@ export default async function courselore({
                     oninteractive="${javascript`
                       tippy(this, {
                         trigger: "click",
-                        content: ${hiddenContent({
+                        content: ${res.locals.HTMLForJavaScript({
                           req,
                           res,
                           content: html`
@@ -7657,7 +7657,7 @@ export default async function courselore({
                                         maxWidth: "none",
                                         content: ${(() => {
                                           const link = `${baseURL}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
-                                          return hiddenContent({
+                                          return res.locals.HTMLForJavaScript({
                                             req,
                                             res,
                                             content: html`
@@ -7765,58 +7765,62 @@ export default async function courselore({
                                       tippy(this, {
                                         trigger: "click",
                                         interactive: true,
-                                        content: ${hiddenContent({
-                                          req,
-                                          res,
-                                          content: html`
-                                            <div class="dropdown--menu">
-                                              <form
-                                                method="POST"
-                                                action="${action}?_method=PATCH"
-                                              >
-                                                <input
-                                                  type="hidden"
-                                                  name="_csrf"
-                                                  value="${req.csrfToken()}"
-                                                />
-                                                <input
-                                                  type="hidden"
-                                                  name="resend"
-                                                  value="true"
-                                                />
-                                                <button
-                                                  class="dropdown--menu--item button button--transparent"
-                                                  $${isUsed
-                                                    ? html`
-                                                        type="button"
-                                                        oninteractive="${javascript`
+                                        content: ${res.locals.HTMLForJavaScript(
+                                          {
+                                            req,
+                                            res,
+                                            content: html`
+                                              <div class="dropdown--menu">
+                                                <form
+                                                  method="POST"
+                                                  action="${action}?_method=PATCH"
+                                                >
+                                                  <input
+                                                    type="hidden"
+                                                    name="_csrf"
+                                                    value="${req.csrfToken()}"
+                                                  />
+                                                  <input
+                                                    type="hidden"
+                                                    name="resend"
+                                                    value="true"
+                                                  />
+                                                  <button
+                                                    class="dropdown--menu--item button button--transparent"
+                                                    $${isUsed
+                                                      ? html`
+                                                          type="button"
+                                                          oninteractive="${javascript`
                                                           tippy(this, {
                                                             theme: "rose",
                                                             trigger: "click",
                                                             content: "You may not resend this invitation because it’s used.",
                                                           });
                                                         `}"
-                                                      `
-                                                    : isInvitationExpired
-                                                    ? html`
-                                                        type="button"
-                                                        oninteractive="${javascript`
+                                                        `
+                                                      : isInvitationExpired
+                                                      ? html`
+                                                          type="button"
+                                                          oninteractive="${javascript`
                                                           tippy(this, {
                                                             theme: "rose",
                                                             trigger: "click",
                                                             content: "You may not resend this invitation because it’s expired.",
                                                           });
                                                         `}"
-                                                      `
-                                                    : html``}
-                                                >
-                                                  <i class="bi bi-envelope"></i>
-                                                  Resend Invitation Email
-                                                </button>
-                                              </form>
-                                            </div>
-                                          `,
-                                        })},
+                                                        `
+                                                      : html``}
+                                                  >
+                                                    <i
+                                                      class="bi bi-envelope"
+                                                    ></i>
+                                                    Resend Invitation Email
+                                                  </button>
+                                                </form>
+                                              </div>
+                                            `,
+                                          }
+                                        )},
                                       });
                                     `}"
                                   >
@@ -7866,7 +7870,7 @@ export default async function courselore({
                                   tippy(this, {
                                     trigger: "click",
                                     interactive: true,
-                                    content: ${hiddenContent({
+                                    content: ${res.locals.HTMLForJavaScript({
                                       req,
                                       res,
                                       content: html`
@@ -8044,21 +8048,23 @@ export default async function courselore({
                                           `}"
                                           oninteractive="${javascript`
                                             tippy(this, {
-                                              content: ${hiddenContent({
-                                                req,
-                                                res,
-                                                content: html`
-                                                  Used
-                                                  <time
-                                                    datetime="${new Date(
-                                                      invitation.usedAt!
-                                                    ).toISOString()}"
-                                                    oninteractive="${javascript`
+                                              content: ${res.locals.HTMLForJavaScript(
+                                                {
+                                                  req,
+                                                  res,
+                                                  content: html`
+                                                    Used
+                                                    <time
+                                                      datetime="${new Date(
+                                                        invitation.usedAt!
+                                                      ).toISOString()}"
+                                                      oninteractive="${javascript`
                                                       leafac.relativizeDateTimeElement(this, { preposition: "on" });
                                                     `}"
-                                                  ></time>
-                                                `,
-                                              })},
+                                                    ></time>
+                                                  `,
+                                                }
+                                              )},
                                             });
                                           `}"
                                         >
@@ -8080,41 +8086,43 @@ export default async function courselore({
                                             tippy(this, {
                                               trigger: "click",
                                               interactive: true,
-                                              content: ${hiddenContent({
-                                                req,
-                                                res,
-                                                content: html`
-                                                  <div
-                                                    style="${css`
-                                                      display: flex;
-                                                      flex-direction: column;
-                                                      gap: var(--space--2);
-                                                    `}"
-                                                  >
-                                                    <h3 class="heading">
-                                                      <i
-                                                        class="bi bi-calendar-x"
-                                                      ></i>
-                                                      <span>
-                                                        Expired
-                                                        <time
-                                                          datetime="${new Date(
-                                                            invitation.expiresAt!
-                                                          ).toISOString()}"
-                                                          oninteractive="${javascript`
+                                              content: ${res.locals.HTMLForJavaScript(
+                                                {
+                                                  req,
+                                                  res,
+                                                  content: html`
+                                                    <div
+                                                      style="${css`
+                                                        display: flex;
+                                                        flex-direction: column;
+                                                        gap: var(--space--2);
+                                                      `}"
+                                                    >
+                                                      <h3 class="heading">
+                                                        <i
+                                                          class="bi bi-calendar-x"
+                                                        ></i>
+                                                        <span>
+                                                          Expired
+                                                          <time
+                                                            datetime="${new Date(
+                                                              invitation.expiresAt!
+                                                            ).toISOString()}"
+                                                            oninteractive="${javascript`
                                                             leafac.relativizeDateTimeElement(this, { preposition: "on" });
                                                           `}"
-                                                        ></time>
-                                                      </span>
-                                                    </h3>
-                                                    $${updateExpirationForm}
-                                                    <hr
-                                                      class="dropdown--separator"
-                                                    />
-                                                    $${removeExpirationForm}
-                                                  </div>
-                                                `,
-                                              })},
+                                                          ></time>
+                                                        </span>
+                                                      </h3>
+                                                      $${updateExpirationForm}
+                                                      <hr
+                                                        class="dropdown--separator"
+                                                      />
+                                                      $${removeExpirationForm}
+                                                    </div>
+                                                  `,
+                                                }
+                                              )},
                                             });
                                           `}"
                                         >
@@ -8137,28 +8145,30 @@ export default async function courselore({
                                             tippy(this, {
                                               trigger: "click",
                                               interactive: true,
-                                              content: ${hiddenContent({
-                                                req,
-                                                res,
-                                                content: html`
-                                                  <div
-                                                    style="${css`
-                                                      padding-top: var(
-                                                        --space--2
-                                                      );
-                                                      display: flex;
-                                                      flex-direction: column;
-                                                      gap: var(--space--2);
-                                                    `}"
-                                                  >
-                                                    $${updateExpirationForm}
-                                                    <hr
-                                                      class="dropdown--separator"
-                                                    />
-                                                    $${expireForm}
-                                                  </div>
-                                                `,
-                                              })},
+                                              content: ${res.locals.HTMLForJavaScript(
+                                                {
+                                                  req,
+                                                  res,
+                                                  content: html`
+                                                    <div
+                                                      style="${css`
+                                                        padding-top: var(
+                                                          --space--2
+                                                        );
+                                                        display: flex;
+                                                        flex-direction: column;
+                                                        gap: var(--space--2);
+                                                      `}"
+                                                    >
+                                                      $${updateExpirationForm}
+                                                      <hr
+                                                        class="dropdown--separator"
+                                                      />
+                                                      $${expireForm}
+                                                    </div>
+                                                  `,
+                                                }
+                                              )},
                                             });
                                           `}"
                                         >
@@ -8182,45 +8192,47 @@ export default async function courselore({
                                             tippy(this, {
                                               trigger: "click",
                                               interactive: true,
-                                              content: ${hiddenContent({
-                                                req,
-                                                res,
-                                                content: html`
-                                                  <div
-                                                    style="${css`
-                                                      display: flex;
-                                                      flex-direction: column;
-                                                      gap: var(--space--2);
-                                                    `}"
-                                                  >
-                                                    <h3 class="heading">
-                                                      <i
-                                                        class="bi bi-calendar-plus"
-                                                      ></i>
-                                                      <span>
-                                                        Expires
-                                                        <time
-                                                          datetime="${new Date(
-                                                            invitation.expiresAt
-                                                          ).toISOString()}"
-                                                          oninteractive="${javascript`
+                                              content: ${res.locals.HTMLForJavaScript(
+                                                {
+                                                  req,
+                                                  res,
+                                                  content: html`
+                                                    <div
+                                                      style="${css`
+                                                        display: flex;
+                                                        flex-direction: column;
+                                                        gap: var(--space--2);
+                                                      `}"
+                                                    >
+                                                      <h3 class="heading">
+                                                        <i
+                                                          class="bi bi-calendar-plus"
+                                                        ></i>
+                                                        <span>
+                                                          Expires
+                                                          <time
+                                                            datetime="${new Date(
+                                                              invitation.expiresAt
+                                                            ).toISOString()}"
+                                                            oninteractive="${javascript`
                                                             leafac.relativizeDateTimeElement(this, { preposition: "on" });
                                                           `}"
-                                                        ></time>
-                                                      </span>
-                                                    </h3>
-                                                    <hr
-                                                      class="dropdown--separator"
-                                                    />
-                                                    $${updateExpirationForm}
-                                                    <hr
-                                                      class="dropdown--separator"
-                                                    />
-                                                    $${removeExpirationForm}
-                                                    $${expireForm}
-                                                  </div>
-                                                `,
-                                              })},
+                                                          ></time>
+                                                        </span>
+                                                      </h3>
+                                                      <hr
+                                                        class="dropdown--separator"
+                                                      />
+                                                      $${updateExpirationForm}
+                                                      <hr
+                                                        class="dropdown--separator"
+                                                      />
+                                                      $${removeExpirationForm}
+                                                      $${expireForm}
+                                                    </div>
+                                                  `,
+                                                }
+                                              )},
                                             });
                                           `}"
                                         >
@@ -8780,7 +8792,7 @@ export default async function courselore({
                             tippy(this, {
                               trigger: "click",
                               interactive: true,
-                              content: ${hiddenContent({
+                              content: ${res.locals.HTMLForJavaScript({
                                 req,
                                 res,
                                 content: html`
@@ -8826,7 +8838,7 @@ export default async function courselore({
                                                             trigger: "click",
                                                             interactive: true,
                                                             appendTo: document.body,
-                                                            content: ${hiddenContent(
+                                                            content: ${res.locals.HTMLForJavaScript(
                                                               {
                                                                 req,
                                                                 res,
@@ -8946,7 +8958,7 @@ export default async function courselore({
                                       theme: "rose",
                                       trigger: "click",
                                       interactive: true,
-                                      content: ${hiddenContent({
+                                      content: ${res.locals.HTMLForJavaScript({
                                         req,
                                         res,
                                         content: html`
@@ -9279,7 +9291,7 @@ export default async function courselore({
                                     theme: "rose",
                                     trigger: "click",
                                     interactive: true,
-                                    content: ${hiddenContent({
+                                    content: ${res.locals.HTMLForJavaScript({
                                       req,
                                       res,
                                       content: html`
@@ -9425,7 +9437,7 @@ export default async function courselore({
                       });
                     `}"
                     onclick="${javascript`
-                      const newTag = ${hiddenContent({
+                      const newTag = ${res.locals.HTMLForJavaScript({
                         req,
                         res,
                         content: html`
@@ -12089,7 +12101,7 @@ export default async function courselore({
             }
               tippy(this, {
                 touch: false,
-                content: ${hiddenContent({
+                content: ${res.locals.HTMLForJavaScript({
                   req,
                   res,
                   content: html`
@@ -12161,7 +12173,7 @@ export default async function courselore({
                   tippy(this, {
                     trigger: "click",
                     interactive: true,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req,
                       res,
                       content: html`
@@ -12197,7 +12209,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+1", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req,
                       res,
                       content: html`
@@ -12236,7 +12248,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+2", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req,
                       res,
                       content: html`
@@ -12275,7 +12287,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+3", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req,
                       res,
                       content: html`
@@ -12316,7 +12328,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+b", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req,
                       res,
                       content: html`
@@ -12354,7 +12366,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+i", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req,
                       res,
                       content: html`
@@ -12392,7 +12404,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+k", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req,
                       res,
                       content: html`
@@ -12432,7 +12444,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+8", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req,
                       res,
                       content: html`
@@ -12471,7 +12483,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+7", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req,
                       res,
                       content: html`
@@ -12510,7 +12522,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+9", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req,
                       res,
                       content: html`
@@ -12551,7 +12563,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+'", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req,
                       res,
                       content: html`
@@ -12589,7 +12601,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+t", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req,
                       res,
                       content: html`
@@ -12629,7 +12641,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+d", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req,
                       res,
                       content: html`
@@ -12668,7 +12680,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+f", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req,
                       res,
                       content: html`
@@ -12709,7 +12721,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+e", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req,
                       res,
                       content: html`
@@ -12747,7 +12759,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+e", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req,
                       res,
                       content: html`
@@ -12788,7 +12800,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+e", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req,
                       res,
                       content: html`
@@ -12827,7 +12839,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+shift+e", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req,
                       res,
                       content: html`
@@ -12869,7 +12881,7 @@ export default async function courselore({
                       oninteractive="${javascript`
                         tippy(this, {
                           touch: false,
-                          content: ${hiddenContent({
+                          content: ${res.locals.HTMLForJavaScript({
                             req,
                             res,
                             content: html`
@@ -12893,7 +12905,7 @@ export default async function courselore({
                       oninteractive="${javascript`
                         tippy(this, {
                           touch: false,
-                          content: ${hiddenContent({
+                          content: ${res.locals.HTMLForJavaScript({
                             req,
                             res,
                             content: html`
@@ -12922,7 +12934,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+i", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req,
                       res,
                       content: html`
@@ -12960,7 +12972,7 @@ export default async function courselore({
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+k", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req,
                       res,
                       content: html`
@@ -13002,7 +13014,7 @@ export default async function courselore({
                   const uploadingIndicator = tippy(textarea, {
                     trigger: "manual",
                     hideOnClick: false,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req,
                       res,
                       content: html`
@@ -13121,7 +13133,7 @@ export default async function courselore({
                             placement: "bottom-start",
                             trigger: "manual",
                             interactive: true,
-                            content: ${hiddenContent({
+                            content: ${res.locals.HTMLForJavaScript({
                               req,
                               res,
                               content: html`
@@ -13178,7 +13190,7 @@ export default async function courselore({
                             placement: "bottom-start",
                             trigger: "manual",
                             interactive: true,
-                            content: ${hiddenContent({
+                            content: ${res.locals.HTMLForJavaScript({
                               req,
                               res,
                               content: html`
@@ -14081,7 +14093,7 @@ ${contentSource}</textarea
             javascript`
               tippy(this, {
                 touch: false,
-                content: ${hiddenContent({
+                content: ${res.locals.HTMLForJavaScript({
                   req,
                   res,
                   content: html`
@@ -14347,7 +14359,7 @@ ${contentSource}</textarea
                 javascript`
                   tippy(this, {
                     touch: false,
-                    content: ${hiddenContent({
+                    content: ${res.locals.HTMLForJavaScript({
                       req: narrowReq,
                       res: narrowRes,
                       content: html`
@@ -14381,7 +14393,7 @@ ${contentSource}</textarea
               javascript`
                 tippy(this, {
                   touch: false,
-                  content: ${hiddenContent({
+                  content: ${res.locals.HTMLForJavaScript({
                     req: narrowReq,
                     res: narrowRes,
                     content: html`
@@ -14909,7 +14921,7 @@ ${contentSource}</textarea
                       Mousetrap(this.closest("form").querySelector(".content-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                       tippy(this, {
                         touch: false,
-                        content: ${hiddenContent({
+                        content: ${res.locals.HTMLForJavaScript({
                           req,
                           res,
                           content: html`
@@ -15481,7 +15493,7 @@ ${contentSource}</textarea
                                     tippy(this, {
                                       trigger: "click",
                                       interactive: true,
-                                      content: ${hiddenContent({
+                                      content: ${res.locals.HTMLForJavaScript({
                                         req,
                                         res,
                                         content: html`
@@ -15636,7 +15648,7 @@ ${contentSource}</textarea
                                     theme: "rose",
                                     trigger: "click",
                                     interactive: true,
-                                    content: ${hiddenContent({
+                                    content: ${res.locals.HTMLForJavaScript({
                                       req,
                                       res,
                                       content: html`
@@ -15771,7 +15783,7 @@ ${contentSource}</textarea
                             tippy(this, {
                               trigger: "click",
                               interactive: true,
-                              content: ${hiddenContent({
+                              content: ${res.locals.HTMLForJavaScript({
                                 req,
                                 res,
                                 content: html`
@@ -15827,59 +15839,63 @@ ${contentSource}</textarea
                                                   theme: "rose",
                                                   trigger: "click",
                                                   interactive: true,
-                                                  content: ${hiddenContent({
-                                                    req,
-                                                    res,
-                                                    content: html`
-                                                      <form
-                                                        method="POST"
-                                                        action="${baseURL}/courses/${res
-                                                          .locals.course
-                                                          .reference}/conversations/${res
-                                                          .locals.conversation
-                                                          .reference}?_method=DELETE"
-                                                        style="${css`
-                                                          padding: var(
-                                                            --space--2
-                                                          );
-                                                          display: flex;
-                                                          flex-direction: column;
-                                                          gap: var(--space--4);
-                                                        `}"
-                                                      >
-                                                        <input
-                                                          type="hidden"
-                                                          name="_csrf"
-                                                          value="${req.csrfToken()}"
-                                                        />
-                                                        <p>
-                                                          Are you sure you want
-                                                          to remove this
-                                                          conversation?
-                                                        </p>
-                                                        <p>
-                                                          <strong
-                                                            style="${css`
-                                                              font-weight: var(
-                                                                --font-weight--bold
-                                                              );
-                                                            `}"
-                                                          >
-                                                            You may not undo
-                                                            this action!
-                                                          </strong>
-                                                        </p>
-                                                        <button
-                                                          class="button button--rose"
+                                                  content: ${res.locals.HTMLForJavaScript(
+                                                    {
+                                                      req,
+                                                      res,
+                                                      content: html`
+                                                        <form
+                                                          method="POST"
+                                                          action="${baseURL}/courses/${res
+                                                            .locals.course
+                                                            .reference}/conversations/${res
+                                                            .locals.conversation
+                                                            .reference}?_method=DELETE"
+                                                          style="${css`
+                                                            padding: var(
+                                                              --space--2
+                                                            );
+                                                            display: flex;
+                                                            flex-direction: column;
+                                                            gap: var(
+                                                              --space--4
+                                                            );
+                                                          `}"
                                                         >
-                                                          <i
-                                                            class="bi bi-trash"
-                                                          ></i>
-                                                          Remove Conversation
-                                                        </button>
-                                                      </form>
-                                                    `,
-                                                  })},
+                                                          <input
+                                                            type="hidden"
+                                                            name="_csrf"
+                                                            value="${req.csrfToken()}"
+                                                          />
+                                                          <p>
+                                                            Are you sure you
+                                                            want to remove this
+                                                            conversation?
+                                                          </p>
+                                                          <p>
+                                                            <strong
+                                                              style="${css`
+                                                                font-weight: var(
+                                                                  --font-weight--bold
+                                                                );
+                                                              `}"
+                                                            >
+                                                              You may not undo
+                                                              this action!
+                                                            </strong>
+                                                          </p>
+                                                          <button
+                                                            class="button button--rose"
+                                                          >
+                                                            <i
+                                                              class="bi bi-trash"
+                                                            ></i>
+                                                            Remove Conversation
+                                                          </button>
+                                                        </form>
+                                                      `,
+                                                    }
+                                                  )},
                                                 });
                                               `}"
                                             >
@@ -16113,98 +16129,101 @@ ${contentSource}</textarea
                                               tippy(this, {
                                                 trigger: "click",
                                                 interactive: true,
-                                                content: ${hiddenContent({
-                                                  req,
-                                                  res,
-                                                  content: html`
-                                                    <div
-                                                      class="dropdown--menu"
-                                                      style="${css`
-                                                        max-height: var(
-                                                          --space--40
-                                                        );
-                                                        overflow: auto;
-                                                      `}"
-                                                    >
-                                                      $${res.locals.tags
-                                                        .filter(
-                                                          (tag) =>
-                                                            !res.locals.conversation.taggings.some(
-                                                              (tagging) =>
-                                                                tagging.tag
-                                                                  .id === tag.id
-                                                            )
-                                                        )
-                                                        .map(
-                                                          (tag) => html`
-                                                            <form
-                                                              method="POST"
-                                                              action="${baseURL}/courses/${res
-                                                                .locals.course
-                                                                .reference}/conversations/${res
-                                                                .locals
-                                                                .conversation
-                                                                .reference}/taggings"
-                                                            >
-                                                              <input
-                                                                type="hidden"
-                                                                name="_csrf"
-                                                                value="${req.csrfToken()}"
-                                                              />
-                                                              <input
-                                                                type="hidden"
-                                                                name="reference"
-                                                                value="${tag.reference}"
-                                                              />
-                                                              <button
-                                                                class="dropdown--menu--item button button--transparent text--teal"
+                                                content: ${res.locals.HTMLForJavaScript(
+                                                  {
+                                                    req,
+                                                    res,
+                                                    content: html`
+                                                      <div
+                                                        class="dropdown--menu"
+                                                        style="${css`
+                                                          max-height: var(
+                                                            --space--40
+                                                          );
+                                                          overflow: auto;
+                                                        `}"
+                                                      >
+                                                        $${res.locals.tags
+                                                          .filter(
+                                                            (tag) =>
+                                                              !res.locals.conversation.taggings.some(
+                                                                (tagging) =>
+                                                                  tagging.tag
+                                                                    .id ===
+                                                                  tag.id
+                                                              )
+                                                          )
+                                                          .map(
+                                                            (tag) => html`
+                                                              <form
+                                                                method="POST"
+                                                                action="${baseURL}/courses/${res
+                                                                  .locals.course
+                                                                  .reference}/conversations/${res
+                                                                  .locals
+                                                                  .conversation
+                                                                  .reference}/taggings"
                                                               >
-                                                                <i
-                                                                  class="bi bi-tag-fill"
-                                                                ></i>
-                                                                ${tag.name}
-                                                                $${tag.staffOnlyAt !==
-                                                                null
-                                                                  ? html`
-                                                                      <span
-                                                                        class="text--pink"
-                                                                        oninteractive="${javascript`
+                                                                <input
+                                                                  type="hidden"
+                                                                  name="_csrf"
+                                                                  value="${req.csrfToken()}"
+                                                                />
+                                                                <input
+                                                                  type="hidden"
+                                                                  name="reference"
+                                                                  value="${tag.reference}"
+                                                                />
+                                                                <button
+                                                                  class="dropdown--menu--item button button--transparent text--teal"
+                                                                >
+                                                                  <i
+                                                                    class="bi bi-tag-fill"
+                                                                  ></i>
+                                                                  ${tag.name}
+                                                                  $${tag.staffOnlyAt !==
+                                                                  null
+                                                                    ? html`
+                                                                        <span
+                                                                          class="text--pink"
+                                                                          oninteractive="${javascript`
                                                                           tippy(this, {
                                                                             touch: false,
                                                                             content: "This tag is visible by staff only.",
                                                                           });
                                                                         `}"
-                                                                      >
-                                                                        <i
-                                                                          class="bi bi-mortarboard-fill"
-                                                                        ></i>
-                                                                      </span>
-                                                                    `
-                                                                  : html``}
-                                                              </button>
-                                                            </form>
-                                                          `
-                                                        )}
-                                                      $${res.locals.enrollment
-                                                        .role === "staff"
-                                                        ? html`
-                                                            <a
-                                                              href="${baseURL}/courses/${res
-                                                                .locals.course
-                                                                .reference}/settings/tags"
-                                                              target="_blank"
-                                                              class="dropdown--menu--item button button--transparent"
-                                                            >
-                                                              <i
-                                                                class="bi bi-sliders"
-                                                              ></i>
-                                                              Manage Tags
-                                                            </a>
-                                                          `
-                                                        : html``}
-                                                    </div>
-                                                  `,
-                                                })},
+                                                                        >
+                                                                          <i
+                                                                            class="bi bi-mortarboard-fill"
+                                                                          ></i>
+                                                                        </span>
+                                                                      `
+                                                                    : html``}
+                                                                </button>
+                                                              </form>
+                                                            `
+                                                          )}
+                                                        $${res.locals.enrollment
+                                                          .role === "staff"
+                                                          ? html`
+                                                              <a
+                                                                href="${baseURL}/courses/${res
+                                                                  .locals.course
+                                                                  .reference}/settings/tags"
+                                                                target="_blank"
+                                                                class="dropdown--menu--item button button--transparent"
+                                                              >
+                                                                <i
+                                                                  class="bi bi-sliders"
+                                                                ></i>
+                                                                Manage Tags
+                                                              </a>
+                                                            `
+                                                          : html``}
+                                                      </div>
+                                                    `,
+                                                  }
+                                                )},
                                               });
                                             `}"
                                           >
@@ -16587,65 +16606,67 @@ ${contentSource}</textarea
                                                   tippy(this, {
                                                     trigger: "click",
                                                     interactive: true,
-                                                    content: ${hiddenContent({
-                                                      req,
-                                                      res,
-                                                      content: html`
-                                                        <h3 class="heading">
-                                                          <i
-                                                            class="bi bi-chat-left-text"
-                                                          ></i>
-                                                          Message
-                                                          #${res.locals
-                                                            .conversation
-                                                            .reference}/${message.reference}
-                                                        </h3>
-                                                        <div
-                                                          class="dropdown--menu"
-                                                        >
-                                                          $${res.locals
-                                                            .conversation
-                                                            .type === "chat" &&
-                                                          message.likes
-                                                            .length === 0
-                                                            ? html`
-                                                                <form
-                                                                  method="POST"
-                                                                  action="${baseURL}/courses/${res
-                                                                    .locals
-                                                                    .course
-                                                                    .reference}/conversations/${res
-                                                                    .locals
-                                                                    .conversation
-                                                                    .reference}/messages/${message.reference}/likes"
-                                                                  onsubmit="${javascript`
+                                                    content: ${res.locals.HTMLForJavaScript(
+                                                      {
+                                                        req,
+                                                        res,
+                                                        content: html`
+                                                          <h3 class="heading">
+                                                            <i
+                                                              class="bi bi-chat-left-text"
+                                                            ></i>
+                                                            Message
+                                                            #${res.locals
+                                                              .conversation
+                                                              .reference}/${message.reference}
+                                                          </h3>
+                                                          <div
+                                                            class="dropdown--menu"
+                                                          >
+                                                            $${res.locals
+                                                              .conversation
+                                                              .type ===
+                                                              "chat" &&
+                                                            message.likes
+                                                              .length === 0
+                                                              ? html`
+                                                                  <form
+                                                                    method="POST"
+                                                                    action="${baseURL}/courses/${res
+                                                                      .locals
+                                                                      .course
+                                                                      .reference}/conversations/${res
+                                                                      .locals
+                                                                      .conversation
+                                                                      .reference}/messages/${message.reference}/likes"
+                                                                    onsubmit="${javascript`
                                                                     event.preventDefault();
                                                                     fetch(this.action, {
                                                                       method: this.method,
                                                                       body: new URLSearchParams(new FormData(this)),
                                                                     });
                                                                   `}"
-                                                                >
-                                                                  <input
-                                                                    type="hidden"
-                                                                    name="_csrf"
-                                                                    value="${req.csrfToken()}"
-                                                                  />
-                                                                  <button
-                                                                    class="dropdown--menu--item button button--transparent"
                                                                   >
-                                                                    <i
-                                                                      class="bi bi-hand-thumbs-up"
-                                                                    ></i>
-                                                                    Like
-                                                                  </button>
-                                                                </form>
-                                                              `
-                                                            : html``}
+                                                                    <input
+                                                                      type="hidden"
+                                                                      name="_csrf"
+                                                                      value="${req.csrfToken()}"
+                                                                    />
+                                                                    <button
+                                                                      class="dropdown--menu--item button button--transparent"
+                                                                    >
+                                                                      <i
+                                                                        class="bi bi-hand-thumbs-up"
+                                                                      ></i>
+                                                                      Like
+                                                                    </button>
+                                                                  </form>
+                                                                `
+                                                              : html``}
 
-                                                          <button
-                                                            class="dropdown--menu--item button button--transparent"
-                                                            onclick="${javascript`
+                                                            <button
+                                                              class="dropdown--menu--item button button--transparent"
+                                                              onclick="${javascript`
                                                               const content = JSON.parse(this.closest("[data-content-source]").dataset.contentSource);
                                                               const newMessage = document.querySelector(".new-message");
                                                               newMessage.querySelector(".content-editor--button--write").click();
@@ -16674,34 +16695,34 @@ ${contentSource}</textarea
                                                                       } · " +
                                                                     `
                                                                 } "#" + ${JSON.stringify(
-                                                              res.locals
-                                                                .conversation
-                                                                .reference
-                                                            )} + "/" + ${JSON.stringify(
-                                                              message.reference
-                                                            )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n",
+                                                                res.locals
+                                                                  .conversation
+                                                                  .reference
+                                                              )} + "/" + ${JSON.stringify(
+                                                                message.reference
+                                                              )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n",
                                                                 ""
                                                               );
                                                               element.focus();
                                                               tippy.hideAll();
                                                             `}"
-                                                          >
-                                                            <i
-                                                              class="bi bi-reply"
-                                                            ></i>
-                                                            Reply
-                                                          </button>
+                                                            >
+                                                              <i
+                                                                class="bi bi-reply"
+                                                              ></i>
+                                                              Reply
+                                                            </button>
 
-                                                          <button
-                                                            class="dropdown--menu--item button button--transparent"
-                                                            oninteractive="${javascript`
+                                                            <button
+                                                              class="dropdown--menu--item button button--transparent"
+                                                              oninteractive="${javascript`
                                                               this.copied = tippy(this, {
                                                                 theme: "green",
                                                                 trigger: "manual",
                                                                 content: "Copied",
                                                               });
                                                             `}"
-                                                            onclick="${javascript`
+                                                              onclick="${javascript`
                                                               (async () => {
                                                                 await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${message.reference}");
                                                                 this.copied.show();
@@ -16709,151 +16730,156 @@ ${contentSource}</textarea
                                                                 this.copied.hide();
                                                               })();
                                                             `}"
-                                                          >
-                                                            <i
-                                                              class="bi bi-link"
-                                                            ></i>
-                                                            Copy Message
-                                                            Permanent Link
-                                                          </button>
+                                                            >
+                                                              <i
+                                                                class="bi bi-link"
+                                                              ></i>
+                                                              Copy Message
+                                                              Permanent Link
+                                                            </button>
 
-                                                          $${message.authorEnrollment !==
-                                                            "no-longer-enrolled" &&
-                                                          message
-                                                            .authorEnrollment
-                                                            .id ===
+                                                            $${message.authorEnrollment !==
+                                                              "no-longer-enrolled" &&
+                                                            message
+                                                              .authorEnrollment
+                                                              .id ===
+                                                              res.locals
+                                                                .enrollment
+                                                                .id &&
                                                             res.locals
-                                                              .enrollment.id &&
-                                                          res.locals.enrollment
-                                                            .role ===
-                                                            "student" &&
-                                                          res.locals
-                                                            .conversation
-                                                            .staffOnlyAt ===
-                                                            null
-                                                            ? html`
-                                                                <form
-                                                                  method="POST"
-                                                                  action="${baseURL}/courses/${res
-                                                                    .locals
-                                                                    .course
-                                                                    .reference}/conversations/${res
-                                                                    .locals
-                                                                    .conversation
-                                                                    .reference}/messages/${message.reference}?_method=PATCH"
-                                                                  class="dropdown--menu"
-                                                                >
-                                                                  <input
-                                                                    type="hidden"
-                                                                    name="_csrf"
-                                                                    value="${req.csrfToken()}"
-                                                                  />
-                                                                  $${message.anonymousAt ===
-                                                                  null
-                                                                    ? html`
-                                                                        <input
-                                                                          type="hidden"
-                                                                          name="isAnonymous"
-                                                                          value="true"
-                                                                        />
-                                                                        <button
-                                                                          class="dropdown--menu--item button button--transparent"
-                                                                        >
-                                                                          <span
-                                                                            style="${css`
-                                                                              margin-left: var(
-                                                                                --space---0-5
-                                                                              );
-                                                                            `}"
+                                                              .enrollment
+                                                              .role ===
+                                                              "student" &&
+                                                            res.locals
+                                                              .conversation
+                                                              .staffOnlyAt ===
+                                                              null
+                                                              ? html`
+                                                                  <form
+                                                                    method="POST"
+                                                                    action="${baseURL}/courses/${res
+                                                                      .locals
+                                                                      .course
+                                                                      .reference}/conversations/${res
+                                                                      .locals
+                                                                      .conversation
+                                                                      .reference}/messages/${message.reference}?_method=PATCH"
+                                                                    class="dropdown--menu"
+                                                                  >
+                                                                    <input
+                                                                      type="hidden"
+                                                                      name="_csrf"
+                                                                      value="${req.csrfToken()}"
+                                                                    />
+                                                                    $${message.anonymousAt ===
+                                                                    null
+                                                                      ? html`
+                                                                          <input
+                                                                            type="hidden"
+                                                                            name="isAnonymous"
+                                                                            value="true"
+                                                                          />
+                                                                          <button
+                                                                            class="dropdown--menu--item button button--transparent"
                                                                           >
-                                                                            $${userPartial(
-                                                                              {
-                                                                                req,
-                                                                                res,
-                                                                                name: false,
-                                                                                size: "xs",
-                                                                              }
-                                                                            )}
-                                                                          </span>
-                                                                          Set as
-                                                                          Anonymous
-                                                                          to
-                                                                          Other
-                                                                          Students
-                                                                        </button>
-                                                                      `
-                                                                    : html`
-                                                                        <input
-                                                                          type="hidden"
-                                                                          name="isAnonymous"
-                                                                          value="false"
-                                                                        />
-                                                                        <button
-                                                                          class="dropdown--menu--item button button--transparent"
-                                                                        >
-                                                                          <span
-                                                                            style="${css`
-                                                                              margin-left: var(
-                                                                                --space---0-5
-                                                                              );
-                                                                            `}"
+                                                                            <span
+                                                                              style="${css`
+                                                                                margin-left: var(
+                                                                                  --space---0-5
+                                                                                );
+                                                                              `}"
+                                                                            >
+                                                                              $${userPartial(
+                                                                                {
+                                                                                  req,
+                                                                                  res,
+                                                                                  name: false,
+                                                                                  size: "xs",
+                                                                                }
+                                                                              )}
+                                                                            </span>
+                                                                            Set
+                                                                            as
+                                                                            Anonymous
+                                                                            to
+                                                                            Other
+                                                                            Students
+                                                                          </button>
+                                                                        `
+                                                                      : html`
+                                                                          <input
+                                                                            type="hidden"
+                                                                            name="isAnonymous"
+                                                                            value="false"
+                                                                          />
+                                                                          <button
+                                                                            class="dropdown--menu--item button button--transparent"
                                                                           >
-                                                                            $${userPartial(
-                                                                              {
-                                                                                req,
-                                                                                res,
-                                                                                user: res
-                                                                                  .locals
-                                                                                  .user,
-                                                                                decorate:
-                                                                                  false,
-                                                                                name: false,
-                                                                                size: "xs",
-                                                                              }
-                                                                            )}
-                                                                          </span>
-                                                                          Set as
-                                                                          Signed
-                                                                          by You
-                                                                        </button>
-                                                                      `}
-                                                                </form>
-                                                              `
-                                                            : html``}
-                                                          $${mayEditMessage({
-                                                            req,
-                                                            res,
-                                                            message,
-                                                          })
-                                                            ? html`
-                                                                <button
-                                                                  class="dropdown--menu--item button button--transparent"
-                                                                  onclick="${javascript`
+                                                                            <span
+                                                                              style="${css`
+                                                                                margin-left: var(
+                                                                                  --space---0-5
+                                                                                );
+                                                                              `}"
+                                                                            >
+                                                                              $${userPartial(
+                                                                                {
+                                                                                  req,
+                                                                                  res,
+                                                                                  user: res
+                                                                                    .locals
+                                                                                    .user,
+                                                                                  decorate:
+                                                                                    false,
+                                                                                  name: false,
+                                                                                  size: "xs",
+                                                                                }
+                                                                              )}
+                                                                            </span>
+                                                                            Set
+                                                                            as
+                                                                            Signed
+                                                                            by
+                                                                            You
+                                                                          </button>
+                                                                        `}
+                                                                  </form>
+                                                                `
+                                                              : html``}
+                                                            $${mayEditMessage({
+                                                              req,
+                                                              res,
+                                                              message,
+                                                            })
+                                                              ? html`
+                                                                  <button
+                                                                    class="dropdown--menu--item button button--transparent"
+                                                                    onclick="${javascript`
                                                                     this.closest(".message").querySelector(".message--show").hidden = true;
                                                                     this.closest(".message").querySelector(".message--edit").hidden = false;
                                                                     tippy.hideAll();
                                                                   `}"
-                                                                >
-                                                                  <i
-                                                                    class="bi bi-pencil"
-                                                                  ></i>
-                                                                  Edit Message
-                                                                </button>
-                                                              `
-                                                            : html``}
-                                                          $${res.locals
-                                                            .enrollment.role ===
-                                                          "staff"
-                                                            ? html`
-                                                                <div>
-                                                                  <button
-                                                                    class="dropdown--menu--item button button--transparent"
-                                                                    oninteractive="${javascript`
+                                                                  >
+                                                                    <i
+                                                                      class="bi bi-pencil"
+                                                                    ></i>
+                                                                    Edit Message
+                                                                  </button>
+                                                                `
+                                                              : html``}
+                                                            $${res.locals
+                                                              .enrollment
+                                                              .role === "staff"
+                                                              ? html`
+                                                                  <div>
+                                                                    <button
+                                                                      class="dropdown--menu--item button button--transparent"
+                                                                      oninteractive="${javascript`
                                                                       tippy(this, {
                                                                         theme: "rose",
                                                                         trigger: "click",
                                                                         interactive: true,
-                                                                        content: ${hiddenContent(
+                                                                        content: ${res.locals.HTMLForJavaScript(
                                                                           {
                                                                             req,
                                                                             res,
@@ -16925,19 +16951,20 @@ ${contentSource}</textarea
                                                                         )},
                                                                       });
                                                                     `}"
-                                                                  >
-                                                                    <i
-                                                                      class="bi bi-trash"
-                                                                    ></i>
-                                                                    Remove
-                                                                    Message
-                                                                  </button>
-                                                                </div>
-                                                              `
-                                                            : html``}
-                                                        </div>
-                                                      `,
-                                                    })},
+                                                                    >
+                                                                      <i
+                                                                        class="bi bi-trash"
+                                                                      ></i>
+                                                                      Remove
+                                                                      Message
+                                                                    </button>
+                                                                  </div>
+                                                                `
+                                                              : html``}
+                                                          </div>
+                                                        `,
+                                                      }
+                                                    )},
                                                   });
                                                 `}"
                                               >
@@ -17439,16 +17466,17 @@ ${contentSource}</textarea
                                                 const dropdownMenu = tippy(dropdownMenuTarget, {
                                                   trigger: "manual",
                                                   interactive: true,
-                                                  content: ${hiddenContent({
-                                                    req,
-                                                    res,
-                                                    content: html`
-                                                      <div
-                                                        class="dropdown--menu"
-                                                      >
-                                                        <button
-                                                          class="dropdown--menu--item button button--transparent"
-                                                          onclick="${javascript`
+                                                  content: ${res.locals.HTMLForJavaScript(
+                                                    {
+                                                      req,
+                                                      res,
+                                                      content: html`
+                                                        <div
+                                                          class="dropdown--menu"
+                                                        >
+                                                          <button
+                                                            class="dropdown--menu--item button button--transparent"
+                                                            onclick="${javascript`
                                                             tippy.hideAll();
                                                             const selection = window.getSelection();
                                                             let anchorElement = selection.anchorNode;
@@ -17507,25 +17535,26 @@ ${contentSource}</textarea
                                                                     } · " +
                                                                   `
                                                               } "#" + ${JSON.stringify(
-                                                            res.locals
-                                                              .conversation
-                                                              .reference
-                                                          )} + "/" + ${JSON.stringify(
-                                                            message.reference
-                                                          )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n",
+                                                              res.locals
+                                                                .conversation
+                                                                .reference
+                                                            )} + "/" + ${JSON.stringify(
+                                                              message.reference
+                                                            )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n",
                                                               ""
                                                             );
                                                             element.focus();
                                                           `}"
-                                                        >
-                                                          <i
-                                                            class="bi bi-chat-left-quote"
-                                                          ></i>
-                                                          Quote
-                                                        </button>
-                                                      </div>
-                                                    `,
-                                                  })},
+                                                          >
+                                                            <i
+                                                              class="bi bi-chat-left-quote"
+                                                            ></i>
+                                                            Quote
+                                                          </button>
+                                                        </div>
+                                                      `,
+                                                    }
+                                                  )},
                                                 });
                                                 this.addEventListener("mouseup", (event) => {
                                                   window.setTimeout(() => {
@@ -17728,7 +17757,7 @@ ${contentSource}</textarea
                                                       Mousetrap(this.closest("form").querySelector(".content-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                                                       tippy(this, {
                                                         touch: false,
-                                                        content: ${hiddenContent(
+                                                        content: ${res.locals.HTMLForJavaScript(
                                                           {
                                                             req,
                                                             res,
@@ -17938,7 +17967,7 @@ ${contentSource}</textarea
                             oninteractive="${javascript`
                               tippy(this, {
                                 touch: false,
-                                content: ${hiddenContent({
+                                content: ${res.locals.HTMLForJavaScript({
                                   req,
                                   res,
                                   content: html`
@@ -18061,7 +18090,7 @@ ${contentSource}</textarea
                         Mousetrap(this.closest("form").querySelector(".content-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                         tippy(this, {
                           touch: false,
-                          content: ${hiddenContent({
+                          content: ${res.locals.HTMLForJavaScript({
                             req,
                             res,
                             content: html`
