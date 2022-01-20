@@ -3416,6 +3416,15 @@ export default async function courselore({
     })
   );
 
+  interface BaseMiddlewareLocals {
+    localCSS: ReturnType<typeof localCSS>;
+    HTMLForJavaScript: ReturnType<typeof HTMLForJavaScript>;
+  }
+  app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res) => {
+    res.locals.localCSS = localCSS();
+    res.locals.HTMLForJavaScript = HTMLForJavaScript();
+  })
+
   if (liveReload)
     app.get<{}, any, {}, {}, {}>("/live-reload", (req, res, next) => {
       res.type("text/event-stream").flushHeaders();
