@@ -6834,7 +6834,7 @@ export default async function courselore({
 
   interface IsInvitationUsableMiddlewareLocals
     extends InvitationExistsMiddlewareLocals,
-      Partial<IsSignedInMiddlewareLocals> {}
+      Omit<Partial<IsSignedInMiddlewareLocals>, keyof BaseMiddlewareLocals> {}
   const isInvitationUsableMiddleware: express.RequestHandler<
     { courseReference: string; invitationReference: string },
     any,
