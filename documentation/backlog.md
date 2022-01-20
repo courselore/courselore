@@ -1,7 +1,6 @@
 # Backlog
 
 - CSS management
-  - Try and make JSDOM faster.
   - Use `res.locals` to collect CSS.
   - Remove static CSS (the design system) from every request.
 - Write a function to determine if processing the message is even necessary. Most messages don’t use extra features and could skip JSDOM entirely.
