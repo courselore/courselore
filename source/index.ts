@@ -3423,19 +3423,22 @@ export default async function courselore({
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res) => {
     res.locals.localCSS = localCSS();
     res.locals.HTMLForJavaScript = HTMLForJavaScript();
-  })
+  });
 
   if (liveReload)
-    app.get<{}, any, {}, {}, {}>("/live-reload", (req, res, next) => {
-      res.type("text/event-stream").flushHeaders();
-    });
+    app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
+      "/live-reload",
+      (req, res, next) => {
+        res.type("text/event-stream").flushHeaders();
+      }
+    );
 
   const eventDestinations = new Set<{
     req: express.Request;
     res: express.Response;
   }>();
 
-  interface EventSourceMiddlewareLocals {
+  interface EventSourceMiddlewareLocals extends BaseMiddlewareLocals {
     eventSource: boolean;
   }
   const eventSourceMiddleware: express.RequestHandler<
@@ -3614,7 +3617,7 @@ export default async function courselore({
     },
   };
 
-  interface IsSignedOutMiddlewareLocals {}
+  interface IsSignedOutMiddlewareLocals extends BaseMiddlewareLocals {}
   const isSignedOutMiddleware: express.RequestHandler<
     {},
     any,
@@ -3628,7 +3631,7 @@ export default async function courselore({
     },
   ];
 
-  interface IsSignedInMiddlewareLocals {
+  interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
     user: {
       id: number;
       lastSeenOnlineAt: string;
@@ -4770,7 +4773,7 @@ export default async function courselore({
     },
   };
 
-  app.get<{}, HTML, {}, { email?: string }, {}>(
+  app.get<{}, HTML, {}, { email?: string }, BaseMiddlewareLocals>(
     "/reset-password",
     (req, res) => {
       res.send(
@@ -4848,89 +4851,92 @@ export default async function courselore({
     }
   );
 
-  app.post<{}, HTML, { email?: string; resend?: "true" }, {}, {}>(
-    "/reset-password",
-    (req, res, next) => {
-      if (
-        typeof req.body.email !== "string" ||
-        req.body.email.match(emailRegExp) === null
-      )
-        return next("validation");
+  app.post<
+    {},
+    HTML,
+    { email?: string; resend?: "true" },
+    {},
+    BaseMiddlewareLocals
+  >("/reset-password", (req, res, next) => {
+    if (
+      typeof req.body.email !== "string" ||
+      req.body.email.match(emailRegExp) === null
+    )
+      return next("validation");
 
-      const user = database.get<{ id: number; email: string }>(
-        sql`SELECT "id", "email" FROM "users" WHERE "email" = ${req.body.email}`
-      );
-      if (user === undefined) {
-        Flash.set({
-          req,
-          res,
-          content: html`<div class="flash--rose">Email not found.</div>`,
-        });
-        return res.redirect(
-          `${baseURL}/reset-password${qs.stringify(req.query, {
-            addQueryPrefix: true,
-          })}`
-        );
-      }
-
-      const link = `${baseURL}/reset-password/${PasswordReset.create(
-        user.id
-      )}${qs.stringify(req.query, { addQueryPrefix: true })}`;
-      sendMail({
-        to: user.email,
-        subject: "CourseLore · Password Reset Link",
-        html: html`
-          <p><a href="${link}" target="_blank">${link}</a></p>
-          <p>
-            <small>
-              This password reset link is valid for ten minutes.<br />
-              You may ignore this password reset link if you didn’t request it.
-            </small>
-          </p>
-        `,
+    const user = database.get<{ id: number; email: string }>(
+      sql`SELECT "id", "email" FROM "users" WHERE "email" = ${req.body.email}`
+    );
+    if (user === undefined) {
+      Flash.set({
+        req,
+        res,
+        content: html`<div class="flash--rose">Email not found.</div>`,
       });
-      if (req.body.resend === "true")
-        Flash.set({
-          req,
-          res,
-          content: html`<div class="flash--green">Email resent.</div>`,
-        });
-      res.send(
-        boxLayout({
-          req,
-          res,
-          head: html`
-            <title>
-              Reset Password · CourseLore · Communication Platform for Education
-            </title>
-          `,
-          body: html`
-            <p>
-              To continue resetting your password, please follow the password
-              reset link that was sent to
-              <strong class="strong">${req.body.email}</strong>.
-            </p>
-            <form
-              method="POST"
-              action="${baseURL}/reset-password${qs.stringify(req.query, {
-                addQueryPrefix: true,
-              })}"
-            >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-              <input type="hidden" name="email" value="${req.body.email}" />
-              <input type="hidden" name="resend" value="true" />
-              <p>
-                Didn’t receive the email? Already checked your spam folder?
-                <button class="link">Resend</button>.
-              </p>
-            </form>
-          `,
-        })
+      return res.redirect(
+        `${baseURL}/reset-password${qs.stringify(req.query, {
+          addQueryPrefix: true,
+        })}`
       );
     }
-  );
 
-  app.get<{ passwordResetNonce: string }, HTML, {}, {}, {}>(
+    const link = `${baseURL}/reset-password/${PasswordReset.create(
+      user.id
+    )}${qs.stringify(req.query, { addQueryPrefix: true })}`;
+    sendMail({
+      to: user.email,
+      subject: "CourseLore · Password Reset Link",
+      html: html`
+        <p><a href="${link}" target="_blank">${link}</a></p>
+        <p>
+          <small>
+            This password reset link is valid for ten minutes.<br />
+            You may ignore this password reset link if you didn’t request it.
+          </small>
+        </p>
+      `,
+    });
+    if (req.body.resend === "true")
+      Flash.set({
+        req,
+        res,
+        content: html`<div class="flash--green">Email resent.</div>`,
+      });
+    res.send(
+      boxLayout({
+        req,
+        res,
+        head: html`
+          <title>
+            Reset Password · CourseLore · Communication Platform for Education
+          </title>
+        `,
+        body: html`
+          <p>
+            To continue resetting your password, please follow the password
+            reset link that was sent to
+            <strong class="strong">${req.body.email}</strong>.
+          </p>
+          <form
+            method="POST"
+            action="${baseURL}/reset-password${qs.stringify(req.query, {
+              addQueryPrefix: true,
+            })}"
+          >
+            <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+            <input type="hidden" name="email" value="${req.body.email}" />
+            <input type="hidden" name="resend" value="true" />
+            <p>
+              Didn’t receive the email? Already checked your spam folder?
+              <button class="link">Resend</button>.
+            </p>
+          </form>
+        `,
+      })
+    );
+  });
+
+  app.get<{ passwordResetNonce: string }, HTML, {}, {}, BaseMiddlewareLocals>(
     "/reset-password/:passwordResetNonce",
     (req, res) => {
       const userId = PasswordReset.get(req.params.passwordResetNonce);
@@ -5013,7 +5019,7 @@ export default async function courselore({
     HTML,
     { password?: string },
     { redirect?: string },
-    {}
+    BaseMiddlewareLocals
   >(
     "/reset-password/:passwordResetNonce",
     asyncHandler(async (req, res, next) => {
@@ -6742,7 +6748,7 @@ export default async function courselore({
     }
   );
 
-  interface InvitationExistsMiddlewareLocals {
+  interface InvitationExistsMiddlewareLocals extends BaseMiddlewareLocals {
     invitation: {
       id: number;
       expiresAt: string | null;
@@ -10105,7 +10111,7 @@ export default async function courselore({
     HTML,
     {},
     {},
-    {}
+    BaseMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     (req, res) => {
@@ -18912,7 +18918,7 @@ ${contentSource}</textarea
   };
 
   if (demonstration)
-    app.post<{}, any, {}, {}, {}>(
+    app.post<{}, any, {}, {}, BaseMiddlewareLocals>(
       "/demonstration-data",
       asyncHandler(async (req, res) => {
         const password = await argon2.hash("courselore", argon2Options);
@@ -19471,10 +19477,13 @@ ${contentSource}</textarea
     );
 
   if (demonstration && process.env.NODE_ENV !== "production")
-    app.delete<{}, any, {}, {}, {}>("/turn-off", (req, res, next) => {
-      res.send(`Thanks for trying CourseLore.`);
-      process.exit(0);
-    });
+    app.delete<{}, any, {}, {}, BaseMiddlewareLocals>(
+      "/turn-off",
+      (req, res, next) => {
+        res.send(`Thanks for trying CourseLore.`);
+        process.exit(0);
+      }
+    );
 
   app.all<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "*",
@@ -19520,7 +19529,7 @@ ${contentSource}</textarea
     }
   );
 
-  app.use<{}, HTML, {}, {}, {}>(((err, req, res, next) => {
+  app.use<{}, HTML, {}, {}, BaseMiddlewareLocals>(((err, req, res, next) => {
     console.error(err);
     const isCSRF = err.code === "EBADCSRFTOKEN";
     const isValidation = err === "validation";
