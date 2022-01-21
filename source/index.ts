@@ -446,7 +446,7 @@ export default async function courselore({
     const baseLayoutBody = html`
       <body
         class="${res.locals.localCSS(css`
-          font-family: "Public Sans", var(--font-family--sans-serif);
+          font-family: "public-sans", var(--font-family--sans-serif);
           font-size: var(--font-size--sm);
           line-height: var(--line-height--sm);
           color: var(--color--gray--medium--700);
@@ -955,28 +955,6 @@ export default async function courselore({
             content="Communication Platform for Education"
           />
 
-          $${["public-sans", "jetbrains-mono"].flatMap((family) =>
-            [
-              "100",
-              "200",
-              "300",
-              "400",
-              "500",
-              "600",
-              "700",
-              "800",
-              "900",
-            ].flatMap((weight) =>
-              ["", "-italic"].map(
-                (style) => html`
-                  <link
-                    rel="stylesheet"
-                    href="${baseURL}/node_modules/@fontsource/${family}/${weight}${style}.css"
-                  />
-                `
-              )
-            )
-          )}
           <link
             rel="stylesheet"
             href="${baseURL}/node_modules/bootstrap-icons/font/bootstrap-icons.css"
@@ -1057,6 +1035,23 @@ export default async function courselore({
   };
 
   const globalCSSProcessed = processCSS(css`
+    ${["public-sans", "jetbrains-mono"].flatMap((family) =>
+      ["normal", "italic"].flatMap((style) =>
+        ["100", "200", "300", "400", "500", "600", "700", "800", "900"].flatMap(
+          (weight) => [
+            css`
+              @font-face {
+                font-family: "${family}";
+                font-style: ${style};
+                font-display: swap;
+                font-weight: ${weight};
+                src: url("${baseURL}/node_modules/@fontsource/${family}/files/${family}-all-${weight}-${style}.woff");
+              }
+            `,
+          ]
+        )
+      )
+    )}
     ${await Promise.all(
       ["tippy.js/dist/svg-arrow.css", "tippy.js/dist/border.css"].map(
         async (path) =>
@@ -1499,7 +1494,7 @@ export default async function courselore({
 
     .code,
     .pre > code {
-      font-family: "JetBrains Mono", var(--font-family--monospace);
+      font-family: "jetbrains-mono", var(--font-family--monospace);
       font-variant-ligatures: none;
     }
 
@@ -1804,7 +1799,7 @@ export default async function courselore({
       tt,
       kbd,
       samp {
-        font-family: "JetBrains Mono", var(--font-family--monospace);
+        font-family: "jetbrains-mono", var(--font-family--monospace);
         font-variant-ligatures: none;
       }
 
@@ -2047,7 +2042,7 @@ export default async function courselore({
   `);
   const globalCSSPath = `/global--${crypto
     .createHash("sha256")
-    .update(globalCSS)
+    .update(globalCSSProcessed)
     .digest("hex")}.css`;
   app.get<{}, CSS, {}, {}, {}>(globalCSSPath, (req, res) => {
     res.type("css").send(globalCSSProcessed);
