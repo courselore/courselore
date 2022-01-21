@@ -5,7 +5,7 @@
     "@leafac/javascript": "^0.2.0",
     "bootstrap-icons": "^1.7.2",
     "fake-avatars": "^1.0.0",
-    "katex": "^0.15.1",
+    "katex": "^0.15.2",
     "morphdom": "^2.6.1",
     "mousetrap": "^1.6.5",
     "scroll-into-view-if-needed": "^2.2.28",
