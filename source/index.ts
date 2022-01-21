@@ -955,14 +955,6 @@ export default async function courselore({
             content="Communication Platform for Education"
           />
 
-          <link
-            rel="stylesheet"
-            href="${baseURL}/node_modules/bootstrap-icons/font/bootstrap-icons.css"
-          />
-          <link
-            rel="stylesheet"
-            href="${baseURL}/node_modules/katex/dist/katex.min.css"
-          />
           <script src="${baseURL}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
           <script src="${baseURL}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
           <script type="module">
@@ -1052,14 +1044,40 @@ export default async function courselore({
         )
       )
     )}
-    ${await Promise.all(
-      ["tippy.js/dist/svg-arrow.css", "tippy.js/dist/border.css"].map(
-        async (path) =>
-          await fs.readFile(
-            new URL(`../static/node_modules/${path}`, import.meta.url),
-            "utf-8"
-          )
+    ${(
+      await fs.readFile(
+        new URL(
+          "../static/node_modules/bootstrap-icons/font/bootstrap-icons.css",
+          import.meta.url
+        ),
+        "utf-8"
       )
+    ).replaceAll(
+      `url("./`,
+      `url("${baseURL}/node_modules/bootstrap-icons/font/`
+    )}
+    ${(
+      await fs.readFile(
+        new URL(
+          "../static/node_modules/katex/dist/katex.min.css",
+          import.meta.url
+        ),
+        "utf-8"
+      )
+    ).replaceAll(`url(`, `url(${baseURL}/node_modules/katex/dist/`)}
+    ${await fs.readFile(
+      new URL(
+        "../static/node_modules/tippy.js/dist/svg-arrow.css",
+        import.meta.url
+      ),
+      "utf-8"
+    )}
+    ${await fs.readFile(
+      new URL(
+        "../static/node_modules/tippy.js/dist/border.css",
+        import.meta.url
+      ),
+      "utf-8"
     )}
 
     ${globalCSS}
