@@ -1,7 +1,6 @@
 # Backlog
 
 - Sprinkle links of Meta course & try.courselore.org
-  - Include the link to Meta CourseLore on the “Report an Issue” menu.
   - Mention that production server may not be free forever.
 - Write a function to determine if processing the message is even necessary. Most messages don’t use extra features and could skip JSDOM entirely.
 - Overflowing text on mobile: Invitation link on `/settings/invitations` page.

@@ -883,6 +883,18 @@ export default async function courselore({
                         </h3>
                         <div class="dropdown--menu">
                           <a
+                            href="https://courselore.org/courses/8537410611/invitations/3667859788"
+                            target="_blank"
+                            class="dropdown--menu--item button button--transparent ${res.locals.localCSS(
+                              css`
+                                align-items: center;
+                              `
+                            )}"
+                          >
+                            $${logo({ size: 14 /* var(--space--3-5) */ })} Meta
+                            CourseLore
+                          </a>
+                          <a
                             href="${reportIssueHref}"
                             target="_blank"
                             class="dropdown--menu--item button button--transparent"
@@ -924,18 +936,6 @@ export default async function courselore({
                           >
                             <i class="bi bi-github"></i>
                             GitHub Issues
-                          </a>
-                          <a
-                            href="https://courselore.org/courses/8537410611/invitations/3667859788"
-                            target="_blank"
-                            class="dropdown--menu--item button button--transparent ${res.locals.localCSS(
-                              css`
-                                align-items: center;
-                              `
-                            )}"
-                          >
-                            $${logo({ size: 14 /* var(--space--3-5) */ })} Meta
-                            CourseLore
                           </a>
                         </div>
                       `
