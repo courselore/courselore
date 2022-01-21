@@ -959,12 +959,11 @@ export default async function courselore({
           <style>
             $${res.locals.localCSS}
           </style>
-          <script src="${baseURL}${globalJavaScriptPath}"></script>
-
           <script type="module">
             import * as textFieldEdit from "${baseURL}/node_modules/text-field-edit/index.js";
             window.textFieldEdit = textFieldEdit;
           </script>
+          <script src="${baseURL}${globalJavaScriptPath}"></script>
 
           $${res?.locals.eventSource
             ? html`
