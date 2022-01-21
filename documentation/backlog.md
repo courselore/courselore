@@ -2,12 +2,11 @@
 
 - Sprinkle links of Meta course & try.courselore.org
   - Include the link to Meta CourseLore on the “Report an Issue” menu.
+  - Mention that production server may not be free forever.
 - Write a function to determine if processing the message is even necessary. Most messages don’t use extra features and could skip JSDOM entirely.
 - Overflowing text on mobile: Invitation link on `/settings/invitations` page.
 - Find out why I received the same notification multiple times.
 - `coursePartial` is sometimes used in contexts that aren’t `button`s, so be mindful of cursor change on icon.
-- Chat goes blank when you send a message.
-  - This happens because I load the chat hidden to prevent a flash of unstyled content, but I’m not reruning the `oninteractive` (I did that to fix the tooltips).
 - Make QR more prominent
 - On new course: Change link from “Invite People” to “Configure Course”.
 - Editing a message on a chat shows the compact editor. It should show the complete one.
