@@ -1019,6 +1019,7 @@ export default async function courselore({
           <style>
             $${res.locals.localCSS}
           </style>
+          <script src="${baseURL}${globalJavaScriptPath}"></script>
           $${head}
         </head>
         $${baseLayoutBody}
@@ -2064,6 +2065,17 @@ export default async function courselore({
     .digest("hex")}.css`;
   app.get<{}, CSS, {}, {}, {}>(globalCSSPath, (req, res) => {
     res.type("css").send(globalCSSProcessed);
+  });
+
+  const globalJavaScript = javascript`
+
+  `;
+  const globalJavaScriptPath = `/global--${crypto
+    .createHash("sha256")
+    .update(globalJavaScript)
+    .digest("hex")}.js`;
+  app.get<{}, CSS, {}, {}, {}>(globalJavaScriptPath, (req, res) => {
+    res.type("js").send(globalJavaScript);
   });
 
   const boxLayout = ({
