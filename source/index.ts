@@ -965,22 +965,6 @@ export default async function courselore({
             import * as textFieldEdit from "${baseURL}/node_modules/text-field-edit/index.js";
             window.textFieldEdit = textFieldEdit;
           </script>
-          <script src="${baseURL}/node_modules/mousetrap/mousetrap.min.js"></script>
-          <script src="${baseURL}/node_modules/textarea-caret/index.js"></script>
-          <script src="${baseURL}/node_modules/scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js"></script>
-          <script src="${baseURL}/node_modules/@leafac/javascript/browser.js"></script>
-          <script>
-            leafac.evaluateOnInteractive();
-            leafac.customFormValidation();
-            leafac.warnAboutLosingInputs();
-            leafac.disableButtonsOnSubmit();
-            leafac.tippySetDefaultProps();
-            ${liveReload
-              ? javascript`
-                  leafac.liveReload();
-                `
-              : javascript``};
-          </script>
 
           $${res?.locals.eventSource
             ? html`
@@ -2081,6 +2065,45 @@ export default async function courselore({
       ),
       "utf-8"
     )}
+    ${await fs.readFile(
+      new URL(
+        "../static/node_modules/mousetrap/mousetrap.min.js",
+        import.meta.url
+      ),
+      "utf-8"
+    )}
+    ${await fs.readFile(
+      new URL(
+        "../static/node_modules/textarea-caret/index.js",
+        import.meta.url
+      ),
+      "utf-8"
+    )}
+    ${await fs.readFile(
+      new URL(
+        "../static/node_modules/scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js",
+        import.meta.url
+      ),
+      "utf-8"
+    )}
+    ${await fs.readFile(
+      new URL(
+        "../static/node_modules/@leafac/javascript/browser.js",
+        import.meta.url
+      ),
+      "utf-8"
+    )}
+
+    leafac.evaluateOnInteractive();
+    leafac.customFormValidation();
+    leafac.warnAboutLosingInputs();
+    leafac.disableButtonsOnSubmit();
+    leafac.tippySetDefaultProps();
+    ${liveReload
+      ? javascript`
+          leafac.liveReload();
+        `
+      : javascript``};
   `;
   const globalJavaScriptPath = `/global--${crypto
     .createHash("sha256")
