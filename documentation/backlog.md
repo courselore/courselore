@@ -35,6 +35,7 @@
   - `html` tagged template literal.
   - Synchronous stuff that could be async.
 - Don’t pre-load the `edit` form for messages. Instead, load the `contentSource` from the `data-content-source` that’s already used by the quoting mechanism.
+- Make Demonstration Data load faster by having a cache of pre-built data.
 
 ### Advanced Access Control
 
