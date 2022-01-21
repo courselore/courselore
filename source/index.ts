@@ -2099,11 +2099,13 @@ export default async function courselore({
     leafac.warnAboutLosingInputs();
     leafac.disableButtonsOnSubmit();
     leafac.tippySetDefaultProps();
-    ${liveReload
-      ? javascript`
+    ${
+      liveReload
+        ? javascript`
           leafac.liveReload();
         `
-      : javascript``};
+        : javascript``
+    };
   `;
   const globalJavaScriptPath = `/global--${crypto
     .createHash("sha256")
