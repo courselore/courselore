@@ -7035,6 +7035,18 @@ export default async function courselore({
               </a>
               <a
                 href="${baseURL}/courses/${res.locals.course
+                  .reference}/settings/tags"
+                class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
+                  "/settings/tags"
+                )
+                  ? "button--blue"
+                  : "button--transparent"}"
+              >
+                <i class="bi bi-tags"></i>
+                Tags
+              </a>
+              <a
+                href="${baseURL}/courses/${res.locals.course
                   .reference}/settings/invitations"
                 class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings/invitations"
@@ -7056,18 +7068,6 @@ export default async function courselore({
               >
                 <i class="bi bi-people"></i>
                 Enrollments
-              </a>
-              <a
-                href="${baseURL}/courses/${res.locals.course
-                  .reference}/settings/tags"
-                class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
-                  "/settings/tags"
-                )
-                  ? "button--blue"
-                  : "button--transparent"}"
-              >
-                <i class="bi bi-tags"></i>
-                Tags
               </a>
               <a
                 href="${baseURL}/courses/${res.locals.course
@@ -7290,6 +7290,547 @@ export default async function courselore({
 
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/settings/course-information`
+      );
+    }
+  );
+
+  app.get<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    IsCourseStaffMiddlewareLocals
+  >(
+    "/courses/:courseReference/settings/tags",
+    ...isCourseStaffMiddleware,
+    (req, res) => {
+      res.send(
+        courseSettingsLayout({
+          req,
+          res,
+          head: html`
+            <title>
+              Tags · Course Settings · ${res.locals.course.name} · CourseLore
+            </title>
+          `,
+          body: html`
+            <h2 class="heading">
+              <i class="bi bi-sliders"></i>
+              Course Settings ·
+              <i class="bi bi-tags"></i>
+              Tags
+            </h2>
+
+            $${res.locals.tags.length === 0
+              ? html`
+                  <div
+                    class="${res.locals.localCSS(css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--2);
+                      align-items: center;
+                    `)}"
+                  >
+                    <div class="decorative-icon">
+                      <i class="bi bi-tags"></i>
+                    </div>
+                    <p class="secondary">Organize conversations with tags.</p>
+                  </div>
+                `
+              : html``}
+
+            <form
+              method="POST"
+              action="${baseURL}/courses/${res.locals.course
+                .reference}/settings/tags?_method=PUT"
+              novalidate
+              class="${res.locals.localCSS(css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `)}"
+            >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+              <div
+                class="${res.locals.localCSS(css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--2);
+                `)}"
+              >
+                <div
+                  class="tags ${res.locals.localCSS(css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--4);
+                  `)}"
+                >
+                  $${res.locals.tags.map(
+                    (tag, index) => html`
+                      <div
+                        class="tag ${res.locals.localCSS(css`
+                          padding-bottom: var(--space--4);
+                          border-bottom: var(--border-width--1) solid
+                            var(--color--gray--medium--200);
+                          @media (prefers-color-scheme: dark) {
+                            border-color: var(--color--gray--medium--700);
+                          }
+                          display: flex;
+                          gap: var(--space--2);
+                          align-items: baseline;
+                        `)}"
+                      >
+                        <input
+                          type="hidden"
+                          name="tags[${index}][reference]"
+                          value="${tag.reference}"
+                        />
+                        <input
+                          type="hidden"
+                          name="tags[${index}][delete]"
+                          value="true"
+                          disabled
+                          data-force-is-modified="true"
+                        />
+                        <div class="tag--icon text--teal">
+                          <i class="bi bi-tag-fill"></i>
+                        </div>
+                        <div
+                          class="${res.locals.localCSS(css`
+                            flex: 1;
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--2);
+                          `)}"
+                        >
+                          <input
+                            type="text"
+                            name="tags[${index}][name]"
+                            value="${tag.name}"
+                            class="disable-on-delete input--text"
+                            required
+                            autocomplete="off"
+                          />
+                          <div
+                            class="${res.locals.localCSS(css`
+                              display: flex;
+                              flex-wrap: wrap;
+                              column-gap: var(--space--4);
+                              row-gap: var(--space--2);
+                            `)}"
+                          >
+                            <div
+                              class="${res.locals.localCSS(css`
+                                width: var(--space--40);
+                              `)}"
+                            >
+                              <label
+                                class="button button--tight button--tight--inline button--justify-start button--transparent"
+                              >
+                                <input
+                                  type="checkbox"
+                                  name="tags[${index}][isStaffOnly]"
+                                  $${tag.staffOnlyAt === null
+                                    ? html``
+                                    : html`checked`}
+                                  class="disable-on-delete visually-hidden input--radio-or-checkbox--multilabel"
+                                />
+                                <span
+                                  oninteractive="${javascript`
+                                    tippy(this, {
+                                      touch: false,
+                                      content: "Set as Visible by Staff Only",
+                                    });
+                                  `}"
+                                >
+                                  <i class="bi bi-eye"></i>
+                                  Visible by Everyone
+                                </span>
+                                <span
+                                  class="text--pink"
+                                  oninteractive="${javascript`
+                                    tippy(this, {
+                                      touch: false,
+                                      content: "Set as Visible by Everyone",
+                                    });
+                                  `}"
+                                >
+                                  <i class="bi bi-mortarboard-fill"></i>
+                                  Visible by Staff Only
+                                </span>
+                              </label>
+                            </div>
+                            <div
+                              class="${res.locals.localCSS(css`
+                                .tag.deleted & {
+                                  display: none;
+                                }
+                              `)}"
+                            >
+                              <button
+                                type="button"
+                                class="button button--tight button--tight--inline button--transparent"
+                                oninteractive="${javascript`
+                                  tippy(this, {
+                                    theme: "rose",
+                                    touch: false,
+                                    content: "Remove Tag",
+                                  });
+                                  tippy(this, {
+                                    theme: "rose",
+                                    trigger: "click",
+                                    interactive: true,
+                                    content: ${res.locals.HTMLForJavaScript(
+                                      html`
+                                        <div
+                                          class="${res.locals.localCSS(css`
+                                            padding: var(--space--2)
+                                              var(--space--0);
+                                            display: flex;
+                                            flex-direction: column;
+                                            gap: var(--space--4);
+                                          `)}"
+                                        >
+                                          <p>
+                                            Are you sure you want to remove this
+                                            tag?
+                                          </p>
+                                          <p>
+                                            <strong
+                                              class="${res.locals.localCSS(css`
+                                                font-weight: var(
+                                                  --font-weight--bold
+                                                );
+                                              `)}"
+                                            >
+                                              The tag will be removed from all
+                                              conversations and you may not undo
+                                              this action!
+                                            </strong>
+                                          </p>
+                                          <button
+                                            type="button"
+                                            class="button button--rose"
+                                            onclick="${javascript`
+                                              const tag = this.closest(".tag");
+                                              tag.classList.add("deleted");
+                                              const tagIconClassList = tag.querySelector(".tag--icon").classList;
+                                              tagIconClassList.remove("text--teal");
+                                              tagIconClassList.add("text--rose");
+                                              tag.querySelector('[name$="[delete]"]').disabled = false;
+                                              for (const element of tag.querySelectorAll(".disable-on-delete")) {
+                                                element.disabled = true;
+                                                const button = element.closest(".button");
+                                                if (button === null) continue;
+                                                button.classList.add("disabled");
+                                                for (const element of button.querySelectorAll("*"))
+                                                  if (element.tooltip !== undefined) element.tooltip.disable();
+                                              }
+                                            `}"
+                                          >
+                                            <i class="bi bi-trash"></i>
+                                            Remove Tag
+                                          </button>
+                                        </div>
+                                      `
+                                    )},
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-trash"></i>
+                              </button>
+                            </div>
+                            <div
+                              class="${res.locals.localCSS(css`
+                                .tag:not(.deleted) & {
+                                  display: none;
+                                }
+                              `)}"
+                            >
+                              <button
+                                type="button"
+                                class="button button--tight button--tight--inline button--transparent"
+                                oninteractive="${javascript`
+                                  tippy(this, {
+                                    touch: false,
+                                    content: "Don’t Remove Tag",
+                                  });
+                                `}"
+                                onclick="${javascript`
+                                  const tag = this.closest(".tag");
+                                  tag.classList.remove("deleted");
+                                  const tagIconClassList = tag.querySelector(".tag--icon").classList;
+                                  tagIconClassList.remove("text--rose");
+                                  tagIconClassList.add("text--teal");
+                                  tag.querySelector('[name$="[delete]"]').disabled = true;
+                                  for (const element of tag.querySelectorAll(".disable-on-delete")) {
+                                    element.disabled = false;
+                                    const button = element.closest(".button");
+                                    if (button === null) continue;
+                                    button.classList.remove("disabled");
+                                    for (const element of button.querySelectorAll("*"))
+                                      if (element.tooltip !== undefined) element.tooltip.enable();
+                                  }
+                                `}"
+                              >
+                                <i class="bi bi-recycle"></i>
+                              </button>
+                            </div>
+                            $${res.locals.conversationsCount > 0
+                              ? html`
+                                  <a
+                                    href="${baseURL}/courses/${res.locals.course
+                                      .reference}${qs.stringify(
+                                      {
+                                        conversationLayoutSidebarOpenOnSmallScreen:
+                                          "true",
+                                        filters: {
+                                          tagsReferences: [tag.reference],
+                                        },
+                                      },
+                                      { addQueryPrefix: true }
+                                    )}"
+                                    class="button button--tight button--tight--inline button--transparent"
+                                    oninteractive="${javascript`
+                                      tippy(this, {
+                                        touch: false,
+                                        content: "See Conversations with This Tag",
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-chat-left-text"></i>
+                                  </a>
+                                `
+                              : html``}
+                          </div>
+                        </div>
+                      </div>
+                    `
+                  )}
+                </div>
+                <div
+                  class="${res.locals.localCSS(css`
+                    display: flex;
+                    justify-content: center;
+                  `)}"
+                >
+                  <button
+                    type="button"
+                    class="button button--transparent button--full-width-on-small-screen"
+                    oninteractive="${javascript`
+                      (this.validators ??= []).push(() => {
+                        if ([...this.closest("form").querySelector(".tags").children].filter((tag) => !tag.hidden).length === 0)
+                          return "Please add at least one tag.";
+                      });
+                    `}"
+                    onclick="${javascript`
+                      const newTag = ${res.locals.HTMLForJavaScript(
+                        html`
+                          <div
+                            class="tag ${res.locals.localCSS(css`
+                              display: flex;
+                              gap: var(--space--2);
+                              align-items: baseline;
+                            `)}"
+                          >
+                            <div class="text--teal">
+                              <i class="bi bi-tag-fill"></i>
+                            </div>
+                            <div
+                              class="${res.locals.localCSS(css`
+                                flex: 1;
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--2);
+                              `)}"
+                            >
+                              <input
+                                type="text"
+                                placeholder=" "
+                                required
+                                autocomplete="off"
+                                disabled
+                                class="input--text"
+                                onmount="${javascript`
+                                  this.dataset.forceIsModified = true;
+                                  this.disabled = false;
+                                  this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][name]";
+                                `}"
+                              />
+                              <div
+                                class="${res.locals.localCSS(css`
+                                  display: flex;
+                                  flex-wrap: wrap;
+                                  column-gap: var(--space--4);
+                                  row-gap: var(--space--2);
+                                `)}"
+                              >
+                                <div
+                                  class="${res.locals.localCSS(css`
+                                    width: var(--space--40);
+                                  `)}"
+                                >
+                                  <label
+                                    class="button button--tight button--tight--inline button--justify-start button--transparent"
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      disabled
+                                      class="visually-hidden input--radio-or-checkbox--multilabel"
+                                      onmount="${javascript`
+                                        this.dataset.forceIsModified = true;
+                                        this.disabled = false;
+                                        this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][isStaffOnly]";
+                                      `}"
+                                    />
+                                    <span
+                                      onmount="${javascript`
+                                        tippy(this, {
+                                          touch: false,
+                                          content: "Set as Visible by Staff Only",
+                                        });
+                                      `}"
+                                    >
+                                      <i class="bi bi-eye"></i>
+                                      Visible by Everyone
+                                    </span>
+                                    <span
+                                      class="text--pink"
+                                      onmount="${javascript`
+                                        tippy(this, {
+                                          touch: false,
+                                          content: "Set as Visible by Everyone",
+                                        });
+                                      `}"
+                                    >
+                                      <i class="bi bi-mortarboard-fill"></i>
+                                      Visible by Staff Only
+                                    </span>
+                                  </label>
+                                </div>
+                                <button
+                                  type="button"
+                                  class="button button--tight button--tight--inline button--transparent"
+                                  onmount="${javascript`
+                                    tippy(this, {
+                                      theme: "rose",
+                                      touch: false,
+                                      content: "Remove Tag",
+                                    });
+                                  `}"
+                                  onclick="${javascript`
+                                    const tag = this.closest(".tag");
+                                    tag.replaceChildren();
+                                    tag.hidden = true;
+                                  `}"
+                                >
+                                  <i class="bi bi-trash"></i>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        `
+                      )}.firstElementChild.cloneNode(true);
+                      this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
+                      leafac.evaluateElementsAttribute(newTag, "onmount");
+                    `}"
+                  >
+                    <i class="bi bi-plus-circle"></i>
+                    Add Tag
+                  </button>
+                </div>
+              </div>
+              <div>
+                <button
+                  class="button button--full-width-on-small-screen button--blue"
+                >
+                  <i class="bi bi-pencil"></i>
+                  Update Tags
+                </button>
+              </div>
+            </form>
+          `,
+        })
+      );
+    }
+  );
+
+  app.put<
+    { courseReference: string },
+    HTML,
+    {
+      tags?: {
+        reference?: string;
+        delete?: "true";
+        name?: string;
+        isStaffOnly?: boolean;
+      }[];
+    },
+    {},
+    IsCourseStaffMiddlewareLocals
+  >(
+    "/courses/:courseReference/settings/tags",
+    ...isCourseStaffMiddleware,
+    (req, res, next) => {
+      if (
+        !Array.isArray(req.body.tags) ||
+        req.body.tags.length === 0 ||
+        req.body.tags.some(
+          (tag) =>
+            (tag.reference === undefined &&
+              (typeof tag.name !== "string" || tag.name.trim() === "")) ||
+            (tag.reference !== undefined &&
+              (!res.locals.tags.some(
+                (existingTag) => tag.reference === existingTag.reference
+              ) ||
+                (tag.delete !== "true" &&
+                  (typeof tag.name !== "string" || tag.name.trim() === ""))))
+        )
+      )
+        return next("validation");
+
+      for (const tag of req.body.tags)
+        if (tag.reference === undefined)
+          database.run(
+            sql`
+              INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
+              VALUES (
+                ${new Date().toISOString()},
+                ${res.locals.course.id},
+                ${cryptoRandomString({ length: 10, type: "numeric" })},
+                ${tag.name},
+                ${tag.isStaffOnly ? new Date().toISOString() : null}
+              )
+            `
+          );
+        else if (tag.delete === "true")
+          database.run(
+            sql`
+              DELETE FROM "tags" WHERE "reference" = ${tag.reference}
+            `
+          );
+        else
+          database.run(
+            sql`
+              UPDATE "tags"
+              SET "name" = ${tag.name},
+                  "staffOnlyAt" = ${
+                    tag.isStaffOnly ? new Date().toISOString() : null
+                  }
+              WHERE "reference" = ${tag.reference}
+            `
+          );
+
+      Flash.set({
+        req,
+        res,
+        content: html`
+          <div class="flash--green">Tags updated successfully.</div>
+        `,
+      });
+
+      res.redirect(
+        `${baseURL}/courses/${res.locals.course.reference}/settings/tags`
       );
     }
   );
@@ -9098,547 +9639,6 @@ export default async function courselore({
         res.locals.managedEnrollment.isSelf
           ? `${baseURL}/`
           : `${baseURL}/courses/${res.locals.course.reference}/settings/enrollments`
-      );
-    }
-  );
-
-  app.get<
-    { courseReference: string },
-    HTML,
-    {},
-    {},
-    IsCourseStaffMiddlewareLocals
-  >(
-    "/courses/:courseReference/settings/tags",
-    ...isCourseStaffMiddleware,
-    (req, res) => {
-      res.send(
-        courseSettingsLayout({
-          req,
-          res,
-          head: html`
-            <title>
-              Tags · Course Settings · ${res.locals.course.name} · CourseLore
-            </title>
-          `,
-          body: html`
-            <h2 class="heading">
-              <i class="bi bi-sliders"></i>
-              Course Settings ·
-              <i class="bi bi-tags"></i>
-              Tags
-            </h2>
-
-            $${res.locals.tags.length === 0
-              ? html`
-                  <div
-                    class="${res.locals.localCSS(css`
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--space--2);
-                      align-items: center;
-                    `)}"
-                  >
-                    <div class="decorative-icon">
-                      <i class="bi bi-tags"></i>
-                    </div>
-                    <p class="secondary">Organize conversations with tags.</p>
-                  </div>
-                `
-              : html``}
-
-            <form
-              method="POST"
-              action="${baseURL}/courses/${res.locals.course
-                .reference}/settings/tags?_method=PUT"
-              novalidate
-              class="${res.locals.localCSS(css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-              `)}"
-            >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-              <div
-                class="${res.locals.localCSS(css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--2);
-                `)}"
-              >
-                <div
-                  class="tags ${res.locals.localCSS(css`
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--4);
-                  `)}"
-                >
-                  $${res.locals.tags.map(
-                    (tag, index) => html`
-                      <div
-                        class="tag ${res.locals.localCSS(css`
-                          padding-bottom: var(--space--4);
-                          border-bottom: var(--border-width--1) solid
-                            var(--color--gray--medium--200);
-                          @media (prefers-color-scheme: dark) {
-                            border-color: var(--color--gray--medium--700);
-                          }
-                          display: flex;
-                          gap: var(--space--2);
-                          align-items: baseline;
-                        `)}"
-                      >
-                        <input
-                          type="hidden"
-                          name="tags[${index}][reference]"
-                          value="${tag.reference}"
-                        />
-                        <input
-                          type="hidden"
-                          name="tags[${index}][delete]"
-                          value="true"
-                          disabled
-                          data-force-is-modified="true"
-                        />
-                        <div class="tag--icon text--teal">
-                          <i class="bi bi-tag-fill"></i>
-                        </div>
-                        <div
-                          class="${res.locals.localCSS(css`
-                            flex: 1;
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--2);
-                          `)}"
-                        >
-                          <input
-                            type="text"
-                            name="tags[${index}][name]"
-                            value="${tag.name}"
-                            class="disable-on-delete input--text"
-                            required
-                            autocomplete="off"
-                          />
-                          <div
-                            class="${res.locals.localCSS(css`
-                              display: flex;
-                              flex-wrap: wrap;
-                              column-gap: var(--space--4);
-                              row-gap: var(--space--2);
-                            `)}"
-                          >
-                            <div
-                              class="${res.locals.localCSS(css`
-                                width: var(--space--40);
-                              `)}"
-                            >
-                              <label
-                                class="button button--tight button--tight--inline button--justify-start button--transparent"
-                              >
-                                <input
-                                  type="checkbox"
-                                  name="tags[${index}][isStaffOnly]"
-                                  $${tag.staffOnlyAt === null
-                                    ? html``
-                                    : html`checked`}
-                                  class="disable-on-delete visually-hidden input--radio-or-checkbox--multilabel"
-                                />
-                                <span
-                                  oninteractive="${javascript`
-                                    tippy(this, {
-                                      touch: false,
-                                      content: "Set as Visible by Staff Only",
-                                    });
-                                  `}"
-                                >
-                                  <i class="bi bi-eye"></i>
-                                  Visible by Everyone
-                                </span>
-                                <span
-                                  class="text--pink"
-                                  oninteractive="${javascript`
-                                    tippy(this, {
-                                      touch: false,
-                                      content: "Set as Visible by Everyone",
-                                    });
-                                  `}"
-                                >
-                                  <i class="bi bi-mortarboard-fill"></i>
-                                  Visible by Staff Only
-                                </span>
-                              </label>
-                            </div>
-                            <div
-                              class="${res.locals.localCSS(css`
-                                .tag.deleted & {
-                                  display: none;
-                                }
-                              `)}"
-                            >
-                              <button
-                                type="button"
-                                class="button button--tight button--tight--inline button--transparent"
-                                oninteractive="${javascript`
-                                  tippy(this, {
-                                    theme: "rose",
-                                    touch: false,
-                                    content: "Remove Tag",
-                                  });
-                                  tippy(this, {
-                                    theme: "rose",
-                                    trigger: "click",
-                                    interactive: true,
-                                    content: ${res.locals.HTMLForJavaScript(
-                                      html`
-                                        <div
-                                          class="${res.locals.localCSS(css`
-                                            padding: var(--space--2)
-                                              var(--space--0);
-                                            display: flex;
-                                            flex-direction: column;
-                                            gap: var(--space--4);
-                                          `)}"
-                                        >
-                                          <p>
-                                            Are you sure you want to remove this
-                                            tag?
-                                          </p>
-                                          <p>
-                                            <strong
-                                              class="${res.locals.localCSS(css`
-                                                font-weight: var(
-                                                  --font-weight--bold
-                                                );
-                                              `)}"
-                                            >
-                                              The tag will be removed from all
-                                              conversations and you may not undo
-                                              this action!
-                                            </strong>
-                                          </p>
-                                          <button
-                                            type="button"
-                                            class="button button--rose"
-                                            onclick="${javascript`
-                                              const tag = this.closest(".tag");
-                                              tag.classList.add("deleted");
-                                              const tagIconClassList = tag.querySelector(".tag--icon").classList;
-                                              tagIconClassList.remove("text--teal");
-                                              tagIconClassList.add("text--rose");
-                                              tag.querySelector('[name$="[delete]"]').disabled = false;
-                                              for (const element of tag.querySelectorAll(".disable-on-delete")) {
-                                                element.disabled = true;
-                                                const button = element.closest(".button");
-                                                if (button === null) continue;
-                                                button.classList.add("disabled");
-                                                for (const element of button.querySelectorAll("*"))
-                                                  if (element.tooltip !== undefined) element.tooltip.disable();
-                                              }
-                                            `}"
-                                          >
-                                            <i class="bi bi-trash"></i>
-                                            Remove Tag
-                                          </button>
-                                        </div>
-                                      `
-                                    )},
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-trash"></i>
-                              </button>
-                            </div>
-                            <div
-                              class="${res.locals.localCSS(css`
-                                .tag:not(.deleted) & {
-                                  display: none;
-                                }
-                              `)}"
-                            >
-                              <button
-                                type="button"
-                                class="button button--tight button--tight--inline button--transparent"
-                                oninteractive="${javascript`
-                                  tippy(this, {
-                                    touch: false,
-                                    content: "Don’t Remove Tag",
-                                  });
-                                `}"
-                                onclick="${javascript`
-                                  const tag = this.closest(".tag");
-                                  tag.classList.remove("deleted");
-                                  const tagIconClassList = tag.querySelector(".tag--icon").classList;
-                                  tagIconClassList.remove("text--rose");
-                                  tagIconClassList.add("text--teal");
-                                  tag.querySelector('[name$="[delete]"]').disabled = true;
-                                  for (const element of tag.querySelectorAll(".disable-on-delete")) {
-                                    element.disabled = false;
-                                    const button = element.closest(".button");
-                                    if (button === null) continue;
-                                    button.classList.remove("disabled");
-                                    for (const element of button.querySelectorAll("*"))
-                                      if (element.tooltip !== undefined) element.tooltip.enable();
-                                  }
-                                `}"
-                              >
-                                <i class="bi bi-recycle"></i>
-                              </button>
-                            </div>
-                            $${res.locals.conversationsCount > 0
-                              ? html`
-                                  <a
-                                    href="${baseURL}/courses/${res.locals.course
-                                      .reference}${qs.stringify(
-                                      {
-                                        conversationLayoutSidebarOpenOnSmallScreen:
-                                          "true",
-                                        filters: {
-                                          tagsReferences: [tag.reference],
-                                        },
-                                      },
-                                      { addQueryPrefix: true }
-                                    )}"
-                                    class="button button--tight button--tight--inline button--transparent"
-                                    oninteractive="${javascript`
-                                      tippy(this, {
-                                        touch: false,
-                                        content: "See Conversations with This Tag",
-                                      });
-                                    `}"
-                                  >
-                                    <i class="bi bi-chat-left-text"></i>
-                                  </a>
-                                `
-                              : html``}
-                          </div>
-                        </div>
-                      </div>
-                    `
-                  )}
-                </div>
-                <div
-                  class="${res.locals.localCSS(css`
-                    display: flex;
-                    justify-content: center;
-                  `)}"
-                >
-                  <button
-                    type="button"
-                    class="button button--transparent button--full-width-on-small-screen"
-                    oninteractive="${javascript`
-                      (this.validators ??= []).push(() => {
-                        if ([...this.closest("form").querySelector(".tags").children].filter((tag) => !tag.hidden).length === 0)
-                          return "Please add at least one tag.";
-                      });
-                    `}"
-                    onclick="${javascript`
-                      const newTag = ${res.locals.HTMLForJavaScript(
-                        html`
-                          <div
-                            class="tag ${res.locals.localCSS(css`
-                              display: flex;
-                              gap: var(--space--2);
-                              align-items: baseline;
-                            `)}"
-                          >
-                            <div class="text--teal">
-                              <i class="bi bi-tag-fill"></i>
-                            </div>
-                            <div
-                              class="${res.locals.localCSS(css`
-                                flex: 1;
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--2);
-                              `)}"
-                            >
-                              <input
-                                type="text"
-                                placeholder=" "
-                                required
-                                autocomplete="off"
-                                disabled
-                                class="input--text"
-                                onmount="${javascript`
-                                  this.dataset.forceIsModified = true;
-                                  this.disabled = false;
-                                  this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][name]";
-                                `}"
-                              />
-                              <div
-                                class="${res.locals.localCSS(css`
-                                  display: flex;
-                                  flex-wrap: wrap;
-                                  column-gap: var(--space--4);
-                                  row-gap: var(--space--2);
-                                `)}"
-                              >
-                                <div
-                                  class="${res.locals.localCSS(css`
-                                    width: var(--space--40);
-                                  `)}"
-                                >
-                                  <label
-                                    class="button button--tight button--tight--inline button--justify-start button--transparent"
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      disabled
-                                      class="visually-hidden input--radio-or-checkbox--multilabel"
-                                      onmount="${javascript`
-                                        this.dataset.forceIsModified = true;
-                                        this.disabled = false;
-                                        this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][isStaffOnly]";
-                                      `}"
-                                    />
-                                    <span
-                                      onmount="${javascript`
-                                        tippy(this, {
-                                          touch: false,
-                                          content: "Set as Visible by Staff Only",
-                                        });
-                                      `}"
-                                    >
-                                      <i class="bi bi-eye"></i>
-                                      Visible by Everyone
-                                    </span>
-                                    <span
-                                      class="text--pink"
-                                      onmount="${javascript`
-                                        tippy(this, {
-                                          touch: false,
-                                          content: "Set as Visible by Everyone",
-                                        });
-                                      `}"
-                                    >
-                                      <i class="bi bi-mortarboard-fill"></i>
-                                      Visible by Staff Only
-                                    </span>
-                                  </label>
-                                </div>
-                                <button
-                                  type="button"
-                                  class="button button--tight button--tight--inline button--transparent"
-                                  onmount="${javascript`
-                                    tippy(this, {
-                                      theme: "rose",
-                                      touch: false,
-                                      content: "Remove Tag",
-                                    });
-                                  `}"
-                                  onclick="${javascript`
-                                    const tag = this.closest(".tag");
-                                    tag.replaceChildren();
-                                    tag.hidden = true;
-                                  `}"
-                                >
-                                  <i class="bi bi-trash"></i>
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        `
-                      )}.firstElementChild.cloneNode(true);
-                      this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
-                      leafac.evaluateElementsAttribute(newTag, "onmount");
-                    `}"
-                  >
-                    <i class="bi bi-plus-circle"></i>
-                    Add Tag
-                  </button>
-                </div>
-              </div>
-              <div>
-                <button
-                  class="button button--full-width-on-small-screen button--blue"
-                >
-                  <i class="bi bi-pencil"></i>
-                  Update Tags
-                </button>
-              </div>
-            </form>
-          `,
-        })
-      );
-    }
-  );
-
-  app.put<
-    { courseReference: string },
-    HTML,
-    {
-      tags?: {
-        reference?: string;
-        delete?: "true";
-        name?: string;
-        isStaffOnly?: boolean;
-      }[];
-    },
-    {},
-    IsCourseStaffMiddlewareLocals
-  >(
-    "/courses/:courseReference/settings/tags",
-    ...isCourseStaffMiddleware,
-    (req, res, next) => {
-      if (
-        !Array.isArray(req.body.tags) ||
-        req.body.tags.length === 0 ||
-        req.body.tags.some(
-          (tag) =>
-            (tag.reference === undefined &&
-              (typeof tag.name !== "string" || tag.name.trim() === "")) ||
-            (tag.reference !== undefined &&
-              (!res.locals.tags.some(
-                (existingTag) => tag.reference === existingTag.reference
-              ) ||
-                (tag.delete !== "true" &&
-                  (typeof tag.name !== "string" || tag.name.trim() === ""))))
-        )
-      )
-        return next("validation");
-
-      for (const tag of req.body.tags)
-        if (tag.reference === undefined)
-          database.run(
-            sql`
-              INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
-              VALUES (
-                ${new Date().toISOString()},
-                ${res.locals.course.id},
-                ${cryptoRandomString({ length: 10, type: "numeric" })},
-                ${tag.name},
-                ${tag.isStaffOnly ? new Date().toISOString() : null}
-              )
-            `
-          );
-        else if (tag.delete === "true")
-          database.run(
-            sql`
-              DELETE FROM "tags" WHERE "reference" = ${tag.reference}
-            `
-          );
-        else
-          database.run(
-            sql`
-              UPDATE "tags"
-              SET "name" = ${tag.name},
-                  "staffOnlyAt" = ${
-                    tag.isStaffOnly ? new Date().toISOString() : null
-                  }
-              WHERE "reference" = ${tag.reference}
-            `
-          );
-
-      Flash.set({
-        req,
-        res,
-        content: html`
-          <div class="flash--green">Tags updated successfully.</div>
-        `,
-      });
-
-      res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/settings/tags`
       );
     }
   );
