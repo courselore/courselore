@@ -5489,8 +5489,15 @@ export default async function courselore({
                   </div>
 
                   <div class="menu-box">
-                    <button
+                    <a
+                      href="${baseURL}/settings/profile"
                       class="menu-box--item button button--blue"
+                    >
+                      <i class="bi bi-person-circle"></i>
+                      Fill in Your Profile
+                    </a>
+                    <button
+                      class="menu-box--item button button--transparent"
                       oninteractive="${javascript`
                         tippy(this, {
                           trigger: "click",
@@ -5501,13 +5508,6 @@ export default async function courselore({
                       <i class="bi bi-journal-arrow-down"></i>
                       Enroll in an Existing Course
                     </button>
-                    <a
-                      href="${baseURL}/settings/profile"
-                      class="menu-box--item button button--transparent"
-                    >
-                      <i class="bi bi-person-circle"></i>
-                      Fill in Your Profile
-                    </a>
                     <a
                       href="${baseURL}/courses/new"
                       class="menu-box--item button button--transparent"
