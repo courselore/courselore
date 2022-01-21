@@ -955,8 +955,12 @@ export default async function courselore({
             content="Communication Platform for Education"
           />
 
-          <script src="${baseURL}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
-          <script src="${baseURL}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
+          <link rel="stylesheet" href="${baseURL}${globalCSSPath}" />
+          <style>
+            $${res.locals.localCSS}
+          </style>
+          <script src="${baseURL}${globalJavaScriptPath}"></script>
+
           <script type="module">
             import * as textFieldEdit from "${baseURL}/node_modules/text-field-edit/index.js";
             window.textFieldEdit = textFieldEdit;
@@ -1015,11 +1019,6 @@ export default async function courselore({
                 </script>
               `
             : html``}
-          <link rel="stylesheet" href="${baseURL}${globalCSSPath}" />
-          <style>
-            $${res.locals.localCSS}
-          </style>
-          <script src="${baseURL}${globalJavaScriptPath}"></script>
           $${head}
         </head>
         $${baseLayoutBody}
@@ -2068,7 +2067,20 @@ export default async function courselore({
   });
 
   const globalJavaScript = javascript`
-
+    ${await fs.readFile(
+      new URL(
+        "../static/node_modules/@popperjs/core/dist/umd/popper.min.js",
+        import.meta.url
+      ),
+      "utf-8"
+    )}
+    ${await fs.readFile(
+      new URL(
+        "../static/node_modules/tippy.js/dist/tippy-bundle.umd.min.js",
+        import.meta.url
+      ),
+      "utf-8"
+    )}
   `;
   const globalJavaScriptPath = `/global--${crypto
     .createHash("sha256")
