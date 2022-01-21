@@ -1,6 +1,5 @@
 # Backlog
 
-- On new course: Change link from “Invite People” to “Configure Course”.
 - Sprinkle links of Meta course & try.courselore.org
   - Include the link to Meta CourseLore on the “Report an Issue” menu.
   - Mention that production server may not be free forever.
