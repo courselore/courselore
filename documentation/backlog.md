@@ -1,5 +1,6 @@
 # Backlog
 
+- On new course: Change link from “Invite People” to “Configure Course”.
 - Sprinkle links of Meta course & try.courselore.org
   - Include the link to Meta CourseLore on the “Report an Issue” menu.
   - Mention that production server may not be free forever.
@@ -8,7 +9,6 @@
 - Find out why I received the same notification multiple times.
 - `coursePartial` is sometimes used in contexts that aren’t `button`s, so be mindful of cursor change on icon.
 - Make QR more prominent
-- On new course: Change link from “Invite People” to “Configure Course”.
 - Editing a message on a chat shows the compact editor. It should show the complete one.
 - Change the design of chats so that it’s easier to tell messages apart. Right now @mentions and messages look too much alike. Maybe use the Slack/Discord/GitHub solution of moving the avatar into the margin.
 - Live reloading:
