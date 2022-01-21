@@ -955,7 +955,6 @@ export default async function courselore({
             content="Communication Platform for Education"
           />
 
-          <link rel="stylesheet" href="${baseURL}${globalCSSPath}" />
           $${["public-sans", "jetbrains-mono"].flatMap((family) =>
             [
               "100",
@@ -1054,6 +1053,7 @@ export default async function courselore({
                 </script>
               `
             : html``}
+          <link rel="stylesheet" href="${baseURL}${globalCSSPath}" />
           <style>
             $${res.locals.localCSS}
           </style>
