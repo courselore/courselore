@@ -415,7 +415,7 @@ export default async function courselore({
       `
     );
     setTimeout(deleteExpiredData, 24 * 60 * 60 * 1000);
-  }, 0);
+  }, 1000);
 
   const baseLayout = ({
     req,
@@ -987,14 +987,6 @@ export default async function courselore({
           />
           <script src="${baseURL}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
           <script src="${baseURL}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
-          <link
-            rel="stylesheet"
-            href="${baseURL}/node_modules/tippy.js/dist/svg-arrow.css"
-          />
-          <link
-            rel="stylesheet"
-            href="${baseURL}/node_modules/tippy.js/dist/border.css"
-          />
           <script type="module">
             import * as textFieldEdit from "${baseURL}/node_modules/text-field-edit/index.js";
             window.textFieldEdit = textFieldEdit;
@@ -1065,6 +1057,16 @@ export default async function courselore({
   };
 
   const globalCSSProcessed = processCSS(css`
+    ${await Promise.all(
+      ["tippy.js/dist/svg-arrow.css", "tippy.js/dist/border.css"].map(
+        async (path) =>
+          await fs.readFile(
+            new URL(`../static/node_modules/${path}`, import.meta.url),
+            "utf-8"
+          )
+      )
+    )}
+
     ${globalCSS}
 
     .label {
