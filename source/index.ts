@@ -3963,42 +3963,74 @@ export default async function courselore({
               <div
                 class="${res.locals.localCSS(css`
                   display: flex;
+                  flex-direction: column;
                   gap: var(--space--4);
                   & > * {
-                    flex: 1;
+                    display: flex;
+                    gap: var(--space--4);
+                    & > * {
+                      flex: 1;
+                    }
                   }
                 `)}"
               >
-                $${res.locals.user === undefined
-                  ? html`
-                      <a href="${baseURL}/sign-up" class="button button--blue">
-                        <i class="bi bi-person-plus"></i>
-                        Sign up
-                      </a>
-                      <a
-                        href="${baseURL}/sign-in"
-                        class="button button--transparent"
-                      >
-                        <i class="bi bi-box-arrow-in-right"></i>
-                        Sign in
-                      </a>
-                    `
-                  : html`
-                      <a href="${baseURL}/" class="button button--blue">
-                        Return to CourseLore
-                        <i class="bi bi-chevron-right"></i>
-                      </a>
-                    `}
-              </div>
+                <div>
+                  <a
+                    href="https://courselore.org/sign-in"
+                    class="button button--blue"
+                    oninteractive="${javascript`
+                      tippy(this, {
+                        touch: false,
+                        content: "A CourseLore installation managed by the developers of CourseLore. Free for a limited time.",
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-stars"></i>
+                    Hosted Installation
+                  </a>
+                  <a
+                    href="https://try.courselore.org/sign-in"
+                    class="button button--transparent"
+                    oninteractive="${javascript`
+                      tippy(this, {
+                        touch: false,
+                        content: "A CourseLore installation running the latest development version. Not for use with real courses.",
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-tools"></i>
+                    Development Installation
+                  </a>
+                </div>
 
-              <a
-                href="https://github.com/courselore/courselore"
-                class="button button--transparent"
-              >
-                <i class="bi bi-file-earmark-code"></i>
-                Source Code
-              </a>
+                <div>
+                  <a
+                    href="https://courselore.org/courses/8537410611/invitations/3667859788"
+                    class="button button--transparent ${res.locals.localCSS(
+                      css`
+                        align-items: center;
+                      `
+                    )}"
+                    oninteractive="${javascript`
+                      tippy(this, {
+                        touch: false,
+                        content: "A CourseLore course that isn’t really a course, but a place to talk about CourseLore itself.",
+                      });
+                    `}"
+                  >
+                    $${logo({ size: 16 /* var(--space--4) */ })} Meta CourseLore
+                  </a>
+                  <a
+                    href="https://github.com/courselore/courselore"
+                    class="button button--transparent"
+                  >
+                    <i class="bi bi-file-earmark-code"></i>
+                    Source Code
+                  </a>
+                </div>
+              </div>
             </div>
+
             <div
               class="${res.locals.localCSS(css`
                 max-width: var(--width--3xl);
@@ -4567,37 +4599,59 @@ export default async function courselore({
               justify-content: center;
               padding: var(--space--36) var(--space--8);
               align-items: center;
-              @media (max-width: 599px) {
+              @media (max-width: 1099px) {
                 flex-direction: column;
               }
             `)}"
           >
-            $${res.locals.user === undefined
-              ? html`
-                  <a href="${baseURL}/sign-up" class="button button--blue">
-                    <i class="bi bi-person-plus"></i>
-                    Sign up
-                  </a>
-                  <a
-                    href="${baseURL}/sign-in"
-                    class="button button--transparent"
-                  >
-                    <i class="bi bi-box-arrow-in-right"></i>
-                    Sign in
-                  </a>
+            <a
+              href="https://courselore.org/sign-in"
+              class="button button--blue"
+              oninteractive="${javascript`
+                tippy(this, {
+                  touch: false,
+                  content: "A CourseLore installation managed by the developers of CourseLore. Free for a limited time.",
+                });
+              `}"
+            >
+              <i class="bi bi-stars"></i>
+              Hosted Installation
+            </a>
+            <a
+              href="https://try.courselore.org/sign-in"
+              class="button button--transparent"
+              oninteractive="${javascript`
+                tippy(this, {
+                  touch: false,
+                  content: "A CourseLore installation running the latest development version. Not for use with real courses.",
+                });
+              `}"
+            >
+              <i class="bi bi-tools"></i>
+              Development Installation
+            </a>
+            <a
+              href="https://courselore.org/courses/8537410611/invitations/3667859788"
+              class="button button--transparent ${res.locals.localCSS(
+                css`
+                  align-items: center;
                 `
-              : html`
-                  <a href="${baseURL}/" class="button button--blue">
-                    Return to CourseLore
-                    <i class="bi bi-chevron-right"></i>
-                  </a>
-                `}
+              )}"
+              oninteractive="${javascript`
+                tippy(this, {
+                  touch: false,
+                  content: "A CourseLore course that isn’t really a course, but a place to talk about CourseLore itself.",
+                });
+              `}"
+            >
+              $${logo({ size: 24 /* var(--space--6) */ })} Meta CourseLore
+            </a>
             <a
               href="https://github.com/courselore/courselore"
               class="button button--transparent"
             >
               <i class="bi bi-file-earmark-code"></i>
-              Source Code
+              Source Code
             </a>
           </div>
         `,

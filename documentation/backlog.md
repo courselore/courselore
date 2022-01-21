@@ -1,7 +1,6 @@
 # Backlog
 
-- Sprinkle links of Meta course & try.courselore.org
-  - Mention that production server may not be free forever.
+- Mention that production server may not be free forever.
 - Write a function to determine if processing the message is even necessary. Most messages don’t use extra features and could skip JSDOM entirely.
 - Overflowing text on mobile: Invitation link on `/settings/invitations` page.
 - Find out why I received the same notification multiple times.

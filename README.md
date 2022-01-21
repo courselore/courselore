@@ -9,8 +9,8 @@
 [<img src="static/main-screen--light.png" alt="CourseLore Main Screen" width="960">](https://courselore.org)
 
 <h3 align="center">
-<a href="https://courselore.org">Hosted Version at <code>courselore.org</code></a> ·
-<a href="https://try.courselore.org">Staging Version at <code>try.courselore.org</code></a> ·
+<a href="https://courselore.org">Hosted Installation</a> ·
+<a href="https://try.courselore.org">Development Installation</a> ·
 <a href="https://courselore.org/courses/8537410611/invitations/3667859788">Meta CourseLore</a>
 </h3>
 
