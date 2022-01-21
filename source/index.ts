@@ -6742,11 +6742,11 @@ export default async function courselore({
                     ? html`
                         <a
                           href="${baseURL}/courses/${res.locals.course
-                            .reference}/settings/invitations"
+                            .reference}/settings/tags"
                           class="menu-box--item button button--blue"
                         >
-                          <i class="bi bi-person-plus"></i>
-                          Invite Other People to the Course
+                          <i class="bi bi-sliders"></i>
+                          Configure the Course
                         </a>
                       `
                     : html``}
