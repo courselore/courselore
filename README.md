@@ -1,6 +1,5 @@
 <h1 align="center"><a href="https://courselore.org">CourseLore</a></h1>
 <h3 align="center">Communication Platform for Education</h3>
-<h3 align="center"><a href="https://courselore.org">https://courselore.org</a></h3>
 <p align="center">
 <a href="https://github.com/courselore/courselore"><img src="https://img.shields.io/badge/Source---" alt="Source"></a>
 <a href="https://www.npmjs.com/package/courselore"><img alt="Package" src="https://badge.fury.io/js/courselore.svg"></a>
@@ -8,6 +7,12 @@
 </p>
 
 [<img src="static/main-screen--light.png" alt="CourseLore Main Screen" width="960">](https://courselore.org)
+
+<h3 align="center">
+<a href="https://courselore.org">Hosted Version at <code>courselore.org</code></a> ·
+<a href="https://try.courselore.org">Staging Version at <code>try.courselore.org</code></a> ·
+<a href="https://courselore.org/courses/8537410611/invitations/3667859788">Meta CourseLore</a>
+</h3>
 
 ### Features
 
