@@ -1,6 +1,5 @@
 # Backlog
 
-- Try and load fonts without so many requests.
 - Try and load all JS from a global JS file.
 - Write a function to determine if processing the message is even necessary. Most messages don’t use extra features and could skip JSDOM entirely.
 - Overflowing text on mobile: Invitation link on `/settings/invitations` page.
