@@ -734,8 +734,8 @@ export default async function courselore({
                                   nonce: string;
                                 }>(
                                   sql`
-                                  SELECT "nonce" FROM "emailConfirmations" WHERE "user" = ${res.locals.user.id}
-                                `
+                                    SELECT "nonce" FROM "emailConfirmations" WHERE "user" = ${res.locals.user.id}
+                                  `
                                 )!.nonce}${qs.stringify(
                                   {
                                     redirect: req.originalUrl,
