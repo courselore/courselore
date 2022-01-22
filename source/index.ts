@@ -5614,7 +5614,7 @@ export default async function courselore({
             ${new Date().toISOString()},
             ${req.body.email},
             ${await argon2.hash(req.body.password, argon2Options)},
-            ${null},
+            ${demonstration ? new Date().toISOString() : null},
             ${req.body.name},
             ${html`${req.body.name}`},
             ${lodash.sample(userAvatarlessBackgroundColors)},
