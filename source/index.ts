@@ -2205,6 +2205,69 @@ export default async function courselore({
             >
               $${body}
             </div>
+
+            $${baseURL === "https://courselore.org"
+              ? html``
+              : baseURL === "https://try.courselore.org"
+              ? html``
+              : demonstration
+              ? html`
+                  <div
+                    class="${res.locals.localCSS(css`
+                      color: var(--color--amber--700);
+                      background-color: var(--color--amber--100);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--amber--200);
+                        background-color: var(--color--amber--900);
+                      }
+                      padding: var(--space--4);
+                      border-radius: var(--border-radius--lg);
+                      display: flex;
+                      gap: var(--space--4);
+
+                      .link {
+                        color: var(--color--amber--600);
+                        &:hover,
+                        &:focus-within {
+                          color: var(--color--amber--500);
+                        }
+                        &:active {
+                          color: var(--color--amber--700);
+                        }
+                        @media (prefers-color-scheme: dark) {
+                          color: var(--color--amber--100);
+                          &:hover,
+                          &:focus-within {
+                            color: var(--color--amber--50);
+                          }
+                          &:active {
+                            color: var(--color--amber--200);
+                          }
+                        }
+                      }
+                    `)}"
+                  >
+                    <div
+                      class="${res.locals.localCSS(css`
+                        font-size: var(--font-size--4xl);
+                        line-height: var(--line-height--4xl);
+                      `)}"
+                    >
+                      <i class="bi bi-exclamation-triangle-fill"></i>
+                    </div>
+                    <form method="POST" action="${baseURL}/demonstration-data">
+                      This CourseLore installation is running in demonstration
+                      mode and must not be used for real courses. Any data may
+                      be lost, including users, courses, invitations,
+                      conversations, messages, and so forth. Emails aren’t
+                      delivered. You may
+                      <button class="link">create demonstration data</button> to
+                      give you a better idea of what CourseLore looks like in
+                      use.
+                    </form>
+                  </div>
+                `
+              : html``}
           </div>
         </div>
       `,
