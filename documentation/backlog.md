@@ -1,6 +1,5 @@
 # Backlog
 
-- Don’t center `coursePartial` on invitations.
 - Make QR more prominent
 - **Notifications are sent multiple times.**
 - Live reloading:

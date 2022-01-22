@@ -10067,18 +10067,11 @@ export default async function courselore({
               <i class="bi bi-journal-arrow-down"></i>
               Invitation
             </h2>
-            <div
-              class="${res.locals.localCSS(css`
-                display: flex;
-                justify-content: center;
-              `)}"
-            >
-              $${coursePartial({
-                req,
-                res,
-                course: res.locals.invitation.course,
-              })}
-            </div>
+            $${coursePartial({
+              req,
+              res,
+              course: res.locals.invitation.course,
+            })}
             <hr class="separator" />
             <p class="strong">You’re already enrolled.</p>
             <p>
@@ -10187,18 +10180,11 @@ export default async function courselore({
               <i class="bi bi-journal-arrow-down"></i>
               Invitation
             </h2>
-            <div
-              class="${res.locals.localCSS(css`
-                display: flex;
-                justify-content: center;
-              `)}"
-            >
-              $${coursePartial({
-                req,
-                res,
-                course: res.locals.invitation.course,
-              })}
-            </div>
+            $${coursePartial({
+              req,
+              res,
+              course: res.locals.invitation.course,
+            })}
             <form
               method="POST"
               action="${baseURL}/courses/${res.locals.invitation.course
@@ -10284,18 +10270,11 @@ export default async function courselore({
               <i class="bi bi-journal-arrow-down"></i>
               Invitation
             </h2>
-            <div
-              class="${res.locals.localCSS(css`
-                display: flex;
-                justify-content: center;
-              `)}"
-            >
-              $${coursePartial({
-                req,
-                res,
-                course: res.locals.invitation.course,
-              })}
-            </div>
+            $${coursePartial({
+              req,
+              res,
+              course: res.locals.invitation.course,
+            })}
             <div
               class="${res.locals.localCSS(css`
                 display: flex;
