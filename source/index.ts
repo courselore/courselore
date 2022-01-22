@@ -3504,6 +3504,7 @@ export default async function courselore({
           class="button button--tight ${tight
             ? "button--tight--inline"
             : ""} ${res.locals.localCSS(css`
+            cursor: default;
             ${enrollment === undefined
               ? css``
               : css`
