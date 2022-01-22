@@ -1347,7 +1347,7 @@ export default async function courselore({
         }
       }
 
-      ${["blue", "green", "rose"].map(
+      ${["blue", "green", "rose", "amber"].map(
         (color) => css`
           &.button--${color} {
             color: var(--color--${color}--50);
