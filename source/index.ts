@@ -717,6 +717,37 @@ export default async function courselore({
                       ${res.locals.user.email}.<br />
                       Didn’t receive the email? Already checked your spam
                       folder? <button class="link">Resend</button>.
+                      $${demonstration
+                        ? html`
+                            <br />
+                            <span
+                              class="${res.locals.localCSS(
+                                css`
+                                  font-weight: var(--font-weight--bold);
+                                `
+                              )}"
+                              >This CourseLore installation is running in
+                              demonstration mode and doesn’t send emails.
+                              Confirm your email by
+                              <a
+                                href="${baseURL}/email-confirmation/${database.get<{
+                                  nonce: string;
+                                }>(
+                                  sql`
+                                  SELECT "nonce" FROM "emailConfirmations" WHERE "user" = ${res.locals.user.id}
+                                `
+                                )!.nonce}${qs.stringify(
+                                  {
+                                    redirect: req.originalUrl,
+                                  },
+                                  { addQueryPrefix: true }
+                                )}"
+                                class="link"
+                                >clicking here</a
+                              >.</span
+                            >
+                          `
+                        : html``}
                     </form>
                   </div>
                 </div>
@@ -2148,10 +2179,10 @@ export default async function courselore({
     ${
       liveReload
         ? javascript`
-          leafac.liveReload();
-        `
+            leafac.liveReload();
+          `
         : javascript``
-    };
+    }
   `;
   const globalJavaScriptPath = `/global--${crypto
     .createHash("sha256")
@@ -5619,7 +5650,7 @@ export default async function courselore({
             ${new Date().toISOString()},
             ${req.body.email},
             ${await argon2.hash(req.body.password, argon2Options)},
-            ${demonstration ? new Date().toISOString() : null},
+            ${null},
             ${req.body.name},
             ${html`${req.body.name}`},
             ${lodash.sample(userAvatarlessBackgroundColors)},

@@ -1,6 +1,5 @@
 # Backlog
 
-- Skim over the codebase.
 - Test everything in different browsers & devices.
 - Release v1.0.0.
 
@@ -8,6 +7,7 @@
 
 - Live reloading:
   - Special behaviors:
+    - Times and other components are blinking on reload. Add them to `onrefresh`.
     - Latency compensation when sending messages (particularly on chat).
     - Latency compensation when pressing “like”.
   - On chats (which need to scroll to the bottom), do something to prevent flash of unstyled content. (I commented out the previous hack, look for `TODO`.)
