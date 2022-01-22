@@ -2263,12 +2263,12 @@ export default async function courselore({
                     <p>
                       This is the hosted installation of CourseLore managed by
                       the CourseLore developers. It’s free for a limited period,
-                      but we may charge for it in the future—in which case you’d
-                      be warned well in advance. CourseLore is
+                      but we may charge for it in the future (you’ll be warned
+                      well in advance). CourseLore is
                       <a
                         href="https://github.com/courselore/courselore"
                         class="link"
-                        >open-source</a
+                        >open source</a
                       >
                       and you may install it on your own server, an option that
                       will be free forever and guarantees maximum privacy &
