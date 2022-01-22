@@ -3,6 +3,19 @@
 <details>
 <summary>2021-01-22</summary>
 
+- This week’s progress:
+  - Improved the performance by 3x by changing the processing of CSS/JS.
+  - Improved routing regarding email confirmation, email resetting, invitations, and so forth.
+  - Fixed the cookie issue that was causing Outlook confirmation links to not work.
+  - Did one more round of testing in different devices & browsers.
+  - Added links to try.courselore.org & Meta CourseLore.
+  - Added warnings explaining the intent of different servers.
+  - Changed landing page for when you just created a course.
+  - Made QR code more prominent on the invitations settings page.
+  - Email notifications are formatted.
+  - Silenced Caddy logs.
+  - Operating-system detection for showing only the relevant keyboard shortcuts.
+  - Fixed scrolling to the bottom on new messages on chat.
 - Progress from last week that we didn’t have the time to talk about:
   - Added a decoration to the `userPartial` to highlight staff.
   - Changed the display of new messages: Instead of a blue dot next to each new message (à la Mail.app), have a bar on top of the first new message (à la Discord). Started the investigation of which parts to optimize first.
