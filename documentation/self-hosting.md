@@ -1,7 +1,5 @@
 # Self-Hosting
 
-**The first release suitable for self-hosting will be available at 2022-01-22.**
-
 You may use CourseLore at [`courselore.org`](https://courselore.org), but you may prefer to run CourseLore on your own servers for maximum privacy and control. CourseLore is easy to self-host and is an excellent first project if you’re new to system administration.
 
 > **Note:** If you get stuck, please [open an issue](https://github.com/courselore/courselore/issues/new) including as much information as possible: What you tried, what you expected to happen, what really happened, what error messages you ran into, and so forth.
