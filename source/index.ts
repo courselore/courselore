@@ -583,15 +583,14 @@ export default async function courselore({
                                   `)}"
                                 >
                                   <p>
-                                    CourseLore is running in Demonstration Mode.
-                                    All data may be lost, including courses,
-                                    conversations, users, and so forth. Also, no
-                                    emails are actually sent.
-                                  </p>
-                                  <p>
-                                    To give you a better idea of what CourseLore
-                                    looks like in use, you may create
-                                    demonstration data.
+                                    This CourseLore installation is running in
+                                    demonstration mode and must not be used for
+                                    real courses. Any data may be lost,
+                                    including users, courses, invitations,
+                                    conversations, messages, and so forth.
+                                    Emails aren’t delivered. You may create
+                                    demonstration data to give you a better idea
+                                    of what CourseLore looks like in use.
                                   </p>
                                   <form
                                     method="POST"
@@ -2224,27 +2223,6 @@ export default async function courselore({
                       border-radius: var(--border-radius--lg);
                       display: flex;
                       gap: var(--space--4);
-
-                      .link {
-                        color: var(--color--amber--600);
-                        &:hover,
-                        &:focus-within {
-                          color: var(--color--amber--500);
-                        }
-                        &:active {
-                          color: var(--color--amber--700);
-                        }
-                        @media (prefers-color-scheme: dark) {
-                          color: var(--color--amber--100);
-                          &:hover,
-                          &:focus-within {
-                            color: var(--color--amber--50);
-                          }
-                          &:active {
-                            color: var(--color--amber--200);
-                          }
-                        }
-                      }
                     `)}"
                   >
                     <div
@@ -2255,16 +2233,35 @@ export default async function courselore({
                     >
                       <i class="bi bi-exclamation-triangle-fill"></i>
                     </div>
-                    <form method="POST" action="${baseURL}/demonstration-data">
-                      This CourseLore installation is running in demonstration
-                      mode and must not be used for real courses. Any data may
-                      be lost, including users, courses, invitations,
-                      conversations, messages, and so forth. Emails aren’t
-                      delivered. You may
-                      <button class="link">create demonstration data</button> to
-                      give you a better idea of what CourseLore looks like in
-                      use.
-                    </form>
+                    <div
+                      class="${res.locals.localCSS(css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--4);
+                      `)}"
+                    >
+                      <p>
+                        This CourseLore installation is running in demonstration
+                        mode and must not be used for real courses. Any data may
+                        be lost, including users, courses, invitations,
+                        conversations, messages, and so forth. Emails aren’t
+                        delivered. You may create demonstration data to give you
+                        a better idea of what CourseLore looks like in use.
+                      </p>
+                      <form
+                        method="POST"
+                        action="${baseURL}/demonstration-data"
+                      >
+                        <button
+                          class="button button--amber ${res.locals.localCSS(css`
+                            width: 100%;
+                          `)}"
+                        >
+                          <i class="bi bi-easel"></i>
+                          Create Demonstration Data
+                        </button>
+                      </form>
+                    </div>
                   </div>
                 `
               : html``}
