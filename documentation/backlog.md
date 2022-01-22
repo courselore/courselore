@@ -1,6 +1,5 @@
 # Backlog
 
-- Make QR more prominent
 - **Notifications are sent multiple times.**
 - Live reloading:
   - Do the morphdom on the server.

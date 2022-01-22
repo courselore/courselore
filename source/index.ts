@@ -8511,13 +8511,18 @@ export default async function courselore({
                                                     align-items: center;
                                                   `)}"
                                                 >
-                                                  <div>
-                                                    <a
-                                                      href="${link}"
-                                                      class="link"
-                                                      >${link}</a
-                                                    >
-                                                  </div>
+                                                  <input
+                                                    type="text"
+                                                    readonly
+                                                    value="${link}"
+                                                    class="input--text ${res
+                                                      .locals.localCSS(css`
+                                                      flex: 1;
+                                                    `)}"
+                                                    onfocus="${javascript`
+                                                      this.select();
+                                                    `}"
+                                                  />
                                                   <button
                                                     class="button button--tight button--transparent"
                                                     oninteractive="${javascript`
@@ -8555,6 +8560,19 @@ export default async function courselore({
                                                       ></i>
                                                     </span>
                                                   </button>
+                                                  <a
+                                                    href="${link}"
+                                                    class="button button--tight button--transparent"
+                                                    oninteractive="${javascript`
+                                                      tippy(this, {
+                                                        touch: false,
+                                                        content: "See QR Code for Link",
+                                                      });
+                                                    `}"
+                                                    ><i
+                                                      class="bi bi-qr-code"
+                                                    ></i
+                                                  ></a>
                                                 </div>
                                               </div>
                                             `
