@@ -18980,14 +18980,22 @@ ${contentSource}</textarea
     database.run(
       sql`
         INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
-        VALUES (${new Date().toISOString()}, ${message.id}, ${res.locals.enrollment.id})
+        VALUES (
+          ${new Date().toISOString()},
+          ${message.id},
+          ${res.locals.enrollment.id}
+        )
       `
     );
     if (message.authorEnrollment !== "no-longer-enrolled")
       database.run(
         sql`
           INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
-          VALUES (${new Date().toISOString()}, ${message.id}, ${message.authorEnrollment.id})
+          VALUES (
+            ${new Date().toISOString()},
+            ${message.id},
+            ${message.authorEnrollment.id}
+          )
         `
       );
     let enrollments = database.all<{
@@ -19062,8 +19070,7 @@ ${contentSource}</textarea
                 ? "Someone who is no longer enrolled"
                 : message.anonymousAt !== null
                 ? `Anonymous ${
-                    enrollment.role === "staff" ||
-                    enrollment.userId === res.locals.user.id
+                    enrollment.role === "staff"
                       ? `(${message.authorEnrollment.user.name})`
                       : ""
                   }`
