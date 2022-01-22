@@ -1,6 +1,5 @@
 # Backlog
 
-- Mention that production server may not be free forever.
 - `coursePartial` is sometimes used in contexts that aren’t `button`s, so be mindful of cursor change on icon.
 - Make QR more prominent
 - **Notifications are sent multiple times.**
