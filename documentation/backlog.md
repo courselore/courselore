@@ -1,5 +1,7 @@
 # Backlog
 
+- Skim over the codebase.
+- Test everything in different browsers & devices.
 - Live reloading:
   - Do the morphdom on the server.
     - **This is necessary for correctness as well; see what happens when you’re editing a message (not writing a new one, because we use localStorage to remember that one) and a new message is submitted, causing a refresh.**
@@ -11,8 +13,6 @@
 - Investigate performance issue on the browser when you leave the tab open for a long time.
   - It seems that the server isn’t affected, because when I close the browser tab, the performance on the machine is back to normal.
   - It doesn’t seem to be related to live-reloading, or other development features, because it also happens in `courselore.org`.
-- Skim over the codebase.
-- Test everything in different browsers & devices.
 - Release v1.0.0.
 
 ### Performance
