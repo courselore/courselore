@@ -13,6 +13,7 @@
   - It doesn’t seem to be related to live-reloading, or other development features, because it also happens in `courselore.org`.
 - Skim over the codebase.
 - Test everything in different browsers & devices.
+- Release v1.0.0.
 
 ### Performance
 
