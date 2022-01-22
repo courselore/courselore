@@ -1,6 +1,7 @@
 # Backlog
 
 - `coursePartial` is sometimes used in contexts that aren’t `button`s, so be mindful of cursor change on icon.
+- Don’t center `coursePartial` on invitations.
 - Make QR more prominent
 - **Notifications are sent multiple times.**
 - Live reloading:
