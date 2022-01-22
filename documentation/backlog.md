@@ -28,6 +28,9 @@
   - Synchronous stuff that could be async.
 - Don’t pre-load the `edit` form for messages. Instead, load the `contentSource` from the `data-content-source` that’s already used by the quoting mechanism.
 - Make Demonstration Data load faster by having a cache of pre-built data.
+- Front-end optimizations:
+  - Hotwire.
+  - Pre-fetching.
 
 ### Advanced Access Control
 
@@ -186,7 +189,6 @@
 
 ### Interface Details
 
-- Overflowing text on mobile: Invitation link on `/settings/invitations` page.
 - Change the design of chats so that it’s easier to tell messages apart. Right now @mentions and messages look too much alike. Maybe use the Slack/Discord/GitHub solution of moving the avatar into the margin.
 - Have some kind of guide for the first time you enter the system, or the first time you create a course, and that sort of thing.
 - Make breadcrumbs (for example, under “User Settings”) clickable (they should expose the navigation menu, just like what happens in Visual Studio Code).

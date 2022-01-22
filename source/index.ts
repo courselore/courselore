@@ -769,9 +769,30 @@ export default async function courselore({
                             padding: var(--space--1) var(--space--10);
                             display: flex;
                             justify-content: center;
+                            text-align: center;
                             & > * {
                               flex: 1;
                               max-width: var(--width--prose);
+                            }
+                            .link {
+                              color: var(--color--${color}--600);
+                              &:hover,
+                              &:focus-within {
+                                color: var(--color--${color}--500);
+                              }
+                              &:active {
+                                color: var(--color--${color}--700);
+                              }
+                              @media (prefers-color-scheme: dark) {
+                                color: var(--color--${color}--100);
+                                &:hover,
+                                &:focus-within {
+                                  color: var(--color--${color}--50);
+                                }
+                                &:active {
+                                  color: var(--color--${color}--200);
+                                }
+                              }
                             }
                           }
                         `
@@ -9121,17 +9142,10 @@ export default async function courselore({
             res,
             content: html`
               <div class="flash--green">
-                <div
-                  class="${res.locals.localCSS(css`
-                    display: flex;
-                    justify-content: center;
-                    align-items: baseline;
-                    gap: var(--space--4);
-                  `)}"
-                >
+                <div>
                   Invitation created successfully.
                   <button
-                    class="button button--green"
+                    class="link"
                     onclick="${javascript`
                       const id = "#invitation--${invitation.reference}";
                       window.location.hash = id;
@@ -9141,8 +9155,8 @@ export default async function courselore({
                       this.closest(".flash").remove();
                     `}"
                   >
-                    See Invitation
-                  </button>
+                    See invitation</button
+                  >.
                 </div>
               </div>
             `,
