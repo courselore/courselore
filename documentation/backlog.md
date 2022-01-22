@@ -10,13 +10,13 @@
     - Latency compensation when sending messages (particularly on chat).
     - Latency compensation when pressing “like”.
   - On chats (which need to scroll to the bottom), do something to prevent flash of unstyled content. (I commented out the previous hack, look for `TODO`.)
-- Investigate performance issue on the browser when you leave the tab open for a long time.
-  - It seems that the server isn’t affected, because when I close the browser tab, the performance on the machine is back to normal.
-  - It doesn’t seem to be related to live-reloading, or other development features, because it also happens in `courselore.org`.
 - Release v1.0.0.
 
 ### Performance
 
+- Investigate performance issue on the browser when you leave the tab open for a long time.
+  - It seems that the server isn’t affected, because when I close the browser tab, the performance on the machine is back to normal.
+  - It doesn’t seem to be related to live-reloading, or other development features, because it also happens in `courselore.org`.
 - Write a function to determine if processing the message is even necessary. Most messages don’t use extra features and could skip JSDOM entirely.
 - Pagination.
   - Messages in conversation.
