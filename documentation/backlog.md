@@ -1,8 +1,5 @@
 # Backlog
 
-- Test everything in different browsers & devices.
-- Release v1.0.0.
-
 ### Performance
 
 - Live reloading:
