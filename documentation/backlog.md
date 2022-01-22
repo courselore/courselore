@@ -1,6 +1,5 @@
 # Backlog
 
-- **Notifications are sent multiple times.**
 - Live reloading:
   - Do the morphdom on the server.
     - **This is necessary for correctness as well; see what happens when you’re editing a message (not writing a new one, because we use localStorage to remember that one) and a new message is submitted, causing a refresh.**
@@ -95,6 +94,8 @@
 
 ### Notifications
 
+- Notifications are sent multiple times.
+  - Only seems to occur in our real conversation in production. I tested in development, staging, and even on a test course in production, and multiple deliveries never happened. 😕
 - Delay sending notifications for a little bit to give the person a chance to update or delete the message.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
 - Add different notification badges for when you’re @mentioned.
