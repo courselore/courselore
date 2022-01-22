@@ -18977,6 +18977,19 @@ ${contentSource}</textarea
     message: NonNullable<ReturnType<typeof getMessage>>;
     mentions: Set<string>;
   }): Promise<void> => {
+    database.run(
+      sql`
+        INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
+        VALUES (${new Date().toISOString()}, ${message.id}, ${res.locals.enrollment.id})
+      `
+    );
+    if (message.authorEnrollment !== "no-longer-enrolled")
+      database.run(
+        sql`
+          INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
+          VALUES (${new Date().toISOString()}, ${message.id}, ${message.authorEnrollment.id})
+        `
+      );
     let enrollments = database.all<{
       id: number;
       userId: number;
@@ -18993,15 +19006,7 @@ ${contentSource}</textarea
                "enrollments"."reference",
                "enrollments"."role"
         FROM "enrollments"
-        JOIN "users" ON "enrollments"."user" = "users"."id"
-                        $${
-                          message.authorEnrollment === "no-longer-enrolled"
-                            ? sql``
-                            : sql`
-                                AND
-                                "users"."id" != ${message.authorEnrollment.user.id}
-                              `
-                        } AND
+        JOIN "users" ON "enrollments"."user" = "users"."id" AND
                         "users"."emailConfirmedAt" IS NOT NULL AND
                         "users"."emailNotifications" != 'none'
         LEFT JOIN "notificationDeliveries" ON "enrollments"."id" = "notificationDeliveries"."enrollment" AND
