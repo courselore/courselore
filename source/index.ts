@@ -1027,6 +1027,11 @@ export default async function courselore({
                         );
                         morphdom(document.body, refreshedDocument.body);
                         leafac.evaluateElementsAttribute(document);
+                        leafac.evaluateElementsAttribute(
+                          document,
+                          "onrefresh",
+                          true
+                        );
                         break;
 
                       case 404:
@@ -16471,13 +16476,23 @@ ${contentSource}</textarea
                               ${
                                 shouldScrollToBottom
                                   ? javascript`
-                                      if (window.location.hash === "") window.setTimeout(() => { this.scrollTop = this.scrollHeight; }, 0);
+                                      if (window.location.hash === "")
+                                        window.setTimeout(() => {
+                                          this.scrollTop = this.scrollHeight;
+                                          this.shouldScrollToBottomOnRefresh = true;
+                                        }, 0);
                                     `
                                   : javascript``
                               }
                             `
                           : javascript``
                       }
+                    `}"
+                    onscroll="${javascript`
+                      this.shouldScrollToBottomOnRefresh = this.scrollTop === this.scrollHeight - this.offsetHeight;
+                    `}"
+                    onrefresh="${javascript`
+                      if (this.shouldScrollToBottomOnRefresh) this.scrollTop = this.scrollHeight;
                     `}"
                   >
                     <div
