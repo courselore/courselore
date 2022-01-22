@@ -7934,6 +7934,12 @@ export default async function courselore({
                         html`
                           <div
                             class="tag ${res.locals.localCSS(css`
+                              padding-bottom: var(--space--4);
+                              border-bottom: var(--border-width--1) solid
+                                var(--color--gray--medium--200);
+                              @media (prefers-color-scheme: dark) {
+                                border-color: var(--color--gray--medium--700);
+                              }
                               display: flex;
                               gap: var(--space--2);
                               align-items: baseline;
@@ -11188,12 +11194,42 @@ export default async function courselore({
                             </div>
                           </div>
                         `}
-                    <button
-                      class="button button--tight button--tight--inline button--transparent"
+                    <div
+                      class="${res.locals.localCSS(css`
+                        margin-top: var(--space--2);
+                        display: flex;
+                        gap: var(--space--2);
+                        & > * {
+                          flex: 1;
+                        }
+                      `)}"
                     >
-                      <i class="bi bi-funnel"></i>
-                      Apply Filters
-                    </button>
+                      <button
+                        class="button button--tight button--tight--inline button--transparent"
+                      >
+                        <i class="bi bi-funnel"></i>
+                        Apply Filters
+                      </button>
+                      $${req.query.search !== undefined ||
+                      req.query.filters !== undefined
+                        ? html`
+                            <a
+                              href="${qs.stringify(
+                                {
+                                  conversationLayoutSidebarOpenOnSmallScreen:
+                                    "true",
+                                  scrollToConversation: "false",
+                                },
+                                { addQueryPrefix: true }
+                              )}"
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <i class="bi bi-x-lg"></i>
+                              Clear Search & Filters
+                            </a>
+                          `
+                        : html``}
+                    </div>
                   </div>
                 </form>
 
