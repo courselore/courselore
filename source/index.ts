@@ -417,6 +417,16 @@ export default async function courselore({
     setTimeout(deleteExpiredData, 24 * 60 * 60 * 1000);
   }, 1000);
 
+  interface BaseMiddlewareLocals {
+    localCSS: ReturnType<typeof localCSS>;
+    HTMLForJavaScript: ReturnType<typeof HTMLForJavaScript>;
+  }
+  app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
+    res.locals.localCSS = localCSS();
+    res.locals.HTMLForJavaScript = HTMLForJavaScript();
+    next();
+  });
+
   const baseLayout = ({
     req,
     res,
@@ -2252,6 +2262,11 @@ export default async function courselore({
                         method="POST"
                         action="${baseURL}/demonstration-data"
                       >
+                        <input
+                          type="hidden"
+                          name="_csrf"
+                          value="${req.csrfToken()}"
+                        />
                         <button
                           class="button button--amber ${res.locals.localCSS(css`
                             width: 100%;
@@ -3535,16 +3550,6 @@ export default async function courselore({
       },
     })
   );
-
-  interface BaseMiddlewareLocals {
-    localCSS: ReturnType<typeof localCSS>;
-    HTMLForJavaScript: ReturnType<typeof HTMLForJavaScript>;
-  }
-  app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
-    res.locals.localCSS = localCSS();
-    res.locals.HTMLForJavaScript = HTMLForJavaScript();
-    next();
-  });
 
   if (liveReload)
     app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
