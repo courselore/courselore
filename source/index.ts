@@ -4211,6 +4211,9 @@ export default async function courselore({
                     & > * {
                       flex: 1;
                     }
+                    @media (max-width: 459px) {
+                      flex-direction: column;
+                    }
                   }
                 `)}"
               >
