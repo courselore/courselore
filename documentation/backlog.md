@@ -19,9 +19,9 @@
   - Only seems to occur in our real conversation in production. I tested in development, staging, and even on a test course in production, and multiple deliveries never happened. 😕
 - Show how many views a post had.
 - Get notifications for replies to your posts. If a student asks a question they probably would like notifications on all replies. That might want to be on by default as well.
-
-### Performance
-
+- Investigate performance issue on the browser when you leave the tab open for a long time.
+  - It seems that the server isn’t affected, because when I close the browser tab, the performance on the machine is back to normal.
+  - It doesn’t seem to be related to live-reloading, or other development features, because it also happens in `courselore.org`.
 - Live reloading:
   - Special behaviors:
     - Times and other components are blinking on reload. Add them to `onrefresh`.
@@ -30,9 +30,6 @@
   - On chats (which need to scroll to the bottom), do something to prevent flash of unstyled content. (I commented out the previous hack, look for `TODO`.)
   - Do the morphdom on the server.
     - **This is necessary for correctness as well; see what happens when you’re editing a message (not writing a new one, because we use localStorage to remember that one) and a new message is submitted, causing a refresh.**
-- Investigate performance issue on the browser when you leave the tab open for a long time.
-  - It seems that the server isn’t affected, because when I close the browser tab, the performance on the machine is back to normal.
-  - It doesn’t seem to be related to live-reloading, or other development features, because it also happens in `courselore.org`.
 - Write a function to determine if processing the message is even necessary. Most messages don’t use extra features and could skip JSDOM entirely.
 - Pagination.
   - Messages in conversation.
