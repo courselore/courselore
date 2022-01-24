@@ -1,6 +1,5 @@
 # Backlog
 
-- On home page, under the “source code” button, add a tooltip to highlight how CourseLore will be free forever for people who self-host.
 - Change `userPartial` tooltip to be activated on click, instead of hover.
 - On invitations, when sending invitations via email, change the action button to say “Send Email(s)” instead of “Create Invitation”.
 - Add favicon for when you bookmark CourseLore on iOS’s home screen.
