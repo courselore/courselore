@@ -8240,10 +8240,13 @@ export default async function courselore({
                       required
                       class="visually-hidden input--radio-or-checkbox--multilabel"
                       onchange="${javascript`
-                        const emails = this.closest("form").querySelector(".emails");
+                        const form = this.closest("form");
+                        const emails = form.querySelector(".emails");
                         emails.hidden = true;
                         for (const element of emails.querySelectorAll("*"))
                           if (element.disabled !== null) element.disabled = true;
+                        form.querySelector(".button--create-invitation").hidden = false;
+                        form.querySelector(".button--send-invitation-emails").hidden = true;
                       `}"
                     />
                     <span>
@@ -8265,10 +8268,13 @@ export default async function courselore({
                       required
                       class="visually-hidden input--radio-or-checkbox--multilabel"
                       onchange="${javascript`
-                        const emails = this.closest("form").querySelector(".emails");
+                        const form = this.closest("form");
+                        const emails = form.querySelector(".emails");
                         emails.hidden = false;
                         for (const element of emails.querySelectorAll("*"))
                           if (element.disabled !== null) element.disabled = false;
+                        form.querySelector(".button--create-invitation").hidden = true;
+                        form.querySelector(".button--send-invitation-emails").hidden = false;
                       `}"
                     />
                     <span>
@@ -8476,10 +8482,17 @@ export default async function courselore({
 
               <div>
                 <button
-                  class="button button--full-width-on-small-screen button--blue"
+                  class="button--create-invitation button button--full-width-on-small-screen button--blue"
                 >
                   <i class="bi bi-person-plus"></i>
                   Create Invitation
+                </button>
+                <button
+                  class="button--send-invitation-emails button button--full-width-on-small-screen button--blue"
+                  hidden
+                >
+                  <i class="bi bi-envelope"></i>
+                  Send Invitation Emails
                 </button>
               </div>
             </form>
@@ -9203,7 +9216,7 @@ export default async function courselore({
             content: html`
               <div class="flash--green">
                 <div>
-                  Invitation created successfully.
+                  Invitation link created successfully.
                   <button
                     class="link"
                     onclick="${javascript`
@@ -9215,7 +9228,7 @@ export default async function courselore({
                       this.closest(".flash").remove();
                     `}"
                   >
-                    See invitation</button
+                    See invitation link</button
                   >.
                 </div>
               </div>
@@ -9325,7 +9338,7 @@ export default async function courselore({
             req,
             res,
             content: html`
-              <div class="flash--green">Invitations sent successfully.</div>
+              <div class="flash--green">Invitation emails sent successfully.</div>
             `,
           });
           break;
