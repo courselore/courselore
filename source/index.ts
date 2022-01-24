@@ -2272,68 +2272,7 @@ export default async function courselore({
               $${body}
             </div>
 
-            $${baseURL === "https://courselore.org"
-              ? html`
-                  <div
-                    class="${res.locals.localCSS(css`
-                      color: var(--color--amber--700);
-                      background-color: var(--color--amber--100);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--amber--200);
-                        background-color: var(--color--amber--900);
-                      }
-                      padding: var(--space--4);
-                      border-radius: var(--border-radius--lg);
-                      display: flex;
-                      gap: var(--space--4);
-
-                      .link {
-                        color: var(--color--amber--600);
-                        &:hover,
-                        &:focus-within {
-                          color: var(--color--amber--500);
-                        }
-                        &:active {
-                          color: var(--color--amber--700);
-                        }
-                        @media (prefers-color-scheme: dark) {
-                          color: var(--color--amber--100);
-                          &:hover,
-                          &:focus-within {
-                            color: var(--color--amber--50);
-                          }
-                          &:active {
-                            color: var(--color--amber--200);
-                          }
-                        }
-                      }
-                    `)}"
-                  >
-                    <div
-                      class="${res.locals.localCSS(css`
-                        font-size: var(--font-size--4xl);
-                        line-height: var(--line-height--4xl);
-                      `)}"
-                    >
-                      <i class="bi bi-exclamation-triangle-fill"></i>
-                    </div>
-                    <p>
-                      This is the hosted installation of CourseLore managed by
-                      the CourseLore developers. It’s free for a limited period,
-                      but we may charge for it in the future (you’ll be warned
-                      well in advance). CourseLore is
-                      <a
-                        href="https://github.com/courselore/courselore"
-                        class="link"
-                        >open source</a
-                      >
-                      and you may install it on your own server, an option that
-                      will be free forever and guarantees maximum privacy &
-                      control.
-                    </p>
-                  </div>
-                `
-              : baseURL === "https://try.courselore.org"
+            $${baseURL === "https://try.courselore.org"
               ? html`
                   <div
                     class="${res.locals.localCSS(css`
@@ -2702,6 +2641,72 @@ export default async function courselore({
                             Create a New Course
                           </a>
                         </div>
+
+                        $${baseURL === "https://courselore.org"
+                          ? html`
+                              <div
+                                class="${res.locals.localCSS(css`
+                                  color: var(--color--amber--700);
+                                  background-color: var(--color--amber--100);
+                                  @media (prefers-color-scheme: dark) {
+                                    color: var(--color--amber--200);
+                                    background-color: var(--color--amber--900);
+                                  }
+                                  padding: var(--space--4);
+                                  border-radius: var(--border-radius--lg);
+                                  display: flex;
+                                  gap: var(--space--4);
+
+                                  .link {
+                                    color: var(--color--amber--600);
+                                    &:hover,
+                                    &:focus-within {
+                                      color: var(--color--amber--500);
+                                    }
+                                    &:active {
+                                      color: var(--color--amber--700);
+                                    }
+                                    @media (prefers-color-scheme: dark) {
+                                      color: var(--color--amber--100);
+                                      &:hover,
+                                      &:focus-within {
+                                        color: var(--color--amber--50);
+                                      }
+                                      &:active {
+                                        color: var(--color--amber--200);
+                                      }
+                                    }
+                                  }
+                                `)}"
+                              >
+                                <div
+                                  class="${res.locals.localCSS(css`
+                                    font-size: var(--font-size--4xl);
+                                    line-height: var(--line-height--4xl);
+                                  `)}"
+                                >
+                                  <i
+                                    class="bi bi-exclamation-triangle-fill"
+                                  ></i>
+                                </div>
+                                <p>
+                                  This is the hosted installation of CourseLore
+                                  managed by the CourseLore developers. It’s
+                                  free for a limited period, but we may charge
+                                  for it in the future (you’ll be warned well in
+                                  advance). CourseLore is
+                                  <a
+                                    href="https://github.com/courselore/courselore"
+                                    class="link"
+                                    >open source</a
+                                  >
+                                  and you may install it on your own server, an
+                                  option that will be free forever and
+                                  guarantees maximum privacy & control.
+                                </p>
+                              </div>
+                            `
+                          : html``}
                       </div>
                     `
                   )},
