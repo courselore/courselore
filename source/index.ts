@@ -17089,6 +17089,31 @@ ${contentSource}</textarea
                                                               </form>
                                                             `
                                                           : html``}
+                                                        $${res.locals.enrollment
+                                                          .role === "staff" &&
+                                                        res.locals.conversation
+                                                          .type === "chat"
+                                                          ? html`
+                                                              <button
+                                                                class="dropdown--menu--item button button--transparent"
+                                                                oninteractive="${javascript`
+                                                                  tippy(this, {
+                                                                    trigger: "click",
+                                                                    interactive: true,
+                                                                    content: ${readingsPartial},
+                                                                  });
+                                                                `}"
+                                                              >
+                                                                <i
+                                                                  class="bi bi-eye"
+                                                                ></i>
+                                                                ${message
+                                                                  .readings
+                                                                  .length}
+                                                                Views
+                                                              </button>
+                                                            `
+                                                          : html``}
 
                                                         <button
                                                           class="dropdown--menu--item button button--transparent"
