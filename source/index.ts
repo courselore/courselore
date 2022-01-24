@@ -18075,12 +18075,30 @@ ${contentSource}</textarea
                                                       content: ${res.locals
                                                         .HTMLForJavaScript(html`
                                                         <div
-                                                          class="dropdown--menu"
+                                                          class="dropdown--menu ${res
+                                                            .locals
+                                                            .localCSS(css`
+                                                            max-height: var(
+                                                              --space--56
+                                                            );
+                                                            padding: var(
+                                                              --space--2
+                                                            );
+                                                          `)}"
                                                         >
                                                           $${message.readings.map(
                                                             (reading) => html`
                                                               <button
-                                                                class="dropdown--menu--item"
+                                                                class="dropdown--menu--item ${res
+                                                                  .locals
+                                                                  .localCSS(css`
+                                                                  padding: var(
+                                                                      --space--0-5
+                                                                    )
+                                                                    var(
+                                                                      --space--0
+                                                                    );
+                                                                `)}"
                                                               >
                                                                 $${userPartial({
                                                                   req,
