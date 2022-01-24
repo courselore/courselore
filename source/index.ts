@@ -12236,6 +12236,7 @@ export default async function courselore({
           JOIN "enrollments" ON "readings"."enrollment" = "enrollments"."id"
           JOIN "users" ON "enrollments"."user" = "users"."id"
           WHERE "readings"."message" = ${message.id}
+          ORDER BY "readings"."id" ASC
         `
       )
       .map((reading) => ({
@@ -18088,43 +18089,47 @@ ${contentSource}</textarea
                                                             overflow: auto;
                                                           `)}"
                                                         >
-                                                          $${message.readings.map(
-                                                            (reading) => html`
-                                                              <button
-                                                                class="dropdown--menu--item ${res
-                                                                  .locals
-                                                                  .localCSS(css`
-                                                                  padding: var(
-                                                                      --space--0-5
-                                                                    )
-                                                                    var(
-                                                                      --space--0
-                                                                    );
-                                                                `)}"
-                                                              >
-                                                                $${userPartial({
-                                                                  req,
-                                                                  res,
-                                                                  enrollment:
-                                                                    reading.enrollment,
-                                                                  size: "xs",
-                                                                })}
-                                                                <span
-                                                                  class="secondary"
+                                                          $${message.readings
+                                                            .reverse()
+                                                            .map(
+                                                              (reading) => html`
+                                                                <button
+                                                                  class="dropdown--menu--item ${res
+                                                                    .locals
+                                                                    .localCSS(css`
+                                                                    padding: var(
+                                                                        --space--0-5
+                                                                      )
+                                                                      var(
+                                                                        --space--0
+                                                                      );
+                                                                  `)}"
                                                                 >
-                                                                  ·
-                                                                  <time
-                                                                    datetime="${new Date(
-                                                                      reading.createdAt
-                                                                    ).toISOString()}"
-                                                                    oninteractive="${javascript`
+                                                                  $${userPartial(
+                                                                    {
+                                                                      req,
+                                                                      res,
+                                                                      enrollment:
+                                                                        reading.enrollment,
+                                                                      size: "xs",
+                                                                    }
+                                                                  )}
+                                                                  <span
+                                                                    class="secondary"
+                                                                  >
+                                                                    ·
+                                                                    <time
+                                                                      datetime="${new Date(
+                                                                        reading.createdAt
+                                                                      ).toISOString()}"
+                                                                      oninteractive="${javascript`
                                                                     leafac.relativizeDateTimeElement(this);
                                                                   `}"
-                                                                  ></time>
-                                                                </span>
-                                                              </button>
-                                                            `
-                                                          )}
+                                                                    ></time>
+                                                                  </span>
+                                                                </button>
+                                                              `
+                                                            )}
                                                         </div>
                                                       `)},
                                                     });
@@ -19905,20 +19910,29 @@ ${contentSource}</textarea
                 `
               )!;
 
+              let readingCreatedAt = messageCreatedAt;
               for (const enrollment of lodash.sampleSize(
                 enrollments,
                 lodash.random(1, enrollments.length)
-              ))
+              )) {
+                readingCreatedAt = new Date(
+                  Math.min(
+                    Date.now(),
+                    new Date(readingCreatedAt).getTime() +
+                      lodash.random(12 * 60 * 60 * 1000)
+                  )
+                ).toISOString();
                 database.run(
                   sql`
                     INSERT INTO "readings" ("createdAt", "message", "enrollment")
                     VALUES (
-                      ${new Date().toISOString()},
+                      ${readingCreatedAt},
                       ${message.id},
                       ${enrollment.id}
                     )
                   `
                 );
+              }
 
               for (const enrollment of lodash.sampleSize(
                 staff,
