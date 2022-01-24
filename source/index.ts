@@ -12090,6 +12090,10 @@ export default async function courselore({
         contentPreprocessed: HTML;
         contentSearch: string;
         reading: { id: number } | null;
+        readings: {
+          id: number;
+          enrollment: AuthorEnrollment;
+        }[];
         endorsements: {
           id: number;
           enrollment: AuthorEnrollment;
@@ -12197,6 +12201,70 @@ export default async function courselore({
         messageRow.readingId === null ? null : { id: messageRow.readingId },
     };
 
+    const readings = database
+      .all<{
+        id: number;
+        enrollmentId: number | null;
+        userId: number | null;
+        userLastSeenOnlineAt: string | null;
+        userEmail: string | null;
+        userName: string | null;
+        userAvatar: string | null;
+        userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor | null;
+        userBiographySource: string | null;
+        userBiographyPreprocessed: HTML | null;
+        enrollmentReference: string | null;
+        enrollmentRole: EnrollmentRole | null;
+      }>(
+        sql`
+        SELECT "readings"."id",
+               "enrollments"."id" AS "enrollmentId",
+               "users"."id" AS "userId",
+               "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+               "users"."email" AS "userEmail",
+               "users"."name" AS "userName",
+               "users"."avatar" AS "userAvatar",
+               "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+               "users"."biographySource" AS "userBiographySource",
+               "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+               "enrollments"."reference" AS "enrollmentReference",
+               "enrollments"."role" AS "enrollmentRole"
+        FROM "readings"
+        JOIN "enrollment" ON "readings"."enrollment" = "enrollment"."id"
+        JOIN "users" ON "enrollment"."user" = "user"."id"
+        WHERE "readings"."message" = ${message.id}
+      `
+      )
+      .map((reading) => ({
+        id: reading.id,
+        enrollment:
+          reading.enrollmentId !== null &&
+          reading.userId !== null &&
+          reading.userLastSeenOnlineAt !== null &&
+          reading.userEmail !== null &&
+          reading.userName !== null &&
+          reading.userAvatarlessBackgroundColor !== null &&
+          reading.enrollmentReference !== null &&
+          reading.enrollmentRole !== null
+            ? {
+                id: reading.enrollmentId,
+                user: {
+                  id: reading.userId,
+                  lastSeenOnlineAt: reading.userLastSeenOnlineAt,
+                  email: reading.userEmail,
+                  name: reading.userName,
+                  avatar: reading.userAvatar,
+                  avatarlessBackgroundColor:
+                    reading.userAvatarlessBackgroundColor,
+                  biographySource: reading.userBiographySource,
+                  biographyPreprocessed: reading.userBiographyPreprocessed,
+                },
+                reference: reading.enrollmentReference,
+                role: reading.enrollmentRole,
+              }
+            : ("no-longer-enrolled" as const),
+      }));
+
     const endorsements = database
       .all<{
         id: number;
@@ -12214,17 +12282,17 @@ export default async function courselore({
       }>(
         sql`
           SELECT "endorsements"."id",
-                "enrollments"."id" AS "enrollmentId",
-                "users"."id" AS "userId",
-                "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-                "users"."email" AS "userEmail",
-                "users"."name" AS "userName",
-                "users"."avatar" AS "userAvatar",
-                "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-                "users"."biographySource" AS "userBiographySource",
-                "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                "enrollments"."reference" AS "enrollmentReference",
-                "enrollments"."role" AS "enrollmentRole"
+                 "enrollments"."id" AS "enrollmentId",
+                 "users"."id" AS "userId",
+                 "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                 "users"."email" AS "userEmail",
+                 "users"."name" AS "userName",
+                 "users"."avatar" AS "userAvatar",
+                 "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+                 "users"."biographySource" AS "userBiographySource",
+                 "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+                 "enrollments"."reference" AS "enrollmentReference",
+                 "enrollments"."role" AS "enrollmentRole"
           FROM "endorsements"
           JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
           JOIN "users" ON "enrollments"."user" = "users"."id"
@@ -12328,6 +12396,7 @@ export default async function courselore({
 
     return {
       ...message,
+      readings,
       endorsements,
       likes,
     };
