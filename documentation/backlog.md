@@ -36,7 +36,9 @@
 - Investigate other potential bottlenecks:
   - `html` tagged template literal.
   - Synchronous stuff that could be async.
-- Don’t pre-load the `edit` form for messages. Instead, load the `contentSource` from the `data-content-source` that’s already used by the quoting mechanism.
+- Components which we repeat in the HTML, making it bigger, but should DRY:
+  - The `edit` form for messages. Use `data-content-source` that’s already used by the quoting mechanism.
+  - `userPartial`s, particularly on the list of who read each message.
 - Make Demonstration Data load faster by having a cache of pre-built data.
 - Front-end optimizations:
   - Hotwire.
