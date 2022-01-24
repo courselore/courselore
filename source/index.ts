@@ -18088,7 +18088,8 @@ ${contentSource}</textarea
                                                                   enrollment:
                                                                     reading.enrollment,
                                                                   size: "xs",
-                                                                })} ·
+                                                                })}
+                                                                ·
                                                                 <time
                                                                   datetime="${new Date(
                                                                     reading.createdAt
@@ -19879,6 +19880,21 @@ ${contentSource}</textarea
                   RETURNING *
                 `
               )!;
+
+              for (const enrollment of lodash.sampleSize(
+                enrollments,
+                lodash.random(1, enrollments.length)
+              ))
+                database.run(
+                  sql`
+                    INSERT INTO "readings" ("createdAt", "message", "enrollment")
+                    VALUES (
+                      ${new Date().toISOString()},
+                      ${message.id},
+                      ${enrollment.id}
+                    )
+                  `
+                );
 
               for (const enrollment of lodash.sampleSize(
                 staff,
