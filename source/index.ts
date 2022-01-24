@@ -415,7 +415,7 @@ export default async function courselore({
       `
     );
     setTimeout(deleteExpiredData, 24 * 60 * 60 * 1000);
-  }, 1000);
+  }, 10 * 60 * 1000);
 
   interface BaseMiddlewareLocals {
     localCSS: ReturnType<typeof localCSS>;
