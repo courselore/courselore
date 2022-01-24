@@ -21,6 +21,19 @@
   - Changed the display of new messages: Instead of a blue dot next to each new message (à la Mail.app), have a bar on top of the first new message (à la Discord). Started the investigation of which parts to optimize first.
   - Fixed glitches related to tooltips on live updates.
   - Fixed the treatment of people who are no longer enrolled.
+- Other things that we talked about:
+  - On home page, under the “source code” button, add a tooltip to highlight how CourseLore will be free forever for people who self-host.
+  - Make a public page listing known issues.
+  - Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the CourseLore community.
+  - Change `userPartial` tooltip to be activated on click, instead of hover.
+  - Don’t send notifications when the person is online.
+  - List of conversations shouldn’t jump when you go to a particular conversation.
+  - Add favicon for when you bookmark CourseLore on iOS’s home screen.
+  - Add a help screen under the “About CourseLore” button:
+    - A more app-like experience (in iOS):
+      - Bookmark CourseLore to home screen.
+      - Use VIPs as notifications mechanism.
+    - If things look weird, or if something doesn’t work, you may need to update your browser.
 
 </details>
 
