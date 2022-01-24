@@ -4196,7 +4196,7 @@ export default async function courselore({
                     oninteractive="${javascript`
                       tippy(this, {
                         touch: false,
-                        content: "A CourseLore course that isn’t really a course, but a place to talk about CourseLore itself.",
+                        content: "Join the CourseLore community on Meta CourseLore, a CourseLore course that isn’t really a course, but a place to talk about CourseLore itself.",
                       });
                     `}"
                   >
@@ -4205,6 +4205,12 @@ export default async function courselore({
                   <a
                     href="https://github.com/courselore/courselore"
                     class="button button--transparent"
+                    oninteractive="${javascript`
+                      tippy(this, {
+                        touch: false,
+                        content: "CourseLore is open source and will be free forever for installing on your own server.",
+                      });
+                    `}"
                   >
                     <i class="bi bi-file-earmark-code"></i>
                     Source Code
@@ -4822,7 +4828,7 @@ export default async function courselore({
               oninteractive="${javascript`
                 tippy(this, {
                   touch: false,
-                  content: "A CourseLore course that isn’t really a course, but a place to talk about CourseLore itself.",
+                  content: "Join the CourseLore community on Meta CourseLore, a CourseLore course that isn’t really a course, but a place to talk about CourseLore itself.",
                 });
               `}"
             >
@@ -4831,6 +4837,12 @@ export default async function courselore({
             <a
               href="https://github.com/courselore/courselore"
               class="button button--transparent"
+              oninteractive="${javascript`
+                tippy(this, {
+                  touch: false,
+                  content: "CourseLore is open source and will be free forever for installing on your own server.",
+                });
+              `}"
             >
               <i class="bi bi-file-earmark-code"></i>
               Source Code
