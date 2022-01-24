@@ -2458,112 +2458,136 @@ export default async function courselore({
               min-width: var(--width--0);
             `)}"
           >
-            $${res.locals.course !== undefined
-              ? html`
-                  <button
-                    class="button button--tight button--tight--inline button--transparent strong ${res
-                      .locals.localCSS(css`
-                      max-width: 100%;
-                    `)}"
-                    oninteractive="${javascript`
-                      tippy(this, {
-                        trigger: "click",
-                        interactive: true,
-                        content: ${res.locals.HTMLForJavaScript(
-                          html`
-                            <div
-                              class="${res.locals.localCSS(css`
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--2);
-                              `)}"
-                            >
-                              <div>
-                                <h3 class="heading">
-                                  <i class="bi bi-journal-text"></i>
-                                  ${res.locals.course.name}
-                                </h3>
-                                <div class="dropdown--menu">
-                                  <a
-                                    href="${baseURL}/courses/${res.locals.course
-                                      .reference}"
-                                    class="dropdown--menu--item button ${req.path.includes(
-                                      "/settings/"
-                                    )
-                                      ? "button--transparent"
-                                      : "button--blue"}"
-                                  >
-                                    <i class="bi bi-chat-left-text"></i>
-                                    Conversations
-                                  </a>
-                                  <a
-                                    href="${baseURL}/courses/${res.locals.course
-                                      .reference}/settings"
-                                    class="dropdown--menu--item button ${req.path.includes(
-                                      "/settings/"
-                                    )
-                                      ? "button--blue"
-                                      : "button--transparent"}"
-                                  >
-                                    <i class="bi bi-sliders"></i>
-                                    Course Settings
-                                  </a>
-                                </div>
-                              </div>
-                              $${res.locals.enrollments.length > 1
-                                ? html`
-                                    <div>
-                                      <h3 class="heading">
-                                        <i class="bi bi-arrow-left-right"></i>
-                                        Switch to Another Course
-                                      </h3>
-                                      <div class="dropdown--menu">
-                                        $${res.locals.enrollments.map(
-                                          (enrollment) => html`
-                                            <a
-                                              href="${baseURL}/courses/${enrollment
-                                                .course.reference}"
-                                              class="dropdown--menu--item button ${enrollment.id ===
-                                              res.locals.enrollment?.id
-                                                ? "button--blue"
-                                                : "button--transparent"}"
-                                            >
-                                              $${coursePartial({
-                                                req,
-                                                res,
-                                                course: enrollment.course,
-                                                enrollment,
-                                                tight: true,
-                                              })}
-                                            </a>
-                                          `
-                                        )}
-                                      </div>
-                                    </div>
-                                  `
-                                : html``}
-                            </div>
-                          `
-                        )},
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-journal-text"></i>
-                    <span
-                      class="${res.locals.localCSS(css`
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
+            $${(() => {
+              const courseSwitcher = html`
+                <div class="dropdown--menu">
+                  $${res.locals.enrollments.map(
+                    (enrollment) => html`
+                      <a
+                        href="${baseURL}/courses/${enrollment.course.reference}"
+                        class="dropdown--menu--item button ${enrollment.id ===
+                        res.locals.enrollment?.id
+                          ? "button--blue"
+                          : "button--transparent"}"
+                      >
+                        $${coursePartial({
+                          req,
+                          res,
+                          course: enrollment.course,
+                          enrollment,
+                          tight: true,
+                        })}
+                      </a>
+                    `
+                  )}
+                </div>
+              `;
+
+              return res.locals.course !== undefined
+                ? html`
+                    <button
+                      class="button button--tight button--tight--inline button--transparent strong ${res
+                        .locals.localCSS(css`
+                        max-width: 100%;
                       `)}"
+                      oninteractive="${javascript`
+                        tippy(this, {
+                          trigger: "click",
+                          interactive: true,
+                          content: ${res.locals.HTMLForJavaScript(
+                            html`
+                              <div
+                                class="${res.locals.localCSS(css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--2);
+                                `)}"
+                              >
+                                <div>
+                                  <h3 class="heading">
+                                    <i class="bi bi-journal-text"></i>
+                                    ${res.locals.course.name}
+                                  </h3>
+                                  <div class="dropdown--menu">
+                                    <a
+                                      href="${baseURL}/courses/${res.locals
+                                        .course.reference}"
+                                      class="dropdown--menu--item button ${req.path.includes(
+                                        "/settings/"
+                                      )
+                                        ? "button--transparent"
+                                        : "button--blue"}"
+                                    >
+                                      <i class="bi bi-chat-left-text"></i>
+                                      Conversations
+                                    </a>
+                                    <a
+                                      href="${baseURL}/courses/${res.locals
+                                        .course.reference}/settings"
+                                      class="dropdown--menu--item button ${req.path.includes(
+                                        "/settings/"
+                                      )
+                                        ? "button--blue"
+                                        : "button--transparent"}"
+                                    >
+                                      <i class="bi bi-sliders"></i>
+                                      Course Settings
+                                    </a>
+                                  </div>
+                                </div>
+                                $${res.locals.enrollments.length > 1
+                                  ? html`
+                                      <div>
+                                        <h3 class="heading">
+                                          <i class="bi bi-arrow-left-right"></i>
+                                          Switch to Another Course
+                                        </h3>
+                                        $${courseSwitcher}
+                                      </div>
+                                    `
+                                  : html``}
+                              </div>
+                            `
+                          )},
+                        });
+                      `}"
                     >
-                      ${res.locals.course.name}
-                    </span>
-                    <i class="bi bi-chevron-down"></i>
-                  </button>
-                `
-              : res.locals.enrollments.length > 0
-              ? html``
-              : html``}
+                      <i class="bi bi-journal-text"></i>
+                      <span
+                        class="${res.locals.localCSS(css`
+                          white-space: nowrap;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                        `)}"
+                      >
+                        ${res.locals.course.name}
+                      </span>
+                      <i class="bi bi-chevron-down"></i>
+                    </button>
+                  `
+                : res.locals.enrollments.length > 0
+                ? html`
+                    <button
+                      class="button button--tight button--tight--inline button--transparent ${res
+                        .locals.localCSS(css`
+                        max-width: 100%;
+                      `)}"
+                      oninteractive="${javascript`
+                        tippy(this, {
+                          trigger: "click",
+                          interactive: true,
+                          content: ${res.locals.HTMLForJavaScript(
+                            html`$${courseSwitcher}`
+                          )},
+                        });
+                      `}"
+                    >
+                      Go to Your Courses
+                      <i class="bi bi-chevron-down"></i>
+                    </button>
+                  `
+                : html``;
+            })()}
           </div>
 
           <div>
