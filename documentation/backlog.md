@@ -14,6 +14,9 @@
   - If things look weird, or if something doesn’t work, you may need to update your browser.
 - Make a public page listing known issues.
 - Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the CourseLore community.
+
+---
+
 - **Notifications are sent multiple times.**
   - Only seems to occur in our real conversation in production. I tested in development, staging, and even on a test course in production, and multiple deliveries never happened. 😕
 - **Browser tab crashes if left open for a long time.**
