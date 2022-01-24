@@ -12217,23 +12217,23 @@ export default async function courselore({
         enrollmentRole: EnrollmentRole | null;
       }>(
         sql`
-        SELECT "readings"."id",
-               "enrollments"."id" AS "enrollmentId",
-               "users"."id" AS "userId",
-               "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-               "users"."email" AS "userEmail",
-               "users"."name" AS "userName",
-               "users"."avatar" AS "userAvatar",
-               "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
-               "users"."biographySource" AS "userBiographySource",
-               "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-               "enrollments"."reference" AS "enrollmentReference",
-               "enrollments"."role" AS "enrollmentRole"
-        FROM "readings"
-        JOIN "enrollment" ON "readings"."enrollment" = "enrollment"."id"
-        JOIN "users" ON "enrollment"."user" = "user"."id"
-        WHERE "readings"."message" = ${message.id}
-      `
+          SELECT "readings"."id",
+                 "enrollments"."id" AS "enrollmentId",
+                 "users"."id" AS "userId",
+                 "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                 "users"."email" AS "userEmail",
+                 "users"."name" AS "userName",
+                 "users"."avatar" AS "userAvatar",
+                 "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+                 "users"."biographySource" AS "userBiographySource",
+                 "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+                 "enrollments"."reference" AS "enrollmentReference",
+                 "enrollments"."role" AS "enrollmentRole"
+          FROM "readings"
+          JOIN "enrollments" ON "readings"."enrollment" = "enrollments"."id"
+          JOIN "users" ON "enrollments"."user" = "users"."id"
+          WHERE "readings"."message" = ${message.id}
+        `
       )
       .map((reading) => ({
         id: reading.id,
