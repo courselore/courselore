@@ -1,6 +1,5 @@
 # Backlog
 
-- Show how many views a post had.
 - Add a help screen under the “About CourseLore” button:
   - A more app-like experience (in iOS):
     - Bookmark CourseLore to home screen.
@@ -95,6 +94,7 @@
 - Assign questions to CAs.
 - Save drafts of conversations you’re creating.
 - `position: sticky` headers (showing author name) in messages?
+- Add list of who read each message and when they read it to chats as well. The first attempt wasn’t successful because the `userPartial`s blow up the HTML. Revisit this when we DRY `userPartial`s.
 
 ### Chat
 
