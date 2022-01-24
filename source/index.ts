@@ -18082,8 +18082,10 @@ ${contentSource}</textarea
                                                               --space--56
                                                             );
                                                             padding: var(
-                                                              --space--2
-                                                            );
+                                                                --space--1
+                                                              )
+                                                              var(--space--2);
+                                                            overflow: auto;
                                                           `)}"
                                                         >
                                                           $${message.readings.map(
@@ -18107,15 +18109,19 @@ ${contentSource}</textarea
                                                                     reading.enrollment,
                                                                   size: "xs",
                                                                 })}
-                                                                ·
-                                                                <time
-                                                                  datetime="${new Date(
-                                                                    reading.createdAt
-                                                                  ).toISOString()}"
-                                                                  oninteractive="${javascript`
-                                                                  leafac.relativizeDateTimeElement(this);
-                                                                `}"
-                                                                ></time>
+                                                                <span
+                                                                  class="secondary"
+                                                                >
+                                                                  ·
+                                                                  <time
+                                                                    datetime="${new Date(
+                                                                      reading.createdAt
+                                                                    ).toISOString()}"
+                                                                    oninteractive="${javascript`
+                                                                    leafac.relativizeDateTimeElement(this);
+                                                                  `}"
+                                                                  ></time>
+                                                                </span>
                                                               </button>
                                                             `
                                                           )}
