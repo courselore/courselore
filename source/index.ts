@@ -2402,6 +2402,7 @@ export default async function courselore({
     req,
     res,
     head,
+    showCourseSwitcher = true,
     extraHeaders = html``,
     body,
   }: {
@@ -2421,6 +2422,7 @@ export default async function courselore({
         Partial<EventSourceMiddlewareLocals>
     >;
     head: HTML;
+    showCourseSwitcher?: boolean;
     extraHeaders?: HTML;
     body: HTML;
   }): HTML =>
@@ -2565,7 +2567,7 @@ export default async function courselore({
                       <i class="bi bi-chevron-down"></i>
                     </button>
                   `
-                : res.locals.enrollments.length > 0
+                : showCourseSwitcher && res.locals.enrollments.length > 0
                 ? html`
                     <button
                       class="button button--tight button--tight--inline button--transparent ${res
@@ -2801,6 +2803,7 @@ export default async function courselore({
     req,
     res,
     head,
+    showCourseSwitcher = true,
     body,
   }: {
     req: express.Request<
@@ -2819,12 +2822,14 @@ export default async function courselore({
         Partial<EventSourceMiddlewareLocals>
     >;
     head: HTML;
+    showCourseSwitcher?: boolean;
     body: HTML;
   }): HTML =>
     applicationLayout({
       req,
       res,
       head,
+      showCourseSwitcher,
       body: html`
         <div
           class="${res.locals.localCSS(css`
@@ -5821,6 +5826,7 @@ export default async function courselore({
               req,
               res,
               head: html`<title>CourseLore</title>`,
+              showCourseSwitcher: false,
               body: html`
                 <div
                   class="${res.locals.localCSS(css`

@@ -1,6 +1,5 @@
 # Backlog
 
-- On the User Settings pages, add a course selector next to the CourseLore main logo button.
 - Show how many views a post had.
 - Add a help screen under the “About CourseLore” button:
   - A more app-like experience (in iOS):
