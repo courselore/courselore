@@ -1,5 +1,25 @@
 # Backlog
 
+- Move the warning about servers (for example, `courselore.org` may be paid in the future), to the course creation page.
+- On home page, under the “source code” button, add a tooltip to highlight how CourseLore will be free forever for people who self-host.
+- Make a public page listing known issues.
+- Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the CourseLore community.
+- Change `userPartial` tooltip to be activated on click, instead of hover.
+- Don’t send notifications when the person is online.
+- List of conversations shouldn’t jump when you go to a particular conversation.
+- Add favicon for when you bookmark CourseLore on iOS’s home screen.
+- Add a help screen under the “About CourseLore” button:
+  - A more app-like experience (in iOS):
+    - Bookmark CourseLore to home screen.
+    - Use VIPs as notifications mechanism.
+  - If things look weird, or if something doesn’t work, you may need to update your browser.
+- On invitations, when sending invitations via email, change the action button to say “Send Email(s)” instead of “Create Invitation”.
+- On the User Settings pages, add a course selector next to the CourseLore main logo button.
+- Notifications are sent multiple times.
+  - Only seems to occur in our real conversation in production. I tested in development, staging, and even on a test course in production, and multiple deliveries never happened. 😕
+- Show how many views a post had.
+- Get notifications for replies to your posts. If a student asks a question they probably would like notifications on all replies. That might want to be on by default as well.
+
 ### Performance
 
 - Live reloading:
@@ -90,8 +110,6 @@
 
 ### Notifications
 
-- Notifications are sent multiple times.
-  - Only seems to occur in our real conversation in production. I tested in development, staging, and even on a test course in production, and multiple deliveries never happened. 😕
 - Delay sending notifications for a little bit to give the person a chance to update or delete the message.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
 - Add different notification badges for when you’re @mentioned.
