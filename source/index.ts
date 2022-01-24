@@ -12092,6 +12092,7 @@ export default async function courselore({
         reading: { id: number } | null;
         readings: {
           id: number;
+          createdAt: string;
           enrollment: AuthorEnrollment;
         }[];
         endorsements: {
@@ -12204,6 +12205,7 @@ export default async function courselore({
     const readings = database
       .all<{
         id: number;
+        createdAt: string;
         enrollmentId: number | null;
         userId: number | null;
         userLastSeenOnlineAt: string | null;
@@ -12218,6 +12220,7 @@ export default async function courselore({
       }>(
         sql`
           SELECT "readings"."id",
+                 "readings"."createdAt",
                  "enrollments"."id" AS "enrollmentId",
                  "users"."id" AS "userId",
                  "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
@@ -12237,6 +12240,7 @@ export default async function courselore({
       )
       .map((reading) => ({
         id: reading.id,
+        createdAt: reading.createdAt,
         enrollment:
           reading.enrollmentId !== null &&
           reading.userId !== null &&
@@ -18054,6 +18058,58 @@ ${contentSource}</textarea
                                                   </form>
                                                 `
                                               );
+
+                                            if (
+                                              res.locals.enrollment.role ===
+                                                "staff" &&
+                                              res.locals.conversation.type !==
+                                                "chat"
+                                            )
+                                              content.push(html`
+                                                <button
+                                                  class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                                                  oninteractive="${javascript`
+                                                    tippy(this, {
+                                                      trigger: "click",
+                                                      interactive: true,
+                                                      content: ${res.locals
+                                                        .HTMLForJavaScript(html`
+                                                        <div
+                                                          class="dropdown--menu"
+                                                        >
+                                                          $${message.readings.map(
+                                                            (reading) => html`
+                                                              <button
+                                                                class="dropdown--menu--item"
+                                                              >
+                                                                $${userPartial({
+                                                                  req,
+                                                                  res,
+                                                                  enrollment:
+                                                                    reading.enrollment,
+                                                                  size: "xs",
+                                                                })} ·
+                                                                <time
+                                                                  datetime="${new Date(
+                                                                    reading.createdAt
+                                                                  ).toISOString()}"
+                                                                  oninteractive="${javascript`
+                                                                  leafac.relativizeDateTimeElement(this);
+                                                                `}"
+                                                                ></time>
+                                                              </button>
+                                                            `
+                                                          )}
+                                                        </div>
+                                                      `)},
+                                                    });
+                                                  `}"
+                                                >
+                                                  <i class="bi bi-eye"></i>
+                                                  ${message.readings.length}
+                                                  Views
+                                                </button>
+                                              `);
 
                                             return content.length === 0
                                               ? html``
