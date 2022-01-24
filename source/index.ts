@@ -2458,9 +2458,8 @@ export default async function courselore({
               min-width: var(--width--0);
             `)}"
           >
-            $${res.locals.course === undefined
-              ? html``
-              : html`
+            $${res.locals.course !== undefined
+              ? html`
                   <button
                     class="button button--tight button--tight--inline button--transparent strong ${res
                       .locals.localCSS(css`
@@ -2561,7 +2560,10 @@ export default async function courselore({
                     </span>
                     <i class="bi bi-chevron-down"></i>
                   </button>
-                `}
+                `
+              : res.locals.enrollments.length > 0
+              ? html``
+              : html``}
           </div>
 
           <div>
@@ -9338,7 +9340,9 @@ export default async function courselore({
             req,
             res,
             content: html`
-              <div class="flash--green">Invitation emails sent successfully.</div>
+              <div class="flash--green">
+                Invitation emails sent successfully.
+              </div>
             `,
           });
           break;
