@@ -1,6 +1,5 @@
 # Backlog
 
-- Change `userPartial` tooltip to be activated on click, instead of hover.
 - On invitations, when sending invitations via email, change the action button to say “Send Email(s)” instead of “Create Invitation”.
 - Add favicon for when you bookmark CourseLore on iOS’s home screen.
 - On the User Settings pages, add a course selector next to the CourseLore main logo button.

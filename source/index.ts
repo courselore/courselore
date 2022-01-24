@@ -3304,6 +3304,7 @@ export default async function courselore({
                     tippy(this, {
                       interactive: true,
                       appendTo: document.body,
+                      delay: [1000, null],
                       content: ${res.locals.HTMLForJavaScript(
                         html`
                           <div
