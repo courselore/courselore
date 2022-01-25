@@ -18125,8 +18125,8 @@ ${contentSource}</textarea
                                                                         reading.createdAt
                                                                       ).toISOString()}"
                                                                       oninteractive="${javascript`
-                                                                    leafac.relativizeDateTimeElement(this);
-                                                                  `}"
+                                                                        leafac.relativizeDateTimeElement(this, { capitalize: true });
+                                                                      `}"
                                                                     ></time>
                                                                   </span>
                                                                 </button>
