@@ -2123,7 +2123,7 @@ export default async function courselore({
     .createHash("sha256")
     .update(globalCSSProcessed)
     .digest("hex")}.css`;
-  app.get<{}, CSS, {}, {}, {}>(globalCSSPath, (req, res) => {
+  app.get<{}, CSS, {}, {}, BaseMiddlewareLocals>(globalCSSPath, (req, res) => {
     res.type("css").send(globalCSSProcessed);
   });
 
@@ -2188,9 +2188,12 @@ export default async function courselore({
     .createHash("sha256")
     .update(globalJavaScript)
     .digest("hex")}.js`;
-  app.get<{}, CSS, {}, {}, {}>(globalJavaScriptPath, (req, res) => {
-    res.type("js").send(globalJavaScript);
-  });
+  app.get<{}, CSS, {}, {}, BaseMiddlewareLocals>(
+    globalJavaScriptPath,
+    (req, res) => {
+      res.type("js").send(globalJavaScript);
+    }
+  );
 
   const boxLayout = ({
     req,
@@ -3669,11 +3672,11 @@ export default async function courselore({
     }
   )}`;
 
-  app.use<{}, any, {}, {}, {}>(
+  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
     express.static(url.fileURLToPath(new URL("../static", import.meta.url)))
   );
-  app.use<{}, any, {}, {}, {}>(methodOverride("_method"));
-  app.use<{}, any, {}, {}, {}>(cookieParser());
+  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(methodOverride("_method"));
+  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(cookieParser());
   const cookieOptions = {
     domain: new URL(baseURL).hostname,
     httpOnly: true,
@@ -3681,14 +3684,16 @@ export default async function courselore({
     sameSite: "lax",
     secure: true,
   } as const;
-  app.use<{}, any, {}, {}, {}>(express.urlencoded({ extended: true }));
-  app.use<{}, any, {}, {}, {}>(
+  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
+    express.urlencoded({ extended: true })
+  );
+  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
     expressFileUpload({
       createParentPath: true,
       limits: { fileSize: 10 * 1024 * 1024 },
     })
   );
-  app.use<{}, any, {}, {}, {}>(
+  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
     csurf({
       cookie: {
         ...cookieOptions,
