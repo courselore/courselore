@@ -4104,9 +4104,8 @@ export default async function courselore({
     },
   ];
 
-  app.get<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
+  app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
     "/files/*",
-    ...isSignedInMiddleware,
     express.static(dataDirectory, {
       index: false,
       dotfiles: "allow",
