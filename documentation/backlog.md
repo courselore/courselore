@@ -1,8 +1,7 @@
 # Backlog
 
-- Don’t require sign in to see attachments, so that they work on email notifications.
-  - Test against email notification on bug report.
 - Prevent morphdom from erasing form data.
+- Test image on email notification.
 
 ---
 
