@@ -1,6 +1,5 @@
 # Backlog
 
-- Prevent morphdom from erasing form data.
 - Test image on email notification.
 
 ---
@@ -27,6 +26,11 @@
   - If things look weird, or if something doesn’t work, you may need to update your browser.
 - Make a public page listing known issues.
 - Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the CourseLore community.
+
+---
+
+- Rename table `readings` -> `views`.
+- Remove `data-` in favor of `oninteractive`.
 
 ---
 

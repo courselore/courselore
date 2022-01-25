@@ -1054,7 +1054,19 @@ export default async function courselore({
                         document.head.append(
                           ...refreshedDocument.head.querySelectorAll("style")
                         );
-                        morphdom(document.body, refreshedDocument.body);
+                        morphdom(document.body, refreshedDocument.body, {
+                          onBeforeElUpdated(from, to) {
+                            const onBeforeElUpdated =
+                              from.getAttribute("onbeforeelupdated");
+                            return onBeforeElUpdated === null
+                              ? true
+                              : new Function(
+                                  "from",
+                                  "to",
+                                  onBeforeElUpdated
+                                ).call(from, from, to);
+                          },
+                        });
                         leafac.evaluateElementsAttribute(document);
                         leafac.evaluateElementsAttribute(
                           document,
@@ -12448,6 +12460,9 @@ export default async function courselore({
       class="content-editor ${res.locals.localCSS(css`
         min-width: var(--space--0);
       `)}"
+      onbeforeelupdated="${javascript`
+        return false;
+      `}"
     >
       <div
         $${compact ? html`hidden` : html``}
