@@ -1,5 +1,26 @@
 # Backlog
 
+- Don’t require sign in to see attachments, so that they work on email notifications.
+  - Test against email notification on bug report.
+- Prevent morphdom from erasing form data.
+
+---
+
+- There may be something awkward with shutdown of SQLite
+- Lazy loading
+  - userPartial
+  - Edit message forms
+  - Views component showing who saw each message and when
+  - On mobile, decouple the list of conversation (the sidebar on desktop) from the conversation itself, to push less data on the wire
+  - (We’re already doing it for things like the @mention component. Just use the same approach)
+  - (Should we use web sockets instead of http to skip authentication, and that sort of thing)
+- Add request logging
+- We need to update the online status of other users as they come online
+- Add some view caching
+- Potential issue: when we deploy a new version, the morphdom doesn’t update the global css & js. Solution: force a reload
+
+---
+
 - Add a help screen under the “About CourseLore” button:
   - A more app-like experience (in iOS):
     - Bookmark CourseLore to home screen.
