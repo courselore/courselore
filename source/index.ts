@@ -1040,8 +1040,6 @@ export default async function courselore({
 
           $${res?.locals.eventSource
             ? html`
-                <script src="${baseURL}/node_modules/morphdom/dist/morphdom-umd.min.js"></script>
-
                 <script>
                   const eventSource = new EventSource(window.location.href);
                   eventSource.addEventListener("refresh", async () => {
@@ -2159,6 +2157,13 @@ export default async function courselore({
     ${await fs.readFile(
       new URL(
         "../static/node_modules/scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js",
+        import.meta.url
+      ),
+      "utf-8"
+    )}
+    ${await fs.readFile(
+      new URL(
+        "../static/node_modules/morphdom/dist/morphdom-umd.min.js",
         import.meta.url
       ),
       "utf-8"
