@@ -1,5 +1,6 @@
 # Backlog
 
+- Live-updates are resetting message editing.
 - Test image on email notification.
 
 ---
