@@ -1,6 +1,9 @@
 # Backlog
 
-Lazy load images
+- Lazy load images.
+- There may be something awkward with shutdown of SQLite.
+
+---
 
 - Live-updates are resetting message editing.
   - Morphdom should preserve all kinds of inputs.
@@ -13,7 +16,6 @@ Lazy load images
 
 ---
 
-- There may be something awkward with shutdown of SQLite
 - Lazy loading
   - userPartial
   - Edit message forms
