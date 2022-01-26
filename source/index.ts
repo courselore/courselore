@@ -17080,6 +17080,83 @@ ${contentSource}</textarea
                                                                 </form>
                                                               `
                                                             : html``}
+                                                          $${res.locals
+                                                            .enrollment.role ===
+                                                            "staff" &&
+                                                          res.locals
+                                                            .conversation
+                                                            .type === "chat"
+                                                            ? html`
+                                                                <button
+                                                                  class="dropdown--menu--item button button--transparent"
+                                                                  oninteractive="${javascript`
+                                                                    const tooltip = ${res
+                                                                      .locals
+                                                                      .HTMLForJavaScript(html`
+                                                                      <div
+                                                                        class="loading ${res.locals.localCSS(
+                                                                          css`
+                                                                            display: flex;
+                                                                            gap: var(
+                                                                              --space--2
+                                                                            );
+                                                                            align-items: center;
+                                                                          `
+                                                                        )}"
+                                                                      >
+                                                                        $${spinner(
+                                                                          {
+                                                                            req,
+                                                                            res,
+                                                                          }
+                                                                        )}
+                                                                        Loading…
+                                                                      </div>
+                                                                      <div
+                                                                        class="content"
+                                                                        hidden
+                                                                      ></div>
+                                                                    `)};
+                                                                    const loading = tooltip.querySelector(".loading");
+                                                                    const content = tooltip.querySelector(".content");
+
+                                                                    tippy(this, {
+                                                                      trigger: "click",
+                                                                      interactive: true,
+                                                                      content: tooltip,
+                                                                    });
+
+                                                                    this.onmouseover = this.onfocus = async () => {
+                                                                      if (!content.hidden) return;
+                                                                      leafac.mount(
+                                                                        content,
+                                                                        await (await fetch("${baseURL}/courses/${
+                                                                    res.locals
+                                                                      .course
+                                                                      .reference
+                                                                  }/conversations/${
+                                                                    res.locals
+                                                                      .conversation
+                                                                      .reference
+                                                                  }/messages/${
+                                                                    message.reference
+                                                                  }/views")).text()
+                                                                      );
+                                                                      loading.hidden = true;
+                                                                      content.hidden = false;
+                                                                    };
+                                                                  `}"
+                                                                >
+                                                                  <i
+                                                                    class="bi bi-eye"
+                                                                  ></i>
+                                                                  ${message
+                                                                    .readings
+                                                                    .length}
+                                                                  Views
+                                                                </button>
+                                                              `
+                                                            : html``}
 
                                                           <button
                                                             class="dropdown--menu--item button button--transparent"
@@ -18144,7 +18221,14 @@ ${contentSource}</textarea
                                                       if (!content.hidden) return;
                                                       leafac.mount(
                                                         content,
-                                                        await (await fetch("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}/messages/${message.reference}/views")).text()
+                                                        await (await fetch("${baseURL}/courses/${
+                                                    res.locals.course.reference
+                                                  }/conversations/${
+                                                    res.locals.conversation
+                                                      .reference
+                                                  }/messages/${
+                                                    message.reference
+                                                  }/views")).text()
                                                       );
                                                       loading.hidden = true;
                                                       content.hidden = false;
