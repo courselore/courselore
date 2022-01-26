@@ -42,6 +42,7 @@
 
 - Rename table `readings` -> `views`.
 - Remove `data-` in favor of `oninteractive`.
+- Change from `addEventListener` to `onEvent`.
 
 ---
 
@@ -113,6 +114,7 @@
 
 ### Conversations
 
+- We shouldn’t show endorsements for non-answers. (They show up at least for staff.)
 - Scroll the conversations list to the current conversation doesn’t work on mobile.
 - Streamlining the creation of DMs.
 - Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
@@ -252,6 +254,7 @@
 
 ### Infrastructure
 
+- Handle errors on `fetch`. Right now we’ll just let the “loading” spinner run forever.
 - When we’re a bit more mature, don’t have a `production` branch, but tie the production deployment to tags.
 - Let @leafac/html eat interpolated `null`s and `undefined`s and `[objects]`.
 - Using `getConversation()` to enforce permissions may not be a great idea. It limits the number of search results in a weird way, that even leaks a bit of data. Also, it isn’t the most performant thing, probably (see point about n+1 queries). Maybe a better idea would be to `WHERE` the permissions everywhere, or use a database view.

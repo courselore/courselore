@@ -18107,71 +18107,48 @@ ${contentSource}</textarea
                                                 <button
                                                   class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                                   oninteractive="${javascript`
-                                                    tippy(this, {
-                                                      trigger: "click",
-                                                      interactive: true,
-                                                      content: ${res.locals
-                                                        .HTMLForJavaScript(html`
-                                                        <div
-                                                          class="dropdown--menu ${res
-                                                            .locals
-                                                            .localCSS(css`
-                                                            max-height: var(
-                                                              --space--56
-                                                            );
-                                                            padding: var(
-                                                                --space--1
-                                                              )
-                                                              var(--space--0);
-                                                            overflow: auto;
+                                                    const tooltip = ${res.locals
+                                                      .HTMLForJavaScript(html`
+                                                      <div
+                                                        class="loading ${res.locals.localCSS(
+                                                          css`
+                                                            display: flex;
                                                             gap: var(
                                                               --space--2
                                                             );
-                                                          `)}"
-                                                        >
-                                                          $${message.readings
-                                                            .reverse()
-                                                            .map(
-                                                              (reading) => html`
-                                                                <button
-                                                                  class="dropdown--menu--item"
-                                                                >
-                                                                  $${userPartial(
-                                                                    {
-                                                                      req,
-                                                                      res,
-                                                                      enrollment:
-                                                                        reading.enrollment,
-                                                                      size: "xs",
-                                                                    }
-                                                                  )}
-                                                                  <span
-                                                                    class="secondary ${res
-                                                                      .locals
-                                                                      .localCSS(css`
-                                                                      font-size: var(
-                                                                        --font-size--xs
-                                                                      );
-                                                                      line-height: var(
-                                                                        --line-height--xs
-                                                                      );
-                                                                    `)}"
-                                                                  >
-                                                                    <time
-                                                                      datetime="${new Date(
-                                                                        reading.createdAt
-                                                                      ).toISOString()}"
-                                                                      oninteractive="${javascript`
-                                                                        leafac.relativizeDateTimeElement(this, { capitalize: true });
-                                                                      `}"
-                                                                    ></time>
-                                                                  </span>
-                                                                </button>
-                                                              `
-                                                            )}
-                                                        </div>
-                                                      `)},
+                                                            align-items: center;
+                                                          `
+                                                        )}"
+                                                      >
+                                                        $${spinner({
+                                                          req,
+                                                          res,
+                                                        })}
+                                                        Loading…
+                                                      </div>
+                                                      <div
+                                                        class="content"
+                                                        hidden
+                                                      ></div>
+                                                    `)};
+                                                    const loading = tooltip.querySelector(".loading");
+                                                    const content = tooltip.querySelector(".content");
+
+                                                    tippy(this, {
+                                                      trigger: "click",
+                                                      interactive: true,
+                                                      content: tooltip,
                                                     });
+
+                                                    this.onmouseover = this.onfocus = async () => {
+                                                      if (!content.hidden) return;
+                                                      leafac.mount(
+                                                        content,
+                                                        await (await fetch("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}/messages/${message.reference}/views")).text()
+                                                      );
+                                                      loading.hidden = true;
+                                                      content.hidden = false;
+                                                    };
                                                   `}"
                                                 >
                                                   <i class="bi bi-eye"></i>
@@ -18608,6 +18585,65 @@ ${contentSource}</textarea
                   </div>
                 </div>
               </form>
+            </div>
+          `,
+        })
+      );
+    }
+  );
+
+  app.get<
+    {
+      courseReference: string;
+      conversationReference: string;
+      messageReference: string;
+    },
+    HTML,
+    {},
+    {},
+    MessageExistsMiddlewareLocals
+  >(
+    "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/views",
+    ...messageExistsMiddleware,
+    (req, res) => {
+      res.send(
+        partialLayout({
+          req,
+          res,
+          body: html`
+            <div
+              class="dropdown--menu ${res.locals.localCSS(css`
+                max-height: var(--space--56);
+                padding: var(--space--1) var(--space--0);
+                overflow: auto;
+                gap: var(--space--2);
+              `)}"
+            >
+              $${res.locals.message.readings.reverse().map(
+                (reading) => html`
+                  <button class="dropdown--menu--item">
+                    $${userPartial({
+                      req,
+                      res,
+                      enrollment: reading.enrollment,
+                      size: "xs",
+                    })}
+                    <span
+                      class="secondary ${res.locals.localCSS(css`
+                        font-size: var(--font-size--xs);
+                        line-height: var(--line-height--xs);
+                      `)}"
+                    >
+                      <time
+                        datetime="${new Date(reading.createdAt).toISOString()}"
+                        oninteractive="${javascript`
+                          leafac.relativizeDateTimeElement(this, { capitalize: true });
+                        `}"
+                      ></time>
+                    </span>
+                  </button>
+                `
+              )}
             </div>
           `,
         })
