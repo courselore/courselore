@@ -56,8 +56,25 @@ export default async ({ courselore, courseloreVersion, courseloreImport }) => {
       })(),
       liveReload: true,
     });
-    app.listen(4001, "127.0.0.1", () => {
+    const server = app.listen(4001, "127.0.0.1", () => {
       console.log(`CourseLore/${courseloreVersion} started at ${baseURL}`);
+    });
+    process.once("exit", () => {
+      server.close();
+      app.emit("close");
+      console.log(`CourseLore/${courseloreVersion} stopped at ${baseURL}`);
+    });
+    process.once("SIGHUP", () => {
+      process.exit(128 + 1);
+    });
+    process.once("SIGINT", () => {
+      process.exit(128 + 2);
+    });
+    process.once("SIGTERM", () => {
+      process.exit(128 + 15);
+    });
+    process.once("SIGBREAK", () => {
+      process.exit(128 + 21);
     });
   }
 };
