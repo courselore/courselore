@@ -1,7 +1,15 @@
 # Backlog
 
+Lazy load images
+
 - Live-updates are resetting message editing.
-- Test image on email notification.
+  - Morphdom should preserve all kinds of inputs.
+- **Notifications are sent multiple times.**
+  - Only seems to occur in our real conversation in production. I tested in development, staging, and even on a test course in production, and multiple deliveries never happened. 😕
+  - Only seems to occur in the conversations pages. I left the Course Settings page open for a long time, and nothing went wrong.
+- **Browser tab crashes if left open for a long time.**
+  - It seems that the server isn’t affected, because when I close the browser tab, the performance on the machine is back to normal.
+  - It doesn’t seem to be related to live-reloading, or other development features, because it also happens in `courselore.org`.
 
 ---
 
@@ -35,12 +43,6 @@
 
 ---
 
-- **Notifications are sent multiple times.**
-  - Only seems to occur in our real conversation in production. I tested in development, staging, and even on a test course in production, and multiple deliveries never happened. 😕
-  - Only seems to occur in the conversations pages. I left the Course Settings page open for a long time, and nothing went wrong.
-- **Browser tab crashes if left open for a long time.**
-  - It seems that the server isn’t affected, because when I close the browser tab, the performance on the machine is back to normal.
-  - It doesn’t seem to be related to live-reloading, or other development features, because it also happens in `courselore.org`.
 - Changes to notifications:
   - Don’t send notifications when the person is online.
   - Get notifications for replies to your posts. If a student asks a question they probably would like notifications on all replies. That might want to be on by default as well.
@@ -49,6 +51,7 @@
     - Times and other components are blinking on reload. Add them to `onrefresh`.
     - Latency compensation when sending messages (particularly on chat).
     - Latency compensation when pressing “like”.
+  - We may do latency compensation by returning the HTML to render as the response to the POST, instead of relying on the refresh event (similar to responding to a POST with a Turbo Stream).
   - On chats (which need to scroll to the bottom), do something to prevent flash of unstyled content. (I commented out the previous hack, look for `TODO`.)
   - Do the morphdom on the server.
     - **This is necessary for correctness as well; see what happens when you’re editing a message (not writing a new one, because we use localStorage to remember that one) and a new message is submitted, causing a refresh.**
@@ -69,6 +72,7 @@
   - Hotwire.
   - Pre-fetching.
   - List of conversations shouldn’t jump when you go to a particular conversation.
+- Add a button to “Return to Bottom” in chat.
 
 ### Advanced Access Control
 
@@ -89,6 +93,8 @@
 - Authentication:
   - SSO with Hopkins ID (SAML) (https://glacial-plateau-47269.herokuapp.com/).
   - 2-Factor Authentication.
+- Pronoun.
+- A short audio with the name’s pronunciation.
 
 ### Courses
 
@@ -134,6 +140,8 @@
 
 ### Notifications
 
+- Add support for Dark Mode in emails.
+  - This should fix the duplication of code blocks.
 - Delay sending notifications for a little bit to give the person a chance to update or delete the message.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
 - Add different notification badges for when you’re @mentioned.
@@ -146,6 +154,7 @@
 - Other channels: Use the browser Notifications API & Push API; Desktop & phone applications.
 - Snooze.
 - Don’t require user to be logged in to unsubscribe from notifications?
+- Add option to receive email notifications for your own messages.
 
 ### Search
 
