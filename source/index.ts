@@ -416,6 +416,9 @@ export default async function courselore({
     );
     setTimeout(deleteExpiredData, 24 * 60 * 60 * 1000);
   }, 10 * 60 * 1000);
+  app.once("close", () => {
+    database.close();
+  });
 
   interface BaseMiddlewareLocals {
     localCSS: ReturnType<typeof localCSS>;

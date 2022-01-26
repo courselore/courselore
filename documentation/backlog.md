@@ -1,9 +1,5 @@
 # Backlog
 
-- There may be something awkward with shutdown of SQLite.
-
----
-
 - Live-updates are resetting message editing.
   - Morphdom should preserve all kinds of inputs.
   - What about the state of tooltips?
@@ -254,6 +250,17 @@
 
 ### Infrastructure
 
+- Graceful HTTP shutdown
+  ```js
+  process.on("SIGTERM", () => {
+    debug("SIGTERM signal received: closing HTTP server");
+    server.close(() => {
+      debug("HTTP server closed");
+    });
+  });
+  ```
+  - https://github.com/gajus/http-terminator
+- Test signal handling of shutdown process on Windows
 - Handle errors on `fetch`. Right now we’ll just let the “loading” spinner run forever.
 - When we’re a bit more mature, don’t have a `production` branch, but tie the production deployment to tags.
 - Let @leafac/html eat interpolated `null`s and `undefined`s and `[objects]`.
@@ -292,16 +299,6 @@
     - https://github.com/jshttp/on-finished
     - https://github.com/pillarjs/router/issues/18
 - Use `Cache-control: no-store`.
-- Graceful HTTP shutdown
-  ```js
-  process.on("SIGTERM", () => {
-    debug("SIGTERM signal received: closing HTTP server");
-    server.close(() => {
-      debug("HTTP server closed");
-    });
-  });
-  ```
-  - https://github.com/gajus/http-terminator
 - Helmet.
 - Extract the infrastructure for running the project into a package:
   - The snippet in `index.ts`.
