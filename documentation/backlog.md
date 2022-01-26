@@ -58,7 +58,7 @@
   - On chats (which need to scroll to the bottom), do something to prevent flash of unstyled content. (I commented out the previous hack, look for `TODO`.)
   - Do the morphdom on the server.
     - **This is necessary for correctness as well; see what happens when you’re editing a message (not writing a new one, because we use localStorage to remember that one) and a new message is submitted, causing a refresh.**
-  - The number of views should live-update.
+  - The views component should live-update.
 - Write a function to determine if processing the message is even necessary. Most messages don’t use extra features and could skip JSDOM entirely.
 - Pagination.
   - Messages in conversation.
