@@ -3149,6 +3149,7 @@ export default async function courselore({
         userAvatar = html`<img
           src="${user.avatar}"
           alt="${user.name}"
+          loading="lazy"
           class="${res.locals.localCSS(css`
             ${{
               xs: css`
@@ -4281,6 +4282,7 @@ export default async function courselore({
                 src="/main-screen--light.png"
                 alt="CourseLore Main Screen"
                 width="960"
+                loading="lazy"
                 class="img light ${res.locals.localCSS(css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
@@ -4294,6 +4296,7 @@ export default async function courselore({
                 src="/main-screen--dark.png"
                 alt="CourseLore Main Screen"
                 width="960"
+                loading="lazy"
                 class="img dark ${res.locals.localCSS(css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
@@ -4476,6 +4479,7 @@ export default async function courselore({
                 src="/main-screen--light-and-dark.png"
                 alt="CourseLore Main Screen Featuring Light & Dark Modes"
                 width="960"
+                loading="lazy"
                 class="img ${res.locals.localCSS(css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
@@ -4548,6 +4552,7 @@ export default async function courselore({
                 src="/main-screen--phone--light.jpeg"
                 alt="CourseLore Main Screen on Phone"
                 width="300"
+                loading="lazy"
                 class="img light ${res.locals.localCSS(css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
@@ -4561,6 +4566,7 @@ export default async function courselore({
                 src="/main-screen--phone--dark.jpeg"
                 alt="CourseLore Main Screen on Phone"
                 width="300"
+                loading="lazy"
                 class="img dark ${res.locals.localCSS(css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
@@ -4770,6 +4776,7 @@ export default async function courselore({
                 <img
                   src="/team/scott-smith.png"
                   alt="Dr. Scott Smith"
+                  loading="lazy"
                   class="img"
                 />
                 <p>
@@ -4791,6 +4798,7 @@ export default async function courselore({
                 <img
                   src="/team/ali-madooei.png"
                   alt="Dr. Ali Madooei"
+                  loading="lazy"
                   class="img"
                 />
                 <p>
@@ -4812,6 +4820,7 @@ export default async function courselore({
                 <img
                   src="/team/leandro-facchinetti.png"
                   alt="Leandro Facchinetti"
+                  loading="lazy"
                   class="img"
                 />
                 <p>
@@ -6088,6 +6097,7 @@ export default async function courselore({
                       <img
                         src="${res.locals.user.avatar ?? ""}"
                         alt="Avatar"
+                        loading="lazy"
                         class="${res.locals.localCSS(css`
                           width: 100%;
                           height: 100%;

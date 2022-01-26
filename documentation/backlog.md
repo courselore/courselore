@@ -1,6 +1,7 @@
 # Backlog
 
 - Lazy load images.
+  - Add to the decoration process in the `contentProcessor`.
 - There may be something awkward with shutdown of SQLite.
 
 ---
