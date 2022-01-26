@@ -6,6 +6,7 @@
 
 - Live-updates are resetting message editing.
   - Morphdom should preserve all kinds of inputs.
+  - What about the state of tooltips?
 - **Notifications are sent multiple times.**
   - Only seems to occur in our real conversation in production. I tested in development, staging, and even on a test course in production, and multiple deliveries never happened. 😕
   - Only seems to occur in the conversations pages. I left the Course Settings page open for a long time, and nothing went wrong.
