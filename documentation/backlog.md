@@ -310,6 +310,8 @@ Lazy load images
 - Live updates with Server-Sent Events currently depend on the fact that we’re running in a single process. Use a message broker like ZeroMQ to support multiple processes.
 - Automated tests.
 
+<details>
+
 ```typescript
 import { test, expect, beforeEach, afterEach } from "@jest/globals";
 import os from "os";
@@ -1776,6 +1778,8 @@ $$
   `);
 });
 ```
+
+</details>
 
 ### API
 
