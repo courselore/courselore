@@ -14492,6 +14492,9 @@ ${contentSource}</textarea
           ? html`<div><p>$${element.innerHTML}</p></div>`
           : html`<div>$${element.innerHTML}</div>`;
 
+      for (const element of contentElement.querySelectorAll("img"))
+        element.setAttribute("loading", "lazy");
+
       for (const element of contentElement.querySelectorAll("details")) {
         const summaries: Node[] = [];
         const rest: Node[] = [];
