@@ -61,7 +61,7 @@ export default async ({ courselore, courseloreVersion, courseloreImport }) => {
     });
     process.once("exit", () => {
       server.close();
-      app.emit("close");
+      app.close();
       console.log(`CourseLore/${courseloreVersion} stopped at ${baseURL}`);
     });
     process.once("SIGHUP", () => {
@@ -69,6 +69,12 @@ export default async ({ courselore, courseloreVersion, courseloreImport }) => {
     });
     process.once("SIGINT", () => {
       process.exit(128 + 2);
+    });
+    process.once("SIGQUIT", () => {
+      process.exit(128 + 3);
+    });
+    process.once("SIGUSR2", () => {
+      process.exit(128 + 12);
     });
     process.once("SIGTERM", () => {
       process.exit(128 + 15);
