@@ -252,7 +252,14 @@
 
 - The “No conversation selected.” page doesn’t open a SSE connection to the server, so it doesn’t get live updates.
 - Graceful HTTP shutdown
+  - Do we need that, or is our currently solution enough, given that Node.js seems to end keep-alive connections gracefully and we have no interest in keeping the Node.js process running?
+    - I think we do need that, because we want to close the database, otherwise journal files are kept around, and we want to close the database strictly **after** the server closed, otherwise there could be requests in the middle that will throw because of a closed database connection.
+      - But there’s more: the handler for `exit` has to be synchronous. So we can’t `await` on graceful termination.
   - https://github.com/gajus/http-terminator
+    - This library seems to track open connections and close them, instead of relying on whatever Node.js does when it receives a signal.
+    - Great § Alternative Libraries (https://www.npmtrends.com/@godaddy/terminus-vs-http-close-vs-http-shutdown-vs-http-terminator-vs-stoppable-vs-http-graceful-shutdown).
+  - https://github.com/godaddy/terminus
+    - I think that what we’re already doing is equivalent to what this library seems to do: rely on Node.js handling the signal to end connections.
 - Test signal handling of shutdown process on Windows
 - Handle errors on `fetch`. Right now we’ll just let the “loading” spinner run forever.
 - When we’re a bit more mature, don’t have a `production` branch, but tie the production deployment to tags.
