@@ -61,7 +61,7 @@ export default async ({ courselore, courseloreVersion, courseloreImport }) => {
     });
     process.once("exit", () => {
       server.close();
-      app.close();
+      app.emit("close");
       console.log(`CourseLore/${courseloreVersion} stopped at ${baseURL}`);
     });
     process.once("SIGHUP", () => {

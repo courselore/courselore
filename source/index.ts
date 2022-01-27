@@ -416,6 +416,9 @@ export default async function courselore({
     );
     setTimeout(deleteExpiredData, 24 * 60 * 60 * 1000);
   }, 10 * 60 * 1000);
+  app.once("close", () => {
+    database.close();
+  });
 
   interface BaseMiddlewareLocals {
     localCSS: ReturnType<typeof localCSS>;
@@ -20290,10 +20293,6 @@ ${contentSource}</textarea
 
   const splitFilterablePhrases = (filterable: string): string[] =>
     filterable.split(/(?<=[^a-z0-9])(?=[a-z0-9])|(?<=[a-z0-9])(?=[^a-z0-9])/i);
-
-  (app as any).close = () => {
-    database.close();
-  };
 
   return app;
 }
