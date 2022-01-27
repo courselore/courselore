@@ -3753,7 +3753,7 @@ export default async function courselore({
       }
       const eventDestination = { req, res };
       eventDestinations.add(eventDestination);
-      res.on("close", () => {
+      res.once("close", () => {
         eventDestinations.delete(eventDestination);
       });
       res.type("text/event-stream").flushHeaders();

@@ -37,7 +37,7 @@ export default async ({ courselore, courseloreVersion, courseloreImport }) => {
       }),
     ];
     for (const subprocess of subprocesses)
-      subprocess.on("close", () => {
+      subprocess.once("close", () => {
         for (const otherSubprocess of subprocesses)
           if (subprocess !== otherSubprocess) otherSubprocess.cancel();
       });

@@ -251,14 +251,6 @@
 ### Infrastructure
 
 - Graceful HTTP shutdown
-  ```js
-  process.on("SIGTERM", () => {
-    debug("SIGTERM signal received: closing HTTP server");
-    server.close(() => {
-      debug("HTTP server closed");
-    });
-  });
-  ```
   - https://github.com/gajus/http-terminator
 - Test signal handling of shutdown process on Windows
 - Handle errors on `fetch`. Right now we’ll just let the “loading” spinner run forever.
