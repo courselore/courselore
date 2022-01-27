@@ -1,13 +1,6 @@
 # Backlog
 
-- Graceful shutdown
-  - Deploy to production
-  - Release a minor
-
----
-
 - Live-updates are resetting message editing.
-  - Morphdom should preserve all kinds of inputs.
   - What about the state of tooltips?
 - **Notifications are sent multiple times.**
   - Only seems to occur in our real conversation in production. I tested in development, staging, and even on a test course in production, and multiple deliveries never happened. 😕
