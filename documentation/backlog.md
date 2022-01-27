@@ -70,6 +70,7 @@
   - Pre-fetching.
   - List of conversations shouldn’t jump when you go to a particular conversation.
 - Add a button to “Return to Bottom” in chat.
+- Add support for underline in Markdown.
 
 ### Advanced Access Control
 
