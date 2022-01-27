@@ -5,6 +5,7 @@ import url from "node:url";
 import crypto from "node:crypto";
 
 import express from "express";
+import morgan from "morgan";
 import methodOverride from "method-override";
 import cookieParser from "cookie-parser";
 import expressFileUpload from "express-fileupload";
@@ -419,6 +420,26 @@ export default async function courselore({
   app.once("close", () => {
     database.close();
   });
+
+  app.enable("trust proxy");
+  app.use(
+    morgan(
+      (tokens, req, res) =>
+        `${tokens.date(req, res, "iso")}\t${tokens.method(
+          req,
+          res
+        )}\t${tokens.status(req, res)}\t${tokens["remote-addr"](
+          req,
+          res
+        )}\t${tokens["total-time"](req, res)}ms\t\t${
+          tokens.res(req, res, "content-length") ?? "0"
+        }B\t\t${tokens.url(req, res)}${
+          process.env.NODE_ENV !== "production" && req.method !== "GET"
+            ? `\n${JSON.stringify(req.body, undefined, 2)}`
+            : ``
+        }`
+    )
+  );
 
   interface BaseMiddlewareLocals {
     localCSS: ReturnType<typeof localCSS>;

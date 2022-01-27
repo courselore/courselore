@@ -1,6 +1,6 @@
 # Backlog
 
-- Add request logging
+- Add database logging in development
 - Graceful shutdown
   - Deploy to production
   - Release a minor
