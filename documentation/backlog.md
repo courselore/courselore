@@ -1,5 +1,12 @@
 # Backlog
 
+- Graceful shutdown
+  - Check staging
+  - Deploy to production
+  - Release a minor
+
+---
+
 - Live-updates are resetting message editing.
   - Morphdom should preserve all kinds of inputs.
   - What about the state of tooltips?
