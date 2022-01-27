@@ -119,7 +119,10 @@ export default async function courselore({
     "chat",
   ] as const;
 
-  const database = new Database(path.join(dataDirectory, "courselore.db"));
+  const database = new Database(
+    path.join(dataDirectory, "courselore.db"),
+    process.env.LOG_DATABASE === "true" ? { verbose: console.log } : undefined
+  );
   database.pragma("journal_mode = WAL");
   database.migrate(
     sql`
