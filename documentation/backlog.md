@@ -250,6 +250,7 @@
 
 ### Infrastructure
 
+- The “No conversation selected.” page doesn’t open a SSE connection to the server, so it doesn’t get live updates.
 - Graceful HTTP shutdown
   - https://github.com/gajus/http-terminator
 - Test signal handling of shutdown process on Windows
