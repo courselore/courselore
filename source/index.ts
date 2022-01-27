@@ -1085,13 +1085,13 @@ export default async function courselore({
                           onBeforeElUpdated(from, to) {
                             const onBeforeElUpdated =
                               from.getAttribute("onbeforeelupdated");
-                            return onBeforeElUpdated === null
-                              ? true
-                              : new Function(
+                            return typeof onBeforeElUpdated === "true"
+                              ? new Function(
                                   "from",
                                   "to",
                                   onBeforeElUpdated
-                                ).call(from, from, to);
+                                ).call(from, from, to)
+                              : !from.matches("input, textarea");
                           },
                         });
                         leafac.evaluateElementsAttribute(document);
