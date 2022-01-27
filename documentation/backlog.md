@@ -1,7 +1,7 @@
 # Backlog
 
+- Add request logging
 - Graceful shutdown
-  - Check staging
   - Deploy to production
   - Release a minor
 
@@ -26,7 +26,6 @@
   - On mobile, decouple the list of conversation (the sidebar on desktop) from the conversation itself, to push less data on the wire
   - (We’re already doing it for things like the @mention component. Just use the same approach)
   - (Should we use web sockets instead of http to skip authentication, and that sort of thing)
-- Add request logging
 - We need to update the online status of other users as they come online
 - Add some view caching
 - Potential issue: when we deploy a new version, the morphdom doesn’t update the global css & js. Solution: force a reload
