@@ -17,8 +17,8 @@ export default async ({ courselore, courseloreVersion, courseloreImport }) => {
       ),
       execa("caddy", ["run", "--config", "-", "--adapter", "caddyfile"], {
         preferLocal: true,
-        stdout: "inherit",
-        stderr: "inherit",
+        stdout: "ignore",
+        stderr: "ignore",
         input: caddyfile`
           {
             admin off
@@ -57,8 +57,31 @@ export default async ({ courselore, courseloreVersion, courseloreImport }) => {
       })(),
       demonstration: true,
     });
-    app.listen(4001, "127.0.0.1", () => {
+    const server = app.listen(4001, "127.0.0.1", () => {
       console.log(`CourseLore/${courseloreVersion} started at ${baseURL}`);
+    });
+    process.once("exit", () => {
+      server.close();
+      app.emit("close");
+      console.log(`CourseLore/${courseloreVersion} stopped at ${baseURL}`);
+    });
+    process.once("SIGHUP", () => {
+      process.exit(128 + 1);
+    });
+    process.once("SIGINT", () => {
+      process.exit(128 + 2);
+    });
+    process.once("SIGQUIT", () => {
+      process.exit(128 + 3);
+    });
+    process.once("SIGUSR2", () => {
+      process.exit(128 + 12);
+    });
+    process.once("SIGTERM", () => {
+      process.exit(128 + 15);
+    });
+    process.once("SIGBREAK", () => {
+      process.exit(128 + 21);
     });
   }
 };
