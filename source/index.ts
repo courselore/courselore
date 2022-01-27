@@ -14361,11 +14361,11 @@ ${contentSource}</textarea
         : [req.files.attachments];
       for (const attachment of attachments) {
         if (attachment.truncated)
-          return res.status(413).send(
-            dedent`
-              <!-- Failed to upload: Attachments must be smaller than 10MB. -->
-            `
-          );
+          return res
+            .status(413)
+            .send(
+              `<!-- Failed to upload: Attachments must be smaller than 10MB. -->`
+            );
         attachment.name = filenamify(attachment.name, { replacement: "-" });
         if (attachment.name.trim() === "") return next("validation");
       }
@@ -14424,7 +14424,7 @@ ${contentSource}</textarea
           }
         attachmentsContentSources.push(`[${attachment.name}](${href})`);
       }
-      res.send(attachmentsContentSources.join("\n\n"));
+      res.send(` ${attachmentsContentSources.join("\n\n")} `);
     })
   );
 
