@@ -52,7 +52,13 @@ export default async ({ courselore, courseloreVersion, courseloreImport }) => {
           { from: `"CourseLore" <${administratorEmail}>` }
         );
         return async (mailOptions) => {
-          console.log(await transporter.sendMail(mailOptions));
+          console.log(
+            JSON.stringify(
+              await transporter.sendMail(mailOptions),
+              undefined,
+              2
+            )
+          );
         };
       })(),
       demonstration: true,

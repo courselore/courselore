@@ -66,6 +66,16 @@ export default async function courselore({
 }): Promise<express.Express> {
   await fs.ensureDir(dataDirectory);
 
+  const originalSendMail = sendMail;
+  sendMail = async (mailOptions) => {
+    console.log(
+      `${new Date().toISOString()}\tMAIL\t${mailOptions.to}\t${
+        mailOptions.subject
+      }`
+    );
+    return await originalSendMail(mailOptions);
+  };
+
   const app = express();
 
   type UserAvatarlessBackgroundColor =
