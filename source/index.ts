@@ -66,26 +66,6 @@ export default async function courselore({
 }): Promise<express.Express> {
   await fs.ensureDir(dataDirectory);
 
-  const originalSendMail = sendMail;
-  sendMail = async (mailOptions) => {
-    let sentMessageInfo: nodemailer.SentMessageInfo;
-    try {
-      sentMessageInfo = await originalSendMail(mailOptions);
-      return sentMessageInfo;
-    } catch (error) {
-      sentMessageInfo = error;
-      throw error;
-    } finally {
-      console.log(
-        `${new Date().toISOString()}\tMAIL\t${
-          sentMessageInfo?.response ?? ""
-        }\t\t${mailOptions.to}\t\t${mailOptions.subject}${
-          process.env.NODE_ENV !== "production" ? `\n${mailOptions.html}` : ``
-        }`
-      );
-    }
-  };
-
   const app = express();
 
   type UserAvatarlessBackgroundColor =
@@ -461,6 +441,25 @@ export default async function courselore({
     });
     next();
   });
+  const originalSendMail = sendMail;
+  sendMail = async (mailOptions) => {
+    let sentMessageInfo: nodemailer.SentMessageInfo;
+    try {
+      sentMessageInfo = await originalSendMail(mailOptions);
+      return sentMessageInfo;
+    } catch (error) {
+      sentMessageInfo = error;
+      throw sentMessageInfo;
+    } finally {
+      console.log(
+        `${new Date().toISOString()}\tMAIL\t${
+          sentMessageInfo?.response ?? ""
+        }\t\t${mailOptions.to}\t\t${mailOptions.subject}${
+          process.env.NODE_ENV !== "production" ? `\n${mailOptions.html}` : ``
+        }`
+      );
+    }
+  };
 
   interface BaseMiddlewareLocals {
     localCSS: ReturnType<typeof localCSS>;

@@ -1,9 +1,14 @@
 # Backlog
 
 - **Notifications are sent multiple times.**
-  - Only seems to occur in our real conversation in production. I tested in development, staging, and even on a test course in production, and multiple deliveries never happened. 😕
-- Live-updates are resetting message editing.
-  - What about the state of tooltips?
+  - Catch exceptions
+    - `sendMail`
+    - `sendConfirmationEmail`
+    - `sendInvitationEmail`
+- Live-updates:
+  - Inputs of any kind.
+  - Tooltips.
+  - Relative times (for example, “2 days ago”).
 - **Browser tab crashes if left open for a long time.**
   - It seems that the server isn’t affected, because when I close the browser tab, the performance on the machine is back to normal.
   - Only seems to occur in the conversations pages. I left the Course Settings page open for a long time, and nothing went wrong.
