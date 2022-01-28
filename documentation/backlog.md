@@ -290,6 +290,11 @@
   - Right now we’re using Node.js’s event queue as the queue. This is simple, but there are a few issues:
     - Jobs don’t persist if you stop the server and they haven’t have the chance of completing. This affects email delivery, notifications, and so forth.
     - If too many jobs are fired at once, there’s no protection in place, and it may exhaust resources.
+  - Use SQLite as queue:
+    - https://sqlite.org/forum/info/b047f5ef5b76edff
+    - https://github.com/StratoKit/strato-db/blob/master/src/EventQueue.js
+    - https://github.com/litements/litequeue
+    - https://www.npmjs.com/package/better-queue-sqlite
 - `try.courselore.org` (reference https://moodle.org/demo)
 - Rate limiting.
 - Database transactions:
