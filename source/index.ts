@@ -392,7 +392,8 @@ export default async function courselore({
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
         "startedAt" TEXT NULL,
-        "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
+        "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE,
+        "redirect" TEXT NOT NULL
       );
     `
   );
@@ -5610,20 +5611,65 @@ export default async function courselore({
     parallelism: 1,
   };
 
-  const sendEmailConfirmationEmail = async ({
-    req,
-    res,
-    userId,
-    userEmail,
-  }: {
-    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-    res: express.Response<any, BaseMiddlewareLocals>;
-    userId: number;
-    userEmail: string;
-  }): Promise<nodemailer.SentMessageInfo> => {
+  const emailConfirmationWorker = async (): Promise<void> => {
+    clearTimeout(emailConfirmationWorkerTimeout);
+    const job = database.get<{
+      id: number;
+      userId: number;
+      userEmail: string;
+      redirect: string;
+    }>(
+      sql`
+        SELECT "emailConfirmationJobs"."id",
+               "users"."id" AS "userId",
+               "users"."email" AS "userEmail",
+               "emailConfirmationJobs"."redirect"
+        FROM "emailConfirmationJobs"
+        JOIN "users" ON "emailConfirmationJobs"."user" = "users"."id"
+        WHERE "emailConfirmationJobs"."startedAt" IS NULL OR
+              datetime("emailConfirmationJobs"."startedAt") < datetime(${new Date(
+                Date.now() - 3 * 60 * 1000
+              ).toISOString()})
+        ORDER BY "emailConfirmationJobs"."id" DESC
+        LIMIT 1
+      `
+    );
+    if (job === undefined) {
+      for (const job of database.all<{
+        id: number;
+        createdAt: string;
+        userEmail: string;
+      }>(
+        sql`
+          SELECT "emailConfirmationJobs"."id",
+                 "emailConfirmationJobs"."createdAt",
+                 "users"."email" AS "userEmail"
+          FROM "emailConfirmationJobs"
+          JOIN "users" ON "emailConfirmationJobs"."user" = "users"."id"
+          WHERE datetime("emailConfirmationJobs"."createdAt") < datetime(${new Date(
+            Date.now() - 20 * 60 * 1000
+          ).toISOString()}) AND
+                datetime("emailConfirmationJobs"."startedAt") > datetime(${new Date(
+                  Date.now() - 5 * 60 * 1000
+                ).toISOString()})
+        `
+      )) {
+        database.run(
+          sql`DELETE FROM "emailConfirmationJobs" WHERE "id" = ${job.id}`
+        );
+        console.log(
+          `${new Date().toISOString()}\temailConfirmationWorker\tFAILED\t${
+            job.userEmail
+          }\t${new Date(job.createdAt).toISOString()}`
+        );
+      }
+      setTimeout(emailConfirmationWorker, 5 * 60 * 1000);
+      return;
+    }
+
     database.run(
       sql`
-        DELETE FROM "emailConfirmations" WHERE "user" = ${userId}
+        DELETE FROM "emailConfirmations" WHERE "user" = ${job.userId}
       `
     );
     const emailConfirmation = database.get<{
@@ -5633,7 +5679,7 @@ export default async function courselore({
         INSERT INTO "emailConfirmations" ("createdAt", "user", "nonce")
         VALUES (
           ${new Date().toISOString()},
-          ${userId},
+          ${job.userId},
           ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
         )
         RETURNING *
@@ -5644,21 +5690,32 @@ export default async function courselore({
       emailConfirmation.nonce
     }${qs.stringify(
       {
-        redirect: req.originalUrl,
+        redirect: job.redirect,
       },
       { addQueryPrefix: true }
     )}`;
-    return await sendMail({
-      to: userEmail,
-      subject: "Welcome to CourseLore!",
-      html: html`
-        <p>
-          Please confirm your email:<br />
-          <a href="${link}" target="_blank">${link}</a>
-        </p>
-      `,
-    });
+    try {
+      await sendMail({
+        to: job.userEmail,
+        subject: "Welcome to CourseLore!",
+        html: html`
+          <p>
+            Please confirm your email:<br />
+            <a href="${link}" target="_blank">${link}</a>
+          </p>
+        `,
+      });
+      database.run(
+        sql`DELETE FROM "emailConfirmationJobs" WHERE "id" = ${job.id}`
+      );
+    } catch {}
+
+    setTimeout(emailConfirmationWorker, 1000);
   };
+  let emailConfirmationWorkerTimeout = setTimeout(
+    emailConfirmationWorker,
+    5 * 60 * 1000
+  );
 
   app.post<
     {},
@@ -5702,7 +5759,7 @@ export default async function courselore({
         );
       }
 
-      const user = database.get<{ id: number; email: string }>(
+      const user = database.get<{ id: number }>(
         sql`
           INSERT INTO "users" (
             "createdAt",
@@ -5730,14 +5787,13 @@ export default async function courselore({
         `
       )!;
 
-      sendEmailConfirmationEmail({
-        req,
-        res,
-        userId: user.id,
-        userEmail: user.email,
-      }).catch(() => {
-        // Ignore this error because it’s rare enough that it isn’t worth having a retry job. Let the user click on “Resend”.
-      });
+      database.run(
+        sql`
+          INSERT INTO "emailConfirmationJobs" ("createdAt", "user", "redirect")
+          VALUES (${new Date().toISOString()}, ${user.id}, ${req.originalUrl})
+        `
+      );
+      emailConfirmationWorker();
 
       Session.open({ req, res, userId: user.id });
       res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
