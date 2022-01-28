@@ -58,7 +58,7 @@ export default async ({ courselore, courseloreVersion, courseloreImport }) => {
       sendMail: (() => {
         const transporter = nodemailer.createTransport(
           {
-            host: secrets.smtp.host,
+            host: "email-smtp.us-east-1.amazonaws.com",
             auth: {
               user: secrets.smtp.username,
               pass: secrets.smtp.password,
