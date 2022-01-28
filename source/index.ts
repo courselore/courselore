@@ -386,6 +386,14 @@ export default async function courselore({
         UNIQUE ("message", "enrollment")
       );
       CREATE INDEX "likesMessageIndex" ON "likes" ("message");
+    `,
+    sql`
+      CREATE TABLE "emailConfirmationJobs" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL,
+        "startedAt" TEXT NULL,
+        "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
+      );
     `
   );
   setTimeout(function deleteExpiredData() {
@@ -5602,7 +5610,7 @@ export default async function courselore({
     parallelism: 1,
   };
 
-  const sendConfirmationEmail = async ({
+  const sendEmailConfirmationEmail = async ({
     req,
     res,
     userId,
@@ -5722,7 +5730,7 @@ export default async function courselore({
         `
       )!;
 
-      sendConfirmationEmail({
+      sendEmailConfirmationEmail({
         req,
         res,
         userId: user.id,
@@ -5751,7 +5759,7 @@ export default async function courselore({
         return res.redirect("back");
       }
 
-      sendConfirmationEmail({
+      sendEmailConfirmationEmail({
         req,
         res,
         userId: res.locals.user.id,
@@ -6582,7 +6590,7 @@ export default async function courselore({
             WHERE "id" = ${res.locals.user.id}
           `
         );
-        sendConfirmationEmail({
+        sendEmailConfirmationEmail({
           req,
           res,
           userId: res.locals.user.id,
@@ -15603,7 +15611,7 @@ ${contentSource}</textarea
           res,
           conversationReference: conversationRow.reference,
         })!;
-        sendNotifications({
+        sendNotificationEmails({
           req,
           res,
           conversation,
@@ -19105,7 +19113,7 @@ ${contentSource}</textarea
         );
         messageReference = message.reference;
       }
-      sendNotifications({
+      sendNotificationEmails({
         req,
         res,
         conversation: res.locals.conversation,
@@ -19230,7 +19238,7 @@ ${contentSource}</textarea
             WHERE "id" = ${res.locals.conversation.id}
           `
         );
-        sendNotifications({
+        sendNotificationEmails({
           req,
           res,
           conversation: res.locals.conversation,
@@ -19477,7 +19485,7 @@ ${contentSource}</textarea
       res.write(`event: refresh\ndata:\n\n`);
   };
 
-  const sendNotifications = async ({
+  const sendNotificationEmails = async ({
     req,
     res,
     conversation,
