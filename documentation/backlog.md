@@ -2,9 +2,13 @@
 
 - **Notifications are sent multiple times.**
   - Catch exceptions
-    - `sendMail`
-    - `sendConfirmationEmail`
     - `sendInvitationEmail`
+
+.catch(() => {
+      // Ignore this error because it’s rare enough that it isn’t worth having a retry job. Besides, it’s a time-sensitive email. Let the user click on “Resend”.
+    })
+
+  - Retry: `TODO`
 - Live-updates:
   - Inputs of any kind.
   - Tooltips.

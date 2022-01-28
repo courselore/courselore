@@ -5297,6 +5297,8 @@ export default async function courselore({
           </small>
         </p>
       `,
+    }).catch(() => {
+      // Ignore this error because it’s rare enough that it isn’t worth having a retry job. Besides, it’s a time-sensitive email. Let the user click on “Resend”.
     });
     if (req.body.resend === "true")
       Flash.set({
@@ -5725,6 +5727,8 @@ export default async function courselore({
         res,
         userId: user.id,
         userEmail: user.email,
+      }).catch(() => {
+        // Ignore this error because it’s rare enough that it isn’t worth having a retry job. Let the user click on “Resend”.
       });
 
       Session.open({ req, res, userId: user.id });
@@ -5752,6 +5756,8 @@ export default async function courselore({
         res,
         userId: res.locals.user.id,
         userEmail: res.locals.user.email,
+      }).catch(() => {
+        // Ignore this error because it’s rare enough that it isn’t worth having a retry job. Let the user click on “Resend” again.
       });
 
       Flash.set({
@@ -6581,6 +6587,8 @@ export default async function courselore({
           res,
           userId: res.locals.user.id,
           userEmail: req.body.email,
+        }).catch(() => {
+          // Ignore this error because it’s rare enough that it isn’t worth having a retry job. Let the user click on “Resend”.
         });
         Flash.set({
           req,
@@ -19562,51 +19570,56 @@ ${contentSource}</textarea
           mentions.has(enrollment.reference)
       );
 
-    for (const enrollment of enrollments) {
-      await sendMail({
-        to: enrollment.userEmail,
-        subject: `${conversation.title} · ${res.locals.course.name} · CourseLore`,
-        html: html`
-          <p>
-            <a
-              href="${baseURL}/courses/${res.locals.course
-                .reference}/conversations/${conversation.reference}#message--${message.reference}"
-              >${message.authorEnrollment === "no-longer-enrolled"
-                ? "Someone who is no longer enrolled"
-                : message.anonymousAt !== null
-                ? `Anonymous ${
-                    enrollment.role === "staff"
-                      ? `(${message.authorEnrollment.user.name})`
-                      : ""
-                  }`
-                : message.authorEnrollment.user.name}
-              says</a
-            >:
-          </p>
+    for (const enrollment of enrollments)
+      try {
+        await sendMail({
+          to: enrollment.userEmail,
+          subject: `${conversation.title} · ${res.locals.course.name} · CourseLore`,
+          html: html`
+            <p>
+              <a
+                href="${baseURL}/courses/${res.locals.course
+                  .reference}/conversations/${conversation.reference}#message--${message.reference}"
+                >${message.authorEnrollment === "no-longer-enrolled"
+                  ? "Someone who is no longer enrolled"
+                  : message.anonymousAt !== null
+                  ? `Anonymous ${
+                      enrollment.role === "staff"
+                        ? `(${message.authorEnrollment.user.name})`
+                        : ""
+                    }`
+                  : message.authorEnrollment.user.name}
+                says</a
+              >:
+            </p>
 
-          <hr />
+            <hr />
 
-          $${message.contentPreprocessed}
+            $${message.contentPreprocessed}
 
-          <hr />
+            <hr />
 
-          <p>
-            <small>
-              <a href="${baseURL}/settings/notifications-preferences"
-                >Change Notifications Preferences</a
-              >
-            </small>
-          </p>
-        `,
-      });
+            <p>
+              <small>
+                <a href="${baseURL}/settings/notifications-preferences"
+                  >Change Notifications Preferences</a
+                >
+              </small>
+            </p>
+          `,
+        });
 
-      database.run(
-        sql`
-          INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
-          VALUES (${new Date().toISOString()}, ${message.id}, ${enrollment.id})
-        `
-      );
-    }
+        database.run(
+          sql`
+            INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
+            VALUES (${new Date().toISOString()}, ${message.id}, ${
+            enrollment.id
+          })
+          `
+        );
+      } catch {
+        // TODO: Retry.
+      }
   };
 
   if (demonstration)
