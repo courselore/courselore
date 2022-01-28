@@ -68,12 +68,22 @@ export default async function courselore({
 
   const originalSendMail = sendMail;
   sendMail = async (mailOptions) => {
-    console.log(
-      `${new Date().toISOString()}\tMAIL\t${mailOptions.to}\t${
-        mailOptions.subject
-      }`
-    );
-    return await originalSendMail(mailOptions);
+    let sentMessageInfo: nodemailer.SentMessageInfo;
+    try {
+      sentMessageInfo = await originalSendMail(mailOptions);
+      return sentMessageInfo;
+    } catch (error) {
+      sentMessageInfo = error;
+      throw error;
+    } finally {
+      console.log(
+        `${new Date().toISOString()}\tMAIL\t${
+          sentMessageInfo?.response ?? ""
+        }\t\t${mailOptions.to}\t\t${mailOptions.subject}${
+          process.env.NODE_ENV !== "production" ? `\n${mailOptions.html}` : ``
+        }`
+      );
+    }
   };
 
   const app = express();
