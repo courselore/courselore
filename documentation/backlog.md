@@ -71,6 +71,9 @@
   - List of conversations shouldn’t jump when you go to a particular conversation.
 - Add a button to “Return to Bottom” in chat.
 - Add support for underline in Markdown.
+- Email change improvements:
+  - The confirmation email has a subject of “Welcome to CourseLore!”. It should be “Please confirm your email”.
+  - Maybe we shouldn’t actually change the email until it’s confirmed. Otherwise an attacker with a compromised password could change your email and lock you out of the “Forgot your password?” flow.
 
 ### Advanced Access Control
 
