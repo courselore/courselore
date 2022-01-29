@@ -402,6 +402,62 @@ export default async function courselore({
     database.close();
   });
 
+  const sendEmailWorker = (() => {
+    let timeout = setTimeout(scheduler, 2 * 60 * 1000);
+    return scheduler;
+    async function scheduler(): Promise<void> {
+      clearTimeout(timeout);
+      await worker();
+      timeout = setTimeout(scheduler, 2 * 60 * 1000);
+    }
+    async function worker(): Promise<void> {
+      for (const job of database.all<{ id: number; mailOptions: string }>(
+        sql`
+          SELECT "id", "mailOptions"
+          FROM "sendEmailJobs"
+          WHERE datetime("failAt") < datetime('now')
+        `
+      )) {
+        database.run(
+          sql`
+            DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
+          `
+        );
+        console.log(
+          `${new Date().toISOString()}\tsendEmailWorker\tFAILED\n${JSON.stringify(
+            JSON.parse(job.mailOptions),
+            undefined,
+            2
+          )}`
+        );
+      }
+      for (const job of database.all<{ id: number; mailOptions: string }>(
+        sql`
+          SELECT "id", "mailOptions"
+          FROM "sendEmailJobs"
+          WHERE datetime("startedAt") < datetime(${new Date(
+            Date.now() - 4 * 60 * 1000
+          ).toISOString()})
+        `
+      )) {
+        database.run(
+          sql`
+            UPDATE "sendEmailJobs"
+            SET "startedAt" = NULL
+            WHERE "id" = ${job.id}
+          `
+        );
+        console.log(
+          `${new Date().toISOString()}\tsendEmailWorker\tTIMED OUT\n${JSON.stringify(
+            JSON.parse(job.mailOptions),
+            undefined,
+            2
+          )}`
+        );
+      }
+    }
+  })();
+
   app.once("listen", () => {
     console.log(`CourseLore/${courseloreVersion} started at ${baseURL}`);
   });
