@@ -466,7 +466,7 @@ export default async function courselore({
               sql`
               SELECT "id", "mailOptions"
               FROM "sendEmailJobs"
-              WHERE datetime("startAt") < datetime('now') AND
+              WHERE datetime("startAt") <= datetime('now') AND
                     "startedAt" IS NULL
               ORDER BY datetime("startAt") ASC
               LIMIT 1
@@ -515,7 +515,7 @@ export default async function courselore({
           console.log(
             `${new Date().toISOString()}\tsendEmailWorker\t${
               result.status
-            }\t\t${result.response}\t\t${mailOptions.to}\t\t${
+            }\t\t${result?.response ?? ""}\t\t${mailOptions.to}\t\t${
               mailOptions.subject
             }${
               process.env.NODE_ENV !== "production"
@@ -5767,9 +5767,9 @@ export default async function courselore({
     database.run(
       sql`
         INSERT INTO "sendEmailJobs" (
-          "createdAt"
-          "startAt"
-          "expiresAt"
+          "createdAt",
+          "startAt",
+          "expiresAt",
           "mailOptions"
         )
         VALUES (
