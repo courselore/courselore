@@ -4087,7 +4087,7 @@ export default async function courselore({
             JOIN "courses" ON "invitations"."course" = "courses"."id"
             WHERE "invitations"."usedAt" IS NULL AND (
                     "invitations"."expiresAt" IS NULL OR
-                    CURRENT_TIMESTAMP < datetime("invitations"."expiresAt") 
+                    datetime('now') < datetime("invitations"."expiresAt") 
                   ) AND
                   "invitations"."email" = ${res.locals.user.email}
             ORDER BY "invitations"."id" DESC
