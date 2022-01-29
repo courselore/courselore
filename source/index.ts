@@ -19650,7 +19650,7 @@ ${contentSource}</textarea
       res.write(`event: refresh\ndata:\n\n`);
   };
 
-  const sendNotificationEmails = async ({
+  const sendNotificationEmails = ({
     req,
     res,
     conversation,
@@ -19662,7 +19662,7 @@ ${contentSource}</textarea
     conversation: NonNullable<ReturnType<typeof getConversation>>;
     message: NonNullable<ReturnType<typeof getMessage>>;
     mentions: Set<string>;
-  }): Promise<void> => {
+  }): void => {
     database.run(
       sql`
         INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
@@ -19743,56 +19743,67 @@ ${contentSource}</textarea
           mentions.has(enrollment.reference)
       );
 
-    for (const enrollment of enrollments)
-      try {
-        await sendMail({
-          to: enrollment.userEmail,
-          subject: `${conversation.title} · ${res.locals.course.name} · CourseLore`,
-          html: html`
-            <p>
-              <a
-                href="${baseURL}/courses/${res.locals.course
-                  .reference}/conversations/${conversation.reference}#message--${message.reference}"
-                >${message.authorEnrollment === "no-longer-enrolled"
-                  ? "Someone who is no longer enrolled"
-                  : message.anonymousAt !== null
-                  ? `Anonymous ${
-                      enrollment.role === "staff"
-                        ? `(${message.authorEnrollment.user.name})`
-                        : ""
-                    }`
-                  : message.authorEnrollment.user.name}
-                says</a
-              >:
-            </p>
+    for (const enrollment of enrollments) {
+      database.run(
+        sql`
+          INSERT INTO "sendEmailJobs" (
+            "createdAt",
+            "startAt",
+            "expiresAt",
+            "mailOptions"
+          )
+          VALUES (
+            ${new Date().toISOString()},
+            ${new Date().toISOString()},
+            ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
+            ${JSON.stringify({
+              to: enrollment.userEmail,
+              subject: `${conversation.title} · ${res.locals.course.name} · CourseLore`,
+              html: html`
+                <p>
+                  <a
+                    href="${baseURL}/courses/${res.locals.course
+                      .reference}/conversations/${conversation.reference}#message--${message.reference}"
+                    >${message.authorEnrollment === "no-longer-enrolled"
+                      ? "Someone who is no longer enrolled"
+                      : message.anonymousAt !== null
+                      ? `Anonymous ${
+                          enrollment.role === "staff"
+                            ? `(${message.authorEnrollment.user.name})`
+                            : ""
+                        }`
+                      : message.authorEnrollment.user.name}
+                    says</a
+                  >:
+                </p>
 
-            <hr />
+                <hr />
 
-            $${message.contentPreprocessed}
+                $${message.contentPreprocessed}
 
-            <hr />
+                <hr />
 
-            <p>
-              <small>
-                <a href="${baseURL}/settings/notifications-preferences"
-                  >Change Notifications Preferences</a
-                >
-              </small>
-            </p>
-          `,
-        });
-
-        database.run(
-          sql`
-            INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
-            VALUES (${new Date().toISOString()}, ${message.id}, ${
-            enrollment.id
-          })
-          `
-        );
-      } catch {
-        // TODO: Retry.
-      }
+                <p>
+                  <small>
+                    <a href="${baseURL}/settings/notifications-preferences"
+                      >Change Notifications Preferences</a
+                    >
+                  </small>
+                </p>
+              `,
+            })}
+          )
+        `
+      );
+      database.run(
+        sql`
+          INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
+          VALUES (${new Date().toISOString()}, ${message.id}, ${enrollment.id})
+        `
+      );
+    }
+    
+    sendEmailWorker();
   };
 
   if (demonstration)
