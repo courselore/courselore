@@ -5,7 +5,6 @@
 ---
 
 - **Notifications are sent multiple times.**
-  - Database indices for jobs.
   - Job for scheduling notifications.
 - Live-updates:
   - Chat input area isn’t emptying.

@@ -396,6 +396,9 @@ export default async function courselore({
         "expiresAt" TEXT NOT NULL,
         "mailOptions" TEXT NOT NULL
       );
+      CREATE INDEX "sendEmailJobsStartAtIndex" ON "sendEmailJobs" ("startAt");
+      CREATE INDEX "sendEmailJobsStartedAtIndex" ON "sendEmailJobs" ("startedAt");
+      CREATE INDEX "sendEmailJobsExpiresAtIndex" ON "sendEmailJobs" ("expiresAt");
     `
   );
   app.once("close", () => {
@@ -20380,7 +20383,7 @@ ${contentSource}</textarea
           sql`
             SELECT "id", "mailOptions"
             FROM "sendEmailJobs"
-            WHERE datetime("expiresAt") < datetime('now')
+            WHERE "expiresAt" < ${new Date().toISOString()}
           `
         )) {
           database.run(
@@ -20403,9 +20406,9 @@ ${contentSource}</textarea
           sql`
             SELECT "id", "mailOptions"
             FROM "sendEmailJobs"
-            WHERE datetime("startedAt") < datetime(${new Date(
+            WHERE "startedAt" < ${new Date(
               Date.now() - 2 * 60 * 1000
-            ).toISOString()})
+            ).toISOString()}
           `
         )) {
           database.run(
@@ -20432,9 +20435,9 @@ ${contentSource}</textarea
               sql`
                 SELECT "id", "mailOptions"
                 FROM "sendEmailJobs"
-                WHERE datetime("startAt") <= datetime('now') AND
+                WHERE "startAt" <= ${new Date().toISOString()} AND
                       "startedAt" IS NULL
-                ORDER BY datetime("startAt") ASC
+                ORDER BY "startAt" ASC
                 LIMIT 1
               `
             );
