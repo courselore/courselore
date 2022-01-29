@@ -406,7 +406,7 @@ export default async function courselore({
     console.log(`CourseLore/${courseloreVersion} started at ${baseURL}`);
   });
   app.enable("trust proxy");
-  app.use((req, res, next) => {
+  app.use<{}, any, {}, {}, {}>((req, res, next) => {
     const start = process.hrtime.bigint();
     res.once("close", () => {
       console.log(
