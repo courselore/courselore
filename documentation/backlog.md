@@ -1,7 +1,6 @@
 # Backlog
 
 - Propagate changes to other configuration files.
-- Try a `/crash` route to see if exception is logged even with an `exit` handler installed.
 - Document configuration change on release.
 
 ---
