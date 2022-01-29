@@ -3834,7 +3834,7 @@ export default async function courselore({
       return flash.content;
     },
   };
-  setTimeout(function deleteExpiredFlashes() {
+  setTimeout(function worker() {
     database.run(
       sql`
         DELETE FROM "flashes"
@@ -3843,7 +3843,7 @@ export default async function courselore({
         ).toISOString()})
       `
     );
-    setTimeout(deleteExpiredFlashes, 24 * 60 * 60 * 1000);
+    setTimeout(worker, 24 * 60 * 60 * 1000);
   }, 10 * 60 * 1000);
 
   const Session = {
@@ -11535,8 +11535,8 @@ export default async function courselore({
                                 req.query.scrollToConversation !== "false"
                                   ? html`
                                       oninteractive="${javascript`
-                                      window.setTimeout(() => { this.scrollIntoView({ block: "center" }); }, 0);
-                                    `}"
+                                        window.setTimeout(() => { this.scrollIntoView({ block: "center" }); }, 0);
+                                      `}"
                                     `
                                   : html``}
                               >
