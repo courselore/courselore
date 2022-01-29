@@ -388,12 +388,12 @@ export default async function courselore({
       CREATE INDEX "likesMessageIndex" ON "likes" ("message");
     `,
     sql`
-      CREATE TABLE "emailConfirmationJobs" (
+      CREATE TABLE "sendEmailJobs" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
         "startedAt" TEXT NULL,
-        "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE,
-        "redirect" TEXT NOT NULL
+        "tryUntil" TEXT NOT NULL,
+        "mailOptions" TEXT NOT NULL
       );
     `
   );
