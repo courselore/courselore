@@ -401,6 +401,9 @@ export default async function courselore({
     database.close();
   });
 
+  app.once("listen", () => {
+    console.log(`CourseLore/${courseloreVersion} started at ${baseURL}`);
+  });
   app.enable("trust proxy");
   app.use((req, res, next) => {
     const start = process.hrtime.bigint();
@@ -438,6 +441,9 @@ export default async function courselore({
       );
     }
   };
+  app.once("close", () => {
+    console.log(`CourseLore/${courseloreVersion} stopped at ${baseURL}`);
+  });
 
   interface BaseMiddlewareLocals {
     localCSS: ReturnType<typeof localCSS>;
@@ -20457,6 +20463,6 @@ if (import.meta.url.endsWith(process.argv[1]))
     )
   ).default({
     courselore,
-    courseloreVersion,
     courseloreImport: async (modulePath: string) => await import(modulePath),
+    courseloreVersion,
   });

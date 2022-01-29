@@ -1,6 +1,7 @@
 # Backlog
 
-- Move “server started” and “server stopping” logs into application and out of configuration.
+- Try a `/crash` route to see if exception is logged even with an `exit` handler installed.
+- Document configuration change on release.
 
 ---
 
