@@ -1,7 +1,6 @@
 # Backlog
 
-- Propagate changes to other configuration files.
-- Document configuration change on release.
+- Do a minor release and document configuration change.
 
 ---
 
