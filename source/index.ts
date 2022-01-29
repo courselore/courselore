@@ -399,6 +399,18 @@ export default async function courselore({
       CREATE INDEX "sendEmailJobsStartAtIndex" ON "sendEmailJobs" ("startAt");
       CREATE INDEX "sendEmailJobsStartedAtIndex" ON "sendEmailJobs" ("startedAt");
       CREATE INDEX "sendEmailJobsExpiresAtIndex" ON "sendEmailJobs" ("expiresAt");
+
+      DROP INDEX "flashesCreatedAtIndex";
+      CREATE INDEX "flashesCreatedAtIndex" ON "flashes" ("createdAt");
+
+      DROP INDEX "emailConfirmationsCreatedAtIndex";
+      CREATE INDEX "emailConfirmationsCreatedAtIndex" ON "emailConfirmations" ("createdAt");
+
+      DROP INDEX "passwordResetsCreatedAtIndex";
+      CREATE INDEX "passwordResetsCreatedAtIndex" ON "passwordResets" ("createdAt");
+
+      DROP INDEX "sessionsCreatedAtIndex";
+      CREATE INDEX "sessionsCreatedAtIndex" ON "sessions" ("createdAt");
     `
   );
   app.once("close", () => {
@@ -3829,9 +3841,7 @@ export default async function courselore({
     database.run(
       sql`
         DELETE FROM "flashes"
-        WHERE datetime("createdAt") < datetime(${new Date(
-          Date.now() - Flash.maxAge
-        ).toISOString()})
+        WHERE "createdAt" < ${new Date(Date.now() - Flash.maxAge).toISOString()}
       `
     );
     setTimeout(worker, 24 * 60 * 60 * 1000);
@@ -3939,9 +3949,9 @@ export default async function courselore({
     database.run(
       sql`
         DELETE FROM "sessions"
-        WHERE datetime("createdAt") < datetime(${new Date(
+        WHERE "createdAt" < ${new Date(
           Date.now() - Session.maxAge
-        ).toISOString()})
+        ).toISOString()}
       `
     );
     setTimeout(worker, 24 * 60 * 60 * 1000);
@@ -4078,7 +4088,7 @@ export default async function courselore({
             JOIN "courses" ON "invitations"."course" = "courses"."id"
             WHERE "invitations"."usedAt" IS NULL AND (
                     "invitations"."expiresAt" IS NULL OR
-                    datetime('now') < datetime("invitations"."expiresAt") 
+                    ${new Date().toISOString()} < "invitations"."expiresAt"
                   ) AND
                   "invitations"."email" = ${res.locals.user.email}
             ORDER BY "invitations"."id" DESC
@@ -5169,9 +5179,9 @@ export default async function courselore({
     database.run(
       sql`
         DELETE FROM "passwordResets"
-        WHERE datetime("createdAt") < datetime(${new Date(
+        WHERE "createdAt" < ${new Date(
           Date.now() - PasswordReset.maxAge
-        ).toISOString()})
+        ).toISOString()}
       `
     );
     setTimeout(worker, 24 * 60 * 60 * 1000);
@@ -5685,9 +5695,9 @@ export default async function courselore({
     database.run(
       sql`
         DELETE FROM "emailConfirmations"
-        WHERE datetime("createdAt") < datetime(${new Date(
+        WHERE "createdAt" < ${new Date(
           Date.now() - 24 * 60 * 60 * 1000
-        ).toISOString()})
+        ).toISOString()}
       `
     );
     setTimeout(worker, 24 * 60 * 60 * 1000);

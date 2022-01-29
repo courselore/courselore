@@ -1,6 +1,16 @@
 # Backlog
 
-- Do a minor release and document configuration change.
+- Do a minor release and document configuration change (using events instead of logging directly).
+
+---
+
+- Remove `datetime()` from the database and use regular string comparison.
+  - Expiration
+    - flashes
+    - emailConfirmations
+    - passwordResets
+    - sessions
+  - Don’t show invitations that are expired on menubar notification (the little red dot)
 
 ---
 
@@ -44,7 +54,6 @@
 - Rename table `readings` -> `views`.
 - Remove `data-` in favor of `oninteractive`.
 - Change from `addEventListener` to `onEvent`.
-- Remove `datetime()` from the database and use regular string comparison.
 
 ---
 
