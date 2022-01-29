@@ -5412,21 +5412,36 @@ export default async function courselore({
     const link = `${baseURL}/reset-password/${PasswordReset.create(
       user.id
     )}${qs.stringify(req.query, { addQueryPrefix: true })}`;
-    sendMail({
-      to: user.email,
-      subject: "CourseLore · Password Reset Link",
-      html: html`
-        <p><a href="${link}" target="_blank">${link}</a></p>
-        <p>
-          <small>
-            This password reset link is valid for ten minutes.<br />
-            You may ignore this password reset link if you didn’t request it.
-          </small>
-        </p>
-      `,
-    }).catch(() => {
-      // Ignore this error because it’s rare enough that it isn’t worth having a retry job. Besides, it’s a time-sensitive email. Let the user click on “Resend”.
-    });
+    database.run(
+      sql`
+        INSERT INTO "sendEmailJobs" (
+          "createdAt",
+          "startAt",
+          "expiresAt",
+          "mailOptions"
+        )
+        VALUES (
+          ${new Date().toISOString()},
+          ${new Date().toISOString()},
+          ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
+          ${JSON.stringify({
+            to: user.email,
+            subject: "CourseLore · Password Reset Link",
+            html: html`
+              <p><a href="${link}" target="_blank">${link}</a></p>
+              <p>
+                <small>
+                  This password reset link is valid for ten minutes.<br />
+                  You may ignore this password reset link if you didn’t request
+                  it.
+                </small>
+              </p>
+            `,
+          })}
+        )
+      `
+    );
+    sendEmailWorker();
     if (req.body.resend === "true")
       Flash.set({
         req,
