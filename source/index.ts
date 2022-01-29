@@ -423,25 +423,6 @@ export default async function courselore({
     });
     next();
   });
-  const originalSendMail = sendMail;
-  sendMail = async (mailOptions) => {
-    let sentMessageInfo: nodemailer.SentMessageInfo;
-    try {
-      sentMessageInfo = await originalSendMail(mailOptions);
-      return sentMessageInfo;
-    } catch (error) {
-      sentMessageInfo = error;
-      throw sentMessageInfo;
-    } finally {
-      console.log(
-        `${new Date().toISOString()}\tMAIL\t${
-          sentMessageInfo?.response ?? ""
-        }\t\t${mailOptions.to}\t\t${mailOptions.subject}${
-          process.env.NODE_ENV !== "production" ? `\n${mailOptions.html}` : ``
-        }`
-      );
-    }
-  };
   app.once("close", () => {
     console.log(`CourseLore/${courseloreVersion} stopped at ${baseURL}`);
   });
