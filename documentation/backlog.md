@@ -5,6 +5,7 @@
 ---
 
 - **Notifications are sent multiple times.**
+  - sendMail
   - Job for scheduling notifications.
   - Database indices for jobs.
   - TODO
