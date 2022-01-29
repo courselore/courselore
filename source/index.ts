@@ -5801,14 +5801,15 @@ export default async function courselore({
         return res.redirect("back");
       }
 
-      sendEmailConfirmationEmail({
-        req,
-        res,
-        userId: res.locals.user.id,
-        userEmail: res.locals.user.email,
-      }).catch(() => {
-        // Ignore this error because it’s rare enough that it isn’t worth having a retry job. Let the user click on “Resend” again.
-      });
+      // TODO
+      // sendEmailConfirmationEmail({
+      //   req,
+      //   res,
+      //   userId: res.locals.user.id,
+      //   userEmail: res.locals.user.email,
+      // }).catch(() => {
+      //   // Ignore this error because it’s rare enough that it isn’t worth having a retry job. Let the user click on “Resend” again.
+      // });
 
       Flash.set({
         req,
@@ -6632,14 +6633,15 @@ export default async function courselore({
             WHERE "id" = ${res.locals.user.id}
           `
         );
-        sendEmailConfirmationEmail({
-          req,
-          res,
-          userId: res.locals.user.id,
-          userEmail: req.body.email,
-        }).catch(() => {
-          // Ignore this error because it’s rare enough that it isn’t worth having a retry job. Let the user click on “Resend”.
-        });
+        // TODO
+        // sendEmailConfirmationEmail({
+        //   req,
+        //   res,
+        //   userId: res.locals.user.id,
+        //   userEmail: req.body.email,
+        // }).catch(() => {
+        //   // Ignore this error because it’s rare enough that it isn’t worth having a retry job. Let the user click on “Resend”.
+        // });
         Flash.set({
           req,
           res,
