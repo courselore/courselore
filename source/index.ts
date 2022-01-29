@@ -438,7 +438,7 @@ export default async function courselore({
             SELECT "id", "mailOptions"
             FROM "sendEmailJobs"
             WHERE datetime("startedAt") < datetime(${new Date(
-              Date.now() - 4 * 60 * 1000
+              Date.now() - 2 * 60 * 1000
             ).toISOString()})
           `
         )) {
