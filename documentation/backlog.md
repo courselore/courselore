@@ -47,6 +47,7 @@
 - Rename table `readings` -> `views`.
 - Remove `data-` in favor of `oninteractive`.
 - Change from `addEventListener` to `onEvent`.
+- Remove `datetime()` from the database and use regular string comparison.
 
 ---
 
