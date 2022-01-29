@@ -1,7 +1,6 @@
 # Backlog
 
 - Move “server started” and “server stopping” logs into application and out of configuration.
-- Get rid of CURRENT_TIMESTAMP
 
 ---
 
