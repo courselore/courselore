@@ -5845,7 +5845,7 @@ export default async function courselore({
         );
       }
 
-      const user = database.get<{ id: number }>(
+      const user = database.get<{ id: number; email: string }>(
         sql`
           INSERT INTO "users" (
             "createdAt",
@@ -5873,14 +5873,12 @@ export default async function courselore({
         `
       )!;
 
-      database.run(
-        sql`
-          INSERT INTO "emailConfirmationJobs" ("createdAt", "user", "redirect")
-          VALUES (${new Date().toISOString()}, ${user.id}, ${req.originalUrl})
-        `
-      );
-      emailConfirmationWorker();
-
+      sendEmailConfirmationEmail({
+        req,
+        res,
+        userId: user.id,
+        userEmail: user.email,
+      });
       Session.open({ req, res, userId: user.id });
       res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
     })
