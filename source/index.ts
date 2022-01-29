@@ -7503,7 +7503,7 @@ export default async function courselore({
     },
   ];
 
-  const sendInvitationEmail = async ({
+  const sendInvitationEmail = ({
     req,
     res,
     invitation,
@@ -7511,28 +7511,44 @@ export default async function courselore({
     req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
     res: express.Response<any, BaseMiddlewareLocals>;
     invitation: InvitationExistsMiddlewareLocals["invitation"];
-  }): Promise<nodemailer.SentMessageInfo> => {
+  }): void => {
     const link = `${baseURL}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
-    return await sendMail({
-      to: invitation.email!,
-      subject: `Enroll in ${invitation.course.name}`,
-      html: html`
-        <p>
-          Enroll in ${invitation.course.name}:<br />
-          <a href="${link}" target="_blank">${link}</a>
-        </p>
-        $${invitation.expiresAt === null
-          ? html``
-          : html`
+    database.run(
+      sql`
+        INSERT INTO "sendEmailJobs" (
+          "createdAt",
+          "startAt",
+          "expiresAt",
+          "mailOptions"
+        )
+        VALUES (
+          ${new Date().toISOString()},
+          ${new Date().toISOString()},
+          ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
+          ${JSON.stringify({
+            to: invitation.email!,
+            subject: `Enroll in ${invitation.course.name}`,
+            html: html`
               <p>
-                <small>
-                  This invitation is valid until
-                  ${new Date(invitation.expiresAt).toISOString()}.
-                </small>
+                Enroll in ${invitation.course.name}:<br />
+                <a href="${link}" target="_blank">${link}</a>
               </p>
-            `}
-      `,
-    });
+              $${invitation.expiresAt === null
+                ? html``
+                : html`
+                    <p>
+                      <small>
+                        This invitation is valid until
+                        ${new Date(invitation.expiresAt).toISOString()}.
+                      </small>
+                    </p>
+                  `}
+            `,
+          })}
+        )
+      `
+    );
+    sendEmailWorker();
   };
 
   interface MayManageEnrollmentMiddlewareLocals
