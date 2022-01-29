@@ -19684,125 +19684,132 @@ ${contentSource}</textarea
           )
         `
       );
-    let enrollments = database.all<{
-      id: number;
-      userId: number;
-      userEmail: string;
-      userEmailNotifications: UserEmailNotifications;
-      reference: string;
-      role: EnrollmentRole;
-    }>(
-      sql`
-        SELECT "enrollments"."id",
-               "users"."id" AS "userId",
-               "users"."email" AS "userEmail",
-               "users"."emailNotifications" AS "userEmailNotifications",
-               "enrollments"."reference",
-               "enrollments"."role"
-        FROM "enrollments"
-        JOIN "users" ON "enrollments"."user" = "users"."id" AND
-                        "users"."emailConfirmedAt" IS NOT NULL AND
-                        "users"."emailNotifications" != 'none'
-        LEFT JOIN "notificationDeliveries" ON "enrollments"."id" = "notificationDeliveries"."enrollment" AND
-                                              "notificationDeliveries"."message" = ${
-                                                message.id
-                                              }
-        $${
-          conversation.staffOnlyAt !== null
-            ? sql`
-              LEFT JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment" AND
-                                      "messages"."conversation" = ${conversation.id}
-            `
-            : sql``
-        }
-        WHERE "enrollments"."course" = ${res.locals.course.id} AND
-              "notificationDeliveries"."id" IS NULL
-              $${
-                conversation.staffOnlyAt !== null
-                  ? sql`
-                    AND (
-                      "enrollments"."role" = 'staff' OR
-                      "messages"."id" IS NOT NULL
-                    )
-                  `
-                  : sql``
-              }
-      `
-    );
-    if (
-      !(
-        (conversation.type === "announcement" && message.reference === "1") ||
-        mentions.has("everyone")
+
+    database.executeTransaction(() => {
+      let enrollments = database.all<{
+        id: number;
+        userId: number;
+        userEmail: string;
+        userEmailNotifications: UserEmailNotifications;
+        reference: string;
+        role: EnrollmentRole;
+      }>(
+        sql`
+          SELECT "enrollments"."id",
+                 "users"."id" AS "userId",
+                 "users"."email" AS "userEmail",
+                 "users"."emailNotifications" AS "userEmailNotifications",
+                 "enrollments"."reference",
+                 "enrollments"."role"
+          FROM "enrollments"
+          JOIN "users" ON "enrollments"."user" = "users"."id" AND
+                          "users"."emailConfirmedAt" IS NOT NULL AND
+                          "users"."emailNotifications" != 'none'
+          LEFT JOIN "notificationDeliveries" ON "enrollments"."id" = "notificationDeliveries"."enrollment" AND
+                                                "notificationDeliveries"."message" = ${
+                                                  message.id
+                                                }
+          $${
+            conversation.staffOnlyAt !== null
+              ? sql`
+                LEFT JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment" AND
+                                        "messages"."conversation" = ${conversation.id}
+              `
+              : sql``
+          }
+          WHERE "enrollments"."course" = ${res.locals.course.id} AND
+                "notificationDeliveries"."id" IS NULL
+                $${
+                  conversation.staffOnlyAt !== null
+                    ? sql`
+                      AND (
+                        "enrollments"."role" = 'staff' OR
+                        "messages"."id" IS NOT NULL
+                      )
+                    `
+                    : sql``
+                }
+        `
+      );
+      if (
+        !(
+          (conversation.type === "announcement" && message.reference === "1") ||
+          mentions.has("everyone")
+        )
       )
-    )
-      enrollments = enrollments.filter(
-        (enrollment) =>
-          enrollment.userEmailNotifications === "all-messages" ||
-          (enrollment.role === "staff" && mentions.has("staff")) ||
-          (enrollment.role === "student" && mentions.has("students")) ||
-          mentions.has(enrollment.reference)
-      );
+        enrollments = enrollments.filter(
+          (enrollment) =>
+            enrollment.userEmailNotifications === "all-messages" ||
+            (enrollment.role === "staff" && mentions.has("staff")) ||
+            (enrollment.role === "student" && mentions.has("students")) ||
+            mentions.has(enrollment.reference)
+        );
 
-    for (const enrollment of enrollments) {
-      database.run(
-        sql`
-          INSERT INTO "sendEmailJobs" (
-            "createdAt",
-            "startAt",
-            "expiresAt",
-            "mailOptions"
-          )
-          VALUES (
-            ${new Date().toISOString()},
-            ${new Date().toISOString()},
-            ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
-            ${JSON.stringify({
-              to: enrollment.userEmail,
-              subject: `${conversation.title} · ${res.locals.course.name} · CourseLore`,
-              html: html`
-                <p>
-                  <a
-                    href="${baseURL}/courses/${res.locals.course
-                      .reference}/conversations/${conversation.reference}#message--${message.reference}"
-                    >${message.authorEnrollment === "no-longer-enrolled"
-                      ? "Someone who is no longer enrolled"
-                      : message.anonymousAt !== null
-                      ? `Anonymous ${
-                          enrollment.role === "staff"
-                            ? `(${message.authorEnrollment.user.name})`
-                            : ""
-                        }`
-                      : message.authorEnrollment.user.name}
-                    says</a
-                  >:
-                </p>
+      for (const enrollment of enrollments) {
+        database.run(
+          sql`
+            INSERT INTO "sendEmailJobs" (
+              "createdAt",
+              "startAt",
+              "expiresAt",
+              "mailOptions"
+            )
+            VALUES (
+              ${new Date().toISOString()},
+              ${new Date().toISOString()},
+              ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
+              ${JSON.stringify({
+                to: enrollment.userEmail,
+                subject: `${conversation.title} · ${res.locals.course.name} · CourseLore`,
+                html: html`
+                  <p>
+                    <a
+                      href="${baseURL}/courses/${res.locals.course
+                        .reference}/conversations/${conversation.reference}#message--${message.reference}"
+                      >${message.authorEnrollment === "no-longer-enrolled"
+                        ? "Someone who is no longer enrolled"
+                        : message.anonymousAt !== null
+                        ? `Anonymous ${
+                            enrollment.role === "staff"
+                              ? `(${message.authorEnrollment.user.name})`
+                              : ""
+                          }`
+                        : message.authorEnrollment.user.name}
+                      says</a
+                    >:
+                  </p>
 
-                <hr />
+                  <hr />
 
-                $${message.contentPreprocessed}
+                  $${message.contentPreprocessed}
 
-                <hr />
+                  <hr />
 
-                <p>
-                  <small>
-                    <a href="${baseURL}/settings/notifications-preferences"
-                      >Change Notifications Preferences</a
-                    >
-                  </small>
-                </p>
-              `,
-            })}
-          )
-        `
-      );
-      database.run(
-        sql`
-          INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
-          VALUES (${new Date().toISOString()}, ${message.id}, ${enrollment.id})
-        `
-      );
-    }
-    
+                  <p>
+                    <small>
+                      <a href="${baseURL}/settings/notifications-preferences"
+                        >Change Notifications Preferences</a
+                      >
+                    </small>
+                  </p>
+                `,
+              })}
+            )
+          `
+        );
+        database.run(
+          sql`
+            INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
+            VALUES (
+              ${new Date().toISOString()},
+              ${message.id},
+              ${enrollment.id}
+            )
+          `
+        );
+      }
+    });
+
     sendEmailWorker();
   };
 
