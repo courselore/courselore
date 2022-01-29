@@ -3944,6 +3944,17 @@ export default async function courselore({
       Session.open({ req, res, userId });
     },
   };
+  setTimeout(function worker() {
+    database.run(
+      sql`
+        DELETE FROM "sessions"
+        WHERE datetime("createdAt") < datetime(${new Date(
+          Date.now() - Session.maxAge
+        ).toISOString()})
+      `
+    );
+    setTimeout(worker, 24 * 60 * 60 * 1000);
+  }, 10 * 60 * 1000);
 
   interface IsSignedOutMiddlewareLocals extends BaseMiddlewareLocals {}
   const isSignedOutMiddleware: express.RequestHandler<
@@ -5163,6 +5174,17 @@ export default async function courselore({
         : passwordReset.user;
     },
   };
+  setTimeout(function worker() {
+    database.run(
+      sql`
+        DELETE FROM "passwordResets"
+        WHERE datetime("createdAt") < datetime(${new Date(
+          Date.now() - PasswordReset.maxAge
+        ).toISOString()})
+      `
+    );
+    setTimeout(worker, 24 * 60 * 60 * 1000);
+  }, 10 * 60 * 1000);
 
   app.get<{}, HTML, {}, { email?: string }, BaseMiddlewareLocals>(
     "/reset-password",
@@ -5702,6 +5724,17 @@ export default async function courselore({
     emailConfirmationWorker,
     5 * 60 * 1000
   );
+  setTimeout(function worker() {
+    database.run(
+      sql`
+        DELETE FROM "emailConfirmations"
+        WHERE datetime("createdAt") < datetime(${new Date(
+          Date.now() - 24 * 60 * 60 * 1000
+        ).toISOString()})
+      `
+    );
+    setTimeout(worker, 24 * 60 * 60 * 1000);
+  }, 10 * 60 * 1000);
 
   app.post<
     {},
