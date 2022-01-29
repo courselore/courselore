@@ -1,5 +1,10 @@
 # Backlog
 
+- Move “server started” and “server stopping” logs into application and out of configuration.
+- Get rid of CURRENT_TIMESTAMP
+
+---
+
 - **Notifications are sent multiple times.**
 - Live-updates:
   - Chat input area isn’t emptying.

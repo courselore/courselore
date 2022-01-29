@@ -397,37 +397,6 @@ export default async function courselore({
       );
     `
   );
-  setTimeout(function deleteExpiredData() {
-    database.run(
-      sql`
-        DELETE FROM "flashes" WHERE datetime("createdAt") < datetime(${new Date(
-          Date.now() - Flash.maxAge
-        ).toISOString()})
-      `
-    );
-    database.run(
-      sql`
-        DELETE FROM "emailConfirmations" WHERE datetime("createdAt") < datetime(${new Date(
-          Date.now() - 24 * 60 * 60 * 1000
-        ).toISOString()})
-      `
-    );
-    database.run(
-      sql`
-        DELETE FROM "passwordResets" WHERE datetime("createdAt") < datetime(${new Date(
-          Date.now() - PasswordReset.maxAge
-        ).toISOString()})
-      `
-    );
-    database.run(
-      sql`
-        DELETE FROM "sessions" WHERE datetime("createdAt") < datetime(${new Date(
-          Date.now() - Session.maxAge
-        ).toISOString()})
-      `
-    );
-    setTimeout(deleteExpiredData, 24 * 60 * 60 * 1000);
-  }, 10 * 60 * 1000);
   app.once("close", () => {
     database.close();
   });
@@ -3865,6 +3834,17 @@ export default async function courselore({
       return flash.content;
     },
   };
+  setTimeout(function deleteExpiredFlashes() {
+    database.run(
+      sql`
+        DELETE FROM "flashes"
+        WHERE datetime("createdAt") < datetime(${new Date(
+          Date.now() - Flash.maxAge
+        ).toISOString()})
+      `
+    );
+    setTimeout(deleteExpiredFlashes, 24 * 60 * 60 * 1000);
+  }, 10 * 60 * 1000);
 
   const Session = {
     maxAge: 180 * 24 * 60 * 60 * 1000,
