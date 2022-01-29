@@ -393,7 +393,7 @@ export default async function courselore({
         "createdAt" TEXT NOT NULL,
         "startAt" TEXT NOT NULL,
         "startedAt" TEXT NULL,
-        "failAt" TEXT NOT NULL,
+        "expiresAt" TEXT NOT NULL,
         "mailOptions" TEXT NOT NULL
       );
     `
@@ -411,48 +411,109 @@ export default async function courselore({
       timeout = setTimeout(scheduler, 2 * 60 * 1000);
     }
     async function worker(): Promise<void> {
-      for (const job of database.all<{ id: number; mailOptions: string }>(
-        sql`
-          SELECT "id", "mailOptions"
-          FROM "sendEmailJobs"
-          WHERE datetime("failAt") < datetime('now')
-        `
-      )) {
-        database.run(
+      database.executeTransaction(() => {
+        for (const job of database.all<{ id: number; mailOptions: string }>(
           sql`
-            DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
+            SELECT "id", "mailOptions"
+            FROM "sendEmailJobs"
+            WHERE datetime("expiresAt") < datetime('now')
+          `
+        )) {
+          database.run(
+            sql`
+              DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
+            `
+          );
+          console.log(
+            `${new Date().toISOString()}\tsendEmailWorker\tEXPIRED\n${JSON.stringify(
+              JSON.parse(job.mailOptions),
+              undefined,
+              2
+            )}`
+          );
+        }
+      });
+      database.executeTransaction(() => {
+        for (const job of database.all<{ id: number; mailOptions: string }>(
+          sql`
+            SELECT "id", "mailOptions"
+            FROM "sendEmailJobs"
+            WHERE datetime("startedAt") < datetime(${new Date(
+              Date.now() - 4 * 60 * 1000
+            ).toISOString()})
+          `
+        )) {
+          database.run(
+            sql`
+              UPDATE "sendEmailJobs"
+              SET "startedAt" = NULL
+              WHERE "id" = ${job.id}
+            `
+          );
+          console.log(
+            `${new Date().toISOString()}\tsendEmailWorker\tTIMED OUT\n${JSON.stringify(
+              JSON.parse(job.mailOptions),
+              undefined,
+              2
+            )}`
+          );
+        }
+      });
+      let jobs: { id: number; mailOptions: string }[];
+      database.executeTransaction(() => {
+        jobs = database.all<{ id: number; mailOptions: string }>(
+          sql`
+            SELECT "id", "mailOptions"
+            FROM "sendEmailJobs"
+            WHERE datetime("startAt") < datetime('now') AND
+                  "startedAt" IS NULL
+            ORDER BY "id" ASC
           `
         );
-        console.log(
-          `${new Date().toISOString()}\tsendEmailWorker\tFAILED\n${JSON.stringify(
-            JSON.parse(job.mailOptions),
-            undefined,
-            2
-          )}`
-        );
-      }
-      for (const job of database.all<{ id: number; mailOptions: string }>(
-        sql`
-          SELECT "id", "mailOptions"
-          FROM "sendEmailJobs"
-          WHERE datetime("startedAt") < datetime(${new Date(
-            Date.now() - 4 * 60 * 1000
-          ).toISOString()})
-        `
-      )) {
         database.run(
           sql`
             UPDATE "sendEmailJobs"
-            SET "startedAt" = NULL
-            WHERE "id" = ${job.id}
+            SET "startedAt" = ${new Date().toISOString()}
+            WHERE datetime("startAt") < datetime('now')
           `
         );
+      });
+      for (const job of jobs!) {
+        const mailOptions = JSON.parse(job.mailOptions);
+        let result: { status: "SUCCEEDED" | "FAILED"; response: string };
+        try {
+          const sentMessageInfo = await sendMail(mailOptions);
+          result = { status: "SUCCEEDED", ...sentMessageInfo };
+        } catch (error: any) {
+          result = { status: "FAILED", ...error };
+        }
+        switch (result.status) {
+          case "SUCCEEDED":
+            database.run(
+              sql`
+                DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
+              `
+            );
+            break;
+          case "FAILED":
+            database.run(
+              sql`
+                UPDATE "sendEmailJobs"
+                SET "startAt" = ${new Date(
+                  Date.now() + 5 * 60 * 1000
+                ).toISOString()},
+                    "startedAt" = NULL
+                WHERE "id" = ${job.id}
+              `
+            );
+            break;
+        }
         console.log(
-          `${new Date().toISOString()}\tsendEmailWorker\tTIMED OUT\n${JSON.stringify(
-            JSON.parse(job.mailOptions),
-            undefined,
-            2
-          )}`
+          `${new Date().toISOString()}\tsendEmailWorker\t${result.status}\t\t${
+            result.response
+          }\t\t${mailOptions.to}\t\t${mailOptions.subject}${
+            process.env.NODE_ENV !== "production" ? `\n${mailOptions.html}` : ``
+          }`
         );
       }
     }
