@@ -1,4 +1,4 @@
-export default async ({ courselore, courseloreVersion, courseloreImport }) => {
+export default async ({ courselore, courseloreImport }) => {
   const baseURL = "https://YOUR-DOMAIN.EDU";
   const administratorEmail = "administrator@YOUR-DOMAIN.EDU";
   if (process.argv[3] === undefined) {
@@ -62,9 +62,8 @@ export default async ({ courselore, courseloreVersion, courseloreImport }) => {
         return async (mailOptions) => await transporter.sendMail(mailOptions);
       })(),
     });
-    const server = app.listen(4001, "127.0.0.1", () => {
-      console.log(`CourseLore/${courseloreVersion} started at ${baseURL}`);
-    });
+    const server = app.listen(4001, "127.0.0.1");
+    app.emit("listen");
     for (const signal of [
       "exit",
       "SIGHUP",
@@ -77,7 +76,6 @@ export default async ({ courselore, courseloreVersion, courseloreImport }) => {
       process.once(signal, () => {
         server.close();
         app.emit("close");
-        console.log(`CourseLore/${courseloreVersion} stopped at ${baseURL}`);
         if (signal.startsWith("SIG")) process.kill(process.pid, signal);
       });
   }
