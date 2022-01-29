@@ -402,134 +402,6 @@ export default async function courselore({
     database.close();
   });
 
-  const sendEmailWorker = (() => {
-    let timeout = setTimeout(schedule, 2 * 60 * 1000);
-    return schedule;
-
-    async function schedule(): Promise<void> {
-      clearTimeout(timeout);
-
-      database.executeTransaction(() => {
-        for (const job of database.all<{ id: number; mailOptions: string }>(
-          sql`
-            SELECT "id", "mailOptions"
-            FROM "sendEmailJobs"
-            WHERE datetime("expiresAt") < datetime('now')
-          `
-        )) {
-          database.run(
-            sql`
-              DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
-            `
-          );
-          console.log(
-            `${new Date().toISOString()}\tsendEmailWorker\tEXPIRED\n${JSON.stringify(
-              JSON.parse(job.mailOptions),
-              undefined,
-              2
-            )}`
-          );
-        }
-      });
-
-      database.executeTransaction(() => {
-        for (const job of database.all<{ id: number; mailOptions: string }>(
-          sql`
-            SELECT "id", "mailOptions"
-            FROM "sendEmailJobs"
-            WHERE datetime("startedAt") < datetime(${new Date(
-              Date.now() - 2 * 60 * 1000
-            ).toISOString()})
-          `
-        )) {
-          database.run(
-            sql`
-              UPDATE "sendEmailJobs"
-              SET "startedAt" = NULL
-              WHERE "id" = ${job.id}
-            `
-          );
-          console.log(
-            `${new Date().toISOString()}\tsendEmailWorker\tTIMED OUT\n${JSON.stringify(
-              JSON.parse(job.mailOptions),
-              undefined,
-              2
-            )}`
-          );
-        }
-      });
-
-      await (async function work(): Promise<void> {
-        while (true) {
-          const job = database.executeTransaction(() => {
-            const job = database.get<{ id: number; mailOptions: string }>(
-              sql`
-              SELECT "id", "mailOptions"
-              FROM "sendEmailJobs"
-              WHERE datetime("startAt") <= datetime('now') AND
-                    "startedAt" IS NULL
-              ORDER BY datetime("startAt") ASC
-              LIMIT 1
-            `
-            );
-            if (job !== undefined)
-              database.run(
-                sql`
-                  UPDATE "sendEmailJobs"
-                  SET "startedAt" = ${new Date().toISOString()}
-                  WHERE "id" = ${job.id}
-                `
-              );
-            return job;
-          });
-          if (job === undefined) return;
-          const mailOptions = JSON.parse(job.mailOptions);
-          let result: { status: "SUCCEEDED" | "FAILED"; response: string };
-          try {
-            const sentMessageInfo = await sendMail(mailOptions);
-            result = { status: "SUCCEEDED", ...sentMessageInfo };
-          } catch (error: any) {
-            result = { status: "FAILED", ...error };
-          }
-          switch (result.status) {
-            case "SUCCEEDED":
-              database.run(
-                sql`
-                  DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
-                `
-              );
-              break;
-            case "FAILED":
-              database.run(
-                sql`
-                  UPDATE "sendEmailJobs"
-                  SET "startAt" = ${new Date(
-                    Date.now() + 5 * 60 * 1000
-                  ).toISOString()},
-                      "startedAt" = NULL
-                  WHERE "id" = ${job.id}
-                `
-              );
-              break;
-          }
-          console.log(
-            `${new Date().toISOString()}\tsendEmailWorker\t${
-              result.status
-            }\t\t${result?.response ?? ""}\t\t${mailOptions.to}\t\t${
-              mailOptions.subject
-            }${
-              process.env.NODE_ENV !== "production"
-                ? `\n${mailOptions.html}`
-                : ``
-            }`
-          );
-        }
-      })();
-
-      timeout = setTimeout(schedule, 2 * 60 * 1000);
-    }
-  })();
-
   app.once("listen", () => {
     console.log(`CourseLore/${courseloreVersion} started at ${baseURL}`);
   });
@@ -20495,6 +20367,134 @@ ${contentSource}</textarea
       })
     );
   }) as express.ErrorRequestHandler<{}, any, {}, {}, BaseMiddlewareLocals>);
+
+  const sendEmailWorker = (() => {
+    let timeout = setTimeout(schedule, 2 * 60 * 1000);
+    return schedule;
+
+    async function schedule(): Promise<void> {
+      clearTimeout(timeout);
+
+      database.executeTransaction(() => {
+        for (const job of database.all<{ id: number; mailOptions: string }>(
+          sql`
+            SELECT "id", "mailOptions"
+            FROM "sendEmailJobs"
+            WHERE datetime("expiresAt") < datetime('now')
+          `
+        )) {
+          database.run(
+            sql`
+              DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
+            `
+          );
+          console.log(
+            `${new Date().toISOString()}\tsendEmailWorker\tEXPIRED\n${JSON.stringify(
+              JSON.parse(job.mailOptions),
+              undefined,
+              2
+            )}`
+          );
+        }
+      });
+
+      database.executeTransaction(() => {
+        for (const job of database.all<{ id: number; mailOptions: string }>(
+          sql`
+            SELECT "id", "mailOptions"
+            FROM "sendEmailJobs"
+            WHERE datetime("startedAt") < datetime(${new Date(
+              Date.now() - 2 * 60 * 1000
+            ).toISOString()})
+          `
+        )) {
+          database.run(
+            sql`
+              UPDATE "sendEmailJobs"
+              SET "startedAt" = NULL
+              WHERE "id" = ${job.id}
+            `
+          );
+          console.log(
+            `${new Date().toISOString()}\tsendEmailWorker\tTIMED OUT\n${JSON.stringify(
+              JSON.parse(job.mailOptions),
+              undefined,
+              2
+            )}`
+          );
+        }
+      });
+
+      await (async function work(): Promise<void> {
+        while (true) {
+          const job = database.executeTransaction(() => {
+            const job = database.get<{ id: number; mailOptions: string }>(
+              sql`
+                SELECT "id", "mailOptions"
+                FROM "sendEmailJobs"
+                WHERE datetime("startAt") <= datetime('now') AND
+                      "startedAt" IS NULL
+                ORDER BY datetime("startAt") ASC
+                LIMIT 1
+              `
+            );
+            if (job !== undefined)
+              database.run(
+                sql`
+                  UPDATE "sendEmailJobs"
+                  SET "startedAt" = ${new Date().toISOString()}
+                  WHERE "id" = ${job.id}
+                `
+              );
+            return job;
+          });
+          if (job === undefined) return;
+          const mailOptions = JSON.parse(job.mailOptions);
+          let result: { status: "SUCCEEDED" | "FAILED"; response: string };
+          try {
+            const sentMessageInfo = await sendMail(mailOptions);
+            result = { status: "SUCCEEDED", ...sentMessageInfo };
+          } catch (error: any) {
+            result = { status: "FAILED", ...error };
+          }
+          switch (result.status) {
+            case "SUCCEEDED":
+              database.run(
+                sql`
+                  DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
+                `
+              );
+              break;
+            case "FAILED":
+              database.run(
+                sql`
+                  UPDATE "sendEmailJobs"
+                  SET "startAt" = ${new Date(
+                    Date.now() + 5 * 60 * 1000
+                  ).toISOString()},
+                      "startedAt" = NULL
+                  WHERE "id" = ${job.id}
+                `
+              );
+              break;
+          }
+          console.log(
+            `${new Date().toISOString()}\tsendEmailWorker\t${
+              result.status
+            }\t\t${result?.response ?? ""}\t\t${mailOptions.to}\t\t${
+              mailOptions.subject
+            }${
+              process.env.NODE_ENV !== "production"
+                ? `\n${mailOptions.html}`
+                : ``
+            }`
+          );
+        }
+      })();
+
+      timeout = setTimeout(schedule, 2 * 60 * 1000);
+    }
+  })();
 
   const emailRegExp = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
 

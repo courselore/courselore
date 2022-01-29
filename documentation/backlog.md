@@ -5,10 +5,8 @@
 ---
 
 - **Notifications are sent multiple times.**
-  - sendMail
-  - Job for scheduling notifications.
   - Database indices for jobs.
-  - TODO
+  - Job for scheduling notifications.
 - Live-updates:
   - Chat input area isn’t emptying.
   - Inputs of any kind.
