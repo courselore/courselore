@@ -391,8 +391,9 @@ export default async function courselore({
       CREATE TABLE "sendEmailJobs" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
+        "startAt" TEXT NOT NULL,
         "startedAt" TEXT NULL,
-        "tryUntil" TEXT NOT NULL,
+        "failAt" TEXT NOT NULL,
         "mailOptions" TEXT NOT NULL
       );
     `
