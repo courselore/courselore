@@ -2,6 +2,7 @@
 
 - **Notifications are sent multiple times.**
 - Live-updates:
+  - Chat input area isn’t emptying.
   - Inputs of any kind.
   - Tooltips.
   - Relative times (for example, “2 days ago”).
@@ -113,6 +114,7 @@
 
 ### Conversations
 
+- Show a widget similar to the Views (with person & time) to likes & endorsements.
 - We shouldn’t show endorsements for non-answers. (They show up at least for staff.)
 - Scroll the conversations list to the current conversation doesn’t work on mobile.
 - Streamlining the creation of DMs.

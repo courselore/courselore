@@ -5666,6 +5666,12 @@ export default async function courselore({
       setTimeout(emailConfirmationWorker, 5 * 60 * 1000);
       return;
     }
+    // TODO: Transaction
+    database.run(
+      sql`UPDATE "emailConfirmationJobs" SET "startedAt" = ${new Date().toISOString()} WHERE "id" = ${
+        job.id
+      }`
+    );
 
     database.run(
       sql`
