@@ -468,18 +468,18 @@ export default async function courselore({
               FROM "sendEmailJobs"
               WHERE datetime("startAt") < datetime('now') AND
                     "startedAt" IS NULL
-              ORDER BY "id" ASC
+              ORDER BY datetime("startAt") ASC
               LIMIT 1
             `
             );
-            if (job === undefined) return;
-            database.run(
-              sql`
-              UPDATE "sendEmailJobs"
-              SET "startedAt" = ${new Date().toISOString()}
-              WHERE "id" = ${job.id}
-            `
-            );
+            if (job !== undefined) 
+              database.run(
+                sql`
+                  UPDATE "sendEmailJobs"
+                  SET "startedAt" = ${new Date().toISOString()}
+                  WHERE "id" = ${job.id}
+                `
+              );
             return job;
           });
           if (job === undefined) return;
