@@ -14727,7 +14727,6 @@ ${contentSource}</textarea
                           mentionHTML = html`@$${userPartial({
                             req,
                             res,
-                            size: "xs",
                           })}`;
                           break;
                         default:
@@ -14790,7 +14789,6 @@ ${contentSource}</textarea
                             req,
                             res,
                             enrollment,
-                            size: "xs",
                           })}`;
                           if (enrollment.user.id === res.locals.user!.id)
                             mentionHTML = html`<mark
