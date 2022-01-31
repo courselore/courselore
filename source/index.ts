@@ -14469,51 +14469,40 @@ ${contentSource}</textarea
         const href = `${baseURL}/files/${folder}/${encodeURIComponent(
           attachment.name
         )}`;
-        if (attachment.mimetype.startsWith("image/")) {
-          let image: sharp.Sharp;
-          let metadata: sharp.Metadata;
+        if (attachment.mimetype.startsWith("image/"))
           try {
-            image = sharp(attachment.data, { limitInputPixels: false });
-            metadata = await image.metadata();
+            const image = sharp(attachment.data, { limitInputPixels: false });
+            const metadata = await image.metadata();
             if (metadata.width === undefined) throw new Error();
-          } catch {
-            attachmentsContentSources.push(`[${attachment.name}](${href})`);
-            continue;
-          }
-          const maximumWidth = 1152; /* var(--width--6xl) */
-          if (metadata.width <= maximumWidth) {
-            attachmentsContentSources.push(
-              `[<img src="${href}" alt="${attachment.name}" width="${
-                metadata.width / 2
-              }" />](${href})`
-            );
-            continue;
-          }
-          const ext = path.extname(attachment.name);
-          const nameThumbnail = `${attachment.name.slice(
-            0,
-            attachment.name.length - ext.length
-          )}--thumbnail${ext}`;
-          try {
+            const maximumWidth = 1152; /* var(--width--6xl) */
+            if (metadata.width <= maximumWidth) {
+              attachmentsContentSources.push(
+                `[<img src="${href}" alt="${attachment.name}" width="${
+                  metadata.width / 2
+                }" />](${href})`
+              );
+              continue;
+            }
+            const ext = path.extname(attachment.name);
+            const nameThumbnail = `${attachment.name.slice(
+              0,
+              attachment.name.length - ext.length
+            )}--thumbnail${ext}`;
             await image
               .rotate()
               .resize({ width: maximumWidth })
               .toFile(
                 path.join(dataDirectory, `files/${folder}/${nameThumbnail}`)
               );
-          } catch {
-            attachmentsContentSources.push(`[${attachment.name}](${href})`);
+            attachmentsContentSources.push(
+              `[<img src="${baseURL}/files/${folder}/${encodeURIComponent(
+                nameThumbnail
+              )}" alt="${attachment.name}" width="${
+                maximumWidth / 2
+              }" />](${href})`
+            );
             continue;
-          }
-          attachmentsContentSources.push(
-            `[<img src="${baseURL}/files/${folder}/${encodeURIComponent(
-              nameThumbnail
-            )}" alt="${attachment.name}" width="${
-              maximumWidth / 2
-            }" />](${href})`
-          );
-          continue;
-        }
+          } catch {}
         attachmentsContentSources.push(`[${attachment.name}](${href})`);
       }
       res.send(` ${attachmentsContentSources.join("\n\n")} `);
