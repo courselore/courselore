@@ -3136,6 +3136,7 @@ export default async function courselore({
   }): HTML => {
     let userAvatar: HTML | undefined;
     let userName: HTML | undefined;
+
     if (anonymous !== true && user !== undefined) {
       if (avatar) {
         userAvatar =
@@ -3476,6 +3477,7 @@ export default async function courselore({
 
     let anonymousAvatar: HTML | undefined;
     let anonymousName: HTML | undefined;
+
     if (anonymous !== false) {
       if (avatar)
         anonymousAvatar = html`<svg
