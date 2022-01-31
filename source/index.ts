@@ -19614,6 +19614,7 @@ ${contentSource}</textarea
                     `
                     : sql``
                 }
+          GROUP BY "enrollments"."id"
         `
       );
       if (

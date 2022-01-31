@@ -2,8 +2,13 @@
 
 - Deploy changes that should fix email notification delivery:
   - Review the code.
+    - `sendNotificationEmails`
+    - `sendEmailWorker`
+    - `LEFT JOIN`
   - Do a minor release and document configuration change (using events instead of logging directly).
-  - Push secrets.json
+  - Deploy to production
+    - Make a backup of the database
+    - Push secrets.json
 
 ---
 
@@ -280,6 +285,7 @@
 
 ### Infrastructure
 
+- `app.on("close")` stop workers.
 - The “No conversation selected.” page doesn’t open a SSE connection to the server, so it doesn’t get live updates.
 - Graceful HTTP shutdown
   - Do we need that, or is our currently solution enough, given that Node.js seems to end keep-alive connections gracefully and we have no interest in keeping the Node.js process running?
