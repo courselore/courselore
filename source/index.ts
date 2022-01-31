@@ -3437,16 +3437,16 @@ export default async function courselore({
             : name}$${enrollment !== undefined &&
           enrollment !== "no-longer-enrolled" &&
           enrollment.role === "staff"
-            ? html` <span
-                class="text--pink"
-                oninteractive="${javascript`
+            ? html`  <span
+                  class="text--pink"
+                  oninteractive="${javascript`
                     tippy(this, {
                       touch: false,
                       content: "Staff",
                     });
                   `}"
-                ><i class="bi bi-mortarboard-fill"></i
-              ></span>`
+                  ><i class="bi bi-mortarboard-fill"></i
+                ></span>`
             : html``}</span
         >`;
     }
