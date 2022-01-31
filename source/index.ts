@@ -14714,18 +14714,21 @@ ${contentSource}</textarea
                         case "staff":
                         case "students":
                           mentions!.add(mention);
-                          mentionHTML = html`<strong
+                          mentionHTML = html`<span
                             oninteractive="${javascript`
                               tippy(this, {
-                                content: "Mention",
+                                content: "Mention ${mention} in the conversation",
                               });
                             `}"
-                            >${lodash.capitalize(mention)} in the
-                            Conversation</strong
+                            >@${lodash.capitalize(mention)}</span
                           >`;
                           break;
                         case "anonymous":
-                          mentionHTML = userPartial({ req, res });
+                          mentionHTML = html`@$${userPartial({
+                            req,
+                            res,
+                            size: "xs",
+                          })}`;
                           break;
                         default:
                           const enrollmentReference = mention.split("--")[0];
@@ -14783,26 +14786,24 @@ ${contentSource}</textarea
                             role: enrollmentRow.role,
                           };
                           mentions!.add(enrollment.reference);
-                          mentionHTML = userPartial({
+                          mentionHTML = html`@$${userPartial({
                             req,
                             res,
                             enrollment,
-                          });
+                            size: "xs",
+                          })}`;
                           if (enrollment.user.id === res.locals.user!.id)
                             mentionHTML = html`<mark
                               class="mark ${res.locals.localCSS(css`
-                                border-top-left-radius: var(
-                                  --border-radius--3xl
-                                );
-                                border-bottom-left-radius: var(
-                                  --border-radius--3xl
-                                );
+                                padding: var(--space--0-5);
                               `)}"
                               >$${mentionHTML}</mark
                             >`;
                           break;
                       }
-                      return html`<span class="mention">$${mentionHTML}</span>`;
+                      return html`<strong class="mention"
+                        >$${mentionHTML}</strong
+                      >`;
                     }
                   );
 
