@@ -1,6 +1,5 @@
 # Backlog
 
-- GIFs don’t show as images because they lack `metadata.density`
 - Change the presentation of the staff role in `userPartial`:
   - Put the icon next to the person’s name, instead of overlaying on their avatar.
   - Change the color.
