@@ -1,7 +1,5 @@
 # Backlog
 
-- Change the presentation of the staff role in `userPartial`:
-  - Change the color.
 - Redesign the presentation of @mentions in messages.
   - Shorten “Everyone in this Conversation” to just “Everyone”.
 - Add the notion of questions being resolved.

@@ -1582,7 +1582,7 @@ export default async function courselore({
       "blue",
       "green",
       "rose",
-      "pink",
+      "sky",
       "amber",
       "teal",
       "lime",
@@ -3415,7 +3415,7 @@ export default async function courselore({
                                   enrollment.role === "staff"
                                     ? html`
                                         <div
-                                          class="text--pink ${res.locals
+                                          class="text--sky ${res.locals
                                             .localCSS(css`
                                             font-size: var(--font-size--xs);
                                             line-height: var(--line-height--xs);
@@ -3456,7 +3456,7 @@ export default async function courselore({
           enrollment !== "no-longer-enrolled" &&
           enrollment.role === "staff"
             ? html`  <span
-                  class="text--pink"
+                  class="text--sky"
                   oninteractive="${javascript`
                     tippy(this, {
                       touch: false,
@@ -4411,11 +4411,11 @@ export default async function courselore({
               <div>
                 <div
                   class="${res.locals.localCSS(css`
-                    color: var(--color--pink--700);
-                    background-color: var(--color--pink--200);
+                    color: var(--color--sky--700);
+                    background-color: var(--color--sky--200);
                     @media (prefers-color-scheme: dark) {
-                      color: var(--color--pink--200);
-                      background-color: var(--color--pink--700);
+                      color: var(--color--sky--200);
+                      background-color: var(--color--sky--700);
                     }
                   `)}"
                 >
@@ -7926,7 +7926,7 @@ export default async function courselore({
                                   Visible by Everyone
                                 </span>
                                 <span
-                                  class="text--pink"
+                                  class="text--sky"
                                   oninteractive="${javascript`
                                     tippy(this, {
                                       touch: false,
@@ -8180,7 +8180,7 @@ export default async function courselore({
                                       Visible by Everyone
                                     </span>
                                     <span
-                                      class="text--pink"
+                                      class="text--sky"
                                       onmount="${javascript`
                                         tippy(this, {
                                           touch: false,
@@ -9842,7 +9842,7 @@ export default async function courselore({
                         <button
                           class="button button--tight button--tight--inline button--transparent ${enrollment.role ===
                           "staff"
-                            ? "text--pink"
+                            ? "text--sky"
                             : ""}"
                           oninteractive="${javascript`
                             tippy(this, {
@@ -11272,7 +11272,7 @@ export default async function courselore({
                             <i class="bi bi-eye"></i>
                             Visible by Everyone
                           </span>
-                          <span class="text--pink">
+                          <span class="text--sky">
                             <i class="bi bi-eye-fill"></i>
                             Visible by Everyone
                           </span>
@@ -11296,7 +11296,7 @@ export default async function courselore({
                             <i class="bi bi-mortarboard"></i>
                             Visible by Staff Only
                           </span>
-                          <span class="text--pink">
+                          <span class="text--sky">
                             <i class="bi bi-mortarboard-fill"></i>
                             Visible by Staff Only
                           </span>
@@ -11365,7 +11365,7 @@ export default async function courselore({
                                     $${tag.staffOnlyAt !== null
                                       ? html`
                                           <span
-                                            class="text--pink"
+                                            class="text--sky"
                                             oninteractive="${javascript`
                                               tippy(this, {
                                                 touch: false,
@@ -11718,7 +11718,7 @@ export default async function courselore({
           : html``}
         $${conversation.staffOnlyAt !== null
           ? html`
-              <div class="text--pink">
+              <div class="text--sky">
                 <i class="bi bi-mortarboard-fill"></i>
                 Visible by Staff Only
               </div>
@@ -11802,7 +11802,7 @@ export default async function courselore({
                     $${tagging.tag.staffOnlyAt !== null
                       ? html`
                           <span
-                            class="text--pink"
+                            class="text--sky"
                             oninteractive="${javascript`
                               tippy(this, {
                                 touch: false,
@@ -15222,7 +15222,7 @@ ${contentSource}</textarea
                           Visible by Everyone
                         </span>
                         <span
-                          class="text--pink"
+                          class="text--sky"
                           oninteractive="${javascript`
                             tippy(this, {
                               touch: false,
@@ -15344,7 +15344,7 @@ ${contentSource}</textarea
                                     $${tag.staffOnlyAt !== null
                                       ? html`
                                           <span
-                                            class="text--pink"
+                                            class="text--sky"
                                             oninteractive="${javascript`
                                           tippy(this, {
                                             touch: false,
@@ -16148,7 +16148,7 @@ ${contentSource}</textarea
                                 class="button button--tight button--tight--inline button--tight-gap button--transparent ${res
                                   .locals.conversation.staffOnlyAt === null
                                   ? ""
-                                  : "text--pink"}"
+                                  : "text--sky"}"
                                 oninteractive="${javascript`
                                   tippy(this, {
                                     touch: false,
@@ -16274,7 +16274,7 @@ ${contentSource}</textarea
                           : res.locals.conversation.staffOnlyAt !== null
                           ? html`
                               <div
-                                class="text--pink ${res.locals.localCSS(css`
+                                class="text--sky ${res.locals.localCSS(css`
                                   display: flex;
                                   gap: var(--space--1);
                                 `)}"
@@ -16544,7 +16544,7 @@ ${contentSource}</textarea
                                             .tag.staffOnlyAt !== null
                                             ? html`
                                                 <span
-                                                  class="text--pink"
+                                                  class="text--sky"
                                                   oninteractive="${javascript`
                                                     tippy(this, {
                                                       content: "This tag is visible by staff only.",
@@ -16604,7 +16604,7 @@ ${contentSource}</textarea
                                               null
                                                 ? html`
                                                     <span
-                                                      class="text--pink"
+                                                      class="text--sky"
                                                       oninteractive="${javascript`
                                                         tippy(this, {
                                                           content: "This tag is visible by staff only.",
@@ -16687,7 +16687,7 @@ ${contentSource}</textarea
                                                                 null
                                                                   ? html`
                                                                       <span
-                                                                        class="text--pink"
+                                                                        class="text--sky"
                                                                         oninteractive="${javascript`
                                                                           tippy(this, {
                                                                             touch: false,
