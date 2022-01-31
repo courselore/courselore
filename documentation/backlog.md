@@ -1,7 +1,6 @@
 # Backlog
 
 - Deploy changes that should fix email notification delivery:
-  - Investigate logs of notifications that were sent multiple times to me.
   - Review the code.
   - Do a minor release and document configuration change (using events instead of logging directly).
   - Push secrets.json
