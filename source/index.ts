@@ -12034,6 +12034,7 @@ export default async function courselore({
                     `
                   : sql``
               }
+        GROUP BY "conversations"."id"
       `
     );
     if (conversationRow === undefined) return undefined;
@@ -19597,9 +19598,9 @@ ${contentSource}</textarea
           $${
             conversation.staffOnlyAt !== null
               ? sql`
-                LEFT JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment" AND
-                                        "messages"."conversation" = ${conversation.id}
-              `
+                  LEFT JOIN "messages" ON "enrollments"."id" = "messages"."authorEnrollment" AND
+                                          "messages"."conversation" = ${conversation.id}
+                `
               : sql``
           }
           WHERE "enrollments"."course" = ${res.locals.course.id} AND
