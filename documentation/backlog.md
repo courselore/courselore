@@ -2,7 +2,6 @@
 
 - Deploy changes that should fix email notification delivery:
   - Review the code.
-    - `sendEmailWorker`
     - `LEFT JOIN`
   - Do a minor release and document configuration change (using events instead of logging directly).
   - Deploy to production
