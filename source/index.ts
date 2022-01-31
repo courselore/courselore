@@ -3434,7 +3434,20 @@ export default async function courselore({
             ? html`${user === "no-longer-enrolled"
                 ? "No Longer Enrolled"
                 : user.name}`
-            : name}</span
+            : name}$${enrollment !== undefined &&
+          enrollment !== "no-longer-enrolled" &&
+          enrollment.role === "staff"
+            ? html` <span
+                class="text--pink"
+                oninteractive="${javascript`
+                    tippy(this, {
+                      touch: false,
+                      content: "Staff",
+                    });
+                  `}"
+                ><i class="bi bi-mortarboard-fill"></i
+              ></span>`
+            : html``}</span
         >`;
     }
 
