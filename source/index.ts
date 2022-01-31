@@ -3335,19 +3335,20 @@ export default async function courselore({
             : name}$${enrollment !== undefined &&
           enrollment !== "no-longer-enrolled" &&
           enrollment.role === "staff"
-            ? html`  <span
-                  class="text--sky"
-                  oninteractive="${javascript`
+            ? html`<span
+                class="text--sky"
+                oninteractive="${javascript`
                     tippy(this, {
                       touch: false,
                       content: "Staff",
                     });
                   `}"
-                  ><i class="bi bi-mortarboard-fill"></i
-                ></span>`
+                >  <i class="bi bi-mortarboard-fill"></i
+              ></span>`
             : html``}</span
         >`;
     }
+
     const userHTML =
       userAvatar !== undefined && userName !== undefined
         ? html`<span
@@ -3540,6 +3541,7 @@ export default async function courselore({
           >Anonymous</span
         >`;
     }
+
     const anonymousHTML =
       anonymousAvatar !== undefined && anonymousName !== undefined
         ? html`<span
