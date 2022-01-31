@@ -1,7 +1,34 @@
 # Meeting Notes
 
 <details>
-<summary>2021-01-22</summary>
+<summary>2021-01-29</summary>
+
+- This week’s progress:
+  - Investigated techniques for live-updates, view caching, and so forth.
+  - Fixed shutdown behavior.
+  - Added logging.
+  - Investigated issue of notifications being delivered multiple times.
+- Other things we talked about:
+  - The highest priority is fixing all the remaining bugs.
+  - Redesign the presentation of @mentions in messages.
+    - Shorten “Everyone in this Conversation” to just “Everyone”.
+  - The scale of a single course:
+    - 150 students
+    - 15 CAs
+    - 1300 conversations
+    - 2~3 messages per conversation
+    - 8 chats
+    - 50 messages per chat
+  - Add the notion of questions being resolved.
+    - Only staff may change the “resolved” status
+    - List of conversations: Make it easy to see unresolved questions. Color-code and filters.
+    - Use that to organize Meta CourseLore.
+  - Meta CourseLore make a pinned announcement of how to report bugs.
+
+</details>
+
+<details>
+<summary>2021-01-23</summary>
 
 - This week’s progress:
   - Improved the performance by 3x by changing the processing of CSS/JS.

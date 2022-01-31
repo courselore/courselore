@@ -1,6 +1,26 @@
 # Backlog
 
+- Redesign the presentation of @mentions in messages.
+  - Shorten “Everyone in this Conversation” to just “Everyone”.
+- The scale of a single course:
+  - 150 students
+  - 15 CAs
+  - 1300 conversations
+  - 2~3 messages per conversation
+  - 8 chats
+  - 50 messages per chat
+- Add the notion of questions being resolved.
+  - Only staff may change the “resolved” status
+  - List of conversations: Make it easy to see unresolved questions. Color-code and filters.
+  - Use that to organize Meta CourseLore.
+- Meta CourseLore make a pinned announcement of how to report bugs.
+
+---
+
 - Do a minor release and document configuration change (using events instead of logging directly).
+- Push secrets.json
+- GIFs don’t show as images because they lack metadata.density
+- Change color of staff indicator in userPartial
 
 ---
 
@@ -21,6 +41,7 @@
 - Lazy loading
   - userPartial
   - Edit message forms
+    - Should also fix the bug in which you send a couple messages in a row, they coalesce, and then you try to edit.
   - Views component showing who saw each message and when
   - On mobile, decouple the list of conversation (the sidebar on desktop) from the conversation itself, to push less data on the wire
   - (We’re already doing it for things like the @mention component. Just use the same approach)
