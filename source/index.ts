@@ -3288,17 +3288,15 @@ export default async function courselore({
                 xs: css`
                   width: var(--space--1);
                   height: var(--space--1);
-                  transform: translate(50%, 50%);
                 `,
                 sm: css`
                   width: var(--space--1-5);
                   height: var(--space--1-5);
-                  transform: translate(50%, 50%);
                 `,
                 xl: css`
-                  width: var(--space--2-5);
-                  height: var(--space--2-5);
-                  transform: translate(-70%, -70%);
+                  width: var(--space--3);
+                  height: var(--space--3);
+                  transform: translate(-100%, -100%);
                 `,
               }[size]}
               border-radius: var(--border-radius--circle);
@@ -3320,57 +3318,6 @@ export default async function courselore({
               })();
             `}"
           ></span>
-          $${enrollment !== undefined && enrollment.role === "staff"
-            ? html`
-                <svg
-                  viewBox="0 0 24 24"
-                  class="${res.locals.localCSS(css`
-                    color: var(--color--pink--700);
-                    background-color: var(--color--pink--200);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--pink--200);
-                      background-color: var(--color--pink--700);
-                    }
-                    ${{
-                      xs: css`
-                        width: var(--space--2);
-                        height: var(--space--2);
-                        transform: translate(50%, -40%);
-                      `,
-                      sm: css`
-                        width: var(--space--2-5);
-                        height: var(--space--2-5);
-                        transform: translate(50%, -30%);
-                      `,
-                      xl: css`
-                        width: var(--space--5);
-                        height: var(--space--5);
-                        transform: translate(-20%, 10%);
-                      `,
-                    }[size]}
-                    border-radius: var(--border-radius--circle);
-                    justify-self: end;
-                  `)}"
-                  oninteractive="${javascript`
-                    tippy(this, {
-                      touch: false,
-                      content: "Staff",
-                    });
-                  `}"
-                >
-                  <foreignObject x="2" y="-2" width="24" height="24">
-                    <span
-                      class="${res.locals.localCSS(css`
-                        font-size: var(--font-size--xl);
-                        line-height: var(--line-height--xl);
-                      `)}"
-                    >
-                      <i class="bi bi-mortarboard-fill"></i>
-                    </span>
-                  </foreignObject>
-                </svg>
-              `
-            : html``}
         </span>`;
 
       if (name !== false)
