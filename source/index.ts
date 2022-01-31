@@ -3410,6 +3410,24 @@ export default async function courselore({
                                           ></time>
                                         </div>
                                       `}
+                                  $${enrollment !== undefined &&
+                                  enrollment !== "no-longer-enrolled" &&
+                                  enrollment.role === "staff"
+                                    ? html`
+                                        <div
+                                          class="text--pink ${res.locals
+                                            .localCSS(css`
+                                            font-size: var(--font-size--xs);
+                                            line-height: var(--line-height--xs);
+                                            display: flex;
+                                            gap: var(--space--2);
+                                          `)}"
+                                        >
+                                          <i class="bi bi-mortarboard-fill"></i>
+                                          Staff
+                                        </div>
+                                      `
+                                    : html``}
                                 </div>
                               </div>
                             </div>
