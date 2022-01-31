@@ -14471,28 +14471,20 @@ ${contentSource}</textarea
         )}`;
         if (attachment.mimetype.startsWith("image/")) {
           let image: sharp.Sharp;
-          try {
-            image = sharp(attachment.data, { limitInputPixels: false });
-          } catch {
-            attachmentsContentSources.push(`[${attachment.name}](${href})`);
-            continue;
-          }
           let metadata: sharp.Metadata;
           try {
+            image = sharp(attachment.data, { limitInputPixels: false });
             metadata = await image.metadata();
+            if (metadata.width === undefined) throw new Error();
           } catch {
-            attachmentsContentSources.push(`[![${attachment.name}](${href})](${href})`);
-            continue;
-          }
-          if (metadata.width === undefined || metadata.density === undefined) {
-            attachmentsContentSources.push(`[![${attachment.name}](${href})](${href})`);
+            attachmentsContentSources.push(`[${attachment.name}](${href})`);
             continue;
           }
           const maximumWidth = 1152; /* var(--width--6xl) */
           if (metadata.width <= maximumWidth) {
             attachmentsContentSources.push(
               `[<img src="${href}" alt="${attachment.name}" width="${
-                metadata.density < 100 ? metadata.width / 2 : metadata.width
+                metadata.width / 2
               }" />](${href})`
             );
             continue;
@@ -14510,7 +14502,7 @@ ${contentSource}</textarea
                 path.join(dataDirectory, `files/${folder}/${nameThumbnail}`)
               );
           } catch {
-            attachmentsContentSources.push(`[![${attachment.name}](${href})](${href})`);
+            attachmentsContentSources.push(`[${attachment.name}](${href})`);
             continue;
           }
           attachmentsContentSources.push(
@@ -14520,6 +14512,7 @@ ${contentSource}</textarea
               maximumWidth / 2
             }" />](${href})`
           );
+          continue;
         }
         attachmentsContentSources.push(`[${attachment.name}](${href})`);
       }
