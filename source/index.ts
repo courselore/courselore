@@ -9840,7 +9840,10 @@ export default async function courselore({
                         `)}"
                       >
                         <button
-                          class="button button--tight button--tight--inline button--transparent"
+                          class="button button--tight button--tight--inline button--transparent ${enrollment.role ===
+                          "staff"
+                            ? "text--pink"
+                            : ""}"
                           oninteractive="${javascript`
                             tippy(this, {
                               touch: false,
@@ -18798,6 +18801,7 @@ ${contentSource}</textarea
                       enrollment: reading.enrollment,
                       size: "xs",
                     })}
+                     
                     <span
                       class="secondary ${res.locals.localCSS(css`
                         font-size: var(--font-size--xs);

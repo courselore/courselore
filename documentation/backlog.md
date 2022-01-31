@@ -1,9 +1,7 @@
 # Backlog
 
 - Change the presentation of the staff role in `userPartial`:
-  - Put the icon next to the person’s name, instead of overlaying on their avatar.
   - Change the color.
-  - On the Course Settings > Enrollments page, make it clearer the separation between staff & students.
 - Redesign the presentation of @mentions in messages.
   - Shorten “Everyone in this Conversation” to just “Everyone”.
 - Add the notion of questions being resolved.
