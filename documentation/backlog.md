@@ -1,12 +1,5 @@
 # Backlog
 
-- Deploy changes that should fix email notification delivery:
-  - Do a minor release and document configuration change (using events instead of logging directly).
-  - Deploy to production
-    - Push secrets.json
-
----
-
 - Review `LEFT JOIN`s
 - GIFs don’t show as images because they lack `metadata.density`
 - Change the presentation of the staff role in `userPartial`:
