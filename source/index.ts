@@ -3268,6 +3268,7 @@ export default async function courselore({
               display: inline-grid;
               & > * {
                 grid-area: 1 / 1;
+                position: relative;
               }
               ${{
                 xs: css`
