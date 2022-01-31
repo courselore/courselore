@@ -418,7 +418,9 @@ export default async function courselore({
   });
 
   app.once("listen", () => {
-    console.log(`${new Date().toISOString()}\tCourseLore/${courseloreVersion} started at ${baseURL}`);
+    console.log(
+      `${new Date().toISOString()}\tCourseLore/${courseloreVersion} started at ${baseURL}`
+    );
   });
   app.enable("trust proxy");
   app.use<{}, any, {}, {}, {}>((req, res, next) => {
@@ -439,7 +441,9 @@ export default async function courselore({
     next();
   });
   app.once("close", () => {
-    console.log(`${new Date().toISOString()}\tCourseLore/${courseloreVersion} stopped at ${baseURL}`);
+    console.log(
+      `${new Date().toISOString()}\tCourseLore/${courseloreVersion} stopped at ${baseURL}`
+    );
   });
 
   interface BaseMiddlewareLocals {
@@ -20337,7 +20341,7 @@ ${contentSource}</textarea
   );
 
   app.use<{}, HTML, {}, {}, BaseMiddlewareLocals>(((err, req, res, next) => {
-    console.error(err);
+    console.error(`${new Date().toISOString()}\tERROR\t${err}`);
     const isCSRF = err.code === "EBADCSRFTOKEN";
     const isValidation = err === "validation";
     const message = isCSRF
