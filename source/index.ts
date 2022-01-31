@@ -3349,145 +3349,130 @@ export default async function courselore({
         >`;
     }
 
-    const userHTML =
+    let userHTML =
       userAvatar !== undefined && userName !== undefined
-        ? html`<span
-            oninteractive="${javascript`
-              ${
-                tooltip
-                  ? javascript`
-                      tippy(this, {
-                        interactive: true,
-                        appendTo: document.body,
-                        delay: [1000, null],
-                        content: ${res.locals.HTMLForJavaScript(
-                          html`
-                            <div
-                              class="${res.locals.localCSS(css`
-                                max-height: var(--space--56);
-                                padding: var(--space--1) var(--space--2);
-                                overflow: auto;
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--4);
-                              `)}"
-                            >
-                              <div
-                                class="${res.locals.localCSS(css`
-                                  display: flex;
-                                  gap: var(--space--4);
-                                  align-items: center;
-                                `)}"
-                              >
-                                <div>
-                                  $${userPartial({
-                                    req,
-                                    res,
-                                    enrollment,
-                                    user,
-                                    name: false,
-                                    size: "xl",
-                                  })}
-                                </div>
-                                <div
-                                  class="${res.locals.localCSS(css`
-                                    padding-top: var(--space--0-5);
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--space--2);
-                                  `)}"
-                                >
-                                  <div>
-                                    <div class="strong">
-                                      ${user === "no-longer-enrolled"
-                                        ? "No Longer Enrolled"
-                                        : user!.name}
-                                    </div>
-                                    $${user !== "no-longer-enrolled" &&
-                                    (res.locals.enrollment?.role === "staff" ||
-                                      res.locals.user?.id === user!.id)
-                                      ? html`
-                                          <div class="secondary">
-                                            ${user!.email}
-                                          </div>
-                                        `
-                                      : html``}
-                                    $${user === "no-longer-enrolled"
-                                      ? html`
-                                          <div class="secondary">
-                                            This person has left the course.
-                                          </div>
-                                        `
-                                      : html`
-                                          <div
-                                            class="secondary ${res.locals
-                                              .localCSS(css`
-                                              font-size: var(--font-size--xs);
-                                              line-height: var(
-                                                --line-height--xs
-                                              );
-                                            `)}"
-                                          >
-                                            Last seen online
-                                            <time
-                                              datetime="${new Date(
-                                                user!.lastSeenOnlineAt
-                                              ).toISOString()}"
-                                              oninteractive="${javascript`
-                                                leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                                              `}"
-                                            ></time>
-                                          </div>
-                                        `}
-                                    $${enrollment !== undefined &&
-                                    enrollment !== "no-longer-enrolled" &&
-                                    enrollment.role === "staff"
-                                      ? html`
-                                          <div
-                                            class="text--sky ${res.locals
-                                              .localCSS(css`
-                                              font-size: var(--font-size--xs);
-                                              line-height: var(
-                                                --line-height--xs
-                                              );
-                                              display: flex;
-                                              gap: var(--space--2);
-                                            `)}"
-                                          >
-                                            <i
-                                              class="bi bi-mortarboard-fill"
-                                            ></i>
-                                            Staff
-                                          </div>
-                                        `
-                                      : html``}
-                                  </div>
-                                </div>
-                              </div>
-                              $${user !== "no-longer-enrolled" &&
-                              user!.biographyPreprocessed !== null
-                                ? processContent({
-                                    req,
-                                    res,
-                                    type: "preprocessed",
-                                    content: user!.biographyPreprocessed,
-                                  }).processed
-                                : html``}
-                            </div>
-                          `
-                        )},
-                      });
-                    `
-                  : javascript``
-              }
-            `}"
-            >$${userAvatar}  $${userName}</span
-          >`
+        ? html`<span>$${userAvatar}  $${userName}</span>`
         : userAvatar !== undefined
         ? userAvatar
         : userName !== undefined
         ? userName
         : undefined;
+
+    if (tooltip && userHTML !== undefined)
+      userHTML = html`<span
+        oninteractive="${javascript`
+          tippy(this, {
+            interactive: true,
+            appendTo: document.body,
+            delay: [1000, null],
+            content: ${res.locals.HTMLForJavaScript(
+              html`
+                <div
+                  class="${res.locals.localCSS(css`
+                    max-height: var(--space--56);
+                    padding: var(--space--1) var(--space--2);
+                    overflow: auto;
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--4);
+                  `)}"
+                >
+                  <div
+                    class="${res.locals.localCSS(css`
+                      display: flex;
+                      gap: var(--space--4);
+                      align-items: center;
+                    `)}"
+                  >
+                    <div>
+                      $${userPartial({
+                        req,
+                        res,
+                        enrollment,
+                        user,
+                        name: false,
+                        size: "xl",
+                      })}
+                    </div>
+                    <div
+                      class="${res.locals.localCSS(css`
+                        padding-top: var(--space--0-5);
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--2);
+                      `)}"
+                    >
+                      <div>
+                        <div class="strong">
+                          ${user === "no-longer-enrolled"
+                            ? "No Longer Enrolled"
+                            : user!.name}
+                        </div>
+                        $${user !== "no-longer-enrolled" &&
+                        (res.locals.enrollment?.role === "staff" ||
+                          res.locals.user?.id === user!.id)
+                          ? html` <div class="secondary">${user!.email}</div> `
+                          : html``}
+                        $${user === "no-longer-enrolled"
+                          ? html`
+                              <div class="secondary">
+                                This person has left the course.
+                              </div>
+                            `
+                          : html`
+                              <div
+                                class="secondary ${res.locals.localCSS(css`
+                                  font-size: var(--font-size--xs);
+                                  line-height: var(--line-height--xs);
+                                `)}"
+                              >
+                                Last seen online
+                                <time
+                                  datetime="${new Date(
+                                    user!.lastSeenOnlineAt
+                                  ).toISOString()}"
+                                  oninteractive="${javascript`
+                                    leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                  `}"
+                                ></time>
+                              </div>
+                            `}
+                        $${enrollment !== undefined &&
+                        enrollment !== "no-longer-enrolled" &&
+                        enrollment.role === "staff"
+                          ? html`
+                              <div
+                                class="text--sky ${res.locals.localCSS(css`
+                                  font-size: var(--font-size--xs);
+                                  line-height: var(--line-height--xs);
+                                  display: flex;
+                                  gap: var(--space--2);
+                                `)}"
+                              >
+                                <i class="bi bi-mortarboard-fill"></i>
+                                Staff
+                              </div>
+                            `
+                          : html``}
+                      </div>
+                    </div>
+                  </div>
+                  $${user !== "no-longer-enrolled" &&
+                  user!.biographyPreprocessed !== null
+                    ? processContent({
+                        req,
+                        res,
+                        type: "preprocessed",
+                        content: user!.biographyPreprocessed,
+                      }).processed
+                    : html``}
+                </div>
+              `
+            )},
+          });
+        `}"
+        >$${userHTML}</span
+      >`;
 
     let anonymousAvatar: HTML | undefined;
     let anonymousName: HTML | undefined;
@@ -3542,28 +3527,25 @@ export default async function courselore({
         >`;
     }
 
-    const anonymousHTML =
+    let anonymousHTML =
       anonymousAvatar !== undefined && anonymousName !== undefined
-        ? html`<span
-            oninteractive="${javascript`
-              ${
-                tooltip
-                  ? javascript`
-                      tippy(this, {
-                        touch: false,
-                        content: "Anonymous to Other Students",
-                      });
-                    `
-                  : javascript``
-              }
-            `}"
-            >$${anonymousAvatar}  $${anonymousName}</span
-          >`
+        ? html`<span>$${anonymousAvatar}  $${anonymousName}</span>`
         : anonymousAvatar !== undefined
         ? anonymousAvatar
         : anonymousName !== undefined
         ? anonymousName
         : undefined;
+
+    if (tooltip && anonymousHTML !== undefined)
+      anonymousHTML = html`<span
+        oninteractive="${javascript`
+          tippy(this, {
+            touch: false,
+            content: "Anonymous to Other Students",
+          });
+        `}"
+        >$${anonymousHTML}</span
+      >`;
 
     return userHTML !== undefined && anonymousHTML !== undefined
       ? html`<span>$${anonymousHTML} ($${userHTML})</span>`
