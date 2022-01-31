@@ -418,7 +418,7 @@ export default async function courselore({
   });
 
   app.once("listen", () => {
-    console.log(`CourseLore/${courseloreVersion} started at ${baseURL}`);
+    console.log(`${new Date().toISOString()}\tCourseLore/${courseloreVersion} started at ${baseURL}`);
   });
   app.enable("trust proxy");
   app.use<{}, any, {}, {}, {}>((req, res, next) => {
@@ -439,7 +439,7 @@ export default async function courselore({
     next();
   });
   app.once("close", () => {
-    console.log(`CourseLore/${courseloreVersion} stopped at ${baseURL}`);
+    console.log(`${new Date().toISOString()}\tCourseLore/${courseloreVersion} stopped at ${baseURL}`);
   });
 
   interface BaseMiddlewareLocals {
