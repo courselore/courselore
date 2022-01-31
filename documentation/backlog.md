@@ -1,8 +1,6 @@
 # Backlog
 
 - Deploy changes that should fix email notification delivery:
-  - Review the code.
-    - `LEFT JOIN`
   - Do a minor release and document configuration change (using events instead of logging directly).
   - Deploy to production
     - Make a backup of the database
@@ -10,6 +8,7 @@
 
 ---
 
+- Review `LEFT JOIN`s
 - GIFs don’t show as images because they lack `metadata.density`
 - Change the presentation of the staff role in `userPartial`:
   - Put the icon next to the person’s name, instead of overlaying on their avatar.
