@@ -1,31 +1,36 @@
 # Backlog
 
+- Deploy changes that should fix email notification delivery:
+  - Investigate logs of notifications that were sent multiple times to me.
+  - Review the code.
+  - Do a minor release and document configuration change (using events instead of logging directly).
+  - Push secrets.json
+
+---
+
+- GIFs don’t show as images because they lack `metadata.density`
+- Change the presentation of the staff role in `userPartial`:
+  - Put the icon next to the person’s name, instead of overlaying on their avatar.
+  - Change the color.
 - Redesign the presentation of @mentions in messages.
   - Shorten “Everyone in this Conversation” to just “Everyone”.
-- The scale of a single course:
-  - 150 students
-  - 15 CAs
-  - 1300 conversations
-  - 2~3 messages per conversation
-  - 8 chats
-  - 50 messages per chat
 - Add the notion of questions being resolved.
   - Only staff may change the “resolved” status
   - List of conversations: Make it easy to see unresolved questions. Color-code and filters.
   - Use that to organize Meta CourseLore.
 - Meta CourseLore make a pinned announcement of how to report bugs.
+- Add support for underline in Markdown.
 
 ---
 
-- Do a minor release and document configuration change (using events instead of logging directly).
-- Push secrets.json
-- GIFs don’t show as images because they lack metadata.density
-- Change color of staff indicator in userPartial
+- Implement job for scheduling notifications
+  - Delay sending notifications for a little bit to give the person a chance to update or delete the message.
+  - That’s another defense against multiple notifications being sent
+  - Don’t send notifications when the person is online.
+  - Get notifications for replies to your posts. If a student asks a question they probably would like notifications on all replies. That might want to be on by default as well.
 
 ---
 
-- **Notifications are sent multiple times.**
-  - Job for scheduling notifications.
 - Live-updates:
   - Chat input area isn’t emptying.
   - Inputs of any kind.
@@ -68,9 +73,6 @@
 
 ---
 
-- Changes to notifications:
-  - Don’t send notifications when the person is online.
-  - Get notifications for replies to your posts. If a student asks a question they probably would like notifications on all replies. That might want to be on by default as well.
 - Live reloading:
   - Special behaviors:
     - Times and other components are blinking on reload. Add them to `onrefresh`.
@@ -98,7 +100,6 @@
   - Pre-fetching.
   - List of conversations shouldn’t jump when you go to a particular conversation.
 - Add a button to “Return to Bottom” in chat.
-- Add support for underline in Markdown.
 - Email change improvements:
   - The confirmation email has a subject of “Welcome to CourseLore!”. It should be “Please confirm your email”.
   - Maybe we shouldn’t actually change the email until it’s confirmed. Otherwise an attacker with a compromised password could change your email and lock you out of the “Forgot your password?” flow.
@@ -173,7 +174,6 @@
 
 - Add support for Dark Mode in emails.
   - This should fix the duplication of code blocks.
-- Delay sending notifications for a little bit to give the person a chance to update or delete the message.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
 - Add different notification badges for when you’re @mentioned.
 - A timeline-like list of unread messages and other things that require your attention.
