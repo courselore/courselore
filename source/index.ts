@@ -14481,11 +14481,11 @@ ${contentSource}</textarea
           try {
             metadata = await image.metadata();
           } catch {
-            attachmentsContentSources.push(`![${attachment.name}](${href})`);
+            attachmentsContentSources.push(`[![${attachment.name}](${href})](${href})`);
             continue;
           }
           if (metadata.width === undefined || metadata.density === undefined) {
-            attachmentsContentSources.push(`![${attachment.name}](${href})`);
+            attachmentsContentSources.push(`[![${attachment.name}](${href})](${href})`);
             continue;
           }
           const maximumWidth = 1152; /* var(--width--6xl) */
@@ -14505,14 +14505,12 @@ ${contentSource}</textarea
           try {
             await image
               .rotate()
-              .resize({
-                width: maximumWidth,
-              })
+              .resize({ width: maximumWidth })
               .toFile(
                 path.join(dataDirectory, `files/${folder}/${nameThumbnail}`)
               );
           } catch {
-            attachmentsContentSources.push(`![${attachment.name}](${href})`);
+            attachmentsContentSources.push(`[![${attachment.name}](${href})](${href})`);
             continue;
           }
           attachmentsContentSources.push(
