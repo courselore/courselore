@@ -1,7 +1,5 @@
 # Backlog
 
-- Redesign the presentation of @mentions in messages.
-  - Shorten “Everyone in this Conversation” to just “Everyone”.
 - Add the notion of questions being resolved.
   - Only staff may change the “resolved” status
   - List of conversations: Make it easy to see unresolved questions. Color-code and filters.
