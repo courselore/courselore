@@ -1,6 +1,5 @@
 # Backlog
 
-- Make textarea resizable.
 - Anonymous messages are turning into “No longer enrolled”, leaking anonymity information.
 
 ---
