@@ -57,7 +57,7 @@ export default async ({ courselore, courseloreImport }) => {
               pass: "YOUR-PASSWORD-AT-YOUR-EMAIL-DELIVERY-SERVICE",
             },
           },
-          { from: `"CourseLore" <${administratorEmail}>` }
+          { from: `"Courselore" <${administratorEmail}>` }
         );
         return async (mailOptions) => await transporter.sendMail(mailOptions);
       })(),

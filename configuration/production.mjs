@@ -64,7 +64,7 @@ export default async ({ courselore, courseloreImport }) => {
               pass: secrets.smtp.password,
             },
           },
-          { from: `"CourseLore" <${administratorEmail}>` }
+          { from: `"Courselore" <${administratorEmail}>` }
         );
         return async (mailOptions) => await transporter.sendMail(mailOptions);
       })(),

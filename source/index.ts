@@ -419,7 +419,7 @@ export default async function courselore({
 
   app.once("listen", () => {
     console.log(
-      `${new Date().toISOString()}\tCourseLore/${courseloreVersion} started at ${baseURL}`
+      `${new Date().toISOString()}\tCourselore/${courseloreVersion} started at ${baseURL}`
     );
   });
   app.enable("trust proxy");
@@ -442,7 +442,7 @@ export default async function courselore({
   });
   app.once("close", () => {
     console.log(
-      `${new Date().toISOString()}\tCourseLore/${courseloreVersion} stopped at ${baseURL}`
+      `${new Date().toISOString()}\tCourselore/${courseloreVersion} stopped at ${baseURL}`
     );
   });
 
@@ -622,14 +622,14 @@ export default async function courselore({
                                   `)}"
                                 >
                                   <p>
-                                    This CourseLore installation is running in
+                                    This Courselore installation is running in
                                     demonstration mode and must not be used for
                                     real courses. Any data may be lost,
                                     including users, courses, invitations,
                                     conversations, messages, and so forth.
                                     Emails aren’t delivered. You may create
                                     demonstration data to give you a better idea
-                                    of what CourseLore looks like in use.
+                                    of what Courselore looks like in use.
                                   </p>
                                   <form
                                     method="POST"
@@ -755,7 +755,7 @@ export default async function courselore({
                                   font-weight: var(--font-weight--bold);
                                 `
                               )}"
-                              >This CourseLore installation is running in
+                              >This Courselore installation is running in
                               demonstration mode and doesn’t send emails.
                               Confirm your email by
                               <a
@@ -920,7 +920,7 @@ export default async function courselore({
                         <h3 class="heading">
                           $${logo({ size: 12 /* var(--space--3) */ })}
                           <span>
-                            CourseLore <br />
+                            Courselore <br />
                             Communication Platform for Education <br />
                             <small
                               class="secondary ${res.locals.localCSS(css`
@@ -955,7 +955,7 @@ export default async function courselore({
                   });
                 `}"
               >
-                $${logo({ size: 16 /* var(--space--4) */ })} CourseLore
+                $${logo({ size: 16 /* var(--space--4) */ })} Courselore
               </button>
             </div>
             <div>
@@ -982,7 +982,7 @@ export default async function courselore({
                             )}"
                           >
                             $${logo({ size: 14 /* var(--space--3-5) */ })} Meta
-                            CourseLore
+                            Courselore
                           </a>
                           <a
                             href="${reportIssueHref}"
@@ -1014,7 +1014,7 @@ export default async function courselore({
 
                                   Please provide as much relevant context as possible (operating system, browser, and so forth):
 
-                                  - CourseLore Version: ${courseloreVersion}
+                                  - Courselore Version: ${courseloreVersion}
                                 `,
                               },
                               {
@@ -2302,7 +2302,7 @@ export default async function courselore({
                   align-items: center;
                 `)}"
               >
-                $${logo()} CourseLore
+                $${logo()} Courselore
               </a>
             </div>
             <div
@@ -2353,12 +2353,12 @@ export default async function courselore({
                       `)}"
                     >
                       <p>
-                        This is the development installation of CourseLore and
+                        This is the development installation of Courselore and
                         must not be used for real courses. Any data may be lost,
                         including users, courses, invitations, conversations,
                         messages, and so forth. Emails aren’t delivered. You may
                         create demonstration data to give you a better idea of
-                        what CourseLore looks like in use.
+                        what Courselore looks like in use.
                       </p>
                       <form
                         method="POST"
@@ -2413,12 +2413,12 @@ export default async function courselore({
                       `)}"
                     >
                       <p>
-                        This CourseLore installation is running in demonstration
+                        This Courselore installation is running in demonstration
                         mode and must not be used for real courses. Any data may
                         be lost, including users, courses, invitations,
                         conversations, messages, and so forth. Emails aren’t
                         delivered. You may create demonstration data to give you
-                        a better idea of what CourseLore looks like in use.
+                        a better idea of what Courselore looks like in use.
                       </p>
                       <form
                         method="POST"
@@ -2494,7 +2494,7 @@ export default async function courselore({
             oninteractive="${javascript`
               tippy(this, {
                 touch: false,
-                content: "CourseLore",
+                content: "Courselore",
               });
             `}"
           >
@@ -3713,7 +3713,7 @@ export default async function courselore({
 
         Please provide as much relevant context as possible (operating system, browser, and so forth):
 
-        CourseLore Version: ${courseloreVersion}
+        Courselore Version: ${courseloreVersion}
       `,
     },
     {
@@ -4198,7 +4198,7 @@ export default async function courselore({
         req,
         res,
         head: html`
-          <title>CourseLore · Communication Platform for Education</title>
+          <title>Courselore · Communication Platform for Education</title>
         `,
         body: html`
           <div
@@ -4232,7 +4232,7 @@ export default async function courselore({
                   align-items: center;
                 `)}"
               >
-                $${logo({ size: 48 /* var(--space--12) */ })} CourseLore
+                $${logo({ size: 48 /* var(--space--12) */ })} Courselore
               </a>
               <h3
                 class="secondary ${res.locals.localCSS(css`
@@ -4268,7 +4268,7 @@ export default async function courselore({
                     oninteractive="${javascript`
                       tippy(this, {
                         touch: false,
-                        content: "A CourseLore installation managed by the developers of CourseLore. Free for a limited time.",
+                        content: "A Courselore installation managed by the developers of Courselore. Free for a limited time.",
                       });
                     `}"
                   >
@@ -4281,7 +4281,7 @@ export default async function courselore({
                     oninteractive="${javascript`
                       tippy(this, {
                         touch: false,
-                        content: "A CourseLore installation running the latest development version. Not for use with real courses.",
+                        content: "A Courselore installation running the latest development version. Not for use with real courses.",
                       });
                     `}"
                   >
@@ -4301,11 +4301,11 @@ export default async function courselore({
                     oninteractive="${javascript`
                       tippy(this, {
                         touch: false,
-                        content: "Join the CourseLore community on Meta CourseLore, a CourseLore course that isn’t really a course, but a place to talk about CourseLore itself.",
+                        content: "Join the Courselore community on Meta Courselore, a Courselore course that isn’t really a course, but a place to talk about Courselore itself.",
                       });
                     `}"
                   >
-                    $${logo({ size: 16 /* var(--space--4) */ })} Meta CourseLore
+                    $${logo({ size: 16 /* var(--space--4) */ })} Meta Courselore
                   </a>
                   <a
                     href="https://github.com/courselore/courselore"
@@ -4313,7 +4313,7 @@ export default async function courselore({
                     oninteractive="${javascript`
                       tippy(this, {
                         touch: false,
-                        content: "CourseLore is open source and will be free forever for installing on your own server.",
+                        content: "Courselore is open source and will be free forever for installing on your own server.",
                       });
                     `}"
                   >
@@ -4331,7 +4331,7 @@ export default async function courselore({
             >
               <img
                 src="/main-screen--light.png"
-                alt="CourseLore Main Screen"
+                alt="Courselore Main Screen"
                 width="960"
                 loading="lazy"
                 class="img light ${res.locals.localCSS(css`
@@ -4345,7 +4345,7 @@ export default async function courselore({
               />
               <img
                 src="/main-screen--dark.png"
-                alt="CourseLore Main Screen"
+                alt="Courselore Main Screen"
                 width="960"
                 loading="lazy"
                 class="img dark ${res.locals.localCSS(css`
@@ -4528,7 +4528,7 @@ export default async function courselore({
             >
               <img
                 src="/main-screen--light-and-dark.png"
-                alt="CourseLore Main Screen Featuring Light & Dark Modes"
+                alt="Courselore Main Screen Featuring Light & Dark Modes"
                 width="960"
                 loading="lazy"
                 class="img ${res.locals.localCSS(css`
@@ -4601,7 +4601,7 @@ export default async function courselore({
             >
               <img
                 src="/main-screen--phone--light.jpeg"
-                alt="CourseLore Main Screen on Phone"
+                alt="Courselore Main Screen on Phone"
                 width="300"
                 loading="lazy"
                 class="img light ${res.locals.localCSS(css`
@@ -4615,7 +4615,7 @@ export default async function courselore({
               />
               <img
                 src="/main-screen--phone--dark.jpeg"
-                alt="CourseLore Main Screen on Phone"
+                alt="Courselore Main Screen on Phone"
                 width="300"
                 loading="lazy"
                 class="img dark ${res.locals.localCSS(css`
@@ -4737,7 +4737,7 @@ export default async function courselore({
                 req,
                 res,
                 contentSource: dedent`
-                  # Reasons to **Love** CourseLore’s Message Editor
+                  # Reasons to **Love** Courselore’s Message Editor
 
                   **Easy** to learn for people who are new to [Markdown](https://guides.github.com/features/mastering-markdown/).
 
@@ -4911,7 +4911,7 @@ export default async function courselore({
               oninteractive="${javascript`
                 tippy(this, {
                   touch: false,
-                  content: "A CourseLore installation managed by the developers of CourseLore. Free for a limited time.",
+                  content: "A Courselore installation managed by the developers of Courselore. Free for a limited time.",
                 });
               `}"
             >
@@ -4924,7 +4924,7 @@ export default async function courselore({
               oninteractive="${javascript`
                 tippy(this, {
                   touch: false,
-                  content: "A CourseLore installation running the latest development version. Not for use with real courses.",
+                  content: "A Courselore installation running the latest development version. Not for use with real courses.",
                 });
               `}"
             >
@@ -4941,11 +4941,11 @@ export default async function courselore({
               oninteractive="${javascript`
                 tippy(this, {
                   touch: false,
-                  content: "Join the CourseLore community on Meta CourseLore, a CourseLore course that isn’t really a course, but a place to talk about CourseLore itself.",
+                  content: "Join the Courselore community on Meta Courselore, a Courselore course that isn’t really a course, but a place to talk about Courselore itself.",
                 });
               `}"
             >
-              $${logo({ size: 24 /* var(--space--6) */ })} Meta CourseLore
+              $${logo({ size: 24 /* var(--space--6) */ })} Meta Courselore
             </a>
             <a
               href="https://github.com/courselore/courselore"
@@ -4953,7 +4953,7 @@ export default async function courselore({
               oninteractive="${javascript`
                 tippy(this, {
                   touch: false,
-                  content: "CourseLore is open source and will be free forever for installing on your own server.",
+                  content: "Courselore is open source and will be free forever for installing on your own server.",
                 });
               `}"
             >
@@ -4979,7 +4979,7 @@ export default async function courselore({
         res,
         head: html`
           <title>
-            Sign in · CourseLore · Communication Platform for Education
+            Sign in · Courselore · Communication Platform for Education
           </title>
         `,
         body: html`
@@ -5202,7 +5202,7 @@ export default async function courselore({
           res,
           head: html`
             <title>
-              Reset Password · CourseLore · Communication Platform for Education
+              Reset Password · Courselore · Communication Platform for Education
             </title>
           `,
           body: html`
@@ -5317,7 +5317,7 @@ export default async function courselore({
           ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
           ${JSON.stringify({
             to: user.email,
-            subject: "CourseLore · Password Reset Link",
+            subject: "Courselore · Password Reset Link",
             html: html`
               <p><a href="${link}" target="_blank">${link}</a></p>
               <p>
@@ -5345,7 +5345,7 @@ export default async function courselore({
         res,
         head: html`
           <title>
-            Reset Password · CourseLore · Communication Platform for Education
+            Reset Password · Courselore · Communication Platform for Education
           </title>
         `,
         body: html`
@@ -5399,7 +5399,7 @@ export default async function courselore({
           res,
           head: html`
             <title>
-              Reset Password · CourseLore · Communication Platform for Education
+              Reset Password · Courselore · Communication Platform for Education
             </title>
           `,
           body: html`
@@ -5520,7 +5520,7 @@ export default async function courselore({
         res,
         head: html`
           <title>
-            Sign up · CourseLore · Communication Platform for Education
+            Sign up · Courselore · Communication Platform for Education
           </title>
         `,
         body: html`
@@ -5684,7 +5684,7 @@ export default async function courselore({
           ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
           ${JSON.stringify({
             to: userEmail,
-            subject: "Welcome to CourseLore!",
+            subject: "Welcome to Courselore!",
             html: html`
               <p>
                 Please confirm your email:<br />
@@ -5894,7 +5894,7 @@ export default async function courselore({
             mainLayout({
               req,
               res,
-              head: html`<title>CourseLore</title>`,
+              head: html`<title>Courselore</title>`,
               body: html`
                 <div
                   class="${res.locals.localCSS(css`
@@ -5904,7 +5904,7 @@ export default async function courselore({
                     align-items: center;
                   `)}"
                 >
-                  <h2 class="heading--display">Welcome to CourseLore!</h2>
+                  <h2 class="heading--display">Welcome to Courselore!</h2>
 
                   <div class="decorative-icon">
                     $${logo({ size: 144 /* var(--space--36) */ })}
@@ -5955,7 +5955,7 @@ export default async function courselore({
             mainLayout({
               req,
               res,
-              head: html`<title>CourseLore</title>`,
+              head: html`<title>Courselore</title>`,
               showCourseSwitcher: false,
               body: html`
                 <div
@@ -6082,7 +6082,7 @@ export default async function courselore({
         userSettingsLayout({
           req,
           res,
-          head: html`<title>Profile · User Settings · CourseLore</title>`,
+          head: html`<title>Profile · User Settings · Courselore</title>`,
           body: html`
             <h2 class="heading">
               <i class="bi bi-sliders"></i>
@@ -6460,7 +6460,7 @@ export default async function courselore({
           req,
           res,
           head: html`<title>
-            Update Email & Password · User Settings · CourseLore
+            Update Email & Password · User Settings · Courselore
           </title>`,
           body: html`
             <h2 class="heading">
@@ -6687,7 +6687,7 @@ export default async function courselore({
           req,
           res,
           head: html`<title>
-            Notifications Preferences · User Settings · CourseLore
+            Notifications Preferences · User Settings · Courselore
           </title>`,
           body: html`
             <h2 class="heading">
@@ -6831,7 +6831,7 @@ export default async function courselore({
         mainLayout({
           req,
           res,
-          head: html`<title>Create a New Course · CourseLore</title>`,
+          head: html`<title>Create a New Course · Courselore</title>`,
           body: html`
             <h2 class="heading">
               <i class="bi bi-journal-plus"></i>
@@ -6884,10 +6884,10 @@ export default async function courselore({
                       <i class="bi bi-exclamation-triangle-fill"></i>
                     </div>
                     <p>
-                      This is the hosted installation of CourseLore managed by
-                      the CourseLore developers. It’s free for a limited period,
+                      This is the hosted installation of Courselore managed by
+                      the Courselore developers. It’s free for a limited period,
                       but we may charge for it in the future (you’ll be warned
-                      well in advance). CourseLore is
+                      well in advance). Courselore is
                       <a
                         href="https://github.com/courselore/courselore"
                         class="link"
@@ -7206,7 +7206,7 @@ export default async function courselore({
           mainLayout({
             req,
             res,
-            head: html`<title>${res.locals.course.name} · CourseLore</title>`,
+            head: html`<title>${res.locals.course.name} · Courselore</title>`,
             body: html`
               <div
                 class="${res.locals.localCSS(css`
@@ -7258,7 +7258,7 @@ export default async function courselore({
         conversationLayout({
           req,
           res,
-          head: html`<title>${res.locals.course.name} · CourseLore</title>`,
+          head: html`<title>${res.locals.course.name} · Courselore</title>`,
           onlyConversationLayoutSidebarOnSmallScreen: true,
           body: html`<p class="secondary">No conversation selected.</p>`,
         })
@@ -7626,7 +7626,7 @@ export default async function courselore({
           head: html`
             <title>
               Course Information · Course Settings · ${res.locals.course.name} ·
-              CourseLore
+              Courselore
             </title>
           `,
           body: html`
@@ -7813,7 +7813,7 @@ export default async function courselore({
           res,
           head: html`
             <title>
-              Tags · Course Settings · ${res.locals.course.name} · CourseLore
+              Tags · Course Settings · ${res.locals.course.name} · Courselore
             </title>
           `,
           body: html`
@@ -8378,7 +8378,7 @@ export default async function courselore({
           head: html`
             <title>
               Invitations · Course Settings · ${res.locals.course.name} ·
-              CourseLore
+              Courselore
             </title>
           `,
           body: html`
@@ -9725,7 +9725,7 @@ export default async function courselore({
           head: html`
             <title>
               Enrollments · Course Settings · ${res.locals.course.name} ·
-              CourseLore
+              Courselore
             </title>
           `,
           body: html`
@@ -10198,7 +10198,7 @@ export default async function courselore({
           head: html`
             <title>
               Your Enrollment · Course Settings · ${res.locals.course.name} ·
-              CourseLore
+              Courselore
             </title>
           `,
           body: html`
@@ -10349,7 +10349,7 @@ export default async function courselore({
           req,
           res,
           head: html`
-            <title>Invitation · ${res.locals.course.name} · CourseLore</title>
+            <title>Invitation · ${res.locals.course.name} · Courselore</title>
           `,
           body: html`
             <h2 class="heading">
@@ -10461,7 +10461,7 @@ export default async function courselore({
           res,
           head: html`
             <title>
-              Invitation · ${res.locals.invitation.course.name} · CourseLore
+              Invitation · ${res.locals.invitation.course.name} · Courselore
             </title>
           `,
           body: html`
@@ -10551,7 +10551,7 @@ export default async function courselore({
           res,
           head: html`
             <title>
-              Invitation · ${res.locals.invitation.course.name} · CourseLore
+              Invitation · ${res.locals.invitation.course.name} · Courselore
             </title>
           `,
           body: html`
@@ -10637,7 +10637,7 @@ export default async function courselore({
         boxLayout({
           req,
           res,
-          head: html` <title>Invitation · CourseLore</title> `,
+          head: html` <title>Invitation · Courselore</title> `,
           body: html`
             <h2 class="heading">
               <i class="bi bi-journal-arrow-down"></i>
@@ -15067,7 +15067,7 @@ ${contentSource}</textarea
               <title>
                 Start
                 ${res.locals.conversationsCount === 0 ? "the First" : "a New"}
-                Conversation · ${res.locals.course.name} · CourseLore
+                Conversation · ${res.locals.course.name} · Courselore
               </title>
             `,
             body: html`
@@ -15904,7 +15904,7 @@ ${contentSource}</textarea
           head: html`
             <title>
               ${res.locals.conversation.title} · ${res.locals.course.name} ·
-              CourseLore
+              Courselore
             </title>
           `,
           mainIsAScrollingPane: res.locals.conversation.type === "chat",
@@ -19651,7 +19651,7 @@ ${contentSource}</textarea
               ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
               ${JSON.stringify({
                 to: enrollment.userEmail,
-                subject: `${conversation.title} · ${res.locals.course.name} · CourseLore`,
+                subject: `${conversation.title} · ${res.locals.course.name} · Courselore`,
                 html: html`
                   <p>
                     <a
@@ -20276,7 +20276,7 @@ ${contentSource}</textarea
               <p>
                 Demonstration data including users, courses, conversations, and
                 so forth, have been created and you’ve been signed in as a
-                demonstration user to give you a better idea of what CourseLore
+                demonstration user to give you a better idea of what Courselore
                 looks like in use. If you wish to sign in as another one of the
                 demonstration users, their password is “courselore”.
               </p>
@@ -20291,7 +20291,7 @@ ${contentSource}</textarea
     app.delete<{}, any, {}, {}, BaseMiddlewareLocals>(
       "/turn-off",
       (req, res, next) => {
-        res.send(`Thanks for trying CourseLore.`);
+        res.send(`Thanks for trying Courselore.`);
         process.exit(0);
       }
     );
@@ -20321,7 +20321,7 @@ ${contentSource}</textarea
         boxLayout({
           req,
           res,
-          head: html`<title>404 Not Found · CourseLore</title>`,
+          head: html`<title>404 Not Found · Courselore</title>`,
           body: html`
             <h2 class="heading">
               <i class="bi bi-question-diamond"></i>
@@ -20353,7 +20353,7 @@ ${contentSource}</textarea
       boxLayout({
         req,
         res,
-        head: html`<title>${message} Error · CourseLore</title>`,
+        head: html`<title>${message} Error · Courselore</title>`,
         body: html`
           <h2 class="heading">
             <i class="bi bi-bug"></i>
@@ -20362,7 +20362,7 @@ ${contentSource}</textarea
           $${isCSRF
             ? html`
                 <p>
-                  This request doesn’t appear to have come from CourseLore.
+                  This request doesn’t appear to have come from Courselore.
                   Please try again.
                 </p>
                 <p>
@@ -20375,7 +20375,7 @@ ${contentSource}</textarea
               `
             : html`
                 <p>
-                  This is an issue in CourseLore, please report to the system
+                  This is an issue in Courselore, please report to the system
                   administrator at
                   <a href="${reportIssueHref}" target="_blank" class="link"
                     >${administratorEmail}</a

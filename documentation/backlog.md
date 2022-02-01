@@ -7,8 +7,8 @@
 - Add the notion of questions being resolved.
   - Only staff may change the “resolved” status
   - List of conversations: Make it easy to see unresolved questions. Color-code and filters.
-  - Use that to organize Meta CourseLore.
-- Meta CourseLore make a pinned announcement of how to report bugs.
+  - Use that to organize Meta Courselore.
+- Meta Courselore make a pinned announcement of how to report bugs.
 - Add support for underline in Markdown.
 
 ---
@@ -44,13 +44,13 @@
 
 ---
 
-- Add a help screen under the “About CourseLore” button:
+- Add a help screen under the “About Courselore” button:
   - A more app-like experience (in iOS):
-    - Bookmark CourseLore to home screen.
+    - Bookmark Courselore to home screen.
     - Use VIPs as notifications mechanism.
   - If things look weird, or if something doesn’t work, you may need to update your browser.
 - Make a public page listing known issues.
-- Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the CourseLore community.
+- Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the Courselore community.
 
 ---
 
@@ -88,7 +88,7 @@
   - List of conversations shouldn’t jump when you go to a particular conversation.
 - Add a button to “Return to Bottom” in chat.
 - Email change improvements:
-  - The confirmation email has a subject of “Welcome to CourseLore!”. It should be “Please confirm your email”.
+  - The confirmation email has a subject of “Welcome to Courselore!”. It should be “Please confirm your email”.
   - Maybe we shouldn’t actually change the email until it’s confirmed. Otherwise an attacker with a compromised password could change your email and lock you out of the “Forgot your password?” flow.
 
 ---
@@ -1837,7 +1837,7 @@ $$
   - https://cordova.apache.org/
     - The spiritual predecessor of Capacitor.
     - Still more popular, but dreaded.
-- Have registry of CourseLore instances. For example, in a phone application we could show a list of existing instances. (You could always not list yourself in the registry and enter the URL for your instance manually on the phone application.)
+- Have registry of Courselore instances. For example, in a phone application we could show a list of existing instances. (You could always not list yourself in the registry and enter the URL for your instance manually on the phone application.)
 
 ### Design & Accessibility
 
@@ -1866,7 +1866,7 @@ $$
   - https://capacitorjs.com
   - Maybe hire a designer.
 - Newsletter.
-- Create CourseLore Gravatar.
+- Create Courselore Gravatar.
   - Use in npm.
 - Create accounts on:
   - Facebook.

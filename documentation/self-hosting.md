@@ -1,22 +1,22 @@
 # Self-Hosting
 
-You may use CourseLore at [`courselore.org`](https://courselore.org), but you may prefer to run CourseLore on your own servers for maximum privacy and control. CourseLore is easy to self-host and is an excellent first project if you’re new to system administration.
+You may use Courselore at [`courselore.org`](https://courselore.org), but you may prefer to run Courselore on your own servers for maximum privacy and control. Courselore is easy to self-host and is an excellent first project if you’re new to system administration.
 
 > **Note:** If you get stuck, please [open an issue](https://github.com/courselore/courselore/issues/new) including as much information as possible: What you tried, what you expected to happen, what really happened, what error messages you ran into, and so forth.
 
 ### Requirements
 
-- **Server.** This is the machine that will run CourseLore. You may rent a server from a provider such as [DigitalOcean](https://www.digitalocean.com/) (this is what we use for [`courselore.org`](https://courselore.org)), [Linode](https://www.linode.com/), and so forth. You may also use a server provided by your educational institution, or a [Raspberry Pi](https://www.raspberrypi.com) that you have running in your closet.
+- **Server.** This is the machine that will run Courselore. You may rent a server from a provider such as [DigitalOcean](https://www.digitalocean.com/) (this is what we use for [`courselore.org`](https://courselore.org)), [Linode](https://www.linode.com/), and so forth. You may also use a server provided by your educational institution, or a [Raspberry Pi](https://www.raspberrypi.com) that you have running in your closet.
 
   > **Note:** You need command-line access to the server.
 
   > **Note:** The server may run Linux, Windows, or macOS. We recommend Linux ([Ubuntu](https://ubuntu.com)).
 
-  > **Note:** CourseLore is lightweight. A $5/month DigitalOcean server is enough for a couple hundred users.
+  > **Note:** Courselore is lightweight. A $5/month DigitalOcean server is enough for a couple hundred users.
 
 - **Email Delivery Service.** This is the service that will deliver emails on behalf of your server. You may use a service such as [Amazon SES](https://aws.amazon.com/ses/) (this is what we use for [`courselore.org`](https://courselore.org)), [SendGrid](https://sendgrid.com), and so forth. You may also use an email delivery service provided by your educational institution.
 
-  > **Note:** In theory your server could try delivering emails directly instead of relying on an email delivery service. CourseLore may be configured to do that, and it would be better for privacy because no data would be going through third-party services. Unfortunately, in practice your emails would likely be marked as spam or even be rejected by most destinations such as [Gmail](https://www.google.com/gmail/) and [Microsoft Outlook](https://outlook.live.com/). CourseLore must be able to send emails to complete the sign-up process, to send notifications, and so forth, so it’s best to rely on an email delivery service who guarantees that emails will arrive at your users’ inboxes.
+  > **Note:** In theory your server could try delivering emails directly instead of relying on an email delivery service. Courselore may be configured to do that, and it would be better for privacy because no data would be going through third-party services. Unfortunately, in practice your emails would likely be marked as spam or even be rejected by most destinations such as [Gmail](https://www.google.com/gmail/) and [Microsoft Outlook](https://outlook.live.com/). Courselore must be able to send emails to complete the sign-up process, to send notifications, and so forth, so it’s best to rely on an email delivery service who guarantees that emails will arrive at your users’ inboxes.
 
 - **Domain.** This is a name such as `courselore.org`. You may buy a domain from providers such as [Namecheap](https://www.namecheap.com/) (this is what we use for `courselore.org`), [Amazon Route 53](https://aws.amazon.com/route53/), and so forth. You may also use a domain provided by your educational institution, for example, `my-course.educational-institution.edu`.
 
@@ -28,7 +28,7 @@ Create an `A` Record pointing at your server’s IP address and `ALIAS` or `CNAM
 
 ### Server Setup
 
-1. [Download the latest CourseLore release for your platform](https://github.com/courselore/courselore/releases). For example, from the Linux command line:
+1. [Download the latest Courselore release for your platform](https://github.com/courselore/courselore/releases). For example, from the Linux command line:
 
    ```console
    # mkdir courselore
@@ -44,7 +44,7 @@ Create an `A` Record pointing at your server’s IP address and `ALIAS` or `CNAM
    # nano configuration.mjs
    ```
 
-   > **Note for Advanced Users:** The CourseLore configuration is a JavaScript module whose default export is a function called by the `courselore` binary. The example configuration starts an [Express](https://expressjs.com) application server and a [Caddy](https://caddyserver.com) reverse-proxy & TLS certificate manager, both of which are embedded in the `courselore` binary using [`caxa`](https://github.com/leafac/caxa). But this is a pretty flexible configuration strategy that allows for endless customization, for example:
+   > **Note for Advanced Users:** The Courselore configuration is a JavaScript module whose default export is a function called by the `courselore` binary. The example configuration starts an [Express](https://expressjs.com) application server and a [Caddy](https://caddyserver.com) reverse-proxy & TLS certificate manager, both of which are embedded in the `courselore` binary using [`caxa`](https://github.com/leafac/caxa). But this is a pretty flexible configuration strategy that allows for endless customization, for example:
    >
    > - Load secrets from a different source instead of hard-coding them (see an example of how to do that in the configuration we use for [`courselore.org`](https://courselore.org) at [`configuration/production.mjs`](/configuration/production.mjs)).
    >
@@ -52,9 +52,9 @@ Create an `A` Record pointing at your server’s IP address and `ALIAS` or `CNAM
    >
    > - Use a different email service provider, either via SMTP with [Nodemailer](https://nodemailer.com/) or via a proprietary API specific to your email service provider that may be available as a [Node.js](https://nodejs.org/) package. You may even try to [deliver emails directly from your server instead of relying on an email delivery service](https://github.com/nodemailer/nodemailer/issues/1227) if you can include your server on the allowlist of you users’ inbox.
    >
-   > - Mount CourseLore as part of a larger Node.js application. This allows you to intercept CourseLore’s requests & responses and manipulate them in any way you want.
+   > - Mount Courselore as part of a larger Node.js application. This allows you to intercept Courselore’s requests & responses and manipulate them in any way you want.
 
-3. Configure your operating system’s service manager to start CourseLore on boot and restart it in case it crashes. For example, you may use Ubuntu’s service manager [systemd](https://systemd.io) with the configuration we use for [`courselore.org`](https://courselore.org) at [`configuration/courselore.service`](/configuration/courselore.service):
+3. Configure your operating system’s service manager to start Courselore on boot and restart it in case it crashes. For example, you may use Ubuntu’s service manager [systemd](https://systemd.io) with the configuration we use for [`courselore.org`](https://courselore.org) at [`configuration/courselore.service`](/configuration/courselore.service):
 
    ```console
    # wget -O /etc/systemd/system/courselore.service https://github.com/courselore/courselore/raw/main/configuration/courselore.service
@@ -67,7 +67,7 @@ Create an `A` Record pointing at your server’s IP address and `ALIAS` or `CNAM
 
 #### Backups
 
-With the default configuration, all the data generated by CourseLore lives on the `data/` folder. Backup that directory using your usual backup strategies. For example, using macOS you may download all the data to a local hard drive:
+With the default configuration, all the data generated by Courselore lives on the `data/` folder. Backup that directory using your usual backup strategies. For example, using macOS you may download all the data to a local hard drive:
 
 ```console
 $ rsync -av --progress --delete YOUR-USER@YOUR-SERVER.EDU:PATH-TO-COURSELORE/data/ /Volumes/HARD-DRIVE/courselore-data/
@@ -75,7 +75,7 @@ $ rsync -av --progress --delete YOUR-USER@YOUR-SERVER.EDU:PATH-TO-COURSELORE/dat
 
 #### Updates
 
-[Download the latest CourseLore release for your platform](https://github.com/courselore/courselore/releases) and restart the server. For example, if you followed the examples from [§ Server Setup](#server-setup), you may do the following:
+[Download the latest Courselore release for your platform](https://github.com/courselore/courselore/releases) and restart the server. For example, if you followed the examples from [§ Server Setup](#server-setup), you may do the following:
 
 ```console
 # wget https://github.com/courselore/courselore/releases/download/v0.0.8/courselore--linux--v0.0.8.tgz

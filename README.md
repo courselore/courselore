@@ -1,4 +1,4 @@
-<h1 align="center"><a href="https://courselore.org">CourseLore</a></h1>
+<h1 align="center"><a href="https://courselore.org">Courselore</a></h1>
 <h3 align="center">Communication Platform for Education</h3>
 <p align="center">
 <a href="https://github.com/courselore/courselore"><img src="https://img.shields.io/badge/Source---" alt="Source"></a>
@@ -6,12 +6,12 @@
 <a href="https://github.com/courselore/courselore/actions"><img src="https://github.com/courselore/courselore/workflows/.github/workflows/main.yml/badge.svg" alt="Continuous Integration"></a>
 </p>
 
-[<img src="static/main-screen--light.png" alt="CourseLore Main Screen" width="960">](https://courselore.org)
+[<img src="static/main-screen--light.png" alt="Courselore Main Screen" width="960">](https://courselore.org)
 
 <h3 align="center">
 <a href="https://courselore.org">Hosted Installation</a> ·
 <a href="https://try.courselore.org">Development Installation</a> ·
-<a href="https://courselore.org/courses/8537410611/invitations/3667859788">Meta CourseLore</a>
+<a href="https://courselore.org/courses/8537410611/invitations/3667859788">Meta Courselore</a>
 </h3>
 
 ### Features

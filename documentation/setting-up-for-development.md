@@ -1,22 +1,22 @@
 # Setting Up for Development
 
-CourseLore has been designed to be welcoming to new developers. It’s an excellent first project for people who are new to contributing to open-source software.
+Courselore has been designed to be welcoming to new developers. It’s an excellent first project for people who are new to contributing to open-source software.
 
 > **Note:** If you get stuck, please [open an issue](https://github.com/courselore/courselore/issues/new) including as much information as possible: What you tried, what you expected to happen, what really happened, what error messages you ran into, and so forth.
 
 ### Running a Pre-Compiled Binary Locally
 
-The best way to get started is to run a pre-compiled CourseLore binary on your machine. You may download CourseLore from two channels: The latest development versions, which are available as [Actions Artifacts](https://github.com/courselore/courselore/actions); and stable versions, which are available as [Releases](https://github.com/courselore/courselore/releases). After you downloaded CourseLore, extract it and run the `courselore` binary.
+The best way to get started is to run a pre-compiled Courselore binary on your machine. You may download Courselore from two channels: The latest development versions, which are available as [Actions Artifacts](https://github.com/courselore/courselore/actions); and stable versions, which are available as [Releases](https://github.com/courselore/courselore/releases). After you downloaded Courselore, extract it and run the `courselore` binary.
 
 > **Note:** You must be signed in to GitHub to download GitHub Actions Artifacts.
 
-> **Note:** CourseLore needs some network ports to be available: 80, 443, 4000, and 4001. Stop other applications you may have running on those ports. In macOS and Linux you may find if an application is running on a network port using, for example, `lsof -i:80`.
+> **Note:** Courselore needs some network ports to be available: 80, 443, 4000, and 4001. Stop other applications you may have running on those ports. In macOS and Linux you may find if an application is running on a network port using, for example, `lsof -i:80`.
 
 > **Note:** Most Linux distributions prevent regular users from binding to network ports lower than 1024. This is a setting that [you should disable](https://github.com/small-tech/auto-encrypt/tree/a917892b93b61cd3b80a6f3919db752e2c5a9f6c#a-note-on-linux-and-the-security-farce-that-is-privileged-ports).
 
-> **Note:** CourseLore may ask for your password before running. This happens because it runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS. To accomplish this, it needs to install local TLS certificates on your operating system’s trust store. CourseLore relies on [Caddy](https://caddyserver.com) to manage this process.
+> **Note:** Courselore may ask for your password before running. This happens because it runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS. To accomplish this, it needs to install local TLS certificates on your operating system’s trust store. Courselore relies on [Caddy](https://caddyserver.com) to manage this process.
 
-> **Note:** Firefox may have issues with the local TLS certificate used by CourseLore because by default it uses its own trust store. There are two possible solutions for this:
+> **Note:** Firefox may have issues with the local TLS certificate used by Courselore because by default it uses its own trust store. There are two possible solutions for this:
 >
 > 1. Use NSS to install the TLS certificate into Firefox’s trust store.
 >
@@ -47,13 +47,13 @@ If you’re using WSL, follow the Linux instructions.
 
    > **Package Breakdown**
    >
-   > - [NVM for Windows (`nvm`)](https://github.com/coreybutler/nvm-windows): A manager of multiple Node.js installations. While in theory you could install just the latest Node.js version directly from Chocolatey, in practice you’ll often need to test something in different versions of Node.js, particularly when you contribute to the packages on which CourseLore depends, so it’s better to use NVM for Windows from the beginning.
+   > - [NVM for Windows (`nvm`)](https://github.com/coreybutler/nvm-windows): A manager of multiple Node.js installations. While in theory you could install just the latest Node.js version directly from Chocolatey, in practice you’ll often need to test something in different versions of Node.js, particularly when you contribute to the packages on which Courselore depends, so it’s better to use NVM for Windows from the beginning.
    >
    > - [Python (`python`)](https://www.python.org) and [Visual Studio C++ Build Tools (`visualstudio2022-workload-vctools`)](https://visualstudio.microsoft.com/visual-cpp-build-tools/): These tools are necessary to build native Node.js extensions written in C/C++.
    >
-   > - [Visual Studio Code (`vscode`)](https://code.visualstudio.com): A text editor with excellent support for the programming languages used in CourseLore.
+   > - [Visual Studio Code (`vscode`)](https://code.visualstudio.com): A text editor with excellent support for the programming languages used in Courselore.
    >
-   > - [Git (`git`)](https://git-scm.com): The version control system used by CourseLore.
+   > - [Git (`git`)](https://git-scm.com): The version control system used by Courselore.
 
 2. Setup Git:
 
@@ -70,11 +70,11 @@ If you’re using WSL, follow the Linux instructions.
 
 4. Install the following Visual Studio Code extensions:
 
-   - [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode): Support for [Prettier](https://prettier.io), the code formatter used by CourseLore.
-   - [`es6-string-html`](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html): Syntax highlighting for HTML & SQL as tagged template literals in TypeScript—a feature heavily used in the CourseLore codebase.
+   - [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode): Support for [Prettier](https://prettier.io), the code formatter used by Courselore.
+   - [`es6-string-html`](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html): Syntax highlighting for HTML & SQL as tagged template literals in TypeScript—a feature heavily used in the Courselore codebase.
    - [Indentation Level Movement](https://marketplace.visualstudio.com/items?itemName=kaiwood.indentation-level-movement): Move up & down by indentation, which helps navigating on HTML.
 
-5. Clone the codebase, install the dependencies, and run CourseLore:
+5. Clone the codebase, install the dependencies, and run Courselore:
 
    ```console
    > git clone git@github.com:courselore/courselore.git
@@ -99,11 +99,11 @@ If you’re using WSL, follow the Linux instructions.
 
    > **Package Breakdown**
    >
-   > - [Node Version Manager (`nvm`)](https://github.com/nvm-sh/nvm): A manager of multiple Node.js installations. While in theory you could install just the latest Node.js version directly from Homebrew, in practice you’ll often need to test something in different versions of Node.js, particularly when you contribute to the packages on which CourseLore depends, so it’s better to use Node Version Manager from the beginning.
+   > - [Node Version Manager (`nvm`)](https://github.com/nvm-sh/nvm): A manager of multiple Node.js installations. While in theory you could install just the latest Node.js version directly from Homebrew, in practice you’ll often need to test something in different versions of Node.js, particularly when you contribute to the packages on which Courselore depends, so it’s better to use Node Version Manager from the beginning.
    >
-   > - [Visual Studio Code (`visual-studio-code`)](https://code.visualstudio.com): A text editor with excellent support for the programming languages used in CourseLore.
+   > - [Visual Studio Code (`visual-studio-code`)](https://code.visualstudio.com): A text editor with excellent support for the programming languages used in Courselore.
    >
-   > - [Git (`git`)](https://git-scm.com): The version control system used by CourseLore.
+   > - [Git (`git`)](https://git-scm.com): The version control system used by Courselore.
 
 2. Setup Git:
 
@@ -120,11 +120,11 @@ If you’re using WSL, follow the Linux instructions.
 
 4. Install the following Visual Studio Code extensions:
 
-   - [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode): Support for [Prettier](https://prettier.io), the code formatter used by CourseLore.
-   - [`es6-string-html`](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html): Syntax highlighting for HTML & SQL as tagged template literals in TypeScript—a feature heavily used in the CourseLore codebase.
+   - [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode): Support for [Prettier](https://prettier.io), the code formatter used by Courselore.
+   - [`es6-string-html`](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html): Syntax highlighting for HTML & SQL as tagged template literals in TypeScript—a feature heavily used in the Courselore codebase.
    - [Indentation Level Movement](https://marketplace.visualstudio.com/items?itemName=kaiwood.indentation-level-movement): Move up & down by indentation, which helps navigating on HTML.
 
-5. Clone the codebase, install the dependencies, and run CourseLore:
+5. Clone the codebase, install the dependencies, and run Courselore:
 
    ```console
    $ git clone git@github.com:courselore/courselore.git
@@ -133,7 +133,7 @@ If you’re using WSL, follow the Linux instructions.
    $ npm start
    ```
 
-   > **Note:** macOS imposes a limit on the number of files a process can open, but in development CourseLore needs to open more files than the default setting allows because it reloads code as soon as you change it. Increase the limit by following [these instructions](https://gist.github.com/abernix/a7619b07b687bb97ab573b0dc30928a0).
+   > **Note:** macOS imposes a limit on the number of files a process can open, but in development Courselore needs to open more files than the default setting allows because it reloads code as soon as you change it. Increase the limit by following [these instructions](https://gist.github.com/abernix/a7619b07b687bb97ab573b0dc30928a0).
 
 </details>
 
@@ -152,11 +152,11 @@ If you’re using WSL, follow the Linux instructions.
 
    > **Package Breakdown**
    >
-   > - [Node Version Manager (`nvm`)](https://github.com/nvm-sh/nvm): A manager of multiple Node.js installations. While in theory you could install just the latest Node.js version directly from Homebrew, in practice you’ll often need to test something in different versions of Node.js, particularly when you contribute to the packages on which CourseLore depends, so it’s better to use Node Version Manager from the beginning.
+   > - [Node Version Manager (`nvm`)](https://github.com/nvm-sh/nvm): A manager of multiple Node.js installations. While in theory you could install just the latest Node.js version directly from Homebrew, in practice you’ll often need to test something in different versions of Node.js, particularly when you contribute to the packages on which Courselore depends, so it’s better to use Node Version Manager from the beginning.
    >
-   > - [Git (`git`)](https://git-scm.com): The version control system used by CourseLore.
+   > - [Git (`git`)](https://git-scm.com): The version control system used by Courselore.
    >
-   > - [Visual Studio Code (`code`)](https://code.visualstudio.com): A text editor with excellent support for the programming languages used in CourseLore.
+   > - [Visual Studio Code (`code`)](https://code.visualstudio.com): A text editor with excellent support for the programming languages used in Courselore.
 
    > **Why Homebrew for Linux instead of `apt` (a package manager that comes with Ubuntu)?** The packages available from `apt` prioritize stability, so they run behind on the latest releases. This is desirable for long-running servers, but not for development.
 
@@ -177,11 +177,11 @@ If you’re using WSL, follow the Linux instructions.
 
 4. Install the following Visual Studio Code extensions:
 
-   - [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode): Support for [Prettier](https://prettier.io), the code formatter used by CourseLore.
-   - [`es6-string-html`](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html): Syntax highlighting for HTML & SQL as tagged template literals in TypeScript—a feature heavily used in the CourseLore codebase.
+   - [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode): Support for [Prettier](https://prettier.io), the code formatter used by Courselore.
+   - [`es6-string-html`](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html): Syntax highlighting for HTML & SQL as tagged template literals in TypeScript—a feature heavily used in the Courselore codebase.
    - [Indentation Level Movement](https://marketplace.visualstudio.com/items?itemName=kaiwood.indentation-level-movement): Move up & down by indentation, which helps navigating on HTML.
 
-5. Clone the codebase, install the dependencies, and run CourseLore:
+5. Clone the codebase, install the dependencies, and run Courselore:
 
    ```console
    $ git clone git@github.com:courselore/courselore.git
@@ -194,13 +194,13 @@ If you’re using WSL, follow the Linux instructions.
 
 ### Testing on Mobile
 
-You may run CourseLore on your machine and access it from a phone, which is essential to test any user interface changes you may introduce. You may use the same procedure to test on different computers running different operating systems.
+You may run Courselore on your machine and access it from a phone, which is essential to test any user interface changes you may introduce. You may use the same procedure to test on different computers running different operating systems.
 
 <details>
 
 <summary>Option 1: Using the Local Area Network (Preferred)</summary>
 
-1. Establish a network route between your development machine running CourseLore and your phone. The exact steps for accomplishing this depends on your network, but in general it’s enough to have your development machine and your phone on the same wifi.
+1. Establish a network route between your development machine running Courselore and your phone. The exact steps for accomplishing this depends on your network, but in general it’s enough to have your development machine and your phone on the same wifi.
 
    > **iPhone/iPad + Mac Tip:** Connect an iPhone/iPad to a Mac with an USB cable and iOS & macOS will establish a route between them. In macOS you may go to System Preferences… > Sharing to find the address you should use in the browser on the iPhone/iPad.
 
@@ -216,13 +216,13 @@ You may run CourseLore on your machine and access it from a phone, which is esse
 
    > **iPhone/iPad Tip:** Install the certificate on **Settings > General > VPN & Device Management Certificates**, and trust it on **Settings > General > About > Certificate Trust Settings**.
 
-4. Run CourseLore with the Local Area Network address, for example:
+4. Run Courselore with the Local Area Network address, for example:
 
    ```console
    $ env BASE_URL=https://leafac.local npm start
    ```
 
-   > **Note:** The address must start with `https`, not `http`. CourseLore runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS.
+   > **Note:** The address must start with `https`, not `http`. Courselore runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS.
 
 5. Visit the address on the phone.
 
@@ -239,13 +239,13 @@ You may run CourseLore on your machine and access it from a phone, which is esse
    - Modify `/etc/ssh/sshd_config` to include `GatewayPorts yes`.
    - Run `ssh -NR 0.0.0.0:4001:localhost:4000 root@YOUR-SERVER.COM` and leave the terminal session open.
 
-3. Run CourseLore with the server’s address, for example:
+3. Run Courselore with the server’s address, for example:
 
    ```console
    $ env BASE_URL=https://YOUR-SERVER.COM:4000 npm start
    ```
 
-   > **Note:** The address must start with `https`, not `http`. CourseLore runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS.
+   > **Note:** The address must start with `https`, not `http`. Courselore runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS.
 
 4. Connect to the tunnel from your machine, for example:
 
@@ -263,13 +263,13 @@ You may run CourseLore on your machine and access it from a phone, which is esse
 
 1. Install & run Localtunnel following the instructions on the website.
 
-2. Run CourseLore with the Localtunnel address, for example:
+2. Run Courselore with the Localtunnel address, for example:
 
    ```console
    $ env BASE_URL=https://THE-LOCAL-TUNNEL-ADDRESS npm start
    ```
 
-   > **Note:** The address must start with `https`, not `http`. CourseLore runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS.
+   > **Note:** The address must start with `https`, not `http`. Courselore runs with HTTPS—not HTTP—in development to reduce confusion around some browser features that work differently under HTTPS.
 
 3. Visit the Localtunnel address on the phone.
 

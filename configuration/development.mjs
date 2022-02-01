@@ -48,7 +48,7 @@ export default async ({ courselore, courseloreImport }) => {
           {
             jsonTransport: true,
           },
-          { from: `"CourseLore" <${administratorEmail}>` }
+          { from: `"Courselore" <${administratorEmail}>` }
         );
         return async (mailOptions) => await transporter.sendMail(mailOptions);
       })(),
