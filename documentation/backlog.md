@@ -96,6 +96,10 @@
 - **Browser tab crashes if left open for a long time.**
   - Has the change from `setInterval()` to `setTimeout()` fixed it?
 
+---
+
+- Change the page title when there are new messages on that conversation, to make it stand out on the browser tabs.
+
 ### Advanced Access Control
 
 - Chats with only a few people.
