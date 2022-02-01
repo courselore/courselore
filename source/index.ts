@@ -20073,6 +20073,7 @@ ${contentSource}</textarea
             const title = `${lodash.capitalize(
               casual.words(lodash.random(3, 9))
             )}${type === "question" ? "?" : ""}`;
+            const conversationAuthorEnrollment = lodash.sample(enrollments)!;
             const conversation = database.get<{
               id: number;
               authorEnrollment: number | null;
@@ -20100,8 +20101,13 @@ ${contentSource}</textarea
                   ${messageCreatedAts[messageCreatedAts.length - 1]},
                   ${course.id},
                   ${String(conversationReference)},
-                  ${lodash.sample(enrollments)!.id},
-                  ${Math.random() < 0.5 ? new Date().toISOString() : null},
+                  ${conversationAuthorEnrollment.id},
+                  ${
+                    conversationAuthorEnrollment.role !== "staff" &&
+                    Math.random() < 0.5
+                      ? new Date().toISOString()
+                      : null
+                  },
                   ${type},
                   ${Math.random() < 0.15 ? new Date().toISOString() : null},
                   ${Math.random() < 0.25 ? new Date().toISOString() : null},
@@ -20145,6 +20151,12 @@ ${contentSource}</textarea
                 content: contentSource,
                 decorate: true,
               });
+              const messageAuthorEnrollment =
+                messageReference === 1
+                  ? conversationAuthorEnrollment
+                  : Math.random() < 0.05
+                  ? null
+                  : lodash.sample(enrollments)!;
               const message = database.get<{ id: number }>(
                 sql`
                   INSERT INTO "messages" (
@@ -20177,17 +20189,12 @@ ${contentSource}</textarea
                     },
                     ${conversation.id},
                     ${String(messageReference)},
-                    ${
-                      messageReference === 1
-                        ? conversation.authorEnrollment
-                        : Math.random() < 0.05
-                        ? null
-                        : lodash.sample(enrollments)!.id
-                    },
+                    ${messageAuthorEnrollment?.id},
                     ${
                       messageReference === 1
                         ? conversation.anonymousAt
-                        : Math.random() < 0.5
+                        : messageAuthorEnrollment?.role !== "staff" &&
+                          Math.random() < 0.5
                         ? new Date().toISOString()
                         : null
                     },
