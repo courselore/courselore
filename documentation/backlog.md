@@ -1,9 +1,5 @@
 # Backlog
 
-- **Browser tab crashes if left open for a long time.**
-  - It seems that the server isn’t affected, because when I close the browser tab, the performance on the machine is back to normal.
-  - Only seems to occur in the conversations pages. I left the Course Settings page open for a long time, and nothing went wrong.
-  - It doesn’t seem to be related to live-reloading, or other development features, because it also happens in `courselore.org`.
 - Make textarea resizable.
 
 ---
@@ -94,6 +90,11 @@
 - Email change improvements:
   - The confirmation email has a subject of “Welcome to CourseLore!”. It should be “Please confirm your email”.
   - Maybe we shouldn’t actually change the email until it’s confirmed. Otherwise an attacker with a compromised password could change your email and lock you out of the “Forgot your password?” flow.
+
+---
+
+- **Browser tab crashes if left open for a long time.**
+  - Has the change from `setInterval()` to `setTimeout()` fixed it?
 
 ### Advanced Access Control
 
