@@ -3318,7 +3318,7 @@ export default async function courselore({
                 });
                 (function update() {
                   element.style.display = Date.now() - lastSeenOnlineAt < 5 * 60 * 1000 ? "block" : "none";
-                  window.setInterval(update, 60 * 1000);
+                  window.setTimeout(update, 60 * 1000);
                 })();
               `}"
             ></span>
