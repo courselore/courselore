@@ -2204,6 +2204,13 @@ export default async function courselore({
     )}
     ${await fs.readFile(
       new URL(
+        "../static/node_modules/autosize/dist/autosize.min.js",
+        import.meta.url
+      ),
+      "utf-8"
+    )}
+    ${await fs.readFile(
+      new URL(
         "../static/node_modules/morphdom/dist/morphdom-umd.min.js",
         import.meta.url
       ),
@@ -4764,7 +4771,6 @@ export default async function courselore({
                 `,
                 required: false,
                 skipIsModified: true,
-                expanded: true,
               })}
             </div>
           </div>
@@ -12566,7 +12572,6 @@ export default async function courselore({
     required = true,
     compact = false,
     skipIsModified = false,
-    expanded = false,
   }: {
     req: express.Request<
       {},
@@ -12584,7 +12589,6 @@ export default async function courselore({
     required?: boolean;
     compact?: boolean;
     skipIsModified?: boolean;
-    expanded?: boolean;
   }): HTML => html`
     <div
       class="content-editor ${res.locals.localCSS(css`
@@ -13663,19 +13667,11 @@ export default async function courselore({
                   ? css`
                       height: var(--space--14);
                     `
-                  : expanded
-                  ? css`
-                      height: var(--space--52);
-                    `
                   : css`
                       height: var(--space--20);
                     `}
+                max-height: var(--space--64);
 
-                transition-property: var(--transition-property--all);
-                transition-duration: var(--transition-duration--150);
-                transition-timing-function: var(
-                  --transition-timing-function--in-out
-                );
                 &.drag {
                   background-color: var(--color--blue--200);
                   @media (prefers-color-scheme: dark) {
@@ -13683,208 +13679,204 @@ export default async function courselore({
                   }
                 }
               `)}"
-              $${res.locals.course !== undefined
-                ? html`
-                    oninteractive="${javascript`
-                      const contentEditor = this.closest(".content-editor");
-                      const dropdownMenuTarget = contentEditor.querySelector(".content-editor--write--textarea--dropdown-menu-target");
-                      const dropdownMenus = [
-                        {
-                          trigger: "@",
-                          route: "mention-user-search",
-                          dropdownMenu: tippy(dropdownMenuTarget, {
-                            placement: "bottom-start",
-                            trigger: "manual",
-                            interactive: true,
-                            content: ${res.locals.HTMLForJavaScript(
-                              html`
-                                <div
-                                  class="${res.locals.localCSS(css`
-                                    width: var(--space--56);
-                                    max-height: var(--space--44);
-                                    overflow: auto;
-                                  `)}"
-                                >
-                                  <p class="heading">
-                                    <i class="bi bi-at"></i>
-                                    Mention User
-                                  </p>
-                                  <div class="dropdown--menu">
-                                    <div class="search-results"></div>
-                                    <button
-                                      type="button"
-                                      class="dropdown--menu--item button button--transparent"
-                                      onclick="${javascript`
-                                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("everyone");
-                                      `}"
-                                    >
-                                      Everyone in the Conversation
-                                    </button>
-                                    <button
-                                      type="button"
-                                      class="dropdown--menu--item button button--transparent"
-                                      onclick="${javascript`
-                                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("staff");
-                                      `}"
-                                    >
-                                      Staff in the Conversation
-                                    </button>
-                                    <button
-                                      type="button"
-                                      class="dropdown--menu--item button button--transparent"
-                                      onclick="${javascript`
-                                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("students");
-                                      `}"
-                                    >
-                                      Students in the Conversation
-                                    </button>
+              oninteractive="${javascript`
+                autosize(this);
+                ${
+                  res.locals.course !== undefined
+                    ? javascript`
+                        const contentEditor = this.closest(".content-editor");
+                        const dropdownMenuTarget = contentEditor.querySelector(".content-editor--write--textarea--dropdown-menu-target");
+                        const dropdownMenus = [
+                          {
+                            trigger: "@",
+                            route: "mention-user-search",
+                            dropdownMenu: tippy(dropdownMenuTarget, {
+                              placement: "bottom-start",
+                              trigger: "manual",
+                              interactive: true,
+                              content: ${res.locals.HTMLForJavaScript(
+                                html`
+                                  <div
+                                    class="${res.locals.localCSS(css`
+                                      width: var(--space--56);
+                                      max-height: var(--space--44);
+                                      overflow: auto;
+                                    `)}"
+                                  >
+                                    <p class="heading">
+                                      <i class="bi bi-at"></i>
+                                      Mention User
+                                    </p>
+                                    <div class="dropdown--menu">
+                                      <div class="search-results"></div>
+                                      <button
+                                        type="button"
+                                        class="dropdown--menu--item button button--transparent"
+                                        onclick="${javascript`
+                                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("everyone");
+                                        `}"
+                                      >
+                                        Everyone in the Conversation
+                                      </button>
+                                      <button
+                                        type="button"
+                                        class="dropdown--menu--item button button--transparent"
+                                        onclick="${javascript`
+                                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("staff");
+                                        `}"
+                                      >
+                                        Staff in the Conversation
+                                      </button>
+                                      <button
+                                        type="button"
+                                        class="dropdown--menu--item button button--transparent"
+                                        onclick="${javascript`
+                                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("students");
+                                        `}"
+                                      >
+                                        Students in the Conversation
+                                      </button>
+                                    </div>
                                   </div>
-                                </div>
-                              `
-                            )},
-                          }),
-                        },
-                        {
-                          trigger: "#",
-                          route: "refer-to-conversation-or-message-search",
-                          dropdownMenu: tippy(dropdownMenuTarget, {
-                            placement: "bottom-start",
-                            trigger: "manual",
-                            interactive: true,
-                            content: ${res.locals.HTMLForJavaScript(
-                              html`
-                                <div
-                                  class="${res.locals.localCSS(css`
-                                    width: var(--space--72);
-                                    max-height: var(--space--44);
-                                    overflow: auto;
-                                  `)}"
-                                >
-                                  <p class="heading">
-                                    <i class="bi bi-hash"></i>
-                                    Refer to Conversation or Message
-                                  </p>
-                                  <div class="dropdown--menu">
-                                    <div class="search-results"></div>
+                                `
+                              )},
+                            }),
+                          },
+                          {
+                            trigger: "#",
+                            route: "refer-to-conversation-or-message-search",
+                            dropdownMenu: tippy(dropdownMenuTarget, {
+                              placement: "bottom-start",
+                              trigger: "manual",
+                              interactive: true,
+                              content: ${res.locals.HTMLForJavaScript(
+                                html`
+                                  <div
+                                    class="${res.locals.localCSS(css`
+                                      width: var(--space--72);
+                                      max-height: var(--space--44);
+                                      overflow: auto;
+                                    `)}"
+                                  >
+                                    <p class="heading">
+                                      <i class="bi bi-hash"></i>
+                                      Refer to Conversation or Message
+                                    </p>
+                                    <div class="dropdown--menu">
+                                      <div class="search-results"></div>
+                                    </div>
                                   </div>
-                                </div>
-                              `
-                            )},
-                          }),
-                        },
-                      ];
-                      let anchorIndex = null;
+                                `
+                              )},
+                            }),
+                          },
+                        ];
+                        let anchorIndex = null;
 
-                      this.addEventListener("input", (() => {
-                        let isUpdating = false;
-                        let shouldUpdateAgain = false;
-                        return async function onInput() {
-                          const value = this.value;
-                          const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
-                          const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
-                          for (const { trigger, route, dropdownMenu } of dropdownMenus) {
-                            if (!dropdownMenu.state.isShown) {
-                              if (
-                                value[selectionMin - 1] !== trigger ||
-                                (selectionMin > 1 && value[selectionMin - 2].match(/\\w/) !== null)
-                              ) continue;
-                              anchorIndex = selectionMin;
-                              const caretCoordinates = getCaretCoordinates(this, anchorIndex - 1);
-                              dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
-                              dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
-                              tippy.hideAll();
-                              dropdownMenu.show();
-                            }
-                            if (selectionMin < anchorIndex || value[anchorIndex - 1] !== trigger) {
-                              dropdownMenu.hide();
-                              continue;
-                            }
-                            if (isUpdating) {
-                              shouldUpdateAgain = true;
-                              continue;
-                            }
-                            isUpdating = true;
-                            shouldUpdateAgain = false;
-                            const content = dropdownMenu.props.content;
-                            const searchResults = content.querySelector(".search-results");
-                            const search = value.slice(anchorIndex, selectionMax).trim();
-                            if (search === "")
-                              searchResults.innerHTML = "";
-                            else
-                              leafac.mount(
-                                searchResults,
-                                await (await fetch("${baseURL}/courses/${
-                      res.locals.course.reference
-                    }/content-editor/" + route + "?" + new URLSearchParams({ search }))).text()
-                              );
-                            const buttons = content.querySelectorAll(".button");
-                            for (const button of buttons) button.classList.remove("hover");
-                            if (buttons.length > 0) buttons[0].classList.add("hover");
-                            isUpdating = false;
-                            if (shouldUpdateAgain) onInput();
-                          }
-                        }
-                      })());
-
-                      this.addEventListener("keydown", (event) => {
-                        for (const { dropdownMenu } of dropdownMenus) {
-                          if (!dropdownMenu.state.isShown) continue;
-                          const content = dropdownMenu.props.content;
-                          switch (event.code) {
-                            case "ArrowUp":
-                            case "ArrowDown":
-                              event.preventDefault();
-                              const buttons = [...content.querySelectorAll(".button")];
-                              if (buttons.length === 0) continue;    
-                              const currentHoverIndex = buttons.indexOf(content.querySelector(".button.hover"));
-                              if (
-                                currentHoverIndex === -1 ||
-                                (event.code === "ArrowUp" && currentHoverIndex === 0) ||
-                                (event.code === "ArrowDown" && currentHoverIndex === buttons.length - 1)
-                              ) continue;
-                              buttons[currentHoverIndex].classList.remove("hover");
-                              const buttonToHover = buttons[currentHoverIndex + (event.code === "ArrowUp" ? -1 : 1)];
-                              buttonToHover.classList.add("hover");
-                              scrollIntoView(buttonToHover, { scrollMode: "if-needed" });
-                              break;
-
-                            case "Enter":
-                            case "Tab":
-                              const buttonHover = content.querySelector(".button.hover");
-                              if (buttonHover === null) dropdownMenu.hide();
-                              else {
-                                event.preventDefault();
-                                buttonHover.click();
+                        this.addEventListener("input", (() => {
+                          let isUpdating = false;
+                          let shouldUpdateAgain = false;
+                          return async function onInput() {
+                            const value = this.value;
+                            const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
+                            const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
+                            for (const { trigger, route, dropdownMenu } of dropdownMenus) {
+                              if (!dropdownMenu.state.isShown) {
+                                if (
+                                  value[selectionMin - 1] !== trigger ||
+                                  (selectionMin > 1 && value[selectionMin - 2].match(/\\w/) !== null)
+                                ) continue;
+                                anchorIndex = selectionMin;
+                                const caretCoordinates = getCaretCoordinates(this, anchorIndex - 1);
+                                dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
+                                dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
+                                tippy.hideAll();
+                                dropdownMenu.show();
                               }
-                              break;
-
-                            case "Escape":
-                            case "ArrowLeft":
-                            case "ArrowRight":
-                            case "Home":
-                            case "End":
-                              dropdownMenu.hide();
-                              break;
+                              if (selectionMin < anchorIndex || value[anchorIndex - 1] !== trigger) {
+                                dropdownMenu.hide();
+                                continue;
+                              }
+                              if (isUpdating) {
+                                shouldUpdateAgain = true;
+                                continue;
+                              }
+                              isUpdating = true;
+                              shouldUpdateAgain = false;
+                              const content = dropdownMenu.props.content;
+                              const searchResults = content.querySelector(".search-results");
+                              const search = value.slice(anchorIndex, selectionMax).trim();
+                              if (search === "")
+                                searchResults.innerHTML = "";
+                              else
+                                leafac.mount(
+                                  searchResults,
+                                  await (await fetch("${baseURL}/courses/${
+                        res.locals.course.reference
+                      }/content-editor/" + route + "?" + new URLSearchParams({ search }))).text()
+                                );
+                              const buttons = content.querySelectorAll(".button");
+                              for (const button of buttons) button.classList.remove("hover");
+                              if (buttons.length > 0) buttons[0].classList.add("hover");
+                              isUpdating = false;
+                              if (shouldUpdateAgain) onInput();
+                            }
                           }
-                        }
-                      });
+                        })());
 
-                      this.dropdownMenuComplete = (text) => {
-                        this.setSelectionRange(anchorIndex, Math.max(this.selectionStart, this.selectionEnd));
-                        textFieldEdit.insert(this, text + " ");
-                        tippy.hideAll();
-                        this.focus();
-                      };
-                    `}"
-                  `
-                : html``}
-              $${compact
-                ? html``
-                : html`
-                    onfocus="${javascript`
-                      this.style.height = "var(--space--52)";
-                    `}"
-                  `}
+                        this.addEventListener("keydown", (event) => {
+                          for (const { dropdownMenu } of dropdownMenus) {
+                            if (!dropdownMenu.state.isShown) continue;
+                            const content = dropdownMenu.props.content;
+                            switch (event.code) {
+                              case "ArrowUp":
+                              case "ArrowDown":
+                                event.preventDefault();
+                                const buttons = [...content.querySelectorAll(".button")];
+                                if (buttons.length === 0) continue;    
+                                const currentHoverIndex = buttons.indexOf(content.querySelector(".button.hover"));
+                                if (
+                                  currentHoverIndex === -1 ||
+                                  (event.code === "ArrowUp" && currentHoverIndex === 0) ||
+                                  (event.code === "ArrowDown" && currentHoverIndex === buttons.length - 1)
+                                ) continue;
+                                buttons[currentHoverIndex].classList.remove("hover");
+                                const buttonToHover = buttons[currentHoverIndex + (event.code === "ArrowUp" ? -1 : 1)];
+                                buttonToHover.classList.add("hover");
+                                scrollIntoView(buttonToHover, { scrollMode: "if-needed" });
+                                break;
+
+                              case "Enter":
+                              case "Tab":
+                                const buttonHover = content.querySelector(".button.hover");
+                                if (buttonHover === null) dropdownMenu.hide();
+                                else {
+                                  event.preventDefault();
+                                  buttonHover.click();
+                                }
+                                break;
+
+                              case "Escape":
+                              case "ArrowLeft":
+                              case "ArrowRight":
+                              case "Home":
+                              case "End":
+                                dropdownMenu.hide();
+                                break;
+                            }
+                          }
+                        });
+
+                        this.dropdownMenuComplete = (text) => {
+                          this.setSelectionRange(anchorIndex, Math.max(this.selectionStart, this.selectionEnd));
+                          textFieldEdit.insert(this, text + " ");
+                          tippy.hideAll();
+                          this.focus();
+                        };
+                      `
+                    : javascript``
+                }
+              `}"
               ondragenter="${javascript`
                 this.classList.add("drag");
               `}"

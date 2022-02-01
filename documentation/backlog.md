@@ -82,6 +82,7 @@
   - Synchronous stuff that could be async.
 - Components which we repeat in the HTML, making it bigger, but should DRY:
   - The `edit` form for messages. Use `data-content-source` that’s already used by the quoting mechanism.
+    - That should fix jump in autosize, which can’t calculate width of a hidden element.
   - `userPartial`s, particularly on the list of who read each message.
 - Make Demonstration Data load faster by having a cache of pre-built data.
 - Front-end optimizations:
@@ -101,6 +102,7 @@
 ---
 
 - Change the page title when there are new messages on that conversation, to make it stand out on the browser tabs.
+- When `contentEditor` is in `compact` mode, don’t just hide elements, prevent them from outputting HTML at all, which reduces the HTML payload. (But pay attention to buttons that are hidden but still accessible via keyboard shortcuts.)
 
 ### Advanced Access Control
 
