@@ -28,6 +28,7 @@
   - Tooltips.
   - Relative times (for example, “2 days ago”).
   - Multiple message submissions.
+  - Look for leaking event listeners.
 
 ---
 
@@ -200,6 +201,7 @@
 - Templates for questions (like GitHub Issues).
 - Reuse answers.
 - Paste tables from Excel and have them formatted as Markdown tables.
+- The localStorage which remembers messages that haven’t been sent yet isn’t cleaning empty objects, leaking resources.
 
 ### Content Processor
 
