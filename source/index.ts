@@ -17515,6 +17515,7 @@ ${contentSource}</textarea
                                                                   onclick="${javascript`
                                                                     this.closest(".message").querySelector(".message--show").hidden = true;
                                                                     this.closest(".message").querySelector(".message--edit").hidden = false;
+                                                                    autosize.update(this.closest(".message").querySelector(".message--edit textarea"));
                                                                     tippy.hideAll();
                                                                   `}"
                                                                 >

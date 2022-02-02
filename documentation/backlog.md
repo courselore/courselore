@@ -1,6 +1,5 @@
 # Backlog
 
-- Do a quick hack to fix autosize not kicking in on edit messages.
 - On chat message send morphdom SHOULD erase the textarea.
 - Big GIFs resizing
   - https://github.com/lovell/sharp/issues/2437
@@ -89,7 +88,7 @@
   - Synchronous stuff that could be async.
 - Components which we repeat in the HTML, making it bigger, but should DRY:
   - The `edit` form for messages. Use `data-content-source` that’s already used by the quoting mechanism.
-    - That should fix jump in autosize, which can’t calculate width of a hidden element.
+    - Implement a more proper solution than the current use of `autosize.update()`
   - `userPartial`s, particularly on the list of who read each message.
 - Make Demonstration Data load faster by having a cache of pre-built data.
 - Front-end optimizations:
