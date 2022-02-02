@@ -13643,6 +13643,45 @@ export default async function courselore({
                 `}"
               />
             </div>
+            <div>
+              <button
+                type="button"
+                class="button button--tight button--transparent"
+                oninteractive="${javascript`
+                  Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+0", () => { this.click(); return false; });
+                  tippy(this, {
+                    touch: false,
+                    content: ${res.locals.HTMLForJavaScript(
+                      html`
+                        Programmer Mode
+                        <span class="keyboard-shortcut">
+                          (<span
+                            oninteractive="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+Alt+0</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            oninteractive="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
+                            ><i class="bi bi-alt"></i
+                            ><i class="bi bi-command"></i>0</span
+                          >)
+                        </span>
+                      `
+                    )},
+                  });
+                `}"
+                onclick="${javascript`
+                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  textFieldEdit.wrapSelection(element, "$");
+                  element.focus();
+                `}"
+              >
+                <i class="bi bi-braces-asterisk"></i>
+              </button>
+            </div>
           </div>
           <div
             class="${res.locals.localCSS(css`
