@@ -1,5 +1,10 @@
 # Backlog
 
+- Monospaced font on editor.
+- Do a quick hack to fix autosize not kicking in on edit messages.
+- On chat message send morphdom SHOULD erase the textarea.
+- Big GIFs resizing
+- Check why OCaml syntax highlighting behaves strangely.
 - Anonymous messages are turning into “No longer enrolled”, leaking anonymity information.
 
 ---
@@ -58,6 +63,7 @@
 - Rename table `readings` -> `views`.
 - Remove `data-` in favor of `oninteractive`.
 - Change from `addEventListener` to `onEvent`.
+- Confirm email -> verify email.
 
 ---
 
@@ -1848,6 +1854,7 @@ $$
 - Translate to other languages.
 - Add a toggle to switch between light mode and dark mode, regardless of your operating system setting? I don’t like this idea, but lots of people do it. Investigate…
 - Test screen readers.
+- Test contrast.
 
 ### Documentation
 
