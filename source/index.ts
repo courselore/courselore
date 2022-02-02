@@ -13644,43 +13644,54 @@ export default async function courselore({
               />
             </div>
             <div>
-              <button
-                type="button"
-                class="button button--tight button--transparent"
-                oninteractive="${javascript`
-                  Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+0", () => { this.click(); return false; });
-                  tippy(this, {
-                    touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
-                      html`
-                        Programmer Mode
-                        <span class="keyboard-shortcut">
-                          (<span
-                            oninteractive="${javascript`
-                              this.hidden = leafac.isAppleDevice;
-                            `}"
-                            >Ctrl+Alt+0</span
-                          ><span
-                            class="keyboard-shortcut--cluster"
-                            oninteractive="${javascript`
-                              this.hidden = !leafac.isAppleDevice;
-                            `}"
-                            ><i class="bi bi-alt"></i
-                            ><i class="bi bi-command"></i>0</span
-                          >)
-                        </span>
-                      `
-                    )},
-                  });
-                `}"
-                onclick="${javascript`
-                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                  textFieldEdit.wrapSelection(element, "$");
-                  element.focus();
-                `}"
-              >
-                <i class="bi bi-braces-asterisk"></i>
-              </button>
+              <label class="button button--tight button--transparent">
+                <input
+                  type="checkbox"
+                  data-skip-is-modified="true"
+                  class="visually-hidden input--radio-or-checkbox--multilabel"
+                  oninteractive="${javascript`
+                    Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+0", () => { this.click(); return false; });
+                    tippy(this, {
+                      touch: false,
+                      content: ${res.locals.HTMLForJavaScript(
+                        html`
+                          Programmer Mode
+                          <span class="secondary"
+                            >(Monospaced font, select-and-tab to indent, and so
+                            forth)</span
+                          >
+                          <span class="keyboard-shortcut">
+                            (<span
+                              oninteractive="${javascript`
+                                this.hidden = leafac.isAppleDevice;
+                              `}"
+                              >Ctrl+Alt+0</span
+                            ><span
+                              class="keyboard-shortcut--cluster"
+                              oninteractive="${javascript`
+                                this.hidden = !leafac.isAppleDevice;
+                              `}"
+                              ><i class="bi bi-alt"></i
+                              ><i class="bi bi-command"></i>0</span
+                            >)
+                          </span>
+                        `
+                      )},
+                    });
+                  `}"
+                  onclick="${javascript`
+                    const classList = this.closest(".content-editor").querySelector(".content-editor--write--textarea").classList;
+                    if (this.checked) classList.add("programmer-mode");
+                    else classList.remove("programmer-mode");
+                  `}"
+                />
+                <span>
+                  <i class="bi bi-braces-asterisk"></i>
+                </span>
+                <span class="text--blue">
+                  <i class="bi bi-braces-asterisk"></i>
+                </span>
+              </label>
             </div>
           </div>
           <div
@@ -13716,6 +13727,11 @@ export default async function courselore({
                   @media (prefers-color-scheme: dark) {
                     background-color: var(--color--blue--900);
                   }
+                }
+
+                &.programmer-mode {
+                  font-family: "jetbrains-mono", var(--font-family--monospace);
+                  font-variant-ligatures: none;
                 }
               `)}"
               oninteractive="${javascript`
