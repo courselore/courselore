@@ -1,6 +1,5 @@
 # Backlog
 
-- On chat message send morphdom SHOULD erase the textarea.
 - Big GIFs resizing
   - https://github.com/lovell/sharp/issues/2437
   - https://stackoverflow.com/questions/67938794/gif-output-requires-libvips-with-support-for-imagemagick
