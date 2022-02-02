@@ -1,5 +1,7 @@
 # Backlog
 
+- Make programmer mode font smaller.
+- Change default ordering of messages on the left for most recently updated.
 - Big GIFs resizing
   - https://github.com/lovell/sharp/issues/2437
   - https://stackoverflow.com/questions/67938794/gif-output-requires-libvips-with-support-for-imagemagick
