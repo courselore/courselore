@@ -13644,37 +13644,41 @@ export default async function courselore({
               />
             </div>
             <div>
-              <label class="button button--tight button--transparent">
+              <label
+                class="button button--tight button--transparent"
+                oninteractive="${javascript`
+                  tippy(this, {
+                    touch: false,
+                    content: ${res.locals.HTMLForJavaScript(
+                      html`
+                        Programmer Mode
+                        <span class="secondary">(Monospaced Font)</span>
+                        <span class="keyboard-shortcut">
+                          (<span
+                            oninteractive="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+Alt+0</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            oninteractive="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
+                            ><i class="bi bi-alt"></i
+                            ><i class="bi bi-command"></i>0</span
+                          >)
+                        </span>
+                      `
+                    )},
+                  });
+                `}"
+              >
                 <input
                   type="checkbox"
                   data-skip-is-modified="true"
                   class="visually-hidden input--radio-or-checkbox--multilabel"
                   oninteractive="${javascript`
                     Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+0", () => { this.click(); return false; });
-                    tippy(this, {
-                      touch: false,
-                      content: ${res.locals.HTMLForJavaScript(
-                        html`
-                          Programmer Mode
-                          <span class="secondary">(Monospaced Font)</span>
-                          <span class="keyboard-shortcut">
-                            (<span
-                              oninteractive="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+Alt+0</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              oninteractive="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-alt"></i
-                              ><i class="bi bi-command"></i>0</span
-                            >)
-                          </span>
-                        `
-                      )},
-                    });
                     if (localStorage.getItem("content-editor--write--textarea--programmer-mode") === "true") this.click();
                   `}"
                   onclick="${javascript`
