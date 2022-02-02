@@ -13678,11 +13678,14 @@ export default async function courselore({
                         `
                       )},
                     });
+                    if (localStorage.getItem("content-editor--write--textarea--programmer-mode") === "true") this.click();
                   `}"
                   onclick="${javascript`
+                    const enabled = this.checked;
                     const classList = this.closest(".content-editor").querySelector(".content-editor--write--textarea").classList;
-                    if (this.checked) classList.add("programmer-mode");
-                    else classList.remove("programmer-mode");
+                    if (enabled) classList.add("content-editor--write--textarea--programmer-mode");
+                    else classList.remove("content-editor--write--textarea--programmer-mode");
+                    localStorage.setItem("content-editor--write--textarea--programmer-mode", enabled);
                   `}"
                 />
                 <span>
@@ -13729,7 +13732,7 @@ export default async function courselore({
                   }
                 }
 
-                &.programmer-mode {
+                &.content-editor--write--textarea--programmer-mode {
                   font-family: "jetbrains-mono", var(--font-family--monospace);
                   font-variant-ligatures: none;
                 }
