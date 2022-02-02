@@ -4,6 +4,9 @@
 - Do a quick hack to fix autosize not kicking in on edit messages.
 - On chat message send morphdom SHOULD erase the textarea.
 - Big GIFs resizing
+  - https://github.com/lovell/sharp/issues/2437
+  - https://stackoverflow.com/questions/67938794/gif-output-requires-libvips-with-support-for-imagemagick
+  - https://sharp.pixelplumbing.com/install#custom-libvips
 - Check why OCaml syntax highlighting behaves strangely.
 - Anonymous messages are turning into “No longer enrolled”, leaking anonymity information.
 
