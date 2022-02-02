@@ -1,6 +1,5 @@
 # Backlog
 
-- Monospaced font on editor.
 - Do a quick hack to fix autosize not kicking in on edit messages.
 - On chat message send morphdom SHOULD erase the textarea.
 - Big GIFs resizing
@@ -212,6 +211,8 @@
 - Reuse answers.
 - Paste tables from Excel and have them formatted as Markdown tables.
 - The localStorage which remembers messages that haven’t been sent yet isn’t cleaning empty objects, leaking resources.
+- Add https://github.com/fregante/indent-textarea in programmer mode
+  - This requires proper ESM bundling, because it depends on text-field-edit
 
 ### Content Processor
 

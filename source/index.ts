@@ -13656,10 +13656,7 @@ export default async function courselore({
                       content: ${res.locals.HTMLForJavaScript(
                         html`
                           Programmer Mode
-                          <span class="secondary"
-                            >(Monospaced font, select-and-tab to indent, and so
-                            forth)</span
-                          >
+                          <span class="secondary">(Monospaced Font)</span>
                           <span class="keyboard-shortcut">
                             (<span
                               oninteractive="${javascript`
