@@ -17515,7 +17515,7 @@ ${contentSource}</textarea
                                                                   onclick="${javascript`
                                                                     this.closest(".message").querySelector(".message--show").hidden = true;
                                                                     this.closest(".message").querySelector(".message--edit").hidden = false;
-                                                                    autosize.update(this.closest(".message").querySelector(".message--edit textarea"));
+                                                                    autosize.update(this.closest(".message").querySelector(".message--edit .content-editor--write--textarea"));
                                                                     tippy.hideAll();
                                                                   `}"
                                                                 >
@@ -18571,6 +18571,7 @@ ${contentSource}</textarea
                           method: this.method,
                           body: new URLSearchParams(new FormData(this)),
                         });
+                        textFieldEdit.set(this.querySelector(".content-editor--write--textarea"), "");
                       `}"
                     `
                   : html``}
