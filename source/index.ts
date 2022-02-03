@@ -10873,7 +10873,7 @@ export default async function courselore({
                           ) ASC,
                         `
                     }
-                    "conversations"."id" DESC
+                    coalesce("conversations"."updatedAt", "conversations"."createdAt") DESC
         `
       )
       .flatMap((conversationWithSearchResult) => {
