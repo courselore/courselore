@@ -11767,11 +11767,11 @@ export default async function courselore({
           res,
           enrollment: conversation.authorEnrollment,
           anonymous:
-            conversation.anonymousAt === null ||
-            conversation.authorEnrollment === "no-longer-enrolled"
+            conversation.anonymousAt === null
               ? false
               : res.locals.enrollment.role === "staff" ||
-                conversation.authorEnrollment.id === res.locals.enrollment.id
+                (conversation.authorEnrollment !== "no-longer-enrolled" &&
+                  conversation.authorEnrollment.id === res.locals.enrollment.id)
               ? "reveal"
               : true,
           size: "xs",
@@ -11892,13 +11892,13 @@ export default async function courselore({
                   res,
                   enrollment: searchResult.message.authorEnrollment,
                   anonymous:
-                    searchResult.message.anonymousAt === null ||
-                    searchResult.message.authorEnrollment ===
-                      "no-longer-enrolled"
+                    searchResult.message.anonymousAt === null
                       ? false
                       : res.locals.enrollment.role === "staff" ||
-                        searchResult.message.authorEnrollment.id ===
-                          res.locals.enrollment.id
+                        (searchResult.message.authorEnrollment !==
+                          "no-longer-enrolled" &&
+                          searchResult.message.authorEnrollment.id ===
+                            res.locals.enrollment.id)
                       ? "reveal"
                       : true,
                 })}
@@ -11915,11 +11915,12 @@ export default async function courselore({
                   res,
                   enrollment: message.authorEnrollment,
                   anonymous:
-                    message.anonymousAt === null ||
-                    message.authorEnrollment === "no-longer-enrolled"
+                    message.anonymousAt === null
                       ? false
                       : res.locals.enrollment.role === "staff" ||
-                        message.authorEnrollment.id === res.locals.enrollment.id
+                        (message.authorEnrollment !== "no-longer-enrolled" &&
+                          message.authorEnrollment.id ===
+                            res.locals.enrollment.id)
                       ? "reveal"
                       : true,
                 })}
@@ -15519,17 +15520,17 @@ export default async function courselore({
                                                       message.authorEnrollment,
                                                     anonymous:
                                                       message.anonymousAt ===
-                                                        null ||
-                                                      message.authorEnrollment ===
-                                                        "no-longer-enrolled"
+                                                      null
                                                         ? false
                                                         : res.locals.enrollment
                                                             .role === "staff" ||
-                                                          message
-                                                            .authorEnrollment
-                                                            .id ===
-                                                            res.locals
-                                                              .enrollment.id
+                                                          (message.authorEnrollment !==
+                                                            "no-longer-enrolled" &&
+                                                            message
+                                                              .authorEnrollment
+                                                              .id ===
+                                                              res.locals
+                                                                .enrollment.id)
                                                         ? "reveal"
                                                         : true,
                                                     name:

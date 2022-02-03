@@ -1,9 +1,5 @@
 # Backlog
 
-- Anonymous messages are turning into “No longer enrolled”, leaking anonymity information.
-
----
-
 - Add the notion of questions being resolved.
   - Only staff may change the “resolved” status
   - List of conversations: Make it easy to see unresolved questions. Color-code and filters.
