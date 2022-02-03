@@ -11766,10 +11766,6 @@ export default async function courselore({
         class="secondary ${res.locals.localCSS(css`
           font-size: var(--font-size--xs);
           line-height: var(--line-height--xs);
-          display: flex;
-          flex-wrap: wrap;
-          column-gap: var(--space--3);
-          row-gap: var(--space--0-5);
         `)}"
       >
         $${userPartial({
@@ -11786,6 +11782,28 @@ export default async function courselore({
               : true,
           size: "xs",
         })}
+      </div>
+
+      <div
+        class="secondary ${res.locals.localCSS(css`
+          font-size: var(--font-size--xs);
+          line-height: var(--line-height--xs);
+          display: flex;
+          flex-wrap: wrap;
+          column-gap: var(--space--3);
+          row-gap: var(--space--0-5);
+        `)}"
+      >
+        <div
+          oninteractive="${javascript`
+          tippy(this, {
+            touch: false,
+            content: "Conversation Reference",
+          });
+        `}"
+        >
+          #${conversation.reference}
+        </div>
 
         <time
           datetime="${new Date(conversation.createdAt).toISOString()}"
@@ -11807,17 +11825,6 @@ export default async function courselore({
               </div>
             `
           : html``}
-
-        <div
-          oninteractive="${javascript`
-            tippy(this, {
-              touch: false,
-              content: "Conversation Reference",
-            });
-          `}"
-        >
-          #${conversation.reference}
-        </div>
       </div>
 
       $${conversation.taggings.length === 0
