@@ -18566,12 +18566,14 @@ ${contentSource}</textarea
                 $${res.locals.conversation.type === "chat"
                   ? html`
                       onsubmit="${javascript`
-                        event.preventDefault();
-                        fetch(this.action, {
-                          method: this.method,
-                          body: new URLSearchParams(new FormData(this)),
-                        });
-                        textFieldEdit.set(this.querySelector(".content-editor--write--textarea"), "");
+                        (async () => {
+                          event.preventDefault();
+                          await fetch(this.action, {
+                            method: this.method,
+                            body: new URLSearchParams(new FormData(this)),
+                          });
+                          textFieldEdit.set(this.querySelector(".content-editor--write--textarea"), "");
+                        })();
                       `}"
                     `
                   : html``}
