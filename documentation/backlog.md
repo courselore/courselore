@@ -1,6 +1,7 @@
 # Backlog
 
 - Make it so that people in the conversation are listed first in the @mentions widget.
+  - On new conversation page, maybe adapt the @mentions widget according to the visibility that’s currently set.
 - Check why OCaml syntax highlighting behaves strangely.
 - Anonymous messages are turning into “No longer enrolled”, leaking anonymity information.
 

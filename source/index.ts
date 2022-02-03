@@ -12599,11 +12599,15 @@ export default async function courselore({
       any,
       {},
       {},
-      BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+      BaseMiddlewareLocals &
+        Partial<IsEnrolledInCourseMiddlewareLocals> &
+        Partial<IsConversationAccessibleMiddlewareLocals>
     >;
     res: express.Response<
       any,
-      BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+      BaseMiddlewareLocals &
+        Partial<IsEnrolledInCourseMiddlewareLocals> &
+        Partial<IsConversationAccessibleMiddlewareLocals>
     >;
     name?: string;
     contentSource?: string;
@@ -13769,7 +13773,15 @@ export default async function courselore({
                         const dropdownMenus = [
                           {
                             trigger: "@",
-                            route: "mention-user-search",
+                            route: ${JSON.stringify(
+                              `${baseURL}/courses/${
+                                res.locals.course.reference
+                              }/${
+                                res.locals.conversation !== undefined
+                                  ? `conversations/${res.locals.conversation.reference}/`
+                                  : ``
+                              }content-editor/mention-user-search`
+                            )},
                             dropdownMenu: tippy(dropdownMenuTarget, {
                               placement: "bottom-start",
                               trigger: "manual",
@@ -13824,7 +13836,9 @@ export default async function courselore({
                           },
                           {
                             trigger: "#",
-                            route: "refer-to-conversation-or-message-search",
+                            route: ${JSON.stringify(
+                              `${baseURL}/courses/${res.locals.course.reference}/content-editor/refer-to-conversation-or-message-search`
+                            )},
                             dropdownMenu: tippy(dropdownMenuTarget, {
                               placement: "bottom-start",
                               trigger: "manual",
@@ -13891,9 +13905,7 @@ export default async function courselore({
                               else
                                 leafac.mount(
                                   searchResults,
-                                  await (await fetch("${baseURL}/courses/${
-                        res.locals.course.reference
-                      }/content-editor/" + route + "?" + new URLSearchParams({ search }))).text()
+                                  await (await fetch(route + "?" + new URLSearchParams({ search }))).text()
                                 );
                               const buttons = content.querySelectorAll(".button");
                               for (const button of buttons) button.classList.remove("hover");
