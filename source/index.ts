@@ -19151,6 +19151,13 @@ ${contentSource}</textarea
         });
         database.run(
           sql`
+            UPDATE "conversations"
+            SET "updatedAt" = ${new Date().toISOString()}
+            WHERE "id" = ${res.locals.conversation.id}
+          `
+        );
+        database.run(
+          sql`
             UPDATE "messages"
             SET "contentSource" = ${contentSource},
                 "contentPreprocessed" = ${processedContent.preprocessed},
