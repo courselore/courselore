@@ -1,6 +1,5 @@
 # Backlog
 
-- Big GIFs resizing
 - Make it so that people in the conversation are listed first in the @mentions widget.
 - Check why OCaml syntax highlighting behaves strangely.
 - Anonymous messages are turning into “No longer enrolled”, leaking anonymity information.
