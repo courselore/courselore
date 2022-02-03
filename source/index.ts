@@ -4199,7 +4199,7 @@ export default async function courselore({
     {},
     {},
     BaseMiddlewareLocals & Partial<IsSignedInMiddlewareLocals>
-  > = (req, res, next) => {
+  > = (req, res) => {
     res.send(
       baseLayout({
         req,
@@ -14017,38 +14017,33 @@ ${contentSource}</textarea
     </div>
   `;
 
-  app.get<
-    { courseReference: string },
+  const mentionUserSearchRequestHandler: express.RequestHandler<
+    { courseReference: string; conversationReference?: string },
     any,
     {},
     { search?: string },
-    IsEnrolledInCourseMiddlewareLocals
-  >(
-    "/courses/:courseReference/content-editor/mention-user-search",
-    ...isEnrolledInCourseMiddleware,
-    (req, res, next) => {
-      if (
-        typeof req.query.search !== "string" ||
-        req.query.search.trim() === ""
-      )
-        return next("validation");
+    IsEnrolledInCourseMiddlewareLocals &
+      Partial<IsConversationAccessibleMiddlewareLocals>
+  > = (req, res, next) => {
+    if (typeof req.query.search !== "string" || req.query.search.trim() === "")
+      return next("validation");
 
-      const enrollments = database
-        .all<{
-          id: number;
-          userId: number;
-          userLastSeenOnlineAt: string;
-          userEmail: string;
-          userName: string;
-          userAvatar: string | null;
-          userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-          userBiographySource: string | null;
-          userBiographyPreprocessed: HTML | null;
-          userNameSearchResultHighlight: string;
-          reference: string;
-          role: EnrollmentRole;
-        }>(
-          sql`
+    const enrollments = database
+      .all<{
+        id: number;
+        userId: number;
+        userLastSeenOnlineAt: string;
+        userEmail: string;
+        userName: string;
+        userAvatar: string | null;
+        userAvatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+        userBiographySource: string | null;
+        userBiographyPreprocessed: HTML | null;
+        userNameSearchResultHighlight: string;
+        reference: string;
+        role: EnrollmentRole;
+      }>(
+        sql`
           SELECT "enrollments"."id",
                  "users"."id" AS "userId",
                  "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
@@ -14066,69 +14061,78 @@ ${contentSource}</textarea
                           "enrollments"."course" = ${res.locals.course.id} AND
                           "users"."id" != ${res.locals.user.id}
           JOIN "usersNameSearchIndex" ON "users"."id" = "usersNameSearchIndex"."rowid" AND
-                                         "usersNameSearchIndex" MATCH ${sanitizeSearch(
-                                           req.query.search,
-                                           { prefix: true }
-                                         )}
+                                        "usersNameSearchIndex" MATCH ${sanitizeSearch(
+                                          req.query.search,
+                                          { prefix: true }
+                                        )}
           ORDER BY "usersNameSearchIndex"."rank" ASC,
-                   "users"."name" ASC
+                  "users"."name" ASC
           LIMIT 5
         `
-        )
-        .map((enrollment) => ({
-          id: enrollment.id,
-          user: {
-            id: enrollment.userId,
-            lastSeenOnlineAt: enrollment.userLastSeenOnlineAt,
-            email: enrollment.userEmail,
-            name: enrollment.userName,
-            avatar: enrollment.userAvatar,
-            avatarlessBackgroundColor: enrollment.userAvatarlessBackgroundColor,
-            biographySource: enrollment.userBiographySource,
-            biographyPreprocessed: enrollment.userBiographyPreprocessed,
-            nameSearchResultHighlight: enrollment.userNameSearchResultHighlight,
-          },
-          reference: enrollment.reference,
-          role: enrollment.role,
-        }));
+      )
+      .map((enrollment) => ({
+        id: enrollment.id,
+        user: {
+          id: enrollment.userId,
+          lastSeenOnlineAt: enrollment.userLastSeenOnlineAt,
+          email: enrollment.userEmail,
+          name: enrollment.userName,
+          avatar: enrollment.userAvatar,
+          avatarlessBackgroundColor: enrollment.userAvatarlessBackgroundColor,
+          biographySource: enrollment.userBiographySource,
+          biographyPreprocessed: enrollment.userBiographyPreprocessed,
+          nameSearchResultHighlight: enrollment.userNameSearchResultHighlight,
+        },
+        reference: enrollment.reference,
+        role: enrollment.role,
+      }));
 
-      res.send(
-        partialLayout({
-          req,
-          res,
-          body: html`
-            $${enrollments.length === 0
-              ? html`
-                  <div class="dropdown--menu--item secondary">
-                    No user found.
-                  </div>
+    res.send(
+      partialLayout({
+        req,
+        res,
+        body: html`
+          $${enrollments.length === 0
+            ? html`
+                <div class="dropdown--menu--item secondary">No user found.</div>
+              `
+            : enrollments.map(
+                (enrollment) => html`
+                  <button
+                    type="button"
+                    class="dropdown--menu--item button button--transparent"
+                    onclick="${javascript`
+                      this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${
+                        enrollment.reference
+                      }--${slugify(enrollment.user.name)}");
+                    `}"
+                  >
+                    $${userPartial({
+                      req,
+                      res,
+                      enrollment,
+                      name: enrollment.user.nameSearchResultHighlight,
+                      tooltip: false,
+                      size: "xs",
+                    })}
+                  </button>
                 `
-              : enrollments.map(
-                  (enrollment) => html`
-                    <button
-                      type="button"
-                      class="dropdown--menu--item button button--transparent"
-                      onclick="${javascript`
-                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${
-                          enrollment.reference
-                        }--${slugify(enrollment.user.name)}");
-                      `}"
-                    >
-                      $${userPartial({
-                        req,
-                        res,
-                        enrollment,
-                        name: enrollment.user.nameSearchResultHighlight,
-                        tooltip: false,
-                        size: "xs",
-                      })}
-                    </button>
-                  `
-                )}
-          `,
-        })
-      );
-    }
+              )}
+        `,
+      })
+    );
+  };
+
+  app.get<
+    { courseReference: string },
+    any,
+    {},
+    { search?: string },
+    IsEnrolledInCourseMiddlewareLocals
+  >(
+    "/courses/:courseReference/content-editor/mention-user-search",
+    ...isEnrolledInCourseMiddleware,
+    mentionUserSearchRequestHandler
   );
 
   app.get<
