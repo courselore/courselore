@@ -1,10 +1,7 @@
 # Backlog
 
-- Make it so that people in the conversation are listed first in the @mentions widget.
 - Big GIFs resizing
-  - https://github.com/lovell/sharp/issues/2437
-  - https://stackoverflow.com/questions/67938794/gif-output-requires-libvips-with-support-for-imagemagick
-  - https://sharp.pixelplumbing.com/install#custom-libvips
+  - Make it so that people in the conversation are listed first in the @mentions widget.
 - Check why OCaml syntax highlighting behaves strangely.
 - Anonymous messages are turning into “No longer enrolled”, leaking anonymity information.
 
