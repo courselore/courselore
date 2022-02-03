@@ -1,6 +1,5 @@
 # Backlog
 
-- Check why OCaml syntax highlighting behaves strangely.
 - Anonymous messages are turning into “No longer enrolled”, leaking anonymity information.
 
 ---
