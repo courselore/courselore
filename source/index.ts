@@ -18733,6 +18733,15 @@ ${contentSource}</textarea
                                           req.query.search,
                                           { prefix: true }
                                         )}
+          $${
+            res.locals.conversation !== undefined && res.locals.conversation.staffOnlyAt !== null
+              ? sql`
+                  WHERE "enrollments"."role" = ${"staff"} OR
+                        (SELECT EXISTS(SELECT 1 FROM "messages" WHERE "enrollments"."id" = "messages"."authorEnrollment" AND
+                        "messages"."conversation" = ${res.locals.conversation.id} ))
+                `
+              : sql``
+          }
           ORDER BY "usersNameSearchIndex"."rank" ASC,
                    "users"."name" ASC
           LIMIT 5
