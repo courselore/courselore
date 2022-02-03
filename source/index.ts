@@ -18734,7 +18734,7 @@ ${contentSource}</textarea
                                           { prefix: true }
                                         )}
           ORDER BY "usersNameSearchIndex"."rank" ASC,
-                  "users"."name" ASC
+                   "users"."name" ASC
           LIMIT 5
         `
       )
