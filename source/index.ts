@@ -4188,7 +4188,7 @@ export default async function courselore({
       immutable: true,
       maxAge: 60 * 24 * 60 * 60 * 1000,
       setHeaders: (res, path, stat) => {
-        res.attachment();
+        if (express.static.mime.lookup(path) === "text/html") res.attachment();
       },
     })
   );
