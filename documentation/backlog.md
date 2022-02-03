@@ -2,6 +2,7 @@
 
 - Make programmer mode font smaller.
 - Change default ordering of messages on the left for most recently updated.
+- Make it so that people in the conversation are listed first in the @mentions widget.
 - Big GIFs resizing
   - https://github.com/lovell/sharp/issues/2437
   - https://stackoverflow.com/questions/67938794/gif-output-requires-libvips-with-support-for-imagemagick
@@ -109,6 +110,7 @@
 ---
 
 - Change the page title when there are new messages on that conversation, to make it stand out on the browser tabs.
+  - Or change the favicon.
 - When `contentEditor` is in `compact` mode, don’t just hide elements, prevent them from outputting HTML at all, which reduces the HTML payload. (But pay attention to buttons that are hidden but still accessible via keyboard shortcuts.)
 
 ### Advanced Access Control
