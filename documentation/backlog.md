@@ -224,8 +224,10 @@
 - Polls.
 - Lightbox modal for resized images.
   - Animated GIFs should just play.
+  - Convert animaged GIFs into other data formats that would be lighter.
 - Lightbox for code blocks (“click for more”, full screen, and selective wrap or not long lines).
 - Add support for videos: Sanitization, dimensions, and so forth.
+- Install extensions for Shiki, for example, for OCaml.
 
 ### Pagination
 
