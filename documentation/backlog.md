@@ -1,9 +1,17 @@
 # Backlog
 
 - Add the notion of questions being resolved.
-  - Only staff may change the “resolved” status
-  - List of conversations: Make it easy to see unresolved questions. Color-code and filters.
-  - Use that to organize Meta Courselore.
+  - `conversation` page
+  - Edit (`patch` route)
+  - `conversationPartial`.
+  - Special behavior:
+    - Staff sending message which is an answer
+    - Staff endorsing answer
+    - Student sending follow-up question
+  - Notes
+    - Only staff may change the “resolved” status
+    - List of conversations: Make it easy to see unresolved questions. Color-code and filters.
+    - Use that to organize Meta Courselore.
 - Meta Courselore make a pinned announcement of how to report bugs.
 - Add support for underline in Markdown.
 
