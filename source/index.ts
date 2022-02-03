@@ -11794,6 +11794,20 @@ export default async function courselore({
           `}"
         ></time>
 
+        $${conversation.updatedAt !== null
+          ? html`
+              <div>
+                Updated
+                <time
+                  datetime="${new Date(conversation.updatedAt).toISOString()}"
+                  oninteractive="${javascript`
+                    leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                  `}"
+                ></time>
+              </div>
+            `
+          : html``}
+
         <div
           oninteractive="${javascript`
             tippy(this, {
