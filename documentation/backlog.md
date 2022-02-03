@@ -220,6 +220,7 @@
 - Reference on more features ideas: <https://github.com/gjtorikian/html-pipeline>
 - Polls.
 - Lightbox modal for resized images.
+  - Animated GIFs should just play.
 - Lightbox for code blocks (“click for more”, full screen, and selective wrap or not long lines).
 - Add support for videos: Sanitization, dimensions, and so forth.
 
