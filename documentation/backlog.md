@@ -1,6 +1,5 @@
 # Backlog
 
-- In things like /preview, don’t have multiple routes, but query params
 - Change default ordering of messages on the left for most recently updated.
 - Make it so that people in the conversation are listed first in the @mentions widget.
 - Big GIFs resizing
