@@ -1,7 +1,5 @@
 # Backlog
 
-- Make it so that people in the conversation are listed first in the @mentions widget.
-  - On new conversation page, maybe adapt the @mentions widget according to the visibility that’s currently set.
 - Revisit `EXISTS`.
 - Check why OCaml syntax highlighting behaves strangely.
 - Anonymous messages are turning into “No longer enrolled”, leaking anonymity information.
@@ -201,9 +199,10 @@
 
 ### Content Editor
 
-- Content editor:
-  - When you select multiple lines and click on the list options, turn each line into a list item.
-  - Add more placeholders to things like tables to help explain how to use them.
+- On new conversation page, maybe adapt the `@mentions` widget according to the visibility that’s currently set.
+- On the contentProcessor, maybe don’t render `@mention` widget for people who aren’t in the conversation.
+- When you select multiple lines and click on the list options, turn each line into a list item.
+- Add more placeholders to things like tables to help explain how to use them.
 - Press ↑ to edit previously sent message.
 - Templates for questions (like GitHub Issues).
 - Reuse answers.
