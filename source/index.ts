@@ -5737,13 +5737,11 @@ export default async function courselore({
         return next("validation");
 
       if (
-        database.get<{ exists: number }>(
+        database.get<{}>(
           sql`
-            SELECT EXISTS(
-              SELECT 1 FROM "users" WHERE "email" = ${req.body.email}
-            ) AS "exists"
+            SELECT TRUE FROM "users" WHERE "email" = ${req.body.email}
           `
-        )!.exists === 1
+        ) !== undefined
       ) {
         Flash.set({
           req,
@@ -6614,13 +6612,11 @@ export default async function courselore({
         if (req.body.email.match(emailRegExp) === null)
           return next("validation");
         if (
-          database.get<{ exists: number }>(
+          database.get<{}>(
             sql`
-              SELECT (
-                SELECT 1 FROM "users" WHERE "email" = ${req.body.email}
-              ) AS "exists"
+              SELECT TRUE FROM "users" WHERE "email" = ${req.body.email}
             `
-          )!.exists === 1
+          ) !== undefined
         ) {
           Flash.set({
             req,
@@ -9446,17 +9442,15 @@ export default async function courselore({
 
           for (const { email, name } of emails) {
             if (
-              database.get<{ exists: number }>(
+              database.get<{}>(
                 sql`
-                  SELECT EXISTS(
-                    SELECT 1
-                    FROM "enrollments"
-                    JOIN "users" ON "enrollments"."user" = "users"."id" AND
-                                    "users"."email" = ${email}
-                    WHERE "enrollments"."course" = ${res.locals.course.id}
-                  ) AS "exists"
+                  SELECT TRUE
+                  FROM "enrollments"
+                  JOIN "users" ON "enrollments"."user" = "users"."id" AND
+                                  "users"."email" = ${email}
+                  WHERE "enrollments"."course" = ${res.locals.course.id}
                 `
-              )!.exists === 1
+              ) !== undefined
             )
               continue;
 
