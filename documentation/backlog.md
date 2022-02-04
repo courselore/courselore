@@ -3,7 +3,8 @@
 - Add the notion of questions being resolved.
   - [x] `conversation` page
   - [x] Edit (`patch` route)
-  - `conversationPartial`.
+  - [x] `conversationPartial`.
+  - Filters
   - demonstration data.
   - Special behavior:
     - Staff sending message which is an answer

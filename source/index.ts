@@ -11736,6 +11736,23 @@ export default async function courselore({
           $${conversationTypeIcon[conversation.type].fill}
           ${lodash.capitalize(conversation.type)}
         </div>
+        $${conversation.type === "question"
+          ? html`
+              $${conversation.resolvedAt === null
+                ? html`
+                    <div class="text--rose">
+                      <i class="bi bi-patch-exclamation-fill"></i>
+                      Unresolved
+                    </div>
+                  `
+                : html`
+                    <div class="text--emerald">
+                      <i class="bi bi-patch-check-fill"></i>
+                      Resolved
+                    </div>
+                  `}
+            `
+          : html``}
         $${conversation.pinnedAt !== null
           ? html`
               <div
@@ -13679,7 +13696,7 @@ export default async function courselore({
                                               value="true"
                                             />
                                             <button
-                                              class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                                              class="button button--tight button--tight--inline button--tight-gap button--transparent text--rose"
                                               oninteractive="${javascript`
                                                 tippy(this, {
                                                   touch: false,
@@ -13687,7 +13704,9 @@ export default async function courselore({
                                                 });
                                               `}"
                                             >
-                                              <i class="bi bi-patch-check"></i>
+                                              <i
+                                                class="bi bi-patch-exclamation-fill"
+                                              ></i>
                                               Unresolved
                                             </button>
                                           `
@@ -13717,12 +13736,15 @@ export default async function courselore({
                                 : res.locals.conversation.staffOnlyAt === null
                                 ? html`
                                     <div
-                                      class="${res.locals.localCSS(css`
+                                      class="text--rose ${res.locals
+                                        .localCSS(css`
                                         display: flex;
                                         gap: var(--space--1);
                                       `)}"
                                     >
-                                      <i class="bi bi-patch-check"></i>
+                                      <i
+                                        class="bi bi-patch-exclamation-fill"
+                                      ></i>
                                       Unresolved
                                     </div>
                                   `
