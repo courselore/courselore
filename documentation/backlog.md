@@ -1,21 +1,27 @@
 # Backlog
 
 - Live-updates:
+  - Organize:
+    - Remove `data-` in favor of `oninteractive`.
+    - Change from `addEventListener` to `onEvent`.
+  - Review code for:
+    - Running custom events such as `oninteractive`
+    - Mounting partials
+    - Refreshing the page.
+    - When Morphdom refreshes the page, what happens to event listeners? Are they leaking?
+  - Review side-effects of refreshing
+    - Inputs of any kind.
+    - Tooltips.
+    - Relative times and other components are blinking on reload. Add them to `onrefresh`.
   - Latency compensation
     - Don’t count on live-reload to give user feedback of their action.
-  - Only send refresh events to people who need it (those who have the right page open)
-  - Don’t send refresh events right away, or you’re DoS the server
-  - Remove `data-` in favor of `oninteractive`.
-  - Change from `addEventListener` to `onEvent`.
-  - Inputs of any kind.
-  - Tooltips.
-  - Relative times (for example, “2 days ago”).
-  - Multiple message submissions.
-  - Look for leaking event listeners.
-  - Special behaviors:
-    - Times and other components are blinking on reload. Add them to `onrefresh`.
-    - Latency compensation when sending messages (particularly on chat).
-    - Latency compensation when pressing “like”.
+    - Particularly important cases:
+      - Latency compensation when sending messages (particularly on chat).
+      - Latency compensation when pressing “like”.
+  - Improve the refreshing mechanism
+    - Only send refresh events to people who need it (those who have open a page that’s affected)
+    - Don’t send refresh events right away, or you’re DoS the server
+    - Instead of asking browsers to refresh, just push the new page.
   - We may do latency compensation by returning the HTML to render as the response to the POST, instead of relying on the refresh event (similar to responding to a POST with a Turbo Stream).
   - On chats (which need to scroll to the bottom), do something to prevent flash of unstyled content. (I commented out the previous hack, look for `TODO`.)
   - Do the morphdom on the server.
