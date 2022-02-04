@@ -1,7 +1,6 @@
 # Backlog
 
 - Add the notion of questions being resolved.
-  - https://www.sqlite.org/lang_altertable.html
   - `conversation` page
   - Edit (`patch` route)
   - `conversationPartial`.
