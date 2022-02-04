@@ -204,6 +204,7 @@
 
 - On new conversation page, maybe adapt the `@mentions` widget according to the visibility that’s currently set.
 - On the contentProcessor, maybe don’t render `@mention` widget for people who aren’t in the conversation.
+- Have the `@mention` widget list people who aren’t in the conversation (suitably marked as so) (similar to Twitter DMs).
 - When you select multiple lines and click on the list options, turn each line into a list item.
 - Add more placeholders to things like tables to help explain how to use them.
 - Press ↑ to edit previously sent message.
