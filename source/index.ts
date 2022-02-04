@@ -13847,7 +13847,7 @@ export default async function courselore({
                                           `}
                                     </form>
                                   `
-                                : res.locals.conversation.staffOnlyAt === null
+                                : res.locals.conversation.resolvedAt === null
                                 ? html`
                                     <div
                                       class="text--rose ${res.locals
@@ -13864,7 +13864,7 @@ export default async function courselore({
                                   `
                                 : html`
                                     <div
-                                      class="text-emerald ${res.locals
+                                      class="text--emerald ${res.locals
                                         .localCSS(css`
                                         display: flex;
                                         gap: var(--space--1);

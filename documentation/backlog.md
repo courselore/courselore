@@ -1,14 +1,6 @@
 # Backlog
 
 - Add the notion of questions being resolved.
-  - [x] `conversation` page
-  - [x] Edit (`patch` route)
-  - [x] `conversationPartial`.
-  - [x] Filters
-  - Special behavior:
-    - [x] Staff sending message which is an answer
-    - [x] Student sending follow-up question
-    - [x] Staff endorsing answer
   - Organize Meta Courselore.
 - Meta Courselore make a pinned announcement of how to report bugs.
 - Add support for underline in Markdown.
