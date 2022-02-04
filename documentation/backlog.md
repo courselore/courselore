@@ -21,19 +21,7 @@
   - Do the morphdom on the server.
     - **This is necessary for correctness as well; see what happens when you’re editing a message (not writing a new one, because we use localStorage to remember that one) and a new message is submitted, causing a refresh.**
   - The views component should live-update.
-
----
-
-- Lazy loading
-  - `userPartial` tooltip
-  - Edit message forms. Use `data-content-source` that’s already used by the quoting mechanism.
-    - Implement a more proper solution than the current use of `autosize.update()`
-    - Should also fix the bug in which you send a couple messages in a row, they coalesce, and then you try to edit.
-  - On mobile, decouple the list of conversation (the sidebar on desktop) from the conversation itself, to push less data on the wire
-  - Use web sockets instead of HTTP to save on roundtrips, authentication, and so forth? (Probably not, because it adds a lot of complexity, from keeping the connection open, to re-authenticating anyway to make sure you haven’t lost access to the relevant information, and so forth. But still, investigate…)
-  - List of conversations shouldn’t jump when you go to a particular conversation.
 - Potential issue: when we deploy a new version, Morphdom doesn’t update the global CSS & JavaScript. Solution: force a reload.
-- When `contentEditor` is in `compact` mode, don’t just hide elements, prevent them from outputting HTML at all, which reduces the HTML payload. (But pay attention to buttons that are hidden but still accessible via keyboard shortcuts.)
 
 ---
 
@@ -41,6 +29,21 @@
   - Messages in conversation.
   - Conversations on sidebar.
   - Increase demonstration data to thousands of conversations & messages.
+
+---
+
+- Lazy loading & DRYing to reduce HTML payload
+  - `userPartial` tooltip
+  - Edit message forms.
+    - Use `data-content-source` that’s already used by the quoting mechanism.
+    - Implement a more proper solution than the current use of `autosize.update()`
+    - Should also fix the bug in which you send a couple messages in a row, they coalesce, and then you try to edit.
+  - When `contentEditor` is in `compact` mode, don’t just hide elements, prevent them from outputting HTML at all
+    - But pay attention to buttons that are hidden but still accessible via keyboard shortcuts.
+  - Conversation navigation shouldn’t refresh the whole page:
+    - List of conversations shouldn’t jump when you go to a particular conversation.
+  - On mobile, decouple the list of conversation (the sidebar on desktop) from the conversation itself, to push less data on the wire
+  - Use web sockets instead of HTTP to save on roundtrips, authentication, and so forth? (Probably not, because it adds a lot of complexity, from keeping the connection open, to re-authenticating anyway to make sure you haven’t lost access to the relevant information, and so forth. But still, investigate…)
 
 ---
 
