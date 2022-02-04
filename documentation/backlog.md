@@ -54,10 +54,6 @@
   - Hotwire.
   - Pre-fetching.
   - List of conversations shouldn’t jump when you go to a particular conversation.
-- Add a button to “Return to Bottom” in chat.
-- Email change improvements:
-  - The confirmation email has a subject of “Welcome to Courselore!”. It should be “Please confirm your email”.
-  - Maybe we shouldn’t actually change the email until it’s confirmed. Otherwise an attacker with a compromised password could change your email and lock you out of the “Forgot your password?” flow.
 
 ---
 
@@ -89,6 +85,9 @@
 
 ### Users
 
+- Improvements to the workflow for when you change your email:
+  - The confirmation email has a subject of “Welcome to Courselore!”. It should be “Please confirm your email”.
+  - Maybe we shouldn’t actually change the email until it’s confirmed. Otherwise an attacker with a compromised password could change your email and lock you out of the “Forgot your password?” flow.
 - Online indicators.
   - Query the server for updates before turning off online indicator.
   - Fade in and out.
@@ -115,6 +114,7 @@
 
 ### Conversations
 
+- Add a button to “Return to Bottom” in chat.
 - Show a widget similar to the Views (with person & time) to likes & endorsements.
 - We shouldn’t show endorsements for non-answers. (They show up at least for staff.)
 - Scroll the conversations list to the current conversation doesn’t work on mobile.
