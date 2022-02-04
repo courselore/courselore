@@ -30,7 +30,6 @@
   - Use web sockets instead of HTTP to save on roundtrips, authentication, and so forth? (Probably not, because it adds a lot of complexity, from keeping the connection open, to re-authenticating anyway to make sure you haven’t lost access to said information, and so forth. But still, investigate…)
   - List of conversations shouldn’t jump when you go to a particular conversation.
 - Add some view caching on the server
-- Add some navigation caching on the client, similar to Turbo
 - Potential issue: when we deploy a new version, the morphdom doesn’t update the global css & js. Solution: force a reload
 - When `contentEditor` is in `compact` mode, don’t just hide elements, prevent them from outputting HTML at all, which reduces the HTML payload. (But pay attention to buttons that are hidden but still accessible via keyboard shortcuts.)
 - Components which we repeat in the HTML, making it bigger, but should DRY:
