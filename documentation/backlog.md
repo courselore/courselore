@@ -6,8 +6,8 @@
   - [x] `conversationPartial`.
   - [x] Filters
   - Special behavior:
-    - Staff sending message which is an answer
-    - Student sending follow-up question
+    - [x] Staff sending message which is an answer
+    - [x] Student sending follow-up question
     - Staff endorsing answer
   - Double-check
     - `isResolved`

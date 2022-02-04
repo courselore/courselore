@@ -16931,6 +16931,21 @@ export default async function courselore({
                 "nextMessageReference" = ${
                   res.locals.conversation.nextMessageReference + 1
                 }
+                $${
+                  res.locals.conversation.type === "question" &&
+                  res.locals.enrollment.role === "staff" &&
+                  req.body.isAnswer
+                    ? sql`,
+                      "resolvedAt" = ${new Date().toISOString()}
+                    `
+                    : res.locals.conversation.type === "question" &&
+                      res.locals.enrollment.role === "student" &&
+                      !req.body.isAnswer
+                    ? sql`,
+                        "resolvedAt" = ${null}
+                      `
+                    : sql``
+                }
             WHERE "id" = ${res.locals.conversation.id}
           `
         );
