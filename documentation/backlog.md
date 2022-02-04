@@ -7,8 +7,8 @@
   - [x] Filters
   - Special behavior:
     - Staff sending message which is an answer
-    - Staff endorsing answer
     - Student sending follow-up question
+    - Staff endorsing answer
   - Double-check
     - `isResolved`
     - `resolvedAt`
