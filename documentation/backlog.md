@@ -10,7 +10,6 @@
     - [x] Student sending follow-up question
     - [x] Staff endorsing answer
   - Double-check
-    - `isResolved`
     - `resolvedAt`
   - Organize Meta Courselore.
 - Meta Courselore make a pinned announcement of how to report bugs.

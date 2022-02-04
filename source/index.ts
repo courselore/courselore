@@ -10845,46 +10845,46 @@ export default async function courselore({
             search === undefined
               ? sql``
               : sql`
-                AND (
-                  "conversationTitleSearchResult"."rank" IS NOT NULL OR
-                  "messageAuthorUserNameSearchResult"."rank" IS NOT NULL OR
-                  "messageContentSearchResult"."rank" IS NOT NULL
-                )
-              `
+                  AND (
+                    "conversationTitleSearchResult"."rank" IS NOT NULL OR
+                    "messageAuthorUserNameSearchResult"."rank" IS NOT NULL OR
+                    "messageContentSearchResult"."rank" IS NOT NULL
+                  )
+                `
           }
           $${
             filters.types === undefined
               ? sql``
               : sql`
-                AND "conversations"."type" IN ${filters.types}
-              `
+                  AND "conversations"."type" IN ${filters.types}
+                `
           }
           $${
             filters.isResolved === undefined
               ? sql``
               : sql`
-                AND "conversations"."resolvedAt" IS $${
-                  filters.isResolved === "true" ? sql`NOT` : sql``
-                } NULL
-              `
+                  AND "conversations"."resolvedAt" IS $${
+                    filters.isResolved === "true" ? sql`NOT` : sql``
+                  } NULL
+                `
           }
           $${
             filters.isPinned === undefined
               ? sql``
               : sql`
-                AND "conversations"."pinnedAt" IS $${
-                  filters.isPinned === "true" ? sql`NOT` : sql``
-                } NULL
-              `
+                  AND "conversations"."pinnedAt" IS $${
+                    filters.isPinned === "true" ? sql`NOT` : sql``
+                  } NULL
+                `
           }
           $${
             filters.isStaffOnly === undefined
               ? sql``
               : sql`
-                AND "conversations"."staffOnlyAt" IS $${
-                  filters.isStaffOnly === "true" ? sql`NOT` : sql``
-                } NULL
-              `
+                  AND "conversations"."staffOnlyAt" IS $${
+                    filters.isStaffOnly === "true" ? sql`NOT` : sql``
+                  } NULL
+                `
           }
           GROUP BY "conversations"."id"
           ORDER BY "conversations"."pinnedAt" IS NOT NULL DESC,
@@ -10892,12 +10892,12 @@ export default async function courselore({
                       search === undefined
                         ? sql``
                         : sql`
-                          min(
-                            coalesce("conversationTitleSearchResult"."rank", 0),
-                            coalesce("messageAuthorUserNameSearchResult"."rank", 0),
-                            coalesce("messageContentSearchResult"."rank", 0)
-                          ) ASC,
-                        `
+                            min(
+                              coalesce("conversationTitleSearchResult"."rank", 0),
+                              coalesce("messageAuthorUserNameSearchResult"."rank", 0),
+                              coalesce("messageContentSearchResult"."rank", 0)
+                            ) ASC,
+                          `
                     }
                     coalesce("conversations"."updatedAt", "conversations"."createdAt") DESC
         `
