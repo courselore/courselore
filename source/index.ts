@@ -10683,9 +10683,10 @@ export default async function courselore({
         search?: string;
         filters?: {
           types?: ConversationType[];
-          tagsReferences?: string[];
+          isResolved?: "true" | "false";
           isPinned?: "true" | "false";
           isStaffOnly?: "true" | "false";
+          tagsReferences?: string[];
         };
         scrollToConversation?: "false";
       },
@@ -11184,6 +11185,15 @@ export default async function courselore({
                                   ? html`checked`
                                   : html``}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
+                                onchange="${javascript`
+                                  ${
+                                    conversationType === "question"
+                                      ? javascript`
+                                          this.closest(".filters").querySelector(".filters--resolved").hidden = !this.checked;
+                                        `
+                                      : javascript``
+                                  }
+                                `}"
                               />
                               <span>
                                 $${conversationTypeIcon[conversationType]
@@ -11201,6 +11211,78 @@ export default async function courselore({
                             </label>
                           `
                         )}
+                      </div>
+                    </div>
+
+                    <div
+                      class="filters--resolved label"
+                      $${req.query.filters?.types?.includes("question")
+                        ? html``
+                        : html`hidden`}
+                    >
+                      <p class="label--text">Resolved</p>
+                      <div
+                        class="${res.locals.localCSS(css`
+                          display: flex;
+                          flex-wrap: wrap;
+                          column-gap: var(--space--6);
+                          row-gap: var(--space--2);
+                        `)}"
+                      >
+                        <label
+                          class="button button--tight button--tight--inline button--transparent"
+                        >
+                          <input
+                            type="checkbox"
+                            name="filters[isResolved]"
+                            value="false"
+                            $${req.query.filters?.isResolved === "false"
+                              ? html`checked`
+                              : html``}
+                            class="visually-hidden input--radio-or-checkbox--multilabel"
+                            onchange="${javascript`
+                              if (this.checked)
+                                for (const element of this.closest(".filters--resolved").querySelectorAll("input"))
+                                  if (element !== this)
+                                    element.checked = false;
+                            `}"
+                          />
+                          <span>
+                            <i class="bi bi-patch-exclamation"></i>
+                            Unresolved
+                          </span>
+                          <span class="text--rose">
+                            <i class="bi bi-patch-exclamation-fill"></i>
+                            Unresolved
+                          </span>
+                        </label>
+                        <label
+                          class="button button--tight button--tight--inline button--transparent"
+                        >
+                          <input
+                            type="checkbox"
+                            name="filters[isResolved]"
+                            value="true"
+                            $${req.query.filters?.isResolved === "true"
+                              ? html`checked`
+                              : html``}
+                            class="visually-hidden input--radio-or-checkbox--multilabel"
+                            onchange="${javascript`
+                              if (this.checked)
+                                for (const element of this.closest(".filters--resolved").querySelectorAll("input"))
+                                  if (element !== this)
+                                    element.checked = false;
+                            `}"
+                          />
+                          <span>
+                            <i class="bi bi-patch-check"></i>
+                            Resolved
+                          </span>
+                          <span class="text--emerald">
+                            <i class="bi bi-patch-check-fill"></i>
+                            Resolved
+                          </span>
+                        </label>
                       </div>
                     </div>
 
