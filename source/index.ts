@@ -20364,6 +20364,7 @@ ${contentSource}</textarea
                   "authorEnrollment",
                   "anonymousAt",      
                   "type",
+                  "resolvedAt",
                   "pinnedAt",
                   "staffOnlyAt",
                   "title",
@@ -20383,6 +20384,11 @@ ${contentSource}</textarea
                       : null
                   },
                   ${type},
+                  ${
+                    type === "question" && Math.random() < 0.75
+                      ? new Date().toISOString()
+                      : null
+                  },
                   ${Math.random() < 0.15 ? new Date().toISOString() : null},
                   ${Math.random() < 0.25 ? new Date().toISOString() : null},
                   ${title},

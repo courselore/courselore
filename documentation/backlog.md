@@ -4,7 +4,6 @@
   - [x] `conversation` page
   - [x] Edit (`patch` route)
   - [x] `conversationPartial`.
-  - demonstration data.
   - Filters
   - Special behavior:
     - Staff sending message which is an answer
