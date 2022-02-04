@@ -16494,6 +16494,7 @@ export default async function courselore({
     HTML,
     {
       type?: ConversationType;
+      isResolved?: "true" | "false";
       isPinned?: "true" | "false";
       isStaffOnly?: "true" | "false";
       title?: string;
@@ -16512,6 +16513,28 @@ export default async function courselore({
             sql`
               UPDATE "conversations"
               SET "type" = ${req.body.type}
+              WHERE "id" = ${res.locals.conversation.id}
+            `
+          );
+
+      if (typeof req.body.isResolved === "string")
+        if (
+          res.locals.conversation.type !== "question" ||
+          !["true", "false"].includes(req.body.isResolved) ||
+          res.locals.enrollment.role !== "staff" ||
+          (req.body.isResolved === "true" &&
+            res.locals.conversation.resolvedAt !== null) ||
+          (req.body.isResolved === "false" &&
+            res.locals.conversation.resolvedAt === null)
+        )
+          return next("validation");
+        else
+          database.run(
+            sql`
+              UPDATE "conversations"
+              SET "resolvedAt" = ${
+                req.body.isResolved === "true" ? new Date().toISOString() : null
+              }
               WHERE "id" = ${res.locals.conversation.id}
             `
           );

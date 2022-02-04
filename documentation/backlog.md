@@ -2,7 +2,7 @@
 
 - Add the notion of questions being resolved.
   - [x] `conversation` page
-  - Edit (`patch` route)
+  - [x] Edit (`patch` route)
   - `conversationPartial`.
   - demonstration data.
   - Special behavior:
