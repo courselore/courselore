@@ -28,6 +28,7 @@
   - On mobile, decouple the list of conversation (the sidebar on desktop) from the conversation itself, to push less data on the wire
   - (We’re already doing it for things like the @mention component. Just use the same approach)
   - (Should we use web sockets instead of http to skip authentication, and that sort of thing)
+  - List of conversations shouldn’t jump when you go to a particular conversation.
 - We need to update the online status of other users as they come online
 - Add some view caching on the server
 - Add some navigation caching on the client, similar to Turbo
@@ -55,7 +56,6 @@
 - Front-end optimizations:
   - Hotwire.
   - Pre-fetching.
-  - List of conversations shouldn’t jump when you go to a particular conversation.
 
 ---
 
@@ -66,7 +66,7 @@
   - If things look weird, or if something doesn’t work, you may need to update your browser.
 - Make a public page listing known issues.
 - Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the Courselore community.
-- Meta Courselore make a pinned announcement of how to report bugs.
+- In Meta Courselore, make a pinned announcement of how to report bugs.
   - Have a way to pre-fill the new conversation form, similar to what GitHub does with new issues.
 
 ---
