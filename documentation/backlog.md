@@ -18,11 +18,6 @@
 
 ---
 
-- Meta Courselore make a pinned announcement of how to report bugs.
-  - Have a way to pre-fill the new conversation form, similar to what GitHub does with new issues.
-
----
-
 - Lazy loading
   - userPartial
   - Edit message forms
@@ -32,40 +27,28 @@
   - (We’re already doing it for things like the @mention component. Just use the same approach)
   - (Should we use web sockets instead of http to skip authentication, and that sort of thing)
 - We need to update the online status of other users as they come online
-- Add some view caching
+- Add some view caching on the server
+- Add some navigation caching on the client, similar to Turbo
 - Potential issue: when we deploy a new version, the morphdom doesn’t update the global css & js. Solution: force a reload
-
----
-
-- Add a help screen under the “About Courselore” button:
-  - A more app-like experience (in iOS):
-    - Bookmark Courselore to home screen.
-    - Use VIPs as notifications mechanism.
-  - If things look weird, or if something doesn’t work, you may need to update your browser.
-- Make a public page listing known issues.
-- Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the Courselore community.
-
----
-
-- Rename table `readings` -> `views`.
-- Remove `data-` in favor of `oninteractive`.
-- Change from `addEventListener` to `onEvent`.
-- Confirm email -> verify email.
-
----
-
-- Write a function to determine if processing the message is even necessary. Most messages don’t use extra features and could skip JSDOM entirely.
-- Pagination.
-  - Messages in conversation.
-  - Conversations on sidebar.
-  - Test with thousands of messages.
-- Investigate other potential bottlenecks:
-  - `html` tagged template literal.
-  - Synchronous stuff that could be async.
+- When `contentEditor` is in `compact` mode, don’t just hide elements, prevent them from outputting HTML at all, which reduces the HTML payload. (But pay attention to buttons that are hidden but still accessible via keyboard shortcuts.)
 - Components which we repeat in the HTML, making it bigger, but should DRY:
   - The `edit` form for messages. Use `data-content-source` that’s already used by the quoting mechanism.
     - Implement a more proper solution than the current use of `autosize.update()`
   - `userPartial`s, particularly on the list of who read each message.
+
+---
+
+- Pagination.
+  - Messages in conversation.
+  - Conversations on sidebar.
+  - Test with thousands of messages.
+
+---
+
+- Write a function to determine if processing the message is even necessary. Most messages don’t use extra features and could skip JSDOM entirely.
+- Investigate other potential bottlenecks:
+  - `html` tagged template literal.
+  - Synchronous stuff that could be async.
 - Make Demonstration Data load faster by having a cache of pre-built data.
 - Front-end optimizations:
   - Hotwire.
@@ -78,14 +61,22 @@
 
 ---
 
-- **Browser tab crashes if left open for a long time.**
-  - Has the change from `setInterval()` to `setTimeout()` fixed it?
+- Add a help screen under the “About Courselore” button:
+  - A more app-like experience (in iOS):
+    - Bookmark Courselore to home screen.
+    - Use VIPs as notifications mechanism.
+  - If things look weird, or if something doesn’t work, you may need to update your browser.
+- Make a public page listing known issues.
+- Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the Courselore community.
+- Meta Courselore make a pinned announcement of how to report bugs.
+  - Have a way to pre-fill the new conversation form, similar to what GitHub does with new issues.
 
 ---
 
-- Change the page title when there are new messages on that conversation, to make it stand out on the browser tabs.
-  - Or change the favicon.
-- When `contentEditor` is in `compact` mode, don’t just hide elements, prevent them from outputting HTML at all, which reduces the HTML payload. (But pay attention to buttons that are hidden but still accessible via keyboard shortcuts.)
+- Rename table `readings` -> `views`.
+- Remove `data-` in favor of `oninteractive`.
+- Change from `addEventListener` to `onEvent`.
+- Confirm email -> verify email.
 
 ### Advanced Access Control
 
@@ -155,6 +146,8 @@
 
 ### Notifications
 
+- Change the page title when there are new messages on that conversation, to make it stand out on the browser tabs.
+  - Or change the favicon.
 - Implement job for scheduling notifications
   - Delay sending notifications for a little bit to give the person a chance to update or delete the message.
   - Don’t send notifications when the person is online.
