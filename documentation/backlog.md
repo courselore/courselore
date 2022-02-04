@@ -4,11 +4,14 @@
   - [x] `conversation` page
   - [x] Edit (`patch` route)
   - [x] `conversationPartial`.
-  - Filters
+  - [x] Filters
   - Special behavior:
     - Staff sending message which is an answer
     - Staff endorsing answer
     - Student sending follow-up question
+  - Double-check
+    - `isResolved`
+    - `resolvedAt`
   - Notes
     - Only staff may change the “resolved” status
     - List of conversations: Make it easy to see unresolved questions. Color-code and filters.

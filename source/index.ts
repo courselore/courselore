@@ -414,6 +414,9 @@ export default async function courselore({
     `,
     sql`
       ALTER TABLE "conversations" ADD COLUMN "resolvedAt" TEXT NULL;
+    `,
+    sql`
+      CREATE INDEX "conversationsResolvedAtIndex" ON "conversations" ("resolvedAt");
     `
   );
   app.once("close", () => {
@@ -10712,9 +10715,10 @@ export default async function courselore({
 
     const filters: {
       types?: ConversationType[];
-      tagsReferences?: string[];
+      isResolved?: "true" | "false";
       isPinned?: "true" | "false";
       isStaffOnly?: "true" | "false";
+      tagsReferences?: string[];
     } = {};
     if (typeof req.query.filters === "object") {
       if (Array.isArray(req.query.filters.types)) {
@@ -10727,6 +10731,22 @@ export default async function courselore({
         ];
         if (types.length > 0) filters.types = types;
       }
+      if (
+        filters.types?.includes("question") &&
+        typeof req.query.filters.isResolved === "string" &&
+        ["true", "false"].includes(req.query.filters.isResolved)
+      )
+        filters.isResolved = req.query.filters.isResolved;
+      if (
+        typeof req.query.filters.isPinned === "string" &&
+        ["true", "false"].includes(req.query.filters.isPinned)
+      )
+        filters.isPinned = req.query.filters.isPinned;
+      if (
+        typeof req.query.filters.isStaffOnly === "string" &&
+        ["true", "false"].includes(req.query.filters.isStaffOnly)
+      )
+        filters.isStaffOnly = req.query.filters.isStaffOnly;
       if (Array.isArray(req.query.filters.tagsReferences)) {
         const tagsReferences = [
           ...new Set(
@@ -10740,16 +10760,6 @@ export default async function courselore({
         ];
         if (tagsReferences.length > 0) filters.tagsReferences = tagsReferences;
       }
-      if (
-        typeof req.query.filters.isPinned === "string" &&
-        ["true", "false"].includes(req.query.filters.isPinned)
-      )
-        filters.isPinned = req.query.filters.isPinned;
-      if (
-        typeof req.query.filters.isStaffOnly === "string" &&
-        ["true", "false"].includes(req.query.filters.isStaffOnly)
-      )
-        filters.isStaffOnly = req.query.filters.isStaffOnly;
     }
 
     const conversationsWithSearchResults = database
@@ -10847,6 +10857,15 @@ export default async function courselore({
               ? sql``
               : sql`
                 AND "conversations"."type" IN ${filters.types}
+              `
+          }
+          $${
+            filters.isResolved === undefined
+              ? sql``
+              : sql`
+                AND "conversations"."resolvedAt" IS $${
+                  filters.isResolved === "true" ? sql`NOT` : sql``
+                } NULL
               `
           }
           $${
