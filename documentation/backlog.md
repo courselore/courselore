@@ -1,7 +1,5 @@
 # Backlog
 
-- Add the notion of questions being resolved.
-  - Organize Meta Courselore.
 - Meta Courselore make a pinned announcement of how to report bugs.
 - Add support for underline in Markdown.
 
@@ -216,6 +214,7 @@
   - Animated GIFs should just play.
   - Convert animaged GIFs into other data formats that would be lighter.
 - Lightbox for code blocks (“click for more”, full screen, and selective wrap or not long lines).
+- Lightbox for block quotes.
 - Add support for videos: Sanitization, dimensions, and so forth.
 - Install extensions for Shiki, for example, for OCaml.
 
