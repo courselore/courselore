@@ -1,6 +1,8 @@
 # Backlog
 
 - Live-updates:
+  - Remove `data-` in favor of `oninteractive`.
+  - Change from `addEventListener` to `onEvent`.
   - Inputs of any kind.
   - Tooltips.
   - Relative times (for example, “2 days ago”).
@@ -69,10 +71,9 @@
 
 ---
 
-- Rename table `readings` -> `views`.
-- Remove `data-` in favor of `oninteractive`.
-- Change from `addEventListener` to `onEvent`.
-- Confirm email -> verify email.
+- Rename & reword:
+  - `readings` → `views`.
+  - “Confirm” email → “Verify” email.
 
 ### Advanced Access Control
 
