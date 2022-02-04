@@ -1,6 +1,8 @@
 # Backlog
 
 - Live-updates:
+  - Latency compensation
+    - Don’t count on live-reload to give user feedback of their action.
   - Only send refresh events to people who need it (those who have the right page open)
   - Don’t send refresh events right away, or you’re DoS the server
   - Remove `data-` in favor of `oninteractive`.
