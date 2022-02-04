@@ -8,7 +8,7 @@
   - Special behavior:
     - [x] Staff sending message which is an answer
     - [x] Student sending follow-up question
-    - Staff endorsing answer
+    - [x] Staff endorsing answer
   - Double-check
     - `isResolved`
     - `resolvedAt`
