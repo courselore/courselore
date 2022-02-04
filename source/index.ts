@@ -411,6 +411,9 @@ export default async function courselore({
 
       DROP INDEX "sessionsCreatedAtIndex";
       CREATE INDEX "sessionsCreatedAtIndex" ON "sessions" ("createdAt");
+    `,
+    sql`
+      ALTER TABLE "conversations" ADD COLUMN "resolvedAt" TEXT NULL;
     `
   );
   app.once("close", () => {
@@ -11973,6 +11976,7 @@ export default async function courselore({
         authorEnrollment: AuthorEnrollment;
         anonymousAt: string | null;
         type: ConversationType;
+        resolvedAt: string | null;
         pinnedAt: string | null;
         staffOnlyAt: string | null;
         title: string;
@@ -12013,6 +12017,7 @@ export default async function courselore({
       authorEnrollmentRole: EnrollmentRole | null;
       anonymousAt: string | null;
       type: ConversationType;
+      resolvedAt: string | null;
       pinnedAt: string | null;
       staffOnlyAt: string | null;
       title: string;
@@ -12037,6 +12042,7 @@ export default async function courselore({
                "authorEnrollment"."role" AS "authorEnrollmentRole",
                "conversations"."anonymousAt",
                "conversations"."type",
+               "conversations"."resolvedAt",
                "conversations"."pinnedAt",
                "conversations"."staffOnlyAt",
                "conversations"."title",
@@ -12103,6 +12109,7 @@ export default async function courselore({
           : ("no-longer-enrolled" as const),
       anonymousAt: conversationRow.anonymousAt,
       type: conversationRow.type,
+      resolvedAt: conversationRow.resolvedAt,
       pinnedAt: conversationRow.pinnedAt,
       staffOnlyAt: conversationRow.staffOnlyAt,
       title: conversationRow.title,
@@ -13638,6 +13645,149 @@ export default async function courselore({
                                 )}
                               </div>
                             `}
+                        $${res.locals.enrollment.role === "staff"
+                          ? html`
+                              <button
+                                class="button button--tight button--tight--inline button--tight-gap button--transparent ${res
+                                  .locals.conversation.staffOnlyAt === null
+                                  ? ""
+                                  : "text--sky"}"
+                                oninteractive="${javascript`
+                                    tippy(this, {
+                                      touch: false,
+                                      content: "Set as ${
+                                        res.locals.conversation.staffOnlyAt ===
+                                        null
+                                          ? "Visible by Staff Only"
+                                          : "Visible by Everyone"
+                                      }",
+                                    });
+                                    tippy(this, {
+                                      theme: "rose",
+                                      trigger: "click",
+                                      interactive: true,
+                                      content: ${res.locals.HTMLForJavaScript(
+                                        html`
+                                          <form
+                                            method="POST"
+                                            action="${baseURL}/courses/${res
+                                              .locals.course
+                                              .reference}/conversations/${res
+                                              .locals.conversation
+                                              .reference}?_method=PATCH"
+                                            class="${res.locals.localCSS(css`
+                                              padding: var(--space--2);
+                                              display: flex;
+                                              flex-direction: column;
+                                              gap: var(--space--4);
+                                            `)}"
+                                          >
+                                            <input
+                                              type="hidden"
+                                              name="_csrf"
+                                              value="${req.csrfToken()}"
+                                            />
+                                            $${res.locals.conversation
+                                              .staffOnlyAt === null
+                                              ? html`
+                                                  <input
+                                                    type="hidden"
+                                                    name="isStaffOnly"
+                                                    value="true"
+                                                  />
+                                                  <p>
+                                                    Are you sure you want to set
+                                                    this conversation as Visible
+                                                    by Staff Only?
+                                                  </p>
+                                                  <p>
+                                                    <strong
+                                                      class="${res.locals
+                                                        .localCSS(css`
+                                                        font-weight: var(
+                                                          --font-weight--bold
+                                                        );
+                                                      `)}"
+                                                    >
+                                                      Students who already
+                                                      participated in the
+                                                      conversation will continue
+                                                      to have access to it.
+                                                    </strong>
+                                                  </p>
+                                                  <button
+                                                    class="button button--rose"
+                                                  >
+                                                    <i
+                                                      class="bi bi-mortarboard"
+                                                    ></i>
+                                                    Set as Visible by Staff Only
+                                                  </button>
+                                                `
+                                              : html`
+                                                  <input
+                                                    type="hidden"
+                                                    name="isStaffOnly"
+                                                    value="false"
+                                                  />
+                                                  <p>
+                                                    Are you sure you want to set
+                                                    this conversation as Visible
+                                                    by Everyone?
+                                                  </p>
+                                                  <p>
+                                                    <strong
+                                                      class="${res.locals
+                                                        .localCSS(css`
+                                                        font-weight: var(
+                                                          --font-weight--bold
+                                                        );
+                                                      `)}"
+                                                    >
+                                                      Ensure that people
+                                                      involved in the
+                                                      conversation consent to
+                                                      having their messages
+                                                      visible by everyone.
+                                                    </strong>
+                                                  </p>
+                                                  <button
+                                                    class="button button--rose"
+                                                  >
+                                                    <i class="bi bi-eye"></i>
+                                                    Set as Visible by Everyone
+                                                  </button>
+                                                `}
+                                          </form>
+                                        `
+                                      )},
+                                    });
+                                  `}"
+                              >
+                                $${res.locals.conversation.staffOnlyAt === null
+                                  ? html`
+                                      <i class="bi bi-patch-check"></i>
+                                      Unresolved
+                                    `
+                                  : html`
+                                      <i class="bi bi-patch-check-fill"></i>
+                                      Resolved
+                                    `}
+                              </button>
+                            `
+                          : res.locals.conversation.staffOnlyAt !== null
+                          ? html`
+                              <div
+                                class="text--sky ${res.locals.localCSS(css`
+                                  display: flex;
+                                  gap: var(--space--1);
+                                `)}"
+                              >
+                                <i class="bi bi-mortarboard-fill"></i>
+                                Visible by Staff Only
+                              </div>
+                            `
+                          : html``}
                         $${res.locals.enrollment.role === "staff"
                           ? html`
                               <form

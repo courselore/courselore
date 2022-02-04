@@ -1,9 +1,18 @@
 # Backlog
 
 - Add the notion of questions being resolved.
-  - Only staff may change the “resolved” status
-  - List of conversations: Make it easy to see unresolved questions. Color-code and filters.
-  - Use that to organize Meta Courselore.
+  - https://www.sqlite.org/lang_altertable.html
+  - `conversation` page
+  - Edit (`patch` route)
+  - `conversationPartial`.
+  - Special behavior:
+    - Staff sending message which is an answer
+    - Staff endorsing answer
+    - Student sending follow-up question
+  - Notes
+    - Only staff may change the “resolved” status
+    - List of conversations: Make it easy to see unresolved questions. Color-code and filters.
+    - Use that to organize Meta Courselore.
 - Meta Courselore make a pinned announcement of how to report bugs.
 - Add support for underline in Markdown.
 
@@ -195,6 +204,7 @@
 
 - On new conversation page, maybe adapt the `@mentions` widget according to the visibility that’s currently set.
 - On the contentProcessor, maybe don’t render `@mention` widget for people who aren’t in the conversation.
+- Have the `@mention` widget list people who aren’t in the conversation (suitably marked as so) (similar to Twitter DMs).
 - When you select multiple lines and click on the list options, turn each line into a list item.
 - Add more placeholders to things like tables to help explain how to use them.
 - Press ↑ to edit previously sent message.
@@ -215,8 +225,10 @@
 - Polls.
 - Lightbox modal for resized images.
   - Animated GIFs should just play.
+  - Convert animaged GIFs into other data formats that would be lighter.
 - Lightbox for code blocks (“click for more”, full screen, and selective wrap or not long lines).
 - Add support for videos: Sanitization, dimensions, and so forth.
+- Install extensions for Shiki, for example, for OCaml.
 
 ### Pagination
 
