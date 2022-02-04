@@ -43,7 +43,7 @@
 - Pagination.
   - Messages in conversation.
   - Conversations on sidebar.
-  - Test with thousands of messages.
+  - Increase demonstration data to thousands of messages.
 
 ---
 
@@ -51,7 +51,6 @@
 - Investigate other potential bottlenecks:
   - `html` tagged template literal.
   - Synchronous stuff that could be async.
-- Make Demonstration Data load faster by having a cache of pre-built data.
 - Front-end optimizations:
   - Hotwire.
   - Pre-fetching.
@@ -276,6 +275,7 @@
 
 ### Infrastructure
 
+- Make Demonstration Data load faster by having a cache of pre-built data.
 - On deploy to production maybe backup the database like we do in staging.
 - Treat the error cases in every location where we do a `fetch`.
 - `app.on("close")` stop workers.
