@@ -19710,25 +19710,36 @@ ${contentSource}</textarea
         if (href.startsWith("#")) {
           href = `#user-content-${href.slice(1)}--${namespace}`;
           element.setAttribute("href", href);
-        } else if (!href.startsWith(baseURL)) {
-          element.setAttribute("target", "_blank");
-          element.setAttribute(
-            "oninteractive",
-            javascript`
-              tippy(this, {
-                touch: false,
-                content: ${res.locals.HTMLForJavaScript(
-                  html`External link to <code class="code">${href}</code>`
-                )},
-              });
-            `
-          );
         }
         if (
           href.startsWith("#user-content-user-content-fnref-") &&
           element.innerHTML === "↩"
         )
           element.innerHTML = html`<i class="bi bi-arrow-return-left"></i>`;
+        if (
+          (!href.startsWith("#") && !href.startsWith(baseURL)) ||
+          href.startsWith(`${baseURL}/files/`)
+        ) {
+          element.setAttribute("target", "_blank");
+          element.setAttribute(
+            "oninteractive",
+            javascript`
+              ${
+                href.startsWith(`${baseURL}/files/`)
+                  ? javascript``
+                  : javascript`
+                      tippy(this, {
+                        touch: false,
+                        content: ${res.locals.HTMLForJavaScript(
+                          html`External link to
+                            <code class="code">${href}</code>`
+                        )},
+                      });
+                    `
+              }
+            `
+          );
+        }
       }
 
       if (decorate) {
