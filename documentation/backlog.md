@@ -1,25 +1,25 @@
 # Backlog
 
-- Meta Courselore make a pinned announcement of how to report bugs.
-- Add support for underline in Markdown.
-
----
-
-- Implement job for scheduling notifications
-  - Delay sending notifications for a little bit to give the person a chance to update or delete the message.
-  - That’s another defense against multiple notifications being sent
-  - Don’t send notifications when the person is online.
-  - Get notifications for replies to your posts. If a student asks a question they probably would like notifications on all replies. That might want to be on by default as well.
-
----
-
 - Live-updates:
-  - Chat input area isn’t emptying.
   - Inputs of any kind.
   - Tooltips.
   - Relative times (for example, “2 days ago”).
   - Multiple message submissions.
   - Look for leaking event listeners.
+  - Special behaviors:
+    - Times and other components are blinking on reload. Add them to `onrefresh`.
+    - Latency compensation when sending messages (particularly on chat).
+    - Latency compensation when pressing “like”.
+  - We may do latency compensation by returning the HTML to render as the response to the POST, instead of relying on the refresh event (similar to responding to a POST with a Turbo Stream).
+  - On chats (which need to scroll to the bottom), do something to prevent flash of unstyled content. (I commented out the previous hack, look for `TODO`.)
+  - Do the morphdom on the server.
+    - **This is necessary for correctness as well; see what happens when you’re editing a message (not writing a new one, because we use localStorage to remember that one) and a new message is submitted, causing a refresh.**
+  - The views component should live-update.
+
+---
+
+- Meta Courselore make a pinned announcement of how to report bugs.
+  - Have a way to pre-fill the new conversation form, similar to what GitHub does with new issues.
 
 ---
 
@@ -54,16 +54,6 @@
 
 ---
 
-- Live reloading:
-  - Special behaviors:
-    - Times and other components are blinking on reload. Add them to `onrefresh`.
-    - Latency compensation when sending messages (particularly on chat).
-    - Latency compensation when pressing “like”.
-  - We may do latency compensation by returning the HTML to render as the response to the POST, instead of relying on the refresh event (similar to responding to a POST with a Turbo Stream).
-  - On chats (which need to scroll to the bottom), do something to prevent flash of unstyled content. (I commented out the previous hack, look for `TODO`.)
-  - Do the morphdom on the server.
-    - **This is necessary for correctness as well; see what happens when you’re editing a message (not writing a new one, because we use localStorage to remember that one) and a new message is submitted, causing a refresh.**
-  - The views component should live-update.
 - Write a function to determine if processing the message is even necessary. Most messages don’t use extra features and could skip JSDOM entirely.
 - Pagination.
   - Messages in conversation.
@@ -165,6 +155,10 @@
 
 ### Notifications
 
+- Implement job for scheduling notifications
+  - Delay sending notifications for a little bit to give the person a chance to update or delete the message.
+  - Don’t send notifications when the person is online.
+  - Get notifications for replies to your posts. If a student asks a question they probably would like notifications on all replies. That might want to be on by default as well.
 - Add support for Dark Mode in emails.
   - This should fix the duplication of code blocks.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
@@ -204,6 +198,10 @@
 
 ### Content Processor
 
+- Add support for underline in Markdown.
+  - Add a job to re-preprocess content:
+    - Messages
+    - Biographies
 - The “quote” button on code blocks is showing up in the wrong place.
 - `.katex` is overflowing in the `y` axis unnecessarily. (See, for example, the example we give on the home page.)
 - Emoji with the `:smile:` form.
