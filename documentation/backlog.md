@@ -29,6 +29,7 @@
     - The counter is sometimes lagging behind the actual count, because we don’t send refresh events on every GET everyone ever does (’cause **that** would be silly 😛)
       - Another consequence of not sending refresh events on every GET is that the number of unread messages on the sidebar becomes inconsistent when you have multiple tabs open and you read messages on one of them (the rest still show the unread indicator).
     - It should live-update. (Or the cached content of the tooltip should be expired somehow.)
+- The “No conversation selected.” page doesn’t open a SSE connection to the server, so it doesn’t get live updates.
 - Potential issue: when we deploy a new version, Morphdom doesn’t update the global CSS & JavaScript. Solution: force a reload.
 
 ---
@@ -278,7 +279,6 @@
 - When adding tags with the “Manage Tags” button (from the “Create a New Conversation” form or from the “Tags” button on a conversation), have a way to load the new tags without losing progress.
 - Add a `max-height` to the course switcher (what if you have many courses?).
 - Checkboxes that don’t have a visual indication may be confusing.
-- Using the JavaScript event loop for background jobs has another issue besides not persisting: there’s no contention mechanism, which opens it up for DOS attacks.
 - Right click menus on stuff.
 - Places where we show `administratorEmail` to report bugs could be forms instead.
 
@@ -289,7 +289,6 @@
 - Treat the error cases in every location where we do a `fetch`.
 - `app.on("close")` stop workers.
   - Or maybe unref them to begin with?
-- The “No conversation selected.” page doesn’t open a SSE connection to the server, so it doesn’t get live updates.
 - Graceful HTTP shutdown
   - Do we need that, or is our currently solution enough, given that Node.js seems to end keep-alive connections gracefully and we have no interest in keeping the Node.js process running?
     - I think we do need that, because we want to close the database, otherwise journal files are kept around, and we want to close the database strictly **after** the server closed, otherwise there could be requests in the middle that will throw because of a closed database connection.
@@ -314,16 +313,6 @@
       - Single follow-up query with `IN` operator (but then you end up with a bunch of prepared statements in the cache).
       - Use a temporary table instead of `IN`.
       - Nest first query as a subquery and bundle all the information together, then deduplicate the 1–N relationships in the code.
-- Queue / background jobs:
-  - Right now we’re using Node.js’s event queue as the queue. This is simple, but there are a few issues:
-    - Jobs don’t persist if you stop the server and they haven’t have the chance of completing. This affects email delivery, notifications, and so forth.
-    - If too many jobs are fired at once, there’s no protection in place, and it may exhaust resources.
-  - Use SQLite as queue:
-    - https://sqlite.org/forum/info/b047f5ef5b76edff
-    - https://github.com/StratoKit/strato-db/blob/master/src/EventQueue.js
-    - https://github.com/litements/litequeue
-    - https://www.npmjs.com/package/better-queue-sqlite
-- `try.courselore.org` (reference https://moodle.org/demo)
 - Rate limiting.
 - Database transactions:
   - One transaction per request?
