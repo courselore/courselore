@@ -27,6 +27,7 @@
   - On chats (which need to scroll to the bottom), do something to prevent flash of unstyled content. (I commented out the previous hack, look for `TODO`.)
   - Tooltip showing the views for a message:
     - The counter is sometimes lagging behind the actual count, because we don’t send refresh events on every GET everyone ever does (’cause **that** would be silly 😛)
+      - Another consequence of not sending refresh events on every GET is that the number of unread messages on the sidebar becomes inconsistent when you have multiple tabs open and you read messages on one of them (the rest still show the unread indicator).
     - It should live-update. (Or the cached content of the tooltip should be expired somehow.)
 - Potential issue: when we deploy a new version, Morphdom doesn’t update the global CSS & JavaScript. Solution: force a reload.
 
@@ -158,7 +159,7 @@
   - Or change the favicon.
 - Implement job for scheduling notifications
   - Delay sending notifications for a little bit to give the person a chance to update or delete the message.
-  - Don’t send notifications when the person is online.
+  - Don’t send notifications when the person is online and/or has seen the message.
   - Get notifications for replies to your posts. If a student asks a question they probably would like notifications on all replies. That might want to be on by default as well.
 - Add support for Dark Mode in emails.
   - This should fix the duplication of code blocks.
