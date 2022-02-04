@@ -11814,7 +11814,12 @@ export default async function courselore({
           }
         `)}"
       >
-        <div class="${conversationTypeTextColor[conversation.type].display}">
+        <div
+          class="${conversation.type === "question" &&
+          conversation.resolvedAt !== null
+            ? "text--emerald"
+            : conversationTypeTextColor[conversation.type].display}"
+        >
           $${conversationTypeIcon[conversation.type].fill}
           ${lodash.capitalize(conversation.type)}
         </div>
@@ -13672,9 +13677,13 @@ export default async function courselore({
                           ? html`
                               <div>
                                 <button
-                                  class="button button--tight button--tight--inline button--tight-gap button--transparent ${conversationTypeTextColor[
-                                    res.locals.conversation.type
-                                  ].display}"
+                                  class="button button--tight button--tight--inline button--tight-gap button--transparent ${res
+                                    .locals.conversation.type === "question" &&
+                                  res.locals.conversation.resolvedAt !== null
+                                    ? "text--emerald"
+                                    : conversationTypeTextColor[
+                                        res.locals.conversation.type
+                                      ].display}"
                                   oninteractive="${javascript`
                                     tippy(this, {
                                       touch: false,
@@ -13741,9 +13750,13 @@ export default async function courselore({
                             `
                           : html`
                               <div
-                                class="${conversationTypeTextColor[
-                                  res.locals.conversation.type
-                                ].display}"
+                                class="${res.locals.conversation.type ===
+                                  "question" &&
+                                res.locals.conversation.resolvedAt !== null
+                                  ? "text--emerald"
+                                  : conversationTypeTextColor[
+                                      res.locals.conversation.type
+                                    ].display}"
                               >
                                 $${conversationTypeIcon[
                                   res.locals.conversation.type
