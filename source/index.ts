@@ -1910,6 +1910,10 @@ export default async function courselore({
       }
 
       pre {
+        background-color: #ffffff;
+        @media (prefers-color-scheme: dark) {
+          background-color: #1e1e1e;
+        }
         padding: var(--space--4);
         border-radius: var(--border-radius--xl);
         overflow-x: auto;

@@ -1,9 +1,5 @@
 # Backlog
 
-- Background color of non-syntax highlighted code block.
-
----
-
 - Live-updates:
   - Only send refresh events to people who need it (those who have the right page open)
   - Don’t send refresh events right away, or you’re DoS the server
