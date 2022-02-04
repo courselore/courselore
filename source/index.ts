@@ -1610,6 +1610,7 @@ export default async function courselore({
         color: var(--color--amber--200);
         background-color: var(--color--amber--700);
       }
+      padding: var(--space--0) var(--space--0-5);
       border-radius: var(--border-radius--base);
     }
 
@@ -1912,6 +1913,8 @@ export default async function courselore({
         & > code {
           font-size: var(--font-size--xs);
           line-height: var(--line-height--xs);
+          background-color: transparent;
+          padding: var(--space--0);
           overflow-wrap: normal;
         }
       }
@@ -1922,6 +1925,12 @@ export default async function courselore({
       samp {
         font-family: "jetbrains-mono", var(--font-family--monospace);
         font-variant-ligatures: none;
+        background-color: var(--color--gray--medium--200);
+        @media (prefers-color-scheme: dark) {
+          background-color: var(--color--gray--medium--700);
+        }
+        padding: var(--space--0) var(--space--0-5);
+        border-radius: var(--border-radius--base);
       }
 
       del {
@@ -19746,10 +19755,7 @@ ${contentSource}</textarea
                             avatar: false,
                           })}`;
                           if (enrollment.user.id === res.locals.user!.id)
-                            mentionHTML = html`<mark
-                              class="mark ${res.locals.localCSS(css`
-                                padding: var(--space--0-5);
-                              `)}"
+                            mentionHTML = html`<mark class="mark"
                               >$${mentionHTML}</mark
                             >`;
                           break;
