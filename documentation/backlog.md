@@ -1,6 +1,12 @@
 # Backlog
 
+- Background color of non-syntax highlighted code block.
+
+---
+
 - Live-updates:
+  - Only send refresh events to people who need it (those who have the right page open)
+  - Don’t send refresh events right away, or you’re DoS the server
   - Remove `data-` in favor of `oninteractive`.
   - Change from `addEventListener` to `onEvent`.
   - Inputs of any kind.
@@ -21,15 +27,12 @@
 ---
 
 - Lazy loading
-  - userPartial
+  - `userPartial` tooltip
   - Edit message forms
     - Should also fix the bug in which you send a couple messages in a row, they coalesce, and then you try to edit.
-  - Views component showing who saw each message and when
   - On mobile, decouple the list of conversation (the sidebar on desktop) from the conversation itself, to push less data on the wire
-  - (We’re already doing it for things like the @mention component. Just use the same approach)
-  - (Should we use web sockets instead of http to skip authentication, and that sort of thing)
+  - Use web sockets instead of HTTP to save on roundtrips, authentication, and so forth? (Probably not, because it adds a lot of complexity, from keeping the connection open, to re-authenticating anyway to make sure you haven’t lost access to said information, and so forth. But still, investigate…)
   - List of conversations shouldn’t jump when you go to a particular conversation.
-- We need to update the online status of other users as they come online
 - Add some view caching on the server
 - Add some navigation caching on the client, similar to Turbo
 - Potential issue: when we deploy a new version, the morphdom doesn’t update the global css & js. Solution: force a reload
@@ -37,7 +40,6 @@
 - Components which we repeat in the HTML, making it bigger, but should DRY:
   - The `edit` form for messages. Use `data-content-source` that’s already used by the quoting mechanism.
     - Implement a more proper solution than the current use of `autosize.update()`
-  - `userPartial`s, particularly on the list of who read each message.
 
 ---
 
@@ -90,9 +92,10 @@
   - The confirmation email has a subject of “Welcome to Courselore!”. It should be “Please confirm your email”.
   - Maybe we shouldn’t actually change the email until it’s confirmed. Otherwise an attacker with a compromised password could change your email and lock you out of the “Forgot your password?” flow.
 - Online indicators.
-  - Query the server for updates before turning off online indicator.
+  - Turn them on when someone who was offline becomes online.
+  - Don’t turn them off if person continues to be online.
   - Fade in and out.
-- Multiple emails.
+- Allow person to have multiple emails on their account.
 - Allow people to remove their accounts.
 - Authentication:
   - SSO with Hopkins ID (SAML) (https://glacial-plateau-47269.herokuapp.com/).
@@ -275,7 +278,10 @@
 
 ### Infrastructure
 
+- On deploy to production maybe backup the database like we do in staging.
+- Treat the error cases in every location where we do a `fetch`.
 - `app.on("close")` stop workers.
+  - Or maybe unref them to begin with?
 - The “No conversation selected.” page doesn’t open a SSE connection to the server, so it doesn’t get live updates.
 - Graceful HTTP shutdown
   - Do we need that, or is our currently solution enough, given that Node.js seems to end keep-alive connections gracefully and we have no interest in keeping the Node.js process running?
