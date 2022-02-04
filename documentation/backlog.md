@@ -13,8 +13,9 @@
     - Inputs of any kind.
     - Tooltips.
     - Relative times and other components are blinking on reload. Add them to `onrefresh`.
+    - You’re in the middle of editing a message, and live-update comes, closing the textarea.
   - Latency compensation
-    - Don’t count on live-reload to give user feedback of their action.
+    - Don’t count on live-reload to give user feedback of their action. Do something similar to the responding to a POST with a Turbo Stream.
     - Particularly important cases:
       - Latency compensation when sending messages (particularly on chat).
       - Latency compensation when pressing “like”.
@@ -22,11 +23,11 @@
     - Only send refresh events to people who need it (those who have open a page that’s affected)
     - Don’t send refresh events right away, or you’re DoS the server
     - Instead of asking browsers to refresh, just push the new page.
-  - We may do latency compensation by returning the HTML to render as the response to the POST, instead of relying on the refresh event (similar to responding to a POST with a Turbo Stream).
+      - Do the morphdom on the server?
   - On chats (which need to scroll to the bottom), do something to prevent flash of unstyled content. (I commented out the previous hack, look for `TODO`.)
-  - Do the morphdom on the server.
-    - **This is necessary for correctness as well; see what happens when you’re editing a message (not writing a new one, because we use localStorage to remember that one) and a new message is submitted, causing a refresh.**
-  - The views component should live-update.
+  - Tooltip showing the views for a message:
+    - The counter is sometimes lagging behind the actual count, because we don’t send refresh events on every GET everyone ever does (’cause **that** would be silly 😛)
+    - It should live-update. (Or the cached content of the tooltip should be expired somehow.)
 - Potential issue: when we deploy a new version, Morphdom doesn’t update the global CSS & JavaScript. Solution: force a reload.
 
 ---
