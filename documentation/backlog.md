@@ -192,6 +192,7 @@
 
 ### Content Processor
 
+- `#references` into the same conversation don’t need to load the whole `conversationPartial`, just the message part of it.
 - Add support for underline in Markdown.
   - Add a job to re-preprocess content:
     - Messages
