@@ -26,17 +26,14 @@
 
 - Lazy loading
   - `userPartial` tooltip
-  - Edit message forms
+  - Edit message forms. Use `data-content-source` that’s already used by the quoting mechanism.
+    - Implement a more proper solution than the current use of `autosize.update()`
     - Should also fix the bug in which you send a couple messages in a row, they coalesce, and then you try to edit.
   - On mobile, decouple the list of conversation (the sidebar on desktop) from the conversation itself, to push less data on the wire
-  - Use web sockets instead of HTTP to save on roundtrips, authentication, and so forth? (Probably not, because it adds a lot of complexity, from keeping the connection open, to re-authenticating anyway to make sure you haven’t lost access to said information, and so forth. But still, investigate…)
+  - Use web sockets instead of HTTP to save on roundtrips, authentication, and so forth? (Probably not, because it adds a lot of complexity, from keeping the connection open, to re-authenticating anyway to make sure you haven’t lost access to the relevant information, and so forth. But still, investigate…)
   - List of conversations shouldn’t jump when you go to a particular conversation.
-- Add some view caching on the server
-- Potential issue: when we deploy a new version, the morphdom doesn’t update the global css & js. Solution: force a reload
+- Potential issue: when we deploy a new version, Morphdom doesn’t update the global CSS & JavaScript. Solution: force a reload.
 - When `contentEditor` is in `compact` mode, don’t just hide elements, prevent them from outputting HTML at all, which reduces the HTML payload. (But pay attention to buttons that are hidden but still accessible via keyboard shortcuts.)
-- Components which we repeat in the HTML, making it bigger, but should DRY:
-  - The `edit` form for messages. Use `data-content-source` that’s already used by the quoting mechanism.
-    - Implement a more proper solution than the current use of `autosize.update()`
 
 ---
 
@@ -48,6 +45,7 @@
 ---
 
 - Write a function to determine if processing the message is even necessary. Most messages don’t use extra features and could skip JSDOM entirely.
+- Implement view caching on the server.
 - Investigate other potential bottlenecks:
   - `html` tagged template literal.
   - Synchronous stuff that could be async.
