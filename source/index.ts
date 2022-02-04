@@ -16934,7 +16934,8 @@ export default async function courselore({
                 $${
                   res.locals.conversation.type === "question" &&
                   res.locals.enrollment.role === "staff" &&
-                  req.body.isAnswer
+                  req.body.isAnswer &&
+                  res.locals.conversation.resolvedAt === null
                     ? sql`,
                       "resolvedAt" = ${new Date().toISOString()}
                     `
@@ -17313,13 +17314,14 @@ export default async function courselore({
           )
         `
       );
-      database.run(
-        sql`
-          UPDATE "conversations"
-          SET "resolvedAt" = ${new Date().toISOString()}
-          WHERE "id" = ${res.locals.conversation.id}
-        `
-      );
+      if (res.locals.conversation.resolvedAt === null)
+        database.run(
+          sql`
+            UPDATE "conversations"
+            SET "resolvedAt" = ${new Date().toISOString()}
+            WHERE "id" = ${res.locals.conversation.id}
+          `
+        );
 
       res.redirect(
         `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
