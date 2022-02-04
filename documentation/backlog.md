@@ -12,10 +12,7 @@
   - Double-check
     - `isResolved`
     - `resolvedAt`
-  - Notes
-    - Only staff may change the “resolved” status
-    - List of conversations: Make it easy to see unresolved questions. Color-code and filters.
-    - Use that to organize Meta Courselore.
+  - Organize Meta Courselore.
 - Meta Courselore make a pinned announcement of how to report bugs.
 - Add support for underline in Markdown.
 
