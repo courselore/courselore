@@ -43,7 +43,7 @@
 - Pagination.
   - Messages in conversation.
   - Conversations on sidebar.
-  - Increase demonstration data to thousands of messages.
+  - Increase demonstration data to thousands of conversations & messages.
 
 ---
 
