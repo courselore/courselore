@@ -1093,7 +1093,7 @@ export default async function courselore({
                           onBeforeElUpdated(from, to) {
                             const onBeforeElUpdated =
                               from.getAttribute("onbeforeelupdated");
-                            return typeof onBeforeElUpdated === "true"
+                            return typeof onBeforeElUpdated === "string"
                               ? new Function(
                                   "from",
                                   "to",
