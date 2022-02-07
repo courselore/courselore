@@ -56,6 +56,11 @@
     - List of conversations shouldn’t jump when you go to a particular conversation.
   - On mobile, decouple the list of conversation (the sidebar on desktop) from the conversation itself, to push less data on the wire
   - Use web sockets instead of HTTP to save on roundtrips, authentication, and so forth? (Probably not, because it adds a lot of complexity, from keeping the connection open, to re-authenticating anyway to make sure you haven’t lost access to the relevant information, and so forth. But still, investigate…)
+  - I was on the fence about whether to hoist client-side JavaScript the same way we hoist CSS. Arguments in favor:
+    - Reduce the payload, because multiple long `oninteractive` in a loop get DRYed up.
+    - Consistency with CSS.
+  - Content processor should only attach position information that we’ll actually use.
+    - This also allows us to simplify the code that uses the position information, because we don’t have to discard positions from inner elements.
 
 ---
 
