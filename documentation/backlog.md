@@ -4,8 +4,8 @@
 
 - Live-updates:
   - Review side-effects of refreshing
-    - Relative times and other components are blinking on reload. Add them to `onrefresh`.
     - You’re in the middle of editing a message, and live-update comes, closing the textarea.
+    - On chats, scroll to bottom on with MutationObserver?
   - Latency compensation
     - Don’t count on live-reload to give user feedback of their action. Do something similar to the responding to a POST with a Turbo Stream.
     - Particularly important cases:
@@ -22,6 +22,7 @@
   - The counter is sometimes lagging behind the actual count, because we don’t send refresh events on every GET everyone ever does (’cause **that** would be silly 😛)
     - Another consequence of not sending refresh events on every GET is that the number of unread messages on the sidebar becomes inconsistent when you have multiple tabs open and you read messages on one of them (the rest still show the unread indicator).
   - It should live-update. (Or the cached content of the tooltip should be expired somehow.)
+- `updatedAt` relative times aren’t updating as they should, because they don’t look at `datetime` again (effectively, `datetime` is cached).
 - On chats (which need to scroll to the bottom), do something to prevent flash of unstyled content. (I commented out the previous hack, look for `TODO`.)
 - Potential issue: when we deploy a new version, Morphdom doesn’t update the global CSS & JavaScript. Solution: force a reload.
 
@@ -82,6 +83,7 @@
   - “Confirm” email → “Verify” email.
   - Remove `data-` in favor of non-standard attributes?
   - Change from `addEventListener` to `onEvent`?
+  - `onrefresh` → `onrefreshed`
 
 ### Advanced Access Control
 

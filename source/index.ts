@@ -1112,6 +1112,18 @@ export default async function courselore({
                                 ).call(node, node)
                               : !node.matches?.("[data-tippy-root]");
                           },
+                          onBeforeElChildrenUpdated(from, to) {
+                            const onBeforeElChildrenUpdated = from.getAttribute(
+                              "onbeforeelchildrenupdated"
+                            );
+                            return typeof onBeforeElChildrenUpdated === "string"
+                              ? new Function(
+                                  "from",
+                                  "to",
+                                  onBeforeElChildrenUpdated
+                                ).call(from, from, to)
+                              : true;
+                          },
                         });
                         leafac.evaluateElementsAttribute(document);
                         leafac.evaluateElementsAttribute(
@@ -3472,6 +3484,9 @@ export default async function courselore({
                                   ).toISOString()}"
                                   oninteractive="${javascript`
                                     leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                  `}"
+                                  onbeforeelchildrenupdated="${javascript`
+                                    return false;
                                   `}"
                                 ></time>
                               </div>
@@ -9190,8 +9205,11 @@ export default async function courselore({
                                                       invitation.usedAt!
                                                     ).toISOString()}"
                                                     oninteractive="${javascript`
-                                                    leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                                                  `}"
+                                                      leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                    `}"
+                                                    onbeforeelchildrenupdated="${javascript`
+                                                      return false;
+                                                    `}"
                                                   ></time>
                                                 `
                                               )},
@@ -9238,6 +9256,9 @@ export default async function courselore({
                                                           ).toISOString()}"
                                                           oninteractive="${javascript`
                                                             leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                          `}"
+                                                          onbeforeelchildrenupdated="${javascript`
+                                                            return false;
                                                           `}"
                                                         ></time>
                                                       </span>
@@ -9338,6 +9359,9 @@ export default async function courselore({
                                                           ).toISOString()}"
                                                           oninteractive="${javascript`
                                                           leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                        `}"
+                                                          onbeforeelchildrenupdated="${javascript`
+                                                          return false;
                                                         `}"
                                                         ></time>
                                                       </span>
@@ -9875,6 +9899,9 @@ export default async function courselore({
                           ).toISOString()}"
                           oninteractive="${javascript`
                             leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                          `}"
+                          onbeforeelchildrenupdated="${javascript`
+                            return false;
                           `}"
                         ></time>
                       </div>
@@ -11955,6 +11982,9 @@ export default async function courselore({
           oninteractive="${javascript`
             leafac.relativizeDateTimeElement(this, { capitalize: true });
           `}"
+          onbeforeelchildrenupdated="${javascript`
+            return false;
+          `}"
         ></time>
 
         $${conversation.updatedAt !== null
@@ -11965,6 +11995,9 @@ export default async function courselore({
                   datetime="${new Date(conversation.updatedAt).toISOString()}"
                   oninteractive="${javascript`
                     leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                  `}"
+                  onbeforeelchildrenupdated="${javascript`
+                    return false;
                   `}"
                 ></time>
               </div>
@@ -14766,6 +14799,9 @@ export default async function courselore({
                                                   window.setTimeout(update, 60 * 1000);
                                                 })();
                                               `}"
+                                              onbeforeelchildrenupdated="${javascript`
+                                                return false;
+                                              `}"
                                             ></time>
                                             <hr
                                               class="separator ${res.locals
@@ -15807,6 +15843,9 @@ export default async function courselore({
                                                   oninteractive="${javascript`
                                                     leafac.relativizeDateTimeElement(this, { capitalize: true });
                                                   `}"
+                                                  onbeforeelchildrenupdated="${javascript`
+                                                    return false;
+                                                  `}"
                                                 ></time>
 
                                                 $${message.updatedAt !== null
@@ -15819,6 +15858,9 @@ export default async function courselore({
                                                           ).toISOString()}"
                                                           oninteractive="${javascript`
                                                             leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                          `}"
+                                                          onbeforeelchildrenupdated="${javascript`
+                                                            return false;
                                                           `}"
                                                         ></time>
                                                       </div>
@@ -16628,6 +16670,9 @@ export default async function courselore({
                         datetime="${new Date(reading.createdAt).toISOString()}"
                         oninteractive="${javascript`
                           leafac.relativizeDateTimeElement(this, { capitalize: true });
+                        `}"
+                        onbeforeelchildrenupdated="${javascript`
+                          return false;
                         `}"
                       ></time>
                     </span>
