@@ -7217,10 +7217,11 @@ export default async function courselore({
     HTML,
     {},
     {},
-    IsEnrolledInCourseMiddlewareLocals
+    IsEnrolledInCourseMiddlewareLocals & EventSourceMiddlewareLocals
   >(
     "/courses/:courseReference",
     ...isEnrolledInCourseMiddleware,
+    ...eventSourceMiddleware,
     (req, res) => {
       if (res.locals.conversationsCount === 0)
         return res.send(
