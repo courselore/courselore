@@ -4,11 +4,11 @@
 
 - Live-updates:
   - Latency compensation
-    - Don’t count on live-reload to give user feedback of their action. Do something similar to the responding to a POST with a Turbo Stream.
-    - Particularly important cases:
+    - In general, look for places where we’re using `fetch`.
+    - Cases:
       - Latency compensation when sending messages (particularly on chat).
       - Latency compensation when pressing “like”.
-    - In general, look for places where we’re using `fetch`.
+    - Don’t count on live-reload to give user feedback of their action. Do something similar to the responding to a POST with a Turbo Stream.
   - Improve the refreshing mechanism
     - Only send refresh events to people who need it (those who have open a page that’s affected)
     - Don’t send refresh events right away, or you’re DoS the server
