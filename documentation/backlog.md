@@ -4,10 +4,9 @@
 
 - Live-updates:
   - Latency compensation
-    - In general, look for places where we’re using `fetch`.
     - Cases:
-      - Latency compensation when sending messages (particularly on chat).
-      - Latency compensation when pressing “like”.
+      - Sending messages (particularly on chat).
+      - Pressing “like”.
     - Don’t count on live-reload to give user feedback of their action. Do something similar to the responding to a POST with a Turbo Stream.
   - Improve the refreshing mechanism
     - Only send refresh events to people who need it (those who have open a page that’s affected)
@@ -72,6 +71,9 @@
 - Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the Courselore community.
 - In Meta Courselore, make a pinned announcement of how to report bugs.
   - Have a way to pre-fill the new conversation form, similar to what GitHub does with new issues.
+- Don’t leak `HTMLForJavaScript` & `<style>`.
+- Chats sometimes scroll by themselves(!)
+  - Scroll to bottom on with MutationObserver?
 
 ---
 
@@ -81,7 +83,6 @@
   - Remove `data-` in favor of non-standard attributes?
   - Change from `addEventListener` to `onEvent`?
   - `onrefresh` → `onrefreshed`
-  - On chats, scroll to bottom on with MutationObserver?
 
 ### Advanced Access Control
 
