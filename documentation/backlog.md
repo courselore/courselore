@@ -20,7 +20,6 @@
     - Instead of asking browsers to refresh, just push the new page.
       - Do the morphdom on the server?
   - When Morphdom refreshes the page, what happens to timers? Are they leaking?
-- The “No conversation selected.” page doesn’t open a SSE connection to the server, so it doesn’t get live updates.
 - Tooltip showing the views for a message:
   - The counter is sometimes lagging behind the actual count, because we don’t send refresh events on every GET everyone ever does (’cause **that** would be silly 😛)
     - Another consequence of not sending refresh events on every GET is that the number of unread messages on the sidebar becomes inconsistent when you have multiple tabs open and you read messages on one of them (the rest still show the unread indicator).
