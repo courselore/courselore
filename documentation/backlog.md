@@ -4,7 +4,6 @@
 
 - Live-updates:
   - Review side-effects of refreshing
-    - When Morphdom refreshes the page, what happens to event listeners? Are they leaking?
     - Inputs of any kind.
     - Tooltips.
     - Relative times and other components are blinking on reload. Add them to `onrefresh`.
@@ -20,6 +19,7 @@
     - Don’t send refresh events right away, or you’re DoS the server
     - Instead of asking browsers to refresh, just push the new page.
       - Do the morphdom on the server?
+  - When Morphdom refreshes the page, what happens to timers? Are they leaking?
 - The “No conversation selected.” page doesn’t open a SSE connection to the server, so it doesn’t get live updates.
 - Tooltip showing the views for a message:
   - The counter is sometimes lagging behind the actual count, because we don’t send refresh events on every GET everyone ever does (’cause **that** would be silly 😛)
@@ -287,6 +287,8 @@
 
 ### Infrastructure
 
+- Move some of the non-application-specific server-side code into a library (for example, cookie settings, server-sent events, logging, and that sort of thing).
+  - Maybe move @leafac/express-async-handler into that library as well.
 - Make Demonstration Data load faster by having a cache of pre-built data.
 - On deploy to production maybe backup the database like we do in staging.
 - Treat the error cases in every location where we do a `fetch`.
