@@ -1,5 +1,7 @@
 # Backlog
 
+### Performance
+
 - Live-updates:
   - Organize:
     - Remove `data-` in favor of `oninteractive`.
@@ -8,8 +10,8 @@
     - Running custom events such as `oninteractive`
     - Mounting partials
     - Refreshing the page.
-    - When Morphdom refreshes the page, what happens to event listeners? Are they leaking?
   - Review side-effects of refreshing
+    - When Morphdom refreshes the page, what happens to event listeners? Are they leaking?
     - Inputs of any kind.
     - Tooltips.
     - Relative times and other components are blinking on reload. Add them to `onrefresh`.
@@ -19,17 +21,18 @@
     - Particularly important cases:
       - Latency compensation when sending messages (particularly on chat).
       - Latency compensation when pressing “like”.
+    - In general, look for places where we’re using `fetch`.
   - Improve the refreshing mechanism
     - Only send refresh events to people who need it (those who have open a page that’s affected)
     - Don’t send refresh events right away, or you’re DoS the server
     - Instead of asking browsers to refresh, just push the new page.
       - Do the morphdom on the server?
-  - On chats (which need to scroll to the bottom), do something to prevent flash of unstyled content. (I commented out the previous hack, look for `TODO`.)
-  - Tooltip showing the views for a message:
-    - The counter is sometimes lagging behind the actual count, because we don’t send refresh events on every GET everyone ever does (’cause **that** would be silly 😛)
-      - Another consequence of not sending refresh events on every GET is that the number of unread messages on the sidebar becomes inconsistent when you have multiple tabs open and you read messages on one of them (the rest still show the unread indicator).
-    - It should live-update. (Or the cached content of the tooltip should be expired somehow.)
 - The “No conversation selected.” page doesn’t open a SSE connection to the server, so it doesn’t get live updates.
+- Tooltip showing the views for a message:
+  - The counter is sometimes lagging behind the actual count, because we don’t send refresh events on every GET everyone ever does (’cause **that** would be silly 😛)
+    - Another consequence of not sending refresh events on every GET is that the number of unread messages on the sidebar becomes inconsistent when you have multiple tabs open and you read messages on one of them (the rest still show the unread indicator).
+  - It should live-update. (Or the cached content of the tooltip should be expired somehow.)
+- On chats (which need to scroll to the bottom), do something to prevent flash of unstyled content. (I commented out the previous hack, look for `TODO`.)
 - Potential issue: when we deploy a new version, Morphdom doesn’t update the global CSS & JavaScript. Solution: force a reload.
 
 ---
