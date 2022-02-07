@@ -1101,6 +1101,15 @@ export default async function courselore({
                                 ).call(from, from, to)
                               : !from.matches("input, textarea, select");
                           },
+                          onElUpdated(element) {
+                            const onElUpdated =
+                              element.getAttribute("onelupdated");
+                            if (typeof onElUpdated === "string")
+                              new Function("element", onElUpdated).call(
+                                element,
+                                element
+                              );
+                          },
                           onBeforeNodeDiscarded(node) {
                             const onBeforeNodeDiscarded = node.getAttribute?.(
                               "onbeforenodediscarded"
@@ -13689,6 +13698,12 @@ export default async function courselore({
                             this.closest(".conversation--header").querySelector(".conversation--header--compact").hidden = true;
                             this.closest(".conversation--header").querySelector(".conversation--header--full").hidden = false;
                           `}"
+                          onbeforeelupdated="${javascript`
+                            this.wasHidden = this.hidden;
+                          `}"
+                          onelupdated="${javascript`
+                            this.hidden = this.wasHidden;
+                          `}"
                         >
                           <span
                             class="${res.locals.localCSS(css`
@@ -13718,6 +13733,12 @@ export default async function courselore({
                       flex-direction: column;
                       gap: var(--space--1);
                     `)}"
+                    onbeforeelupdated="${javascript`
+                      this.wasHidden = this.hidden;
+                    `}"
+                    onelupdated="${javascript`
+                      this.hidden = this.wasHidden;
+                    `}"
                   >
                     <div
                       class="${res.locals.localCSS(css`
@@ -14274,6 +14295,12 @@ export default async function courselore({
                         font-size: var(--font-size--lg);
                         line-height: var(--line-height--lg);
                       `)}"
+                      onbeforeelupdated="${javascript`
+                        this.wasHidden = this.hidden;
+                      `}"
+                      onelupdated="${javascript`
+                        this.hidden = this.wasHidden;
+                      `}"
                     >
                       $${highlightSearchResult(
                         html`${res.locals.conversation.title}`,
@@ -14295,6 +14322,12 @@ export default async function courselore({
                               gap: var(--space--2);
                               align-items: center;
                             `)}"
+                            onbeforeelupdated="${javascript`
+                              this.wasHidden = this.hidden;
+                            `}"
+                            onelupdated="${javascript`
+                              this.hidden = this.wasHidden;
+                            `}"
                           >
                             <input
                               type="hidden"
@@ -15882,6 +15915,12 @@ export default async function courselore({
                                             flex-direction: column;
                                             gap: var(--space--2);
                                           `)}"
+                                          onbeforeelupdated="${javascript`
+                                            this.wasHidden = this.hidden;
+                                          `}"
+                                          onelupdated="${javascript`
+                                            this.hidden = this.wasHidden;
+                                          `}"
                                         >
                                           <div
                                             class="message--show--content-area ${res
@@ -16228,6 +16267,12 @@ export default async function courselore({
                                                   flex-direction: column;
                                                   gap: var(--space--2);
                                                 `)}"
+                                                onbeforeelupdated="${javascript`
+                                                  this.wasHidden = this.hidden;
+                                                `}"
+                                                onelupdated="${javascript`
+                                                  this.hidden = this.wasHidden;
+                                                `}"
                                               >
                                                 <input
                                                   type="hidden"
