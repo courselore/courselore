@@ -4,7 +4,6 @@
 
 - Live-updates:
   - Review side-effects of refreshing
-    - You’re in the middle of editing a message, and live-update comes, closing the textarea.
     - On chats, scroll to bottom on with MutationObserver?
   - Latency compensation
     - Don’t count on live-reload to give user feedback of their action. Do something similar to the responding to a POST with a Turbo Stream.
@@ -200,6 +199,7 @@
 - The localStorage which remembers messages that haven’t been sent yet isn’t cleaning empty objects, leaking resources.
 - Add https://github.com/fregante/indent-textarea in programmer mode
   - This requires proper ESM bundling, because it depends on text-field-edit
+- If you’re in the middle of editing, and someone else edits a message (or the conversation title), then you’re going to overwrite their changes. Warn about this.
 
 ### Content Processor
 
