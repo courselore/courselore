@@ -4,7 +4,6 @@
 
 - Live-updates:
   - Review side-effects of refreshing
-    - Tooltips.
     - Relative times and other components are blinking on reload. Add them to `onrefresh`.
     - You’re in the middle of editing a message, and live-update comes, closing the textarea.
   - Latency compensation

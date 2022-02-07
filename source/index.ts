@@ -1101,6 +1101,17 @@ export default async function courselore({
                                 ).call(from, from, to)
                               : !from.matches("input, textarea, select");
                           },
+                          onBeforeNodeDiscarded(node) {
+                            const onBeforeNodeDiscarded = node.getAttribute?.(
+                              "onbeforenodediscarded"
+                            );
+                            return typeof onBeforeNodeDiscarded === "string"
+                              ? new Function(
+                                  "node",
+                                  onBeforeNodeDiscarded
+                                ).call(node, node)
+                              : !node.matches?.("[data-tippy-root]");
+                          },
                         });
                         leafac.evaluateElementsAttribute(document);
                         leafac.evaluateElementsAttribute(
