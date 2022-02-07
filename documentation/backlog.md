@@ -4,10 +4,10 @@
 
 - Live-updates:
   - Latency compensation
+    - Don’t count on live-reload to give user feedback of their action. Do something similar to the responding to a POST with a Turbo Stream.
     - Cases:
       - Sending messages (particularly on chat).
       - Pressing “like”.
-    - Don’t count on live-reload to give user feedback of their action. Do something similar to the responding to a POST with a Turbo Stream.
   - Improve the refreshing mechanism
     - Only send refresh events to people who need it (those who have open a page that’s affected)
     - Don’t send refresh events right away, or you’re DoS the server
