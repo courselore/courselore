@@ -1112,8 +1112,7 @@ export default async function courselore({
             ? html`
                 <script>
                   const eventSource = new EventSource(window.location.href);
-                  eventSource.addEventListener("refresh", async () => {
-                    const response = await fetch(window.location.href);
+                  const eventSourceRefresh = async (response) => {
                     switch (response.status) {
                       case 200:
                         const refreshedDocument =
@@ -1188,6 +1187,9 @@ export default async function courselore({
                         console.error(response);
                         break;
                     }
+                  }
+                  eventSource.addEventListener("refresh", async () => {
+                    await eventSourceRefresh(await fetch(window.location.href));
                   });
                 </script>
               `
@@ -16445,10 +16447,10 @@ export default async function courselore({
                       onsubmit="${javascript`
                         (async () => {
                           event.preventDefault();
-                          await fetch(this.action, {
+                          eventSourceRefresh(await fetch(this.action, {
                             method: this.method,
                             body: new URLSearchParams(new FormData(this)),
-                          });
+                          }));
                           textFieldEdit.set(this.querySelector(".content-editor--write--textarea"), "");
                         })();
                       `}"
