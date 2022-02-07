@@ -3,10 +3,6 @@
 ### Performance
 
 - Live-updates:
-  - Review code for:
-    - Running custom events such as `oninteractive`
-    - Mounting partials
-    - Refreshing the page.
   - Review side-effects of refreshing
     - When Morphdom refreshes the page, what happens to event listeners? Are they leaking?
     - Inputs of any kind.
