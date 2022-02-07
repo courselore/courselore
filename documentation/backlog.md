@@ -84,7 +84,7 @@
 
 ---
 
-- Rename & reword:
+- Rename, reword, and refactor:
   - `readings` → `views`.
   - “Confirm” email → “Verify” email.
   - Remove `data-` in favor of non-standard attributes?
