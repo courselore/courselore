@@ -3,9 +3,6 @@
 ### Performance
 
 - Live-updates:
-  - Organize:
-    - Remove `data-` in favor of `oninteractive`.
-    - Change from `addEventListener` to `onEvent`.
   - Review code for:
     - Running custom events such as `oninteractive`
     - Mounting partials
@@ -90,6 +87,8 @@
 - Rename & reword:
   - `readings` → `views`.
   - “Confirm” email → “Verify” email.
+  - Remove `data-` in favor of non-standard attributes?
+  - Change from `addEventListener` to `onEvent`?
 
 ### Advanced Access Control
 
