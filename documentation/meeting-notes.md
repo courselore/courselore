@@ -1,6 +1,21 @@
 # Meeting Notes
 
 <details>
+<summary>2021-02-05</summary>
+
+- Fixes:
+  - Email notifications deliveries fixed.
+  - “Oh, snap” fixed.
+  - Several cosmetic things.
+  - Started work on live-updates.
+- New features:
+  - “Resolved” questions.
+  - Autosizing, monospaced font on editor, and so forth.
+- Bump up the VM even more.
+
+</details>
+
+<details>
 <summary>2021-01-29</summary>
 
 - This week’s progress:
