@@ -1099,7 +1099,7 @@ export default async function courselore({
                                   "to",
                                   onBeforeElUpdated
                                 ).call(from, from, to)
-                              : !from.matches("input, textarea");
+                              : !from.matches("input, textarea, select");
                           },
                         });
                         leafac.evaluateElementsAttribute(document);
