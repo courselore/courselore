@@ -3,8 +3,6 @@
 ### Performance
 
 - Live-updates:
-  - Review side-effects of refreshing
-    - On chats, scroll to bottom on with MutationObserver?
   - Latency compensation
     - Don’t count on live-reload to give user feedback of their action. Do something similar to the responding to a POST with a Turbo Stream.
     - Particularly important cases:
@@ -83,6 +81,7 @@
   - Remove `data-` in favor of non-standard attributes?
   - Change from `addEventListener` to `onEvent`?
   - `onrefresh` → `onrefreshed`
+  - On chats, scroll to bottom on with MutationObserver?
 
 ### Advanced Access Control
 
