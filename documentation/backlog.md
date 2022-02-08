@@ -1,7 +1,5 @@
 # Backlog
 
-- `userPartial` isn’t loading from within views widget
-
 ### Performance
 
 - Live-updates:
@@ -127,6 +125,7 @@
 
 ### Conversations
 
+- Change the meaning of “views”: Instead of using “readings”, only count as “viewed” if the message has appeared on the person’s screen.
 - Add a button to “Return to Bottom” in chat.
 - Show a widget similar to the Views (with person & time) to likes & endorsements.
 - We shouldn’t show endorsements for non-answers. (They show up at least for staff.)
