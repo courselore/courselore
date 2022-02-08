@@ -1112,6 +1112,12 @@ export default async function courselore({
             ? html`
                 <script>
                   const eventSource = new EventSource(window.location.href);
+                  eventSource.addEventListener("reference", (event) => {
+                    eventSource.reference = event.data;
+                  });
+                  eventSource.addEventListener("refresh", async () => {
+                    await eventSourceRefresh(await fetch(window.location.href));
+                  });
                   const eventSourceRefresh = async (response) => {
                     switch (response.status) {
                       case 200:
@@ -1188,9 +1194,6 @@ export default async function courselore({
                         break;
                     }
                   };
-                  eventSource.addEventListener("refresh", async () => {
-                    await eventSourceRefresh(await fetch(window.location.href));
-                  });
                 </script>
               `
             : html``}
@@ -3854,10 +3857,12 @@ export default async function courselore({
       "/live-reload",
       (req, res, next) => {
         res.type("text/event-stream").write(":\n\n");
+        console.log(`${new Date().toISOString()}\tLIVE RELOAD\t${req.ip}`);
       }
     );
 
   const eventDestinations = new Set<{
+    reference: string;
     req: express.Request;
     res: express.Response;
   }>();
@@ -3877,12 +3882,23 @@ export default async function courselore({
         res.locals.eventSource = true;
         return next();
       }
-      const eventDestination = { req, res };
+      const eventDestination = {
+        reference: Math.random().toString(36).slice(2),
+        req,
+        res,
+      };
       eventDestinations.add(eventDestination);
       res.once("close", () => {
         eventDestinations.delete(eventDestination);
       });
-      res.type("text/event-stream").write(":\n\n");
+      res
+        .type("text/event-stream")
+        .write(`event: reference\ndata: ${eventDestination.reference}\n\n`);
+      console.log(
+        `${new Date().toISOString()}\tSSE\topen\t${req.ip}\t${
+          eventDestination.reference
+        }\t\t\t${req.originalUrl}`
+      );
     },
   ];
 
@@ -16447,7 +16463,7 @@ export default async function courselore({
                       onsubmit="${javascript`
                         (async () => {
                           event.preventDefault();
-                          await eventSourceRefresh(await fetch(this.action, {
+                          await eventSourceRefresh(await fetch(this.action + "?eventSourceReference=" + eventSource.reference, {
                             method: this.method,
                             body: new URLSearchParams(new FormData(this)),
                           }));
@@ -17010,7 +17026,7 @@ export default async function courselore({
     { courseReference: string; conversationReference: string },
     HTML,
     { isAnswer?: boolean; content?: string; isAnonymous?: boolean },
-    {},
+    { eventSourceReference?: string },
     IsConversationAccessibleMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages",
@@ -17168,7 +17184,7 @@ export default async function courselore({
         `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.conversation.nextMessageReference}`
       );
 
-      emitCourseRefresh(res.locals.course.id);
+      emitCourseRefresh(res.locals.course.id, req.query.eventSourceReference);
     }
   );
 
@@ -17526,9 +17542,19 @@ export default async function courselore({
     }
   );
 
-  const emitCourseRefresh = (courseId: number): void => {
-    for (const { req, res } of eventDestinations)
+  const emitCourseRefresh = (
+    courseId: number,
+    eventDestinationReference?: string | undefined
+  ): void => {
+    for (const { reference, req, res } of eventDestinations) {
+      if (reference === eventDestinationReference) continue;
       res.write(`event: refresh\ndata:\n\n`);
+      console.log(
+        `${new Date().toISOString()}\tSSE\trefresh\t${
+          req.ip
+        }\t${reference}\t\t\t${req.originalUrl}`
+      );
+    }
   };
 
   const sendNotificationEmails = ({

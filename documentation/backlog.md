@@ -5,7 +5,7 @@
 - Live reloading seems to be making an extra fetch request from `error` event.
 - Live-updates:
   - Latency compensation
-    - Don’t send “refresh” event to originating tab.
+    - Refresh events seem to be sent before the post is completed.
     - Don’t count on live-reload to give user feedback of their action. Do something similar to the responding to a POST with a Turbo Stream.
     - Cases:
       - Sending messages (particularly on chat).
