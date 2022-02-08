@@ -3853,7 +3853,7 @@ export default async function courselore({
     app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
       "/live-reload",
       (req, res, next) => {
-        res.type("text/event-stream").flushHeaders();
+        res.type("text/event-stream").write(":\n\n");
       }
     );
 
@@ -3882,7 +3882,7 @@ export default async function courselore({
       res.once("close", () => {
         eventDestinations.delete(eventDestination);
       });
-      res.type("text/event-stream").flushHeaders();
+      res.type("text/event-stream").write(":\n\n");
     },
   ];
 

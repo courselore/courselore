@@ -2,6 +2,7 @@
 
 ### Performance
 
+- Live reloading seems to be making an extra fetch request from `error` event.
 - Live-updates:
   - Latency compensation
     - Don’t send “refresh” event to originating tab.
