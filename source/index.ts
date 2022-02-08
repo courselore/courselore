@@ -17546,15 +17546,17 @@ export default async function courselore({
     courseId: number,
     eventDestinationReference?: string | undefined
   ): void => {
-    for (const { reference, req, res } of eventDestinations) {
-      if (reference === eventDestinationReference) continue;
-      res.write(`event: refresh\ndata:\n\n`);
-      console.log(
-        `${new Date().toISOString()}\tSSE\trefresh\t${
-          req.ip
-        }\t${reference}\t\t\t${req.originalUrl}`
-      );
-    }
+    setTimeout(() => {
+      for (const { reference, req, res } of eventDestinations) {
+        if (reference === eventDestinationReference) continue;
+        res.write(`event: refresh\ndata:\n\n`);
+        console.log(
+          `${new Date().toISOString()}\tSSE\trefresh\t${
+            req.ip
+          }\t${reference}\t\t\t${req.originalUrl}`
+        );
+      }
+    }, 200);
   };
 
   const sendNotificationEmails = ({

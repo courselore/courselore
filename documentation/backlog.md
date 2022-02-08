@@ -2,7 +2,6 @@
 
 ### Performance
 
-- Refresh events seem to be sent before the `POST` is completed.
 - Live-updates:
   - Latency compensation
     - Cases:
