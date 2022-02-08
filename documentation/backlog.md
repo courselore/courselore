@@ -2,7 +2,6 @@
 
 ### Performance
 
-- Live reloading seems to be making an extra fetch request from `error` event.
 - Refresh events seem to be sent before the `POST` is completed.
 - Live-updates:
   - Latency compensation
