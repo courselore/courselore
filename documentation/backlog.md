@@ -9,7 +9,7 @@
       - Pressing “like”.
   - Improve the refreshing mechanism
     - Only send refresh events to people who need it (those who have open a page that’s affected)
-    - Don’t send refresh events right away, or you’re DoS the server
+    - Spread refresh events over time, or you’re DoS the server
   - When Morphdom refreshes the page, what happens to timers? Are they leaking?
 - Tooltip showing the views for a message:
   - The counter is sometimes lagging behind the actual count, because we don’t send refresh events on every GET everyone ever does (’cause **that** would be silly 😛)
