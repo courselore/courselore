@@ -12,8 +12,6 @@
   - Improve the refreshing mechanism
     - Only send refresh events to people who need it (those who have open a page that’s affected)
     - Don’t send refresh events right away, or you’re DoS the server
-    - Instead of asking browsers to refresh, just push the new page.
-      - Do the morphdom on the server?
   - When Morphdom refreshes the page, what happens to timers? Are they leaking?
 - Tooltip showing the views for a message:
   - The counter is sometimes lagging behind the actual count, because we don’t send refresh events on every GET everyone ever does (’cause **that** would be silly 😛)
@@ -23,6 +21,7 @@
 - On chats (which need to scroll to the bottom), do something to prevent flash of unstyled content. (I commented out the previous hack, look for `TODO`.)
 - Potential issue: when we deploy a new version, Morphdom doesn’t update the global CSS & JavaScript. Solution: force a reload.
 - Right now we’re using a Turbo Drive approach. Upgrade to a Turbo Streams approach for critical flows. (In other words, don’t redirect as response to `POST`, but send the data right away.)
+- Do the morphdom on the server?
 
 ---
 
