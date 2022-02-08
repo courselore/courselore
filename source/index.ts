@@ -752,26 +752,44 @@ export default async function courselore({
                       ${res.locals.user.email}.<br />
                       Didn’t receive the email? Already checked your spam
                       folder? <button class="link">Resend</button>.
-                      $${demonstration
-                        ? html`
-                            <br />
-                            <span
+                    </form>
+                    $${demonstration
+                      ? (() => {
+                          let emailConfirmation = database.get<{
+                            nonce: string;
+                          }>(
+                            sql`
+                              SELECT "nonce" FROM "emailConfirmations" WHERE "user" = ${res.locals.user.id}
+                            `
+                          );
+                          if (emailConfirmation === undefined) {
+                            sendEmailConfirmationEmail({
+                              req,
+                              res,
+                              userId: res.locals.user.id,
+                              userEmail: res.locals.user.email,
+                            });
+                            emailConfirmation = database.get<{
+                              nonce: string;
+                            }>(
+                              sql`
+                                SELECT "nonce" FROM "emailConfirmations" WHERE "user" = ${res.locals.user.id}
+                              `
+                            )!;
+                          }
+                          return html`
+                            <p
                               class="${res.locals.localCSS(
                                 css`
                                   font-weight: var(--font-weight--bold);
                                 `
                               )}"
-                              >This Courselore installation is running in
+                            >
+                              This Courselore installation is running in
                               demonstration mode and doesn’t send emails.
                               Confirm your email by
                               <a
-                                href="${baseURL}/email-confirmation/${database.get<{
-                                  nonce: string;
-                                }>(
-                                  sql`
-                                    SELECT "nonce" FROM "emailConfirmations" WHERE "user" = ${res.locals.user.id}
-                                  `
-                                )!.nonce}${qs.stringify(
+                                href="${baseURL}/email-confirmation/${emailConfirmation.nonce}${qs.stringify(
                                   {
                                     redirect: req.originalUrl,
                                   },
@@ -779,11 +797,11 @@ export default async function courselore({
                                 )}"
                                 class="link"
                                 >clicking here</a
-                              >.</span
-                            >
-                          `
-                        : html``}
-                    </form>
+                              >.
+                            </p>
+                          `;
+                        })()
+                      : html``}
                   </div>
                 </div>
               `
