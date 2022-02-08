@@ -1,8 +1,9 @@
 # Backlog
 
 - Mark all conversations as read:
-  - Is marking as read even conversations to which you don’t have access.
+  - Review `SELECT TRUE` and determine the need for `EXISTS`.
   - May be slow.
+- `userPartial` isn’t loading from within views widget
 
 ### Performance
 

@@ -417,6 +417,23 @@ export default async function courselore({
     `,
     sql`
       CREATE INDEX "conversationsResolvedAtIndex" ON "conversations" ("resolvedAt");
+    `,
+    sql`
+      DELETE FROM "readings" WHERE "id" IN (
+        SELECT "readings"."id"
+        FROM "readings"
+        JOIN "enrollments" ON "readings"."enrollment" = "enrollments"."id" AND
+                              "enrollments"."role" = 'student'
+        JOIN "messages" ON "readings"."message" = "messages"."id"
+        JOIN "conversations" ON "messages"."conversation" = "conversations"."id" AND
+                                "conversations"."staffOnlyAt" IS NOT NULL AND
+                                NOT EXISTS(
+                                  SELECT TRUE
+                                  FROM "messages"
+                                  WHERE "enrollments"."id" = "messages"."authorEnrollment" AND
+                                        "conversations"."id" = "messages"."conversation"
+                                )
+      );
     `
   );
   app.once("close", () => {
