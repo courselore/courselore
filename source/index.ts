@@ -20645,6 +20645,7 @@ ${contentSource}</textarea
               authorEnrollment: number | null;
               anonymousAt: string | null;
               type: ConversationType;
+              staffOnlyAt: string | null;
               title: string;
             }>(
               sql`
@@ -20779,10 +20780,12 @@ ${contentSource}</textarea
                 `
               )!;
 
+              const readers =
+                conversation.staffOnlyAt === null ? enrollments : staff;
               let readingCreatedAt = messageCreatedAt;
               for (const enrollment of lodash.sampleSize(
-                enrollments,
-                lodash.random(1, enrollments.length)
+                readers,
+                lodash.random(1, readers.length)
               )) {
                 readingCreatedAt = new Date(
                   Math.min(
