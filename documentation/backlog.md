@@ -1,5 +1,10 @@
 # Backlog
 
+- `emailConfirmations` aren’t always available (check line 670).
+- Mark all conversations as read:
+  - Is marking as read even conversations to which you don’t have access.
+  - May be slow.
+
 ### Performance
 
 - Live-updates:
