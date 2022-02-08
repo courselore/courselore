@@ -1,7 +1,6 @@
 # Backlog
 
 - Mark all conversations as read:
-  - Review `SELECT TRUE` and determine the need for `EXISTS`.
   - May be slow.
 - `userPartial` isn’t loading from within views widget
 

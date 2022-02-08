@@ -13482,7 +13482,7 @@ export default async function courselore({
                     ? sql``
                     : sql`
                         AND "conversations"."staffOnlyAt" IS NULL OR
-                        (
+                        EXISTS(
                           SELECT TRUE
                           FROM "messages"
                           WHERE "messages"."authorEnrollment" = ${res.locals.enrollment.id} AND
@@ -19178,7 +19178,7 @@ ${contentSource}</textarea
             res.locals.conversation.staffOnlyAt !== null
               ? sql`
                   WHERE "enrollments"."role" = ${"staff"} OR
-                        (
+                        EXISTS(
                           SELECT TRUE
                           FROM "messages"
                           WHERE "enrollments"."id" = "messages"."authorEnrollment" AND
