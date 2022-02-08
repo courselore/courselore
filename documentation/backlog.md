@@ -1,7 +1,5 @@
 # Backlog
 
-- Mark all conversations as read:
-  - May be slow.
 - `userPartial` isn’t loading from within views widget
 
 ### Performance
@@ -290,6 +288,7 @@
 
 ### Infrastructure
 
+- Mark all conversations as read may be slow because it does a bunch of in `INSERT`s.
 - Move some of the non-application-specific server-side code into a library (for example, cookie settings, server-sent events, logging, and that sort of thing).
   - Maybe move @leafac/express-async-handler into that library as well.
 - Make Demonstration Data load faster by having a cache of pre-built data.
