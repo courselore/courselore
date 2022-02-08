@@ -1187,7 +1187,7 @@ export default async function courselore({
                         console.error(response);
                         break;
                     }
-                  }
+                  };
                   eventSource.addEventListener("refresh", async () => {
                     await eventSourceRefresh(await fetch(window.location.href));
                   });
@@ -16447,7 +16447,7 @@ export default async function courselore({
                       onsubmit="${javascript`
                         (async () => {
                           event.preventDefault();
-                          eventSourceRefresh(await fetch(this.action, {
+                          await eventSourceRefresh(await fetch(this.action, {
                             method: this.method,
                             body: new URLSearchParams(new FormData(this)),
                           }));
