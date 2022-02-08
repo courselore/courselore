@@ -13452,10 +13452,27 @@ export default async function courselore({
           SELECT "messages"."id"
           FROM "messages"
           JOIN "conversations" ON "messages"."conversation" = "conversations"."id" AND
-                                  "conversations"."course" = ${res.locals.course.id}
+                                  "conversations"."course" = ${
+                                    res.locals.course.id
+                                  }
           LEFT JOIN "readings" ON "messages"."id" = "readings"."message" AND
-                                  "readings"."enrollment" = ${res.locals.enrollment.id}
+                                  "readings"."enrollment" = ${
+                                    res.locals.enrollment.id
+                                  }
           WHERE "readings"."id" IS NULL
+                $${
+                  res.locals.enrollment.role === "staff"
+                    ? sql``
+                    : sql`
+                        AND "conversations"."staffOnlyAt" IS NULL OR
+                        (
+                          SELECT TRUE
+                          FROM "messages"
+                          WHERE "messages"."authorEnrollment" = ${res.locals.enrollment.id} AND
+                                "messages"."conversation" = "conversations"."id"
+                        )
+                      `
+                }
           ORDER BY "messages"."id" ASC
         `
       );
@@ -19145,7 +19162,7 @@ ${contentSource}</textarea
               ? sql`
                   WHERE "enrollments"."role" = ${"staff"} OR
                         (
-                          SELECT 1
+                          SELECT TRUE
                           FROM "messages"
                           WHERE "enrollments"."id" = "messages"."authorEnrollment" AND
                                 "messages"."conversation" = ${
