@@ -1,8 +1,5 @@
 # Backlog
 
-- Make Morphdom faster
-  - Check for elements that are being modified, while they shouldn’t.
-
 ### Performance
 
 - Live-updates:
