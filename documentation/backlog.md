@@ -1,5 +1,9 @@
 # Backlog
 
+- “New” indicators
+  - Don’t draw new ones on live-updates
+  - Have a way for the user to close them
+
 ### Performance
 
 - Live-updates:

@@ -14836,6 +14836,9 @@ export default async function courselore({
                                               gap: var(--space--4);
                                               align-items: center;
                                             `)}"
+                                            onbeforenodediscarded="${javascript`
+                                              return false;
+                                            `}"
                                           >
                                             <hr
                                               class="separator ${res.locals
@@ -14874,6 +14877,7 @@ export default async function courselore({
                                     $${res.locals.conversation.type === "chat"
                                       ? html`
                                           <div
+                                            id="message--${message.reference}--date-separator"
                                             hidden
                                             class="date-separator ${res.locals
                                               .localCSS(css`
