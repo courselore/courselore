@@ -1,7 +1,5 @@
 # Backlog
 
-- Do something about time stamps making things in the design jump around.
-  - Try just giving them a fixed width.
 - https://github.com/patrick-steele-idem/morphdom#can-i-make-morphdom-blaze-through-the-dom-tree-even-faster-yes
 
 ### Performance
@@ -279,6 +277,8 @@
 
 ### Interface Details
 
+- Do something about time stamps making the design jump around.
+  - I tried giving them fixed width, but it didn’t look right.
 - Change the design of chats so that it’s easier to tell messages apart. Right now @mentions and messages look too much alike. Maybe use the Slack/Discord/GitHub solution of moving the avatar into the margin.
 - Have some kind of guide for the first time you enter the system, or the first time you create a course, and that sort of thing.
 - Make breadcrumbs (for example, under “User Settings”) clickable (they should expose the navigation menu, just like what happens in Visual Studio Code).
