@@ -14838,14 +14838,27 @@ export default async function courselore({
                                     $${message === firstUnreadMessage &&
                                     message !== messages[0]
                                       ? html`
-                                          <div
-                                            class="${res.locals.localCSS(css`
-                                              margin: var(--space--2)
-                                                var(--space--0);
+                                          <button
+                                            class="button button--transparent ${res
+                                              .locals.localCSS(css`
+                                              width: 100%;
+                                              padding: var(--space--1-5)
+                                                var(--space--2);
+                                              margin: var(--space--0)
+                                                var(--space---2);
                                               display: flex;
                                               gap: var(--space--4);
                                               align-items: center;
                                             `)}"
+                                            oninteractive="${javascript`
+                                              tippy(this, {
+                                                touch: false,
+                                                content: "Close",
+                                              });
+                                            `}"
+                                            onclick="${javascript`
+                                              this.remove();
+                                            `}"
                                             onbeforenodeadded="${javascript`
                                               return false;
                                             `}"
@@ -14884,7 +14897,7 @@ export default async function courselore({
                                                 }
                                               `)}"
                                             />
-                                          </div>
+                                          </button>
                                         `
                                       : html``}
                                     $${res.locals.conversation.type === "chat"
