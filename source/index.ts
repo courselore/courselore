@@ -16212,7 +16212,9 @@ export default async function courselore({
                                                     onsubmit="${javascript`
                                                       (async () => {
                                                         event.preventDefault();
-                                                        await eventSourceRefresh(await fetch(this.action + "?eventSourceReference=" + eventSource.reference, {
+                                                        await eventSourceRefresh(await fetch(this.action + "${
+                                                          isLiked ? "&" : "?"
+                                                        }eventSourceReference=" + eventSource.reference, {
                                                           method: this.method,
                                                           body: new URLSearchParams(new FormData(this)),
                                                         }));
@@ -17423,7 +17425,7 @@ export default async function courselore({
     },
     any,
     {},
-    {},
+    { eventSourceReference?: string },
     MessageExistsMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
@@ -17446,7 +17448,7 @@ export default async function courselore({
         `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
       );
 
-      emitCourseRefresh(res.locals.course.id);
+      emitCourseRefresh(res.locals.course.id, req.query.eventSourceReference);
     }
   );
 
