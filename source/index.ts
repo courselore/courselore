@@ -3381,6 +3381,7 @@ export default async function courselore({
           >
             $${userAvatar}
             <span
+              hidden
               class="${res.locals.localCSS(css`
                 background-color: var(--color--green--500);
                 @media (prefers-color-scheme: dark) {
@@ -3403,7 +3404,6 @@ export default async function courselore({
                 }[size]}
                 border-radius: var(--border-radius--circle);
                 place-self: end;
-                display: none;
               `)}"
               oninteractive="${javascript`
                 const element = this;
@@ -3415,9 +3415,12 @@ export default async function courselore({
                   content: "Online",
                 });
                 (function update() {
-                  element.style.display = Date.now() - lastSeenOnlineAt < 5 * 60 * 1000 ? "block" : "none";
+                  element.hidden = Date.now() - lastSeenOnlineAt > 5 * 60 * 1000;
                   window.setTimeout(update, 60 * 1000);
                 })();
+              `}"
+              onbeforeelupdated="${javascript`
+                return false;
               `}"
             ></span>
           </span>`;
