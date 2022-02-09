@@ -14880,6 +14880,9 @@ export default async function courselore({
                                               gap: var(--space--4);
                                               align-items: center;
                                             `)}"
+                                            onbeforeelupdated="${javascript`
+                                              return false;
+                                            `}"
                                           >
                                             <hr
                                               class="separator ${res.locals
@@ -14903,9 +14906,6 @@ export default async function courselore({
                                                   dateSeparator.hidden = previousDateSeparator !== null && dateSeparator.textContent === previousDateSeparator.textContent;
                                                   window.setTimeout(update, 60 * 1000);
                                                 })();
-                                              `}"
-                                              onbeforeelchildrenupdated="${javascript`
-                                                return false;
                                               `}"
                                             ></time>
                                             <hr

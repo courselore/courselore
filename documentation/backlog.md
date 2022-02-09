@@ -2,6 +2,7 @@
 
 ### Performance
 
+- Online indicators are hiding on live updates.
 - Live-updates:
   - Latency compensation
     - Cases:
@@ -72,6 +73,7 @@
   - Have a way to pre-fill the new conversation form, similar to what GitHub does with new issues.
 - Don’t leak `HTMLForJavaScript` & `<style>`.
 - Chats sometimes scroll by themselves(!)
+  - Maybe it’s been fixed by preventing the date separators from hiding on live-updates.
   - Scroll to bottom on with MutationObserver?
 
 ---
