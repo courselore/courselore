@@ -1,6 +1,7 @@
 # Backlog
 
-- https://github.com/patrick-steele-idem/morphdom#can-i-make-morphdom-blaze-through-the-dom-tree-even-faster-yes
+- Make Morphdom faster
+  - Check for elements that are being modified, while they shouldn’t.
 
 ### Performance
 
