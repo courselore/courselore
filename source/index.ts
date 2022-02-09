@@ -15138,6 +15138,7 @@ export default async function courselore({
                                                                         method: this.method,
                                                                         body: new URLSearchParams(new FormData(this)),
                                                                       }));
+                                                                      this.remove();
                                                                     })();
                                                                   `}"
                                                                 >

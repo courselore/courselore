@@ -2,10 +2,6 @@
 
 ### Performance
 
-- undo-like isn’t working
-- two like buttons (special one for chat)
-- like actions need to pass eventSourceReference along so that the originating tab doesn’t receive an event
-
 - Live-updates:
   - Latency compensation
     - Cases:
@@ -281,6 +277,7 @@
 
 ### Interface Details
 
+- In a chat, if you’re the only like, and you remove it, then the dropdown menu won’t update and you won’t be able to re-like it.
 - Make the “New” separator appear on screen when you’re scrolling to a particular message (maybe because of it being new, or maybe because it’s a deep link into the message). I believe the solution is to put the “New” indicator inside the message `<div>` itself.
 - Do something about time stamps making the design jump around.
   - I tried giving them fixed width, but it didn’t look right.
