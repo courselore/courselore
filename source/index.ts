@@ -1130,6 +1130,16 @@ export default async function courselore({
                           ...refreshedDocument.head.querySelectorAll("style")
                         );
                         morphdom(document.body, refreshedDocument.body, {
+                          onBeforeNodeAdded(node) {
+                            const onBeforeNodeAdded =
+                              node.getAttribute?.("onbeforenodeadded");
+                            return typeof onBeforeNodeAdded === "string"
+                              ? new Function("node", onBeforeNodeAdded).call(
+                                  node,
+                                  node
+                                )
+                              : node;
+                          },
                           onBeforeElUpdated(from, to) {
                             const onBeforeElUpdated =
                               from.getAttribute("onbeforeelupdated");
@@ -14836,6 +14846,9 @@ export default async function courselore({
                                               gap: var(--space--4);
                                               align-items: center;
                                             `)}"
+                                            onbeforenodeadded="${javascript`
+                                              return false;
+                                            `}"
                                             onbeforenodediscarded="${javascript`
                                               return false;
                                             `}"

@@ -5,6 +5,7 @@
   - Have a way for the user to close them
 - Do something about time stamps making things in the design jump around.
   - Try just giving them a fixed width.
+- https://github.com/patrick-steele-idem/morphdom#can-i-make-morphdom-blaze-through-the-dom-tree-even-faster-yes
 
 ### Performance
 
