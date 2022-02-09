@@ -2,28 +2,6 @@
 
 ### Performance
 
-- Live-updates:
-  - Latency compensation
-    - Sending messages (particularly on chat).
-    - Pressing “like”.
-  - Improve the refreshing mechanism
-    - Only send refresh events to people who need it (those who have open a page that’s affected)
-    - Spread refresh events over time, or you’re DoS the server
-  - When Morphdom refreshes the page, what happens to timers? Are they leaking?
-- Tooltip showing the views for a message:
-  - The counter is sometimes lagging behind the actual count, because we don’t send refresh events on every GET everyone ever does (’cause **that** would be silly 😛)
-    - Another consequence of not sending refresh events on every GET is that the number of unread messages on the sidebar becomes inconsistent when you have multiple tabs open and you read messages on one of them (the rest still show the unread indicator).
-  - It should live-update. (Or the cached content of the tooltip should be expired somehow.)
-- `updatedAt` relative times aren’t updating as they should, because they don’t look at `datetime` again (effectively, `datetime` is cached).
-- On chats (which need to scroll to the bottom), do something to prevent flash of unstyled content. (I commented out the previous hack, look for `TODO`.)
-- Potential issue: when we deploy a new version, Morphdom doesn’t update the global CSS & JavaScript. Solution: force a reload.
-- Right now we’re using a Turbo Drive approach. Upgrade to a Turbo Streams approach for critical flows. (In other words, don’t redirect as response to `POST`, but send the data right away.)
-- Do the morphdom on the server?
-- Add latency compensation to other parts of the system, for example, endorsements and changing the conversation type. (In general, look for `emitCourseRefresh`).
-  - Maybe add it everywhere, following the Turbo Drive approach?
-
----
-
 - Pagination.
   - Messages in conversation.
   - Conversations on sidebar.
@@ -276,6 +254,22 @@
 
 ### Interface Details
 
+- Live-updates:
+  - Improve the refreshing mechanism
+    - Only send refresh events to people who need it (those who have open a page that’s affected)
+    - Spread refresh events over time, or you’re DoS the server
+  - When Morphdom refreshes the page, what happens to timers? Are they leaking?
+- Tooltip showing the views for a message:
+  - The counter is sometimes lagging behind the actual count, because we don’t send refresh events on every GET everyone ever does (’cause **that** would be silly 😛)
+    - Another consequence of not sending refresh events on every GET is that the number of unread messages on the sidebar becomes inconsistent when you have multiple tabs open and you read messages on one of them (the rest still show the unread indicator).
+  - It should live-update. (Or the cached content of the tooltip should be expired somehow.)
+- `updatedAt` relative times aren’t updating as they should, because they don’t look at `datetime` again (effectively, `datetime` is cached).
+- On chats (which need to scroll to the bottom), do something to prevent flash of unstyled content. (I commented out the previous hack, look for `TODO`.)
+- Potential issue: when we deploy a new version, Morphdom doesn’t update the global CSS & JavaScript. Solution: force a reload.
+- Right now we’re using a Turbo Drive approach. Upgrade to a Turbo Streams approach for critical flows. (In other words, don’t redirect as response to `POST`, but send the data right away.)
+- Do the morphdom on the server?
+- Add latency compensation to other parts of the system, for example, endorsements and changing the conversation type. (In general, look for `emitCourseRefresh`).
+  - Maybe add it everywhere, following the Turbo Drive approach?
 - In a chat, if you’re the only like, and you remove it, then the dropdown menu won’t update and you won’t be able to re-like it.
 - Make the “New” separator appear on screen when you’re scrolling to a particular message (maybe because of it being new, or maybe because it’s a deep link into the message). I believe the solution is to put the “New” indicator inside the message `<div>` itself.
 - Do something about time stamps making the design jump around.
