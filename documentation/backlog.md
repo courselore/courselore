@@ -4,9 +4,8 @@
 
 - Live-updates:
   - Latency compensation
-    - Cases:
-      - Sending messages (particularly on chat).
-      - Pressing “like”.
+    - Sending messages (particularly on chat).
+    - Pressing “like”.
   - Improve the refreshing mechanism
     - Only send refresh events to people who need it (those who have open a page that’s affected)
     - Spread refresh events over time, or you’re DoS the server
