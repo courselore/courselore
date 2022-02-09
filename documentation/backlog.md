@@ -3,6 +3,8 @@
 - “New” indicators
   - Don’t draw new ones on live-updates
   - Have a way for the user to close them
+- Do something about time stamps making things in the design jump around.
+  - Try just giving them a fixed width.
 
 ### Performance
 
