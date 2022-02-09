@@ -9433,11 +9433,11 @@ export default async function courselore({
                                                             invitation.expiresAt
                                                           ).toISOString()}"
                                                           oninteractive="${javascript`
-                                                          leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                                                        `}"
+                                                            leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                          `}"
                                                           onbeforeelchildrenupdated="${javascript`
-                                                          return false;
-                                                        `}"
+                                                            return false;
+                                                          `}"
                                                         ></time>
                                                       </span>
                                                     </h3>
