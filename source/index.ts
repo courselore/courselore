@@ -15132,11 +15132,13 @@ export default async function courselore({
                                                                     .conversation
                                                                     .reference}/messages/${message.reference}/likes"
                                                                   onsubmit="${javascript`
-                                                                    event.preventDefault();
-                                                                    fetch(this.action, {
-                                                                      method: this.method,
-                                                                      body: new URLSearchParams(new FormData(this)),
-                                                                    });
+                                                                    (async () => {
+                                                                      event.preventDefault();
+                                                                      await eventSourceRefresh(await fetch(this.action + "?eventSourceReference=" + eventSource.reference, {
+                                                                        method: this.method,
+                                                                        body: new URLSearchParams(new FormData(this)),
+                                                                      }));
+                                                                    })();
                                                                   `}"
                                                                 >
                                                                   <input
@@ -16208,11 +16210,13 @@ export default async function courselore({
                                                       ? "?_method=DELETE"
                                                       : ""}"
                                                     onsubmit="${javascript`
-                                                      event.preventDefault();
-                                                      fetch(this.action, {
-                                                        method: this.method,
-                                                        body: new URLSearchParams(new FormData(this)),
-                                                      });
+                                                      (async () => {
+                                                        event.preventDefault();
+                                                        await eventSourceRefresh(await fetch(this.action + "?eventSourceReference=" + eventSource.reference, {
+                                                          method: this.method,
+                                                          body: new URLSearchParams(new FormData(this)),
+                                                        }));
+                                                      })();
                                                     `}"
                                                   >
                                                     <input
@@ -17377,7 +17381,7 @@ export default async function courselore({
     },
     any,
     {},
-    {},
+    { eventSourceReference?: string },
     MessageExistsMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
@@ -17407,7 +17411,7 @@ export default async function courselore({
         `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
       );
 
-      emitCourseRefresh(res.locals.course.id);
+      emitCourseRefresh(res.locals.course.id, req.query.eventSourceReference);
     }
   );
 

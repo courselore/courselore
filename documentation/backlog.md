@@ -2,6 +2,10 @@
 
 ### Performance
 
+- undo-like isn’t working
+- two like buttons (special one for chat)
+- like actions need to pass eventSourceReference along so that the originating tab doesn’t receive an event
+
 - Live-updates:
   - Latency compensation
     - Cases:
@@ -20,6 +24,8 @@
 - Potential issue: when we deploy a new version, Morphdom doesn’t update the global CSS & JavaScript. Solution: force a reload.
 - Right now we’re using a Turbo Drive approach. Upgrade to a Turbo Streams approach for critical flows. (In other words, don’t redirect as response to `POST`, but send the data right away.)
 - Do the morphdom on the server?
+- Add latency compensation to other parts of the system, for example, endorsements and changing the conversation type. (In general, look for `emitCourseRefresh`).
+  - Maybe add it everywhere, following the Turbo Drive approach?
 
 ---
 
