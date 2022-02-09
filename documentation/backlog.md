@@ -2,7 +2,6 @@
 
 ### Performance
 
-- Online indicators are hiding on live updates.
 - Live-updates:
   - Latency compensation
     - Cases:
