@@ -275,6 +275,7 @@
 
 ### Interface Details
 
+- Make the “New” separator appear on screen when you’re scrolling to a particular message (maybe because of it being new, or maybe because it’s a deep link into the message). I believe the solution is to put the “New” indicator inside the message `<div>` itself.
 - Do something about time stamps making the design jump around.
   - I tried giving them fixed width, but it didn’t look right.
 - Change the design of chats so that it’s easier to tell messages apart. Right now @mentions and messages look too much alike. Maybe use the Slack/Discord/GitHub solution of moving the avatar into the margin.
