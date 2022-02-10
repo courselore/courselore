@@ -13713,6 +13713,7 @@ export default async function courselore({
       const messagesReverse =
         beforeMessage !== undefined ||
         (afterMessage === undefined && res.locals.conversation.type === "chat");
+
       const messages = database
         .all<{ reference: string }>(
           sql`

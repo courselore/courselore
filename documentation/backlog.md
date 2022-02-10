@@ -5,10 +5,12 @@
 - Pagination.
   - Messages in conversation.
   - Conversations on sidebar.
+    - Difficult because of search & filters.
+      - Either use a slower `OFFSET/LIMIT` approach, or track things like rankings for the `ORDER BY` trick.
   - Increase demonstration data to thousands of conversations & messages.
 - Loading older messages
 - Load older messages on scroll instead of button
-- Deal with delete messages at the edges (before and after)
+- Deal with delete messages/conversations at the edges (before and after)
   - `CAST("reference" AS INTEGER) >= CAST(${req.query.beforeMessageReference} AS INTEGER)`
     - Create indices for `CAST("reference" AS INTEGER)` or convert `"reference"` into number (and then create an index for that!).
 - Deep links
