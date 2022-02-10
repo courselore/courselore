@@ -13675,6 +13675,7 @@ export default async function courselore({
     {
       search?: string;
       beforeMessageReference?: string;
+      afterMessageReference?: string;
     },
     IsConversationAccessibleMiddlewareLocals & EventSourceMiddlewareLocals
   >(
@@ -13682,17 +13683,58 @@ export default async function courselore({
     ...isConversationAccessibleMiddleware,
     ...eventSourceMiddleware,
     (req, res) => {
+      const beforeMessage =
+        typeof req.query.beforeMessageReference === "string"
+          ? database.get<{ id: number }>(
+              sql`
+                SELECT "id"
+                FROM "messages"
+                WHERE "conversation" = ${res.locals.conversation.id} AND
+                      "reference" = ${req.query.beforeMessageReference}
+                LIMIT 1
+              `
+            )
+          : undefined;
+      const afterMessage =
+        beforeMessage === undefined &&
+        typeof req.query.afterMessageReference === "string"
+          ? database.get<{ id: number }>(
+              sql`
+                SELECT "id"
+                FROM "messages"
+                WHERE "conversation" = ${res.locals.conversation.id} AND
+                      "reference" = ${req.query.afterMessageReference}
+                LIMIT 1
+              `
+            )
+          : undefined;
+      const messagesReverse =
+        beforeMessage !== undefined ||
+        (afterMessage === undefined && res.locals.conversation.type === "chat");
       const messages = database
         .all<{ reference: string }>(
           sql`
-            SELECT "messages"."reference"
+            SELECT "reference"
             FROM "messages"
-            WHERE "messages"."conversation" = ${res.locals.conversation.id}
-            ORDER BY "messages"."id" DESC
+            WHERE "conversation" = ${res.locals.conversation.id}
+                  $${
+                    beforeMessage !== undefined
+                      ? sql`
+                          AND "id" < ${beforeMessage.id}
+                        `
+                      : sql``
+                  }
+                  $${
+                    afterMessage !== undefined
+                      ? sql`
+                          AND "id" > ${afterMessage.id}
+                        `
+                      : sql``
+                  }
+            ORDER BY "id" $${messagesReverse ? sql`DESC` : sql`ASC`}
             LIMIT 25
           `
         )
-        .reverse()
         .map(
           (message) =>
             getMessage({
@@ -13702,6 +13744,29 @@ export default async function courselore({
               messageReference: message.reference,
             })!
         );
+      if (messagesReverse) messages.reverse();
+      const previousMessagesExist =
+        messages.length > 0 &&
+        database.get<{}>(
+          sql`
+          SELECT TRUE
+          FROM "messages"
+          WHERE "conversation" = ${res.locals.conversation.id} AND
+                "id" < ${messages[0].id}
+          LIMIT 1
+        `
+        ) !== undefined;
+      const nextMessagesExist =
+        messages.length > 0 &&
+        database.get<{}>(
+          sql`
+          SELECT TRUE
+          FROM "messages"
+          WHERE "conversation" = ${res.locals.conversation.id} AND
+                "id" > ${messages[messages.length - 1].id}
+          LIMIT 1
+        `
+        ) !== undefined;
 
       for (const message of messages)
         database.run(
@@ -14835,15 +14900,7 @@ export default async function courselore({
                                   : css``}
                               `)}"
                             >
-                              $${database.get<{}>(
-                                sql`
-                                  SELECT TRUE
-                                  FROM "messages"
-                                  WHERE "messages"."conversation" = ${res.locals.conversation.id} AND
-                                        "messages"."id" < ${messages[0].id}
-                                  LIMIT 1
-                                `
-                              ) !== undefined
+                              $${previousMessagesExist
                                 ? html`
                                     <div
                                       class="${res.locals.localCSS(css`
@@ -14851,13 +14908,28 @@ export default async function courselore({
                                         justify-content: center;
                                       `)}"
                                     >
-                                      <button
+                                      <a
+                                        href="${baseURL}/courses/${res.locals
+                                          .course.reference}/conversations/${res
+                                          .locals.conversation
+                                          .reference}${qs.stringify(
+                                          lodash.omit(
+                                            {
+                                              ...req.query,
+                                              beforeMessageReference:
+                                                messages[0].reference,
+                                            },
+                                            ["nextMessageReference"]
+                                          ),
+                                          {
+                                            addQueryPrefix: true,
+                                          }
+                                        )}"
                                         class="button button--transparent"
-                                        onclick="${javascript``}"
                                       >
                                         <i class="bi bi-arrow-up"></i>
-                                        Load Older Messages
-                                      </button>
+                                        Load Previous Messages
+                                      </a>
                                     </div>
                                   `
                                 : html``}
@@ -16496,19 +16568,7 @@ export default async function courselore({
                                     </div>
                                   `
                               )}
-                              $${database.get<{}>(
-                                sql`
-                                  SELECT TRUE
-                                  FROM "messages"
-                                  WHERE "messages"."conversation" = ${
-                                    res.locals.conversation.id
-                                  } AND
-                                        "messages"."id" > ${
-                                          messages[messages.length - 1].id
-                                        }
-                                  LIMIT 1
-                                `
-                              ) !== undefined
+                              $${nextMessagesExist
                                 ? html`
                                     <div
                                       class="${res.locals.localCSS(css`
@@ -16516,13 +16576,29 @@ export default async function courselore({
                                         justify-content: center;
                                       `)}"
                                     >
-                                      <button
+                                      <a
+                                        href="${baseURL}/courses/${res.locals
+                                          .course.reference}/conversations/${res
+                                          .locals.conversation
+                                          .reference}${qs.stringify(
+                                          lodash.omit(
+                                            {
+                                              ...req.query,
+                                              afterMessageReference:
+                                                messages[messages.length - 1]
+                                                  .reference,
+                                            },
+                                            ["beforeMessageReference"]
+                                          ),
+                                          {
+                                            addQueryPrefix: true,
+                                          }
+                                        )}"
                                         class="button button--transparent"
-                                        onclick="${javascript``}"
                                       >
-                                        <i class="bi bi-arrow-up"></i>
-                                        Load Newer Messages
-                                      </button>
+                                        <i class="bi bi-arrow-down"></i>
+                                        Load Next Messages
+                                      </a>
                                     </div>
                                   `
                                 : html``}
