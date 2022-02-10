@@ -13752,23 +13752,23 @@ export default async function courselore({
         messages.length > 0 &&
         database.get<{}>(
           sql`
-          SELECT TRUE
-          FROM "messages"
-          WHERE "conversation" = ${res.locals.conversation.id} AND
-                "id" < ${messages[0].id}
-          LIMIT 1
-        `
+            SELECT TRUE
+            FROM "messages"
+            WHERE "conversation" = ${res.locals.conversation.id} AND
+                  "id" < ${messages[0].id}
+            LIMIT 1
+          `
         ) !== undefined;
       const nextMessagesExist =
         messages.length > 0 &&
         database.get<{}>(
           sql`
-          SELECT TRUE
-          FROM "messages"
-          WHERE "conversation" = ${res.locals.conversation.id} AND
-                "id" > ${messages[messages.length - 1].id}
-          LIMIT 1
-        `
+            SELECT TRUE
+            FROM "messages"
+            WHERE "conversation" = ${res.locals.conversation.id} AND
+                  "id" > ${messages[messages.length - 1].id}
+            LIMIT 1
+          `
         ) !== undefined;
 
       for (const message of messages)
