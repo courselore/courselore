@@ -78,7 +78,7 @@ jobs:
           EOF
 
   deploy--production:
-    if: github.ref == 'refs/heads/production'
+    if: startsWith(github.ref, 'refs/tags/v')
     needs: [build, test]
     runs-on: ubuntu-latest
     steps:

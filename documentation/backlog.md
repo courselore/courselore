@@ -303,7 +303,6 @@
     - https://www.npmtrends.com/@godaddy/terminus-vs-http-close-vs-http-shutdown-vs-http-terminator-vs-stoppable-vs-http-graceful-shutdown
 - Test signal handling of shutdown process on Windows
 - Handle errors on `fetch`. Right now we’ll just let the “loading” spinner run forever.
-- When we’re a bit more mature, don’t have a `production` branch, but tie the production deployment to tags.
 - Let @leafac/html eat interpolated `null`s and `undefined`s and `[objects]`.
 - Using `getConversation()` to enforce permissions may not be a great idea. It limits the number of search results in a weird way, that even leaks a bit of data. Also, it isn’t the most performant thing, probably (see point about n+1 queries). Maybe a better idea would be to `WHERE` the permissions everywhere, or use a database view.
 - Performance:
