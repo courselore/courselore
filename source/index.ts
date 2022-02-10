@@ -11752,6 +11752,8 @@ export default async function courselore({
                                   lodash.omit(req.query, [
                                     "conversationLayoutSidebarOpenOnSmallScreen",
                                     "scrollToConversation",
+                                    "beforeMessageReference",
+                                    "afterMessageReference",
                                   ]),
                                   { addQueryPrefix: true }
                                 )}${typeof searchResult?.message?.reference ===
