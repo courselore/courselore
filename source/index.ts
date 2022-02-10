@@ -13674,6 +13674,7 @@ export default async function courselore({
     {},
     {
       search?: string;
+      beforeMessageReference?: string;
     },
     IsConversationAccessibleMiddlewareLocals & EventSourceMiddlewareLocals
   >(
@@ -13688,13 +13689,7 @@ export default async function courselore({
             FROM "messages"
             WHERE "messages"."conversation" = ${res.locals.conversation.id}
             ORDER BY "messages"."id" DESC
-            $${
-              res.locals.conversation.type === "chat"
-                ? sql`
-                    LIMIT 25
-                  `
-                : sql``
-            }
+            LIMIT 25
           `
         )
         .reverse()
@@ -14840,8 +14835,7 @@ export default async function courselore({
                                   : css``}
                               `)}"
                             >
-                              $${res.locals.conversation.type === "chat" &&
-                              database.get<{}>(
+                              $${database.get<{}>(
                                 sql`
                                   SELECT TRUE
                                   FROM "messages"
@@ -16502,6 +16496,36 @@ export default async function courselore({
                                     </div>
                                   `
                               )}
+                              $${database.get<{}>(
+                                sql`
+                                  SELECT TRUE
+                                  FROM "messages"
+                                  WHERE "messages"."conversation" = ${
+                                    res.locals.conversation.id
+                                  } AND
+                                        "messages"."id" > ${
+                                          messages[messages.length - 1].id
+                                        }
+                                  LIMIT 1
+                                `
+                              ) !== undefined
+                                ? html`
+                                    <div
+                                      class="${res.locals.localCSS(css`
+                                        display: flex;
+                                        justify-content: center;
+                                      `)}"
+                                    >
+                                      <button
+                                        class="button button--transparent"
+                                        onclick="${javascript``}"
+                                      >
+                                        <i class="bi bi-arrow-up"></i>
+                                        Load Newer Messages
+                                      </button>
+                                    </div>
+                                  `
+                                : html``}
                             </div>
                           `}
                     </div>
