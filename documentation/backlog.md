@@ -7,8 +7,9 @@
   - Conversations on sidebar.
   - Increase demonstration data to thousands of conversations & messages.
 - Loading older messages
+- Load older messages on scroll instead of button
 - Deep links
-- Unread conversations scrolling
+- Initial scrolling because of unread conversations
 
 ---
 

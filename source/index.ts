@@ -14840,6 +14840,33 @@ export default async function courselore({
                                   : css``}
                               `)}"
                             >
+                              $${res.locals.conversation.type === "chat" &&
+                              database.get<{}>(
+                                sql`
+                                  SELECT TRUE
+                                  FROM "messages"
+                                  WHERE "messages"."conversation" = ${res.locals.conversation.id} AND
+                                        "messages"."id" < ${messages[0].id}
+                                  LIMIT 1
+                                `
+                              ) !== undefined
+                                ? html`
+                                    <div
+                                      class="${res.locals.localCSS(css`
+                                        display: flex;
+                                        justify-content: center;
+                                      `)}"
+                                    >
+                                      <button
+                                        class="button button--transparent"
+                                        onclick="${javascript``}"
+                                      >
+                                        <i class="bi bi-arrow-up"></i>
+                                        Load Older Messages
+                                      </button>
+                                    </div>
+                                  `
+                                : html``}
                               $${messages.map(
                                 (message) =>
                                   html`
