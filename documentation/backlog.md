@@ -6,6 +6,9 @@
   - Messages in conversation.
   - Conversations on sidebar.
   - Increase demonstration data to thousands of conversations & messages.
+- Loading older messages
+- Deep links
+- Unread conversations scrolling
 
 ---
 

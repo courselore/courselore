@@ -13687,9 +13687,17 @@ export default async function courselore({
             SELECT "messages"."reference"
             FROM "messages"
             WHERE "messages"."conversation" = ${res.locals.conversation.id}
-            ORDER BY "messages"."id" ASC
+            ORDER BY "messages"."id" DESC
+            $${
+              res.locals.conversation.type === "chat"
+                ? sql`
+                    LIMIT 25
+                  `
+                : sql``
+            }
           `
         )
+        .reverse()
         .map(
           (message) =>
             getMessage({
