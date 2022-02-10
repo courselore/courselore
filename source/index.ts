@@ -14805,7 +14805,8 @@ export default async function courselore({
                 const shouldScrollToBottom =
                   !shouldScrollToFirstUnreadMessage &&
                   res.locals.conversation.type === "chat" &&
-                  messages.length > 0;
+                  messages.length > 0 &&
+                  afterMessage === undefined;
                 const shouldScroll =
                   shouldScrollToFirstUnreadMessage || shouldScrollToBottom;
 
@@ -14921,7 +14922,7 @@ export default async function courselore({
                                               beforeMessageReference:
                                                 messages[0].reference,
                                             },
-                                            ["nextMessageReference"]
+                                            ["afterMessageReference"]
                                           ),
                                           {
                                             addQueryPrefix: true,
