@@ -20843,7 +20843,13 @@ ${contentSource}</textarea
                   : 2
               ];
             const nextMessageReference =
-              type === "chat" ? lodash.random(50, 100) : lodash.random(2, 13);
+              type === "chat"
+                ? Math.random() < 0.2
+                  ? lodash.random(50, 100)
+                  : lodash.random(500, 1000)
+                : Math.random() < 0.8
+                ? lodash.random(2, 13)
+                : lodash.random(40, 50);
             const messageCreatedAts = [conversationCreatedAt];
             for (
               let messageReference = 1;
