@@ -13735,7 +13735,7 @@ export default async function courselore({
                       : sql``
                   }
             ORDER BY "id" $${messagesReverse ? sql`DESC` : sql`ASC`}
-            LIMIT 25
+            LIMIT 26
           `
         )
         .map(
@@ -13747,29 +13747,9 @@ export default async function courselore({
               messageReference: message.reference,
             })!
         );
+      const moreMessagesExist = messages.length === 26;
+      if (moreMessagesExist) messages.pop();
       if (messagesReverse) messages.reverse();
-      const previousMessagesExist =
-        messages.length > 0 &&
-        database.get<{}>(
-          sql`
-            SELECT TRUE
-            FROM "messages"
-            WHERE "conversation" = ${res.locals.conversation.id} AND
-                  "id" < ${messages[0].id}
-            LIMIT 1
-          `
-        ) !== undefined;
-      const nextMessagesExist =
-        messages.length > 0 &&
-        database.get<{}>(
-          sql`
-            SELECT TRUE
-            FROM "messages"
-            WHERE "conversation" = ${res.locals.conversation.id} AND
-                  "id" > ${messages[messages.length - 1].id}
-            LIMIT 1
-          `
-        ) !== undefined;
 
       for (const message of messages)
         database.run(
@@ -14904,7 +14884,8 @@ export default async function courselore({
                                   : css``}
                               `)}"
                             >
-                              $${previousMessagesExist
+                              $${afterMessage !== undefined ||
+                              (moreMessagesExist && messagesReverse)
                                 ? html`
                                     <div
                                       class="${res.locals.localCSS(css`
@@ -16572,7 +16553,8 @@ export default async function courselore({
                                     </div>
                                   `
                               )}
-                              $${nextMessagesExist
+                              $${beforeMessage !== undefined ||
+                              (moreMessagesExist && !messagesReverse)
                                 ? html`
                                     <div
                                       class="${res.locals.localCSS(css`
