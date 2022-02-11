@@ -7,6 +7,11 @@
   - Conversations on sidebar.
     - Difficult because of search & filters.
       - Either use a slower `OFFSET/LIMIT` approach, or track things like rankings for the `ORDER BY` trick.
+    - The options are:
+      - `OFFSET`
+      - Window function
+        - Anchored on the conversation
+        - Anchored on the `row_number`
   - Increase demonstration data to thousands of conversations & messages.
 - Load older messages on scroll instead of button
 - Deal with delete messages/conversations at the edges (before and after)
