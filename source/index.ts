@@ -11173,6 +11173,8 @@ export default async function courselore({
                       .reference}/conversations/new${qs.stringify(
                       lodash.omit(req.query, [
                         "conversationLayoutSidebarOpenOnSmallScreen",
+                        "beforeMessageReference",
+                        "afterMessageReference",
                       ]),
                       { addQueryPrefix: true }
                     )}"
