@@ -10887,15 +10887,16 @@ export default async function courselore({
         ? Number(req.query.conversationsPage)
         : undefined;
 
-    const conversationsWithSearchResultsRows = database.all<{
-      reference: string;
-      conversationTitleSearchResultHighlight?: string | null;
-      messageAuthorUserNameSearchResultMessageReference?: string | null;
-      messageAuthorUserNameSearchResultHighlight?: string | null;
-      messageContentSearchResultMessageReference?: string | null;
-      messageContentSearchResultSnippet?: string | null;
-    }>(
-      sql`
+    const conversationsWithSearchResults = database
+      .all<{
+        reference: string;
+        conversationTitleSearchResultHighlight?: string | null;
+        messageAuthorUserNameSearchResultMessageReference?: string | null;
+        messageAuthorUserNameSearchResultHighlight?: string | null;
+        messageContentSearchResultMessageReference?: string | null;
+        messageContentSearchResultSnippet?: string | null;
+      }>(
+        sql`
           SELECT "conversations"."reference"
                   $${
                     search === undefined
@@ -11031,65 +11032,61 @@ export default async function courselore({
               : sql``
           }
         `
-    );
-    const moreConversationsExist =
-      conversationsWithSearchResultsRows.length === 16;
-    if (moreConversationsExist) conversationsWithSearchResultsRows.pop();
-    const conversationsWithSearchResults =
-      conversationsWithSearchResultsRows.flatMap(
-        (conversationWithSearchResult) => {
-          const conversation = getConversation({
-            req,
-            res,
-            conversationReference: conversationWithSearchResult.reference,
-          });
-          if (conversation === undefined) return [];
+      )
+      .flatMap((conversationWithSearchResult) => {
+        const conversation = getConversation({
+          req,
+          res,
+          conversationReference: conversationWithSearchResult.reference,
+        });
+        if (conversation === undefined) return [];
 
-          const searchResult =
-            typeof conversationWithSearchResult.conversationTitleSearchResultHighlight ===
-            "string"
-              ? ({
-                  type: "conversationTitle",
-                  highlight:
-                    conversationWithSearchResult.conversationTitleSearchResultHighlight,
-                } as const)
-              : typeof conversationWithSearchResult.messageAuthorUserNameSearchResultMessageReference ===
-                  "string" &&
-                typeof conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight ===
-                  "string"
-              ? ({
-                  type: "messageAuthorUserName",
-                  message: getMessage({
-                    req,
-                    res,
-                    conversation,
-                    messageReference:
-                      conversationWithSearchResult.messageAuthorUserNameSearchResultMessageReference,
-                  })!,
-                  highlight:
-                    conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight,
-                } as const)
-              : typeof conversationWithSearchResult.messageContentSearchResultMessageReference ===
-                  "string" &&
-                typeof conversationWithSearchResult.messageContentSearchResultSnippet ===
-                  "string"
-              ? ({
-                  type: "messageContent",
-                  message: getMessage({
-                    req,
-                    res,
-                    conversation,
-                    messageReference:
-                      conversationWithSearchResult.messageContentSearchResultMessageReference,
-                  })!,
-                  snippet:
-                    conversationWithSearchResult.messageContentSearchResultSnippet,
-                } as const)
-              : undefined;
+        const searchResult =
+          typeof conversationWithSearchResult.conversationTitleSearchResultHighlight ===
+          "string"
+            ? ({
+                type: "conversationTitle",
+                highlight:
+                  conversationWithSearchResult.conversationTitleSearchResultHighlight,
+              } as const)
+            : typeof conversationWithSearchResult.messageAuthorUserNameSearchResultMessageReference ===
+                "string" &&
+              typeof conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight ===
+                "string"
+            ? ({
+                type: "messageAuthorUserName",
+                message: getMessage({
+                  req,
+                  res,
+                  conversation,
+                  messageReference:
+                    conversationWithSearchResult.messageAuthorUserNameSearchResultMessageReference,
+                })!,
+                highlight:
+                  conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight,
+              } as const)
+            : typeof conversationWithSearchResult.messageContentSearchResultMessageReference ===
+                "string" &&
+              typeof conversationWithSearchResult.messageContentSearchResultSnippet ===
+                "string"
+            ? ({
+                type: "messageContent",
+                message: getMessage({
+                  req,
+                  res,
+                  conversation,
+                  messageReference:
+                    conversationWithSearchResult.messageContentSearchResultMessageReference,
+                })!,
+                snippet:
+                  conversationWithSearchResult.messageContentSearchResultSnippet,
+              } as const)
+            : undefined;
 
-          return [{ conversation, searchResult }];
-        }
-      );
+        return [{ conversation, searchResult }];
+      });
+    const moreConversationsExist = conversationsWithSearchResults.length === 16;
+    if (moreConversationsExist) conversationsWithSearchResults.pop();
 
     return applicationLayout({
       req,

@@ -12,6 +12,7 @@
         - Anchored on the conversation
         - Anchored on the `row_number`
   - Increase demonstration data to thousands of conversations & messages.
+  - The `flatMap` to collection conversation & search information doesn’t go well with the `LIMIT`: It’s returning fewer results, and potentially leaking information.
 - Load older messages on scroll instead of button
 - Deal with delete messages/conversations at the edges (before and after)
   - `CAST("reference" AS INTEGER) >= CAST(${req.query.beforeMessageReference} AS INTEGER)`
