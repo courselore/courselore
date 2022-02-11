@@ -11696,34 +11696,6 @@ export default async function courselore({
                   </div>
                 </form>
 
-                $${conversationsPage !== undefined && conversationsPage > 1
-                  ? html`
-                      <div
-                        class="${res.locals.localCSS(css`
-                          display: flex;
-                          justify-content: center;
-                        `)}"
-                      >
-                        <a
-                          href="${qs.stringify(
-                            {
-                              ...req.query,
-                              conversationLayoutSidebarOpenOnSmallScreen:
-                                "true",
-                              conversationsPage: conversationsPage - 1,
-                            },
-                            {
-                              addQueryPrefix: true,
-                            }
-                          )}"
-                          class="button button--transparent"
-                        >
-                          <i class="bi bi-arrow-up"></i>
-                          Load Previous Conversations
-                        </a>
-                      </div>
-                    `
-                  : html``}
                 $${conversationsWithSearchResults.length === 0
                   ? html`
                       <hr class="separator" />
@@ -11777,6 +11749,35 @@ export default async function courselore({
                                 Mark All Conversations as Read
                               </button>
                             </form>
+                          `
+                        : html``}
+                      $${conversationsPage !== undefined &&
+                      conversationsPage > 1
+                        ? html`
+                            <div
+                              class="${res.locals.localCSS(css`
+                                display: flex;
+                                justify-content: center;
+                              `)}"
+                            >
+                              <a
+                                href="${qs.stringify(
+                                  {
+                                    ...req.query,
+                                    conversationLayoutSidebarOpenOnSmallScreen:
+                                      "true",
+                                    conversationsPage: conversationsPage - 1,
+                                  },
+                                  {
+                                    addQueryPrefix: true,
+                                  }
+                                )}"
+                                class="button button--transparent"
+                              >
+                                <i class="bi bi-arrow-up"></i>
+                                Load Previous Conversations
+                              </a>
+                            </div>
                           `
                         : html``}
 
@@ -11893,35 +11894,36 @@ export default async function courselore({
                           }
                         )}
                       </div>
+                      $${moreConversationsExist
+                        ? html`
+                            <div
+                              class="${res.locals.localCSS(css`
+                                display: flex;
+                                justify-content: center;
+                              `)}"
+                            >
+                              <a
+                                href="${qs.stringify(
+                                  {
+                                    ...req.query,
+                                    conversationLayoutSidebarOpenOnSmallScreen:
+                                      "true",
+                                    conversationsPage:
+                                      (conversationsPage ?? 1) + 1,
+                                  },
+                                  {
+                                    addQueryPrefix: true,
+                                  }
+                                )}"
+                                class="button button--transparent"
+                              >
+                                <i class="bi bi-arrow-down"></i>
+                                Load Next Conversations
+                              </a>
+                            </div>
+                          `
+                        : html``}
                     `}
-                $${moreConversationsExist
-                  ? html`
-                      <div
-                        class="${res.locals.localCSS(css`
-                          display: flex;
-                          justify-content: center;
-                        `)}"
-                      >
-                        <a
-                          href="${qs.stringify(
-                            {
-                              ...req.query,
-                              conversationLayoutSidebarOpenOnSmallScreen:
-                                "true",
-                              conversationsPage: (conversationsPage ?? 1) + 1,
-                            },
-                            {
-                              addQueryPrefix: true,
-                            }
-                          )}"
-                          class="button button--transparent"
-                        >
-                          <i class="bi bi-arrow-down"></i>
-                          Load Next Conversations
-                        </a>
-                      </div>
-                    `
-                  : html``}
               </div>
             </div>
           </div>

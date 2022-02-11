@@ -175,6 +175,7 @@
 
 ### Search
 
+- Search should display multiple messages in the same conversation. (Right now it’s only showing the highest ranked message and grouping by conversation.)
 - Search in all courses you’re taking (for example, search for `deadline extension`) (see how GitHub does it).
 - Filters for unanswered questions, answered questions, and so forth.
 - Filter by date.
