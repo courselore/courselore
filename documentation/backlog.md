@@ -2,8 +2,6 @@
 
 ### Performance
 
-- Show next/previous page on “no more messages”.
-
 - Pagination.
   - Messages in conversation.
   - Conversations on sidebar.
@@ -16,6 +14,8 @@
     - Create indices for `CAST("reference" AS INTEGER)` or convert `"reference"` into number (and then create an index for that!).
 - Deep links
 - Initial scrolling because of unread conversations
+- Show next/previous page on “no more messages”.
+  - Difficult because we don’t have a “before” or “after” message to anchor to.
 
 ---
 
