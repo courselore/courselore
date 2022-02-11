@@ -2,6 +2,8 @@
 
 ### Performance
 
+- Show next/previous page on “no more messages”.
+
 - Pagination.
   - Messages in conversation.
   - Conversations on sidebar.

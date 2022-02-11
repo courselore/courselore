@@ -13716,42 +13716,41 @@ export default async function courselore({
         beforeMessage !== undefined ||
         (afterMessage === undefined && res.locals.conversation.type === "chat");
 
-      const messages = database
-        .all<{ reference: string }>(
-          sql`
-            SELECT "reference"
-            FROM "messages"
-            WHERE "conversation" = ${res.locals.conversation.id}
-                  $${
-                    beforeMessage !== undefined
-                      ? sql`
-                          AND "id" < ${beforeMessage.id}
-                        `
-                      : sql``
-                  }
-                  $${
-                    afterMessage !== undefined
-                      ? sql`
-                          AND "id" > ${afterMessage.id}
-                        `
-                      : sql``
-                  }
-            ORDER BY "id" $${messagesReverse ? sql`DESC` : sql`ASC`}
-            LIMIT 26
-          `
-        )
-        .map(
-          (message) =>
-            getMessage({
-              req,
-              res,
-              conversation: res.locals.conversation,
-              messageReference: message.reference,
-            })!
-        );
-      const moreMessagesExist = messages.length === 26;
-      if (moreMessagesExist) messages.pop();
-      if (messagesReverse) messages.reverse();
+      const messagesRows = database.all<{ reference: string }>(
+        sql`
+          SELECT "reference"
+          FROM "messages"
+          WHERE "conversation" = ${res.locals.conversation.id}
+                $${
+                  beforeMessage !== undefined
+                    ? sql`
+                        AND "id" < ${beforeMessage.id}
+                      `
+                    : sql``
+                }
+                $${
+                  afterMessage !== undefined
+                    ? sql`
+                        AND "id" > ${afterMessage.id}
+                      `
+                    : sql``
+                }
+          ORDER BY "id" $${messagesReverse ? sql`DESC` : sql`ASC`}
+          LIMIT 26
+        `
+      );
+      const moreMessagesExist = messagesRows.length === 26;
+      if (moreMessagesExist) messagesRows.pop();
+      if (messagesReverse) messagesRows.reverse();
+      const messages = messagesRows.map(
+        (message) =>
+          getMessage({
+            req,
+            res,
+            conversation: res.locals.conversation,
+            messageReference: message.reference,
+          })!
+      );
 
       for (const message of messages)
         database.run(
@@ -14870,7 +14869,10 @@ export default async function courselore({
                                 <i class="bi bi-chat-left-text"></i>
                               </div>
                               <p class="secondary">
-                                ${res.locals.conversation.type === "chat"
+                                ${afterMessage !== undefined ||
+                                beforeMessage !== undefined
+                                  ? "No more messages."
+                                  : res.locals.conversation.type === "chat"
                                   ? "Start the chat by sending the first message!"
                                   : "All messages in this conversation have been deleted."}
                               </p>
