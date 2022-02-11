@@ -6,9 +6,8 @@
   - Messages in conversation.
   - Conversations on sidebar.
     - Difficult because of search & filters.
-      - Either use a slower `OFFSET/LIMIT` approach, or track things like rankings for the `ORDER BY` trick.
-    - The options are:
-      - `OFFSET`
+      - `OFFSET`/`LIMIT` approach (slower).
+      - Track things like rankings and everything else needed for the `WHERE`/`ORDER BY` (cumbersome & error-prone).
       - Window function
         - Anchored on the conversation
         - Anchored on the `row_number`
