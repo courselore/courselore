@@ -8,7 +8,6 @@
     - Difficult because of search & filters.
       - Either use a slower `OFFSET/LIMIT` approach, or track things like rankings for the `ORDER BY` trick.
   - Increase demonstration data to thousands of conversations & messages.
-- Loading older messages
 - Load older messages on scroll instead of button
 - Deal with delete messages/conversations at the edges (before and after)
   - `CAST("reference" AS INTEGER) >= CAST(${req.query.beforeMessageReference} AS INTEGER)`
