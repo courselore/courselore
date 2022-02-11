@@ -10810,6 +10810,7 @@ export default async function courselore({
           tagsReferences?: string[];
         };
         scrollToConversation?: "false";
+        conversationsPage?: string;
       },
       IsEnrolledInCourseMiddlewareLocals &
         Partial<IsConversationAccessibleMiddlewareLocals> &
@@ -10880,16 +10881,21 @@ export default async function courselore({
       }
     }
 
-    const conversationsWithSearchResults = database
-      .all<{
-        reference: string;
-        conversationTitleSearchResultHighlight?: string | null;
-        messageAuthorUserNameSearchResultMessageReference?: string | null;
-        messageAuthorUserNameSearchResultHighlight?: string | null;
-        messageContentSearchResultMessageReference?: string | null;
-        messageContentSearchResultSnippet?: string | null;
-      }>(
-        sql`
+    const conversationsPage =
+      typeof req.query.conversationsPage === "string" &&
+      req.query.conversationsPage.match(/^[1-9][0-9]*$/)
+        ? Number(req.query.conversationsPage)
+        : undefined;
+
+    const conversationsWithSearchResultsRows = database.all<{
+      reference: string;
+      conversationTitleSearchResultHighlight?: string | null;
+      messageAuthorUserNameSearchResultMessageReference?: string | null;
+      messageAuthorUserNameSearchResultHighlight?: string | null;
+      messageContentSearchResultMessageReference?: string | null;
+      messageContentSearchResultSnippet?: string | null;
+    }>(
+      sql`
           SELECT "conversations"."reference"
                   $${
                     search === undefined
@@ -11018,60 +11024,72 @@ export default async function courselore({
                           `
                     }
                     coalesce("conversations"."updatedAt", "conversations"."createdAt") DESC
+          LIMIT 16
+          $${
+            conversationsPage !== undefined
+              ? sql`OFFSET ${(conversationsPage - 1) * 15}`
+              : sql``
+          }
         `
-      )
-      .flatMap((conversationWithSearchResult) => {
-        const conversation = getConversation({
-          req,
-          res,
-          conversationReference: conversationWithSearchResult.reference,
-        });
-        if (conversation === undefined) return [];
+    );
+    const moreConversationsExist =
+      conversationsWithSearchResultsRows.length === 16;
+    if (moreConversationsExist) conversationsWithSearchResultsRows.pop();
+    const conversationsWithSearchResults =
+      conversationsWithSearchResultsRows.flatMap(
+        (conversationWithSearchResult) => {
+          const conversation = getConversation({
+            req,
+            res,
+            conversationReference: conversationWithSearchResult.reference,
+          });
+          if (conversation === undefined) return [];
 
-        const searchResult =
-          typeof conversationWithSearchResult.conversationTitleSearchResultHighlight ===
-          "string"
-            ? ({
-                type: "conversationTitle",
-                highlight:
-                  conversationWithSearchResult.conversationTitleSearchResultHighlight,
-              } as const)
-            : typeof conversationWithSearchResult.messageAuthorUserNameSearchResultMessageReference ===
-                "string" &&
-              typeof conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight ===
-                "string"
-            ? ({
-                type: "messageAuthorUserName",
-                message: getMessage({
-                  req,
-                  res,
-                  conversation,
-                  messageReference:
-                    conversationWithSearchResult.messageAuthorUserNameSearchResultMessageReference,
-                })!,
-                highlight:
-                  conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight,
-              } as const)
-            : typeof conversationWithSearchResult.messageContentSearchResultMessageReference ===
-                "string" &&
-              typeof conversationWithSearchResult.messageContentSearchResultSnippet ===
-                "string"
-            ? ({
-                type: "messageContent",
-                message: getMessage({
-                  req,
-                  res,
-                  conversation,
-                  messageReference:
-                    conversationWithSearchResult.messageContentSearchResultMessageReference,
-                })!,
-                snippet:
-                  conversationWithSearchResult.messageContentSearchResultSnippet,
-              } as const)
-            : undefined;
+          const searchResult =
+            typeof conversationWithSearchResult.conversationTitleSearchResultHighlight ===
+            "string"
+              ? ({
+                  type: "conversationTitle",
+                  highlight:
+                    conversationWithSearchResult.conversationTitleSearchResultHighlight,
+                } as const)
+              : typeof conversationWithSearchResult.messageAuthorUserNameSearchResultMessageReference ===
+                  "string" &&
+                typeof conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight ===
+                  "string"
+              ? ({
+                  type: "messageAuthorUserName",
+                  message: getMessage({
+                    req,
+                    res,
+                    conversation,
+                    messageReference:
+                      conversationWithSearchResult.messageAuthorUserNameSearchResultMessageReference,
+                  })!,
+                  highlight:
+                    conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight,
+                } as const)
+              : typeof conversationWithSearchResult.messageContentSearchResultMessageReference ===
+                  "string" &&
+                typeof conversationWithSearchResult.messageContentSearchResultSnippet ===
+                  "string"
+              ? ({
+                  type: "messageContent",
+                  message: getMessage({
+                    req,
+                    res,
+                    conversation,
+                    messageReference:
+                      conversationWithSearchResult.messageContentSearchResultMessageReference,
+                  })!,
+                  snippet:
+                    conversationWithSearchResult.messageContentSearchResultSnippet,
+                } as const)
+              : undefined;
 
-        return [{ conversation, searchResult }];
-      });
+          return [{ conversation, searchResult }];
+        }
+      );
 
     return applicationLayout({
       req,
@@ -11681,6 +11699,34 @@ export default async function courselore({
                   </div>
                 </form>
 
+                $${conversationsPage !== undefined && conversationsPage > 1
+                  ? html`
+                      <div
+                        class="${res.locals.localCSS(css`
+                          display: flex;
+                          justify-content: center;
+                        `)}"
+                      >
+                        <a
+                          href="${qs.stringify(
+                            {
+                              ...req.query,
+                              conversationLayoutSidebarOpenOnSmallScreen:
+                                "true",
+                              conversationsPage: conversationsPage - 1,
+                            },
+                            {
+                              addQueryPrefix: true,
+                            }
+                          )}"
+                          class="button button--transparent"
+                        >
+                          <i class="bi bi-arrow-up"></i>
+                          Load Previous Conversations
+                        </a>
+                      </div>
+                    `
+                  : html``}
                 $${conversationsWithSearchResults.length === 0
                   ? html`
                       <hr class="separator" />
@@ -11851,6 +11897,34 @@ export default async function courselore({
                         )}
                       </div>
                     `}
+                $${moreConversationsExist !== undefined
+                  ? html`
+                      <div
+                        class="${res.locals.localCSS(css`
+                          display: flex;
+                          justify-content: center;
+                        `)}"
+                      >
+                        <a
+                          href="${qs.stringify(
+                            {
+                              ...req.query,
+                              conversationLayoutSidebarOpenOnSmallScreen:
+                                "true",
+                              conversationsPage: (conversationsPage ?? 1) + 1,
+                            },
+                            {
+                              addQueryPrefix: true,
+                            }
+                          )}"
+                          class="button button--transparent"
+                        >
+                          <i class="bi bi-arrow-down"></i>
+                          Load Next Conversations
+                        </a>
+                      </div>
+                    `
+                  : html``}
               </div>
             </div>
           </div>
