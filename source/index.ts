@@ -11894,7 +11894,7 @@ export default async function courselore({
                         )}
                       </div>
                     `}
-                $${moreConversationsExist !== undefined
+                $${moreConversationsExist
                   ? html`
                       <div
                         class="${res.locals.localCSS(css`
