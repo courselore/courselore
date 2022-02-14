@@ -1,6 +1,30 @@
 # Meeting Notes
 
 <details>
+<summary>2021-02-12</summary>
+
+- This week’s progress:
+  - Fixed live-update glitches.
+  - Better (but still not best) latency compensation.
+  - Fixed “mark all as read” making it seem as if a student had read a staff-only conversation.
+  - Implemented the core of pagination.
+- Other things we talked about:
+  - Framing.
+  - Issue: Ali’s students are less active than on previous courses using other platforms.
+  - We want a way to steer people away from asking questions as follow-up on announcements.
+    - Locking.
+    - Extract message into conversation.
+    - “Ask a question”
+  - Redesign “Start a new conversation” so that it is clearer how to ask a question
+  - Get rid of “announcement”, and give “note” the option to broadcast.
+  - Quick filters.
+  - `<details>` sidebar group by date & pins.
+  - Redesign New Conversation page.
+  - Tags presentation make them look like tags, instead of icons on the left.
+
+</details>
+
+<details>
 <summary>2021-02-05</summary>
 
 - Fixes:

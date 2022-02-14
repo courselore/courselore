@@ -24,6 +24,23 @@
 
 ---
 
+- Framing.
+  - Sidebar links.
+  - Pagination links.
+
+---
+
+- Redesign the “Start a Conversation” button to include the wording of “Ask a Question”
+- Remove the type “announcement” in favor of the type “note,” and introduce the notion of making it “broadcastable.”
+- Redesign the “New Conversation” page. Keep all the material that is there, but present it differently to try and make the page cleaner.
+  - Collapse tags (similar to what we do in the conversation page itself, and to what Reddit does).
+    - Change the widget that’s a tag: Instead of `icon text`, make the text look like it’s inside a tag.
+  - Use different background colors, similar to Piazza.
+- Introduce the notion of “Quick Filters” for different conversation types.
+- Group conversations by date & pinned (similar to Piazza & Campuswire).
+
+---
+
 - Lazy loading & DRYing to reduce HTML payload
   - `userPartial` tooltip
   - Edit message forms.
@@ -77,6 +94,11 @@
   - Remove `data-` in favor of non-standard attributes?
   - Change from `addEventListener` to `onEvent`?
   - `onrefresh` → `onrefreshed`
+
+---
+
+- Introduce the notion of locking a conversation.
+- Introduce the notion of promoting a message into its own conversation (one example use case is when someone asks a question as a follow-up to an announcement).
 
 ### Advanced Access Control
 
