@@ -1081,7 +1081,7 @@ export default async function courselore({
           </div>
         </div>
 
-        $${res.locals.HTMLForJavaScript}
+        $${res.locals.HTMLForJavaScript.toString()}
       </body>
     `;
     return html`
@@ -1100,7 +1100,7 @@ export default async function courselore({
 
           <link rel="stylesheet" href="${baseURL}${globalCSSPath}" />
           <style>
-            $${res.locals.localCSS}
+            $${res.locals.localCSS.toString()}
           </style>
           <script type="module">
             import * as textFieldEdit from "${baseURL}/node_modules/text-field-edit/index.js";
@@ -3140,7 +3140,11 @@ export default async function courselore({
       .map((point) => point.map((coordinate) => coordinate * viewBox).join(" "))
       .join(" L ")} Z`;
     return ({ size = viewBox }: { size?: number } = {}) => html`
-      <svg width="${size}" height="${size}" viewBox="0 0 ${viewBox} ${viewBox}">
+      <svg
+        width="${size.toString()}"
+        height="${size.toString()}"
+        viewBox="0 0 ${viewBox.toString()} ${viewBox.toString()}"
+      >
         <path
           d="${pathD}"
           fill="none"
@@ -3165,11 +3169,11 @@ export default async function courselore({
     <html>
       <head>
         <style>
-          $${res.locals.localCSS}
+          $${res.locals.localCSS.toString()}
         </style>
       </head>
       <body>
-        $${body}$${res.locals.HTMLForJavaScript}
+        $${body}$${res.locals.HTMLForJavaScript.toString()}
       </body>
     </html>
   `;
@@ -3738,7 +3742,7 @@ export default async function courselore({
               : [
                   html`
                     <div>
-                      $${row.map((element) => html`${element}`).join(" · ")}
+                      $${row.map((element) => html`${element!}`).join(" · ")}
                     </div>
                   `,
                 ];
@@ -8008,12 +8012,12 @@ export default async function courselore({
                       >
                         <input
                           type="hidden"
-                          name="tags[${index}][reference]"
+                          name="tags[${index.toString()}][reference]"
                           value="${tag.reference}"
                         />
                         <input
                           type="hidden"
-                          name="tags[${index}][delete]"
+                          name="tags[${index.toString()}][delete]"
                           value="true"
                           disabled
                           data-force-is-modified="true"
@@ -8031,7 +8035,7 @@ export default async function courselore({
                         >
                           <input
                             type="text"
-                            name="tags[${index}][name]"
+                            name="tags[${index.toString()}][name]"
                             value="${tag.name}"
                             class="disable-on-delete input--text"
                             required
@@ -8055,7 +8059,7 @@ export default async function courselore({
                               >
                                 <input
                                   type="checkbox"
-                                  name="tags[${index}][isStaffOnly]"
+                                  name="tags[${index.toString()}][isStaffOnly]"
                                   $${tag.staffOnlyAt === null
                                     ? html``
                                     : html`checked`}
@@ -11884,7 +11888,7 @@ export default async function courselore({
                                               })();
                                             `}"
                                           >
-                                            ${unreadCount}
+                                            ${unreadCount.toString()}
                                           </button>
                                         `;
                                   })()}
@@ -15391,9 +15395,7 @@ export default async function courselore({
                                                                   <i
                                                                     class="bi bi-eye"
                                                                   ></i>
-                                                                  ${message
-                                                                    .readings
-                                                                    .length}
+                                                                  ${message.readings.length.toString()}
                                                                   Views
                                                                 </button>
                                                               `
@@ -15892,8 +15894,7 @@ export default async function courselore({
                                                         <i
                                                           class="bi bi-award-fill"
                                                         ></i>
-                                                        ${message.endorsements
-                                                          .length}
+                                                        ${message.endorsements.length.toString()}
                                                         Staff
                                                         Endorsement${message
                                                           .endorsements
@@ -16023,7 +16024,7 @@ export default async function courselore({
                                                 `}"
                                               >
                                                 <i class="bi bi-award"></i>
-                                                ${message.endorsements.length}
+                                                ${message.endorsements.length.toString()}
                                                 Staff
                                                 Endorsement${message
                                                   .endorsements.length === 1
@@ -16421,7 +16422,7 @@ export default async function courselore({
                                                       $${likesCount === 0
                                                         ? html`Like`
                                                         : html`
-                                                            ${likesCount}
+                                                            ${likesCount.toString()}
                                                             Like${likesCount ===
                                                             1
                                                               ? ""
@@ -16494,7 +16495,7 @@ export default async function courselore({
                                                   `}"
                                                 >
                                                   <i class="bi bi-eye"></i>
-                                                  ${message.readings.length}
+                                                  ${message.readings.length.toString()}
                                                   Views
                                                 </button>
                                               `);
@@ -20224,6 +20225,7 @@ ${contentSource}</textarea
                 case node.TEXT_NODE:
                   const parentElement = node.parentElement;
                   if (
+                    node.textContent === null ||
                     parentElement === null ||
                     parentElement.closest("a, code, .mention, .reference") !==
                       null
@@ -20477,7 +20479,8 @@ ${contentSource}</textarea
               switch (node.nodeType) {
                 case node.TEXT_NODE:
                   const parentElement = node.parentElement;
-                  if (parentElement === null) return;
+                  if (node.textContent === null || parentElement === null)
+                    return;
                   parentElement.replaceChild(
                     JSDOM.fragment(
                       highlightSearchResult(html`${node.textContent}`, search)
