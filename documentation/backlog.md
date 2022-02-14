@@ -2,8 +2,8 @@
 
 ### Performance
 
-- Look into unit testing things differently.
 - Test `html` without regular expression.
+- Look into unit testing things differently.
 
 ---
 
