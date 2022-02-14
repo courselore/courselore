@@ -2,25 +2,22 @@
 
 ### Performance
 
+- Look into unit testing things differently.
+- Test `html` without regular expression.
+
+---
+
 - Pagination.
-  - Messages in conversation.
-  - Conversations on sidebar.
-    - Difficult because of search & filters.
-      - `OFFSET`/`LIMIT` approach (slower).
-      - Track things like rankings and everything else needed for the `WHERE`/`ORDER BY` (cumbersome & error-prone).
-      - Window function
-        - Anchored on the conversation
-        - Anchored on the `row_number`
-  - Increase demonstration data to thousands of conversations & messages.
-  - The `flatMap` to collection conversation & search information doesn’t go well with the `LIMIT`: It’s returning fewer results, and potentially leaking information.
-- Load older messages on scroll instead of button
-- Deal with delete messages/conversations at the edges (before and after)
-  - `CAST("reference" AS INTEGER) >= CAST(${req.query.beforeMessageReference} AS INTEGER)`
-    - Create indices for `CAST("reference" AS INTEGER)` or convert `"reference"` into number (and then create an index for that!).
-- Deep links
-- Initial scrolling because of unread conversations
-- Show next/previous page on “no more messages”.
-  - Difficult because we don’t have a “before” or “after” message to anchor to.
+  - Review current implementation:
+    - Messages in conversation.
+    - Conversations in sidebar.
+  - The `flatMap` to collect conversation & search information doesn’t go well with the `LIMIT`: It’s returning fewer results, and potentially leaking information. The solution is to filter inaccessible messages directly in the original query.
+  - Load pages on scroll instead of button
+  - Deal with delete messages/conversations at the edges (before and after)
+    - `CAST("reference" AS INTEGER) >= CAST(${req.query.beforeMessageReference} AS INTEGER)`
+      - Create indices for `CAST("reference" AS INTEGER)` or convert `"reference"` into number (and then create an index for that!).
+  - Deep links
+  - On first loading a conversation without a deep link, go to first unread message
 
 ---
 
@@ -242,8 +239,9 @@
 
 ### Pagination
 
-- List of conversations on the left.
-- Messages in a conversation.
+- Edge case: Show next/previous page on “no more messages”.
+  - This is edge case because people should only be able to get there when they manipulate the URL (or because they’re loading the next page right when an item has been deleted)
+  - Difficult because we don’t have a “before” or “after” message to anchor to.
 - Course Settings · Enrollments.
 
 ### File Management
@@ -355,6 +353,7 @@
       - Single follow-up query with `IN` operator (but then you end up with a bunch of prepared statements in the cache).
       - Use a temporary table instead of `IN`.
       - Nest first query as a subquery and bundle all the information together, then deduplicate the 1–N relationships in the code.
+  - We’re doing pagination of conversations in sidebar using `OFFSET`, because the order and presence of conversations changes, so we can’t anchor a `WHERE` clause on the first/last conversation shown. Try and find a better approach. Maybe use window functions anchored on the `row_number`.
 - Rate limiting.
 - Database transactions:
   - One transaction per request?
