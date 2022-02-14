@@ -2,7 +2,6 @@
 
 ### Performance
 
-- Test `html` without regular expression.
 - Look into unit testing things differently.
 
 ---
@@ -61,7 +60,6 @@
 - Write a function to determine if processing the message is even necessary. Most messages don’t use extra features and could skip JSDOM entirely.
 - Implement view caching on the server.
 - Investigate other potential bottlenecks:
-  - `html` tagged template literal.
   - Synchronous stuff that could be async.
 - Front-end optimizations:
   - Hotwire.
@@ -354,6 +352,7 @@
       - Use a temporary table instead of `IN`.
       - Nest first query as a subquery and bundle all the information together, then deduplicate the 1–N relationships in the code.
   - We’re doing pagination of conversations in sidebar using `OFFSET`, because the order and presence of conversations changes, so we can’t anchor a `WHERE` clause on the first/last conversation shown. Try and find a better approach. Maybe use window functions anchored on the `row_number`.
+  - Try and optimize `html` tagged template literal, which sanitizes things over and over.
 - Rate limiting.
 - Database transactions:
   - One transaction per request?
