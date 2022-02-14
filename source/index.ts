@@ -21420,13 +21420,10 @@ ${contentSource}</textarea
 }
 
 export const courseloreVersion = JSON.parse(
-  // FIXME: Remove this extra `await` & `.toString()` when updating TypeScript target so that it doesn’t complain about top-level await.
-  await (
-    await fs.readFile(
-      url.fileURLToPath(new URL("../package.json", import.meta.url)),
-      "utf8"
-    )
-  ).toString()
+  await fs.readFile(
+    url.fileURLToPath(new URL("../package.json", import.meta.url)),
+    "utf8"
+  )
 ).version;
 
 if (import.meta.url.endsWith(process.argv[1]))

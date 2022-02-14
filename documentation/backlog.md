@@ -2,7 +2,7 @@
 
 ### Performance
 
-- Look into unit testing things differently.
+- Colocate tests and implementation.
 
 ---
 
@@ -10,6 +10,7 @@
   - Review current implementation:
     - Messages in conversation.
     - Conversations in sidebar.
+  - On changing page of messages on mobile, prevent sidebar from preopening
   - The `flatMap` to collect conversation & search information doesn’t go well with the `LIMIT`: It’s returning fewer results, and potentially leaking information. The solution is to filter inaccessible messages directly in the original query.
   - Load pages on scroll instead of button
   - Deal with delete messages/conversations at the edges (before and after)
@@ -54,6 +55,7 @@
     - Consistency with CSS.
   - Content processor should only attach position information that we’ll actually use.
     - This also allows us to simplify the code that uses the position information, because we don’t have to discard positions from inner elements.
+  - On live update `refresh` event, don’t include whole page, just a Turbo Stream of what changed
 
 ---
 
@@ -137,6 +139,7 @@
 ### Conversations
 
 - Change the meaning of “views”: Instead of using “readings”, only count as “viewed” if the message has appeared on the person’s screen.
+  - Tracking pixel on email for people who will read the notification on their email and just “mark as read” on Courselore?
 - Add a button to “Return to Bottom” in chat.
 - Show a widget similar to the Views (with person & time) to likes & endorsements.
 - We shouldn’t show endorsements for non-answers. (They show up at least for staff.)
