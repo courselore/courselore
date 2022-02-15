@@ -27,11 +27,7 @@ The best way to get started is to run a pre-compiled Courselore binary on your m
 <details>
 <summary>Windows</summary>
 
-**Option 1: Windows Subsystem for Linux (WSL)**
-
-If you’re using WSL, follow the Linux instructions.
-
-**Option 2: Native Windows Development Environment**
+> **Note:** If you’re using Windows Subsystem for Linux (WSL), follow the instructions for Linux instead.
 
 1. Install [Chocolatey](https://chocolatey.org) and the following packages:
 
