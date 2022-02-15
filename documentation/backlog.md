@@ -33,6 +33,7 @@
   - Collapse tags (similar to what we do in the conversation page itself, and to what Reddit does).
     - Change the widget that’s a tag: Instead of `icon text`, make the text look like it’s inside a tag.
   - Use different background colors, similar to Piazza.
+- Redesign filters to bring out the “resolved/unresolved” filters.
 - Introduce the notion of “Quick Filters” for different conversation types.
 - Group conversations by date & pinned (similar to Piazza & Campuswire).
 
