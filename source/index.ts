@@ -2321,13 +2321,7 @@ export default async function courselore({
       ),
       "utf-8"
     )}
-    ${await fs.readFile(
-      new URL(
-        "../static/node_modules/@leafac/javascript/browser.js",
-        import.meta.url
-      ),
-      "utf-8"
-    )}
+    ${globalJavaScript}
 
     leafac.evaluateOnInteractive();
     leafac.customFormValidation();
