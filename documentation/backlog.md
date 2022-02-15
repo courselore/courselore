@@ -2,7 +2,7 @@
 
 ### Performance
 
-- Colocate tests and implementation.
+- Investigate https://courselore.org/courses/8537410611/conversations/19#message--12
 
 ---
 
@@ -238,6 +238,7 @@
 - Lightbox for block quotes.
 - Add support for videos: Sanitization, dimensions, and so forth.
 - Install extensions for Shiki, for example, for OCaml.
+- Mermaid: https://github.blog/2022-02-14-include-diagrams-markdown-files-mermaid/
 
 ### Pagination
 
