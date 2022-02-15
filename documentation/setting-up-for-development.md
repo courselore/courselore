@@ -18,9 +18,9 @@ The best way to get started is to run a pre-compiled Courselore binary on your m
 
 > **Note:** Firefox may have issues with the local TLS certificate used by Courselore because by default it uses its own trust store. There are two possible solutions for this:
 >
-> 1. Use NSS to install the TLS certificate into Firefox’s trust store.
+> 1. Configure Firefox to use the operating system’s trust store by visiting `about:config` and setting `security.enterprise_roots.enabled` to `true`.
 >
-> 2. Configure Firefox to use the operating system’s trust store by visiting `about:config` and setting `security.enterprise_roots.enabled` to `true`.
+> 2. Use NSS to install the TLS certificate into Firefox’s trust store.
 
 ### Running from Source
 
@@ -211,6 +211,8 @@ You may run Courselore on your machine and access it from a phone, which is esse
    > **Note:** The exact procedure depends on the operating system you’re running, but typically this process occurs in two steps: First **install** the certificate, then **trust** it.
 
    > **iPhone/iPad Tip:** Install the certificate on **Settings > General > VPN & Device Management Certificates**, and trust it on **Settings > General > About > Certificate Trust Settings**.
+
+   > **Windows:** If instead of a phone you’re trying to test Courselore on a secondary Windows machine, install the certificate under the Logical Store Name called **Trusted Root Certification Authorities > Certificates**.
 
 4. Run Courselore with the Local Area Network address, for example:
 
