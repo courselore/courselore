@@ -98,6 +98,14 @@
 - Introduce the notion of locking a conversation.
 - Introduce the notion of promoting a message into its own conversation (one example use case is when someone asks a question as a follow-up to an announcement).
 
+---
+
+- Minify assets:
+  - https://cssnano.co/ (based on PostCSS)
+  - https://github.com/clean-css/clean-css (most popular)
+  - https://github.com/parcel-bundler/parcel-css (seems faster, using Rust)
+  - https://github.com/css/csso
+
 ### Advanced Access Control
 
 - Chats with only a few people.
