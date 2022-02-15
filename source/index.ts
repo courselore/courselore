@@ -2271,7 +2271,7 @@ export default async function courselore({
     res.type("css").send(globalCSSProcessed);
   });
 
-  const globalJavaScript = javascript`
+  const globalJavaScriptProcessed = javascript`
     ${await fs.readFile(
       new URL(
         "../static/node_modules/@popperjs/core/dist/umd/popper.min.js",
@@ -2344,12 +2344,12 @@ export default async function courselore({
   `;
   const globalJavaScriptPath = `/global--${crypto
     .createHash("sha256")
-    .update(globalJavaScript)
+    .update(globalJavaScriptProcessed)
     .digest("hex")}.js`;
   app.get<{}, CSS, {}, {}, BaseMiddlewareLocals>(
     globalJavaScriptPath,
     (req, res) => {
-      res.type("js").send(globalJavaScript);
+      res.type("js").send(globalJavaScriptProcessed);
     }
   );
 
