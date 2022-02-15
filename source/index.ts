@@ -16704,6 +16704,8 @@ export default async function courselore({
                             method: this.method,
                             body: new URLSearchParams(new FormData(this)),
                           }));
+                          // FIXME: https://github.com/fregante/text-field-edit/issues/16
+                          this.querySelector(".content-editor--write--textarea").value = "";
                           textFieldEdit.set(this.querySelector(".content-editor--write--textarea"), "");
                         })();
                       `}"
