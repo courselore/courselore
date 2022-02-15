@@ -2,10 +2,6 @@
 
 ### Performance
 
-- Investigate https://courselore.org/courses/8537410611/conversations/19#message--12
-
----
-
 - Pagination.
   - Review current implementation:
     - Messages in conversation.
