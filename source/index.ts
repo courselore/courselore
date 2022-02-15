@@ -14,8 +14,12 @@ import qs from "qs";
 
 import { Database, sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
-import { CSS, localCSS, globalCSS, processCSS, css } from "@leafac/css";
-import { HTMLForJavaScript, javascript } from "@leafac/javascript";
+import { CSS, localCSS, processCSS, css, globalCSS } from "@leafac/css";
+import {
+  HTMLForJavaScript,
+  javascript,
+  globalJavaScript,
+} from "@leafac/javascript";
 import dedent from "dedent";
 
 import { unified } from "unified";
