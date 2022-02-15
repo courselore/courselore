@@ -51,6 +51,8 @@ import escapeStringRegexp from "escape-string-regexp";
 import QRCode from "qrcode";
 import casual from "casual";
 
+const FEATURE_PAGINATION = false;
+
 export default async function courselore({
   dataDirectory,
   baseURL,
@@ -10887,7 +10889,7 @@ export default async function courselore({
       typeof req.query.conversationsPage === "string" &&
       req.query.conversationsPage.match(/^[1-9][0-9]*$/)
         ? Number(req.query.conversationsPage)
-        : undefined;
+        : 1;
 
     const conversationsWithSearchResults = database
       .all<{
@@ -11027,10 +11029,11 @@ export default async function courselore({
                           `
                     }
                     coalesce("conversations"."updatedAt", "conversations"."createdAt") DESC
-          LIMIT 16
           $${
-            conversationsPage !== undefined
-              ? sql`OFFSET ${(conversationsPage - 1) * 15}`
+            FEATURE_PAGINATION
+              ? sql`
+                  LIMIT 16 OFFSET ${(conversationsPage - 1) * 15}
+                `
               : sql``
           }
         `
@@ -11087,8 +11090,10 @@ export default async function courselore({
 
         return [{ conversation, searchResult }];
       });
-    const moreConversationsExist = conversationsWithSearchResults.length === 16;
-    if (moreConversationsExist) conversationsWithSearchResults.pop();
+    const moreConversationsExist =
+      FEATURE_PAGINATION && conversationsWithSearchResults.length === 16;
+    if (FEATURE_PAGINATION && moreConversationsExist)
+      conversationsWithSearchResults.pop();
 
     return applicationLayout({
       req,
@@ -11753,8 +11758,7 @@ export default async function courselore({
                             </form>
                           `
                         : html``}
-                      $${conversationsPage !== undefined &&
-                      conversationsPage > 1
+                      $${FEATURE_PAGINATION && conversationsPage > 1
                         ? html`
                             <div
                               class="${res.locals.localCSS(css`
@@ -11896,7 +11900,7 @@ export default async function courselore({
                           }
                         )}
                       </div>
-                      $${moreConversationsExist
+                      $${FEATURE_PAGINATION && moreConversationsExist
                         ? html`
                             <div
                               class="${res.locals.localCSS(css`
@@ -11910,8 +11914,7 @@ export default async function courselore({
                                     ...req.query,
                                     conversationLayoutSidebarOpenOnSmallScreen:
                                       "true",
-                                    conversationsPage:
-                                      (conversationsPage ?? 1) + 1,
+                                    conversationsPage: conversationsPage + 1,
                                   },
                                   {
                                     addQueryPrefix: true,
@@ -13763,6 +13766,7 @@ export default async function courselore({
     ...eventSourceMiddleware,
     (req, res) => {
       const beforeMessage =
+        FEATURE_PAGINATION &&
         typeof req.query.beforeMessageReference === "string"
           ? database.get<{ id: number }>(
               sql`
@@ -13775,6 +13779,7 @@ export default async function courselore({
             )
           : undefined;
       const afterMessage =
+        FEATURE_PAGINATION &&
         beforeMessage === undefined &&
         typeof req.query.afterMessageReference === "string"
           ? database.get<{ id: number }>(
@@ -13788,8 +13793,10 @@ export default async function courselore({
             )
           : undefined;
       const messagesReverse =
-        beforeMessage !== undefined ||
-        (afterMessage === undefined && res.locals.conversation.type === "chat");
+        FEATURE_PAGINATION &&
+        (beforeMessage !== undefined ||
+          (afterMessage === undefined &&
+            res.locals.conversation.type === "chat"));
 
       const messagesRows = database.all<{ reference: string }>(
         sql`
@@ -13797,26 +13804,29 @@ export default async function courselore({
           FROM "messages"
           WHERE "conversation" = ${res.locals.conversation.id}
                 $${
-                  beforeMessage !== undefined
+                  FEATURE_PAGINATION && beforeMessage !== undefined
                     ? sql`
                         AND "id" < ${beforeMessage.id}
                       `
                     : sql``
                 }
                 $${
-                  afterMessage !== undefined
+                  FEATURE_PAGINATION && afterMessage !== undefined
                     ? sql`
                         AND "id" > ${afterMessage.id}
                       `
                     : sql``
                 }
-          ORDER BY "id" $${messagesReverse ? sql`DESC` : sql`ASC`}
-          LIMIT 26
+          ORDER BY "id" $${
+            FEATURE_PAGINATION && messagesReverse ? sql`DESC` : sql`ASC`
+          }
+          $${FEATURE_PAGINATION ? sql`LIMIT 26` : sql``}
         `
       );
-      const moreMessagesExist = messagesRows.length === 26;
-      if (moreMessagesExist) messagesRows.pop();
-      if (messagesReverse) messagesRows.reverse();
+      const moreMessagesExist =
+        FEATURE_PAGINATION && messagesRows.length === 26;
+      if (FEATURE_PAGINATION && moreMessagesExist) messagesRows.pop();
+      if (FEATURE_PAGINATION && messagesReverse) messagesRows.reverse();
       const messages = messagesRows.map(
         (message) =>
           getMessage({
@@ -14944,8 +14954,9 @@ export default async function courselore({
                                 <i class="bi bi-chat-left-text"></i>
                               </div>
                               <p class="secondary">
-                                ${afterMessage !== undefined ||
-                                beforeMessage !== undefined
+                                ${FEATURE_PAGINATION &&
+                                (afterMessage !== undefined ||
+                                  beforeMessage !== undefined)
                                   ? "No more messages."
                                   : res.locals.conversation.type === "chat"
                                   ? "Start the chat by sending the first message!"
@@ -14963,8 +14974,9 @@ export default async function courselore({
                                   : css``}
                               `)}"
                             >
-                              $${afterMessage !== undefined ||
-                              (moreMessagesExist && messagesReverse)
+                              $${FEATURE_PAGINATION &&
+                              (afterMessage !== undefined ||
+                                (moreMessagesExist && messagesReverse))
                                 ? html`
                                     <div
                                       class="${res.locals.localCSS(css`
@@ -16629,8 +16641,9 @@ export default async function courselore({
                                     </div>
                                   `
                               )}
-                              $${beforeMessage !== undefined ||
-                              (moreMessagesExist && !messagesReverse)
+                              $${FEATURE_PAGINATION &&
+                              (beforeMessage !== undefined ||
+                                (moreMessagesExist && !messagesReverse))
                                 ? html`
                                     <div
                                       class="${res.locals.localCSS(css`
