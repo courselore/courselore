@@ -65,7 +65,7 @@
     "remark-parse": "^10.0.1",
     "remark-rehype": "^10.1.0",
     "sharp": "^0.30.1",
-    "shiki": "^0.10.0",
+    "shiki": "^0.10.1",
     "unified": "^10.1.1",
     "unist-util-visit": "^4.1.0"
   },
