@@ -2,10 +2,6 @@
 
 ### Performance
 
-- “New” red bar appearing below last message(!)
-
----
-
 - Pagination.
   - Review current implementation:
     - Messages in conversation.
