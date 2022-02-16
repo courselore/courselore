@@ -2,6 +2,10 @@
 
 ### Performance
 
+- “New” red bar appearing below last message(!)
+
+---
+
 - Pagination.
   - Review current implementation:
     - Messages in conversation.
@@ -329,6 +333,7 @@
 
 ### Infrastructure
 
+- “Demonstration Mode” didn’t work for me on Edge, on `try.courselore.org` (tried other browsers and on local machine an it worked (!)).
 - Mark all conversations as read may be slow because it does a bunch of in `INSERT`s.
 - Move some of the non-application-specific server-side code into a library (for example, cookie settings, server-sent events, logging, and that sort of thing).
   - Maybe move @leafac/express-async-handler into that library as well.
