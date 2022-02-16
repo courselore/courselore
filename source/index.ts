@@ -3,6 +3,7 @@
 import path from "node:path";
 import url from "node:url";
 import crypto from "node:crypto";
+import assert from "node:assert/strict";
 
 import express from "express";
 import methodOverride from "method-override";
@@ -10969,6 +10970,14 @@ export default async function courselore({
                                  "tags"."reference" IN ${filters.tagsReferences}
                 `
           }
+          $${
+            res.locals.enrollment.role !== "staff"
+              ? sql`
+                  LEFT JOIN "messages" ON "conversations"."id" = "messages"."conversation" AND
+                                          "messages"."authorEnrollment" = ${res.locals.enrollment.id}
+                `
+              : sql``
+          }
           WHERE "conversations"."course" = ${res.locals.course.id}
           $${
             search === undefined
@@ -11015,6 +11024,16 @@ export default async function courselore({
                   } NULL
                 `
           }
+          $${
+            res.locals.enrollment.role !== "staff"
+              ? sql`
+                  AND (
+                    "conversations"."staffOnlyAt" IS NULL OR
+                    "messages"."id" IS NOT NULL
+                  )
+                `
+              : sql``
+          }
           GROUP BY "conversations"."id"
           ORDER BY "conversations"."pinnedAt" IS NOT NULL DESC,
                     $${
@@ -11038,13 +11057,13 @@ export default async function courselore({
           }
         `
       )
-      .flatMap((conversationWithSearchResult) => {
+      .map((conversationWithSearchResult) => {
         const conversation = getConversation({
           req,
           res,
           conversationReference: conversationWithSearchResult.reference,
         });
-        if (conversation === undefined) return [];
+        assert(conversation !== undefined);
 
         const searchResult =
           typeof conversationWithSearchResult.conversationTitleSearchResultHighlight ===
@@ -11088,7 +11107,7 @@ export default async function courselore({
               } as const)
             : undefined;
 
-        return [{ conversation, searchResult }];
+        return { conversation, searchResult };
       });
     const moreConversationsExist =
       FEATURE_PAGINATION && conversationsWithSearchResults.length === 16;

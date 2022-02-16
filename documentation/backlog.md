@@ -3,7 +3,6 @@
 ### Performance
 
 - Pagination.
-  - The `flatMap` to collect conversation & search information doesn’t go well with the `LIMIT`: It’s returning fewer results, and potentially leaking information. The solution is to filter inaccessible messages directly in the original query.
   - Load pages on scroll instead of button
   - Deal with delete messages/conversations at the edges (before and after)
     - `CAST("reference" AS INTEGER) >= CAST(${req.query.beforeMessageReference} AS INTEGER)`
