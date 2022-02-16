@@ -15012,71 +15012,6 @@ export default async function courselore({
                               $${messages.map(
                                 (message) =>
                                   html`
-                                    $${message === firstUnreadMessage &&
-                                    message !== messages[0]
-                                      ? html`
-                                          <button
-                                            class="button button--transparent ${res
-                                              .locals.localCSS(css`
-                                              width: 100%;
-                                              padding: var(--space--1-5)
-                                                var(--space--2);
-                                              margin: var(--space--0)
-                                                var(--space---2);
-                                              display: flex;
-                                              gap: var(--space--4);
-                                              align-items: center;
-                                            `)}"
-                                            oninteractive="${javascript`
-                                              tippy(this, {
-                                                touch: false,
-                                                content: "Close",
-                                              });
-                                            `}"
-                                            onclick="${javascript`
-                                              this.remove();
-                                            `}"
-                                            onbeforenodeadded="${javascript`
-                                              return false;
-                                            `}"
-                                            onbeforenodediscarded="${javascript`
-                                              return false;
-                                            `}"
-                                          >
-                                            <hr
-                                              class="separator ${res.locals
-                                                .localCSS(css`
-                                                flex: 1;
-                                                border-color: var(
-                                                  --color--rose--600
-                                                );
-                                                @media (prefers-color-scheme: dark) {
-                                                  border-color: var(
-                                                    --color--rose--500
-                                                  );
-                                                }
-                                              `)}"
-                                            />
-                                            <span class="heading text--rose">
-                                              New
-                                            </span>
-                                            <hr
-                                              class="separator ${res.locals
-                                                .localCSS(css`
-                                                flex: 1;
-                                                border-color: var(
-                                                  --color--rose--600
-                                                );
-                                                @media (prefers-color-scheme: dark) {
-                                                  border-color: var(
-                                                    --color--rose--500
-                                                  );
-                                                }
-                                              `)}"
-                                            />
-                                          </button>
-                                        `
-                                      : html``}
                                     $${res.locals.conversation.type === "chat"
                                       ? html`
                                           <div
@@ -15162,6 +15097,75 @@ export default async function courselore({
                                         
                                       `}"
                                     >
+                                      $${message === firstUnreadMessage &&
+                                      message !== messages[0]
+                                        ? html`
+                                            <button
+                                              class="button button--transparent ${res
+                                                .locals.localCSS(css`
+                                                width: calc(
+                                                  var(--space--2) + 100% +
+                                                    var(--space--2)
+                                                );
+                                                padding: var(--space--1-5)
+                                                  var(--space--2);
+                                                margin: var(--space--0)
+                                                  var(--space---2);
+                                                display: flex;
+                                                gap: var(--space--4);
+                                                align-items: center;
+                                              `)}"
+                                              oninteractive="${javascript`
+                                                tippy(this, {
+                                                  touch: false,
+                                                  content: "Close",
+                                                });
+                                              `}"
+                                              onclick="${javascript`
+                                                this.remove();
+                                              `}"
+                                              onbeforenodeadded="${javascript`
+                                                return false;
+                                              `}"
+                                              onbeforenodediscarded="${javascript`
+                                                return false;
+                                              `}"
+                                            >
+                                              <hr
+                                                class="separator ${res.locals
+                                                  .localCSS(css`
+                                                  flex: 1;
+                                                  border-color: var(
+                                                    --color--rose--600
+                                                  );
+                                                  @media (prefers-color-scheme: dark) {
+                                                    border-color: var(
+                                                      --color--rose--500
+                                                    );
+                                                  }
+                                                `)}"
+                                              />
+                                              <span class="heading text--rose">
+                                                New
+                                              </span>
+                                              <hr
+                                                class="separator ${res.locals
+                                                  .localCSS(css`
+                                                  flex: 1;
+                                                  border-color: var(
+                                                    --color--rose--600
+                                                  );
+                                                  @media (prefers-color-scheme: dark) {
+                                                    border-color: var(
+                                                      --color--rose--500
+                                                    );
+                                                  }
+                                                `)}"
+                                              />
+                                            </button>
+                                          `
+                                        : html``}
+
                                       <div
                                         class="${res.locals.localCSS(css`
                                           padding: var(--space--2);
