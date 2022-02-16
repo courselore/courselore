@@ -2,6 +2,10 @@
 
 ### Performance
 
+- The “New” indicator is showing up multiple times in chat.
+
+---
+
 - Pagination.
   - Load pages on scroll instead of button
   - Deal with delete messages/conversations at the edges (before and after)
