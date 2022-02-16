@@ -51,7 +51,7 @@ import escapeStringRegexp from "escape-string-regexp";
 import QRCode from "qrcode";
 import casual from "casual";
 
-const FEATURE_PAGINATION = false;
+const FEATURE_PAGINATION = true;
 
 export default async function courselore({
   dataDirectory,
@@ -14995,7 +14995,10 @@ export default async function courselore({
                                               beforeMessageReference:
                                                 messages[0].reference,
                                             },
-                                            ["afterMessageReference"]
+                                            [
+                                              "conversationLayoutSidebarOpenOnSmallScreen",
+                                              "afterMessageReference",
+                                            ]
                                           ),
                                           {
                                             addQueryPrefix: true,
@@ -16667,7 +16670,10 @@ export default async function courselore({
                                                 messages[messages.length - 1]
                                                   .reference,
                                             },
-                                            ["beforeMessageReference"]
+                                            [
+                                              "conversationLayoutSidebarOpenOnSmallScreen",
+                                              "beforeMessageReference",
+                                            ]
                                           ),
                                           {
                                             addQueryPrefix: true,
