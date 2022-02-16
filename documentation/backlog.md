@@ -9,12 +9,9 @@
       - Create indices for `CAST("reference" AS INTEGER)` or convert `"reference"` into number (and then create an index for that!).
   - Deep links
   - On first loading a conversation without a deep link, go to first unread message
-
----
-
 - Framing.
-  - Sidebar links.
   - Pagination links.
+  - Sidebar links.
 
 ---
 
