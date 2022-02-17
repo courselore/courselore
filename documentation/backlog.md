@@ -9,6 +9,7 @@
       - Create indices for `CAST("reference" AS INTEGER)` or convert `"reference"` into number (and then create an index for that!).
   - Deep links
   - On first loading a conversation without a deep link, go to first unread message
+  - On sending message on non-chat, it’s scrolling back to the first page.
 - Framing.
   - Pagination links.
   - Sidebar links.
