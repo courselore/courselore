@@ -11900,17 +11900,21 @@ export default async function courselore({
                               <a
                                 href="${baseURL}/courses/${res.locals.course
                                   .reference}/conversations/${conversation.reference}${qs.stringify(
-                                  lodash.omit(req.query, [
-                                    "conversationLayoutSidebarOpenOnSmallScreen",
-                                    "scrollToConversation",
-                                    "beforeMessageReference",
-                                    "afterMessageReference",
-                                  ]),
+                                  lodash.omit(
+                                    {
+                                      ...req.query,
+                                      messageReference:
+                                        searchResult?.message?.reference,
+                                    },
+                                    [
+                                      "conversationLayoutSidebarOpenOnSmallScreen",
+                                      "scrollToConversation",
+                                      "beforeMessageReference",
+                                      "afterMessageReference",
+                                    ]
+                                  ),
                                   { addQueryPrefix: true }
-                                )}${typeof searchResult?.message?.reference ===
-                                "string"
-                                  ? `#message--${searchResult.message.reference}`
-                                  : ``}"
+                                )}"
                                 class="button ${isSelected
                                   ? "button--blue"
                                   : "button--transparent"} ${res.locals

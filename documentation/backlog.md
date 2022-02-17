@@ -3,11 +3,14 @@
 ### Performance
 
 - Pagination.
+  - Deep links
+    - `#message--`
+    - Make `?messageReference` cause scroll.
+    - Omit messageReference in some links
   - Load pages on scroll instead of button
   - Deal with delete messages/conversations at the edges (before and after)
     - `CAST("reference" AS INTEGER) >= CAST(${req.query.beforeMessageReference} AS INTEGER)`
       - Create indices for `CAST("reference" AS INTEGER)` or convert `"reference"` into number (and then create an index for that!).
-  - Deep links
   - On first loading a conversation without a deep link, go to first unread message
   - On sending message on non-chat, it’s scrolling back to the first page.
 - Framing.
