@@ -15116,7 +15116,6 @@ export default async function courselore({
                                               `
                                             : javascript``
                                         }
-                                        
                                       `}"
                                     >
                                       $${message === firstUnreadMessage &&
@@ -15145,9 +15144,6 @@ export default async function courselore({
                                               `}"
                                               onclick="${javascript`
                                                 this.remove();
-                                              `}"
-                                              onbeforenodeadded="${javascript`
-                                                return false;
                                               `}"
                                               onbeforenodediscarded="${javascript`
                                                 return false;
