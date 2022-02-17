@@ -246,6 +246,7 @@
   - This is edge case because people should only be able to get there when they manipulate the URL (or because they’re loading the next page right when an item has been deleted)
   - Difficult because we don’t have a “before” or “after” message to anchor to.
 - Course Settings · Enrollments.
+  - And other pages, for example, invitations.
 
 ### File Management
 

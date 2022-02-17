@@ -15118,57 +15118,6 @@ export default async function courselore({
                               $${messages.map(
                                 (message) =>
                                   html`
-                                    $${res.locals.conversation.type === "chat"
-                                      ? html`
-                                          <div
-                                            id="message--${message.reference}--date-separator"
-                                            hidden
-                                            class="date-separator ${res.locals
-                                              .localCSS(css`
-                                              margin: var(--space--2)
-                                                var(--space--0);
-                                              display: flex;
-                                              gap: var(--space--4);
-                                              align-items: center;
-                                            `)}"
-                                            onbeforeelupdated="${javascript`
-                                              return false;
-                                            `}"
-                                          >
-                                            <hr
-                                              class="separator ${res.locals
-                                                .localCSS(css`
-                                                flex: 1;
-                                              `)}"
-                                            />
-                                            <time
-                                              datetime="${new Date(
-                                                message.createdAt
-                                              ).toISOString()}"
-                                              class="heading secondary"
-                                              oninteractive="${javascript`
-                                                const element = this;
-                                                leafac.relativizeDateElement(element);
-                                                (function update() {
-                                                  const dateSeparator = element.closest(".date-separator");
-                                                  let previousDateSeparator = dateSeparator;
-                                                  do previousDateSeparator = previousDateSeparator.previousElementSibling;
-                                                  while (previousDateSeparator !== null && !previousDateSeparator.matches(".date-separator"));
-                                                  dateSeparator.hidden = previousDateSeparator !== null && dateSeparator.textContent === previousDateSeparator.textContent;
-                                                  window.setTimeout(update, 60 * 1000);
-                                                })();
-                                              `}"
-                                            ></time>
-                                            <hr
-                                              class="separator ${res.locals
-                                                .localCSS(css`
-                                                flex: 1;
-                                              `)}"
-                                            />
-                                          </div>
-                                        `
-                                      : html``}
-
                                     <div
                                       id="message--${message.reference}"
                                       data-content-source="${JSON.stringify(
@@ -15268,6 +15217,55 @@ export default async function courselore({
                                                 `)}"
                                               />
                                             </button>
+                                          `
+                                        : html``}
+                                      $${res.locals.conversation.type === "chat"
+                                        ? html`
+                                            <div
+                                              hidden
+                                              class="message--date-separator ${res.locals
+                                                .localCSS(css`
+                                                margin: var(--space--2)
+                                                  var(--space--0);
+                                                display: flex;
+                                                gap: var(--space--4);
+                                                align-items: center;
+                                              `)}"
+                                              onbeforeelupdated="${javascript`
+                                                return false;
+                                              `}"
+                                            >
+                                              <hr
+                                                class="separator ${res.locals
+                                                  .localCSS(css`
+                                                  flex: 1;
+                                                `)}"
+                                              />
+                                              <time
+                                                datetime="${new Date(
+                                                  message.createdAt
+                                                ).toISOString()}"
+                                                class="heading secondary"
+                                                oninteractive="${javascript`
+                                                  const element = this;
+                                                  leafac.relativizeDateElement(element);
+                                                  (function update() {
+                                                    const dateSeparators = [...document.querySelectorAll(".message--date-separator")];
+                                                    const thisDateSeparator = element.closest(".message--date-separator");
+                                                    const thisDateSeparatorIndex = dateSeparators.indexOf(thisDateSeparator);
+                                                    const previousDateSeparator = thisDateSeparatorIndex <= 0 ? undefined : dateSeparators[thisDateSeparatorIndex - 1];
+                                                    thisDateSeparator.hidden = previousDateSeparator !== undefined && previousDateSeparator.textContent === thisDateSeparator.textContent;
+                                                    window.setTimeout(update, 60 * 1000);
+                                                  })();
+                                                `}"
+                                              ></time>
+                                              <hr
+                                                class="separator ${res.locals
+                                                  .localCSS(css`
+                                                  flex: 1;
+                                                `)}"
+                                              />
+                                            </div>
                                           `
                                         : html``}
 
