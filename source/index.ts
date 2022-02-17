@@ -441,7 +441,78 @@ export default async function courselore({
                                         "conversations"."id" = "messages"."conversation"
                                 )
       );
-    `
+    `,
+    ...(FEATURE_PAGINATION
+      ? [
+          () => {
+            const makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork =
+              (text: string): string =>
+                text.replace(
+                  new RegExp(
+                    `(?<=${escapeStringRegexp(
+                      baseURL
+                    )}/courses/\\d+/conversations/\\d+)#message--(?=\\d+)`,
+                    "gi"
+                  ),
+                  "?messageReference="
+                );
+            for (const user of database.all<{
+              id: number;
+              biographySource: string | null;
+              biographyPreprocessed: string | null;
+            }>(
+              sql`
+                SELECT "id", "biographySource", "biographyPreprocessed"
+                FROM "users"
+                ORDER BY "id"
+              `
+            ))
+              if (
+                user.biographySource !== null &&
+                user.biographyPreprocessed !== null
+              )
+                database.run(
+                  sql`
+                    UPDATE "users"
+                    SET "biographySource" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
+                      user.biographySource
+                    )},
+                        "biographyPreprocessed" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
+                          user.biographyPreprocessed
+                        )}
+                    WHERE "id" = ${user.id}
+                  `
+                );
+            for (const message of database.all<{
+              id: number;
+              contentSource: string;
+              contentPreprocessed: string;
+              contentSearch: string;
+            }>(
+              sql`
+                SELECT "id", "contentSource", "contentPreprocessed", "contentSearch"
+                FROM "messages"
+                ORDER BY "id"
+              `
+            ))
+              database.run(
+                sql`
+                  UPDATE "messages"
+                  SET "contentSource" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
+                    message.contentSource
+                  )},
+                      "contentPreprocessed" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
+                        message.contentPreprocessed
+                      )},
+                      "contentSearch" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
+                        message.contentSearch
+                      )}
+                  WHERE "id" = ${message.id}
+                `
+              );
+          },
+        ]
+      : [])
   );
   app.once("close", () => {
     database.close();
