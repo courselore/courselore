@@ -1147,6 +1147,15 @@ export default async function courselore({
                                 )
                               : node;
                           },
+                          onNodeAdded(node) {
+                            const onNodeAdded =
+                              node.getAttribute?.("onnodeadded");
+                            if (typeof onNodeAdded === "string")
+                              new Function("node", onNodeAdded).call(
+                                node,
+                                node
+                              );
+                          },
                           onBeforeElUpdated(from, to) {
                             const onBeforeElUpdated =
                               from.getAttribute("onbeforeelupdated");
@@ -15122,7 +15131,7 @@ export default async function courselore({
                                       message !== messages[0]
                                         ? html`
                                             <button
-                                              class="button button--transparent ${res
+                                              class="message--new-separator button button--transparent ${res
                                                 .locals.localCSS(css`
                                                 width: calc(
                                                   var(--space--2) + 100% +
@@ -15144,6 +15153,9 @@ export default async function courselore({
                                               `}"
                                               onclick="${javascript`
                                                 this.remove();
+                                              `}"
+                                              onnodeadded="${javascript`
+                                                if (document.querySelectorAll(".message--new-separator").length > 1) this.remove();
                                               `}"
                                               onbeforenodediscarded="${javascript`
                                                 return false;
