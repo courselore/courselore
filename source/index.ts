@@ -13860,6 +13860,7 @@ export default async function courselore({
     {},
     {
       search?: string;
+      messageReference?: string;
       beforeMessageReference?: string;
       afterMessageReference?: string;
     },
@@ -14970,16 +14971,22 @@ export default async function courselore({
                 const firstUnreadMessage = messages.find(
                   (message) => message.reading === null
                 );
+                const shouldScrollToMessage =
+                  typeof req.query.messageReference === "string";
                 const shouldScrollToFirstUnreadMessage =
+                  !shouldScrollToMessage &&
                   firstUnreadMessage !== undefined &&
                   firstUnreadMessage !== messages[0];
                 const shouldScrollToBottom =
+                  !shouldScrollToMessage &&
                   !shouldScrollToFirstUnreadMessage &&
                   res.locals.conversation.type === "chat" &&
                   messages.length > 0 &&
                   afterMessage === undefined;
                 const shouldScroll =
-                  shouldScrollToFirstUnreadMessage || shouldScrollToBottom;
+                  shouldScrollToMessage ||
+                  shouldScrollToFirstUnreadMessage ||
+                  shouldScrollToBottom;
 
                 return html`
                   <div
@@ -15143,8 +15150,11 @@ export default async function courselore({
                                       `)}"
                                       oninteractive="${javascript`
                                         ${
-                                          shouldScrollToFirstUnreadMessage &&
-                                          message === firstUnreadMessage
+                                          (shouldScrollToMessage &&
+                                            req.query.messageReference ===
+                                              message.reference) ||
+                                          (shouldScrollToFirstUnreadMessage &&
+                                            message === firstUnreadMessage)
                                             ? javascript`
                                                 if (window.location.hash === "") window.setTimeout(() => { this.scrollIntoView(); }, 0);
                                               `
