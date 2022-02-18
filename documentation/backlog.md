@@ -3,8 +3,8 @@
 ### Performance
 
 - Framing.
-  - Pagination links.
   - Sidebar links.
+  - Pagination links.
 
 ---
 
