@@ -15223,8 +15223,8 @@ export default async function courselore({
                                         ? html`
                                             <div
                                               hidden
-                                              class="message--date-separator ${res.locals
-                                                .localCSS(css`
+                                              class="message--date-separator ${res
+                                                .locals.localCSS(css`
                                                 margin: var(--space--2)
                                                   var(--space--0);
                                                 display: flex;
@@ -15578,7 +15578,7 @@ export default async function courselore({
                                                             `}"
                                                             onclick="${javascript`
                                                               (async () => {
-                                                                await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${message.reference}");
+                                                                await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${message.reference}");
                                                                 this.copied.show();
                                                                 await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                                                                 this.copied.hide();
@@ -17543,7 +17543,7 @@ export default async function courselore({
       });
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.conversation.nextMessageReference}`
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.conversation.nextMessageReference}`
       );
 
       emitCourseRefresh(res.locals.course.id, req.query.eventSourceReference);
@@ -17664,7 +17664,7 @@ export default async function courselore({
       }
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
       );
 
       emitCourseRefresh(res.locals.course.id);
@@ -17733,7 +17733,7 @@ export default async function courselore({
       );
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
       );
 
       emitCourseRefresh(res.locals.course.id, req.query.eventSourceReference);
@@ -17768,7 +17768,7 @@ export default async function courselore({
       );
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
       );
 
       emitCourseRefresh(res.locals.course.id, req.query.eventSourceReference);
@@ -17864,7 +17864,7 @@ export default async function courselore({
         );
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
       );
 
       emitCourseRefresh(res.locals.course.id);
@@ -17897,7 +17897,7 @@ export default async function courselore({
       );
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}#message--${res.locals.message.reference}`
+        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
       );
 
       emitCourseRefresh(res.locals.course.id);
@@ -18037,7 +18037,7 @@ export default async function courselore({
                   <p>
                     <a
                       href="${baseURL}/courses/${res.locals.course
-                        .reference}/conversations/${conversation.reference}#message--${message.reference}"
+                        .reference}/conversations/${conversation.reference}?messageReference=${message.reference}"
                       >${message.authorEnrollment === "no-longer-enrolled"
                         ? "Someone who is no longer enrolled"
                         : message.anonymousAt !== null
@@ -20311,7 +20311,7 @@ ${contentSource}</textarea
               new RegExp(
                 `^${escapeStringRegexp(
                   baseURL
-                )}/courses/(\\d+)/conversations/(\\d+)(?:#message--(\\d+))?$`
+                )}/courses/(\\d+)/conversations/(\\d+)(?:\\?messageReference=(\\d+))?$`
               )
             );
             if (match === null) continue;
@@ -20482,7 +20482,7 @@ ${contentSource}</textarea
                       return html`<a
                         class="reference"
                         href="${baseURL}/courses/${res.locals.course!
-                          .reference}/conversations/${conversation.reference}#message--${message.reference}"
+                          .reference}/conversations/${conversation.reference}?messageReference=${message.reference}"
                         >${match}</a
                       >`;
                     }
@@ -20501,7 +20501,7 @@ ${contentSource}</textarea
               new RegExp(
                 `^${escapeStringRegexp(
                   baseURL
-                )}/courses/(\\d+)/conversations/(\\d+)(?:#message--(\\d+))?$`
+                )}/courses/(\\d+)/conversations/(\\d+)(?:\\?messageReference=(\\d+))?$`
               )
             );
             if (hrefMatch === null) continue;
