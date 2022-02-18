@@ -5,8 +5,8 @@
 - Pagination.
   - Deep links
     - `#message--`
-    - Make `?messageReference` cause scroll.
     - Omit messageReference in some links
+    - Make `?messageReference` cause scroll.
   - Load pages on scroll instead of button
   - Deal with delete messages/conversations at the edges (before and after)
     - `CAST("reference" AS INTEGER) >= CAST(${req.query.beforeMessageReference} AS INTEGER)`
