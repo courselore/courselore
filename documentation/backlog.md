@@ -3,13 +3,16 @@
 ### Performance
 
 - Pagination.
-  - Deep links
-    - Go to the right page.
+  - Smarter default page for when the page isn’t specified explicitly:
+    - Messages
+      - Deep links should go to the page containing the referred message
+      - If there is no deep link but there are unread messages, go to page containing the first unread message
+    - Conversations
+      - Page containing the currently open conversation?
   - Load pages on scroll instead of button
   - Deal with delete messages/conversations at the edges (before and after)
     - `CAST("reference" AS INTEGER) >= CAST(${req.query.beforeMessageReference} AS INTEGER)`
       - Create indices for `CAST("reference" AS INTEGER)` or convert `"reference"` into number (and then create an index for that!).
-  - On first loading a conversation without a deep link, go to first unread message
   - On sending message on non-chat, it’s scrolling back to the first page.
 - Framing.
   - Pagination links.
