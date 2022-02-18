@@ -5,7 +5,6 @@
 - Pagination.
   - Deep links
     - Make `?messageReference` cause scroll.
-      - `window.location.hash`
       - Confirm that the highlight of the selected message works (`:target`).
   - Load pages on scroll instead of button
   - Deal with delete messages/conversations at the edges (before and after)
