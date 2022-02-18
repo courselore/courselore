@@ -11947,14 +11947,14 @@ export default async function courselore({
                                       `}"
                                     `
                                   : html``}
-                                  onclick="${javascript`
-                                    (async () => {
-                                      if (event.which > 1 || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
-                                      event.preventDefault();
-                                      window.history.pushState(undefined, "", this.getAttribute("href"));
-                                      await eventSourceRefresh(await fetch(this.getAttribute("href")));
-                                    })();
-                                  `}"
+                                onclick="${javascript`
+                                  (async () => {
+                                    if (event.which > 1 || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+                                    event.preventDefault();
+                                    window.history.pushState(undefined, "", this.getAttribute("href"));
+                                    await eventSourceRefresh(await fetch(this.getAttribute("href")));
+                                  })();
+                                `}"
                               >
                                 <div
                                   class="${res.locals.localCSS(css`
