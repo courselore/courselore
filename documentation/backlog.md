@@ -4,7 +4,6 @@
 
 - Pagination.
   - Deep links
-    - Omit messageReference in some links
     - Make `?messageReference` cause scroll.
       - Confirm that the highlight of the selected message works (`:target`).
   - Load pages on scroll instead of button
