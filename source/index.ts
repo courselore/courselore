@@ -15020,11 +15020,10 @@ export default async function courselore({
                               ${
                                 shouldScrollToBottom
                                   ? javascript`
-                                      if (window.location.hash === "")
-                                        window.setTimeout(() => {
-                                          this.scrollTop = this.scrollHeight;
-                                          this.shouldScrollToBottomOnRefresh = true;
-                                        }, 0);
+                                      window.setTimeout(() => {
+                                        this.scrollTop = this.scrollHeight;
+                                        this.shouldScrollToBottomOnRefresh = true;
+                                      }, 0);
                                     `
                                   : javascript``
                               }
@@ -15156,7 +15155,7 @@ export default async function courselore({
                                           (shouldScrollToFirstUnreadMessage &&
                                             message === firstUnreadMessage)
                                             ? javascript`
-                                                if (window.location.hash === "") window.setTimeout(() => { this.scrollIntoView(); }, 0);
+                                                window.setTimeout(() => { this.scrollIntoView(); }, 0);
                                               `
                                             : javascript``
                                         }
