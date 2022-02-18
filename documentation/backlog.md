@@ -5,6 +5,8 @@
 - Framing.
   - Sidebar links.
   - Pagination links.
+    - Conversations in sidebar.
+    - Messages in conversation.
 
 ---
 
