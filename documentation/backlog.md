@@ -2,6 +2,12 @@
 
 ### Performance
 
+- Framing.
+  - Pagination links.
+  - Sidebar links.
+
+---
+
 - Pagination.
   - Smarter default page for when the page isn’t specified explicitly:
     - Messages
@@ -14,9 +20,6 @@
     - `CAST("reference" AS INTEGER) >= CAST(${req.query.beforeMessageReference} AS INTEGER)`
       - Create indices for `CAST("reference" AS INTEGER)` or convert `"reference"` into number (and then create an index for that!).
   - On sending message on non-chat, it’s scrolling back to the first page.
-- Framing.
-  - Pagination links.
-  - Sidebar links.
 
 ---
 
