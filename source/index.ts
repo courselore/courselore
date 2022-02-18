@@ -11951,7 +11951,9 @@ export default async function courselore({
                                   onclick="${javascript`
                                     (async () => {
                                       if (event.which > 1 || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
-                                      const href = ${JSON.stringify(
+                                      event.preventDefault();
+                                      window.history.pushState(undefined, "", this.getAttribute("href"));
+                                      await eventSourceRefresh(await fetch(${JSON.stringify(
                                         `${baseURL}/courses/${
                                           res.locals.course.reference
                                         }/conversations/${
@@ -11973,10 +11975,7 @@ export default async function courselore({
                                           ),
                                           { addQueryPrefix: true }
                                         )}`
-                                      )};
-                                      event.preventDefault();
-                                      window.history.pushState(undefined, "", href);
-                                      await eventSourceRefresh(await fetch(href));
+                                      )}));
                                     })();
                                   `}"
                                 >
