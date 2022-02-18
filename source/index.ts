@@ -11305,13 +11305,6 @@ export default async function courselore({
                       { addQueryPrefix: true }
                     )}"
                     class="button button--transparent"
-                    onclick="${javascript`
-                      (async () => {
-                        event.preventDefault();
-                        window.history.pushState(undefined, "", this.getAttribute("href"));
-                        await eventSourceRefresh(await fetch(this.getAttribute("href")));
-                      })();
-                    `}"
                   >
                     <i class="bi bi-chat-left-text"></i>
                     Start a New Conversation

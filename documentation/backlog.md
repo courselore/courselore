@@ -8,6 +8,7 @@
     - Conversations in sidebar.
     - Messages in conversation.
 - `leafac.warnAboutLosingInputs()` doesn’t work when using `eventSourceRefresh`.
+- Should `onpopstate` just refersh the page?
 
 ---
 
