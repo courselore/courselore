@@ -1291,6 +1291,12 @@ export default async function courselore({
                         break;
                     }
                   };
+
+                  /* TODO
+                  window.onpopstate = async () => {
+                    await eventSourceRefresh(await fetch(document.location));
+                  };
+                  */
                 </script>
               `
             : html``}
@@ -11301,6 +11307,15 @@ export default async function courselore({
                       { addQueryPrefix: true }
                     )}"
                     class="button button--transparent"
+                    onclick="${javascript`
+                      /* TODO
+                      (async () => {
+                        event.preventDefault();
+                        window.history.pushState(undefined, "", this.getAttribute("href"));
+                        await eventSourceRefresh(await fetch(this.getAttribute("href")));
+                      })();
+                      */
+                    `}"
                   >
                     <i class="bi bi-chat-left-text"></i>
                     Start a New Conversation
