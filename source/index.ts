@@ -11951,9 +11951,32 @@ export default async function courselore({
                                   onclick="${javascript`
                                     (async () => {
                                       if (event.which > 1 || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+                                      const href = ${JSON.stringify(
+                                        `${baseURL}/courses/${
+                                          res.locals.course.reference
+                                        }/conversations/${
+                                          conversation.reference
+                                        }${qs.stringify(
+                                          lodash.omit(
+                                            {
+                                              ...req.query,
+                                              scrollToConversation: false,
+                                              messageReference:
+                                                searchResult?.message
+                                                  ?.reference,
+                                            },
+                                            [
+                                              "conversationLayoutSidebarOpenOnSmallScreen",
+                                              "beforeMessageReference",
+                                              "afterMessageReference",
+                                            ]
+                                          ),
+                                          { addQueryPrefix: true }
+                                        )}`
+                                      )};
                                       event.preventDefault();
-                                      window.history.pushState(undefined, "", this.getAttribute("href"));
-                                      await eventSourceRefresh(await fetch(this.getAttribute("href")));
+                                      window.history.pushState(undefined, "", href);
+                                      await eventSourceRefresh(await fetch(href));
                                     })();
                                   `}"
                                 >

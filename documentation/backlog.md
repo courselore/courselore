@@ -3,7 +3,6 @@
 ### Performance
 
 - Framing.
-  - Sidebar links.
   - Pagination links.
     - Conversations in sidebar.
     - Messages in conversation.
@@ -303,6 +302,7 @@
 
 ### Interface Details
 
+- Artificial progress bar on hijacked navigation, similar to Turbo Drive.
 - Live-updates:
   - Improve the refreshing mechanism
     - Only send refresh events to people who need it (those who have open a page that’s affected)
