@@ -15302,31 +15302,36 @@ export default async function courselore({
                                                 gap: var(--space--2);
                                               `}
 
-                                          --color--message--highlight-background-on-target: var(
-                                            --color--amber--200
-                                          );
-                                          @media (prefers-color-scheme: dark) {
-                                            --color--message--highlight-background-on-target: var(
-                                              --color--amber--900
-                                            );
-                                          }
-                                          @keyframes message--highlight-background-on-target {
-                                            from {
-                                              background-color: var(
-                                                --color--message--highlight-background-on-target
-                                              );
-                                            }
-                                            to {
-                                              background-color: transparent;
-                                            }
-                                          }
-                                          :target > & {
-                                            animation: message--highlight-background-on-target
-                                              var(--transition-duration--1000)
-                                              var(
-                                                --transition-timing-function--in-out
-                                              );
-                                          }
+                                          ${shouldScrollToMessage &&
+                                          req.query.messageReference ===
+                                            message.reference
+                                            ? css`
+                                                --color--message--highlight-background-on-target: var(
+                                                  --color--amber--200
+                                                );
+                                                @media (prefers-color-scheme: dark) {
+                                                  --color--message--highlight-background-on-target: var(
+                                                    --color--amber--900
+                                                  );
+                                                }
+                                                @keyframes message--highlight-background-on-target {
+                                                  from {
+                                                    background-color: var(
+                                                      --color--message--highlight-background-on-target
+                                                    );
+                                                  }
+                                                  to {
+                                                    background-color: transparent;
+                                                  }
+                                                }
+                                                animation: message--highlight-background-on-target
+                                                  2s
+                                                  var(
+                                                    --transition-timing-function--in-out
+                                                  );
+                                              `
+                                            : css``}
+                                         
 
                                           ${res.locals.conversation.type ===
                                           "chat"

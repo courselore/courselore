@@ -4,8 +4,6 @@
 
 - Pagination.
   - Deep links
-    - Make `?messageReference` cause scroll.
-      - Confirm that the highlight of the selected message works (`:target`).
     - Go to the right page.
   - Load pages on scroll instead of button
   - Deal with delete messages/conversations at the edges (before and after)
