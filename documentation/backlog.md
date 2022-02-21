@@ -3,9 +3,24 @@
 ### Performance
 
 - Do the Turbo Drive thing everywhere.
-  - `leafac.warnAboutLosingInputs()` doesn’t work when using `eventSourceRefresh`.
+  - Reasoning:
+    - It isn’t only for performance, but also to keep the state of the world on the client-side. For example, the scrolling position on the sidebar.
+    - Existing solutions such as https://github.com/hotwired/turbo & https://github.com/MoOx/pjax won’t do it because we want to use Morphdom.
+  - Features
+    - Capture
+      - Internal links
+      - Form submissions
+    - Cache
+    - Scroll
+    - Progress bar
+    - Selective fetching: the server doesn’t need to send the whole page all the time. It can send only what changed.
+    - `leafac.warnAboutLosingInputs()` doesn’t work when using `eventSourceRefresh`.
+    - `autofocus`.
   - Should `onpopstate` just refersh the page?
-  - https://github.com/MoOx/pjax
+  - References
+    - https://github.com/MoOx/pjax
+    - https://github.com/hotwired/turbo
+    - https://github.com/falsandtru/pjax-api
 - Framing.
   - Pagination links.
     - Conversations in sidebar.
