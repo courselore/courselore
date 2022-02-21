@@ -2,6 +2,82 @@
 
 ### Performance
 
+- Module bundler:
+  - https://www.npmtrends.com/esbuild-vs-fuse-box-vs-parcel-vs-rollup-vs-vite-vs-webpack-vs-@swc/core
+  - https://github.com/fregante/indent-textarea
+  - Writing to the `static/` folder is a bad idea because it entails writing to the `caxa` directory
+  - I might as well just bundle dependencies like indent-textarea as needed…
+    - But then we lose minification, and may bundle dependencies multiple times (text-field-edit)
+    - Write to a temporary location?
+
+```javascript
+import esbuild from "esbuild";
+import url from "node:url";
+
+await esbuild.build({
+  stdin: {
+    contents: `
+      import autosize from "autosize";
+      import tippy from "tippy.js";
+      import * as textFieldEdit from "text-field-edit";
+      
+      window.autosize = autosize;
+      
+      autosize(document.querySelectorAll("textarea"));
+      tippy(document.querySelector("a"));
+      new Function("123");
+      textFieldEdit.replace(document.querySelector("a"), "hi", "hello");
+    `,
+    resolveDir: url.fileURLToPath(new URL("..", import.meta.url)),
+  },
+  bundle: true,
+  outfile: url.fileURLToPath(
+    new URL("../distribution/javascript/global.js", import.meta.url)
+  ),
+  minify: true,
+});
+
+await esbuild.build({
+  stdin: {
+    contents: `
+      @import "katex/dist/katex.css";
+      @import "@fontsource/public-sans/100-italic.css";
+      @import "@fontsource/public-sans/100.css";
+      @import "@fontsource/public-sans/200-italic.css";
+      @import "@fontsource/public-sans/200.css";
+      @import "@fontsource/public-sans/300-italic.css";
+      @import "@fontsource/public-sans/300.css";
+      @import "@fontsource/public-sans/400-italic.css";
+      @import "@fontsource/public-sans/400.css";
+      @import "@fontsource/public-sans/500-italic.css";
+      @import "@fontsource/public-sans/500.css";
+      @import "@fontsource/public-sans/600-italic.css";
+      @import "@fontsource/public-sans/600.css";
+      @import "@fontsource/public-sans/700-italic.css";
+      @import "@fontsource/public-sans/700.css";
+      @import "@fontsource/public-sans/800-italic.css";
+      @import "@fontsource/public-sans/800.css";
+      @import "@fontsource/public-sans/900-italic.css";
+      @import "@fontsource/public-sans/900.css";
+      
+      body {
+        background-color: blue;
+      }
+    `,
+    resolveDir: url.fileURLToPath(new URL("..", import.meta.url)),
+    loader: "css",
+  },
+  bundle: true,
+  outfile: url.fileURLToPath(
+    new URL("../distribution/css/global.css", import.meta.url)
+  ),
+  loader: { ".woff": "file", ".woff2": "file", ".ttf": "file" },
+  minify: true,
+});
+```
+
+---
+
 - Do the Turbo Drive thing everywhere.
   - Reasoning:
     - It isn’t only for performance, but also to keep the state of the world on the client-side. For example, the scrolling position on the sidebar.
