@@ -303,6 +303,7 @@
 
 ### Interface Details
 
+- Redesign the presentation of submenus, for example, “Conversations”, on mobile. Try a hamburger menu.
 - Artificial progress bar on hijacked navigation, similar to Turbo Drive.
 - Live-updates:
   - Improve the refreshing mechanism

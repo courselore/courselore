@@ -1,6 +1,19 @@
 # Meeting Notes
 
 <details>
+<summary>2021-02-19</summary>
+
+- This week’s progress:
+  - Worked out many edge cases of pagination (for example, I had to change permanent links 🤷).
+  - Started framing (for example, the sidebar doesn’t jump around when you go to a different conversation).
+  - Improved types & tests to prevent subtle bugs.
+  - Fixed issues with the “New” indicator & Firefox not resetting the textarea.
+- Other things we talked about:
+  - Redesign the presentation of submenus, for example, “Conversations”, on mobile. Try a hamburger menu.
+
+</details>
+
+<details>
 <summary>2021-02-12</summary>
 
 - This week’s progress:
