@@ -2,6 +2,10 @@
 
 ### Performance
 
+- Check back on https://community.chocolatey.org/packages/nvm/1.1.9#discussion & https://community.chocolatey.org/packages/nvm.portable/1.1.9
+
+---
+
 - “Unbundle” JavaScript & CSS
 - https://github.com/fregante/indent-textarea
 
