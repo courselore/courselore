@@ -361,6 +361,7 @@
 
 ### Infrastructure
 
+- Serve static files with Caddy.
 - “Demonstration Mode” didn’t work for me on Edge, on `try.courselore.org` (tried other browsers and on local machine an it worked (!)).
 - Mark all conversations as read may be slow because it does a bunch of in `INSERT`s.
 - Move some of the non-application-specific server-side code into a library (for example, cookie settings, server-sent events, logging, and that sort of thing).
