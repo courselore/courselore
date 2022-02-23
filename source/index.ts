@@ -2251,80 +2251,151 @@ export default async function courselore({
     })()
   );
 
-  const globalJavaScriptProcessed = javascript`
-    ${await fs.readFile(
-      new URL(
-        "../static/node_modules/@popperjs/core/dist/umd/popper.min.js",
-        import.meta.url
-      ),
-      "utf-8"
-    )}
-    ${await fs.readFile(
-      new URL(
-        "../static/node_modules/tippy.js/dist/tippy-bundle.umd.min.js",
-        import.meta.url
-      ),
-      "utf-8"
-    )}
-    ${await fs.readFile(
-      new URL(
-        "../static/node_modules/mousetrap/mousetrap.min.js",
-        import.meta.url
-      ),
-      "utf-8"
-    )}
-    ${await fs.readFile(
-      new URL(
-        "../static/node_modules/textarea-caret/index.js",
-        import.meta.url
-      ),
-      "utf-8"
-    )}
-    ${await fs.readFile(
-      new URL(
-        "../static/node_modules/scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js",
-        import.meta.url
-      ),
-      "utf-8"
-    )}
-    ${await fs.readFile(
-      new URL(
-        "../static/node_modules/autosize/dist/autosize.min.js",
-        import.meta.url
-      ),
-      "utf-8"
-    )}
-    ${await fs.readFile(
-      new URL(
-        "../static/node_modules/morphdom/dist/morphdom-umd.min.js",
-        import.meta.url
-      ),
-      "utf-8"
-    )}
-    ${globalJavaScript}
-
-    leafac.evaluateOnInteractive();
-    leafac.customFormValidation();
-    leafac.warnAboutLosingInputs();
-    leafac.disableButtonsOnSubmit();
-    leafac.tippySetDefaultProps();
-    ${
-      liveReload
-        ? javascript`
-            leafac.liveReload();
-          `
-        : javascript``
-    }
-  `;
-  const globalJavaScriptPath = `/global--${crypto
-    .createHash("sha256")
-    .update(globalJavaScriptProcessed)
-    .digest("hex")}.js`;
   app.get<{}, CSS, {}, {}, BaseMiddlewareLocals>(
-    globalJavaScriptPath,
-    (req, res) => {
-      res.type("js").send(globalJavaScriptProcessed);
-    }
+    "/global.js",
+    (() => {
+      const globalJavaScript = javascript`
+        import ___ from "${baseURL}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js";
+        import ___ from "${baseURL}/node_modules/mousetrap/mousetrap.min.js";
+        import ___ from "${baseURL}/node_modules/textarea-caret/index.js";
+        import ___ from "${baseURL}/node_modules/scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js";
+        import ___ from "${baseURL}/node_modules/autosize/dist/autosize.min.js";
+        import ___ from "${baseURL}/node_modules/morphdom/dist/morphdom-umd.min.js";
+        ${globalJavaScript}
+    
+        leafac.evaluateOnInteractive();
+        leafac.customFormValidation();
+        leafac.warnAboutLosingInputs();
+        leafac.disableButtonsOnSubmit();
+        leafac.tippySetDefaultProps();
+        ${
+          liveReload
+            ? javascript`
+                leafac.liveReload();
+              `
+            : javascript``
+        }
+
+
+
+
+
+
+
+tippy.js/dist/tippy.css
+
+
+
+
+
+import * as textFieldEdit from "${baseURL}/node_modules/text-field-edit/index.js";
+            window.textFieldEdit = textFieldEdit;
+
+
+            const eventSourceRefresh = async (response) => {
+              switch (response.status) {
+                case 200:
+                  const refreshedDocument =
+                    new DOMParser().parseFromString(
+                      await response.text(),
+                      "text/html"
+                    );
+                  document.head.append(
+                    ...refreshedDocument.head.querySelectorAll("style")
+                  );
+                  morphdom(document.body, refreshedDocument.body, {
+                    onBeforeNodeAdded(node) {
+                      const onBeforeNodeAdded =
+                        node.getAttribute?.("onbeforenodeadded");
+                      return typeof onBeforeNodeAdded === "string"
+                        ? new Function("node", onBeforeNodeAdded).call(
+                            node,
+                            node
+                          )
+                        : node;
+                    },
+                    onNodeAdded(node) {
+                      const onNodeAdded =
+                        node.getAttribute?.("onnodeadded");
+                      if (typeof onNodeAdded === "string")
+                        new Function("node", onNodeAdded).call(
+                          node,
+                          node
+                        );
+                    },
+                    onBeforeElUpdated(from, to) {
+                      const onBeforeElUpdated =
+                        from.getAttribute("onbeforeelupdated");
+                      return typeof onBeforeElUpdated === "string"
+                        ? new Function(
+                            "from",
+                            "to",
+                            onBeforeElUpdated
+                          ).call(from, from, to)
+                        : !from.matches("input, textarea, select");
+                    },
+                    onElUpdated(element) {
+                      const onElUpdated =
+                        element.getAttribute("onelupdated");
+                      if (typeof onElUpdated === "string")
+                        new Function("element", onElUpdated).call(
+                          element,
+                          element
+                        );
+                    },
+                    onBeforeNodeDiscarded(node) {
+                      const onBeforeNodeDiscarded = node.getAttribute?.(
+                        "onbeforenodediscarded"
+                      );
+                      return typeof onBeforeNodeDiscarded === "string"
+                        ? new Function(
+                            "node",
+                            onBeforeNodeDiscarded
+                          ).call(node, node)
+                        : !node.matches?.("[data-tippy-root]");
+                    },
+                    onBeforeElChildrenUpdated(from, to) {
+                      const onBeforeElChildrenUpdated = from.getAttribute(
+                        "onbeforeelchildrenupdated"
+                      );
+                      return typeof onBeforeElChildrenUpdated === "string"
+                        ? new Function(
+                            "from",
+                            "to",
+                            onBeforeElChildrenUpdated
+                          ).call(from, from, to)
+                        : true;
+                    },
+                  });
+                  leafac.evaluateElementsAttribute(document);
+                  leafac.evaluateElementsAttribute(
+                    document,
+                    "onrefresh",
+                    true
+                  );
+                  break;
+
+                case 404:
+                  alert(
+                    "This page has been removed.\\n\\nYou’ll be redirected now."
+                  );
+                  window.location.href = $${JSON.stringify(baseURL)};
+                  break;
+
+                default:
+                  console.error(response);
+                  break;
+              }
+            };
+
+            window.onpopstate = async () => {
+              await eventSourceRefresh(await fetch(document.location));
+            };
+      `;
+      return (req, res) => {
+        res.type("js").send(globalJavaScript);
+      };
+    })()
   );
 
   const boxLayout = ({
