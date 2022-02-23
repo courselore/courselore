@@ -32,7 +32,7 @@ The best way to get started is to run a pre-compiled Courselore binary on your m
 1. Install [Chocolatey](https://chocolatey.org) and the following packages:
 
    ```console
-   > choco install nvm python visualstudio2022-workload-vctools vscode git
+   > choco install nvm.portable python visualstudio2022-workload-vctools vscode git
    ```
 
    > **Note:** You must run PowerShell as administrator for Chocolatey to work.
@@ -43,7 +43,7 @@ The best way to get started is to run a pre-compiled Courselore binary on your m
 
    > **Package Breakdown**
    >
-   > - [NVM for Windows (`nvm`)](https://github.com/coreybutler/nvm-windows): A manager of multiple Node.js installations. While in theory you could install just the latest Node.js version directly from Chocolatey, in practice you’ll often need to test something in different versions of Node.js, particularly when you contribute to the packages on which Courselore depends, so it’s better to use NVM for Windows from the beginning.
+   > - [NVM for Windows (`nvm.portable`)](https://github.com/coreybutler/nvm-windows): A manager of multiple Node.js installations. While in theory you could install just the latest Node.js version directly from Chocolatey, in practice you’ll often need to test something in different versions of Node.js, particularly when you contribute to the packages on which Courselore depends, so it’s better to use NVM for Windows from the beginning.
    >
    > - [Python (`python`)](https://www.python.org) and [Visual Studio C++ Build Tools (`visualstudio2022-workload-vctools`)](https://visualstudio.microsoft.com/visual-cpp-build-tools/): These tools are necessary to build native Node.js extensions written in C/C++.
    >
