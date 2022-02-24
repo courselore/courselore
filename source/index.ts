@@ -1344,6 +1344,7 @@ export default async function courselore({
           <script src="${baseURL}/node_modules/text-field-edit/index.umd.js"></script>
           <script src="${baseURL}/node_modules/indent-textarea/index.umd.js"></script>
           <script src="${baseURL}/node_modules/@leafac/javascript/distribution/browser.js"></script>
+          <script src="${baseURL}/leafac--javascript.js"></script>
           <script src="${baseURL}/global.js"></script>
           $${res?.locals.eventSource
             ? html`

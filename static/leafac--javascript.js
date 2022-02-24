@@ -1,3 +1,5 @@
+// This file is here for now as it’s still under development. It should be moved to https://github.com/leafac/javascript/
+
 export function mount(element, partialString) {
   const partialHTML = new DOMParser().parseFromString(
     partialString,
