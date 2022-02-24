@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "postinstall": "rollup node_modules/text-field-edit/index.js --file node_modules/text-field-edit/index.umd.js --format umd --name textFieldEdit && rollup node_modules/indent-textarea/index.js --file node_modules/indent-textarea/index.umd.js --format umd --name indentTextarea"
+    "postinstall": "rollup node_modules/text-field-edit/index.js --file node_modules/text-field-edit/index.umd.js --format umd --name textFieldEdit && rollup node_modules/indent-textarea/index.js --file node_modules/indent-textarea/index.umd.js --format umd --name indentTextarea --plugin @rollup/plugin-node-resolve"
   },
   "dependencies": {
     "@fontsource/jetbrains-mono": "^4.5.3",

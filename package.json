@@ -71,6 +71,7 @@
   },
   "caddy": "2.4.6",
   "devDependencies": {
+    "@rollup/plugin-node-resolve": "^13.1.3",
     "@types/cookie-parser": "^1.4.2",
     "@types/csurf": "^1.11.2",
     "@types/dedent": "^0.7.0",
