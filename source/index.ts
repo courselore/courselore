@@ -581,7 +581,7 @@ export default async function courselore({
     const baseLayoutBody = html`
       <body
         class="${res.locals.localCSS(css`
-          font-family: "public-sans", var(--font-family--sans-serif);
+          font-family: "Public Sans", var(--font-family--sans-serif);
           font-size: var(--font-size--sm);
           line-height: var(--line-height--sm);
           color: var(--color--gray--medium--700);
@@ -1171,11 +1171,178 @@ export default async function courselore({
             content="Communication Platform for Education"
           />
 
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/public-sans/100-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/public-sans/100.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/public-sans/200-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/public-sans/200.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/public-sans/300-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/public-sans/300.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/public-sans/400-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/public-sans/400.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/public-sans/500-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/public-sans/500.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/public-sans/600-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/public-sans/600.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/public-sans/700-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/public-sans/700.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/public-sans/800-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/public-sans/800.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/public-sans/900-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/public-sans/900.css"
+          />
+
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/100-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/100.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/200-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/200.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/300-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/300.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/400-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/400.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/500-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/500.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/600-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/600.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/700-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/700.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/800-italic.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/800.css"
+          />
+
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/bootstrap-icons/font/bootstrap-icons.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/katex/dist/katex.min.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/tippy.js/dist/svg-arrow.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/tippy.js/dist/border.css"
+          />
+          <link
+            rel="stylesheet"
+            href="${baseURL}/node_modules/@leafac/css/distribution/browser.css"
+          />
           <link rel="stylesheet" href="${baseURL}/global.css" />
           <style>
             $${res.locals.localCSS.toString()}
           </style>
-          <script src="${baseURL}/global.js" type="module"></script>
+
+          <script src="${baseURL}/node_modules/autosize/dist/autosize.min.js"></script>
+          <script src="${baseURL}/node_modules/morphdom/dist/morphdom-umd.min.js"></script>
+          <script src="${baseURL}/node_modules/mousetrap/mousetrap.min.js"></script>
+          <script src="${baseURL}/node_modules/scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js"></script>
+          <script src="${baseURL}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
+          <script src="${baseURL}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
+          <script src="${baseURL}/node_modules/textarea-caret/index.js"></script>
+          <script src="${baseURL}/node_modules/@leafac/javascript/distribution/browser.js"></script>
+          <script src="${baseURL}/global.js"></script>
           $${res?.locals.eventSource
             ? html`
                 <script>
@@ -1200,48 +1367,6 @@ export default async function courselore({
     "/global.css",
     (() => {
       const globalCSS = processCSS(css`
-        @import "${baseURL}/node_modules/@fontsource/public-sans/100-italic.css";
-        @import "${baseURL}/node_modules/@fontsource/public-sans/100.css";
-        @import "${baseURL}/node_modules/@fontsource/public-sans/200-italic.css";
-        @import "${baseURL}/node_modules/@fontsource/public-sans/200.css";
-        @import "${baseURL}/node_modules/@fontsource/public-sans/300-italic.css";
-        @import "${baseURL}/node_modules/@fontsource/public-sans/300.css";
-        @import "${baseURL}/node_modules/@fontsource/public-sans/400-italic.css";
-        @import "${baseURL}/node_modules/@fontsource/public-sans/400.css";
-        @import "${baseURL}/node_modules/@fontsource/public-sans/500-italic.css";
-        @import "${baseURL}/node_modules/@fontsource/public-sans/500.css";
-        @import "${baseURL}/node_modules/@fontsource/public-sans/600-italic.css";
-        @import "${baseURL}/node_modules/@fontsource/public-sans/600.css";
-        @import "${baseURL}/node_modules/@fontsource/public-sans/700-italic.css";
-        @import "${baseURL}/node_modules/@fontsource/public-sans/700.css";
-        @import "${baseURL}/node_modules/@fontsource/public-sans/800-italic.css";
-        @import "${baseURL}/node_modules/@fontsource/public-sans/800.css";
-        @import "${baseURL}/node_modules/@fontsource/public-sans/900-italic.css";
-        @import "${baseURL}/node_modules/@fontsource/public-sans/900.css";
-
-        @import "${baseURL}/node_modules/@fontsource/jetbrains-mono/100-italic.css";
-        @import "${baseURL}/node_modules/@fontsource/jetbrains-mono/100.css";
-        @import "${baseURL}/node_modules/@fontsource/jetbrains-mono/200-italic.css";
-        @import "${baseURL}/node_modules/@fontsource/jetbrains-mono/200.css";
-        @import "${baseURL}/node_modules/@fontsource/jetbrains-mono/300-italic.css";
-        @import "${baseURL}/node_modules/@fontsource/jetbrains-mono/300.css";
-        @import "${baseURL}/node_modules/@fontsource/jetbrains-mono/400-italic.css";
-        @import "${baseURL}/node_modules/@fontsource/jetbrains-mono/400.css";
-        @import "${baseURL}/node_modules/@fontsource/jetbrains-mono/500-italic.css";
-        @import "${baseURL}/node_modules/@fontsource/jetbrains-mono/500.css";
-        @import "${baseURL}/node_modules/@fontsource/jetbrains-mono/600-italic.css";
-        @import "${baseURL}/node_modules/@fontsource/jetbrains-mono/600.css";
-        @import "${baseURL}/node_modules/@fontsource/jetbrains-mono/700-italic.css";
-        @import "${baseURL}/node_modules/@fontsource/jetbrains-mono/700.css";
-        @import "${baseURL}/node_modules/@fontsource/jetbrains-mono/800-italic.css";
-        @import "${baseURL}/node_modules/@fontsource/jetbrains-mono/800.css";
-
-        @import "${baseURL}/node_modules/bootstrap-icons/font/bootstrap-icons.css";
-        @import "${baseURL}/node_modules/katex/dist/katex.min.css";
-        @import "${baseURL}/node_modules/tippy.js/dist/svg-arrow.css";
-        @import "${baseURL}/node_modules/tippy.js/dist/border.css";
-        @import "${baseURL}/node_modules/@leafac/css/distribution/browser.css";
-
         .label {
           display: flex;
           flex-direction: column;
@@ -1678,7 +1803,7 @@ export default async function courselore({
 
         .code,
         .pre > code {
-          font-family: "jetbrains-mono", var(--font-family--monospace);
+          font-family: "JetBrains Mono", var(--font-family--monospace);
           font-variant-ligatures: none;
         }
 
@@ -1725,7 +1850,7 @@ export default async function courselore({
             cursor: pointer;
             &::before {
               content: "\\f275";
-              font-family: bootstrap-icons !important;
+              font-family: "bootstrap-icons" !important;
               font-size: var(--font-size--xs);
               line-height: var(--line-height--xs);
               margin-right: var(--space--2);
@@ -1995,7 +2120,7 @@ export default async function courselore({
           tt,
           kbd,
           samp {
-            font-family: "jetbrains-mono", var(--font-family--monospace);
+            font-family: "JetBrains Mono", var(--font-family--monospace);
             font-variant-ligatures: none;
             background-color: var(--color--gray--medium--200);
             @media (prefers-color-scheme: dark) {
@@ -2165,7 +2290,7 @@ export default async function courselore({
               cursor: pointer;
               &::before {
                 content: "\\f275";
-                font-family: bootstrap-icons !important;
+                font-family: "bootstrap-icons" !important;
                 font-size: var(--font-size--xs);
                 line-height: var(--line-height--xs);
                 margin-right: var(--space--2);
@@ -2236,7 +2361,7 @@ export default async function courselore({
             align-items: center;
             &::before {
               content: "\\f633";
-              font-family: bootstrap-icons !important;
+              font-family: "bootstrap-icons" !important;
             }
           }
 
@@ -19140,7 +19265,7 @@ export default async function courselore({
                 }
 
                 &.content-editor--write--textarea--programmer-mode {
-                  font-family: "jetbrains-mono", var(--font-family--monospace);
+                  font-family: "JetBrains Mono", var(--font-family--monospace);
                   font-variant-ligatures: none;
                 }
               `)}"
