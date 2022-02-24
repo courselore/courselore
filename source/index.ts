@@ -1341,6 +1341,7 @@ export default async function courselore({
           <script src="${baseURL}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
           <script src="${baseURL}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
           <script src="${baseURL}/node_modules/textarea-caret/index.js"></script>
+          <script src="${baseURL}/node_modules/text-field-edit/index.umd.js"></script>
           <script src="${baseURL}/node_modules/@leafac/javascript/distribution/browser.js"></script>
           <script src="${baseURL}/global.js"></script>
           $${res?.locals.eventSource
