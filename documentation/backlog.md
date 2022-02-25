@@ -2,10 +2,6 @@
 
 ### Performance
 
-- Check back on https://community.chocolatey.org/packages/nvm/1.1.9#discussion & https://community.chocolatey.org/packages/nvm.portable/1.1.9
-
----
-
 - Change “Hosted Installation” into Sign in and Sign up.
 
 ---
@@ -370,6 +366,8 @@
 
 ### Infrastructure
 
+- Check back on https://community.chocolatey.org/packages/nvm/1.1.9#discussion & https://community.chocolatey.org/packages/nvm.portable/1.1.9
+  - If 1.1.9 hasn’t been released, add `--version=1.1.9` to installation instructions
 - Use `` javascript(html`<script>...</script>`) `` instead of `` javascript`...` `` because it works with Prettier (and syntax highlighting, to some extent).
 - `<script async>`
 - “Demonstration Mode” didn’t work for me on Edge, on `try.courselore.org` (tried other browsers and on local machine an it worked (!)).
