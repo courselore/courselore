@@ -6,9 +6,11 @@
 
 ---
 
-- Do a minor release, because of changes to configuration.
-- Serve static files with Caddy.
-  - `global.css` & `global.js`
+- `global.css` & `global.js`
+- Work out the escapes `${}` in `global.js`.
+
+---
+
 - Live reload keeps spinning on 404
 
 ---
@@ -46,6 +48,10 @@
     - Conversations in sidebar.
     - Messages in conversation.
   - Filters.
+
+---
+
+- Do a minor release, because of changes to configuration.
 
 ---
 

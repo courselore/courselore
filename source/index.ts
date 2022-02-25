@@ -1366,10 +1366,10 @@ export default async function courselore({
     `;
   };
 
-  app.get<{}, CSS, {}, {}, BaseMiddlewareLocals>(
-    "/global.css",
-    (() => {
-      const globalCSS = processCSS(css`
+  if (process.env.NODE_ENV !== "production")
+    await fs.writeFile(
+      new URL("../static/global.css", import.meta.url),
+      processCSS(css`
         .label {
           display: flex;
           flex-direction: column;
@@ -2372,17 +2372,13 @@ export default async function courselore({
             overflow: auto;
           }
         }
-      `);
-      return (req, res) => {
-        res.type("css").send(globalCSS);
-      };
-    })()
-  );
+      `)
+    );
 
-  app.get<{}, CSS, {}, {}, BaseMiddlewareLocals>(
-    "/global.js",
-    (() => {
-      const globalJavaScript = html`
+  if (process.env.NODE_ENV !== "production")
+    await fs.writeFile(
+      new URL("../static/global.js", import.meta.url),
+      html`
         <script>
           leafac.evaluateOnInteractive();
           leafac.customFormValidation();
@@ -2391,8 +2387,8 @@ export default async function courselore({
           leafac.tippySetDefaultProps();
           ${liveReload
             ? javascript`
-            leafac.liveReload();
-          `
+                leafac.liveReload();
+              `
             : javascript``};
 
           const eventSourceRefresh = async (response) => {
@@ -2484,12 +2480,8 @@ export default async function courselore({
         </script>
       `
         .replace(/^\s*<script>/, "")
-        .replace(/<\/script>\s*$/, "");
-      return (req, res) => {
-        res.type("js").send(globalJavaScript);
-      };
-    })()
-  );
+        .replace(/<\/script>\s*$/, "")
+    );
 
   const boxLayout = ({
     req,
