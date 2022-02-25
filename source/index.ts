@@ -1365,7 +1365,7 @@ export default async function courselore({
                 </script>
               `
             : html``}
-          ${liveReload
+          $${liveReload
             ? html`
                 <script>
                   leafac.liveReload();

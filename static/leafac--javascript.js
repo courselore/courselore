@@ -351,7 +351,8 @@ const leafac = {
             eventSource.close();
             window.setTimeout(async function reload() {
               try {
-                if (!(await fetch(location.href)).ok) throw new Error();
+                if ((await fetch(location.href)).status === 502)
+                  throw new Error();
                 location.reload();
               } catch {
                 window.setTimeout(reload, 200);
