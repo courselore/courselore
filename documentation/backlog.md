@@ -7,6 +7,8 @@
 ---
 
 - Live reload keeps spinning on 404
+- Live reload isn’t kicking in
+- Caddy **sometimes** takes up to 10s to respond!
 
 ---
 
