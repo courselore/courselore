@@ -7,6 +7,8 @@
 ---
 
 - Serve static files with Caddy.
+  - `global.css` & `global.js`
+- Live reload keeps spinning on 404
 
 ---
 
