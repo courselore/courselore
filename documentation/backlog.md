@@ -2,7 +2,6 @@
 
 ### Performance
 
-- “Unbundle” JavaScript & CSS
 - https://github.com/fregante/indent-textarea
 
 ---
