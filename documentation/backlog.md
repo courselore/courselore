@@ -6,6 +6,10 @@
 
 ---
 
+- Serve static files with Caddy.
+
+---
+
 - Change “Hosted Installation” into Sign in and Sign up.
 
 ---
@@ -366,7 +370,7 @@
 
 ### Infrastructure
 
-- Serve static files with Caddy.
+- Use `` javascript(html`<script>...</script>`) `` instead of `` javascript`...` `` because it works with Prettier (and syntax highlighting, to some extent).
 - `<script async>`
 - “Demonstration Mode” didn’t work for me on Edge, on `try.courselore.org` (tried other browsers and on local machine an it worked (!)).
 - Mark all conversations as read may be slow because it does a bunch of in `INSERT`s.
