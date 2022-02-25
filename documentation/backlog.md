@@ -6,11 +6,6 @@
 
 ---
 
-- `global.css` & `global.js`
-- Work out the escapes `${}` in `global.js`.
-
----
-
 - Live reload keeps spinning on 404
 
 ---
