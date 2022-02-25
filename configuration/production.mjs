@@ -1,6 +1,13 @@
-export default async ({ courselore, courseloreImport }) => {
+export default async ({
+  courselore,
+  courseloreImport,
+  courseloreImportMetaURL,
+  userFileExtensionsWhichMayBeShownInBrowser,
+}) => {
   const baseURL = "https://courselore.org";
   const administratorEmail = "administrator@courselore.org";
+  const url = await courseloreImport("node:url");
+  const dataDirectory = url.fileURLToPath(new URL("./data/", import.meta.url));
   if (process.argv[3] === undefined) {
     const url = await courseloreImport("node:url");
     const execa = (await courseloreImport("execa")).execa;
@@ -26,7 +33,27 @@ export default async ({ courselore, courseloreImport }) => {
           }
 
           ${baseURL} {
-            reverse_proxy 127.0.0.1:4001
+            route {
+              route {
+                root * ${url.fileURLToPath(
+                  new URL("../static/", courseloreImportMetaURL)
+                )}
+                @file_exists file
+                file_server @file_exists
+              }
+              route /files/* {
+                root * ${dataDirectory}
+                @file_exists file
+                route @file_exists {
+                  @may_not_be_shown_in_browser not path ${userFileExtensionsWhichMayBeShownInBrowser
+                    .map((extension) => `*.${extension}`)
+                    .join(" ")}
+                  header @may_not_be_shown_in_browser Content-Disposition attachment 
+                  file_server
+                }
+              }
+              reverse_proxy 127.0.0.1:4001
+            }
             encode zstd gzip
           }
     
@@ -42,7 +69,6 @@ export default async ({ courselore, courseloreImport }) => {
           if (subprocess !== otherSubprocess) otherSubprocess.cancel();
       });
   } else {
-    const url = await courseloreImport("node:url");
     const fs = (await courseloreImport("fs-extra")).default;
     const nodemailer = (await courseloreImport("nodemailer")).default;
     const secrets = JSON.parse(
@@ -52,7 +78,7 @@ export default async ({ courselore, courseloreImport }) => {
       )
     );
     const app = await courselore({
-      dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
+      dataDirectory,
       baseURL,
       administratorEmail,
       sendMail: (() => {
