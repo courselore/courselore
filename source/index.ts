@@ -1345,7 +1345,13 @@ export default async function courselore({
           <script src="${baseURL}/node_modules/indent-textarea/index.umd.js"></script>
           <script src="${baseURL}/node_modules/@leafac/javascript/distribution/browser.js"></script>
           <script src="${baseURL}/leafac--javascript.js"></script>
-          <script src="${baseURL}/global.js"></script>
+          <script>
+            leafac.evaluateOnInteractive();
+            leafac.customFormValidation();
+            leafac.warnAboutLosingInputs();
+            leafac.disableButtonsOnSubmit();
+            leafac.tippySetDefaultProps();
+          </script>
           $${res?.locals.eventSource
             ? html`
                 <script>
@@ -2380,22 +2386,6 @@ export default async function courselore({
           }
         }
       `)
-    );
-
-  if (process.env.NODE_ENV !== "production")
-    await fs.writeFile(
-      new URL("../static/global.js", import.meta.url),
-      html`
-        <script>
-          leafac.evaluateOnInteractive();
-          leafac.customFormValidation();
-          leafac.warnAboutLosingInputs();
-          leafac.disableButtonsOnSubmit();
-          leafac.tippySetDefaultProps();
-        </script>
-      `
-        .replace(/^\s*<script>/, "")
-        .replace(/<\/script>\s*$/, "")
     );
 
   const boxLayout = ({
