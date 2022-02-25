@@ -4456,7 +4456,7 @@ export default async function courselore({
       setHeaders: (res, path, stat) => {
         if (
           !userFileExtensionsWhichMayBeShownInBrowser.some((extension) =>
-            path.toLowerCase().endsWith(extension)
+            path.toLowerCase().endsWith(`.${extension}`)
           )
         )
           res.attachment();
@@ -21682,7 +21682,7 @@ export const userFileExtensionsWhichMayBeShownInBrowser = [
   "avi",
   "pdf",
   "txt",
-].map((extension) => `.${extension}`);
+];
 
 if (import.meta.url.endsWith(process.argv[1]))
   await (
