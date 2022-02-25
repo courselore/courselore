@@ -2,10 +2,6 @@
 
 ### Performance
 
-- Change “Hosted Installation” into Sign in and Sign up.
-
----
-
 - “Unbundle” JavaScript & CSS
 - https://github.com/fregante/indent-textarea
 
