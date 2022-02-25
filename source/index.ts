@@ -4454,7 +4454,12 @@ export default async function courselore({
       immutable: true,
       maxAge: 60 * 24 * 60 * 60 * 1000,
       setHeaders: (res, path, stat) => {
-        if (express.static.mime.lookup(path) === "text/html") res.attachment();
+        if (
+          !userFileExtensionsWhichMayBeShownInBrowser.some((extension) =>
+            path.toLowerCase().endsWith(extension)
+          )
+        )
+          res.attachment();
       },
     })
   );
@@ -21662,6 +21667,23 @@ export const courseloreVersion = JSON.parse(
   )
 ).version;
 
+export const userFileExtensionsWhichMayBeShownInBrowser = [
+  "png",
+  "svg",
+  "jpg",
+  "jpeg",
+  "gif",
+  "mp3",
+  "mp4",
+  "m4v",
+  "ogg",
+  "mov",
+  "mpeg",
+  "avi",
+  "pdf",
+  "txt",
+].map((extension) => `.${extension}`);
+
 if (import.meta.url.endsWith(process.argv[1]))
   await (
     await import(
@@ -21674,5 +21696,7 @@ if (import.meta.url.endsWith(process.argv[1]))
   ).default({
     courselore,
     courseloreImport: async (modulePath: string) => await import(modulePath),
+    courseloreImportMetaURL: import.meta.url,
     courseloreVersion,
+    userFileExtensionsWhichMayBeShownInBrowser,
   });
