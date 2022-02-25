@@ -14,7 +14,7 @@ import qs from "qs";
 
 import { Database, sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
-import { CSS, localCSS, processCSS, css } from "@leafac/css";
+import { localCSS, processCSS, css } from "@leafac/css";
 import { HTMLForJavaScript, javascript } from "@leafac/javascript";
 import dedent from "dedent";
 
@@ -4437,32 +4437,41 @@ export default async function courselore({
                 `)}"
               >
                 <div>
-                  <a
-                    href="https://courselore.org/sign-in"
-                    class="button button--blue"
-                    oninteractive="${javascript`
-                      tippy(this, {
-                        touch: false,
-                        content: "A Courselore installation managed by the developers of Courselore. Free for a limited time.",
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-stars"></i>
-                    Hosted Installation
-                  </a>
-                  <a
-                    href="https://try.courselore.org/sign-in"
-                    class="button button--transparent"
-                    oninteractive="${javascript`
-                      tippy(this, {
-                        touch: false,
-                        content: "A Courselore installation running the latest development version. Not for use with real courses.",
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-tools"></i>
-                    Development Installation
-                  </a>
+                  $${res.locals.user === undefined
+                    ? html`
+                        <a
+                          href="https://courselore.org/sign-up"
+                          class="button button--blue"
+                          oninteractive="${javascript`
+                            tippy(this, {
+                              touch: false,
+                              content: "Sign up on a Courselore installation managed by the developers of Courselore. Free for a limited time.",
+                            });
+                          `}"
+                        >
+                          <i class="bi bi-person-plus"></i>
+                          Sign up
+                        </a>
+                        <a
+                          href="https://courselore.org/sign-in"
+                          class="button button--transparent"
+                          oninteractive="${javascript`
+                            tippy(this, {
+                              touch: false,
+                              content: "Sign in on a Courselore installation managed by the developers of Courselore. Free for a limited time.",
+                            });
+                          `}"
+                        >
+                          <i class="bi bi-box-arrow-in-right"></i>
+                          Sign in
+                        </a>
+                      `
+                    : html`
+                        <a href="${baseURL}/" class="button button--blue">
+                          Return to Courselore
+                          <i class="bi bi-chevron-right"></i>
+                        </a>
+                      `}
                 </div>
 
                 <div>
@@ -4494,6 +4503,22 @@ export default async function courselore({
                   >
                     <i class="bi bi-file-earmark-code"></i>
                     Source Code
+                  </a>
+                </div>
+
+                <div>
+                  <a
+                    href="https://try.courselore.org/sign-in"
+                    class="button button--transparent"
+                    oninteractive="${javascript`
+                      tippy(this, {
+                        touch: false,
+                        content: "A Courselore installation running the latest development version. Not for use with real courses.",
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-tools"></i>
+                    Development Installation
                   </a>
                 </div>
               </div>
@@ -5074,37 +5099,46 @@ export default async function courselore({
               justify-content: center;
               padding: var(--space--36) var(--space--8);
               align-items: center;
-              @media (max-width: 1099px) {
+              @media (max-width: 1159px) {
                 flex-direction: column;
               }
             `)}"
           >
-            <a
-              href="https://courselore.org/sign-in"
-              class="button button--blue"
-              oninteractive="${javascript`
-                tippy(this, {
-                  touch: false,
-                  content: "A Courselore installation managed by the developers of Courselore. Free for a limited time.",
-                });
-              `}"
-            >
-              <i class="bi bi-stars"></i>
-              Hosted Installation
-            </a>
-            <a
-              href="https://try.courselore.org/sign-in"
-              class="button button--transparent"
-              oninteractive="${javascript`
-                tippy(this, {
-                  touch: false,
-                  content: "A Courselore installation running the latest development version. Not for use with real courses.",
-                });
-              `}"
-            >
-              <i class="bi bi-tools"></i>
-              Development Installation
-            </a>
+            $${res.locals.user === undefined
+              ? html`
+                  <a
+                    href="https://courselore.org/sign-up"
+                    class="button button--blue"
+                    oninteractive="${javascript`
+                      tippy(this, {
+                        touch: false,
+                        content: "Sign up on a Courselore installation managed by the developers of Courselore. Free for a limited time.",
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-person-plus"></i>
+                    Sign up
+                  </a>
+                  <a
+                    href="https://courselore.org/sign-in"
+                    class="button button--transparent"
+                    oninteractive="${javascript`
+                      tippy(this, {
+                        touch: false,
+                        content: "Sign in on a Courselore installation managed by the developers of Courselore. Free for a limited time.",
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    Sign in
+                  </a>
+                `
+              : html`
+                  <a href="${baseURL}/" class="button button--blue">
+                    Return to Courselore
+                    <i class="bi bi-chevron-right"></i>
+                  </a>
+                `}
             <a
               href="https://courselore.org/courses/8537410611/invitations/3667859788"
               class="button button--transparent ${res.locals.localCSS(
@@ -5133,6 +5167,19 @@ export default async function courselore({
             >
               <i class="bi bi-file-earmark-code"></i>
               Source Code
+            </a>
+            <a
+              href="https://try.courselore.org/sign-in"
+              class="button button--transparent"
+              oninteractive="${javascript`
+                tippy(this, {
+                  touch: false,
+                  content: "A Courselore installation running the latest development version. Not for use with real courses.",
+                });
+              `}"
+            >
+              <i class="bi bi-tools"></i>
+              Development Installation
             </a>
           </div>
         `,
