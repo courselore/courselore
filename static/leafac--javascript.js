@@ -353,7 +353,7 @@ const leafac = {
               try {
                 if (!(await fetch(location.href)).ok) throw new Error();
                 location.reload();
-              } catch (error) {
+              } catch {
                 window.setTimeout(reload, 200);
               }
             }, 500);
