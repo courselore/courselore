@@ -8,10 +8,7 @@
 
 - Review leafac--javascript.
   - `on[a-z]*\s*=`
-    - `ondragenter`
-    - `ondragleave`
     - `onmount`
-    - `onpaste`
     - `onelupdated`
     - `onrefresh`
     - `onnodeadded`
