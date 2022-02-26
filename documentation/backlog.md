@@ -121,9 +121,16 @@
 - Implement view caching on the server.
 - Investigate other potential bottlenecks:
   - Synchronous stuff that could be async.
-- Front-end optimizations:
-  - Hotwire.
-  - Pre-fetching.
+- Pre-fetching
+  - There are some links that have side-effects (marking messages as read).
+  - All links in viewport
+    - https://getquick.link/
+  - Link under cursor
+    - https://www.peterbe.com/plog/aggressively-prefetching-everything-you-might-click
+    - https://www.mskog.com/posts/instant-page-loads-with-turbolinks-and-prefetch
+    - http://instantclick.io
+  - References:
+    - https://web.dev/speculative-prerendering/
 
 ### Advanced Access Control
 
