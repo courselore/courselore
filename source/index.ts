@@ -9998,29 +9998,29 @@ export default async function courselore({
                 placeholder="Filter…"
                 oninteractive="${javascript`
                   this.isModified = false;
-                `}"
-                oninput="${javascript`
-                  const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
-                  for (const enrollment of document.querySelectorAll(".enrollment")) {
-                    let enrollmentHidden = filterPhrases.length > 0;
-                    for (const filterablePhrasesElement of enrollment.querySelectorAll("[data-filterable-phrases]")) {
-                      const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
-                      const filterablePhrasesElementChildren = [];
-                      for (const filterablePhrase of filterablePhrases) {
-                        let filterablePhraseElement;
-                        if (filterPhrases.some(filterPhrase => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
-                          filterablePhraseElement = document.createElement("mark");
-                          filterablePhraseElement.classList.add("mark");
-                          enrollmentHidden = false;
-                        } else
-                          filterablePhraseElement = document.createElement("span");
-                        filterablePhraseElement.textContent = filterablePhrase;
-                        filterablePhrasesElementChildren.push(filterablePhraseElement);
+                  this.addEventListener("input", () => {
+                    const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
+                    for (const enrollment of document.querySelectorAll(".enrollment")) {
+                      let enrollmentHidden = filterPhrases.length > 0;
+                      for (const filterablePhrasesElement of enrollment.querySelectorAll("[data-filterable-phrases]")) {
+                        const filterablePhrases = JSON.parse(filterablePhrasesElement.dataset.filterablePhrases);
+                        const filterablePhrasesElementChildren = [];
+                        for (const filterablePhrase of filterablePhrases) {
+                          let filterablePhraseElement;
+                          if (filterPhrases.some(filterPhrase => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
+                            filterablePhraseElement = document.createElement("mark");
+                            filterablePhraseElement.classList.add("mark");
+                            enrollmentHidden = false;
+                          } else
+                            filterablePhraseElement = document.createElement("span");
+                          filterablePhraseElement.textContent = filterablePhrase;
+                          filterablePhrasesElementChildren.push(filterablePhraseElement);
+                        }
+                        filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
                       }
-                      filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
+                      enrollment.hidden = enrollmentHidden;
                     }
-                    enrollment.hidden = enrollmentHidden;
-                  }
+                  });
                 `}"
               />
             </label>

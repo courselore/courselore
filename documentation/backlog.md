@@ -8,7 +8,6 @@
 
 - Review leafac--javascript.
   - `on[a-z]*\s*=`
-    - `oninput`
     - `onsubmit`
     - `ondragenter`
     - `ondragleave`
