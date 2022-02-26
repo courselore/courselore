@@ -4,7 +4,6 @@
 
 - Review leafac--javascript.
   - `on[a-z]*\s*=`
-    - `ondrop`
     - `onchange`
     - `onmouseover`
     - `onfocus`
