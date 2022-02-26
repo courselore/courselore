@@ -265,7 +265,6 @@
 - Templates for questions (like GitHub Issues).
 - Reuse answers.
 - Paste tables from Excel and have them formatted as Markdown tables.
-- The localStorage which remembers messages that haven’t been sent yet isn’t cleaning empty objects, leaking resources.
 - Add https://github.com/fregante/indent-textarea or CodeMirror in programmer mode.
 - If you’re in the middle of editing, and someone else edits a message (or the conversation title), then you’re going to overwrite their changes. Warn about this.
 

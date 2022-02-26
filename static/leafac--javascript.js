@@ -419,6 +419,11 @@ const leafac = {
     element.closest("form").addEventListener("submit", () => {
       const localStorageItem = getLocalStorageItem();
       delete localStorageItem?.[window.location.pathname]?.[identifier];
+      if (
+        Object.entries(localStorageItem?.[window.location.pathname] ?? {})
+          .length === 0
+      )
+        delete localStorageItem?.[window.location.pathname];
       setLocalStorageItem(localStorageItem);
     });
     function getLocalStorageItem() {
