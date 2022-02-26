@@ -5655,9 +5655,10 @@ export default async function courselore({
                   required
                   class="input--text"
                   oninteractive="${javascript`
-                    (this.validators ??= []).push(() => {
-                      if (this.value !== this.closest("form").querySelector('[name="password"]').value)
-                        return "Password & Password Confirmation don’t match.";
+                    this.addEventListener("validate", (event) => {
+                      if (this.value === this.closest("form").querySelector('[name="password"]').value) return;
+                      event.stopImmediatePropagation();
+                      event.detail.error = "Password & Password Confirmation don’t match.";
                     });
                   `}"
                 />
@@ -6772,9 +6773,10 @@ export default async function courselore({
                   required
                   class="input--text"
                   oninteractive="${javascript`
-                    (this.validators ??= []).push(() => {
-                      if (this.value !== this.closest("form").querySelector('[name="newPassword"]').value)
-                        return "New Password & New Password Confirmation don’t match.";
+                    this.addEventListener("validate", (event) => {
+                      if (this.value === this.closest("form").querySelector('[name="newPassword"]').value) return;
+                      event.stopImmediatePropagation();
+                      event.detail.error = "New Password & New Password Confirmation don’t match.";
                     });
                   `}"
                 />
@@ -8343,9 +8345,10 @@ export default async function courselore({
                     type="button"
                     class="button button--transparent button--full-width-on-small-screen"
                     oninteractive="${javascript`
-                      (this.validators ??= []).push(() => {
-                        if ([...this.closest("form").querySelector(".tags").children].filter((tag) => !tag.hidden).length === 0)
-                          return "Please add at least one tag.";
+                      this.addEventListener("validate", (event) => {
+                        if ([...this.closest("form").querySelector(".tags").children].filter((tag) => !tag.hidden).length > 0) return;
+                        event.stopImmediatePropagation();
+                        event.detail.error = "Please add at least one tag.";
                       });
                     `}"
                     onclick="${javascript`
@@ -8737,7 +8740,7 @@ export default async function courselore({
                     height: var(--space--32);
                   `)}"
                   oninteractive="${javascript`
-                    (this.validators ??= []).push(() => {
+                    this.addEventListener("validate", (event) => {
                       const emails = [];
                       for (let email of this.value.split(${/[,\n]/})) {
                         email = email.trim();
@@ -8754,12 +8757,14 @@ export default async function courselore({
                         emails.push({ email, name });
                       }
                       if (
-                        emails.length === 0 ||
-                        emails.some(
-                          ({ email }) => email.match(leafac.regExps.email) === null
+                        emails.length > 0 &&
+                        emails.every(
+                          ({ email }) => email.match(leafac.regExps.email) !== null
                         )
                       )
-                        return "Match the requested format.";
+                        return;
+                      event.stopImmediatePropagation();
+                      event.detail.error = "Match the requested format.";
                     });
                   `}"
                 ></textarea>
@@ -8873,9 +8878,10 @@ export default async function courselore({
                   class="input--text"
                   oninteractive="${javascript`
                     leafac.localizeDateTimeInput(this);
-                    (this.validators ??= []).push(() => {
-                      if (new Date(this.value).getTime() <= Date.now())
-                        return "Must be in the future.";
+                    this.addEventListener("validate", (event) => {
+                      if (Date.now() < new Date(this.value).getTime()) return;
+                      event.stopImmediatePropagation();
+                      event.detail.error = "Must be in the future.";
                     });
                   `}"
                 />
@@ -9297,9 +9303,10 @@ export default async function courselore({
                                         class="input--text"
                                         oninteractive="${javascript`
                                           leafac.localizeDateTimeInput(this);
-                                          (this.validators ??= []).push(() => {
-                                            if (new Date(this.value).getTime() <= Date.now())
-                                              return "Must be in the future.";
+                                          this.addEventListener("validate", (event) => {
+                                            if (Date.now() < new Date(this.value).getTime()) return;
+                                            event.stopImmediatePropagation();
+                                            event.detail.error = "Must be in the future.";
                                           });
                                         `}"
                                       />

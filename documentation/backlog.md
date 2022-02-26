@@ -3,7 +3,6 @@
 ### Performance
 
 - Review leafac--javascript.
-  - `validators`
   - `data-`
     - `dataset`
   - `on[a-z]*\s*=`
@@ -344,6 +343,7 @@
 
 ### Interface Details
 
+- Prevent the flash of unformatted datetime on fields using `localizeDateTimeInput()`.
 - Redesign the presentation of submenus, for example, “Conversations”, on mobile. Try a hamburger menu.
 - Artificial progress bar on hijacked navigation, similar to Turbo Drive.
 - Live-updates:
