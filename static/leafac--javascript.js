@@ -217,10 +217,14 @@ const leafac = {
 
   localizeDateTimeInput: (element) => {
     element.defaultValue = leafac.localizeDateTime(element.defaultValue);
-    (element.validators ??= []).push(() => {
+    element.addEventListener("validate", (event) => {
       const date = leafac.UTCizeDateTime(element.value);
-      if (date === undefined)
-        return "Invalid date & time. Match the pattern YYYY-MM-DD HH:MM.";
+      if (date === undefined) {
+        event.stopImmediatePropagation();
+        event.detail.error =
+          "Invalid date & time. Match the pattern YYYY-MM-DD HH:MM.";
+        return;
+      }
       element.value = date.toISOString();
     });
   },
