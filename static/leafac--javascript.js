@@ -56,7 +56,7 @@ const leafac = {
       (event) => {
         if (leafac.validate(event.target)) return;
         event.preventDefault();
-        event.stopPropagation();
+        event.stopImmediatePropagation();
       },
       true
     );
