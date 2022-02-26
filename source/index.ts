@@ -15525,6 +15525,7 @@ export default async function courselore({
                                                                     .reference}/messages/${message.reference}/likes"
                                                                   oninteractive="${javascript`
                                                                     this.addEventListener("submit", () => {
+                                                                      tippy.hideAll();
                                                                       window.setTimeout(() => { this.remove(); }, 0);
                                                                     });
                                                                   `}"
@@ -16569,17 +16570,6 @@ export default async function courselore({
                                                       .reference}/messages/${message.reference}/likes${isLiked
                                                       ? "?_method=DELETE"
                                                       : ""}"
-                                                    onsubmit="${javascript`
-                                                      (async () => {
-                                                        event.preventDefault();
-                                                        await eventSourceRefresh(await fetch(this.action + "${
-                                                          isLiked ? "&" : "?"
-                                                        }eventSourceReference=" + eventSource.reference, {
-                                                          method: this.method,
-                                                          body: new URLSearchParams(new FormData(this)),
-                                                        }));
-                                                      })();
-                                                    `}"
                                                   >
                                                     <input
                                                       type="hidden"
