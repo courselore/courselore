@@ -3,7 +3,6 @@
 ### Performance
 
 - On `/conversations/new`, the error message for no tags selected isn’t showing up.
-- SVG when resized (avatar or thumbnail) change extension into PNG, but we’re producing the wrong filename.
 
 ---
 
@@ -82,6 +81,10 @@
 - Do a minor release, because of changes to configuration.
 
 ### User Interface Improvements
+
+- SVG when resized (avatar or thumbnail) change extension into PNG, but we’re producing the wrong filename.
+
+---
 
 - Rename, reword, and refactor:
   - “Confirm” email → “Verify” email.
