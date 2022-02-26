@@ -16416,27 +16416,13 @@ export default async function courselore({
                                                           onclick="${javascript`
                                                             tippy.hideAll();
                                                             const selection = window.getSelection();
-                                                            let anchorElement = selection.anchorNode;
-                                                            while (
-                                                              (
-                                                                anchorElement?.dataset?.position === undefined ||
-                                                                anchorElement?.parentElement?.dataset?.position !== undefined
-                                                              ) &&
-                                                              anchorElement !== null
-                                                            ) anchorElement = anchorElement.parentElement;
-                                                            let focusElement = selection.focusNode;
-                                                            while (
-                                                              (
-                                                                focusElement?.dataset?.position === undefined ||
-                                                                focusElement?.parentElement?.dataset?.position !== undefined
-                                                              ) &&
-                                                              focusElement !== null
-                                                            ) focusElement = focusElement.parentElement;
+                                                            const anchorElement = leafac.ancestors(selection.anchorNode).findLast(element => element?.dataset?.position !== undefined);
+                                                            const focusElement = leafac.ancestors(selection.focusNode).findLast(element => element?.dataset?.position !== undefined);
                                                             const contentElement = this.closest(".message--show--content-area").querySelector(".message--show--content-area--content");
                                                             if (
                                                               selection.isCollapsed ||
-                                                              anchorElement === null ||
-                                                              focusElement === null ||
+                                                              anchorElement === undefined ||
+                                                              focusElement === undefined ||
                                                               !contentElement.contains(anchorElement) ||
                                                               !contentElement.contains(focusElement)
                                                             ) return;
@@ -16495,26 +16481,12 @@ export default async function courselore({
                                                 this.addEventListener("mouseup", (event) => {
                                                   window.setTimeout(() => {
                                                     const selection = window.getSelection();
-                                                    let anchorElement = selection.anchorNode;
-                                                    while (
-                                                      (
-                                                        anchorElement?.dataset?.position === undefined ||
-                                                        anchorElement?.parentElement?.dataset?.position !== undefined
-                                                      ) &&
-                                                      anchorElement !== null
-                                                    ) anchorElement = anchorElement.parentElement;
-                                                    let focusElement = selection.focusNode;
-                                                    while (
-                                                      (
-                                                        focusElement?.dataset?.position === undefined ||
-                                                        focusElement?.parentElement?.dataset?.position !== undefined
-                                                      ) &&
-                                                      focusElement !== null
-                                                    ) focusElement = focusElement.parentElement;
+                                                    const anchorElement = leafac.ancestors(selection.anchorNode).findLast(element => element?.dataset?.position !== undefined);
+                                                    const focusElement = leafac.ancestors(selection.focusNode).findLast(element => element?.dataset?.position !== undefined);
                                                     if (
                                                       selection.isCollapsed ||
-                                                      anchorElement === null ||
-                                                      focusElement === null ||
+                                                      anchorElement === undefined ||
+                                                      focusElement === undefined ||
                                                       !this.contains(anchorElement) ||
                                                       !this.contains(focusElement)
                                                     ) return;
