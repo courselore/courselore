@@ -63,7 +63,7 @@ const leafac = {
   },
 
   validate(element) {
-    const elementsToValidate = [element, ...element.querySelectorAll("*")];
+    const elementsToValidate = leafac.descendants(element);
     const elementsToReset = new Map();
 
     for (const element of elementsToValidate) {
@@ -155,7 +155,7 @@ const leafac = {
   },
 
   isModified(element) {
-    const elementsToCheck = [element, ...element.querySelectorAll("*")];
+    const elementsToCheck = leafac.descendants(element);
     for (const element of elementsToCheck) {
       if (
         element.closest(`[data-skip-is-modified="true"]`) !== null ||
