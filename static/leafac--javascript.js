@@ -1,7 +1,7 @@
 // This file is here for now as it’s still under development. It should be moved to https://github.com/leafac/javascript/
 
 const leafac = {
-  mount: (element, partialString) => {
+  mount(element, partialString) {
     const partialHTML = new DOMParser().parseFromString(
       partialString,
       "text/html"
@@ -19,7 +19,7 @@ const leafac = {
     leafac.evaluateElementsAttribute(element);
   },
 
-  evaluateOnInteractive: () => {
+  evaluateOnInteractive() {
     window.addEventListener("DOMContentLoaded", () => {
       leafac.evaluateElementsAttribute(document);
     });
@@ -50,7 +50,7 @@ const leafac = {
     };
   })(),
 
-  customFormValidation: () => {
+  customFormValidation() {
     document.addEventListener(
       "submit",
       (event) => {
@@ -62,7 +62,7 @@ const leafac = {
     );
   },
 
-  validate: (element) => {
+  validate(element) {
     const elementsToValidate = [element, ...element.querySelectorAll("*")];
     const elementsToReset = new Map();
 
@@ -142,7 +142,7 @@ const leafac = {
     }
   },
 
-  warnAboutLosingInputs: () => {
+  warnAboutLosingInputs() {
     const warner = (event) => {
       if (!leafac.isModified(document.body)) return;
       event.preventDefault();
@@ -154,7 +154,7 @@ const leafac = {
     });
   },
 
-  isModified: (element) => {
+  isModified(element) {
     const elementsToCheck = [element, ...element.querySelectorAll("*")];
     for (const element of elementsToCheck) {
       if (
@@ -177,7 +177,7 @@ const leafac = {
     return false;
   },
 
-  disableButtonsOnSubmit: () => {
+  disableButtonsOnSubmit() {
     document.addEventListener("submit", (event) => {
       for (const button of event.target.querySelectorAll(
         `button:not([type="button"])`
@@ -186,7 +186,7 @@ const leafac = {
     });
   },
 
-  tippySetDefaultProps: (extraProps = {}) => {
+  tippySetDefaultProps(extraProps = {}) {
     tippy.setDefaultProps({
       arrow: tippy.roundArrow + tippy.roundArrow,
       duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -196,7 +196,7 @@ const leafac = {
     });
   },
 
-  relativizeDateTimeElement: (element, options = {}) => {
+  relativizeDateTimeElement(element, options = {}) {
     const dateTime = element.getAttribute("datetime");
     tippy(element, { touch: false, content: dateTime });
 
@@ -206,7 +206,7 @@ const leafac = {
     })();
   },
 
-  relativizeDateElement: (element) => {
+  relativizeDateElement(element) {
     const dateTime = element.getAttribute("datetime");
 
     (function update() {
@@ -215,7 +215,7 @@ const leafac = {
     })();
   },
 
-  localizeDateTimeInput: (element) => {
+  localizeDateTimeInput(element) {
     element.defaultValue = leafac.localizeDateTime(element.defaultValue);
     element.addEventListener("validate", (event) => {
       const date = leafac.UTCizeDateTime(element.value);
@@ -268,7 +268,7 @@ const leafac = {
     };
   })(),
 
-  relativizeDate: (dateString) => {
+  relativizeDate(dateString) {
     const date = leafac.localizeDate(dateString);
     const today = leafac.localizeDate(new Date().toISOString());
     const yesterdayDate = new Date();
@@ -281,24 +281,27 @@ const leafac = {
       : `${date} · ${leafac.weekday(date)}`;
   },
 
-  localizeDate: (dateString) => {
+  localizeDate(dateString) {
     const date = new Date(dateString.trim());
     return `${String(date.getFullYear())}-${String(
       date.getMonth() + 1
     ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
   },
 
-  localizeTime: (dateString) => {
+  localizeTime(dateString) {
     const date = new Date(dateString.trim());
     return `${String(date.getHours()).padStart(2, "0")}:${String(
       date.getMinutes()
     ).padStart(2, "0")}`;
   },
 
-  localizeDateTime: (dateString) =>
-    `${leafac.localizeDate(dateString)} ${leafac.localizeTime(dateString)}`,
+  localizeDateTime(dateString) {
+    return `${leafac.localizeDate(dateString)} ${leafac.localizeTime(
+      dateString
+    )}`;
+  },
 
-  UTCizeDateTime: (dateString) => {
+  UTCizeDateTime(dateString) {
     if (dateString.match(leafac.regExps.localizedDateTime) === null) return;
     const date = new Date(dateString.trim().replace(" ", "T"));
     if (isNaN(date.getTime())) return;
@@ -312,10 +315,13 @@ const leafac = {
     return (dateString) => dateTimeFormat.format(new Date(dateString.trim()));
   })(),
 
-  capitalize: (text) =>
-    text.length === 0 ? text : `${text[0].toUpperCase()}${text.slice(1)}`,
+  capitalize(text) {
+    return text.length === 0
+      ? text
+      : `${text[0].toUpperCase()}${text.slice(1)}`;
+  },
 
-  saveFormInputValue: (element, identifier) => {
+  saveFormInputValue(element, identifier) {
     element.defaultValue =
       getLocalStorageItem()?.[window.location.pathname]?.[identifier] ?? "";
     element.dataset.skipIsModified = "true";
@@ -343,7 +349,7 @@ const leafac = {
     }
   },
 
-  ancestors: (element) => {
+  ancestors(element) {
     const ancestors = [];
     do {
       ancestors.push(element);
@@ -352,12 +358,14 @@ const leafac = {
     return ancestors;
   },
 
-  descendants: (element) => [element, ...element.querySelectorAll("*")],
+  descendants(element) {
+    return [element, ...element.querySelectorAll("*")];
+  },
 
   // https://github.com/ccampbell/mousetrap/blob/2f9a476ba6158ba69763e4fcf914966cc72ef433/mousetrap.js#L135
   isAppleDevice: /Mac|iPod|iPhone|iPad/.test(navigator.platform),
 
-  liveReload: () => {
+  liveReload() {
     const eventSource = new EventSource("/live-reload");
     eventSource.addEventListener(
       "open",
