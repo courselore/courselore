@@ -9030,8 +9030,10 @@ export default async function courselore({
                                                       .locals.localCSS(css`
                                                       flex: 1;
                                                     `)}"
-                                                    onfocus="${javascript`
-                                                      this.select();
+                                                    oninteractive="${javascript`
+                                                      this.addEventListener("focus", () => {
+                                                        this.select();
+                                                      });
                                                     `}"
                                                   />
                                                   <button
@@ -10634,8 +10636,10 @@ export default async function courselore({
                   class="input--text ${res.locals.localCSS(css`
                     flex: 1;
                   `)}"
-                  onfocus="${javascript`
-                    this.select();
+                  oninteractive="${javascript`
+                    this.addEventListener("focus", () => {
+                      this.select();
+                    });
                   `}"
                 />
                 <div>
