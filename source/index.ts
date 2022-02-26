@@ -8244,21 +8244,23 @@ export default async function courselore({
                                           <button
                                             type="button"
                                             class="button button--rose"
-                                            onclick="${javascript`
-                                              const tag = this.closest(".tag");
-                                              tag.classList.add("deleted");
-                                              const tagIconClassList = tag.querySelector(".tag--icon").classList;
-                                              tagIconClassList.remove("text--teal");
-                                              tagIconClassList.add("text--rose");
-                                              tag.querySelector('[name$="[delete]"]').disabled = false;
-                                              for (const element of tag.querySelectorAll(".disable-on-delete")) {
-                                                element.disabled = true;
-                                                const button = element.closest(".button");
-                                                if (button === null) continue;
-                                                button.classList.add("disabled");
-                                                for (const element of button.querySelectorAll("*"))
-                                                  if (element.tooltip !== undefined) element.tooltip.disable();
-                                              }
+                                            oninteractive="${javascript`
+                                              this.addEventListener("click", () => {
+                                                const tag = this.closest(".tag");
+                                                tag.classList.add("deleted");
+                                                const tagIconClassList = tag.querySelector(".tag--icon").classList;
+                                                tagIconClassList.remove("text--teal");
+                                                tagIconClassList.add("text--rose");
+                                                tag.querySelector('[name$="[delete]"]').disabled = false;
+                                                for (const element of tag.querySelectorAll(".disable-on-delete")) {
+                                                  element.disabled = true;
+                                                  const button = element.closest(".button");
+                                                  if (button === null) continue;
+                                                  button.classList.add("disabled");
+                                                  for (const element of button.querySelectorAll("*"))
+                                                    if (element.tooltip !== undefined) element.tooltip.disable();
+                                                }
+                                              });
                                             `}"
                                           >
                                             <i class="bi bi-trash"></i>
@@ -8288,22 +8290,22 @@ export default async function courselore({
                                     touch: false,
                                     content: "Don’t Remove Tag",
                                   });
-                                `}"
-                                onclick="${javascript`
-                                  const tag = this.closest(".tag");
-                                  tag.classList.remove("deleted");
-                                  const tagIconClassList = tag.querySelector(".tag--icon").classList;
-                                  tagIconClassList.remove("text--rose");
-                                  tagIconClassList.add("text--teal");
-                                  tag.querySelector('[name$="[delete]"]').disabled = true;
-                                  for (const element of tag.querySelectorAll(".disable-on-delete")) {
-                                    element.disabled = false;
-                                    const button = element.closest(".button");
-                                    if (button === null) continue;
-                                    button.classList.remove("disabled");
-                                    for (const element of button.querySelectorAll("*"))
-                                      if (element.tooltip !== undefined) element.tooltip.enable();
-                                  }
+                                  this.addEventListener("click", () => {
+                                    const tag = this.closest(".tag");
+                                    tag.classList.remove("deleted");
+                                    const tagIconClassList = tag.querySelector(".tag--icon").classList;
+                                    tagIconClassList.remove("text--rose");
+                                    tagIconClassList.add("text--teal");
+                                    tag.querySelector('[name$="[delete]"]').disabled = true;
+                                    for (const element of tag.querySelectorAll(".disable-on-delete")) {
+                                      element.disabled = false;
+                                      const button = element.closest(".button");
+                                      if (button === null) continue;
+                                      button.classList.remove("disabled");
+                                      for (const element of button.querySelectorAll("*"))
+                                        if (element.tooltip !== undefined) element.tooltip.enable();
+                                    }
+                                  });
                                 `}"
                               >
                                 <i class="bi bi-recycle"></i>
@@ -8356,127 +8358,127 @@ export default async function courselore({
                         event.stopImmediatePropagation();
                         event.detail.error = "Please add at least one tag.";
                       });
-                    `}"
-                    onclick="${javascript`
-                      const newTag = ${res.locals.HTMLForJavaScript(
-                        html`
-                          <div
-                            class="tag ${res.locals.localCSS(css`
-                              padding-bottom: var(--space--4);
-                              border-bottom: var(--border-width--1) solid
-                                var(--color--gray--medium--200);
-                              @media (prefers-color-scheme: dark) {
-                                border-color: var(--color--gray--medium--700);
-                              }
-                              display: flex;
-                              gap: var(--space--2);
-                              align-items: baseline;
-                            `)}"
-                          >
-                            <div class="text--teal">
-                              <i class="bi bi-tag-fill"></i>
-                            </div>
+                      this.addEventListener("click", () => {
+                        const newTag = ${res.locals.HTMLForJavaScript(
+                          html`
                             <div
-                              class="${res.locals.localCSS(css`
-                                flex: 1;
+                              class="tag ${res.locals.localCSS(css`
+                                padding-bottom: var(--space--4);
+                                border-bottom: var(--border-width--1) solid
+                                  var(--color--gray--medium--200);
+                                @media (prefers-color-scheme: dark) {
+                                  border-color: var(--color--gray--medium--700);
+                                }
                                 display: flex;
-                                flex-direction: column;
                                 gap: var(--space--2);
+                                align-items: baseline;
                               `)}"
                             >
-                              <input
-                                type="text"
-                                placeholder=" "
-                                required
-                                autocomplete="off"
-                                disabled
-                                class="input--text"
-                                onmount="${javascript`
-                                  this.isModified = true;
-                                  this.disabled = false;
-                                  this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][name]";
-                                `}"
-                              />
+                              <div class="text--teal">
+                                <i class="bi bi-tag-fill"></i>
+                              </div>
                               <div
                                 class="${res.locals.localCSS(css`
+                                  flex: 1;
                                   display: flex;
-                                  flex-wrap: wrap;
-                                  column-gap: var(--space--4);
-                                  row-gap: var(--space--2);
+                                  flex-direction: column;
+                                  gap: var(--space--2);
                                 `)}"
                               >
+                                <input
+                                  type="text"
+                                  placeholder=" "
+                                  required
+                                  autocomplete="off"
+                                  disabled
+                                  class="input--text"
+                                  onmount="${javascript`
+                                    this.isModified = true;
+                                    this.disabled = false;
+                                    this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][name]";
+                                  `}"
+                                />
                                 <div
                                   class="${res.locals.localCSS(css`
-                                    width: var(--space--40);
+                                    display: flex;
+                                    flex-wrap: wrap;
+                                    column-gap: var(--space--4);
+                                    row-gap: var(--space--2);
                                   `)}"
                                 >
-                                  <label
-                                    class="button button--tight button--tight--inline button--justify-start button--transparent"
+                                  <div
+                                    class="${res.locals.localCSS(css`
+                                      width: var(--space--40);
+                                    `)}"
                                   >
-                                    <input
-                                      type="checkbox"
-                                      disabled
-                                      class="visually-hidden input--radio-or-checkbox--multilabel"
-                                      onmount="${javascript`
-                                        this.isModified = true;
-                                        this.disabled = false;
-                                        this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][isStaffOnly]";
-                                      `}"
-                                    />
-                                    <span
-                                      onmount="${javascript`
-                                        tippy(this, {
-                                          touch: false,
-                                          content: "Set as Visible by Staff Only",
-                                        });
-                                      `}"
+                                    <label
+                                      class="button button--tight button--tight--inline button--justify-start button--transparent"
                                     >
-                                      <i class="bi bi-eye"></i>
-                                      Visible by Everyone
-                                    </span>
-                                    <span
-                                      class="text--sky"
-                                      onmount="${javascript`
-                                        tippy(this, {
-                                          touch: false,
-                                          content: "Set as Visible by Everyone",
-                                        });
-                                      `}"
-                                    >
-                                      <i class="bi bi-mortarboard-fill"></i>
-                                      Visible by Staff Only
-                                    </span>
-                                  </label>
+                                      <input
+                                        type="checkbox"
+                                        disabled
+                                        class="visually-hidden input--radio-or-checkbox--multilabel"
+                                        onmount="${javascript`
+                                          this.isModified = true;
+                                          this.disabled = false;
+                                          this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][isStaffOnly]";
+                                        `}"
+                                      />
+                                      <span
+                                        onmount="${javascript`
+                                          tippy(this, {
+                                            touch: false,
+                                            content: "Set as Visible by Staff Only",
+                                          });
+                                        `}"
+                                      >
+                                        <i class="bi bi-eye"></i>
+                                        Visible by Everyone
+                                      </span>
+                                      <span
+                                        class="text--sky"
+                                        onmount="${javascript`
+                                          tippy(this, {
+                                            touch: false,
+                                            content: "Set as Visible by Everyone",
+                                          });
+                                        `}"
+                                      >
+                                        <i class="bi bi-mortarboard-fill"></i>
+                                        Visible by Staff Only
+                                      </span>
+                                    </label>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    class="button button--tight button--tight--inline button--transparent"
+                                    onmount="${javascript`
+                                      tippy(this, {
+                                        theme: "rose",
+                                        touch: false,
+                                        content: "Remove Tag",
+                                      });
+                                      this.addEventListener("click", () => {
+                                        const tag = this.closest(".tag");
+                                        tag.replaceChildren();
+                                        tag.hidden = true;
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-trash"></i>
+                                  </button>
                                 </div>
-                                <button
-                                  type="button"
-                                  class="button button--tight button--tight--inline button--transparent"
-                                  onmount="${javascript`
-                                    tippy(this, {
-                                      theme: "rose",
-                                      touch: false,
-                                      content: "Remove Tag",
-                                    });
-                                  `}"
-                                  onclick="${javascript`
-                                    const tag = this.closest(".tag");
-                                    tag.replaceChildren();
-                                    tag.hidden = true;
-                                  `}"
-                                >
-                                  <i class="bi bi-trash"></i>
-                                </button>
                               </div>
                             </div>
-                          </div>
-                        `
-                      )}.firstElementChild.cloneNode(true);
-                      this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
-                      for (const element of leafac.descendants(newTag)) {
-                        const onmount = element.getAttribute("onmount");
-                        if (onmount === null) continue;
-                        new Function(onmount).call(element);
-                      }
+                          `
+                        )}.firstElementChild.cloneNode(true);
+                        this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
+                        for (const element of leafac.descendants(newTag)) {
+                          const onmount = element.getAttribute("onmount");
+                          if (onmount === null) continue;
+                          new Function(onmount).call(element);
+                        }
+                      });
                     `}"
                   >
                     <i class="bi bi-plus-circle"></i>
@@ -9049,9 +9051,7 @@ export default async function courselore({
                                                         touch: false,
                                                         content: "Copy Link",
                                                       });
-                                                    `}"
-                                                    onclick="${javascript`
-                                                      (async () => {
+                                                      this.addEventListener("click", async () => {
                                                         await navigator.clipboard.writeText(${JSON.stringify(
                                                           link
                                                         )});
@@ -9062,7 +9062,7 @@ export default async function courselore({
                                                         await new Promise((resolve) => { window.setTimeout(resolve, 500); });
                                                         stickies.hidden = false;
                                                         check.hidden = true;
-                                                      })();
+                                                      });
                                                     `}"
                                                   >
                                                     <span class="stickies">
@@ -9654,13 +9654,15 @@ export default async function courselore({
                   Invitation link created successfully.
                   <button
                     class="link"
-                    onclick="${javascript`
-                      const id = "#invitation--${invitation.reference}";
-                      window.location.hash = id;
-                      const button = document.querySelector(id);
-                      button.click();
-                      button.tooltip.hide();
-                      this.closest(".flash").remove();
+                    oninteractive="${javascript`
+                      this.addEventListener("click", () => {
+                        const id = "#invitation--${invitation.reference}";
+                        window.location.hash = id;
+                        const button = document.querySelector(id);
+                        button.click();
+                        button.tooltip.hide();
+                        this.closest(".flash").remove();
+                      });
                     `}"
                   >
                     See invitation link</button
@@ -10656,9 +10658,7 @@ export default async function courselore({
                         touch: false,
                         content: "Copy Link",
                       });
-                    `}"
-                    onclick="${javascript`
-                      (async () => {
+                      this.addEventListener("click", async () => {
                         await navigator.clipboard.writeText(${JSON.stringify(
                           link
                         )});
@@ -10669,7 +10669,7 @@ export default async function courselore({
                         await new Promise((resolve) => { window.setTimeout(resolve, 500); });
                         stickies.hidden = false;
                         check.hidden = true;
-                      })();
+                      });
                     `}"
                   >
                     <span class="stickies">
@@ -11255,11 +11255,13 @@ export default async function courselore({
               >
                 <button
                   class="button button--transparent"
-                  onclick="${javascript`
-                    document.querySelector(".conversation--layout--sidebar").classList.toggle("hidden-on-small-screen");
-                    document.querySelector(".conversation--layout--main").classList.toggle("hidden-on-small-screen");
-                    this.lastElementChild.classList.toggle("bi-chevron-bar-expand");
-                    this.lastElementChild.classList.toggle("bi-chevron-bar-contract");
+                  oninteractive="${javascript`
+                    this.addEventListener("click", () => {
+                      document.querySelector(".conversation--layout--sidebar").classList.toggle("hidden-on-small-screen");
+                      document.querySelector(".conversation--layout--main").classList.toggle("hidden-on-small-screen");
+                      this.lastElementChild.classList.toggle("bi-chevron-bar-expand");
+                      this.lastElementChild.classList.toggle("bi-chevron-bar-contract");
+                    });
                   `}"
                 >
                   <i class="bi bi-chat-left-text"></i>
@@ -11997,43 +11999,15 @@ export default async function courselore({
                                         `
                                       : css``}
                                   `)}"
-                                  $${isSelected &&
-                                  req.query.scrollToConversation !== "false"
-                                    ? html`
-                                        oninteractive="${javascript`
-                                          window.setTimeout(() => { this.scrollIntoView({ block: "center" }); }, 0);
-                                        `}"
-                                      `
-                                    : html``}
-                                  onclick="${javascript`
-                                    (async () => {
-                                      if (event.which > 1 || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
-                                      event.preventDefault();
-                                      window.history.pushState(undefined, "", this.getAttribute("href"));
-                                      await eventSourceRefresh(await fetch(${JSON.stringify(
-                                        `${baseURL}/courses/${
-                                          res.locals.course.reference
-                                        }/conversations/${
-                                          conversation.reference
-                                        }${qs.stringify(
-                                          lodash.omit(
-                                            {
-                                              ...req.query,
-                                              scrollToConversation: false,
-                                              messageReference:
-                                                searchResult?.message
-                                                  ?.reference,
-                                            },
-                                            [
-                                              "conversationLayoutSidebarOpenOnSmallScreen",
-                                              "beforeMessageReference",
-                                              "afterMessageReference",
-                                            ]
-                                          ),
-                                          { addQueryPrefix: true }
-                                        )}`
-                                      )}));
-                                    })();
+                                  oninteractive="${javascript`
+                                    ${
+                                      isSelected &&
+                                      req.query.scrollToConversation !== "false"
+                                        ? javascript`
+                                            window.setTimeout(() => { this.scrollIntoView({ block: "center" }); }, 0);
+                                          `
+                                        : javascript``
+                                    }
                                   `}"
                                 >
                                   <div
@@ -12079,13 +12053,11 @@ export default async function courselore({
                                                   touch: false,
                                                   content: "Mark as Read",
                                                 });
-                                              `}"
-                                              onclick="${javascript`
-                                                (async () => {
+                                                this.addEventListener("click", async (event) => {
                                                   event.preventDefault();
                                                   await fetch(this.closest("a").getAttribute("href"));
                                                   this.remove();
-                                                })();
+                                                });
                                               `}"
                                             >
                                               ${unreadCount.toString()}
@@ -14120,9 +14092,11 @@ export default async function courselore({
                             max-width: calc(100% + var(--space--2));
                             margin-top: var(--space---2);
                           `)}"
-                          onclick="${javascript`
-                            this.closest(".conversation--header").querySelector(".conversation--header--compact").hidden = true;
-                            this.closest(".conversation--header").querySelector(".conversation--header--full").hidden = false;
+                          oninteractive="${javascript`
+                            this.addEventListener("click", () => {
+                              this.closest(".conversation--header").querySelector(".conversation--header--compact").hidden = true;
+                              this.closest(".conversation--header").querySelector(".conversation--header--full").hidden = false;
+                            });
                           `}"
                           onbeforeelupdated="${javascript`
                             this.wasHidden = this.hidden;
@@ -14600,19 +14574,17 @@ export default async function courselore({
                                     <button
                                       class="dropdown--menu--item button button--transparent"
                                       oninteractive="${javascript`
-                                        this.copied = tippy(this, {
+                                        const copied = tippy(this, {
                                           theme: "green",
                                           trigger: "manual",
                                           content: "Copied",
                                         });
-                                      `}"
-                                      onclick="${javascript`
-                                        (async () => {
+                                        this.addEventListener("click", async () => {
                                           await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
-                                          this.copied.show();
+                                          copied.show();
                                           await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                                          this.copied.hide();
-                                        })();
+                                          copied.hide();
+                                        });
                                       `}"
                                     >
                                       <i class="bi bi-link"></i>
@@ -14622,10 +14594,12 @@ export default async function courselore({
                                       ? html`
                                           <button
                                             class="dropdown--menu--item button button--transparent"
-                                            onclick="${javascript`
-                                              this.closest(".conversation--header--full").querySelector(".title--show").hidden = true;
-                                              this.closest(".conversation--header--full").querySelector(".title--edit").hidden = false;
-                                              tippy.hideAll();
+                                            oninteractive="${javascript`
+                                              this.addEventListener("click", () => {
+                                                this.closest(".conversation--header--full").querySelector(".title--show").hidden = true;
+                                                this.closest(".conversation--header--full").querySelector(".title--edit").hidden = false;
+                                                tippy.hideAll();
+                                              });
                                             `}"
                                           >
                                             <i class="bi bi-pencil"></i>
@@ -14792,10 +14766,10 @@ export default async function courselore({
                                   touch: false,
                                   content: "Cancel",
                                 });
-                              `}"
-                              onclick="${javascript`
-                                this.closest(".conversation--header--full").querySelector(".title--show").hidden = false;
-                                this.closest(".conversation--header--full").querySelector(".title--edit").hidden = true;
+                                this.addEventListener("click", () => {
+                                  this.closest(".conversation--header--full").querySelector(".title--show").hidden = false;
+                                  this.closest(".conversation--header--full").querySelector(".title--edit").hidden = true;
+                                });
                               `}"
                             >
                               <i class="bi bi-x-lg"></i>
@@ -15053,9 +15027,11 @@ export default async function courselore({
                       ? html`
                           <button
                             class="button button--tight button--tight--inline button--transparent"
-                            onclick="${javascript`
-                              this.closest(".conversation--header").querySelector(".conversation--header--full").hidden = true;
-                              this.closest(".conversation--header").querySelector(".conversation--header--compact").hidden = false;
+                            oninteractive="${javascript`
+                              this.addEventListener("click", () => {
+                                this.closest(".conversation--header").querySelector(".conversation--header--full").hidden = true;
+                                this.closest(".conversation--header").querySelector(".conversation--header--compact").hidden = false;
+                              });
                             `}"
                           >
                             <i class="bi bi-chevron-bar-contract"></i>
@@ -15283,9 +15259,9 @@ export default async function courselore({
                                                   touch: false,
                                                   content: "Close",
                                                 });
-                                              `}"
-                                              onclick="${javascript`
-                                                this.remove();
+                                                this.addEventListener("click", () => {
+                                                  this.remove();
+                                                });
                                               `}"
                                               onnodeadded="${javascript`
                                                 if (document.querySelectorAll(".message--new-separator").length > 1) this.remove();
@@ -15633,45 +15609,47 @@ export default async function courselore({
 
                                                           <button
                                                             class="dropdown--menu--item button button--transparent"
-                                                            onclick="${javascript`
-                                                              const content = JSON.parse(this.closest("[data-content-source]").dataset.contentSource);
-                                                              const newMessage = document.querySelector(".new-message");
-                                                              newMessage.querySelector(".content-editor--button--write").click();
-                                                              const element = newMessage.querySelector(".content-editor--write--textarea");
-                                                              textFieldEdit.wrapSelection(
-                                                                element,
-                                                                ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
-                                                                  message.authorEnrollment ===
-                                                                  "no-longer-enrolled"
-                                                                    ? javascript``
-                                                                    : javascript`
-                                                                      "@${
-                                                                        message.anonymousAt ===
-                                                                        null
-                                                                          ? `${
-                                                                              message
-                                                                                .authorEnrollment
-                                                                                .reference
-                                                                            }--${slugify(
-                                                                              message
-                                                                                .authorEnrollment
-                                                                                .user
-                                                                                .name
-                                                                            )}`
-                                                                          : `anonymous`
-                                                                      } · " +
-                                                                    `
-                                                                } "#" + ${JSON.stringify(
+                                                            oninteractive="${javascript`
+                                                              this.addEventListener("click", () => {
+                                                                const content = JSON.parse(this.closest("[data-content-source]").dataset.contentSource);
+                                                                const newMessage = document.querySelector(".new-message");
+                                                                newMessage.querySelector(".content-editor--button--write").click();
+                                                                const element = newMessage.querySelector(".content-editor--write--textarea");
+                                                                textFieldEdit.wrapSelection(
+                                                                  element,
+                                                                  ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
+                                                                    message.authorEnrollment ===
+                                                                    "no-longer-enrolled"
+                                                                      ? javascript``
+                                                                      : javascript`
+                                                                        "@${
+                                                                          message.anonymousAt ===
+                                                                          null
+                                                                            ? `${
+                                                                                message
+                                                                                  .authorEnrollment
+                                                                                  .reference
+                                                                              }--${slugify(
+                                                                                message
+                                                                                  .authorEnrollment
+                                                                                  .user
+                                                                                  .name
+                                                                              )}`
+                                                                            : `anonymous`
+                                                                        } · " +
+                                                                      `
+                                                                  } "#" + ${JSON.stringify(
                                                               res.locals
                                                                 .conversation
                                                                 .reference
                                                             )} + "/" + ${JSON.stringify(
                                                               message.reference
                                                             )} + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n",
-                                                                ""
-                                                              );
-                                                              element.focus();
-                                                              tippy.hideAll();
+                                                                  ""
+                                                                );
+                                                                element.focus();
+                                                                tippy.hideAll();
+                                                              });
                                                             `}"
                                                           >
                                                             <i
@@ -15688,14 +15666,12 @@ export default async function courselore({
                                                                 trigger: "manual",
                                                                 content: "Copied",
                                                               });
-                                                            `}"
-                                                            onclick="${javascript`
-                                                              (async () => {
+                                                              this.addEventListener("click", async () => {
                                                                 await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${message.reference}");
                                                                 this.copied.show();
                                                                 await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                                                                 this.copied.hide();
-                                                              })();
+                                                              });                                                            
                                                             `}"
                                                           >
                                                             <i
@@ -15820,11 +15796,13 @@ export default async function courselore({
                                                             ? html`
                                                                 <button
                                                                   class="dropdown--menu--item button button--transparent"
-                                                                  onclick="${javascript`
-                                                                    this.closest(".message").querySelector(".message--show").hidden = true;
-                                                                    this.closest(".message").querySelector(".message--edit").hidden = false;
-                                                                    autosize.update(this.closest(".message").querySelector(".message--edit .content-editor--write--textarea"));
-                                                                    tippy.hideAll();
+                                                                  oninteractive="${javascript`
+                                                                    this.addEventListener("click", () => {
+                                                                      this.closest(".message").querySelector(".message--show").hidden = true;
+                                                                      this.closest(".message").querySelector(".message--edit").hidden = false;
+                                                                      autosize.update(this.closest(".message").querySelector(".message--edit .content-editor--write--textarea"));
+                                                                      tippy.hideAll();
+                                                                    });
                                                                   `}"
                                                                 >
                                                                   <i
@@ -16452,60 +16430,62 @@ export default async function courselore({
                                                       >
                                                         <button
                                                           class="dropdown--menu--item button button--transparent"
-                                                          onclick="${javascript`
-                                                            tippy.hideAll();
-                                                            const selection = window.getSelection();
-                                                            const anchorElement = leafac.ancestors(selection.anchorNode).findLast(element => element?.dataset?.position !== undefined);
-                                                            const focusElement = leafac.ancestors(selection.focusNode).findLast(element => element?.dataset?.position !== undefined);
-                                                            const contentElement = this.closest(".message--show--content-area").querySelector(".message--show--content-area--content");
-                                                            if (
-                                                              selection.isCollapsed ||
-                                                              anchorElement === undefined ||
-                                                              focusElement === undefined ||
-                                                              !contentElement.contains(anchorElement) ||
-                                                              !contentElement.contains(focusElement)
-                                                            ) return;
-                                                            const anchorPosition = JSON.parse(anchorElement.dataset.position);
-                                                            const focusPosition = JSON.parse(focusElement.dataset.position);
-                                                            const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
-                                                            const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
-                                                            const content = JSON.parse(anchorElement.closest("[data-content-source]").dataset.contentSource);
-                                                            const newMessage = document.querySelector(".new-message");
-                                                            newMessage.querySelector(".content-editor--button--write").click();
-                                                            const element = newMessage.querySelector(".content-editor--write--textarea");
-                                                            textFieldEdit.wrapSelection(
-                                                              element,
-                                                              ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
-                                                                message.authorEnrollment ===
-                                                                "no-longer-enrolled"
-                                                                  ? javascript``
-                                                                  : javascript`
-                                                                    "@${
-                                                                      message.anonymousAt ===
-                                                                      null
-                                                                        ? `${
-                                                                            message
-                                                                              .authorEnrollment
-                                                                              .reference
-                                                                          }--${slugify(
-                                                                            message
-                                                                              .authorEnrollment
-                                                                              .user
-                                                                              .name
-                                                                          )}`
-                                                                        : `anonymous`
-                                                                    } · " +
-                                                                  `
-                                                              } "#" + ${JSON.stringify(
+                                                          oninteractive="${javascript`
+                                                            this.addEventListener("click", () => {
+                                                              tippy.hideAll();
+                                                              const selection = window.getSelection();
+                                                              const anchorElement = leafac.ancestors(selection.anchorNode).findLast(element => element?.dataset?.position !== undefined);
+                                                              const focusElement = leafac.ancestors(selection.focusNode).findLast(element => element?.dataset?.position !== undefined);
+                                                              const contentElement = this.closest(".message--show--content-area").querySelector(".message--show--content-area--content");
+                                                              if (
+                                                                selection.isCollapsed ||
+                                                                anchorElement === undefined ||
+                                                                focusElement === undefined ||
+                                                                !contentElement.contains(anchorElement) ||
+                                                                !contentElement.contains(focusElement)
+                                                              ) return;
+                                                              const anchorPosition = JSON.parse(anchorElement.dataset.position);
+                                                              const focusPosition = JSON.parse(focusElement.dataset.position);
+                                                              const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
+                                                              const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
+                                                              const content = JSON.parse(anchorElement.closest("[data-content-source]").dataset.contentSource);
+                                                              const newMessage = document.querySelector(".new-message");
+                                                              newMessage.querySelector(".content-editor--button--write").click();
+                                                              const element = newMessage.querySelector(".content-editor--write--textarea");
+                                                              textFieldEdit.wrapSelection(
+                                                                element,
+                                                                ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
+                                                                  message.authorEnrollment ===
+                                                                  "no-longer-enrolled"
+                                                                    ? javascript``
+                                                                    : javascript`
+                                                                      "@${
+                                                                        message.anonymousAt ===
+                                                                        null
+                                                                          ? `${
+                                                                              message
+                                                                                .authorEnrollment
+                                                                                .reference
+                                                                            }--${slugify(
+                                                                              message
+                                                                                .authorEnrollment
+                                                                                .user
+                                                                                .name
+                                                                            )}`
+                                                                          : `anonymous`
+                                                                      } · " +
+                                                                    `
+                                                                } "#" + ${JSON.stringify(
                                                             res.locals
                                                               .conversation
                                                               .reference
                                                           )} + "/" + ${JSON.stringify(
                                                             message.reference
                                                           )} + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n",
-                                                              ""
-                                                            );
-                                                            element.focus();
+                                                                ""
+                                                              );
+                                                              element.focus();
+                                                            });
                                                           `}"
                                                         >
                                                           <i
@@ -16809,9 +16789,11 @@ export default async function courselore({
                                                   <button
                                                     type="reset"
                                                     class="button button--transparent"
-                                                    onclick="${javascript`
-                                                      this.closest(".message").querySelector(".message--show").hidden = false;
-                                                      this.closest(".message").querySelector(".message--edit").hidden = true;
+                                                    oninteractive="${javascript`
+                                                      this.addEventListener("click", () => {
+                                                        this.closest(".message").querySelector(".message--show").hidden = false;
+                                                        this.closest(".message").querySelector(".message--edit").hidden = true;
+                                                      });
                                                     `}"
                                                   >
                                                     <i class="bi bi-x-lg"></i>
@@ -18224,11 +18206,11 @@ export default async function courselore({
             class="content-editor--button--write visually-hidden"
             oninteractive="${javascript`
               this.isModified = false;
-            `}"
-            onclick="${javascript`
-              this.closest(".content-editor").querySelector(".content-editor--write").hidden = false;
-              this.closest(".content-editor").querySelector(".content-editor--loading").hidden = true;
-              this.closest(".content-editor").querySelector(".content-editor--preview").hidden = true;
+              this.addEventListener("click", () => {
+                this.closest(".content-editor").querySelector(".content-editor--write").hidden = false;
+                this.closest(".content-editor").querySelector(".content-editor--loading").hidden = true;
+                this.closest(".content-editor").querySelector(".content-editor--preview").hidden = true;  
+              });            
             `}"
           />
           <span class="button button--transparent">
@@ -18243,9 +18225,7 @@ export default async function courselore({
             class="content-editor--button--preview visually-hidden"
             oninteractive="${javascript`
               this.isModified = false;
-            `}"
-            onclick="${javascript`
-              (async () => {
+              this.addEventListener("click", async (event) => {
                 const write = this.closest(".content-editor").querySelector(".content-editor--write");
                 const loading = this.closest(".content-editor").querySelector(".content-editor--loading");
                 const preview = this.closest(".content-editor").querySelector(".content-editor--preview");
@@ -18291,7 +18271,7 @@ export default async function courselore({
                 write.hidden = true;
                 loading.hidden = true;
                 preview.hidden = false;
-              })();
+              });            
             `}"
           />
           <span
@@ -18431,11 +18411,11 @@ export default async function courselore({
                       `
                     )},
                   });
-                `}"
-                onclick="${javascript`
-                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
-                  element.focus();
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
+                    element.focus();  
+                  });                
                 `}"
               >
                 <i class="bi bi-type-h1"></i>
@@ -18468,11 +18448,11 @@ export default async function courselore({
                       `
                     )},
                   });
-                `}"
-                onclick="${javascript`
-                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
-                  element.focus();
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
+                    element.focus();
+                  });
                 `}"
               >
                 <i class="bi bi-type-h2"></i>
@@ -18505,11 +18485,11 @@ export default async function courselore({
                       `
                     )},
                   });
-                `}"
-                onclick="${javascript`
-                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
-                  element.focus();
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
+                    element.focus();
+                  });
                 `}"
               >
                 <i class="bi bi-type-h3"></i>
@@ -18543,11 +18523,11 @@ export default async function courselore({
                       `
                     )},
                   });
-                `}"
-                onclick="${javascript`
-                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                  textFieldEdit.wrapSelection(element, "**");
-                  element.focus();
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, "**");
+                    element.focus();
+                  });
                 `}"
               >
                 <i class="bi bi-type-bold"></i>
@@ -18579,11 +18559,11 @@ export default async function courselore({
                       `
                     )},
                   });
-                `}"
-                onclick="${javascript`
-                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                  textFieldEdit.wrapSelection(element, "_");
-                  element.focus();
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, "_");
+                    element.focus();
+                  });
                 `}"
               >
                 <i class="bi bi-type-italic"></i>
@@ -18615,11 +18595,11 @@ export default async function courselore({
                       `
                     )},
                   });
-                `}"
-                onclick="${javascript`
-                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                  textFieldEdit.wrapSelection(element, "[", "](https://example.com)");
-                  element.focus();
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, "[", "](https://example.com)");
+                    element.focus();
+                  });
                 `}"
               >
                 <i class="bi bi-link"></i>
@@ -18654,11 +18634,11 @@ export default async function courselore({
                       `
                     )},
                   });
-                `}"
-                onclick="${javascript`
-                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- ", "\\n\\n");
-                  element.focus();
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- ", "\\n\\n");
+                    element.focus();
+                  });
                 `}"
               >
                 <i class="bi bi-list-ul"></i>
@@ -18691,11 +18671,11 @@ export default async function courselore({
                       `
                     )},
                   });
-                `}"
-                onclick="${javascript`
-                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "1. ", "\\n\\n");
-                  element.focus();
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "1. ", "\\n\\n");
+                    element.focus();
+                  });
                 `}"
               >
                 <i class="bi bi-list-ol"></i>
@@ -18728,11 +18708,11 @@ export default async function courselore({
                       `
                     )},
                   });
-                `}"
-                onclick="${javascript`
-                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ", "\\n\\n");
-                  element.focus();
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ", "\\n\\n");
+                    element.focus();
+                  });
                 `}"
               >
                 <i class="bi bi-ui-checks"></i>
@@ -18766,11 +18746,11 @@ export default async function courselore({
                       `
                     )},
                   });
-                `}"
-                onclick="${javascript`
-                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> ", "\\n\\n");
-                  element.focus();
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> ", "\\n\\n");
+                    element.focus();
+                  });
                 `}"
               >
                 <i class="bi bi-chat-left-quote"></i>
@@ -18803,12 +18783,12 @@ export default async function courselore({
                       `
                     )},
                   });
-                `}"
-                onclick="${javascript`
-                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                  const gapLength = element.selectionEnd - element.selectionStart + 2;
-                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "| ", " |  |\\n|" + "-".repeat(gapLength) + "|--|\\n|" + " ".repeat(gapLength) + "|  |\\n\\n");
-                  element.focus();
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    const gapLength = element.selectionEnd - element.selectionStart + 2;
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "| ", " |  |\\n|" + "-".repeat(gapLength) + "|--|\\n|" + " ".repeat(gapLength) + "|  |\\n\\n");
+                    element.focus();
+                  });
                 `}"
               >
                 <i class="bi bi-table"></i>
@@ -18841,11 +18821,11 @@ export default async function courselore({
                       `
                     )},
                   });
-                `}"
-                onclick="${javascript`
-                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>", "</summary>\\n\\nContent\\n\\n</details>\\n\\n");
-                  element.focus();
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>", "</summary>\\n\\nContent\\n\\n</details>\\n\\n");
+                    element.focus();
+                  });
                 `}"
               >
                 <i class="bi bi-chevron-bar-expand"></i>
@@ -18878,11 +18858,11 @@ export default async function courselore({
                       `
                     )},
                   });
-                `}"
-                onclick="${javascript`
-                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                  textFieldEdit.wrapSelection(element, "[^", "<identifier>]\\n\\n[^<identifier>]: <footnote>");
-                  element.focus();
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, "[^", "<identifier>]\\n\\n[^<identifier>]: <footnote>");
+                    element.focus();
+                  });
                 `}"
               >
                 <i class="bi bi-card-text"></i>
@@ -18916,11 +18896,11 @@ export default async function courselore({
                       `
                     )},
                   });
-                `}"
-                onclick="${javascript`
-                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                  textFieldEdit.wrapSelection(element, "\`");
-                  element.focus();
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, "\`");
+                    element.focus();
+                  });
                 `}"
               >
                 <i class="bi bi-code"></i>
@@ -18953,11 +18933,11 @@ export default async function courselore({
                       `
                     )},
                   });
-                `}"
-                onclick="${javascript`
-                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`language\\n", "\\n\`\`\`\\n\\n");
-                  element.focus();
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`language\\n", "\\n\`\`\`\\n\\n");
+                    element.focus();
+                  });
                 `}"
               >
                 <i class="bi bi-code-square"></i>
@@ -18992,11 +18972,11 @@ export default async function courselore({
                       `
                     )},
                   });
-                `}"
-                onclick="${javascript`
-                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                  textFieldEdit.wrapSelection(element, "$");
-                  element.focus();
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, "$");
+                    element.focus();
+                  });
                 `}"
               >
                 <i class="bi bi-calculator"></i>
@@ -19029,11 +19009,11 @@ export default async function courselore({
                       `
                     )},
                   });
-                `}"
-                onclick="${javascript`
-                  const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                  textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
-                  element.focus();
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
+                    element.focus();
+                  });
                 `}"
               >
                 <i class="bi bi-calculator-fill"></i>
@@ -19054,12 +19034,12 @@ export default async function courselore({
                               <span class="keyboard-shortcut">(@)</span>
                             `
                           )},
-                        }); 
-                      `}"
-                      onclick="${javascript`
-                        const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                        textFieldEdit.wrapSelection(element, "@", "");
-                        element.focus();
+                        });
+                        this.addEventListener("click", () => {
+                          const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                          textFieldEdit.wrapSelection(element, "@", "");
+                          element.focus();
+                        });
                       `}"
                     >
                       <i class="bi bi-at"></i>
@@ -19077,11 +19057,11 @@ export default async function courselore({
                             `
                           )},
                         });
-                      `}"
-                      onclick="${javascript`
-                        const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                        textFieldEdit.wrapSelection(element, "#", "");
-                        element.focus();
+                        this.addEventListener("click", () => {
+                          const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                          textFieldEdit.wrapSelection(element, "#", "");
+                          element.focus();
+                        });
                       `}"
                     >
                       <i class="bi bi-hash"></i>
@@ -19119,9 +19099,9 @@ export default async function courselore({
                       `
                     )},
                   });
-                `}"
-                onclick="${javascript`
-                  this.closest(".content-editor").querySelector(".attachments").click();
+                  this.addEventListener("click", () => {
+                    this.closest(".content-editor").querySelector(".attachments").click();
+                  });
                 `}"
               >
                 <i class="bi bi-image"></i>
@@ -19155,9 +19135,9 @@ export default async function courselore({
                       `
                     )},
                   });
-                `}"
-                onclick="${javascript`
-                  this.closest(".content-editor").querySelector(".attachments").click();
+                  this.addEventListener("click", () => {
+                    this.closest(".content-editor").querySelector(".attachments").click();
+                  });
                 `}"
               >
                 <i class="bi bi-paperclip"></i>
@@ -19270,13 +19250,13 @@ export default async function courselore({
                     this.isModified = false;
                     Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+0", () => { this.click(); return false; });
                     if (localStorage.getItem("content-editor--write--textarea--programmer-mode") === "true") this.click();
-                  `}"
-                  onclick="${javascript`
-                    const enabled = this.checked;
-                    const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    if (enabled) textarea.classList.add("content-editor--write--textarea--programmer-mode");
-                    else textarea.classList.remove("content-editor--write--textarea--programmer-mode");
-                    localStorage.setItem("content-editor--write--textarea--programmer-mode", enabled);
+                    this.addEventListener("click", () => {
+                      const enabled = this.checked;
+                      const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                      if (enabled) textarea.classList.add("content-editor--write--textarea--programmer-mode");
+                      else textarea.classList.remove("content-editor--write--textarea--programmer-mode");
+                      localStorage.setItem("content-editor--write--textarea--programmer-mode", enabled);  
+                    });
                   `}"
                 />
                 <span>
@@ -19375,8 +19355,10 @@ export default async function courselore({
                                       <button
                                         type="button"
                                         class="dropdown--menu--item button button--transparent"
-                                        onclick="${javascript`
-                                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("everyone");
+                                        oninteractive="${javascript`
+                                          this.addEventListener("click", () => {
+                                            this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("everyone");
+                                          });
                                         `}"
                                       >
                                         Everyone in the Conversation
@@ -19384,8 +19366,10 @@ export default async function courselore({
                                       <button
                                         type="button"
                                         class="dropdown--menu--item button button--transparent"
-                                        onclick="${javascript`
-                                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("staff");
+                                        oninteractive="${javascript`
+                                          this.addEventListener("click", () => {
+                                            this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("staff");
+                                          });
                                         `}"
                                       >
                                         Staff in the Conversation
@@ -19393,8 +19377,10 @@ export default async function courselore({
                                       <button
                                         type="button"
                                         class="dropdown--menu--item button button--transparent"
-                                        onclick="${javascript`
-                                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("students");
+                                        oninteractive="${javascript`
+                                          this.addEventListener("click", () => {
+                                            this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("students");
+                                          });
                                         `}"
                                       >
                                         Students in the Conversation
@@ -19688,10 +19674,12 @@ ${contentSource}</textarea
                   <button
                     type="button"
                     class="dropdown--menu--item button button--transparent"
-                    onclick="${javascript`
-                      this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${
-                        enrollment.reference
-                      }--${slugify(enrollment.user.name)}");
+                    oninteractive="${javascript`
+                      this.addEventListener("click", () => {
+                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${
+                          enrollment.reference
+                        }--${slugify(enrollment.user.name)}");  
+                      });
                     `}"
                   >
                     $${userPartial({
@@ -19782,8 +19770,10 @@ ${contentSource}</textarea
                       <button
                         type="button"
                         class="dropdown--menu--item button button--transparent"
-                        onclick="${javascript`
-                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
+                        oninteractive="${javascript`
+                          this.addEventListener("click", () => {
+                            this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
+                          });
                         `}"
                       >
                         <span>
@@ -19849,8 +19839,10 @@ ${contentSource}</textarea
                         <button
                           type="button"
                           class="dropdown--menu--item button button--transparent"
-                          onclick="${javascript`
-                            this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
+                          oninteractive="${javascript`
+                            this.addEventListener("click", () => {
+                              this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
+                            });
                           `}"
                         >
                           <div>
@@ -19883,8 +19875,10 @@ ${contentSource}</textarea
               <button
                 type="button"
                 class="dropdown--menu--item button button--transparent"
-                onclick="${javascript`
-                  this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
+                oninteractive="${javascript`
+                  this.addEventListener("click", () => {
+                    this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
+                  });              
                 `}"
               >
                 <span>
@@ -19936,8 +19930,10 @@ ${contentSource}</textarea
                     <button
                       type="button"
                       class="dropdown--menu--item button button--transparent"
-                      onclick="${javascript`
-                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
+                      oninteractive="${javascript`
+                        this.addEventListener("click", () => {
+                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
+                        });                    
                       `}"
                     >
                       <span>
@@ -20011,8 +20007,10 @@ ${contentSource}</textarea
                     <button
                       type="button"
                       class="dropdown--menu--item button button--transparent"
-                      onclick="${javascript`
-                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
+                      oninteractive="${javascript`
+                        this.addEventListener("click", () => {
+                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
+                        });                    
                       `}"
                     >
                       <div>
@@ -20092,8 +20090,10 @@ ${contentSource}</textarea
                     <button
                       type="button"
                       class="dropdown--menu--item button button--transparent"
-                      onclick="${javascript`
-                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
+                      oninteractive="${javascript`
+                        this.addEventListener("click", () => {
+                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
+                        });                    
                       `}"
                     >
                       <div>

@@ -5,6 +5,41 @@ await eventSourceRefresh(await fetch(this.action + "?eventSourceReference=" + ev
                                                                         method: this.method,
                                                                         body: new URLSearchParams(new FormData(this)),
                                                                       }));
+
+
+
+
+onclick="${javascript`
+                                    (async () => {
+                                      if (event.which > 1 || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+                                      event.preventDefault();
+                                      window.history.pushState(undefined, "", this.getAttribute("href"));
+                                      await eventSourceRefresh(await fetch(${JSON.stringify(
+                                        `${baseURL}/courses/${
+                                          res.locals.course.reference
+                                        }/conversations/${
+                                          conversation.reference
+                                        }${qs.stringify(
+                                          lodash.omit(
+                                            {
+                                              ...req.query,
+                                              scrollToConversation: false,
+                                              messageReference:
+                                                searchResult?.message
+                                                  ?.reference,
+                                            },
+                                            [
+                                              "conversationLayoutSidebarOpenOnSmallScreen",
+                                              "beforeMessageReference",
+                                              "afterMessageReference",
+                                            ]
+                                          ),
+                                          { addQueryPrefix: true }
+                                        )}`
+                                      )}));
+                                    })();
+
+
 */
 
 const eventSourceRefresh = async (response) => {
