@@ -8470,7 +8470,11 @@ export default async function courselore({
                         `
                       )}.firstElementChild.cloneNode(true);
                       this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
-                      leafac.evaluateElementsAttribute(newTag, "onmount");
+                      for (const element of leafac.descendants(newTag)) {
+                        const onmount = element.getAttribute("onmount");
+                        if (onmount === null) continue;
+                        new Function(onmount).call(element);
+                      }
                     `}"
                   >
                     <i class="bi bi-plus-circle"></i>
