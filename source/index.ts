@@ -984,8 +984,10 @@ export default async function courselore({
                         margin-top: var(--space--0-5);
                         margin-right: var(--space--3);
                       `)}"
-                      onclick="${javascript`
-                        this.closest(".flash").remove();
+                      oninteractive="${javascript`
+                        this.addEventListener("click", () => {
+                          this.closest(".flash").remove();
+                        });
                       `}"
                     >
                       <i class="bi bi-x-circle"></i>
@@ -6377,9 +6379,9 @@ export default async function courselore({
                           touch: false,
                           content: "Add Avatar",
                         });
-                      `}"
-                      onclick="${javascript`
-                        this.closest("form").querySelector(".avatar-chooser--upload").click();
+                        this.addEventListener("click", () => {
+                          this.closest("form").querySelector(".avatar-chooser--upload").click();
+                        });
                       `}"
                     >
                       $${userPartial({
@@ -6415,9 +6417,9 @@ export default async function courselore({
                           touch: false,
                           content: "Update Avatar",
                         });
-                      `}"
-                      onclick="${javascript`
-                        this.closest("form").querySelector(".avatar-chooser--upload").click();
+                        this.addEventListener("click", () => {
+                          this.closest("form").querySelector(".avatar-chooser--upload").click();
+                        });
                       `}"
                     >
                       <img
