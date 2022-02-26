@@ -6519,9 +6519,9 @@ export default async function courselore({
                         avatarFilled.hidden = false;
                         avatarFilled.querySelector("img").setAttribute("src", avatarURL);
                       };
-                    `}"
-                    onchange="${javascript`
-                      this.upload(this.files);
+                      this.addEventListener("change", () => {
+                        this.upload(this.files);
+                      });
                     `}"
                   />
                   <input
@@ -8647,14 +8647,16 @@ export default async function courselore({
                       value="link"
                       required
                       class="visually-hidden input--radio-or-checkbox--multilabel"
-                      onchange="${javascript`
-                        const form = this.closest("form");
-                        const emails = form.querySelector(".emails");
-                        emails.hidden = true;
-                        for (const element of emails.querySelectorAll("*"))
-                          if (element.disabled !== null) element.disabled = true;
-                        form.querySelector(".button--create-invitation").hidden = false;
-                        form.querySelector(".button--send-invitation-emails").hidden = true;
+                      oninteractive="${javascript`
+                        this.addEventListener("change", () => {
+                          const form = this.closest("form");
+                          const emails = form.querySelector(".emails");
+                          emails.hidden = true;
+                          for (const element of emails.querySelectorAll("*"))
+                            if (element.disabled !== null) element.disabled = true;
+                          form.querySelector(".button--create-invitation").hidden = false;
+                          form.querySelector(".button--send-invitation-emails").hidden = true;
+                        });
                       `}"
                     />
                     <span>
@@ -8675,14 +8677,16 @@ export default async function courselore({
                       value="email"
                       required
                       class="visually-hidden input--radio-or-checkbox--multilabel"
-                      onchange="${javascript`
-                        const form = this.closest("form");
-                        const emails = form.querySelector(".emails");
-                        emails.hidden = false;
-                        for (const element of emails.querySelectorAll("*"))
-                          if (element.disabled !== null) element.disabled = false;
-                        form.querySelector(".button--create-invitation").hidden = true;
-                        form.querySelector(".button--send-invitation-emails").hidden = false;
+                      oninteractive="${javascript`
+                        this.addEventListener("change", () => {
+                          const form = this.closest("form");
+                          const emails = form.querySelector(".emails");
+                          emails.hidden = false;
+                          for (const element of emails.querySelectorAll("*"))
+                            if (element.disabled !== null) element.disabled = false;
+                          form.querySelector(".button--create-invitation").hidden = true;
+                          form.querySelector(".button--send-invitation-emails").hidden = false;
+                        });
                       `}"
                     />
                     <span>
@@ -8822,11 +8826,13 @@ export default async function courselore({
                     <input
                       type="checkbox"
                       class="visually-hidden input--radio-or-checkbox--multilabel"
-                      onchange="${javascript`
-                        const expiresAt = this.closest("form").querySelector(".expires-at");
-                        expiresAt.hidden = !this.checked;
-                        for (const element of expiresAt.querySelectorAll("*"))
-                          if (element.disabled !== undefined) element.disabled = !this.checked;
+                      oninteractive="${javascript`
+                        this.addEventListener("change", () => {
+                          const expiresAt = this.closest("form").querySelector(".expires-at");
+                          expiresAt.hidden = !this.checked;
+                          for (const element of expiresAt.querySelectorAll("*"))
+                            if (element.disabled !== undefined) element.disabled = !this.checked;
+                        });
                       `}"
                     />
                     <span
@@ -11424,11 +11430,13 @@ export default async function courselore({
                         $${req.query.filters === undefined
                           ? html``
                           : html`checked`}
-                        onchange="${javascript`
-                          const filters = this.closest("form").querySelector(".filters");
-                          filters.hidden = !this.checked;
-                          for (const element of filters.querySelectorAll("*"))
-                            if (element.disabled !== null) element.disabled = !this.checked;
+                        oninteractive="${javascript`
+                          this.addEventListener("change", () => {
+                            const filters = this.closest("form").querySelector(".filters");
+                            filters.hidden = !this.checked;
+                            for (const element of filters.querySelectorAll("*"))
+                              if (element.disabled !== null) element.disabled = !this.checked;
+                          });
                         `}"
                       />
                       <span>
@@ -11475,11 +11483,13 @@ export default async function courselore({
                                   ? html`checked`
                                   : html``}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                onchange="${javascript`
+                                oninteractive="${javascript`
                                   ${
                                     conversationType === "question"
                                       ? javascript`
-                                          this.closest(".filters").querySelector(".filters--resolved").hidden = !this.checked;
+                                          this.addEventListener("change", () => {
+                                            this.closest(".filters").querySelector(".filters--resolved").hidden = !this.checked;
+                                          });                                      
                                         `
                                       : javascript``
                                   }
@@ -11530,11 +11540,13 @@ export default async function courselore({
                               ? html`checked`
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
-                            onchange="${javascript`
-                              if (this.checked)
-                                for (const element of this.closest(".filters--resolved").querySelectorAll("input"))
-                                  if (element !== this)
-                                    element.checked = false;
+                            oninteractive="${javascript`
+                              this.addEventListener("change", () => {
+                                if (this.checked)
+                                  for (const element of this.closest(".filters--resolved").querySelectorAll("input"))
+                                    if (element !== this)
+                                      element.checked = false;
+                              });
                             `}"
                           />
                           <span>
@@ -11557,11 +11569,13 @@ export default async function courselore({
                               ? html`checked`
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
-                            onchange="${javascript`
-                              if (this.checked)
-                                for (const element of this.closest(".filters--resolved").querySelectorAll("input"))
-                                  if (element !== this)
-                                    element.checked = false;
+                            oninteractive="${javascript`
+                              this.addEventListener("change", () => {
+                                if (this.checked)
+                                  for (const element of this.closest(".filters--resolved").querySelectorAll("input"))
+                                    if (element !== this)
+                                      element.checked = false;
+                              });
                             `}"
                           />
                           <span>
@@ -11611,8 +11625,10 @@ export default async function courselore({
                               ? html`checked`
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
-                            onchange="${javascript`
-                              if (this.checked) this.closest("form").querySelector('[name="filters[isPinned]"][value="false"]').checked = false;
+                            oninteractive="${javascript`
+                              this.addEventListener("change", () => {
+                                if (this.checked) this.closest("form").querySelector('[name="filters[isPinned]"][value="false"]').checked = false;
+                              });
                             `}"
                           />
                           <span>
@@ -11635,8 +11651,10 @@ export default async function courselore({
                               ? html`checked`
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
-                            onchange="${javascript`
-                              if (this.checked) this.closest("form").querySelector('[name="filters[isPinned]"][value="true"]').checked = false;
+                            oninteractive="${javascript`
+                              this.addEventListener("change", () => {
+                                if (this.checked) this.closest("form").querySelector('[name="filters[isPinned]"][value="true"]').checked = false;
+                              });
                             `}"
                           />
                           <span>
@@ -11672,8 +11690,10 @@ export default async function courselore({
                               ? html`checked`
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
-                            onchange="${javascript`
-                              if (this.checked) this.closest("form").querySelector('[name="filters[isStaffOnly]"][value="true"]').checked = false;
+                            oninteractive="${javascript`
+                              this.addEventListener("change", () => {
+                                if (this.checked) this.closest("form").querySelector('[name="filters[isStaffOnly]"][value="true"]').checked = false;
+                              });
                             `}"
                           />
                           <span>
@@ -11696,8 +11716,10 @@ export default async function courselore({
                               ? html`checked`
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
-                            onchange="${javascript`
-                              if (this.checked) this.closest("form").querySelector('[name="filters[isStaffOnly]"][value="false"]').checked = false;
+                            oninteractive="${javascript`
+                              this.addEventListener("change", () => {
+                                if (this.checked) this.closest("form").querySelector('[name="filters[isStaffOnly]"][value="false"]').checked = false;
+                              });
                             `}"
                           />
                           <span>
@@ -13159,12 +13181,14 @@ export default async function courselore({
                             value="${conversationType}"
                             required
                             class="visually-hidden input--radio-or-checkbox--multilabel"
-                            onchange="${javascript`
-                              const form = this.closest("form");
-                              for (const element of [...form.querySelectorAll('[name="tagsReferences[]"]'), form.querySelector('[name="content"]')])
-                                element.required = ${JSON.stringify(
-                                  conversationType !== "chat"
-                                )};
+                            oninteractive="${javascript`
+                              this.addEventListener("change", () => {
+                                const form = this.closest("form");
+                                for (const element of [...form.querySelectorAll('[name="tagsReferences[]"]'), form.querySelector('[name="content"]')])
+                                  element.required = ${JSON.stringify(
+                                    conversationType !== "chat"
+                                  )};
+                              });
                             `}"
                           />
                           <span>
@@ -13274,12 +13298,14 @@ export default async function courselore({
                           type="checkbox"
                           name="isStaffOnly"
                           class="visually-hidden input--radio-or-checkbox--multilabel"
-                          onchange="${javascript`
-                            const anonymity = this.closest("form").querySelector(".anonymity");
-                            if (anonymity === null) return;
-                            anonymity.hidden = this.checked;
-                            for (const element of anonymity.querySelectorAll("*"))
-                              if (element.disabled !== null) element.disabled = this.checked;
+                          oninteractive="${javascript`
+                            this.addEventListener("change", () => {
+                              const anonymity = this.closest("form").querySelector(".anonymity");
+                              if (anonymity === null) return;
+                              anonymity.hidden = this.checked;
+                              for (const element of anonymity.querySelectorAll("*"))
+                                if (element.disabled !== null) element.disabled = this.checked;
+                            });
                           `}"
                         />
                         <span
@@ -19213,12 +19239,12 @@ export default async function courselore({
                           `
                     }
                   };
-                `}"
-                onclick="${javascript`
-                  if (this.errorIfNotSignedIn()) event.preventDefault();
-                `}"
-                onchange="${javascript`
-                  this.upload(this.files);
+                  this.addEventListener("click", (event) => {
+                    if (this.errorIfNotSignedIn()) event.preventDefault();
+                  });
+                  this.addEventListener("change", () => {
+                    this.upload(this.files);
+                  });
                 `}"
               />
             </div>

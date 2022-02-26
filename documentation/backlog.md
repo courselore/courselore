@@ -2,9 +2,12 @@
 
 ### Performance
 
+- On `/conversations/new`, the error message for no tags selected isn’t showing up.
+
+---
+
 - Review leafac--javascript.
   - `on[a-z]*\s*=`
-    - `onchange`
     - `onmouseover`
     - `onfocus`
     - `oninput`
@@ -77,6 +80,7 @@
       - Create indices for `CAST("reference" AS INTEGER)` or convert `"reference"` into number (and then create an index for that!).
   - On sending message on non-chat, it’s scrolling back to the first page.
   - Remove feature flag.
+
 ---
 
 - Do a minor release, because of changes to configuration.
