@@ -1330,9 +1330,7 @@ export default async function courselore({
             href="${baseURL}/node_modules/@leafac/css/distribution/browser.css"
           />
           <link rel="stylesheet" href="${baseURL}/global.css" />
-          <style>
-            $${res.locals.localCSS.toString()}
-          </style>
+          $${res.locals.localCSS.toString()}
 
           <script src="${baseURL}/node_modules/autosize/dist/autosize.min.js"></script>
           <script src="${baseURL}/node_modules/morphdom/dist/morphdom-umd.min.js"></script>
@@ -3206,9 +3204,7 @@ export default async function courselore({
     <!DOCTYPE html>
     <html>
       <head>
-        <style>
-          $${res.locals.localCSS.toString()}
-        </style>
+        $${res.locals.localCSS.toString()}
       </head>
       <body>
         $${body}$${res.locals.HTMLForJavaScript.toString()}
