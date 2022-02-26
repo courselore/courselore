@@ -2,6 +2,13 @@
 
 ### Performance
 
+- Review CSS & JavaScript inclusion in page.
+- Review leafac--javascript.
+- Come up with a strategy to manage the lifecycle of components in page.
+  - Rename `oninteractive`, and that sort of thing.
+
+---
+
 - Do the Turbo Drive thing everywhere.
   - Reasoning:
     - It isn’t only for performance, but also to keep the state of the world on the client-side. For example, the scrolling position on the sidebar.
@@ -121,11 +128,6 @@
 
 ---
 
-- Minify assets:
-  - https://cssnano.co/ (based on PostCSS)
-  - https://github.com/clean-css/clean-css (most popular)
-  - https://github.com/parcel-bundler/parcel-css (seems faster, using Rust)
-  - https://github.com/css/csso
 
 ### Advanced Access Control
 
@@ -356,6 +358,13 @@
 
 ### Infrastructure
 
+- Minify assets?
+  - Right now we’re relying on gzip
+  - Potential solutions
+    - https://cssnano.co/ (based on PostCSS)
+    - https://github.com/clean-css/clean-css (most popular)
+    - https://github.com/parcel-bundler/parcel-css (seems faster, using Rust)
+    - https://github.com/css/csso
 - Check back on https://community.chocolatey.org/packages/nvm/1.1.9#discussion & https://community.chocolatey.org/packages/nvm.portable/1.1.9
   - If 1.1.9 hasn’t been released, add `--version=1.1.9` to installation instructions
 - Use `` javascript(html`<script>...</script>`) `` instead of `` javascript`...` `` because it works with Prettier (and syntax highlighting, to some extent).
