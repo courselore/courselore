@@ -4,6 +4,27 @@
 
 - Review leafac--javascript.
   - `on[a-z]*\s*=`
+    - `onscroll`
+    - `onbeforeelupdated`
+    - `onbeforeelchildrenupdated`
+    - `ondragover`
+    - `ondrop`
+    - `onchange`
+    - `onmount`
+    - `onmouseover`
+    - `onfocus`
+    - `oninput`
+    - `onelupdated`
+    - `onrefresh`
+    - `onnodeadded`
+    - `onbeforenodediscarded`
+    - `onsubmit`
+    - `ondragenter`
+    - `ondragleave`
+    - `onpaste`
+    - `onclick`
+    - `oninteractive`
+  - `addEventListener`
 - Come up with a strategy to manage the lifecycle of components in page.
   - Rename `oninteractive`, and that sort of thing.
   - Remove `data-` in favor of non-standard attributes?
@@ -105,6 +126,7 @@
 
 - Lazy loading & DRYing to reduce HTML payload
   - `userPartial` tooltip
+  - `conversationPartial` tooltip on decorated content
   - Edit message forms.
     - Use `data-content-source` that’s already used by the quoting mechanism.
     - Implement a more proper solution than the current use of `autosize.update()`
