@@ -3,8 +3,6 @@
 ### Performance
 
 - Review leafac--javascript.
-  - `data-`
-    - `dataset`
   - `on[a-z]*\s*=`
 - Come up with a strategy to manage the lifecycle of components in page.
   - Rename `oninteractive`, and that sort of thing.
