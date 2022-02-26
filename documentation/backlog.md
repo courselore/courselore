@@ -20,6 +20,8 @@
     - Capture
       - Internal links
       - Form submissions
+        - Confirm that form validation is happening
+        - Confirm that `onsubmit` handlers are being called appropriately.
     - Cache
     - Scroll
     - Progress bar
@@ -36,6 +38,9 @@
     - Conversations in sidebar.
     - Messages in conversation.
   - Filters.
+- Remove special cases
+  - Chat message submission & like
+  - Look for `onsubmit`.
 
 ---
 
@@ -51,7 +56,7 @@
     - `CAST("reference" AS INTEGER) >= CAST(${req.query.beforeMessageReference} AS INTEGER)`
       - Create indices for `CAST("reference" AS INTEGER)` or convert `"reference"` into number (and then create an index for that!).
   - On sending message on non-chat, it’s scrolling back to the first page.
-
+  - Remove feature flag.
 ---
 
 - Do a minor release, because of changes to configuration.

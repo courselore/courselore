@@ -76,13 +76,13 @@ const leafac = {
       for (const [element, valueInputByUser] of elementsToReset)
         element.value = valueInputByUser;
       const tooltip = tippy(element, {
-        content: error,
         theme: "validation--error",
         trigger: "manual",
         showOnCreate: true,
         onHidden: () => {
           tooltip.destroy();
         },
+        content: error,
       });
       element.focus();
       return false;
@@ -196,7 +196,7 @@ const leafac = {
 
   relativizeDateTimeElement: (element, options = {}) => {
     const dateTime = element.getAttribute("datetime");
-    tippy(element, { content: dateTime, touch: false });
+    tippy(element, { touch: false, content: dateTime });
 
     (function update() {
       element.textContent = leafac.relativizeDateTime(dateTime, options);
