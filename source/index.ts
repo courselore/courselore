@@ -47,7 +47,7 @@ import escapeStringRegexp from "escape-string-regexp";
 import QRCode from "qrcode";
 import casual from "casual";
 
-const FEATURE_PAGINATION = true;
+const FEATURE_PAGINATION = false;
 
 export default async function courselore({
   dataDirectory,
