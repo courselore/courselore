@@ -11,6 +11,16 @@
     - `onbeforeelupdated`
     - `onbeforeelchildrenupdated`
     - `oninteractive`
+
+```
+oninteractive="${javascript`
+  this.addEventListener("click", () => {
+  });
+`}"
+```
+
+---
+
 - Come up with a strategy to manage the lifecycle of components in page.
   - Rename `oninteractive`, and that sort of thing.
   - Remove `data-` in favor of non-standard attributes?
