@@ -133,10 +133,12 @@ const leafac = {
       )
         return "Please enter an email address.";
 
-      for (const validator of element.validators ?? []) {
-        const error = validator();
-        if (typeof error === "string") return error;
-      }
+      const validateEvent = new CustomEvent("validate", {
+        detail: { error: undefined },
+      });
+      element.dispatchEvent(validateEvent);
+      if (typeof validateEvent.detail.error === "string")
+        return validateEvent.detail.error;
     }
   },
 

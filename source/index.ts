@@ -5792,9 +5792,10 @@ export default async function courselore({
                 required
                 class="input--text"
                 oninteractive="${javascript`
-                  (this.validators ??= []).push(() => {
-                    if (this.value !== this.closest("form").querySelector('[name="password"]').value)
-                      return "Password & Password Confirmation don’t match.";
+                  this.addEventListener("validate", (event) => {
+                    if (this.value === this.closest("form").querySelector('[name="password"]').value) return;
+                    event.stopImmediatePropagation();
+                    event.detail.error = "Password & Password Confirmation don’t match.";
                   });
                 `}"
               />
