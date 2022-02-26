@@ -276,7 +276,7 @@ const leafac = {
     const tooltip = tippy(element, { touch: false });
     (function update() {
       const dateTime = element.getAttribute("datetime");
-      tooltip.setContent(dateTime);
+      tooltip.setContent(leafac.formatUTCDateTime(dateTime));
       element.textContent = leafac.relativizeDateTime(dateTime, options);
       window.setTimeout(update, 10 * 1000);
     })();
@@ -375,6 +375,15 @@ const leafac = {
     return `${leafac.localizeDate(dateString)} ${leafac.localizeTime(
       dateString
     )}`;
+  },
+
+  formatUTCDateTime(dateString) {
+    const date = new Date(dateString.trim());
+    return `${String(date.getUTCFullYear())}-${String(
+      date.getUTCMonth() + 1
+    ).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")} ${String(
+      date.getUTCHours()
+    ).padStart(2, "0")}:${String(date.getUTCMinutes()).padStart(2, "0")} UTC`;
   },
 
   UTCizeDateTime(dateString) {
