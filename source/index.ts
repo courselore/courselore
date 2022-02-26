@@ -603,8 +603,10 @@ export default async function courselore({
             flex-direction: column;
             overflow: hidden;
           `)}"
-          onscroll="${javascript`
-            this.scroll(0, 0);
+          oninteractive="${javascript`
+            this.addEventListener("scroll", () => {
+              this.scroll(0, 0);
+            });
           `}"
         >
           $${res.locals.enrollment === undefined
@@ -15089,9 +15091,9 @@ export default async function courselore({
                             `
                           : javascript``
                       }
-                    `}"
-                    onscroll="${javascript`
-                      this.shouldScrollToBottomOnRefresh = this.scrollTop === this.scrollHeight - this.offsetHeight;
+                      this.addEventListener("scroll", () => {
+                        this.shouldScrollToBottomOnRefresh = this.scrollTop === this.scrollHeight - this.offsetHeight;
+                      });
                     `}"
                     onrefresh="${javascript`
                       if (this.shouldScrollToBottomOnRefresh) this.scrollTop = this.scrollHeight;
