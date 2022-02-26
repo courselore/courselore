@@ -117,10 +117,11 @@
 
 ---
 
-- Write a function to determine if processing the message is even necessary. Most messages don’t use extra features and could skip JSDOM entirely.
-- Implement view caching on the server.
-- Investigate other potential bottlenecks:
-  - Synchronous stuff that could be async.
+- View caching on the server.
+- Page caching on the client (similar to Turbo Links).
+
+---
+
 - Pre-fetching
   - There are some links that have side-effects (marking messages as read).
   - All links in viewport
@@ -131,6 +132,12 @@
     - http://instantclick.io
   - References:
     - https://web.dev/speculative-prerendering/
+
+---
+
+- Write a function to determine if processing the message is even necessary. Most messages don’t use extra features and could skip JSDOM entirely.
+- Investigate other potential bottlenecks:
+  - Synchronous stuff that could be async.
 
 ### Advanced Access Control
 
