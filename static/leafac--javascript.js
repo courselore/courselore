@@ -343,6 +343,17 @@ const leafac = {
     }
   },
 
+  ancestors: (element) => {
+    const ancestors = [];
+    do {
+      ancestors.push(element);
+      element = element.parentElement;
+    } while (element !== null);
+    return ancestors;
+  },
+
+  descendants: (element) => [element, ...element.querySelectorAll("*")],
+
   // https://github.com/ccampbell/mousetrap/blob/2f9a476ba6158ba69763e4fcf914966cc72ef433/mousetrap.js#L135
   isAppleDevice: /Mac|iPod|iPhone|iPad/.test(navigator.platform),
 
