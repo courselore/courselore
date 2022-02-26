@@ -6,6 +6,9 @@
 - Review leafac--javascript.
 - Come up with a strategy to manage the lifecycle of components in page.
   - Rename `oninteractive`, and that sort of thing.
+  - Remove `data-` in favor of non-standard attributes?
+  - Change from `addEventListener` to `onEvent`?
+  - `onrefresh` → `onrefreshed`
 
 ---
 
@@ -23,7 +26,7 @@
     - Selective fetching: the server doesn’t need to send the whole page all the time. It can send only what changed.
     - `leafac.warnAboutLosingInputs()` doesn’t work when using `eventSourceRefresh`.
     - `autofocus`.
-  - Should `onpopstate` just refersh the page?
+  - Should `onpopstate` just refresh the page?
   - References
     - https://github.com/MoOx/pjax
     - https://github.com/hotwired/turbo
@@ -33,10 +36,6 @@
     - Conversations in sidebar.
     - Messages in conversation.
   - Filters.
-
----
-
-- Do a minor release, because of changes to configuration.
 
 ---
 
@@ -52,6 +51,10 @@
     - `CAST("reference" AS INTEGER) >= CAST(${req.query.beforeMessageReference} AS INTEGER)`
       - Create indices for `CAST("reference" AS INTEGER)` or convert `"reference"` into number (and then create an index for that!).
   - On sending message on non-chat, it’s scrolling back to the first page.
+
+---
+
+- Do a minor release, because of changes to configuration.
 
 ---
 
@@ -117,17 +120,11 @@
 - Rename, reword, and refactor:
   - `readings` → `views`.
   - “Confirm” email → “Verify” email.
-  - Remove `data-` in favor of non-standard attributes?
-  - Change from `addEventListener` to `onEvent`?
-  - `onrefresh` → `onrefreshed`
 
 ---
 
 - Introduce the notion of locking a conversation.
 - Introduce the notion of promoting a message into its own conversation (one example use case is when someone asks a question as a follow-up to an announcement).
-
----
-
 
 ### Advanced Access Control
 
