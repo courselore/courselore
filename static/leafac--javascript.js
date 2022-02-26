@@ -1,5 +1,79 @@
 // This file is here for now as it’s still under development. It should be moved to https://github.com/leafac/javascript/
 
+
+
+const eventSourceRefresh = async (response) => {
+  switch (response.status) {
+    case 200:
+      const refreshedDocument = new DOMParser().parseFromString(
+        await response.text(),
+        "text/html"
+      );
+      document.head.append(...refreshedDocument.head.querySelectorAll("style"));
+      morphdom(document.body, refreshedDocument.body, {
+        onBeforeNodeAdded(node) {
+          const onBeforeNodeAdded = node.getAttribute?.("onbeforenodeadded");
+          return typeof onBeforeNodeAdded === "string"
+            ? new Function("node", onBeforeNodeAdded).call(node, node)
+            : node;
+        },
+        onNodeAdded(node) {
+          const onNodeAdded = node.getAttribute?.("onnodeadded");
+          if (typeof onNodeAdded === "string")
+            new Function("node", onNodeAdded).call(node, node);
+        },
+        onBeforeElUpdated(from, to) {
+          const onBeforeElUpdated = from.getAttribute("onbeforeelupdated");
+          return typeof onBeforeElUpdated === "string"
+            ? new Function("from", "to", onBeforeElUpdated).call(from, from, to)
+            : !from.matches("input, textarea, select");
+        },
+        onElUpdated(element) {
+          const onElUpdated = element.getAttribute("onelupdated");
+          if (typeof onElUpdated === "string")
+            new Function("element", onElUpdated).call(element, element);
+        },
+        onBeforeNodeDiscarded(node) {
+          const onBeforeNodeDiscarded = node.getAttribute?.(
+            "onbeforenodediscarded"
+          );
+          return typeof onBeforeNodeDiscarded === "string"
+            ? new Function("node", onBeforeNodeDiscarded).call(node, node)
+            : !node.matches?.("[data-tippy-root]");
+        },
+        onBeforeElChildrenUpdated(from, to) {
+          const onBeforeElChildrenUpdated = from.getAttribute(
+            "onbeforeelchildrenupdated"
+          );
+          return typeof onBeforeElChildrenUpdated === "string"
+            ? new Function("from", "to", onBeforeElChildrenUpdated).call(
+                from,
+                from,
+                to
+              )
+            : true;
+        },
+      });
+      leafac.evaluateElementsAttribute(document);
+      leafac.evaluateElementsAttribute(document, "onrefresh", true);
+      break;
+
+    case 404:
+      alert("This page has been removed.\\n\\nYou’ll be redirected now.");
+      // FIXME: Redirect to ‘baseURL’
+      window.location.href = "/";
+      break;
+
+    default:
+      console.error(response);
+      break;
+  }
+};
+
+window.onpopstate = async () => {
+  await eventSourceRefresh(await fetch(document.location));
+};
+
 const leafac = {
   mount(element, partialString) {
     const partialHTML = new DOMParser().parseFromString(
@@ -399,76 +473,4 @@ const leafac = {
     email: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i,
     localizedDateTime: /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/,
   },
-};
-
-const eventSourceRefresh = async (response) => {
-  switch (response.status) {
-    case 200:
-      const refreshedDocument = new DOMParser().parseFromString(
-        await response.text(),
-        "text/html"
-      );
-      document.head.append(...refreshedDocument.head.querySelectorAll("style"));
-      morphdom(document.body, refreshedDocument.body, {
-        onBeforeNodeAdded(node) {
-          const onBeforeNodeAdded = node.getAttribute?.("onbeforenodeadded");
-          return typeof onBeforeNodeAdded === "string"
-            ? new Function("node", onBeforeNodeAdded).call(node, node)
-            : node;
-        },
-        onNodeAdded(node) {
-          const onNodeAdded = node.getAttribute?.("onnodeadded");
-          if (typeof onNodeAdded === "string")
-            new Function("node", onNodeAdded).call(node, node);
-        },
-        onBeforeElUpdated(from, to) {
-          const onBeforeElUpdated = from.getAttribute("onbeforeelupdated");
-          return typeof onBeforeElUpdated === "string"
-            ? new Function("from", "to", onBeforeElUpdated).call(from, from, to)
-            : !from.matches("input, textarea, select");
-        },
-        onElUpdated(element) {
-          const onElUpdated = element.getAttribute("onelupdated");
-          if (typeof onElUpdated === "string")
-            new Function("element", onElUpdated).call(element, element);
-        },
-        onBeforeNodeDiscarded(node) {
-          const onBeforeNodeDiscarded = node.getAttribute?.(
-            "onbeforenodediscarded"
-          );
-          return typeof onBeforeNodeDiscarded === "string"
-            ? new Function("node", onBeforeNodeDiscarded).call(node, node)
-            : !node.matches?.("[data-tippy-root]");
-        },
-        onBeforeElChildrenUpdated(from, to) {
-          const onBeforeElChildrenUpdated = from.getAttribute(
-            "onbeforeelchildrenupdated"
-          );
-          return typeof onBeforeElChildrenUpdated === "string"
-            ? new Function("from", "to", onBeforeElChildrenUpdated).call(
-                from,
-                from,
-                to
-              )
-            : true;
-        },
-      });
-      leafac.evaluateElementsAttribute(document);
-      leafac.evaluateElementsAttribute(document, "onrefresh", true);
-      break;
-
-    case 404:
-      alert("This page has been removed.\\n\\nYou’ll be redirected now.");
-      // FIXME: Redirect to ‘baseURL’
-      window.location.href = "/";
-      break;
-
-    default:
-      console.error(response);
-      break;
-  }
-};
-
-window.onpopstate = async () => {
-  await eventSourceRefresh(await fetch(document.location));
 };

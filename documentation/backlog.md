@@ -6,6 +6,7 @@
   - `validators`
   - `data-`
     - `dataset`
+  - `on[a-z]*\s*=`
 - Come up with a strategy to manage the lifecycle of components in page.
   - Rename `oninteractive`, and that sort of thing.
   - Remove `data-` in favor of non-standard attributes?
@@ -31,6 +32,7 @@
     - Selective fetching: the server doesn’t need to send the whole page all the time. It can send only what changed.
     - `leafac.warnAboutLosingInputs()` doesn’t work when using `eventSourceRefresh`.
     - `autofocus`.
+  - `saveFormInputValue()` is misbehaving in Turbo Drive.
   - Should `onpopstate` just refresh the page?
   - References
     - https://github.com/MoOx/pjax
