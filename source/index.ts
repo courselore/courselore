@@ -6450,13 +6450,13 @@ export default async function courselore({
                           touch: false,
                           content: "Remove Avatar",
                         });
-                      `}"
-                      onclick="${javascript`
-                        const form = this.closest("form");
-                        const avatar = form.querySelector('[name="avatar"]')
-                        avatar.value = "";
-                        form.querySelector(".avatar-chooser--empty").hidden = false;
-                        form.querySelector(".avatar-chooser--filled").hidden = true;
+                        this.addEventListener("click", () => {
+                          const form = this.closest("form");
+                          const avatar = form.querySelector('[name="avatar"]')
+                          avatar.value = "";
+                          form.querySelector(".avatar-chooser--empty").hidden = false;
+                          form.querySelector(".avatar-chooser--filled").hidden = true;
+                        });
                       `}"
                     >
                       <i class="bi bi-trash"></i>
