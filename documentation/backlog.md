@@ -41,6 +41,7 @@
       - Form submissions
         - Confirm that form validation is happening
         - Confirm that `onsubmit` handlers are being called appropriately.
+        - Reset form
     - Cache
     - Scroll
     - Progress bar

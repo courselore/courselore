@@ -16889,22 +16889,6 @@ export default async function courselore({
                         padding-top: var(--space--4);
                       `}
                 `)}"
-                $${res.locals.conversation.type === "chat"
-                  ? html`
-                      onsubmit="${javascript`
-                        (async () => {
-                          event.preventDefault();
-                          await eventSourceRefresh(await fetch(this.action + "?eventSourceReference=" + eventSource.reference, {
-                            method: this.method,
-                            body: new URLSearchParams(new FormData(this)),
-                          }));
-                          // FIXME: https://github.com/fregante/text-field-edit/issues/16
-                          this.querySelector(".content-editor--write--textarea").value = "";
-                          textFieldEdit.set(this.querySelector(".content-editor--write--textarea"), "");
-                        })();
-                      `}"
-                    `
-                  : html``}
               >
                 <div
                   class="${res.locals.localCSS(css`
