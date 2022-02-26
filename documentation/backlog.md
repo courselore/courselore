@@ -8,13 +8,13 @@
 
 - Review leafac--javascript.
   - `on[a-z]*\s*=`
+    - `onclick`
     - `onelupdated`
     - `onrefresh`
     - `onnodeadded`
     - `onbeforenodediscarded`
     - `onbeforeelupdated`
     - `onbeforeelchildrenupdated`
-    - `onclick`
     - `oninteractive`
   - `addEventListener`
 - Come up with a strategy to manage the lifecycle of components in page.
