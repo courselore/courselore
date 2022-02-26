@@ -94,7 +94,7 @@
 - Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the Courselore community.
 - In Meta Courselore, make a pinned announcement of how to report bugs.
   - Have a way to pre-fill the new conversation form, similar to what GitHub does with new issues.
-- Don’t leak `HTMLForJavaScript` & `<style>`.
+- Don’t leak `HTMLForJavaScript`, `<style>`, and `update()`.
 - Chats sometimes scroll by themselves(!)
   - Maybe it’s been fixed by preventing the date separators from hiding on live-updates.
   - Scroll to bottom on with MutationObserver?

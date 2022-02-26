@@ -1,7 +1,5 @@
 // This file is here for now as it’s still under development. It should be moved to https://github.com/leafac/javascript/
 
-
-
 const eventSourceRefresh = async (response) => {
   switch (response.status) {
     case 200:
@@ -275,20 +273,20 @@ const leafac = {
   },
 
   relativizeDateTimeElement(element, options = {}) {
-    const dateTime = element.getAttribute("datetime");
-    tippy(element, { touch: false, content: dateTime });
-
+    const tooltip = tippy(element, { touch: false });
     (function update() {
+      const dateTime = element.getAttribute("datetime");
+      tooltip.setContent(dateTime);
       element.textContent = leafac.relativizeDateTime(dateTime, options);
       window.setTimeout(update, 10 * 1000);
     })();
   },
 
   relativizeDateElement(element) {
-    const dateTime = element.getAttribute("datetime");
-
     (function update() {
-      element.textContent = leafac.relativizeDate(dateTime);
+      element.textContent = leafac.relativizeDate(
+        element.getAttribute("datetime")
+      );
       window.setTimeout(update, 60 * 1000);
     })();
   },
