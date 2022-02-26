@@ -19267,9 +19267,9 @@ export default async function courselore({
                   `}"
                   onclick="${javascript`
                     const enabled = this.checked;
-                    const classList = this.closest(".content-editor").querySelector(".content-editor--write--textarea").classList;
-                    if (enabled) classList.add("content-editor--write--textarea--programmer-mode");
-                    else classList.remove("content-editor--write--textarea--programmer-mode");
+                    const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    if (enabled) textarea.classList.add("content-editor--write--textarea--programmer-mode");
+                    else textarea.classList.remove("content-editor--write--textarea--programmer-mode");
                     localStorage.setItem("content-editor--write--textarea--programmer-mode", enabled);
                   `}"
                 />

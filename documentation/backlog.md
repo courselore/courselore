@@ -2,10 +2,6 @@
 
 ### Performance
 
-- https://github.com/fregante/indent-textarea
-
----
-
 - Do the Turbo Drive thing everywhere.
   - Reasoning:
     - It isn’t only for performance, but also to keep the state of the world on the client-side. For example, the scrolling position on the sidebar.
