@@ -6345,12 +6345,14 @@ export default async function courselore({
                       height: var(--space--32);
                     }
                   `)}"
-                  ondragover="${javascript`
-                    event.preventDefault();
-                  `}"
-                  ondrop="${javascript`
-                    event.preventDefault();
-                    this.querySelector(".avatar-chooser--upload").upload(event.dataTransfer.files);
+                  oninteractive="${javascript`
+                    this.addEventListener("dragover", (event) => {
+                      event.preventDefault();
+                    });
+                    this.addEventListener("drop", (event) => {
+                      event.preventDefault();
+                      this.querySelector(".avatar-chooser--upload").upload(event.dataTransfer.files);
+                    });
                   `}"
                 >
                   <div
@@ -19526,25 +19528,25 @@ export default async function courselore({
                       `
                     : javascript``
                 }
-              `}"
-              ondragenter="${javascript`
-                this.classList.add("drag");
-              `}"
-              ondragover="${javascript`
-                event.preventDefault();
-              `}"
-              ondrop="${javascript`
-                event.preventDefault();
-                this.classList.remove("drag");
-                this.closest(".content-editor").querySelector(".attachments").upload(event.dataTransfer.files);
-              `}"
-              ondragleave="${javascript`
-                this.classList.remove("drag");
-              `}"
-              onpaste="${javascript`
-                if (event.clipboardData.files.length === 0) return;
-                event.preventDefault();
-                this.closest(".content-editor").querySelector(".attachments").upload(event.clipboardData.files);
+                this.addEventListener("dragenter", () => {
+                  this.classList.add("drag");
+                });
+                this.addEventListener("dragover", (event) => {
+                  event.preventDefault();
+                });
+                this.addEventListener("drop", (event) => {
+                  event.preventDefault();
+                  this.classList.remove("drag");
+                  this.closest(".content-editor").querySelector(".attachments").upload(event.dataTransfer.files);
+                });
+                this.addEventListener("dragleave", () => {
+                  this.classList.remove("drag");
+                });
+                this.addEventListener("paste", (event) => {
+                  if (event.clipboardData.files.length === 0) return;
+                  event.preventDefault();
+                  this.closest(".content-editor").querySelector(".attachments").upload(event.clipboardData.files);
+                });
               `}"
             >
 ${contentSource}</textarea
