@@ -4,23 +4,23 @@
 
 - Review leafac--javascript.
   - `on[a-z]*\s*=`
-    - `onbeforeelupdated`
-    - `onbeforeelchildrenupdated`
     - `ondragover`
     - `ondrop`
     - `onchange`
-    - `onmount`
     - `onmouseover`
     - `onfocus`
     - `oninput`
+    - `onsubmit`
+    - `ondragenter`
+    - `ondragleave`
+    - `onmount`
+    - `onpaste`
     - `onelupdated`
     - `onrefresh`
     - `onnodeadded`
     - `onbeforenodediscarded`
-    - `onsubmit`
-    - `ondragenter`
-    - `ondragleave`
-    - `onpaste`
+    - `onbeforeelupdated`
+    - `onbeforeelchildrenupdated`
     - `onclick`
     - `oninteractive`
   - `addEventListener`
