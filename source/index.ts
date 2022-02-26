@@ -4958,7 +4958,7 @@ export default async function courselore({
                   Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 `,
                 required: false,
-                skipIsModified: true,
+                isModified: false,
               })}
             </div>
           </div>
@@ -5222,7 +5222,9 @@ export default async function courselore({
                 required
                 autofocus
                 class="input--text"
-                data-skip-is-modified="true"
+                oninteractive="${javascript`
+                  this.isModified = false;
+                `}"
               />
             </label>
             <label class="label">
@@ -5232,7 +5234,9 @@ export default async function courselore({
                 name="password"
                 required
                 class="input--text"
-                data-skip-is-modified="true"
+                oninteractive="${javascript`
+                  this.isModified = false;
+                `}"
               />
             </label>
             <button class="button button--blue">
@@ -5445,7 +5449,9 @@ export default async function courselore({
                   required
                   autofocus
                   class="input--text"
-                  data-skip-is-modified="true"
+                  oninteractive="${javascript`
+                    this.isModified = false;
+                  `}"
                 />
               </label>
               <button class="button button--blue">
@@ -6454,8 +6460,8 @@ export default async function courselore({
                     class="avatar-chooser--upload"
                     accept="image/*"
                     hidden
-                    data-skip-is-modified="true"
                     oninteractive="${javascript`
+                      this.isModified = false;
                       const avatarChooser = this.closest(".avatar-chooser");
                       const avatar = avatarChooser.querySelector('[name="avatar"]');
                       const avatarEmpty = avatarChooser.querySelector(".avatar-chooser--empty");
@@ -8107,7 +8113,9 @@ export default async function courselore({
                           name="tags[${index.toString()}][delete]"
                           value="true"
                           disabled
-                          data-force-is-modified="true"
+                          oninteractive="${javascript`
+                            this.isModified = true;
+                          `}"
                         />
                         <div class="tag--icon text--teal">
                           <i class="bi bi-tag-fill"></i>
@@ -8375,7 +8383,7 @@ export default async function courselore({
                                 disabled
                                 class="input--text"
                                 onmount="${javascript`
-                                  this.dataset.forceIsModified = true;
+                                  this.isModified = true;
                                   this.disabled = false;
                                   this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][name]";
                                 `}"
@@ -8401,7 +8409,7 @@ export default async function courselore({
                                       disabled
                                       class="visually-hidden input--radio-or-checkbox--multilabel"
                                       onmount="${javascript`
-                                        this.dataset.forceIsModified = true;
+                                        this.isModified = true;
                                         this.disabled = false;
                                         this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][isStaffOnly]";
                                       `}"
@@ -9969,7 +9977,9 @@ export default async function courselore({
                 type="text"
                 class="input--text"
                 placeholder="Filter…"
-                data-skip-is-modified="true"
+                oninteractive="${javascript`
+                  this.isModified = false;
+                `}"
                 oninput="${javascript`
                   const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
                   for (const enrollment of document.querySelectorAll(".enrollment")) {
@@ -11317,7 +11327,6 @@ export default async function courselore({
 
                 <form
                   novalidate
-                  data-skip-is-modified="true"
                   class="${res.locals.localCSS(css`
                     font-size: var(--font-size--xs);
                     line-height: var(--line-height--xs);
@@ -11325,6 +11334,9 @@ export default async function courselore({
                     flex-direction: column;
                     gap: var(--space--1);
                   `)}"
+                  oninteractive="${javascript`
+                    this.isModified = false;
+                  `}"
                 >
                   <input
                     type="hidden"
@@ -18147,7 +18159,7 @@ export default async function courselore({
     contentSource = "",
     required = true,
     compact = false,
-    skipIsModified = false,
+    isModified,
   }: {
     req: express.Request<
       {},
@@ -18168,7 +18180,7 @@ export default async function courselore({
     contentSource?: string;
     required?: boolean;
     compact?: boolean;
-    skipIsModified?: boolean;
+    isModified?: boolean | undefined;
   }): HTML => html`
     <div
       class="content-editor ${res.locals.localCSS(css`
@@ -18215,8 +18227,10 @@ export default async function courselore({
             type="radio"
             name="content-editor--mode"
             checked
-            data-skip-is-modified="true"
             class="content-editor--button--write visually-hidden"
+            oninteractive="${javascript`
+              this.isModified = false;
+            `}"
             onclick="${javascript`
               this.closest(".content-editor").querySelector(".content-editor--write").hidden = false;
               this.closest(".content-editor").querySelector(".content-editor--loading").hidden = true;
@@ -18232,8 +18246,10 @@ export default async function courselore({
           <input
             type="radio"
             name="content-editor--mode"
-            data-skip-is-modified="true"
             class="content-editor--button--preview visually-hidden"
+            oninteractive="${javascript`
+              this.isModified = false;
+            `}"
             onclick="${javascript`
               (async () => {
                 const write = this.closest(".content-editor").querySelector(".content-editor--write");
@@ -19157,8 +19173,8 @@ export default async function courselore({
                 class="attachments"
                 multiple
                 hidden
-                data-skip-is-modified="true"
                 oninteractive="${javascript`
+                  this.isModified = false;
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   const uploadingIndicator = tippy(textarea, {
                     trigger: "manual",
@@ -19255,9 +19271,9 @@ export default async function courselore({
               >
                 <input
                   type="checkbox"
-                  data-skip-is-modified="true"
                   class="visually-hidden input--radio-or-checkbox--multilabel"
                   oninteractive="${javascript`
+                    this.isModified = false;
                     Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+0", () => { this.click(); return false; });
                     if (localStorage.getItem("content-editor--write--textarea--programmer-mode") === "true") this.click();
                   `}"
@@ -19294,7 +19310,6 @@ export default async function courselore({
             <textarea
               name="${name}"
               $${required ? html`required` : html``}
-              $${skipIsModified ? html`data-skip-is-modified="true"` : html``}
               class="content-editor--write--textarea input--text input--text--textarea ${res
                 .locals.localCSS(css`
                 ${compact
@@ -19319,6 +19334,13 @@ export default async function courselore({
                 }
               `)}"
               oninteractive="${javascript`
+                ${
+                  isModified !== undefined
+                    ? javascript`
+                        this.isModified = ${JSON.stringify(isModified)};
+                      `
+                    : javascript``
+                }
                 autosize(this);
                 ${
                   res.locals.course !== undefined

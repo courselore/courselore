@@ -4,12 +4,6 @@
 
 - Review leafac--javascript.
   - `validators`
-  - `.isModified = "skip"`
-    - `data-skip-is-modified`
-    - `skipIsModified`
-  - `.isModified = "force"`
-    - `data-force-is-modified`
-    - `forceIsModified`
   - `data-`
     - `dataset`
 - Come up with a strategy to manage the lifecycle of components in page.
@@ -17,6 +11,7 @@
   - Remove `data-` in favor of non-standard attributes?
   - `onrefresh` → `onrefreshed`
   - `onmount`
+- Cache busting on assets
 
 ---
 

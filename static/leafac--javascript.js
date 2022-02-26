@@ -160,14 +160,12 @@ const leafac = {
       if (
         leafac
           .ancestors(element)
-          .some((element) => element.isModified === "skip") ||
+          .some((element) => element.isModified === false) ||
         element.closest("[disabled]") !== null
       )
         continue;
       if (
-        leafac
-          .ancestors(element)
-          .some((element) => element.isModified === "force")
+        leafac.ancestors(element).some((element) => element.isModified === true)
       )
         return true;
       if (["radio", "checkbox"].includes(element.type)) {
@@ -330,7 +328,7 @@ const leafac = {
   saveFormInputValue(element, identifier) {
     element.defaultValue =
       getLocalStorageItem()?.[window.location.pathname]?.[identifier] ?? "";
-    element.dataset.skipIsModified = "true";
+    element.isModified = false;
     element.addEventListener("input", () => {
       const localStorageItem = getLocalStorageItem();
       localStorageItem[window.location.pathname] ??= {};
