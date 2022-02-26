@@ -15592,7 +15592,7 @@ export default async function courselore({
                                                                       content: tooltip,
                                                                     });
 
-                                                                    this.onmouseover = this.onfocus = async () => {
+                                                                    const load = async () => {
                                                                       if (!content.hidden) return;
                                                                       leafac.mount(
                                                                         content,
@@ -15611,6 +15611,9 @@ export default async function courselore({
                                                                       loading.hidden = true;
                                                                       content.hidden = false;
                                                                     };
+
+                                                                    this.addEventListener("mouseover", load);
+                                                                    this.addEventListener("focus", load);
                                                                   `}"
                                                                 >
                                                                   <i
@@ -16669,7 +16672,7 @@ export default async function courselore({
                                                       content: tooltip,
                                                     });
 
-                                                    this.onmouseover = this.onfocus = async () => {
+                                                    const load = async () => {
                                                       if (!content.hidden) return;
                                                       leafac.mount(
                                                         content,
@@ -16685,6 +16688,9 @@ export default async function courselore({
                                                       loading.hidden = true;
                                                       content.hidden = false;
                                                     };
+
+                                                    this.addEventListener("mouseover", load);
+                                                    this.addEventListener("focus", load);
                                                   `}"
                                                 >
                                                   <i class="bi bi-eye"></i>
