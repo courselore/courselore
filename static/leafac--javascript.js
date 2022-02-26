@@ -158,11 +158,17 @@ const leafac = {
     const elementsToCheck = leafac.descendants(element);
     for (const element of elementsToCheck) {
       if (
-        element.closest(`[data-skip-is-modified="true"]`) !== null ||
+        leafac
+          .ancestors(element)
+          .some((element) => element.isModified === "skip") ||
         element.closest("[disabled]") !== null
       )
         continue;
-      if (element.closest(`[data-force-is-modified="true"]`) !== null)
+      if (
+        leafac
+          .ancestors(element)
+          .some((element) => element.isModified === "force")
+      )
         return true;
       if (["radio", "checkbox"].includes(element.type)) {
         if (element.checked !== element.defaultChecked) return true;
