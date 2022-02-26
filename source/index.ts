@@ -1352,6 +1352,7 @@ export default async function courselore({
             leafac.warnAboutLosingInputs();
             leafac.disableButtonsOnSubmit();
             leafac.tippySetDefaultProps();
+            leafac.turboDrive();
           </script>
           $${res?.locals.eventSource
             ? html`

@@ -115,6 +115,29 @@ window.onpopstate = async () => {
 };
 
 const leafac = {
+  turboDrive() {
+    document.addEventListener("click", async (event) => {
+      const link = event.target.closest(
+        "a[href]:not([target^=_]):not([download])"
+      );
+      if (
+        link === null ||
+        (event.target && event.target.isContentEditable) ||
+        event.defaultPrevented ||
+        event.which > 1 ||
+        event.altKey ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.shiftKey
+      )
+        return;
+      event.preventDefault();
+      const href = link.getAttribute("href");
+      window.history.pushState(undefined, "", href);
+      await eventSourceRefresh(await fetch(href));
+    });
+  },
+
   mount(element, partialString) {
     const partialHTML = new DOMParser().parseFromString(
       partialString,
