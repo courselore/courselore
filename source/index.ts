@@ -15523,15 +15523,10 @@ export default async function courselore({
                                                                     .locals
                                                                     .conversation
                                                                     .reference}/messages/${message.reference}/likes"
-                                                                  onsubmit="${javascript`
-                                                                    (async () => {
-                                                                      event.preventDefault();
-                                                                      await eventSourceRefresh(await fetch(this.action + "?eventSourceReference=" + eventSource.reference, {
-                                                                        method: this.method,
-                                                                        body: new URLSearchParams(new FormData(this)),
-                                                                      }));
-                                                                      this.remove();
-                                                                    })();
+                                                                  oninteractive="${javascript`
+                                                                    this.addEventListener("submit", () => {
+                                                                      window.setTimeout(() => { this.remove(); }, 0);
+                                                                    });
                                                                   `}"
                                                                 >
                                                                   <input

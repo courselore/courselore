@@ -47,6 +47,7 @@
     - Selective fetching: the server doesn’t need to send the whole page all the time. It can send only what changed.
     - `leafac.warnAboutLosingInputs()` doesn’t work when using `eventSourceRefresh`.
     - `autofocus`.
+  - `"?eventSourceReference=" + eventSource.reference`
   - `saveFormInputValue()` is misbehaving in Turbo Drive.
   - Should `onpopstate` just refresh the page?
   - References

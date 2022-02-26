@@ -1,5 +1,12 @@
 // This file is here for now as it’s still under development. It should be moved to https://github.com/leafac/javascript/
 
+/*
+await eventSourceRefresh(await fetch(this.action + "?eventSourceReference=" + eventSource.reference, {
+                                                                        method: this.method,
+                                                                        body: new URLSearchParams(new FormData(this)),
+                                                                      }));
+*/
+
 const eventSourceRefresh = async (response) => {
   switch (response.status) {
     case 200:
