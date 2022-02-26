@@ -154,7 +154,11 @@ const leafac = {
       if (typeof error !== "string") continue;
       for (const [element, valueInputByUser] of elementsToReset)
         element.value = valueInputByUser;
-      const tooltip = tippy(element, {
+      const target =
+        element.closest(
+          "[hidden], .visually-hidden, .visually-hidden--interactive:not(:focus):not(:focus-within):not(:active)"
+        )?.parentElement ?? element;
+      const tooltip = tippy(target, {
         theme: "validation--error",
         trigger: "manual",
         showOnCreate: true,

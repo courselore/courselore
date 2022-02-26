@@ -2,10 +2,6 @@
 
 ### Performance
 
-- On `/conversations/new`, the error message for no tags selected isn’t showing up.
-
----
-
 - Review leafac--javascript.
   - `on[a-z]*\s*=`
     - `onclick`
