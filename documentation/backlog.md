@@ -56,6 +56,11 @@
 
 - Do a minor release, because of changes to configuration.
 
+### User Interface Improvements
+
+- Rename, reword, and refactor:
+  - “Confirm” email → “Verify” email.
+
 ---
 
 - Redesign the “Start a Conversation” button to include the wording of “Ask a Question”
@@ -69,6 +74,27 @@
 - Group conversations by date & pinned (similar to Piazza & Campuswire).
 
 ---
+
+- Add a help screen under the “About Courselore” button:
+  - A more app-like experience (in iOS):
+    - Bookmark Courselore to home screen.
+    - Use VIPs as notifications mechanism.
+  - If things look weird, or if something doesn’t work, you may need to update your browser.
+- Make a public page listing known issues.
+- Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the Courselore community.
+- In Meta Courselore, make a pinned announcement of how to report bugs.
+  - Have a way to pre-fill the new conversation form, similar to what GitHub does with new issues.
+- Don’t leak `HTMLForJavaScript` & `<style>`.
+- Chats sometimes scroll by themselves(!)
+  - Maybe it’s been fixed by preventing the date separators from hiding on live-updates.
+  - Scroll to bottom on with MutationObserver?
+
+---
+
+- Introduce the notion of locking a conversation.
+- Introduce the notion of promoting a message into its own conversation (one example use case is when someone asks a question as a follow-up to an announcement).
+
+### More Performance
 
 - Lazy loading & DRYing to reduce HTML payload
   - `userPartial` tooltip
@@ -98,33 +124,6 @@
 - Front-end optimizations:
   - Hotwire.
   - Pre-fetching.
-
----
-
-- Add a help screen under the “About Courselore” button:
-  - A more app-like experience (in iOS):
-    - Bookmark Courselore to home screen.
-    - Use VIPs as notifications mechanism.
-  - If things look weird, or if something doesn’t work, you may need to update your browser.
-- Make a public page listing known issues.
-- Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the Courselore community.
-- In Meta Courselore, make a pinned announcement of how to report bugs.
-  - Have a way to pre-fill the new conversation form, similar to what GitHub does with new issues.
-- Don’t leak `HTMLForJavaScript` & `<style>`.
-- Chats sometimes scroll by themselves(!)
-  - Maybe it’s been fixed by preventing the date separators from hiding on live-updates.
-  - Scroll to bottom on with MutationObserver?
-
----
-
-- Rename, reword, and refactor:
-  - `readings` → `views`.
-  - “Confirm” email → “Verify” email.
-
----
-
-- Introduce the notion of locking a conversation.
-- Introduce the notion of promoting a message into its own conversation (one example use case is when someone asks a question as a follow-up to an announcement).
 
 ### Advanced Access Control
 
