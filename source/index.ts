@@ -55,7 +55,7 @@ export default async function courselore({
   administratorEmail,
   sendMail,
   demonstration = process.env.NODE_ENV !== "production",
-  liveReload = false,
+  hotReload = false,
 }: {
   dataDirectory: string;
   baseURL: string;
@@ -64,7 +64,7 @@ export default async function courselore({
     mailOptions: nodemailer.SendMailOptions
   ) => Promise<nodemailer.SentMessageInfo>;
   demonstration?: boolean;
-  liveReload?: boolean;
+  hotReload?: boolean;
 }): Promise<express.Express> {
   await fs.ensureDir(dataDirectory);
 
@@ -1367,10 +1367,10 @@ export default async function courselore({
                 </script>
               `
             : html``}
-          $${liveReload
+          $${hotReload
             ? html`
                 <script>
-                  leafac.liveReload();
+                  leafac.hotReload();
                 </script>
               `
             : html``}
@@ -3908,12 +3908,12 @@ export default async function courselore({
     })
   );
 
-  if (liveReload)
+  if (hotReload)
     app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
-      "/live-reload",
+      "/hot-reload",
       (req, res, next) => {
         res.type("text/event-stream").write(":\n\n");
-        console.log(`${new Date().toISOString()}\tLIVE RELOAD\t${req.ip}`);
+        console.log(`${new Date().toISOString()}\tHOT RELOAD\t${req.ip}`);
       }
     );
 

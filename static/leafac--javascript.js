@@ -524,8 +524,8 @@ const leafac = {
   // https://github.com/ccampbell/mousetrap/blob/2f9a476ba6158ba69763e4fcf914966cc72ef433/mousetrap.js#L135
   isAppleDevice: /Mac|iPod|iPhone|iPad/.test(navigator.platform),
 
-  liveReload() {
-    const eventSource = new EventSource("/live-reload");
+  hotReload() {
+    const eventSource = new EventSource("/hot-reload");
     eventSource.addEventListener(
       "open",
       () => {

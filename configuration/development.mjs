@@ -78,7 +78,7 @@ export default async ({
         );
         return async (mailOptions) => await transporter.sendMail(mailOptions);
       })(),
-      liveReload: true,
+      hotReload: true,
     });
     const server = app.listen(4001, "127.0.0.1");
     app.emit("listen");
