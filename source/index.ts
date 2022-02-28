@@ -5,17 +5,14 @@ import url from "node:url";
 import assert from "node:assert/strict";
 
 import express from "express";
-import methodOverride from "method-override";
-import cookieParser from "cookie-parser";
-import expressFileUpload from "express-fileupload";
-import csurf from "csurf";
+
 import { asyncHandler } from "@leafac/express-async-handler";
 import qs from "qs";
 
 import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
-import { localCSS, processCSS, css } from "@leafac/css";
-import { HTMLForJavaScript, javascript } from "@leafac/javascript";
+import { processCSS, css } from "@leafac/css";
+import { javascript } from "@leafac/javascript";
 import dedent from "dedent";
 
 import { unified } from "unified";
@@ -49,6 +46,7 @@ import casual from "casual";
 
 import createDatabase from "./database.js";
 import logging from "./logging.js";
+import globalMiddleware, { BaseMiddlewareLocals } from "./global-middleware.js";
 
 const FEATURE_PAGINATION = true;
 
@@ -125,16 +123,7 @@ export default async function courselore({
 
   const database = createDatabase({ app, dataDirectory, baseURL });
   logging({ app, baseURL, courseloreVersion });
-
-  interface BaseMiddlewareLocals {
-    localCSS: ReturnType<typeof localCSS>;
-    HTMLForJavaScript: ReturnType<typeof HTMLForJavaScript>;
-  }
-  app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
-    res.locals.localCSS = localCSS();
-    res.locals.HTMLForJavaScript = HTMLForJavaScript();
-    next();
-  });
+  const { cookieOptions } = globalMiddleware({ app, baseURL });
 
   const baseLayout = ({
     req,
@@ -3464,36 +3453,6 @@ export default async function courselore({
       addQueryPrefix: true,
     }
   )}`;
-
-  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
-    express.static(url.fileURLToPath(new URL("../static", import.meta.url)))
-  );
-  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(methodOverride("_method"));
-  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(cookieParser());
-  const cookieOptions = {
-    domain: new URL(baseURL).hostname,
-    httpOnly: true,
-    path: new URL(baseURL).pathname,
-    sameSite: "lax",
-    secure: true,
-  } as const;
-  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
-    express.urlencoded({ extended: true })
-  );
-  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
-    expressFileUpload({
-      createParentPath: true,
-      limits: { fileSize: 10 * 1024 * 1024 },
-    })
-  );
-  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
-    csurf({
-      cookie: {
-        ...cookieOptions,
-        maxAge: 30 * 24 * 60 * 60,
-      },
-    })
-  );
 
   if (hotReload)
     app.get<{}, any, {}, {}, BaseMiddlewareLocals>(

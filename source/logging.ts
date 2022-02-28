@@ -8,7 +8,7 @@ export default ({
   app: express.Express;
   baseURL: string;
   courseloreVersion: string;
-}) => {
+}): void => {
   app.once("listen", () => {
     console.log(
       `${new Date().toISOString()}\tCourselore/${courseloreVersion} started at ${baseURL}`
