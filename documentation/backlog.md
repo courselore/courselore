@@ -2,6 +2,14 @@
 
 ### Performance
 
+- Idea for livereload: just wait for the eventsource to be available again. At that point, reload, because the server is back up. No need to long poll.
+
+---
+
+- Split the codebase into separate files.
+
+---
+
 - Review leafac--javascript.
   - `on[a-z]*\s*=`
     - `onelupdated`

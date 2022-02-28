@@ -1,6 +1,23 @@
 # Meeting Notes
 
 <details>
+<summary>2021-02-26</summary>
+
+- Module bundling.
+- Serving static assets with Caddy.
+- Benchmarked `@leafac/html`.
+- Fixed installation issues on `@leafac/caddy`.
+- Fixed development installation instructions on Windows.
+- Started the Turbo Drive + morphdom.
+
+---
+
+- 1-1 conversations are the most important feature to work on next.
+- Restructuring the codebase: split files by May.
+
+</details>
+
+<details>
 <summary>2021-02-19</summary>
 
 - This week’s progress:
