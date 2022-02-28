@@ -525,7 +525,7 @@ const leafac = {
   isAppleDevice: /Mac|iPod|iPhone|iPad/.test(navigator.platform),
 
   async hotReload(url = "/hot-reload") {
-    const eventSource = new EventSource(url);
+    const eventSource = new ReconnectingEventSource(url);
     console.log("1");
     await new Promise((resolve) => {
       eventSource.addEventListener("open", resolve, { once: true });

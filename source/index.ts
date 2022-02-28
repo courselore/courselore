@@ -1344,6 +1344,7 @@ export default async function courselore({
           <script src="${baseURL}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
           <script src="${baseURL}/node_modules/textarea-caret/index.js"></script>
           <script src="${baseURL}/node_modules/text-field-edit/index.umd.js"></script>
+          <script src="${baseURL}/node_modules/reconnecting-eventsource/dist/ReconnectingEventSource.min.js"></script>
           <script src="${baseURL}/node_modules/@leafac/javascript/distribution/browser.js"></script>
           <script src="${baseURL}/leafac--javascript.js"></script>
           <script>
@@ -1357,7 +1358,9 @@ export default async function courselore({
           $${res?.locals.eventSource
             ? html`
                 <script>
-                  const eventSource = new EventSource(window.location.href);
+                  const eventSource = new ReconnectingEventSource(
+                    window.location.href
+                  );
                   eventSource.addEventListener("reference", (event) => {
                     eventSource.reference = event.data;
                   });
