@@ -49,7 +49,7 @@ import casual from "casual";
 
 import createDatabase from "./database.js";
 
-const FEATURE_PAGINATION = false;
+const FEATURE_PAGINATION = true;
 
 export default async function courselore({
   dataDirectory,
