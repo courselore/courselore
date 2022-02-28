@@ -526,19 +526,15 @@ const leafac = {
 
   async hotReload(url = "/hot-reload") {
     const eventSource = new ReconnectingEventSource(url);
-    console.log("1");
     await new Promise((resolve) => {
       eventSource.addEventListener("open", resolve, { once: true });
     });
-    console.log("2");
     await new Promise((resolve) => {
       eventSource.addEventListener("error", resolve, { once: true });
     });
-    console.log("3");
     await new Promise((resolve) => {
       eventSource.addEventListener("open", resolve, { once: true });
     });
-    console.log("4");
     location.reload();
   },
 
