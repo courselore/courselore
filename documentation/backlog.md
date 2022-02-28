@@ -3,6 +3,7 @@
 ### Performance
 
 - Idea for livereload: just wait for the eventsource to be available again. At that point, reload, because the server is back up. No need to long poll.
+- Remove console.log
 
 ---
 

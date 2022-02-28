@@ -1370,7 +1370,7 @@ export default async function courselore({
           $${hotReload
             ? html`
                 <script>
-                  leafac.hotReload();
+                  leafac.hotReload($${JSON.stringify(`${baseURL}/hot-reload`)});
                 </script>
               `
             : html``}

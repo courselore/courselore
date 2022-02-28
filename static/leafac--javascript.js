@@ -524,30 +524,22 @@ const leafac = {
   // https://github.com/ccampbell/mousetrap/blob/2f9a476ba6158ba69763e4fcf914966cc72ef433/mousetrap.js#L135
   isAppleDevice: /Mac|iPod|iPhone|iPad/.test(navigator.platform),
 
-  hotReload() {
-    const eventSource = new EventSource("/hot-reload");
-    eventSource.addEventListener(
-      "open",
-      () => {
-        eventSource.addEventListener(
-          "error",
-          () => {
-            eventSource.close();
-            window.setTimeout(async function reload() {
-              try {
-                if ((await fetch(location.href)).status === 502)
-                  throw new Error();
-                location.reload();
-              } catch {
-                window.setTimeout(reload, 200);
-              }
-            }, 500);
-          },
-          { once: true }
-        );
-      },
-      { once: true }
-    );
+  async hotReload(url = "/hot-reload") {
+    const eventSource = new EventSource(url);
+    console.log("1");
+    await new Promise((resolve) => {
+      eventSource.addEventListener("open", resolve, { once: true });
+    });
+    console.log("2");
+    await new Promise((resolve) => {
+      eventSource.addEventListener("error", resolve, { once: true });
+    });
+    console.log("3");
+    await new Promise((resolve) => {
+      eventSource.addEventListener("open", resolve, { once: true });
+    });
+    console.log("4");
+    location.reload();
   },
 
   regExps: {
