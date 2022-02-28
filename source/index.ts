@@ -12,7 +12,7 @@ import csurf from "csurf";
 import { asyncHandler } from "@leafac/express-async-handler";
 import qs from "qs";
 
-import { Database, sql } from "@leafac/sqlite";
+import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
 import { localCSS, processCSS, css } from "@leafac/css";
 import { HTMLForJavaScript, javascript } from "@leafac/javascript";
