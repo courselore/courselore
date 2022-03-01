@@ -1,13 +1,9 @@
 import express from "express";
-
 import { processCSS, css } from "@leafac/css";
 import { HTML, html } from "@leafac/html";
 import { javascript } from "@leafac/javascript";
-
-import {
-  BaseMiddlewareLocals,
-  EventSourceMiddlewareLocals,
-} from "./global-middleware.js";
+import { BaseMiddlewareLocals } from "./global-middleware.js";
+import { EventSourceMiddlewareLocals } from "./event-source.js";
 
 export default ({
   baseURL,
