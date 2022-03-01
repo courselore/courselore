@@ -46,10 +46,8 @@ import casual from "casual";
 
 import createDatabase from "./database.js";
 import logging from "./logging.js";
-import globalMiddleware, {
-  BaseMiddlewareLocals,
-  EventSourceMiddlewareLocals,
-} from "./global-middleware.js";
+import globalMiddleware, { BaseMiddlewareLocals } from "./global-middleware.js";
+import eventSource, { EventSourceMiddlewareLocals } from "./event-source.js";
 import layouts from "./layouts.js";
 
 const FEATURE_PAGINATION = true;
@@ -128,6 +126,7 @@ export default async function courselore({
   const database = createDatabase({ app, dataDirectory, baseURL });
   logging({ app, baseURL, courseloreVersion });
   const { cookieOptions } = globalMiddleware({ app, baseURL });
+  const { eventSourceMiddleware } = eventSource();
   const { baseLayout } = layouts({ baseURL });
 
   const userPartial = ({
