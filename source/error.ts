@@ -1,7 +1,8 @@
 import express from "express";
-import { HTML, html } from "@leafac/html";
 import qs from "qs";
-import { BoxLayout } from "./layouts.js";
+import { HTML, html } from "@leafac/html";
+import { BoxLayout, ReportIssueHref } from "./layouts.js";
+import { BaseMiddlewareLocals } from "./global-middleware.js";
 import {
   IsSignedOutMiddleware,
   IsSignedOutMiddlewareLocals,
@@ -12,16 +13,20 @@ import {
 export default ({
   app,
   baseURL,
+  administratorEmail,
   boxLayout,
+  reportIssueHref,
   isSignedOutMiddleware,
   isSignedInMiddleware,
 }: {
   app: express.Express;
   baseURL: string;
+  administratorEmail: string;
   boxLayout: BoxLayout;
+  reportIssueHref: ReportIssueHref;
   isSignedOutMiddleware: IsSignedOutMiddleware;
   isSignedInMiddleware: IsSignedInMiddleware;
-}) => {
+}): void => {
   app.all<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "*",
     ...isSignedOutMiddleware,
