@@ -1,13 +1,16 @@
-const emailRegExp = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+import escapeStringRegexp from "escape-string-regexp";
+import { HTML, html } from "@leafac/html";
 
-const isDate = (string: string): boolean =>
+export const emailRegExp = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+
+export const isDate = (string: string): boolean =>
   string.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/) !== null &&
   !isNaN(new Date(string).getTime());
 
-const isExpired = (expiresAt: string | null): boolean =>
+export const isExpired = (expiresAt: string | null): boolean =>
   expiresAt !== null && new Date(expiresAt).getTime() <= Date.now();
 
-const sanitizeSearch = (
+export const sanitizeSearch = (
   search: string,
   { prefix = false }: { prefix?: boolean } = {}
 ): string =>
@@ -15,7 +18,7 @@ const sanitizeSearch = (
     .map((phrase) => `"${phrase.replaceAll('"', '""')}"${prefix ? "*" : ""}`)
     .join(" ");
 
-const highlightSearchResult = (
+export const highlightSearchResult = (
   searchResult: string,
   searchPhrases: string | string[] | undefined,
   { prefix = false }: { prefix?: boolean } = {}
@@ -35,8 +38,8 @@ const highlightSearchResult = (
   );
 };
 
-const splitSearchPhrases = (search: string): string[] =>
+export const splitSearchPhrases = (search: string): string[] =>
   search.split(/\s+/).filter((searchPhrase) => searchPhrase.trim() !== "");
 
-const splitFilterablePhrases = (filterable: string): string[] =>
+export const splitFilterablePhrases = (filterable: string): string[] =>
   filterable.split(/(?<=[^a-z0-9])(?=[a-z0-9])|(?<=[a-z0-9])(?=[^a-z0-9])/i);
