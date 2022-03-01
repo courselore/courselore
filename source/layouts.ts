@@ -9,6 +9,33 @@ import cryptoRandomString from "crypto-random-string";
 import { BaseMiddlewareLocals } from "./global-middleware.js";
 import { EventSourceMiddlewareLocals } from "./event-source.js";
 
+export type BaseLayout = ({
+  req,
+  res,
+  head,
+  extraHeaders,
+  body,
+}: {
+  req: express.Request<
+    {},
+    any,
+    {},
+    {},
+    BaseMiddlewareLocals &
+      Partial<IsEnrolledInCourseMiddlewareLocals> &
+      Partial<EventSourceMiddlewareLocals>
+  >;
+  res: express.Response<
+    any,
+    BaseMiddlewareLocals &
+      Partial<IsEnrolledInCourseMiddlewareLocals> &
+      Partial<EventSourceMiddlewareLocals>
+  >;
+  head: HTML;
+  extraHeaders?: HTML;
+  body: HTML;
+}) => HTML;
+
 export default ({
   baseURL,
   administratorEmail,
@@ -22,59 +49,15 @@ export default ({
   database: Database;
   cookieOptions: express.CookieOptions;
 }): {
-  baseLayout: ({
-    req,
-    res,
-    head,
-    extraHeaders,
-    body,
-  }: {
-    req: express.Request<
-      {},
-      any,
-      {},
-      {},
-      BaseMiddlewareLocals &
-        Partial<IsEnrolledInCourseMiddlewareLocals> &
-        Partial<EventSourceMiddlewareLocals>
-    >;
-    res: express.Response<
-      any,
-      BaseMiddlewareLocals &
-        Partial<IsEnrolledInCourseMiddlewareLocals> &
-        Partial<EventSourceMiddlewareLocals>
-    >;
-    head: HTML;
-    extraHeaders?: HTML;
-    body: HTML;
-  }) => HTML;
+  baseLayout: BaseLayout;
 } => {
-  const baseLayout = ({
+  const baseLayout: BaseLayout = ({
     req,
     res,
     head,
     extraHeaders = html``,
     body,
-  }: {
-    req: express.Request<
-      {},
-      any,
-      {},
-      {},
-      BaseMiddlewareLocals &
-        Partial<IsEnrolledInCourseMiddlewareLocals> &
-        Partial<EventSourceMiddlewareLocals>
-    >;
-    res: express.Response<
-      any,
-      BaseMiddlewareLocals &
-        Partial<IsEnrolledInCourseMiddlewareLocals> &
-        Partial<EventSourceMiddlewareLocals>
-    >;
-    head: HTML;
-    extraHeaders?: HTML;
-    body: HTML;
-  }): HTML => {
+  }) => {
     const baseLayoutBody = html`
       <body
         class="${res.locals.localCSS(css`
