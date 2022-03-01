@@ -89,7 +89,7 @@ export default async function courselore({
   const app = express();
   const database = await createDatabase({ app, dataDirectory, baseURL });
   logging({ app, baseURL, courseloreVersion });
-  const { cookieOptions } = globalMiddleware({ app, baseURL });
+  const { cookieOptions } = globalMiddleware({ app, baseURL, hotReload });
   const { eventSourceMiddleware } = eventSource();
   const { baseLayout } = layouts({
     baseURL,
@@ -98,15 +98,6 @@ export default async function courselore({
   });
   const { userPartial } = user();
   const { coursePartial } = course();
-
-  if (hotReload)
-    app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
-      "/hot-reload",
-      (req, res, next) => {
-        res.type("text/event-stream").write(":\n\n");
-        console.log(`${new Date().toISOString()}\tHOT RELOAD\t${req.ip}`);
-      }
-    );
 
   const Flash = {
     maxAge: 5 * 60 * 1000,

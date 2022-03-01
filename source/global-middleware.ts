@@ -15,9 +15,11 @@ export interface BaseMiddlewareLocals {
 export default ({
   app,
   baseURL,
+  hotReload,
 }: {
   app: express.Express;
   baseURL: string;
+  hotReload: boolean;
 }): {
   cookieOptions: express.CookieOptions;
 } => {
@@ -60,6 +62,15 @@ export default ({
       },
     })
   );
+
+  if (hotReload)
+    app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
+      "/hot-reload",
+      (req, res, next) => {
+        res.type("text/event-stream").write(":\n\n");
+        console.log(`${new Date().toISOString()}\tHOT RELOAD\t${req.ip}`);
+      }
+    );
 
   return { cookieOptions };
 };
