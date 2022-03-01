@@ -96,8 +96,8 @@ export default async function courselore({
     administratorEmail,
     courseloreVersion,
   });
-  const { userPartial } = user({});
-  const { coursePartial } = course({});
+  const { userPartial } = user();
+  const { coursePartial } = course();
 
   if (hotReload)
     app.get<{}, any, {}, {}, BaseMiddlewareLocals>(

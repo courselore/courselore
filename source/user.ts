@@ -66,7 +66,7 @@ type UserPartial = ({
   size?: "xs" | "sm" | "xl";
 }) => HTML;
 
-export default ({}: {}): { userPartial: UserPartial } => {
+export default (): { userPartial: UserPartial } => {
   const userPartial: UserPartial = ({
     req,
     res,

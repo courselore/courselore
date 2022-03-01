@@ -88,7 +88,7 @@ type CoursePartial = ({
   tight?: boolean;
 }) => HTML;
 
-export default ({}: {}): { coursePartial: CoursePartial } => {
+export default (): { coursePartial: CoursePartial } => {
   const coursePartial: CoursePartial = ({
     req,
     res,
