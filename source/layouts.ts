@@ -36,9 +36,10 @@ export type BaseLayout = ({
   body: HTML;
 }) => HTML;
 
-export default ({
+export default async ({
   baseURL,
   administratorEmail,
+  demonstration,
   hotReload,
   courseloreVersion,
   database,
@@ -46,13 +47,12 @@ export default ({
 }: {
   baseURL: string;
   administratorEmail: string;
+  demonstration: boolean;
   hotReload: boolean;
   courseloreVersion: string;
   database: Database;
   cookieOptions: express.CookieOptions;
-}): {
-  baseLayout: BaseLayout;
-} => {
+}): Promise<{ baseLayout: BaseLayout }> => {
   const baseLayout: BaseLayout = ({
     req,
     res,

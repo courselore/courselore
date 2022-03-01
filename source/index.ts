@@ -101,9 +101,11 @@ export default async function courselore({
     hotReload,
   });
   const { eventSourceMiddleware } = eventSource();
-  const { baseLayout } = layouts({
+  const { baseLayout } = await layouts({
     baseURL,
     administratorEmail,
+    demonstration,
+    hotReload,
     courseloreVersion,
     database,
     cookieOptions,
