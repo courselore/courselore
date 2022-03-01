@@ -1,7 +1,7 @@
 import express from "express";
 import { BaseMiddlewareLocals } from "./global-middleware.js";
 
-type EventSourceMiddleware = express.RequestHandler<
+export type EventSourceMiddleware = express.RequestHandler<
   {},
   any,
   {},
