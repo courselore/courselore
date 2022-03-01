@@ -5,6 +5,7 @@ import { processCSS, css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
 import dedent from "dedent";
 import qs from "qs";
+import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
 import { BaseMiddlewareLocals } from "./global-middleware.js";
 import { EventSourceMiddlewareLocals } from "./event-source.js";
@@ -35,6 +36,154 @@ export type BaseLayout = ({
   extraHeaders?: HTML;
   body: HTML;
 }) => HTML;
+
+export type BoxLayout = ({
+  req,
+  res,
+  head,
+  body,
+}: {
+  req: express.Request<
+    {},
+    any,
+    {},
+    {},
+    BaseMiddlewareLocals &
+      Partial<IsEnrolledInCourseMiddlewareLocals> &
+      Partial<EventSourceMiddlewareLocals>
+  >;
+  res: express.Response<
+    any,
+    BaseMiddlewareLocals &
+      Partial<IsEnrolledInCourseMiddlewareLocals> &
+      Partial<EventSourceMiddlewareLocals>
+  >;
+  head: HTML;
+  body: HTML;
+}) => HTML;
+
+export type ApplicationLayout = ({
+  req,
+  res,
+  head,
+  showCourseSwitcher,
+  extraHeaders,
+  body,
+}: {
+  req: express.Request<
+    {},
+    any,
+    {},
+    {},
+    IsSignedInMiddlewareLocals &
+      Partial<IsEnrolledInCourseMiddlewareLocals> &
+      Partial<EventSourceMiddlewareLocals>
+  >;
+  res: express.Response<
+    any,
+    IsSignedInMiddlewareLocals &
+      Partial<IsEnrolledInCourseMiddlewareLocals> &
+      Partial<EventSourceMiddlewareLocals>
+  >;
+  head: HTML;
+  showCourseSwitcher?: boolean;
+  extraHeaders?: HTML;
+  body: HTML;
+}) => HTML;
+
+export type MainLayout = ({
+  req,
+  res,
+  head,
+  showCourseSwitcher,
+  body,
+}: {
+  req: express.Request<
+    {},
+    any,
+    {},
+    {},
+    IsSignedInMiddlewareLocals &
+      Partial<IsEnrolledInCourseMiddlewareLocals> &
+      Partial<EventSourceMiddlewareLocals>
+  >;
+  res: express.Response<
+    any,
+    IsSignedInMiddlewareLocals &
+      Partial<IsEnrolledInCourseMiddlewareLocals> &
+      Partial<EventSourceMiddlewareLocals>
+  >;
+  head: HTML;
+  showCourseSwitcher?: boolean;
+  body: HTML;
+}) => HTML;
+
+export type SettingsLayout = ({
+  req,
+  res,
+  head,
+  menuButton,
+  menu,
+  body,
+}: {
+  req: express.Request<
+    {},
+    any,
+    {},
+    {},
+    IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+  >;
+  res: express.Response<
+    any,
+    IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+  >;
+  head: HTML;
+  menuButton: HTML;
+  menu: HTML;
+  body: HTML;
+}) => HTML;
+
+export type Logo = ({ size }: { size?: number }) => HTML;
+
+export type PartialLayout = ({
+  req,
+  res,
+  body,
+}: {
+  req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+  res: express.Response<any, BaseMiddlewareLocals>;
+  body: HTML;
+}) => HTML;
+
+export type Spinner = ({
+  req,
+  res,
+}: {
+  req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+  res: express.Response<any, BaseMiddlewareLocals>;
+}) => HTML;
+
+export type ReportIssueHref = string;
+
+export type Flash = {
+  maxAge: number;
+  set({
+    req,
+    res,
+    content,
+  }: {
+    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+    res: express.Response<any, BaseMiddlewareLocals>;
+    content: HTML;
+  }): void;
+  get({
+    req,
+    res,
+  }: {
+    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+    res: express.Response<any, BaseMiddlewareLocals>;
+  }): HTML | undefined;
+};
 
 export default async ({
   baseURL,
@@ -1876,30 +2025,7 @@ export default async ({
       `)
     );
 
-  const boxLayout = ({
-    req,
-    res,
-    head,
-    body,
-  }: {
-    req: express.Request<
-      {},
-      any,
-      {},
-      {},
-      BaseMiddlewareLocals &
-        Partial<IsEnrolledInCourseMiddlewareLocals> &
-        Partial<EventSourceMiddlewareLocals>
-    >;
-    res: express.Response<
-      any,
-      BaseMiddlewareLocals &
-        Partial<IsEnrolledInCourseMiddlewareLocals> &
-        Partial<EventSourceMiddlewareLocals>
-    >;
-    head: HTML;
-    body: HTML;
-  }): HTML =>
+  const boxLayout: BoxLayout = ({ req, res, head, body }) =>
     baseLayout({
       req,
       res,
@@ -2082,34 +2208,14 @@ export default async ({
       `,
     });
 
-  const applicationLayout = ({
+  const applicationLayout: ApplicationLayout = ({
     req,
     res,
     head,
     showCourseSwitcher = true,
     extraHeaders = html``,
     body,
-  }: {
-    req: express.Request<
-      {},
-      any,
-      {},
-      {},
-      IsSignedInMiddlewareLocals &
-        Partial<IsEnrolledInCourseMiddlewareLocals> &
-        Partial<EventSourceMiddlewareLocals>
-    >;
-    res: express.Response<
-      any,
-      IsSignedInMiddlewareLocals &
-        Partial<IsEnrolledInCourseMiddlewareLocals> &
-        Partial<EventSourceMiddlewareLocals>
-    >;
-    head: HTML;
-    showCourseSwitcher?: boolean;
-    extraHeaders?: HTML;
-    body: HTML;
-  }): HTML =>
+  }) =>
     baseLayout({
       req,
       res,
@@ -2483,32 +2589,13 @@ export default async ({
       body,
     });
 
-  const mainLayout = ({
+  const mainLayout: MainLayout = ({
     req,
     res,
     head,
     showCourseSwitcher = true,
     body,
-  }: {
-    req: express.Request<
-      {},
-      any,
-      {},
-      {},
-      IsSignedInMiddlewareLocals &
-        Partial<IsEnrolledInCourseMiddlewareLocals> &
-        Partial<EventSourceMiddlewareLocals>
-    >;
-    res: express.Response<
-      any,
-      IsSignedInMiddlewareLocals &
-        Partial<IsEnrolledInCourseMiddlewareLocals> &
-        Partial<EventSourceMiddlewareLocals>
-    >;
-    head: HTML;
-    showCourseSwitcher?: boolean;
-    body: HTML;
-  }): HTML =>
+  }) =>
     applicationLayout({
       req,
       res,
@@ -2538,30 +2625,14 @@ export default async ({
       `,
     });
 
-  const settingsLayout = ({
+  const settingsLayout: SettingsLayout = ({
     req,
     res,
     head,
     menuButton,
     menu,
     body,
-  }: {
-    req: express.Request<
-      {},
-      any,
-      {},
-      {},
-      IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
-    >;
-    res: express.Response<
-      any,
-      IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
-    >;
-    head: HTML;
-    menuButton: HTML;
-    menu: HTML;
-    body: HTML;
-  }): HTML =>
+  }) =>
     applicationLayout({
       req,
       res,
@@ -2633,7 +2704,7 @@ export default async ({
       `,
     });
 
-  const logo = (() => {
+  const logo: Logo = (() => {
     // https://www.youtube.com/watch?v=dSK-MW-zuAc
     const order = 2;
     const viewBox = 24; /* var(--space--6) */
@@ -2666,7 +2737,7 @@ export default async ({
     const pathD = `M ${points
       .map((point) => point.map((coordinate) => coordinate * viewBox).join(" "))
       .join(" L ")} Z`;
-    return ({ size = viewBox }: { size?: number } = {}) => html`
+    return ({ size = viewBox } = {}) => html`
       <svg
         width="${size.toString()}"
         height="${size.toString()}"
@@ -2683,15 +2754,7 @@ export default async ({
     `;
   })();
 
-  const partialLayout = ({
-    req,
-    res,
-    body,
-  }: {
-    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-    res: express.Response<any, BaseMiddlewareLocals>;
-    body: HTML;
-  }): HTML => html`
+  const partialLayout: PartialLayout = ({ req, res, body }) => html`
     <!DOCTYPE html>
     <html>
       <head>
@@ -2703,13 +2766,7 @@ export default async ({
     </html>
   `;
 
-  const spinner = ({
-    req,
-    res,
-  }: {
-    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-    res: express.Response<any, BaseMiddlewareLocals>;
-  }): HTML => html`
+  const spinner: Spinner = ({ req, res }) => html`
     <svg
       width="20"
       height="20"
@@ -2735,7 +2792,7 @@ export default async ({
     </svg>
   `;
 
-  const reportIssueHref = `mailto:${administratorEmail}${qs.stringify(
+  const reportIssueHref: ReportIssueHref = `mailto:${administratorEmail}${qs.stringify(
     {
       subject: "Report an Issue",
       body: dedent`
@@ -2765,18 +2822,10 @@ export default async ({
     }
   )}`;
 
-  const Flash = {
+  const Flash: Flash = {
     maxAge: 5 * 60 * 1000,
 
-    set({
-      req,
-      res,
-      content,
-    }: {
-      req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-      res: express.Response<any, BaseMiddlewareLocals>;
-      content: HTML;
-    }): void {
+    set({ req, res, content }) {
       const flash = database.get<{ nonce: string }>(
         sql`
           INSERT INTO "flashes" ("createdAt", "nonce", "content")
@@ -2795,13 +2844,7 @@ export default async ({
       });
     },
 
-    get({
-      req,
-      res,
-    }: {
-      req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-      res: express.Response<any, BaseMiddlewareLocals>;
-    }): HTML | undefined {
+    get({ req, res }) {
       if (req.cookies.flash === undefined) return undefined;
       const flash = database.get<{
         id: number;
