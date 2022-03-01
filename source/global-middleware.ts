@@ -12,17 +12,6 @@ export interface BaseMiddlewareLocals {
   HTMLForJavaScript: ReturnType<typeof HTMLForJavaScript>;
 }
 
-export type EventSourceMiddleware = express.RequestHandler<
-  {},
-  any,
-  {},
-  {},
-  EventSourceMiddlewareLocals
->[];
-export interface EventSourceMiddlewareLocals extends BaseMiddlewareLocals {
-  eventSource: boolean;
-}
-
 export default ({
   app,
   baseURL,
@@ -31,7 +20,6 @@ export default ({
   baseURL: string;
 }): {
   cookieOptions: express.CookieOptions;
-  eventSourceMiddleware: EventSourceMiddleware;
 } => {
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
     res.locals.localCSS = localCSS();
@@ -73,36 +61,5 @@ export default ({
     })
   );
 
-  const eventDestinations = new Set<{
-    reference: string;
-    req: express.Request;
-    res: express.Response;
-  }>();
-  const eventSourceMiddleware: EventSourceMiddleware = [
-    (req, res, next) => {
-      if (!req.header("accept")?.includes("text/event-stream")) {
-        res.locals.eventSource = true;
-        return next();
-      }
-      const eventDestination = {
-        reference: Math.random().toString(36).slice(2),
-        req,
-        res,
-      };
-      eventDestinations.add(eventDestination);
-      res.once("close", () => {
-        eventDestinations.delete(eventDestination);
-      });
-      res
-        .type("text/event-stream")
-        .write(`event: reference\ndata: ${eventDestination.reference}\n\n`);
-      console.log(
-        `${new Date().toISOString()}\tSSE\topen\t${req.ip}\t${
-          eventDestination.reference
-        }\t\t\t${req.originalUrl}`
-      );
-    },
-  ];
-
-  return { cookieOptions, eventSourceMiddleware };
+  return { cookieOptions };
 };
