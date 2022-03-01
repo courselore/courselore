@@ -15,11 +15,14 @@ export const enrollmentAccentColors = [
 ] as const;
 
 export type ConversationType = typeof conversationTypes[number];
-export const conversationTypes = ["announcement", "question", "note", "chat"] as const;
+export const conversationTypes = [
+  "announcement",
+  "question",
+  "note",
+  "chat",
+] as const;
 
-export default (): {coursePartial} => {
-  
-
+export default (): { coursePartial } => {
   const coursePartial = ({
     req,
     res,
@@ -50,7 +53,9 @@ export default (): {coursePartial} => {
               ? css``
               : css`
                   color: var(--color--${enrollment.accentColor}--700);
-                  background-color: var(--color--${enrollment.accentColor}--100);
+                  background-color: var(
+                    --color--${enrollment.accentColor}--100
+                  );
                   @media (prefers-color-scheme: dark) {
                     color: var(--color--${enrollment.accentColor}--200);
                     background-color: var(
@@ -100,5 +105,5 @@ export default (): {coursePartial} => {
       </div>
     </div>
   `;
- return {coursePartial}
-}
+  return { coursePartial };
+};
