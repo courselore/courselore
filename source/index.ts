@@ -55,6 +55,17 @@ import user, {
   UserEmailNotifications,
   userEmailNotificationses,
 } from "./user.js";
+import course, {
+  EnrollmentRole,
+  enrollmentRoles,
+  EnrollmentAccentColor,
+  enrollmentAccentColors,
+  ConversationType,
+  conversationTypes,
+  enrollmentRoleIcon,
+  conversationTypeIcon,
+  conversationTypeTextColor,
+} from "./course.js";
 
 const FEATURE_PAGINATION = true;
 
@@ -82,7 +93,7 @@ export default async function courselore({
   const { eventSourceMiddleware } = eventSource();
   const { baseLayout } = layouts({ baseURL });
   const { userPartial } = user({});
-  const {} = course({});
+  const { coursePartial } = course({});
 
   const reportIssueHref = `mailto:${administratorEmail}${qs.stringify(
     {
