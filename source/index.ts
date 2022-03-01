@@ -91,39 +91,13 @@ export default async function courselore({
   logging({ app, baseURL, courseloreVersion });
   const { cookieOptions } = globalMiddleware({ app, baseURL });
   const { eventSourceMiddleware } = eventSource();
-  const { baseLayout } = layouts({ baseURL });
+  const { baseLayout } = layouts({
+    baseURL,
+    administratorEmail,
+    courseloreVersion,
+  });
   const { userPartial } = user({});
   const { coursePartial } = course({});
-
-  const reportIssueHref = `mailto:${administratorEmail}${qs.stringify(
-    {
-      subject: "Report an Issue",
-      body: dedent`
-        What did you try to do?
-
-
-
-        What did you expect to happen?
-
-
-
-        What really happened?
-
-
-
-        What error messages (if any) did you run into?
-
-
-
-        Please provide as much relevant context as possible (operating system, browser, and so forth):
-
-        Courselore Version: ${courseloreVersion}
-      `,
-    },
-    {
-      addQueryPrefix: true,
-    }
-  )}`;
 
   if (hotReload)
     app.get<{}, any, {}, {}, BaseMiddlewareLocals>(

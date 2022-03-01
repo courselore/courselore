@@ -2,13 +2,19 @@ import express from "express";
 import { processCSS, css } from "@leafac/css";
 import { HTML, html } from "@leafac/html";
 import { javascript } from "@leafac/javascript";
+import dedent from "dedent";
+import qs from "qs";
 import { BaseMiddlewareLocals } from "./global-middleware.js";
 import { EventSourceMiddlewareLocals } from "./event-source.js";
 
 export default ({
   baseURL,
+  administratorEmail,
+  courseloreVersion,
 }: {
   baseURL: string;
+  administratorEmail: string;
+  courseloreVersion: string;
 }): {
   baseLayout: ({
     req,
@@ -2737,6 +2743,36 @@ export default ({
       />
     </svg>
   `;
+
+  const reportIssueHref = `mailto:${administratorEmail}${qs.stringify(
+    {
+      subject: "Report an Issue",
+      body: dedent`
+        What did you try to do?
+
+
+
+        What did you expect to happen?
+
+
+
+        What really happened?
+
+
+
+        What error messages (if any) did you run into?
+
+
+
+        Please provide as much relevant context as possible (operating system, browser, and so forth):
+
+        Courselore Version: ${courseloreVersion}
+      `,
+    },
+    {
+      addQueryPrefix: true,
+    }
+  )}`;
 
   return { baseLayout };
 };
