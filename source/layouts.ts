@@ -201,7 +201,18 @@ export default async ({
   courseloreVersion: string;
   database: Database;
   cookieOptions: express.CookieOptions;
-}): Promise<{ baseLayout: BaseLayout }> => {
+}): Promise<{
+  baseLayout: BaseLayout;
+  boxLayout: BoxLayout;
+  applicationLayout: ApplicationLayout;
+  mainLayout: MainLayout;
+  settingsLayout: SettingsLayout;
+  logo: Logo;
+  partialLayout: PartialLayout;
+  spinner: Spinner;
+  reportIssueHref: ReportIssueHref;
+  Flash: Flash;
+}> => {
   const baseLayout: BaseLayout = ({
     req,
     res,
@@ -2873,5 +2884,16 @@ export default async ({
     setTimeout(worker, 24 * 60 * 60 * 1000);
   }, 10 * 60 * 1000);
 
-  return { baseLayout };
+  return {
+    baseLayout,
+    boxLayout,
+    applicationLayout,
+    mainLayout,
+    settingsLayout,
+    logo,
+    partialLayout,
+    spinner,
+    reportIssueHref,
+    Flash,
+  };
 };
