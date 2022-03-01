@@ -72,6 +72,8 @@ import course, {
 import authentication from "./authentication.js";
 import about from "./about.js";
 
+import error from "./error.js";
+
 const FEATURE_PAGINATION = true;
 
 export default async function courselore({
@@ -126,6 +128,16 @@ export default async function courselore({
   const { userPartial } = user();
   const { coursePartial } = course();
   const { aboutRequestHandler } = about({ baseURL, baseLayout });
+
+  error({
+    app,
+    baseURL,
+    administratorEmail,
+    boxLayout,
+    reportIssueHref,
+    isSignedOutMiddleware,
+    isSignedInMiddleware,
+  });
 
   return app;
 }
