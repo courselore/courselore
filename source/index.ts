@@ -81,7 +81,7 @@ export default async function courselore({
   const { cookieOptions } = globalMiddleware({ app, baseURL });
   const { eventSourceMiddleware } = eventSource();
   const { baseLayout } = layouts({ baseURL });
-  const {} = user({});
+  const { userPartial } = user({});
   const {} = course({});
 
   const enrollmentRoleIcon = {
