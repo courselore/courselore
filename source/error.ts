@@ -1,4 +1,27 @@
-export default () => {
+import express from "express";
+import { HTML, html } from "@leafac/html";
+import qs from "qs";
+import { BoxLayout } from "./layouts.js";
+import {
+  IsSignedOutMiddleware,
+  IsSignedOutMiddlewareLocals,
+  IsSignedInMiddleware,
+  IsSignedInMiddlewareLocals,
+} from "./authentication.js";
+
+export default ({
+  app,
+  baseURL,
+  boxLayout,
+  isSignedOutMiddleware,
+  isSignedInMiddleware,
+}: {
+  app: express.Express;
+  baseURL: string;
+  boxLayout: BoxLayout;
+  isSignedOutMiddleware: IsSignedOutMiddleware;
+  isSignedInMiddleware: IsSignedInMiddleware;
+}) => {
   app.all<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "*",
     ...isSignedOutMiddleware,
