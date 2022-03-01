@@ -3,7 +3,6 @@
 ### Performance
 
 - Split the codebase into separate files.
-  - `source/event-source.ts`
   - `source/about.ts`
   - `source/authentication.ts`
   - `source/content.ts`
