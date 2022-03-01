@@ -3,7 +3,7 @@
 ### Performance
 
 - Split the codebase into separate files.
-  - `source/error.ts`
+  - `source/logging.ts`
   - `source/about.ts`
   - `source/authentication.ts`
   - `source/content.ts`
@@ -15,7 +15,6 @@
   - `source/event-source.ts`
   - `source/global-middleware.ts`
   - `source/layouts.ts`
-  - `source/logging.ts`
   - `source/user.ts`
   - `source/index.ts`
 
