@@ -1,9 +1,11 @@
 import express from "express";
-import { processCSS, css } from "@leafac/css";
+import { Database, sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
+import { processCSS, css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
 import dedent from "dedent";
 import qs from "qs";
+import cryptoRandomString from "crypto-random-string";
 import { BaseMiddlewareLocals } from "./global-middleware.js";
 import { EventSourceMiddlewareLocals } from "./event-source.js";
 
@@ -11,10 +13,14 @@ export default ({
   baseURL,
   administratorEmail,
   courseloreVersion,
+  database,
+  cookieOptions,
 }: {
   baseURL: string;
   administratorEmail: string;
   courseloreVersion: string;
+  database: Database;
+  cookieOptions: express.CookieOptions;
 }): {
   baseLayout: ({
     req,
@@ -2773,6 +2779,71 @@ export default ({
       addQueryPrefix: true,
     }
   )}`;
+
+  const Flash = {
+    maxAge: 5 * 60 * 1000,
+
+    set({
+      req,
+      res,
+      content,
+    }: {
+      req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+      res: express.Response<any, BaseMiddlewareLocals>;
+      content: HTML;
+    }): void {
+      const flash = database.get<{ nonce: string }>(
+        sql`
+          INSERT INTO "flashes" ("createdAt", "nonce", "content")
+          VALUES (
+            ${new Date().toISOString()},
+            ${cryptoRandomString({ length: 10, type: "alphanumeric" })},
+            ${content}
+          )
+          RETURNING *
+        `
+      )!;
+      req.cookies.flash = flash.nonce;
+      res.cookie("flash", flash.nonce, {
+        ...cookieOptions,
+        maxAge: Flash.maxAge,
+      });
+    },
+
+    get({
+      req,
+      res,
+    }: {
+      req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+      res: express.Response<any, BaseMiddlewareLocals>;
+    }): HTML | undefined {
+      if (req.cookies.flash === undefined) return undefined;
+      const flash = database.get<{
+        id: number;
+        content: HTML;
+      }>(
+        sql`SELECT "id", "content" FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
+      );
+      delete req.cookies.flash;
+      res.clearCookie("flash", cookieOptions);
+      if (flash === undefined) return undefined;
+      database.run(
+        sql`
+          DELETE FROM "flashes" WHERE "id" = ${flash.id}
+        `
+      );
+      return flash.content;
+    },
+  };
+  setTimeout(function worker() {
+    database.run(
+      sql`
+        DELETE FROM "flashes"
+        WHERE "createdAt" < ${new Date(Date.now() - Flash.maxAge).toISOString()}
+      `
+    );
+    setTimeout(worker, 24 * 60 * 60 * 1000);
+  }, 10 * 60 * 1000);
 
   return { baseLayout };
 };
