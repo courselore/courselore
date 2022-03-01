@@ -124,7 +124,7 @@ export default async function courselore({
   const {} = authentication({ database, cookieOptions });
   const { userPartial } = user();
   const { coursePartial } = course();
-  const { aboutRequestHandler } = about({ baseLayout });
+  const { aboutRequestHandler } = about({ baseURL, baseLayout });
 
   const signInRequestHandler: express.RequestHandler<
     {},
