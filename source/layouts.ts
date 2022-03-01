@@ -39,12 +39,14 @@ export type BaseLayout = ({
 export default ({
   baseURL,
   administratorEmail,
+  hotReload,
   courseloreVersion,
   database,
   cookieOptions,
 }: {
   baseURL: string;
   administratorEmail: string;
+  hotReload: boolean;
   courseloreVersion: string;
   database: Database;
   cookieOptions: express.CookieOptions;
