@@ -70,8 +70,12 @@ export default async function courselore({
   hotReload?: boolean;
 }): Promise<express.Express> {
   await fs.ensureDir(dataDirectory);
-
   const app = express();
+  const database = createDatabase({ app, dataDirectory, baseURL });
+  logging({ app, baseURL, courseloreVersion });
+  const { cookieOptions } = globalMiddleware({ app, baseURL });
+  const { eventSourceMiddleware } = eventSource();
+  const { baseLayout } = layouts({ baseURL });
 
   type UserAvatarlessBackgroundColor =
     typeof userAvatarlessBackgroundColors[number];
@@ -122,12 +126,6 @@ export default async function courselore({
     "note",
     "chat",
   ] as const;
-
-  const database = createDatabase({ app, dataDirectory, baseURL });
-  logging({ app, baseURL, courseloreVersion });
-  const { cookieOptions } = globalMiddleware({ app, baseURL });
-  const { eventSourceMiddleware } = eventSource();
-  const { baseLayout } = layouts({ baseURL });
 
   const userPartial = ({
     req,
