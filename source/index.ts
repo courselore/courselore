@@ -46,7 +46,10 @@ import casual from "casual";
 
 import createDatabase from "./database.js";
 import logging from "./logging.js";
-import globalMiddleware, { BaseMiddlewareLocals } from "./global-middleware.js";
+import globalMiddleware, {
+  userFileExtensionsWhichMayBeShownInBrowser,
+  BaseMiddlewareLocals,
+} from "./global-middleware.js";
 import eventSource, { EventSourceMiddlewareLocals } from "./event-source.js";
 import layouts from "./layouts.js";
 import user, {
@@ -90,7 +93,12 @@ export default async function courselore({
   const app = express();
   const database = await createDatabase({ app, dataDirectory, baseURL });
   logging({ app, baseURL, courseloreVersion });
-  const { cookieOptions } = globalMiddleware({ app, baseURL, hotReload });
+  const { cookieOptions } = globalMiddleware({
+    app,
+    dataDirectory,
+    baseURL,
+    hotReload,
+  });
   const { eventSourceMiddleware } = eventSource();
   const { baseLayout } = layouts({
     baseURL,
@@ -102,24 +110,6 @@ export default async function courselore({
   const { userPartial } = user();
   const { coursePartial } = course();
   const {} = authentication({ database, cookieOptions });
-
-  app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
-    "/files/*",
-    express.static(dataDirectory, {
-      index: false,
-      dotfiles: "allow",
-      immutable: true,
-      maxAge: 60 * 24 * 60 * 60 * 1000,
-      setHeaders: (res, path, stat) => {
-        if (
-          !userFileExtensionsWhichMayBeShownInBrowser.some((extension) =>
-            path.toLowerCase().endsWith(`.${extension}`)
-          )
-        )
-          res.attachment();
-      },
-    })
-  );
 
   const aboutRequestHandler: express.RequestHandler<
     {},
@@ -17383,23 +17373,6 @@ export const courseloreVersion = JSON.parse(
     "utf8"
   )
 ).version;
-
-export const userFileExtensionsWhichMayBeShownInBrowser = [
-  "png",
-  "svg",
-  "jpg",
-  "jpeg",
-  "gif",
-  "mp3",
-  "mp4",
-  "m4v",
-  "ogg",
-  "mov",
-  "mpeg",
-  "avi",
-  "pdf",
-  "txt",
-];
 
 if (import.meta.url.endsWith(process.argv[1]))
   await (

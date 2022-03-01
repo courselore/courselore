@@ -7,6 +7,23 @@ import url from "node:url";
 import { localCSS } from "@leafac/css";
 import { HTMLForJavaScript } from "@leafac/javascript";
 
+export const userFileExtensionsWhichMayBeShownInBrowser = [
+  "png",
+  "svg",
+  "jpg",
+  "jpeg",
+  "gif",
+  "mp3",
+  "mp4",
+  "m4v",
+  "ogg",
+  "mov",
+  "mpeg",
+  "avi",
+  "pdf",
+  "txt",
+];
+
 export interface BaseMiddlewareLocals {
   localCSS: ReturnType<typeof localCSS>;
   HTMLForJavaScript: ReturnType<typeof HTMLForJavaScript>;
@@ -14,10 +31,12 @@ export interface BaseMiddlewareLocals {
 
 export default ({
   app,
+  dataDirectory,
   baseURL,
   hotReload,
 }: {
   app: express.Express;
+  dataDirectory: string;
   baseURL: string;
   hotReload: boolean;
 }): {
@@ -51,6 +70,23 @@ export default ({
     expressFileUpload({
       createParentPath: true,
       limits: { fileSize: 10 * 1024 * 1024 },
+    })
+  );
+  app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
+    "/files/*",
+    express.static(dataDirectory, {
+      index: false,
+      dotfiles: "allow",
+      immutable: true,
+      maxAge: 60 * 24 * 60 * 60 * 1000,
+      setHeaders: (res, path, stat) => {
+        if (
+          !userFileExtensionsWhichMayBeShownInBrowser.some((extension) =>
+            path.toLowerCase().endsWith(`.${extension}`)
+          )
+        )
+          res.attachment();
+      },
     })
   );
 
