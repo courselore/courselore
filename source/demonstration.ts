@@ -1,4 +1,27 @@
-export default () => {
+import express from "express";
+import { asyncHandler } from "@leafac/express-async-handler";
+import { Database, sql } from "@leafac/sqlite";
+import { html } from "@leafac/html";
+import argon2 from "argon2";
+import casual from "casual";
+import lodash from "lodash";
+import slugify from "@sindresorhus/slugify";
+import cryptoRandomString from "crypto-random-string";
+import { BaseMiddlewareLocals } from "./global-middleware.js";
+
+export default ({
+  app,
+  baseURL,
+  demonstration,
+  database,
+  argon2Options,
+}: {
+  app: express.Express;
+  baseURL: string;
+  demonstration: boolean;
+  database: Database;
+  argon2Options: argon2.Options & { raw: true };
+}): void => {
   if (demonstration)
     app.post<{}, any, {}, {}, BaseMiddlewareLocals>(
       "/demonstration-data",
