@@ -8,6 +8,7 @@ import lodash from "lodash";
 import slugify from "@sindresorhus/slugify";
 import cryptoRandomString from "crypto-random-string";
 import { BaseMiddlewareLocals } from "./global-middleware.js";
+import { UserAvatarlessBackgroundColors } from "./user.js";
 
 export default ({
   app,
@@ -15,12 +16,14 @@ export default ({
   demonstration,
   database,
   argon2Options,
+  userAvatarlessBackgroundColors,
 }: {
   app: express.Express;
   baseURL: string;
   demonstration: boolean;
   database: Database;
   argon2Options: argon2.Options & { raw: true };
+  userAvatarlessBackgroundColors: UserAvatarlessBackgroundColors;
 }): void => {
   if (demonstration)
     app.post<{}, any, {}, {}, BaseMiddlewareLocals>(
