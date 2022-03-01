@@ -841,5 +841,26 @@ export default ({
     );
   };
 
+  const shouldDisplayAbout =
+    baseURL === canonicalBaseURL || process.env.NODE_ENV !== "production";
+  app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
+    "/about",
+    ...isSignedOutMiddleware,
+    shouldDisplayAbout
+      ? aboutRequestHandler
+      : (req, res) => {
+          res.redirect(`${canonicalBaseURL}/about`);
+        }
+  );
+  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+    "/about",
+    ...isSignedInMiddleware,
+    shouldDisplayAbout
+      ? aboutRequestHandler
+      : (req, res) => {
+          res.redirect(`${canonicalBaseURL}/about`);
+        }
+  );
+
   return { aboutRequestHandler };
 };
