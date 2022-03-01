@@ -33,8 +33,41 @@ export const userEmailNotificationses = [
   "none",
 ] as const;
 
-export default ({}: {}): {} => {
-  const userPartial = ({
+type UserPartial = ({
+  req,
+  res,
+  enrollment,
+  user,
+  anonymous,
+  avatar,
+  decorate,
+  name,
+  tooltip,
+  size,
+}: {
+  req: express.Request<
+    {},
+    any,
+    {},
+    {},
+    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+  >;
+  res: express.Response<
+    any,
+    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+  >;
+  enrollment?: AuthorEnrollment;
+  user?: AuthorEnrollmentUser | "no-longer-enrolled";
+  anonymous?: boolean | "reveal";
+  avatar?: boolean;
+  decorate?: boolean;
+  name?: boolean | string;
+  tooltip?: boolean;
+  size?: "xs" | "sm" | "xl";
+}) => HTML;
+
+export default ({}: {}): { userPartial: UserPartial } => {
+  const userPartial: UserPartial = ({
     req,
     res,
     enrollment = undefined,
@@ -49,27 +82,7 @@ export default ({}: {}): {} => {
     name = true,
     tooltip = name !== false,
     size = "sm",
-  }: {
-    req: express.Request<
-      {},
-      any,
-      {},
-      {},
-      BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
-    >;
-    res: express.Response<
-      any,
-      BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
-    >;
-    enrollment?: AuthorEnrollment;
-    user?: AuthorEnrollmentUser | "no-longer-enrolled";
-    anonymous?: boolean | "reveal";
-    avatar?: boolean;
-    decorate?: boolean;
-    name?: boolean | string;
-    tooltip?: boolean;
-    size?: "xs" | "sm" | "xl";
-  }): HTML => {
+  }) => {
     let userAvatar: HTML | undefined;
     let userName: HTML | undefined;
 
