@@ -1,5 +1,8 @@
 import express from "express";
 import { BaseMiddlewareLocals } from "./global-middleware.js";
+import { HTML, html } from "@leafac/html";
+import { css } from "@leafac/css";
+import lodash from "lodash";
 
 export type EnrollmentRole = typeof enrollmentRoles[number];
 export const enrollmentRoles = ["student", "staff"] as const;
@@ -22,20 +25,28 @@ export const conversationTypes = [
   "chat",
 ] as const;
 
-export default (): { coursePartial } => {
-  const coursePartial = ({
+type CoursePartial = ({
+  req,
+  res,
+  course,
+  enrollment,
+  tight,
+}: {
+  req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+  res: express.Response<any, BaseMiddlewareLocals>;
+  course: IsSignedInMiddlewareLocals["enrollments"][number]["course"];
+  enrollment?: IsSignedInMiddlewareLocals["enrollments"][number];
+  tight?: boolean;
+}) => HTML;
+
+export default (): { coursePartial: CoursePartial } => {
+  const coursePartial: CoursePartial = ({
     req,
     res,
     course,
     enrollment = undefined,
     tight = false,
-  }: {
-    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-    res: express.Response<any, BaseMiddlewareLocals>;
-    course: IsSignedInMiddlewareLocals["enrollments"][number]["course"];
-    enrollment?: IsSignedInMiddlewareLocals["enrollments"][number];
-    tight?: boolean;
-  }): HTML => html`
+  }) => html`
     <div
       class="${res.locals.localCSS(css`
         display: flex;
@@ -105,5 +116,60 @@ export default (): { coursePartial } => {
       </div>
     </div>
   `;
-  return { coursePartial };
+
+  const enrollmentRoleIcon = {
+    student: {
+      regular: html`<i class="bi bi-person"></i>`,
+      fill: html`<i class="bi bi-person-fill"></i>`,
+    },
+    staff: {
+      regular: html`<i class="bi bi-mortarboard"></i>`,
+      fill: html`<i class="bi bi-mortarboard-fill"></i>`,
+    },
+  };
+
+  const conversationTypeIcon = {
+    announcement: {
+      regular: html`<i class="bi bi-megaphone"></i>`,
+      fill: html`<i class="bi bi-megaphone-fill"></i>`,
+    },
+    question: {
+      regular: html`<i class="bi bi-patch-question"></i>`,
+      fill: html`<i class="bi bi-patch-question-fill"></i>`,
+    },
+    note: {
+      regular: html`<i class="bi bi-sticky"></i>`,
+      fill: html`<i class="bi bi-sticky-fill"></i>`,
+    },
+    chat: {
+      regular: html`<i class="bi bi-cup"></i>`,
+      fill: html`<i class="bi bi-cup-fill"></i>`,
+    },
+  };
+
+  const conversationTypeTextColor = {
+    announcement: {
+      display: "text--fuchsia",
+      select: "text--fuchsia",
+    },
+    question: {
+      display: "text--rose",
+      select: "text--rose",
+    },
+    note: {
+      display: "",
+      select: "text--blue",
+    },
+    chat: {
+      display: "text--cyan",
+      select: "text--cyan",
+    },
+  };
+
+  return {
+    coursePartial,
+    enrollmentRoleIcon,
+    conversationTypeIcon,
+    conversationTypeTextColor,
+  };
 };

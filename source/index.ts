@@ -84,55 +84,6 @@ export default async function courselore({
   const { userPartial } = user({});
   const {} = course({});
 
-  const enrollmentRoleIcon = {
-    student: {
-      regular: html`<i class="bi bi-person"></i>`,
-      fill: html`<i class="bi bi-person-fill"></i>`,
-    },
-    staff: {
-      regular: html`<i class="bi bi-mortarboard"></i>`,
-      fill: html`<i class="bi bi-mortarboard-fill"></i>`,
-    },
-  };
-
-  const conversationTypeIcon = {
-    announcement: {
-      regular: html`<i class="bi bi-megaphone"></i>`,
-      fill: html`<i class="bi bi-megaphone-fill"></i>`,
-    },
-    question: {
-      regular: html`<i class="bi bi-patch-question"></i>`,
-      fill: html`<i class="bi bi-patch-question-fill"></i>`,
-    },
-    note: {
-      regular: html`<i class="bi bi-sticky"></i>`,
-      fill: html`<i class="bi bi-sticky-fill"></i>`,
-    },
-    chat: {
-      regular: html`<i class="bi bi-cup"></i>`,
-      fill: html`<i class="bi bi-cup-fill"></i>`,
-    },
-  };
-
-  const conversationTypeTextColor = {
-    announcement: {
-      display: "text--fuchsia",
-      select: "text--fuchsia",
-    },
-    question: {
-      display: "text--rose",
-      select: "text--rose",
-    },
-    note: {
-      display: "",
-      select: "text--blue",
-    },
-    chat: {
-      display: "text--cyan",
-      select: "text--cyan",
-    },
-  };
-
   const reportIssueHref = `mailto:${administratorEmail}${qs.stringify(
     {
       subject: "Report an Issue",
