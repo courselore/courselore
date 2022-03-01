@@ -69,9 +69,8 @@ export default async function courselore({
   demonstration?: boolean;
   hotReload?: boolean;
 }): Promise<express.Express> {
-  await fs.ensureDir(dataDirectory);
   const app = express();
-  const database = createDatabase({ app, dataDirectory, baseURL });
+  const database = await createDatabase({ app, dataDirectory, baseURL });
   logging({ app, baseURL, courseloreVersion });
   const { cookieOptions } = globalMiddleware({ app, baseURL });
   const { eventSourceMiddleware } = eventSource();

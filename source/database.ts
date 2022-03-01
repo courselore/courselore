@@ -2,8 +2,9 @@ import path from "node:path";
 import express from "express";
 import escapeStringRegexp from "escape-string-regexp";
 import { Database, sql } from "@leafac/sqlite";
+import fs from "fs-extra";
 
-export default ({
+export default async ({
   app,
   dataDirectory,
   baseURL,
@@ -11,7 +12,8 @@ export default ({
   app: express.Express;
   dataDirectory: string;
   baseURL: string;
-}): Database => {
+}): Promise<Database> => {
+  await fs.ensureDir(dataDirectory);
   const database = new Database(
     path.join(dataDirectory, "courselore.db"),
     process.env.LOG_DATABASE === "true" ? { verbose: console.log } : undefined
