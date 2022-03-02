@@ -94,6 +94,11 @@ export interface Options {
   hotReload?: boolean;
 }
 
+export {
+  BaseMiddlewareLocals,
+  userFileExtensionsWhichMayBeShownInBrowser,
+} from "./global-middleware.js";
+
 export default async function courselore(
   options: Options
 ): Promise<Courselore> {
