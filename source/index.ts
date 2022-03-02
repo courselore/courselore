@@ -113,12 +113,13 @@ export interface Courselore extends express.Express {
       logo: LogoPartial;
       spinner: SpinnerPartial;
       reportIssueHref: ReportIssueHrefPartial;
+      course: any; // TODO
     };
     helpers: {
       flash: FlashHelper;
     };
     mailers: {
-      emailConfirmation: (options: any) => void; // TODO
+      emailConfirmation: any; // TODO
     };
   } & DatabaseLocals &
     EventSourceLocals;

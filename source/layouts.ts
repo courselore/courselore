@@ -148,7 +148,7 @@ export type SettingsLayout = ({
   body: HTML;
 }) => HTML;
 
-export type LogoPartial = ({ size }: { size?: number }) => HTML;
+export type LogoPartial = ({ size }?: { size?: number }) => HTML;
 
 export type PartialLayout = ({
   req,
@@ -2076,8 +2076,8 @@ export default async (app: Courselore): Promise<void> => {
       `)
     );
 
-  const boxLayout: BoxLayout = ({ req, res, head, body }) =>
-    baseLayout({
+  app.locals.layouts.box = ({ req, res, head, body }) =>
+    app.locals.layouts.base({
       req,
       res,
       head,
@@ -2108,13 +2108,13 @@ export default async (app: Courselore): Promise<void> => {
               `)}"
             >
               <a
-                href="${baseURL}/"
+                href="${app.locals.options.baseURL}/"
                 class="heading--display button button--transparent ${res.locals
                   .localCSS(css`
                   align-items: center;
                 `)}"
               >
-                $${logo()} Courselore
+                $${app.locals.partials.logo()} Courselore
               </a>
             </div>
             <div
@@ -2133,7 +2133,7 @@ export default async (app: Courselore): Promise<void> => {
               $${body}
             </div>
 
-            $${baseURL === "https://try.courselore.org"
+            $${app.locals.options.baseURL === "https://try.courselore.org"
               ? html`
                   <div
                     class="${res.locals.localCSS(css`
@@ -2174,7 +2174,8 @@ export default async (app: Courselore): Promise<void> => {
                       </p>
                       <form
                         method="POST"
-                        action="${baseURL}/demonstration-data"
+                        action="${app.locals.options
+                          .baseURL}/demonstration-data"
                       >
                         <input
                           type="hidden"
@@ -2193,7 +2194,7 @@ export default async (app: Courselore): Promise<void> => {
                     </div>
                   </div>
                 `
-              : demonstration
+              : app.locals.options.demonstration
               ? html`
                   <div
                     class="${res.locals.localCSS(css`
@@ -2234,7 +2235,8 @@ export default async (app: Courselore): Promise<void> => {
                       </p>
                       <form
                         method="POST"
-                        action="${baseURL}/demonstration-data"
+                        action="${app.locals.options
+                          .baseURL}/demonstration-data"
                       >
                         <input
                           type="hidden"
@@ -2259,7 +2261,7 @@ export default async (app: Courselore): Promise<void> => {
       `,
     });
 
-  const applicationLayout: ApplicationLayout = ({
+  app.locals.layouts.application = ({
     req,
     res,
     head,
@@ -2267,7 +2269,7 @@ export default async (app: Courselore): Promise<void> => {
     extraHeaders = html``,
     body,
   }) =>
-    baseLayout({
+    app.locals.layouts.base({
       req,
       res,
       head,
@@ -2281,7 +2283,7 @@ export default async (app: Courselore): Promise<void> => {
           `)}"
         >
           <a
-            href="${baseURL}/"
+            href="${app.locals.options.baseURL}/"
             class="button button--tight button--tight--inline button--transparent"
             oninteractive="${javascript`
               tippy(this, {
@@ -2307,13 +2309,14 @@ export default async (app: Courselore): Promise<void> => {
                   $${res.locals.enrollments.map(
                     (enrollment) => html`
                       <a
-                        href="${baseURL}/courses/${enrollment.course.reference}"
+                        href="${app.locals.options.baseURL}/courses/${enrollment
+                          .course.reference}"
                         class="dropdown--menu--item button ${enrollment.id ===
                         res.locals.enrollment?.id
                           ? "button--blue"
                           : "button--transparent"}"
                       >
-                        $${coursePartial({
+                        $${app.locals.partials.course({
                           req,
                           res,
                           course: enrollment.course,
