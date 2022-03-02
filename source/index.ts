@@ -117,6 +117,9 @@ export interface Courselore extends express.Express {
     helpers: {
       flash: FlashHelper;
     };
+    mailers: {
+      emailConfirmation: (options: any) => void; // TODO
+    };
   } & DatabaseLocals &
     EventSourceLocals;
 }

@@ -191,7 +191,7 @@ export type FlashHelper = {
 };
 
 export default async (app: Courselore): Promise<void> => {
-  const baseLayout: BaseLayout = ({
+  app.locals.layouts.base = ({
     req,
     res,
     head,
@@ -279,7 +279,8 @@ export default async (app: Courselore): Promise<void> => {
                                   .localCSS(css`
                                   width: 100%;
                                 `)}"
-                                href="${baseURL}/courses/${res.locals.course!
+                                href="${app.locals.options
+                                  .baseURL}/courses/${res.locals.course!
                                   .reference}/settings/your-enrollment"
                               >
                                 <i class="bi bi-palette"></i>
@@ -314,7 +315,7 @@ export default async (app: Courselore): Promise<void> => {
               }
             `)}"
           >
-            $${demonstration
+            $${app.locals.options.demonstration
               ? html`
                   <div
                     class="${res.locals.localCSS(css`
@@ -351,7 +352,8 @@ export default async (app: Courselore): Promise<void> => {
                                   </p>
                                   <form
                                     method="POST"
-                                    action="${baseURL}/demonstration-data"
+                                    action="${app.locals.options
+                                      .baseURL}/demonstration-data"
                                   >
                                     <input
                                       type="hidden"
@@ -382,7 +384,8 @@ export default async (app: Courselore): Promise<void> => {
                       ? html`
                           <form
                             method="POST"
-                            action="${baseURL}/turn-off?_method=DELETE"
+                            action="${app.locals.options
+                              .baseURL}/turn-off?_method=DELETE"
                           >
                             <input
                               type="hidden"
@@ -448,7 +451,8 @@ export default async (app: Courselore): Promise<void> => {
                   >
                     <form
                       method="POST"
-                      action="${baseURL}/resend-confirmation-email${qs.stringify(
+                      action="${app.locals.options
+                        .baseURL}/resend-confirmation-email${qs.stringify(
                         {
                           redirect: req.originalUrl,
                         },
@@ -466,9 +470,9 @@ export default async (app: Courselore): Promise<void> => {
                       folder?
                       <button class="link">Resend</button>.
                     </form>
-                    $${demonstration
+                    $${app.locals.options.demonstration
                       ? (() => {
-                          let emailConfirmation = database.get<{
+                          let emailConfirmation = app.locals.database.get<{
                             nonce: string;
                           }>(
                             sql`
@@ -476,13 +480,13 @@ export default async (app: Courselore): Promise<void> => {
                             `
                           );
                           if (emailConfirmation === undefined) {
-                            sendEmailConfirmationEmail({
+                            app.locals.mailers.emailConfirmation({
                               req,
                               res,
                               userId: res.locals.user.id,
                               userEmail: res.locals.user.email,
                             });
-                            emailConfirmation = database.get<{
+                            emailConfirmation = app.locals.database.get<{
                               nonce: string;
                             }>(
                               sql`
@@ -502,7 +506,8 @@ export default async (app: Courselore): Promise<void> => {
                               demonstration mode and doesn’t send emails.
                               Confirm your email by
                               <a
-                                href="${baseURL}/email-confirmation/${emailConfirmation.nonce}${qs.stringify(
+                                href="${app.locals.options
+                                  .baseURL}/email-confirmation/${emailConfirmation.nonce}${qs.stringify(
                                   {
                                     redirect: req.originalUrl,
                                   },
@@ -667,7 +672,7 @@ export default async (app: Courselore): Promise<void> => {
                                 line-height: var(--line-height--2xs);
                               `)}"
                             >
-                              Version ${courseloreVersion}
+                              Version ${app.locals.options.version}
                             </small>
                           </span>
                         </h3>
@@ -729,7 +734,7 @@ export default async (app: Courselore): Promise<void> => {
                             class="dropdown--menu--item button button--transparent"
                           >
                             <i class="bi bi-envelope"></i>
-                            ${administratorEmail}
+                            ${app.locals.options.administratorEmail}
                           </a>
                           <a
                             href="https://github.com/courselore/courselore/issues/new${qs.stringify(
@@ -753,7 +758,7 @@ export default async (app: Courselore): Promise<void> => {
 
                                   Please provide as much relevant context as possible (operating system, browser, and so forth):
 
-                                  - Courselore Version: ${courseloreVersion}
+                                  - Courselore Version: ${app.locals.options.version}
                                 `,
                               },
                               {
@@ -798,176 +803,229 @@ export default async (app: Courselore): Promise<void> => {
 
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/public-sans/100-italic.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/public-sans/100-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/public-sans/100.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/public-sans/100.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/public-sans/200-italic.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/public-sans/200-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/public-sans/200.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/public-sans/200.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/public-sans/300-italic.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/public-sans/300-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/public-sans/300.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/public-sans/300.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/public-sans/400-italic.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/public-sans/400-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/public-sans/400.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/public-sans/400.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/public-sans/500-italic.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/public-sans/500-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/public-sans/500.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/public-sans/500.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/public-sans/600-italic.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/public-sans/600-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/public-sans/600.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/public-sans/600.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/public-sans/700-italic.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/public-sans/700-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/public-sans/700.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/public-sans/700.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/public-sans/800-italic.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/public-sans/800-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/public-sans/800.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/public-sans/800.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/public-sans/900-italic.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/public-sans/900-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/public-sans/900.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/public-sans/900.css"
           />
 
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/100-italic.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/jetbrains-mono/100-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/100.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/jetbrains-mono/100.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/200-italic.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/jetbrains-mono/200-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/200.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/jetbrains-mono/200.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/300-italic.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/jetbrains-mono/300-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/300.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/jetbrains-mono/300.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/400-italic.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/jetbrains-mono/400-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/400.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/jetbrains-mono/400.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/500-italic.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/jetbrains-mono/500-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/500.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/jetbrains-mono/500.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/600-italic.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/jetbrains-mono/600-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/600.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/jetbrains-mono/600.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/700-italic.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/jetbrains-mono/700-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/700.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/jetbrains-mono/700.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/800-italic.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/jetbrains-mono/800-italic.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@fontsource/jetbrains-mono/800.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@fontsource/jetbrains-mono/800.css"
           />
 
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/bootstrap-icons/font/bootstrap-icons.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/bootstrap-icons/font/bootstrap-icons.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/katex/dist/katex.min.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/katex/dist/katex.min.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/tippy.js/dist/svg-arrow.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/tippy.js/dist/svg-arrow.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/tippy.js/dist/border.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/tippy.js/dist/border.css"
           />
           <link
             rel="stylesheet"
-            href="${baseURL}/node_modules/@leafac/css/distribution/browser.css"
+            href="${app.locals.options
+              .baseURL}/node_modules/@leafac/css/distribution/browser.css"
           />
-          <link rel="stylesheet" href="${baseURL}/global.css" />
+          <link
+            rel="stylesheet"
+            href="${app.locals.options.baseURL}/global.css"
+          />
           $${res.locals.localCSS.toString()}
 
-          <script src="${baseURL}/node_modules/autosize/dist/autosize.min.js"></script>
-          <script src="${baseURL}/node_modules/morphdom/dist/morphdom-umd.min.js"></script>
-          <script src="${baseURL}/node_modules/mousetrap/mousetrap.min.js"></script>
-          <script src="${baseURL}/node_modules/scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js"></script>
-          <script src="${baseURL}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
-          <script src="${baseURL}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
-          <script src="${baseURL}/node_modules/textarea-caret/index.js"></script>
-          <script src="${baseURL}/node_modules/text-field-edit/index.umd.js"></script>
-          <script src="${baseURL}/node_modules/reconnecting-eventsource/dist/ReconnectingEventSource.min.js"></script>
-          <script src="${baseURL}/node_modules/@leafac/javascript/distribution/browser.js"></script>
-          <script src="${baseURL}/leafac--javascript.js"></script>
+          <script src="${app.locals.options
+              .baseURL}/node_modules/autosize/dist/autosize.min.js"></script>
+          <script src="${app.locals.options
+              .baseURL}/node_modules/morphdom/dist/morphdom-umd.min.js"></script>
+          <script src="${app.locals.options
+              .baseURL}/node_modules/mousetrap/mousetrap.min.js"></script>
+          <script src="${app.locals.options
+              .baseURL}/node_modules/scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js"></script>
+          <script src="${app.locals.options
+              .baseURL}/node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
+          <script src="${app.locals.options
+              .baseURL}/node_modules/tippy.js/dist/tippy-bundle.umd.min.js"></script>
+          <script src="${app.locals.options
+              .baseURL}/node_modules/textarea-caret/index.js"></script>
+          <script src="${app.locals.options
+              .baseURL}/node_modules/text-field-edit/index.umd.js"></script>
+          <script src="${app.locals.options
+              .baseURL}/node_modules/reconnecting-eventsource/dist/ReconnectingEventSource.min.js"></script>
+          <script src="${app.locals.options
+              .baseURL}/node_modules/@leafac/javascript/distribution/browser.js"></script>
+          <script src="${app.locals.options
+              .baseURL}/leafac--javascript.js"></script>
           <script>
             leafac.evaluateOnInteractive();
             leafac.customFormValidation();
@@ -991,10 +1049,14 @@ export default async (app: Courselore): Promise<void> => {
                 </script>
               `
             : html``}
-          $${hotReload
+          $${app.locals.options.hotReload
             ? html`
                 <script>
-                  leafac.hotReload($${JSON.stringify(`${baseURL}/hot-reload`)});
+                  leafac.hotReload(
+                    $${JSON.stringify(
+                      `${app.locals.options.baseURL}/hot-reload`
+                    )}
+                  );
                 </script>
               `
             : html``}
