@@ -70,6 +70,8 @@ import layouts, {
   ReportIssueHrefPartial,
   FlashHelper,
 } from "./layouts.js";
+import authentication from "./authentication.js";
+import about, { AboutHandler } from "./about.js";
 
 import user, {
   UserAvatarlessBackgroundColor,
@@ -88,8 +90,6 @@ import course, {
   conversationTypeIcon,
   conversationTypeTextColor,
 } from "./course.js";
-import authentication from "./authentication.js";
-import about from "./about.js";
 
 import error from "./error.js";
 
@@ -100,7 +100,14 @@ export interface Courselore extends express.Express {
       canonicalBaseURL: string;
     } & Required<Options> &
       GlobalMiddlewaresOptions;
-    middlewares: { eventSource: EventSourceMiddleware };
+    handlers: {
+      about: AboutHandler;
+    };
+    middlewares: {
+      eventSource: EventSourceMiddleware;
+      isSignedOut: any; // TODO
+      isSignedIn: any; // TODO
+    };
     layouts: {
       base: BaseLayout;
       box: BoxLayout;
@@ -115,6 +122,7 @@ export interface Courselore extends express.Express {
       reportIssueHref: ReportIssueHrefPartial;
       course: any; // TODO
       user: any; // TODO
+      contentEditor: any; // TODO
     };
     helpers: {
       Flash: FlashHelper;
@@ -160,6 +168,8 @@ export default async function courselore(
   globalMiddlewares(app);
   eventSource(app);
   await layouts(app);
+  authentication(app);
+  about(app);
 
   const {
     baseLayout,

@@ -3,7 +3,6 @@
 ### Performance
 
 - Split the codebase into separate files.
-  - `source/about.ts`
   - `source/authentication.ts`
   - `source/user.ts`
   - `source/course.ts`

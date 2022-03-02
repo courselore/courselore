@@ -1,12 +1,16 @@
 import express from "express";
-import { html } from "@leafac/html";
+import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
 import dedent from "dedent";
-import { BaseMiddlewareLocals } from "./global-middlewares.js";
-import { BaseLayout } from "./layouts.js";
+import {
+  Courselore,
+  BaseMiddlewareLocals,
+  IsSignedOutMiddlewareLocals,
+  IsSignedInMiddlewareLocals,
+} from "./index.js";
 
-export type AboutRequestHandler = express.RequestHandler<
+export type AboutHandler = express.RequestHandler<
   {},
   any,
   {},
@@ -14,16 +18,10 @@ export type AboutRequestHandler = express.RequestHandler<
   BaseMiddlewareLocals & Partial<IsSignedInMiddlewareLocals>
 >;
 
-export default ({
-  baseURL,
-  baseLayout,
-}: {
-  baseURL: string;
-  baseLayout: BaseLayout;
-}): { aboutRequestHandler: AboutRequestHandler } => {
-  const aboutRequestHandler: AboutRequestHandler = (req, res) => {
+export default (app: Courselore): void => {
+  app.locals.handlers.about = (req, res) => {
     res.send(
-      baseLayout({
+      app.locals.layouts.base({
         req,
         res,
         head: html`
@@ -61,7 +59,10 @@ export default ({
                   align-items: center;
                 `)}"
               >
-                $${logo({ size: 48 /* var(--space--12) */ })} Courselore
+                $${app.locals.partials.logo({
+                  size: 48 /* var(--space--12) */,
+                })}
+                Courselore
               </a>
               <h3
                 class="secondary ${res.locals.localCSS(css`
@@ -121,7 +122,10 @@ export default ({
                         </a>
                       `
                     : html`
-                        <a href="${baseURL}/" class="button button--blue">
+                        <a
+                          href="${app.locals.options.baseURL}/"
+                          class="button button--blue"
+                        >
                           Return to Courselore
                           <i class="bi bi-chevron-right"></i>
                         </a>
@@ -143,7 +147,10 @@ export default ({
                       });
                     `}"
                   >
-                    $${logo({ size: 16 /* var(--space--4) */ })} Meta Courselore
+                    $${app.locals.partials.logo({
+                      size: 16 /* var(--space--4) */,
+                    })}
+                    Meta Courselore
                   </a>
                   <a
                     href="https://github.com/courselore/courselore"
@@ -587,7 +594,7 @@ export default ({
                 max-width: calc(min(var(--width--xl), 100%));
               `)}"
             >
-              $${contentEditor({
+              $${app.locals.partials.contentEditor({
                 req,
                 res,
                 contentSource: dedent`
@@ -788,7 +795,10 @@ export default ({
                   </a>
                 `
               : html`
-                  <a href="${baseURL}/" class="button button--blue">
+                  <a
+                    href="${app.locals.options.baseURL}/"
+                    class="button button--blue"
+                  >
                     Return to Courselore
                     <i class="bi bi-chevron-right"></i>
                   </a>
@@ -807,7 +817,8 @@ export default ({
                 });
               `}"
             >
-              $${logo({ size: 24 /* var(--space--6) */ })} Meta Courselore
+              $${app.locals.partials.logo({ size: 24 /* var(--space--6) */ })}
+              Meta Courselore
             </a>
             <a
               href="https://github.com/courselore/courselore"
@@ -842,25 +853,24 @@ export default ({
   };
 
   const shouldDisplayAbout =
-    baseURL === canonicalBaseURL || process.env.NODE_ENV !== "production";
+    app.locals.options.baseURL === app.locals.options.canonicalBaseURL ||
+    process.env.NODE_ENV !== "production";
   app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "/about",
-    ...isSignedOutMiddleware,
+    ...app.locals.middlewares.isSignedOut,
     shouldDisplayAbout
-      ? aboutRequestHandler
+      ? app.locals.handlers.about
       : (req, res) => {
-          res.redirect(`${canonicalBaseURL}/about`);
+          res.redirect(`${app.locals.options.canonicalBaseURL}/about`);
         }
   );
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/about",
-    ...isSignedInMiddleware,
+    ...app.locals.middlewares.isSignedIn,
     shouldDisplayAbout
-      ? aboutRequestHandler
+      ? app.locals.handlers.about
       : (req, res) => {
-          res.redirect(`${canonicalBaseURL}/about`);
+          res.redirect(`${app.locals.options.canonicalBaseURL}/about`);
         }
   );
-
-  return { aboutRequestHandler };
 };
