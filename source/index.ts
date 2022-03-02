@@ -56,7 +56,6 @@ export {
 import eventSource, {
   EventSourceLocals,
   EventSourceMiddleware,
-  EventSourceMiddlewareLocals,
 } from "./event-source.js";
 export { EventSourceMiddlewareLocals } from "./event-source.js";
 import layouts from "./layouts.js";
@@ -126,8 +125,8 @@ export default async function courselore(
   await database(app);
   logging(app);
   globalMiddleware(app);
+  eventSource(app);
 
-  const { eventSourceMiddleware } = eventSource();
   const {
     baseLayout,
     boxLayout,
