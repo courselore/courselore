@@ -48,11 +48,11 @@ import database, { DatabaseLocals } from "./database.js";
 import logging from "./logging.js";
 import globalMiddleware, {
   GlobalMiddlewareOptions,
-} from "./global-middleware.js";
+} from "./global-middlewares.js";
 export {
   GlobalMiddlewareLocals,
   userFileExtensionsWhichMayBeShownInBrowser,
-} from "./global-middleware.js";
+} from "./global-middlewares.js";
 import eventSource, {
   EventSourceLocals,
   EventSourceMiddleware,

@@ -1,7 +1,7 @@
 import express from "express";
 import { Database, sql } from "@leafac/sqlite";
 import cryptoRandomString from "crypto-random-string";
-import { GlobalMiddlewareLocals } from "./global-middleware.js";
+import { GlobalMiddlewareLocals } from "./global-middlewares.js";
 
 export default ({
   database,

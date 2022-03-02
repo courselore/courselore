@@ -7,7 +7,7 @@ import dedent from "dedent";
 import qs from "qs";
 import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
-import { GlobalMiddlewareLocals } from "./global-middleware.js";
+import { GlobalMiddlewareLocals } from "./global-middlewares.js";
 import { EventSourceMiddlewareLocals } from "./event-source.js";
 
 export type BaseLayout = ({

@@ -2,7 +2,7 @@ import express from "express";
 import qs from "qs";
 import { HTML, html } from "@leafac/html";
 import { BoxLayout, ReportIssueHref } from "./layouts.js";
-import { GlobalMiddlewareLocals } from "./global-middleware.js";
+import { GlobalMiddlewareLocals } from "./global-middlewares.js";
 import {
   IsSignedOutMiddleware,
   IsSignedOutMiddlewareLocals,

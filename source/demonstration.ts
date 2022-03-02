@@ -7,7 +7,7 @@ import casual from "casual";
 import lodash from "lodash";
 import slugify from "@sindresorhus/slugify";
 import cryptoRandomString from "crypto-random-string";
-import { GlobalMiddlewareLocals } from "./global-middleware.js";
+import { GlobalMiddlewareLocals } from "./global-middlewares.js";
 import { UserAvatarlessBackgroundColors } from "./user.js";
 
 export default ({
