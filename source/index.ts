@@ -114,9 +114,10 @@ export interface Courselore extends express.Express {
       spinner: SpinnerPartial;
       reportIssueHref: ReportIssueHrefPartial;
       course: any; // TODO
+      user: any; // TODO
     };
     helpers: {
-      flash: FlashHelper;
+      Flash: FlashHelper;
     };
     mailers: {
       emailConfirmation: any; // TODO
@@ -158,6 +159,7 @@ export default async function courselore(
   logging(app);
   globalMiddlewares(app);
   eventSource(app);
+  await layouts(app);
 
   const {
     baseLayout,

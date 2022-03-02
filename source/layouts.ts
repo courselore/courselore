@@ -525,7 +525,7 @@ export default async (app: Courselore): Promise<void> => {
               `
             : html``}
           $${(() => {
-            const flash = Flash.get({ req, res });
+            const flash = app.locals.helpers.Flash.get({ req, res });
             return flash === undefined
               ? html``
               : html`
@@ -662,7 +662,9 @@ export default async (app: Courselore): Promise<void> => {
                     content: ${res.locals.HTMLForJavaScript(
                       html`
                         <h3 class="heading">
-                          $${logo({ size: 12 /* var(--space--3) */ })}
+                          $${app.locals.partials.logo({
+                            size: 12 /* var(--space--3) */,
+                          })}
                           <span>
                             Courselore <br />
                             Communication Platform for Education <br />
@@ -699,7 +701,8 @@ export default async (app: Courselore): Promise<void> => {
                   });
                 `}"
               >
-                $${logo({ size: 16 /* var(--space--4) */ })} Courselore
+                $${app.locals.partials.logo({ size: 16 /* var(--space--4) */ })}
+                Courselore
               </button>
             </div>
             <div>
@@ -725,11 +728,13 @@ export default async (app: Courselore): Promise<void> => {
                               `
                             )}"
                           >
-                            $${logo({ size: 14 /* var(--space--3-5) */ })} Meta
-                            Courselore
+                            $${app.locals.partials.logo({
+                              size: 14 /* var(--space--3-5) */,
+                            })}
+                            Meta Courselore
                           </a>
                           <a
-                            href="${reportIssueHref}"
+                            href="${app.locals.partials.reportIssueHref}"
                             target="_blank"
                             class="dropdown--menu--item button button--transparent"
                           >
@@ -2292,7 +2297,7 @@ export default async (app: Courselore): Promise<void> => {
               });
             `}"
           >
-            $${logo()}
+            $${app.locals.partials.logo()}
           </a>
 
           <div
@@ -2356,8 +2361,9 @@ export default async (app: Courselore): Promise<void> => {
                                   </h3>
                                   <div class="dropdown--menu">
                                     <a
-                                      href="${baseURL}/courses/${res.locals
-                                        .course.reference}"
+                                      href="${app.locals.options
+                                        .baseURL}/courses/${res.locals.course
+                                        .reference}"
                                       class="dropdown--menu--item button ${req.path.includes(
                                         "/settings/"
                                       )
@@ -2368,8 +2374,9 @@ export default async (app: Courselore): Promise<void> => {
                                       Conversations
                                     </a>
                                     <a
-                                      href="${baseURL}/courses/${res.locals
-                                        .course.reference}/settings"
+                                      href="${app.locals.options
+                                        .baseURL}/courses/${res.locals.course
+                                        .reference}/settings"
                                       class="dropdown--menu--item button ${req.path.includes(
                                         "/settings/"
                                       )
@@ -2474,12 +2481,12 @@ export default async (app: Courselore): Promise<void> => {
                                   $${res.locals.invitations!.map(
                                     (invitation) => html`
                                       <a
-                                        href="${baseURL}/courses/${invitation
-                                          .course
+                                        href="${app.locals.options
+                                          .baseURL}/courses/${invitation.course
                                           .reference}/invitations/${invitation.reference}"
                                         class="dropdown--menu--item button button--transparent"
                                       >
-                                        $${coursePartial({
+                                        $${app.locals.partials.course({
                                           req,
                                           res,
                                           course: invitation.course,
@@ -2506,7 +2513,7 @@ export default async (app: Courselore): Promise<void> => {
                             Enroll in an Existing Course
                           </button>
                           <a
-                            href="${baseURL}/courses/new"
+                            href="${app.locals.options.baseURL}/courses/new"
                             class="dropdown--menu--item button button--transparent"
                           >
                             <i class="bi bi-journal-plus"></i>
@@ -2599,14 +2606,15 @@ export default async (app: Courselore): Promise<void> => {
                         <div class="dropdown--menu">
                           <a
                             class="dropdown--menu--item button button--transparent"
-                            href="${baseURL}/settings"
+                            href="${app.locals.options.baseURL}/settings"
                           >
                             <i class="bi bi-sliders"></i>
                             User Settings
                           </a>
                           <form
                             method="POST"
-                            action="${baseURL}/sign-out?_method=DELETE"
+                            action="${app.locals.options
+                              .baseURL}/sign-out?_method=DELETE"
                           >
                             <input
                               type="hidden"
@@ -2627,7 +2635,7 @@ export default async (app: Courselore): Promise<void> => {
                 });
               `}"
             >
-              $${userPartial({
+              $${app.locals.partials.user({
                 req,
                 res,
                 user: res.locals.user,
@@ -2643,14 +2651,14 @@ export default async (app: Courselore): Promise<void> => {
       body,
     });
 
-  const mainLayout: MainLayout = ({
+  app.locals.layouts.main = ({
     req,
     res,
     head,
     showCourseSwitcher = true,
     body,
   }) =>
-    applicationLayout({
+    app.locals.layouts.application({
       req,
       res,
       head,
@@ -2679,15 +2687,8 @@ export default async (app: Courselore): Promise<void> => {
       `,
     });
 
-  const settingsLayout: SettingsLayout = ({
-    req,
-    res,
-    head,
-    menuButton,
-    menu,
-    body,
-  }) =>
-    applicationLayout({
+  app.locals.layouts.settings = ({ req, res, head, menuButton, menu, body }) =>
+    app.locals.layouts.application({
       req,
       res,
       head,
@@ -2758,7 +2759,7 @@ export default async (app: Courselore): Promise<void> => {
       `,
     });
 
-  const logo: LogoPartial = (() => {
+  app.locals.partials.logo = (() => {
     // https://www.youtube.com/watch?v=dSK-MW-zuAc
     const order = 2;
     const viewBox = 24; /* var(--space--6) */
@@ -2808,7 +2809,7 @@ export default async (app: Courselore): Promise<void> => {
     `;
   })();
 
-  const partialLayout: PartialLayout = ({ req, res, body }) => html`
+  app.locals.layouts.partial = ({ req, res, body }) => html`
     <!DOCTYPE html>
     <html>
       <head>
@@ -2820,7 +2821,7 @@ export default async (app: Courselore): Promise<void> => {
     </html>
   `;
 
-  const spinner: SpinnerPartial = ({ req, res }) => html`
+  app.locals.partials.spinner = ({ req, res }) => html`
     <svg
       width="20"
       height="20"
@@ -2846,7 +2847,9 @@ export default async (app: Courselore): Promise<void> => {
     </svg>
   `;
 
-  const reportIssueHref: ReportIssueHrefPartial = `mailto:${administratorEmail}${qs.stringify(
+  app.locals.partials.reportIssueHref = `mailto:${
+    app.locals.options.administratorEmail
+  }${qs.stringify(
     {
       subject: "Report an Issue",
       body: dedent`
@@ -2868,7 +2871,7 @@ export default async (app: Courselore): Promise<void> => {
 
         Please provide as much relevant context as possible (operating system, browser, and so forth):
 
-        Courselore Version: ${courseloreVersion}
+        Courselore Version: ${app.locals.options.version}
       `,
     },
     {
@@ -2876,11 +2879,11 @@ export default async (app: Courselore): Promise<void> => {
     }
   )}`;
 
-  const Flash: FlashHelper = {
+  app.locals.helpers.Flash = {
     maxAge: 5 * 60 * 1000,
 
     set({ req, res, content }) {
-      const flash = database.get<{ nonce: string }>(
+      const flash = app.locals.database.get<{ nonce: string }>(
         sql`
           INSERT INTO "flashes" ("createdAt", "nonce", "content")
           VALUES (
@@ -2893,23 +2896,23 @@ export default async (app: Courselore): Promise<void> => {
       )!;
       req.cookies.flash = flash.nonce;
       res.cookie("flash", flash.nonce, {
-        ...cookieOptions,
-        maxAge: Flash.maxAge,
+        ...app.locals.options.cookies,
+        maxAge: app.locals.helpers.Flash.maxAge,
       });
     },
 
     get({ req, res }) {
       if (req.cookies.flash === undefined) return undefined;
-      const flash = database.get<{
+      const flash = app.locals.database.get<{
         id: number;
         content: HTML;
       }>(
         sql`SELECT "id", "content" FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
       );
       delete req.cookies.flash;
-      res.clearCookie("flash", cookieOptions);
+      res.clearCookie("flash", app.locals.options.cookies);
       if (flash === undefined) return undefined;
-      database.run(
+      app.locals.database.run(
         sql`
           DELETE FROM "flashes" WHERE "id" = ${flash.id}
         `
@@ -2918,25 +2921,14 @@ export default async (app: Courselore): Promise<void> => {
     },
   };
   setTimeout(function worker() {
-    database.run(
+    app.locals.database.run(
       sql`
         DELETE FROM "flashes"
-        WHERE "createdAt" < ${new Date(Date.now() - Flash.maxAge).toISOString()}
+        WHERE "createdAt" < ${new Date(
+          Date.now() - app.locals.helpers.Flash.maxAge
+        ).toISOString()}
       `
     );
     setTimeout(worker, 24 * 60 * 60 * 1000);
   }, 10 * 60 * 1000);
-
-  return {
-    baseLayout,
-    boxLayout,
-    applicationLayout,
-    mainLayout,
-    settingsLayout,
-    logo,
-    partialLayout,
-    spinner,
-    reportIssueHref,
-    Flash,
-  };
 };
