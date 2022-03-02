@@ -1,21 +1,13 @@
 import path from "node:path";
-import express from "express";
 import escapeStringRegexp from "escape-string-regexp";
 import { Database, sql } from "@leafac/sqlite";
 import fs from "fs-extra";
+import { Courselore } from "./index.js";
 
-export default async ({
-  app,
-  dataDirectory,
-  baseURL,
-}: {
-  app: express.Express;
-  dataDirectory: string;
-  baseURL: string;
-}): Promise<Database> => {
-  await fs.ensureDir(dataDirectory);
+export default async (app: Courselore): Promise<void> => {
+  await fs.ensureDir(app.locals.options.dataDirectory);
   const database = new Database(
-    path.join(dataDirectory, "courselore.db"),
+    path.join(app.locals.options.dataDirectory, "courselore.db"),
     process.env.LOG_DATABASE === "true" ? { verbose: console.log } : undefined
   );
   database.pragma("journal_mode = WAL");
@@ -337,7 +329,7 @@ export default async ({
           text.replace(
             new RegExp(
               `(?<=${escapeStringRegexp(
-                baseURL
+                app.locals.options.baseURL
               )}/courses/\\d+/conversations/\\d+)#message--(?=\\d+)`,
               "gi"
             ),
@@ -402,5 +394,4 @@ export default async ({
   app.once("close", () => {
     database.close();
   });
-  return database;
 };

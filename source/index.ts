@@ -74,16 +74,13 @@ import about from "./about.js";
 
 import error from "./error.js";
 
-const FEATURE_PAGINATION = true;
+export interface Courselore extends express.Express {
+  locals: {
+    options: Required<Options> & { canonicalBaseURL: string };
+  };
+}
 
-export default async function courselore({
-  dataDirectory,
-  baseURL,
-  administratorEmail,
-  sendMail,
-  demonstration = process.env.NODE_ENV !== "production",
-  hotReload = false,
-}: {
+export interface Options {
   dataDirectory: string;
   baseURL: string;
   administratorEmail: string;
@@ -92,10 +89,22 @@ export default async function courselore({
   ) => Promise<nodemailer.SentMessageInfo>;
   demonstration?: boolean;
   hotReload?: boolean;
-}): Promise<express.Express> {
-  const canonicalBaseURL = "https://courselore.org";
-  const app = express();
-  const database = await createDatabase({ app, dataDirectory, baseURL });
+}
+
+export default async function courselore(
+  options: Options
+): Promise<Courselore> {
+  const app = express() as Courselore;
+  app.locals.options = Object.assign(
+    {
+      canonicalBaseURL: "https://courselore.org",
+      demonstration: process.env.NODE_ENV !== "production",
+      hotReload: false,
+    },
+    options
+  );
+  await createDatabase(app);
+
   logging({ app, baseURL, courseloreVersion });
   const { cookieOptions } = globalMiddleware({
     app,
