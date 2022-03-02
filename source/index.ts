@@ -47,10 +47,10 @@ import casual from "casual";
 import database, { DatabaseLocals } from "./database.js";
 import logging from "./logging.js";
 import globalMiddleware, {
-  GlobalMiddlewareOptions,
+  GlobalMiddlewaresOptions,
 } from "./global-middlewares.js";
 export {
-  GlobalMiddlewareLocals,
+  BaseMiddlewareLocals,
   userFileExtensionsWhichMayBeShownInBrowser,
 } from "./global-middlewares.js";
 import eventSource, {
@@ -88,7 +88,7 @@ export interface Courselore extends express.Express {
       version: string;
       canonicalBaseURL: string;
     } & Required<Options> &
-      GlobalMiddlewareOptions;
+      GlobalMiddlewaresOptions;
     middlewares: { eventSource: EventSourceMiddleware };
   } & DatabaseLocals &
     EventSourceLocals;

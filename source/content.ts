@@ -13,13 +13,13 @@ export default () => {
       any,
       {},
       {},
-      GlobalMiddlewareLocals &
+      BaseMiddlewareLocals &
         Partial<IsEnrolledInCourseMiddlewareLocals> &
         Partial<IsConversationAccessibleMiddlewareLocals>
     >;
     res: express.Response<
       any,
-      GlobalMiddlewareLocals &
+      BaseMiddlewareLocals &
         Partial<IsEnrolledInCourseMiddlewareLocals> &
         Partial<IsConversationAccessibleMiddlewareLocals>
     >;
@@ -2122,11 +2122,11 @@ ${contentSource}</textarea
         any,
         {},
         {},
-        GlobalMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+        BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
       >;
       res: express.Response<
         any,
-        GlobalMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+        BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
       >;
       type: "source" | "preprocessed";
       content: string;
@@ -2572,7 +2572,7 @@ ${contentSource}</textarea
     any,
     { content?: string },
     {},
-    GlobalMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
   > = (req, res, next) => {
     if (typeof req.body.content !== "string" || req.body.content.trim() === "")
       return next("validation");

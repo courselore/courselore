@@ -1,5 +1,5 @@
 import express from "express";
-import { GlobalMiddlewareLocals } from "./global-middlewares.js";
+import { BaseMiddlewareLocals } from "./global-middlewares.js";
 import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
@@ -50,11 +50,11 @@ type UserPartial = ({
     any,
     {},
     {},
-    GlobalMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
   >;
   res: express.Response<
     any,
-    GlobalMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
+    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
   >;
   enrollment?: AuthorEnrollment;
   user?: AuthorEnrollmentUser | "no-longer-enrolled";
@@ -964,7 +964,7 @@ export default (): { userPartial: UserPartial } => {
             `Something went wrong in uploading your avatar. Please report to the system administrator at ${administratorEmail}.`
           );
       next(err);
-    }) as express.ErrorRequestHandler<{}, any, {}, {}, GlobalMiddlewareLocals>
+    }) as express.ErrorRequestHandler<{}, any, {}, {}, BaseMiddlewareLocals>
   );
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(

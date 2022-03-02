@@ -3,7 +3,7 @@ import { html } from "@leafac/html";
 import { css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
 import dedent from "dedent";
-import { GlobalMiddlewareLocals } from "./global-middlewares.js";
+import { BaseMiddlewareLocals } from "./global-middlewares.js";
 import { BaseLayout } from "./layouts.js";
 
 export type AboutRequestHandler = express.RequestHandler<
@@ -11,7 +11,7 @@ export type AboutRequestHandler = express.RequestHandler<
   any,
   {},
   {},
-  GlobalMiddlewareLocals & Partial<IsSignedInMiddlewareLocals>
+  BaseMiddlewareLocals & Partial<IsSignedInMiddlewareLocals>
 >;
 
 export default ({
