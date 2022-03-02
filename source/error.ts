@@ -2,7 +2,7 @@ import express from "express";
 import qs from "qs";
 import { HTML, html } from "@leafac/html";
 import { BoxLayout, ReportIssueHref } from "./layouts.js";
-import { BaseMiddlewareLocals } from "./global-middleware.js";
+import { GlobalMiddlewareLocals } from "./global-middleware.js";
 import {
   IsSignedOutMiddleware,
   IsSignedOutMiddlewareLocals,
@@ -71,7 +71,7 @@ export default ({
     }
   );
 
-  app.use<{}, HTML, {}, {}, BaseMiddlewareLocals>(((err, req, res, next) => {
+  app.use<{}, HTML, {}, {}, GlobalMiddlewareLocals>(((err, req, res, next) => {
     console.error(`${new Date().toISOString()}\tERROR\t${err}`);
     const isCSRF = err.code === "EBADCSRFTOKEN";
     const isValidation = err === "validation";
@@ -116,5 +116,5 @@ export default ({
         `,
       })
     );
-  }) as express.ErrorRequestHandler<{}, any, {}, {}, BaseMiddlewareLocals>);
+  }) as express.ErrorRequestHandler<{}, any, {}, {}, GlobalMiddlewareLocals>);
 };

@@ -95,7 +95,7 @@ export interface Options {
 }
 
 export {
-  BaseMiddlewareLocals,
+  GlobalMiddlewareLocals,
   userFileExtensionsWhichMayBeShownInBrowser,
 } from "./global-middleware.js";
 

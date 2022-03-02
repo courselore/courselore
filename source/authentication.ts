@@ -1,7 +1,7 @@
 import express from "express";
 import { Database, sql } from "@leafac/sqlite";
 import cryptoRandomString from "crypto-random-string";
-import { BaseMiddlewareLocals } from "./global-middleware.js";
+import { GlobalMiddlewareLocals } from "./global-middleware.js";
 
 export default ({
   database,
@@ -18,8 +18,8 @@ export default ({
       res,
       userId,
     }: {
-      req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-      res: express.Response<any, BaseMiddlewareLocals>;
+      req: express.Request<{}, any, {}, {}, GlobalMiddlewareLocals>;
+      res: express.Response<any, GlobalMiddlewareLocals>;
       userId: number;
     }): void {
       const session = database.get<{
@@ -46,8 +46,8 @@ export default ({
       req,
       res,
     }: {
-      req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-      res: express.Response<any, BaseMiddlewareLocals>;
+      req: express.Request<{}, any, {}, {}, GlobalMiddlewareLocals>;
+      res: express.Response<any, GlobalMiddlewareLocals>;
     }): number | undefined {
       if (req.cookies.session === undefined) return undefined;
       const session = database.get<{
@@ -83,8 +83,8 @@ export default ({
       req,
       res,
     }: {
-      req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-      res: express.Response<any, BaseMiddlewareLocals>;
+      req: express.Request<{}, any, {}, {}, GlobalMiddlewareLocals>;
+      res: express.Response<any, GlobalMiddlewareLocals>;
     }): void {
       if (req.cookies.session === undefined) return;
       delete req.cookies.session;
@@ -99,8 +99,8 @@ export default ({
       res,
       userId,
     }: {
-      req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-      res: express.Response<any, BaseMiddlewareLocals>;
+      req: express.Request<{}, any, {}, {}, GlobalMiddlewareLocals>;
+      res: express.Response<any, GlobalMiddlewareLocals>;
       userId: number;
     }): void {
       Session.close({ req, res });
@@ -120,7 +120,7 @@ export default ({
     setTimeout(worker, 24 * 60 * 60 * 1000);
   }, 10 * 60 * 1000);
 
-  interface IsSignedOutMiddlewareLocals extends BaseMiddlewareLocals {}
+  interface IsSignedOutMiddlewareLocals extends GlobalMiddlewareLocals {}
   const isSignedOutMiddleware: express.RequestHandler<
     {},
     any,
@@ -134,7 +134,7 @@ export default ({
     },
   ];
 
-  interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
+  interface IsSignedInMiddlewareLocals extends GlobalMiddlewareLocals {
     user: {
       id: number;
       lastSeenOnlineAt: string;
@@ -537,7 +537,7 @@ export default ({
     setTimeout(worker, 24 * 60 * 60 * 1000);
   }, 10 * 60 * 1000);
 
-  app.get<{}, HTML, {}, { email?: string }, BaseMiddlewareLocals>(
+  app.get<{}, HTML, {}, { email?: string }, GlobalMiddlewareLocals>(
     "/reset-password",
     (req, res) => {
       res.send(
@@ -622,7 +622,7 @@ export default ({
     HTML,
     { email?: string; resend?: "true" },
     {},
-    BaseMiddlewareLocals
+    GlobalMiddlewareLocals
   >("/reset-password", (req, res, next) => {
     if (
       typeof req.body.email !== "string" ||
@@ -719,7 +719,7 @@ export default ({
     );
   });
 
-  app.get<{ passwordResetNonce: string }, HTML, {}, {}, BaseMiddlewareLocals>(
+  app.get<{ passwordResetNonce: string }, HTML, {}, {}, GlobalMiddlewareLocals>(
     "/reset-password/:passwordResetNonce",
     (req, res) => {
       const userId = PasswordReset.get(req.params.passwordResetNonce);
@@ -803,7 +803,7 @@ export default ({
     HTML,
     { password?: string },
     { redirect?: string },
-    BaseMiddlewareLocals
+    GlobalMiddlewareLocals
   >(
     "/reset-password/:passwordResetNonce",
     asyncHandler(async (req, res, next) => {
@@ -989,8 +989,8 @@ export default ({
     userId,
     userEmail,
   }: {
-    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-    res: express.Response<any, BaseMiddlewareLocals>;
+    req: express.Request<{}, any, {}, {}, GlobalMiddlewareLocals>;
+    res: express.Response<any, GlobalMiddlewareLocals>;
     userId: number;
     userEmail: string;
   }): void => {

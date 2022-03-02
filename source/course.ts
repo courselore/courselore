@@ -1,5 +1,5 @@
 import express from "express";
-import { BaseMiddlewareLocals } from "./global-middleware.js";
+import { GlobalMiddlewareLocals } from "./global-middleware.js";
 import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
 import lodash from "lodash";
@@ -81,8 +81,8 @@ type CoursePartial = ({
   enrollment,
   tight,
 }: {
-  req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-  res: express.Response<any, BaseMiddlewareLocals>;
+  req: express.Request<{}, any, {}, {}, GlobalMiddlewareLocals>;
+  res: express.Response<any, GlobalMiddlewareLocals>;
   course: IsSignedInMiddlewareLocals["enrollments"][number]["course"];
   enrollment?: IsSignedInMiddlewareLocals["enrollments"][number];
   tight?: boolean;
@@ -726,7 +726,7 @@ export default (): { coursePartial: CoursePartial } => {
     }
   );
 
-  interface InvitationExistsMiddlewareLocals extends BaseMiddlewareLocals {
+  interface InvitationExistsMiddlewareLocals extends GlobalMiddlewareLocals {
     invitation: {
       id: number;
       expiresAt: string | null;
@@ -831,7 +831,7 @@ export default (): { coursePartial: CoursePartial } => {
 
   interface IsInvitationUsableMiddlewareLocals
     extends InvitationExistsMiddlewareLocals,
-      Omit<Partial<IsSignedInMiddlewareLocals>, keyof BaseMiddlewareLocals> {}
+      Omit<Partial<IsSignedInMiddlewareLocals>, keyof GlobalMiddlewareLocals> {}
   const isInvitationUsableMiddleware: express.RequestHandler<
     { courseReference: string; invitationReference: string },
     any,
@@ -859,8 +859,8 @@ export default (): { coursePartial: CoursePartial } => {
     res,
     invitation,
   }: {
-    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-    res: express.Response<any, BaseMiddlewareLocals>;
+    req: express.Request<{}, any, {}, {}, GlobalMiddlewareLocals>;
+    res: express.Response<any, GlobalMiddlewareLocals>;
     invitation: InvitationExistsMiddlewareLocals["invitation"];
   }): void => {
     const link = `${baseURL}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
@@ -4122,7 +4122,7 @@ export default (): { coursePartial: CoursePartial } => {
     HTML,
     {},
     {},
-    BaseMiddlewareLocals
+    GlobalMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     (req, res) => {

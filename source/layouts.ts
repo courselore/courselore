@@ -7,7 +7,7 @@ import dedent from "dedent";
 import qs from "qs";
 import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
-import { BaseMiddlewareLocals } from "./global-middleware.js";
+import { GlobalMiddlewareLocals } from "./global-middleware.js";
 import { EventSourceMiddlewareLocals } from "./event-source.js";
 
 export type BaseLayout = ({
@@ -22,13 +22,13 @@ export type BaseLayout = ({
     any,
     {},
     {},
-    BaseMiddlewareLocals &
+    GlobalMiddlewareLocals &
       Partial<IsEnrolledInCourseMiddlewareLocals> &
       Partial<EventSourceMiddlewareLocals>
   >;
   res: express.Response<
     any,
-    BaseMiddlewareLocals &
+    GlobalMiddlewareLocals &
       Partial<IsEnrolledInCourseMiddlewareLocals> &
       Partial<EventSourceMiddlewareLocals>
   >;
@@ -48,13 +48,13 @@ export type BoxLayout = ({
     any,
     {},
     {},
-    BaseMiddlewareLocals &
+    GlobalMiddlewareLocals &
       Partial<IsEnrolledInCourseMiddlewareLocals> &
       Partial<EventSourceMiddlewareLocals>
   >;
   res: express.Response<
     any,
-    BaseMiddlewareLocals &
+    GlobalMiddlewareLocals &
       Partial<IsEnrolledInCourseMiddlewareLocals> &
       Partial<EventSourceMiddlewareLocals>
   >;
@@ -150,8 +150,8 @@ export type PartialLayout = ({
   res,
   body,
 }: {
-  req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-  res: express.Response<any, BaseMiddlewareLocals>;
+  req: express.Request<{}, any, {}, {}, GlobalMiddlewareLocals>;
+  res: express.Response<any, GlobalMiddlewareLocals>;
   body: HTML;
 }) => HTML;
 
@@ -159,8 +159,8 @@ export type Spinner = ({
   req,
   res,
 }: {
-  req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-  res: express.Response<any, BaseMiddlewareLocals>;
+  req: express.Request<{}, any, {}, {}, GlobalMiddlewareLocals>;
+  res: express.Response<any, GlobalMiddlewareLocals>;
 }) => HTML;
 
 export type ReportIssueHref = string;
@@ -172,16 +172,16 @@ export type Flash = {
     res,
     content,
   }: {
-    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-    res: express.Response<any, BaseMiddlewareLocals>;
+    req: express.Request<{}, any, {}, {}, GlobalMiddlewareLocals>;
+    res: express.Response<any, GlobalMiddlewareLocals>;
     content: HTML;
   }): void;
   get({
     req,
     res,
   }: {
-    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-    res: express.Response<any, BaseMiddlewareLocals>;
+    req: express.Request<{}, any, {}, {}, GlobalMiddlewareLocals>;
+    res: express.Response<any, GlobalMiddlewareLocals>;
   }): HTML | undefined;
 };
 

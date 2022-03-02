@@ -1,5 +1,5 @@
 import express from "express";
-import { BaseMiddlewareLocals } from "./global-middleware.js";
+import { GlobalMiddlewareLocals } from "./global-middleware.js";
 
 export type EventSourceMiddleware = express.RequestHandler<
   {},
@@ -8,7 +8,7 @@ export type EventSourceMiddleware = express.RequestHandler<
   {},
   EventSourceMiddlewareLocals
 >[];
-export interface EventSourceMiddlewareLocals extends BaseMiddlewareLocals {
+export interface EventSourceMiddlewareLocals extends GlobalMiddlewareLocals {
   eventSource: boolean;
 }
 
