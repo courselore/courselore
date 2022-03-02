@@ -3,7 +3,9 @@ import { Courselore } from "./index.js";
 export default (app: Courselore): void => {
   app.once("listen", () => {
     console.log(
-      `${new Date().toISOString()}\tCourselore/${courseloreVersion} started at ${baseURL}`
+      `${new Date().toISOString()}\tCourselore/${
+        app.locals.options.version
+      } started at ${app.locals.options.baseURL}`
     );
   });
   app.enable("trust proxy");
@@ -26,7 +28,9 @@ export default (app: Courselore): void => {
   });
   app.once("close", () => {
     console.log(
-      `${new Date().toISOString()}\tCourselore/${courseloreVersion} stopped at ${baseURL}`
+      `${new Date().toISOString()}\tCourselore/${
+        app.locals.options.version
+      } stopped at ${app.locals.options.baseURL}`
     );
   });
 };

@@ -76,7 +76,10 @@ import error from "./error.js";
 
 export interface Courselore extends express.Express {
   locals: {
-    options: Required<Options> & { canonicalBaseURL: string };
+    options: {
+      version: string;
+      canonicalBaseURL: string;
+    } & Required<Options>;
   } & DatabaseLocals;
 }
 
@@ -97,6 +100,12 @@ export default async function courselore(
   const app = express() as Courselore;
   app.locals.options = Object.assign(
     {
+      version: JSON.parse(
+        await fs.readFile(
+          url.fileURLToPath(new URL("../package.json", import.meta.url)),
+          "utf8"
+        )
+      ).version,
       canonicalBaseURL: "https://courselore.org",
       demonstration: process.env.NODE_ENV !== "production",
       hotReload: false,
@@ -150,13 +159,6 @@ export default async function courselore(
 
   return app;
 }
-
-export const courseloreVersion = JSON.parse(
-  await fs.readFile(
-    url.fileURLToPath(new URL("../package.json", import.meta.url)),
-    "utf8"
-  )
-).version;
 
 if (import.meta.url.endsWith(process.argv[1]))
   await (
