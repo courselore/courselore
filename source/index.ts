@@ -49,7 +49,16 @@ import logging from "./logging.js";
 import globalMiddleware, {
   GlobalMiddlewareOptions,
 } from "./global-middleware.js";
-import eventSource, { EventSourceMiddlewareLocals } from "./event-source.js";
+export {
+  GlobalMiddlewareLocals,
+  userFileExtensionsWhichMayBeShownInBrowser,
+} from "./global-middleware.js";
+import eventSource, {
+  EventSourceLocals,
+  EventSourceMiddleware,
+  EventSourceMiddlewareLocals,
+} from "./event-source.js";
+export { EventSourceMiddlewareLocals } from "./event-source.js";
 import layouts from "./layouts.js";
 import user, {
   UserAvatarlessBackgroundColor,
@@ -80,7 +89,9 @@ export interface Courselore extends express.Express {
       canonicalBaseURL: string;
     } & Required<Options> &
       GlobalMiddlewareOptions;
-  } & DatabaseLocals;
+    middlewares: { eventSource: EventSourceMiddleware };
+  } & DatabaseLocals &
+    EventSourceLocals;
 }
 
 export interface Options {
@@ -93,11 +104,6 @@ export interface Options {
   demonstration?: boolean;
   hotReload?: boolean;
 }
-
-export {
-  GlobalMiddlewareLocals,
-  userFileExtensionsWhichMayBeShownInBrowser,
-} from "./global-middleware.js";
 
 export default async function courselore(
   options: Options

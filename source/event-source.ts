@@ -1,5 +1,13 @@
 import express from "express";
-import { GlobalMiddlewareLocals } from "./global-middleware.js";
+import { Courselore, GlobalMiddlewareLocals } from "./index.js";
+
+export interface EventSourceLocals {
+  eventDestinations: Set<{
+    reference: string;
+    req: express.Request;
+    res: express.Response;
+  }>;
+}
 
 export type EventSourceMiddleware = express.RequestHandler<
   {},
@@ -12,15 +20,9 @@ export interface EventSourceMiddlewareLocals extends GlobalMiddlewareLocals {
   eventSource: boolean;
 }
 
-export default (): {
-  eventSourceMiddleware: EventSourceMiddleware;
-} => {
-  const eventDestinations = new Set<{
-    reference: string;
-    req: express.Request;
-    res: express.Response;
-  }>();
-  const eventSourceMiddleware: EventSourceMiddleware = [
+export default (app: Courselore): void => {
+  app.locals.eventDestinations = new Set();
+  app.locals.middlewares.eventSource = [
     (req, res, next) => {
       if (!req.header("accept")?.includes("text/event-stream")) {
         res.locals.eventSource = true;
@@ -31,9 +33,9 @@ export default (): {
         req,
         res,
       };
-      eventDestinations.add(eventDestination);
+      app.locals.eventDestinations.add(eventDestination);
       res.once("close", () => {
-        eventDestinations.delete(eventDestination);
+        app.locals.eventDestinations.delete(eventDestination);
       });
       res
         .type("text/event-stream")
@@ -44,7 +46,5 @@ export default (): {
         }\t\t\t${req.originalUrl}`
       );
     },
-  ];
-
-  return { eventSourceMiddleware };
+  ] as EventSourceMiddleware;
 };
