@@ -104,8 +104,8 @@ export default async function courselore(
     options
   );
   await database(app);
+  logging(app);
 
-  logging({ app, baseURL, courseloreVersion });
   const { cookieOptions } = globalMiddleware({
     app,
     dataDirectory,

@@ -1,14 +1,6 @@
-import express from "express";
+import { Courselore } from "./index.js";
 
-export default ({
-  app,
-  baseURL,
-  courseloreVersion,
-}: {
-  app: express.Express;
-  baseURL: string;
-  courseloreVersion: string;
-}): void => {
+export default (app: Courselore): void => {
   app.once("listen", () => {
     console.log(
       `${new Date().toISOString()}\tCourselore/${courseloreVersion} started at ${baseURL}`
