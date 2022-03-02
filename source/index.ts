@@ -89,6 +89,9 @@ export interface Courselore extends express.Express {
     } & Required<Options> &
       GlobalMiddlewaresOptions;
     middlewares: { eventSource: EventSourceMiddleware };
+    layouts: ,
+    partials: ,
+    helpers: ,
   } & DatabaseLocals &
     EventSourceLocals;
 }

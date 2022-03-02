@@ -1,5 +1,5 @@
 import express from "express";
-import { Database, sql } from "@leafac/sqlite";
+import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
 import { processCSS, css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
@@ -7,8 +7,13 @@ import dedent from "dedent";
 import qs from "qs";
 import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
-import { BaseMiddlewareLocals } from "./global-middlewares.js";
-import { EventSourceMiddlewareLocals } from "./event-source.js";
+import {
+  Courselore,
+  BaseMiddlewareLocals,
+  EventSourceMiddlewareLocals,
+  IsSignedInMiddlewareLocals,
+  IsEnrolledInCourseMiddlewareLocals,
+} from "./index.js";
 
 export type BaseLayout = ({
   req,
@@ -143,7 +148,7 @@ export type SettingsLayout = ({
   body: HTML;
 }) => HTML;
 
-export type Logo = ({ size }: { size?: number }) => HTML;
+export type LogoPartial = ({ size }: { size?: number }) => HTML;
 
 export type PartialLayout = ({
   req,
@@ -155,7 +160,7 @@ export type PartialLayout = ({
   body: HTML;
 }) => HTML;
 
-export type Spinner = ({
+export type SpinnerPartial = ({
   req,
   res,
 }: {
@@ -163,9 +168,9 @@ export type Spinner = ({
   res: express.Response<any, BaseMiddlewareLocals>;
 }) => HTML;
 
-export type ReportIssueHref = string;
+export type ReportIssueHrefPartial = string;
 
-export type Flash = {
+export type FlashHelper = {
   maxAge: number;
   set({
     req,
@@ -185,34 +190,7 @@ export type Flash = {
   }): HTML | undefined;
 };
 
-export default async ({
-  baseURL,
-  administratorEmail,
-  demonstration,
-  hotReload,
-  courseloreVersion,
-  database,
-  cookieOptions,
-}: {
-  baseURL: string;
-  administratorEmail: string;
-  demonstration: boolean;
-  hotReload: boolean;
-  courseloreVersion: string;
-  database: Database;
-  cookieOptions: express.CookieOptions;
-}): Promise<{
-  baseLayout: BaseLayout;
-  boxLayout: BoxLayout;
-  applicationLayout: ApplicationLayout;
-  mainLayout: MainLayout;
-  settingsLayout: SettingsLayout;
-  logo: Logo;
-  partialLayout: PartialLayout;
-  spinner: Spinner;
-  reportIssueHref: ReportIssueHref;
-  Flash: Flash;
-}> => {
+export default async (app: Courselore): Promise<void> => {
   const baseLayout: BaseLayout = ({
     req,
     res,
@@ -2715,7 +2693,7 @@ export default async ({
       `,
     });
 
-  const logo: Logo = (() => {
+  const logo: LogoPartial = (() => {
     // https://www.youtube.com/watch?v=dSK-MW-zuAc
     const order = 2;
     const viewBox = 24; /* var(--space--6) */
@@ -2777,7 +2755,7 @@ export default async ({
     </html>
   `;
 
-  const spinner: Spinner = ({ req, res }) => html`
+  const spinner: SpinnerPartial = ({ req, res }) => html`
     <svg
       width="20"
       height="20"
@@ -2803,7 +2781,7 @@ export default async ({
     </svg>
   `;
 
-  const reportIssueHref: ReportIssueHref = `mailto:${administratorEmail}${qs.stringify(
+  const reportIssueHref: ReportIssueHrefPartial = `mailto:${administratorEmail}${qs.stringify(
     {
       subject: "Report an Issue",
       body: dedent`
@@ -2833,7 +2811,7 @@ export default async ({
     }
   )}`;
 
-  const Flash: Flash = {
+  const Flash: FlashHelper = {
     maxAge: 5 * 60 * 1000,
 
     set({ req, res, content }) {
