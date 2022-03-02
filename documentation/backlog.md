@@ -16,6 +16,7 @@
   - `source/demonstration.ts`
   - `source/helpers.ts`
   - `source/index.ts`
+  - configuration
 
 ---
 
