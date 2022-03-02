@@ -46,7 +46,7 @@ import casual from "casual";
 
 import database, { DatabaseLocals } from "./database.js";
 import logging from "./logging.js";
-import globalMiddleware, {
+import globalMiddlewares, {
   GlobalMiddlewaresOptions,
 } from "./global-middlewares.js";
 export {
@@ -127,7 +127,7 @@ export default async function courselore(
   );
   await database(app);
   logging(app);
-  globalMiddleware(app);
+  globalMiddlewares(app);
   eventSource(app);
 
   const {
