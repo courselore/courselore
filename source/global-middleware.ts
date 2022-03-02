@@ -6,6 +6,16 @@ import expressFileUpload from "express-fileupload";
 import csurf from "csurf";
 import { localCSS } from "@leafac/css";
 import { HTMLForJavaScript } from "@leafac/javascript";
+import { Courselore } from "./index.js";
+
+export interface GlobalMiddlewareOptions {
+  cookies: express.CookieOptions;
+}
+
+export interface BaseMiddlewareLocals {
+  localCSS: ReturnType<typeof localCSS>;
+  HTMLForJavaScript: ReturnType<typeof HTMLForJavaScript>;
+}
 
 export const userFileExtensionsWhichMayBeShownInBrowser = [
   "png",
@@ -24,24 +34,7 @@ export const userFileExtensionsWhichMayBeShownInBrowser = [
   "txt",
 ];
 
-export interface BaseMiddlewareLocals {
-  localCSS: ReturnType<typeof localCSS>;
-  HTMLForJavaScript: ReturnType<typeof HTMLForJavaScript>;
-}
-
-export default ({
-  app,
-  dataDirectory,
-  baseURL,
-  hotReload,
-}: {
-  app: express.Express;
-  dataDirectory: string;
-  baseURL: string;
-  hotReload: boolean;
-}): {
-  cookieOptions: express.CookieOptions;
-} => {
+export default (app: Courselore): void => {
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
     res.locals.localCSS = localCSS();
     res.locals.HTMLForJavaScript = HTMLForJavaScript();
@@ -53,7 +46,7 @@ export default ({
   );
   app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
     "/files/*",
-    express.static(dataDirectory, {
+    express.static(app.locals.options.dataDirectory, {
       index: false,
       dotfiles: "allow",
       immutable: true,
@@ -72,10 +65,11 @@ export default ({
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>(methodOverride("_method"));
 
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>(cookieParser());
-  const cookieOptions = {
-    domain: new URL(baseURL).hostname,
+  const baseURL = new URL(app.locals.options.baseURL);
+  app.locals.options.cookies = {
+    domain: baseURL.hostname,
     httpOnly: true,
-    path: new URL(baseURL).pathname,
+    path: baseURL.pathname,
     sameSite: "lax",
     secure: true,
   } as const;
@@ -93,13 +87,13 @@ export default ({
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
     csurf({
       cookie: {
-        ...cookieOptions,
+        ...app.locals.options.cookies,
         maxAge: 30 * 24 * 60 * 60,
       },
     })
   );
 
-  if (hotReload)
+  if (app.locals.options.hotReload)
     app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
       "/hot-reload",
       (req, res) => {
@@ -107,6 +101,4 @@ export default ({
         console.log(`${new Date().toISOString()}\tHOT RELOAD\t${req.ip}`);
       }
     );
-
-  return { cookieOptions };
 };

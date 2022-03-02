@@ -47,8 +47,7 @@ import casual from "casual";
 import database, { DatabaseLocals } from "./database.js";
 import logging from "./logging.js";
 import globalMiddleware, {
-  userFileExtensionsWhichMayBeShownInBrowser,
-  BaseMiddlewareLocals,
+  GlobalMiddlewareOptions,
 } from "./global-middleware.js";
 import eventSource, { EventSourceMiddlewareLocals } from "./event-source.js";
 import layouts from "./layouts.js";
@@ -79,7 +78,8 @@ export interface Courselore extends express.Express {
     options: {
       version: string;
       canonicalBaseURL: string;
-    } & Required<Options>;
+    } & Required<Options> &
+      GlobalMiddlewareOptions;
   } & DatabaseLocals;
 }
 
@@ -98,7 +98,7 @@ export default async function courselore(
   options: Options
 ): Promise<Courselore> {
   const app = express() as Courselore;
-  app.locals.options = Object.assign(
+  app.locals.options = Object.assign<any, any>(
     {
       version: JSON.parse(
         await fs.readFile(
@@ -114,13 +114,8 @@ export default async function courselore(
   );
   await database(app);
   logging(app);
+  globalMiddleware(app);
 
-  const { cookieOptions } = globalMiddleware({
-    app,
-    dataDirectory,
-    baseURL,
-    hotReload,
-  });
   const { eventSourceMiddleware } = eventSource();
   const {
     baseLayout,
