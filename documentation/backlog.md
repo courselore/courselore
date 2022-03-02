@@ -3,15 +3,21 @@
 ### Performance
 
 - Split the codebase into separate files.
+  - `source/database.ts`
+  - `source/logging.ts`
+  - `source/global-middleware.ts`
+  - `source/event-source.ts`
   - `source/layouts.ts`
-  - `source/content.ts`
   - `source/about.ts`
   - `source/authentication.ts`
   - `source/user.ts`
   - `source/course.ts`
   - `source/conversation.ts`
-  - `source/demonstration.ts`
+  - `source/error.ts`
+  - `source/content.ts`
   - `source/email.ts`
+  - `source/demonstration.ts`
+  - `source/helpers.ts`
   - `source/index.ts`
 
 ---
@@ -227,6 +233,7 @@ oninteractive="${javascript`
 
 ### Conversations
 
+- Add the notion of “staff considers this a good question.” Similar to the notion of “endorsement,” but for questions.
 - Change the meaning of “views”: Instead of using “readings”, only count as “viewed” if the message has appeared on the person’s screen.
   - Tracking pixel on email for people who will read the notification on their email and just “mark as read” on Courselore?
 - Add a button to “Return to Bottom” in chat.
