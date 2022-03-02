@@ -4,14 +4,18 @@ import { Database, sql } from "@leafac/sqlite";
 import fs from "fs-extra";
 import { Courselore } from "./index.js";
 
+export interface DatabaseLocals {
+  database: Database;
+}
+
 export default async (app: Courselore): Promise<void> => {
   await fs.ensureDir(app.locals.options.dataDirectory);
-  const database = new Database(
+  app.locals.database = new Database(
     path.join(app.locals.options.dataDirectory, "courselore.db"),
     process.env.LOG_DATABASE === "true" ? { verbose: console.log } : undefined
   );
-  database.pragma("journal_mode = WAL");
-  database.migrate(
+  app.locals.database.pragma("journal_mode = WAL");
+  app.locals.database.migrate(
     sql`
       CREATE TABLE "flashes" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -335,7 +339,7 @@ export default async (app: Courselore): Promise<void> => {
             ),
             "?messageReference="
           );
-      for (const user of database.all<{
+      for (const user of app.locals.database.all<{
         id: number;
         biographySource: string | null;
         biographyPreprocessed: string | null;
@@ -350,7 +354,7 @@ export default async (app: Courselore): Promise<void> => {
           user.biographySource !== null &&
           user.biographyPreprocessed !== null
         )
-          database.run(
+          app.locals.database.run(
             sql`
               UPDATE "users"
               SET "biographySource" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
@@ -362,7 +366,7 @@ export default async (app: Courselore): Promise<void> => {
               WHERE "id" = ${user.id}
             `
           );
-      for (const message of database.all<{
+      for (const message of app.locals.database.all<{
         id: number;
         contentSource: string;
         contentPreprocessed: string;
@@ -374,7 +378,7 @@ export default async (app: Courselore): Promise<void> => {
           ORDER BY "id"
         `
       ))
-        database.run(
+        app.locals.database.run(
           sql`
             UPDATE "messages"
             SET "contentSource" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
@@ -392,6 +396,6 @@ export default async (app: Courselore): Promise<void> => {
     }
   );
   app.once("close", () => {
-    database.close();
+    app.locals.database.close();
   });
 };

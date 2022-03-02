@@ -44,7 +44,7 @@ import escapeStringRegexp from "escape-string-regexp";
 import QRCode from "qrcode";
 import casual from "casual";
 
-import createDatabase from "./database.js";
+import database, { DatabaseLocals } from "./database.js";
 import logging from "./logging.js";
 import globalMiddleware, {
   userFileExtensionsWhichMayBeShownInBrowser,
@@ -77,7 +77,7 @@ import error from "./error.js";
 export interface Courselore extends express.Express {
   locals: {
     options: Required<Options> & { canonicalBaseURL: string };
-  };
+  } & DatabaseLocals;
 }
 
 export interface Options {
@@ -103,7 +103,7 @@ export default async function courselore(
     },
     options
   );
-  await createDatabase(app);
+  await database(app);
 
   logging({ app, baseURL, courseloreVersion });
   const { cookieOptions } = globalMiddleware({
