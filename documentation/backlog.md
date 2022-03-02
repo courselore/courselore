@@ -3,7 +3,6 @@
 ### Performance
 
 - Split the codebase into separate files.
-  - `source/global-middleware.ts`
   - `source/event-source.ts`
   - `source/layouts.ts`
   - `source/about.ts`
