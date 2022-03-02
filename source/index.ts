@@ -58,7 +58,19 @@ import eventSource, {
   EventSourceMiddleware,
 } from "./event-source.js";
 export { EventSourceMiddlewareLocals } from "./event-source.js";
-import layouts from "./layouts.js";
+import layouts, {
+  BaseLayout,
+  BoxLayout,
+  ApplicationLayout,
+  MainLayout,
+  SettingsLayout,
+  LogoPartial,
+  PartialLayout,
+  SpinnerPartial,
+  ReportIssueHrefPartial,
+  FlashHelper,
+} from "./layouts.js";
+
 import user, {
   UserAvatarlessBackgroundColor,
   userAvatarlessBackgroundColors,
@@ -89,9 +101,22 @@ export interface Courselore extends express.Express {
     } & Required<Options> &
       GlobalMiddlewaresOptions;
     middlewares: { eventSource: EventSourceMiddleware };
-    layouts: ,
-    partials: ,
-    helpers: ,
+    layouts: {
+      base: BaseLayout;
+      box: BoxLayout;
+      application: ApplicationLayout;
+      main: MainLayout;
+      settings: SettingsLayout;
+      partial: PartialLayout;
+    };
+    partials: {
+      logo: LogoPartial;
+      spinner: SpinnerPartial;
+      reportIssueHref: ReportIssueHrefPartial;
+    };
+    helpers: {
+      flash: FlashHelper;
+    };
   } & DatabaseLocals &
     EventSourceLocals;
 }
