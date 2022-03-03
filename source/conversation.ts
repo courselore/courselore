@@ -5568,15 +5568,17 @@ export default (app: Courselore): void => {
                                                   name="_csrf"
                                                   value="${req.csrfToken()}"
                                                 />
-                                                $${contentEditor({
-                                                  req,
-                                                  res,
-                                                  contentSource:
-                                                    message.contentSource,
-                                                  compact:
-                                                    res.locals.conversation
-                                                      .type === "chat",
-                                                })}
+                                                $${app.locals.partials.contentEditor(
+                                                  {
+                                                    req,
+                                                    res,
+                                                    contentSource:
+                                                      message.contentSource,
+                                                    compact:
+                                                      res.locals.conversation
+                                                        .type === "chat",
+                                                  }
+                                                )}
 
                                                 <div
                                                   class="${res.locals
@@ -5807,7 +5809,7 @@ export default (app: Courselore): void => {
                       leafac.saveFormInputValue(this.querySelector(".content-editor--write--textarea"), "new-message");
                     `}"
                   >
-                    $${contentEditor({
+                    $${app.locals.partials.contentEditor({
                       req,
                       res,
                       compact: res.locals.conversation.type === "chat",

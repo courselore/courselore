@@ -1,5 +1,5 @@
 export default () => {
-  const contentEditor = ({
+  app.locals.partials.contentEditor = ({
     req,
     res,
     name = "content",
@@ -1032,7 +1032,8 @@ export default () => {
                             gap: var(--space--2);
                           `)}"
                         >
-                          $${app.locals.partials.spinner({ req, res })} Uploading…
+                          $${app.locals.partials.spinner({ req, res })}
+                          Uploading…
                         </div>
                       `
                     )},
