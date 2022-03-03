@@ -90,7 +90,7 @@ export type ConversationPartial = ({
 }: {
   req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
   res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
-  conversation: NonNullable<ReturnType<typeof getConversation>>;
+  conversation: NonNullable<ReturnType<GetConversationHelper>>;
   searchResult?:
     | {
         type: "conversationTitle";
@@ -393,7 +393,7 @@ export default (app: Courselore): void => {
         `
       )
       .map((conversationWithSearchResult) => {
-        const conversation = getConversation({
+        const conversation = app.locals.helpers.getConversation({
           req,
           res,
           conversationReference: conversationWithSearchResult.reference,
@@ -1685,8 +1685,12 @@ export default (app: Courselore): void => {
     },
   };
 
-  const getConversation = ({ req, res, conversationReference }) => {
-    const conversationRow = database.get<{
+  app.locals.helpers.getConversation = ({
+    req,
+    res,
+    conversationReference,
+  }) => {
+    const conversationRow = app.locals.database.get<{
       id: number;
       createdAt: string;
       updatedAt: string | null;
@@ -1804,7 +1808,7 @@ export default (app: Courselore): void => {
       nextMessageReference: conversationRow.nextMessageReference,
     };
 
-    const taggings = database
+    const taggings = app.locals.database
       .all<{
         id: number;
         tagId: number;
@@ -1839,13 +1843,13 @@ export default (app: Courselore): void => {
         },
       }));
 
-    const messagesCount = database.get<{
+    const messagesCount = app.locals.database.get<{
       messagesCount: number;
     }>(
       sql`SELECT COUNT(*) AS "messagesCount" FROM "messages" WHERE "messages"."conversation" = ${conversation.id}`
     )!.messagesCount;
 
-    const readingsCount = database.get<{ readingsCount: number }>(
+    const readingsCount = app.locals.database.get<{ readingsCount: number }>(
       sql`
         SELECT COUNT(*) AS "readingsCount"
         FROM "readings"
@@ -1857,7 +1861,7 @@ export default (app: Courselore): void => {
 
     const endorsements =
       conversation.type === "question"
-        ? database
+        ? app.locals.database
             .all<{
               id: number;
               enrollmentId: number | null;
@@ -1942,7 +1946,7 @@ export default (app: Courselore): void => {
   }: {
     req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
-    conversation: NonNullable<ReturnType<typeof getConversation>>;
+    conversation: NonNullable<ReturnType<GetConversationHelper>>;
     messageReference: string;
   }):
     | {
@@ -2896,7 +2900,7 @@ export default (app: Courselore): void => {
             )
           `
         );
-        const conversation = getConversation({
+        const conversation = app.locals.helpers.getConversation({
           req,
           res,
           conversationReference: conversationRow.reference,
@@ -2979,7 +2983,7 @@ export default (app: Courselore): void => {
 
   interface IsConversationAccessibleMiddlewareLocals
     extends IsEnrolledInCourseMiddlewareLocals {
-    conversation: NonNullable<ReturnType<typeof getConversation>>;
+    conversation: NonNullable<ReturnType<GetConversationHelper>>;
   }
   const isConversationAccessibleMiddleware: express.RequestHandler<
     { courseReference: string; conversationReference: string },
@@ -2990,7 +2994,7 @@ export default (app: Courselore): void => {
   >[] = [
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
-      const conversation = getConversation({
+      const conversation = app.locals.helpers.getConversation({
         req,
         res,
         conversationReference: req.params.conversationReference,
@@ -7184,7 +7188,7 @@ export default (app: Courselore): void => {
   }: {
     req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
-    conversation: NonNullable<ReturnType<typeof getConversation>>;
+    conversation: NonNullable<ReturnType<GetConversationHelper>>;
     message: NonNullable<ReturnType<typeof getMessage>>;
     mentions: Set<string>;
   }): void => {

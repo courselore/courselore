@@ -1629,7 +1629,7 @@ ${contentSource}</textarea
               `
             )
             .flatMap((conversationRow) => {
-              const conversation = getConversation({
+              const conversation = app.locals.helpers.getConversation({
                 req,
                 res,
                 conversationReference: conversationRow.reference,
@@ -1668,7 +1668,7 @@ ${contentSource}</textarea
       if (messageReferenceSearchMatch !== null) {
         const [conversationReference, messageReferenceSearch] =
           messageReferenceSearchMatch.slice(1);
-        const conversation = getConversation({
+        const conversation = app.locals.helpers.getConversation({
           req,
           res,
           conversationReference,
@@ -1789,7 +1789,7 @@ ${contentSource}</textarea
             `
           )
           .flatMap((conversationRow) => {
-            const conversation = getConversation({
+            const conversation = app.locals.helpers.getConversation({
               req,
               res,
               conversationReference: conversationRow.reference,
@@ -1859,7 +1859,7 @@ ${contentSource}</textarea
             `
           )
           .flatMap((messageRow) => {
-            const conversation = getConversation({
+            const conversation = app.locals.helpers.getConversation({
               req,
               res,
               conversationReference: messageRow.conversationReference,
@@ -1942,7 +1942,7 @@ ${contentSource}</textarea
             `
           )
           .flatMap((messageRow) => {
-            const conversation = getConversation({
+            const conversation = app.locals.helpers.getConversation({
               req,
               res,
               conversationReference: messageRow.conversationReference,
@@ -2260,7 +2260,7 @@ ${contentSource}</textarea
             const [courseReference, conversationReference, messageReference] =
               match.slice(1);
             if (courseReference !== res.locals.course.reference) continue;
-            const conversation = getConversation({
+            const conversation = app.locals.helpers.getConversation({
               req: narrowReq,
               res: narrowRes,
               conversationReference,
@@ -2401,7 +2401,7 @@ ${contentSource}</textarea
                   newNodeHTML = newNodeHTML.replace(
                     /(?<!\w)#(\d+)(?:\/(\d+))?(?!\w)/g,
                     (match, conversationReference, messageReference) => {
-                      const conversation = getConversation({
+                      const conversation = app.locals.helpers.getConversation({
                         req: narrowReq,
                         res: narrowRes,
                         conversationReference,
@@ -2466,7 +2466,7 @@ ${contentSource}</textarea
               hrefMessageReference !== textContentMessageReference
             )
               continue;
-            const conversation = getConversation({
+            const conversation = app.locals.helpers.getConversation({
               req: narrowReq,
               res: narrowRes,
               conversationReference: hrefConversationReference,
