@@ -1,5 +1,10 @@
+import express from "express";
 import { HTML, html } from "@leafac/html";
-import { Courselore } from "./index.js";
+import {
+  Courselore,
+  EventSourceMiddlewareLocals,
+  IsEnrolledInCourseMiddlewareLocals,
+} from "./index.js";
 
 export type ConversationType = typeof conversationTypes[number];
 export const conversationTypes = [
@@ -8,6 +13,47 @@ export const conversationTypes = [
   "note",
   "chat",
 ] as const;
+
+export type ConversationLayout = ({
+  req,
+  res,
+  head,
+  onlyConversationLayoutSidebarOnSmallScreen,
+  mainIsAScrollingPane,
+  body,
+}: {
+  req: express.Request<
+    { courseReference: string; conversationReference?: string },
+    HTML,
+    {},
+    {
+      conversationLayoutSidebarOpenOnSmallScreen?: "true";
+      search?: string;
+      filters?: {
+        types?: ConversationType[];
+        isResolved?: "true" | "false";
+        isPinned?: "true" | "false";
+        isStaffOnly?: "true" | "false";
+        tagsReferences?: string[];
+      };
+      scrollToConversation?: "false";
+      conversationsPage?: string;
+    },
+    IsEnrolledInCourseMiddlewareLocals &
+      Partial<IsConversationAccessibleMiddlewareLocals> &
+      Partial<EventSourceMiddlewareLocals>
+  >;
+  res: express.Response<
+    HTML,
+    IsEnrolledInCourseMiddlewareLocals &
+      Partial<IsConversationAccessibleMiddlewareLocals> &
+      Partial<EventSourceMiddlewareLocals>
+  >;
+  head: HTML;
+  onlyConversationLayoutSidebarOnSmallScreen?: boolean;
+  mainIsAScrollingPane?: boolean;
+  body: HTML;
+}) => HTML;
 
 export type ConversationTypeIconPartial = {
   [conversationType in ConversationType]: {
@@ -31,39 +77,7 @@ export default (app: Courselore): void => {
     onlyConversationLayoutSidebarOnSmallScreen = false,
     mainIsAScrollingPane = false,
     body,
-  }: {
-    req: express.Request<
-      { courseReference: string; conversationReference?: string },
-      HTML,
-      {},
-      {
-        conversationLayoutSidebarOpenOnSmallScreen?: "true";
-        search?: string;
-        filters?: {
-          types?: ConversationType[];
-          isResolved?: "true" | "false";
-          isPinned?: "true" | "false";
-          isStaffOnly?: "true" | "false";
-          tagsReferences?: string[];
-        };
-        scrollToConversation?: "false";
-        conversationsPage?: string;
-      },
-      IsEnrolledInCourseMiddlewareLocals &
-        Partial<IsConversationAccessibleMiddlewareLocals> &
-        Partial<EventSourceMiddlewareLocals>
-    >;
-    res: express.Response<
-      HTML,
-      IsEnrolledInCourseMiddlewareLocals &
-        Partial<IsConversationAccessibleMiddlewareLocals> &
-        Partial<EventSourceMiddlewareLocals>
-    >;
-    head: HTML;
-    onlyConversationLayoutSidebarOnSmallScreen?: boolean;
-    mainIsAScrollingPane?: boolean;
-    body: HTML;
-  }): HTML => {
+  }) => {
     const search =
       typeof req.query.search === "string" && req.query.search.trim() !== ""
         ? sanitizeSearch(req.query.search)
