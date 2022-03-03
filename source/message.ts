@@ -135,6 +135,11 @@ export type MayEndorseMessageMiddleware = express.RequestHandler<
 export interface MayEndorseMessageMiddlewareLocals
   extends MessageExistsMiddlewareLocals {}
 
+export type CourseRealTimeUpdater = (
+  courseId: number,
+  eventDestinationReference?: string | undefined
+) => void;
+
 export default (app: Courselore): void => {
   app.locals.helpers.getMessage = ({
     req,
@@ -1052,11 +1057,11 @@ export default (app: Courselore): void => {
   );
 
   app.locals.realTimeUpdaters.course = (
-    courseId: number,
-    eventDestinationReference?: string | undefined
-  ): void => {
+    courseId,
+    eventDestinationReference
+  ) => {
     setTimeout(() => {
-      for (const { reference, req, res } of eventDestinations) {
+      for (const { reference, req, res } of app.locals.eventDestinations) {
         if (reference === eventDestinationReference) continue;
         res.write(`event: refresh\ndata:\n\n`);
         console.log(

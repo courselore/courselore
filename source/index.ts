@@ -112,6 +112,7 @@ import message, {
   MayEditMessageMiddleware,
   MayEndorseMessageHelper,
   MayEndorseMessageMiddleware,
+  CourseRealTimeUpdater,
 } from "./message.js";
 export {
   MessageExistsMiddlewareLocals,
@@ -204,7 +205,7 @@ export interface Courselore extends express.Express {
       sendEmail: any; // TODO
     };
     realTimeUpdaters: {
-      course: any; // TODO
+      course: CourseRealTimeUpdater;
     };
   } & DatabaseLocals &
     EventSourceLocals;
