@@ -61,6 +61,9 @@ import course, {
   InvitationExistsMiddleware,
   MayManageInvitationMiddleware,
   IsInvitationUsableMiddleware,
+  InvitationMailer,
+  MayManageEnrollmentMiddleware,
+  CourseSettingsLayout,
 } from "./course.js";
 export {
   EnrollmentRole,
@@ -72,6 +75,7 @@ export {
   InvitationExistsMiddlewareLocals,
   MayManageInvitationMiddlewareLocals,
   IsInvitationUsableMiddlewareLocals,
+  MayManageEnrollmentMiddlewareLocals,
   AuthorEnrollment,
   AuthorEnrollmentUser,
 } from "./course.js";
@@ -110,6 +114,7 @@ export interface Courselore extends express.Express {
       invitationExists: InvitationExistsMiddleware;
       mayManageInvitation: MayManageInvitationMiddleware;
       isInvitationUsable: IsInvitationUsableMiddleware;
+      mayManageEnrollment: MayManageEnrollmentMiddleware;
     };
     layouts: {
       base: BaseLayout;
@@ -119,6 +124,7 @@ export interface Courselore extends express.Express {
       settings: SettingsLayout;
       partial: PartialLayout;
       userSettings: UserSettingsLayout;
+      courseSettings: CourseSettingsLayout;
       conversation: any; // TODO
     };
     partials: {
@@ -138,9 +144,12 @@ export interface Courselore extends express.Express {
       defaultAccentColor: defaultAccentColorHelper;
       emailRegExp: any; // TODO
       isExpired: any; // TODO
+      isDate: any; // TODO
+      splitFilterablePhrases: any; // TODO
     };
     mailers: {
       emailConfirmation: EmailConfirmationMailer;
+      invitation: InvitationMailer;
     };
     workers: {
       sendEmail: any; // TODO

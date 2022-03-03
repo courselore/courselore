@@ -1,15 +1,21 @@
 import express from "express";
+import qs from "qs";
+import { asyncHandler } from "@leafac/express-async-handler";
 import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
+import dedent from "dedent";
 import cryptoRandomString from "crypto-random-string";
 import lodash from "lodash";
+import QRCode from "qrcode";
 import {
   Courselore,
   BaseMiddlewareLocals,
   EventSourceMiddlewareLocals,
+  IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
+  UserAvatarlessBackgroundColor,
   ConversationType,
   conversationTypes,
 } from "./index.js";
@@ -137,6 +143,54 @@ export type IsInvitationUsableMiddleware = express.RequestHandler<
 export interface IsInvitationUsableMiddlewareLocals
   extends InvitationExistsMiddlewareLocals,
     Omit<Partial<IsSignedInMiddlewareLocals>, keyof BaseMiddlewareLocals> {}
+
+export type InvitationMailer = ({
+  req,
+  res,
+  invitation,
+}: {
+  req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+  res: express.Response<any, BaseMiddlewareLocals>;
+  invitation: InvitationExistsMiddlewareLocals["invitation"];
+}) => void;
+
+export type MayManageEnrollmentMiddleware = express.RequestHandler<
+  { courseReference: string; enrollmentReference: string },
+  any,
+  {},
+  {},
+  MayManageEnrollmentMiddlewareLocals
+>[];
+export interface MayManageEnrollmentMiddlewareLocals
+  extends IsCourseStaffMiddlewareLocals {
+  managedEnrollment: {
+    id: number;
+    reference: string;
+    role: EnrollmentRole;
+    isSelf: boolean;
+  };
+}
+
+export type CourseSettingsLayout = ({
+  req,
+  res,
+  head,
+  body,
+}: {
+  req: express.Request<
+    {},
+    any,
+    {},
+    {},
+    IsEnrolledInCourseMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+  >;
+  res: express.Response<
+    any,
+    IsEnrolledInCourseMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+  >;
+  head: HTML;
+  body: HTML;
+}) => HTML;
 
 export default (app: Courselore): void => {
   app.locals.partials.course = ({
@@ -853,17 +907,9 @@ export default (app: Courselore): void => {
     },
   ];
 
-  const sendInvitationEmail = ({
-    req,
-    res,
-    invitation,
-  }: {
-    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-    res: express.Response<any, BaseMiddlewareLocals>;
-    invitation: InvitationExistsMiddlewareLocals["invitation"];
-  }): void => {
+  app.locals.mailers.invitation = ({ req, res, invitation }) => {
     const link = `${app.locals.options.baseURL}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
-    database.run(
+    app.locals.database.run(
       sql`
         INSERT INTO "sendEmailJobs" (
           "createdAt",
@@ -898,28 +944,13 @@ export default (app: Courselore): void => {
         )
       `
     );
-    sendEmailWorker();
+    app.locals.workers.sendEmail();
   };
 
-  interface MayManageEnrollmentMiddlewareLocals
-    extends IsCourseStaffMiddlewareLocals {
-    managedEnrollment: {
-      id: number;
-      reference: string;
-      role: EnrollmentRole;
-      isSelf: boolean;
-    };
-  }
-  const mayManageEnrollmentMiddleware: express.RequestHandler<
-    { courseReference: string; enrollmentReference: string },
-    any,
-    {},
-    {},
-    MayManageEnrollmentMiddlewareLocals
-  >[] = [
+  app.locals.middlewares.mayManageEnrollment = [
     ...app.locals.middlewares.isCourseStaff,
     (req, res, next) => {
-      const managedEnrollment = database.get<{
+      const managedEnrollment = app.locals.database.get<{
         id: number;
         reference: string;
         role: EnrollmentRole;
@@ -938,7 +969,7 @@ export default (app: Courselore): void => {
       };
       if (
         managedEnrollment.id === res.locals.enrollment.id &&
-        database.get<{ count: number }>(
+        app.locals.database.get<{ count: number }>(
           sql`
             SELECT COUNT(*) AS "count"
             FROM "enrollments"
@@ -952,27 +983,8 @@ export default (app: Courselore): void => {
     },
   ];
 
-  const courseSettingsLayout = ({
-    req,
-    res,
-    head,
-    body,
-  }: {
-    req: express.Request<
-      {},
-      any,
-      {},
-      {},
-      IsEnrolledInCourseMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
-    >;
-    res: express.Response<
-      any,
-      IsEnrolledInCourseMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
-    >;
-    head: HTML;
-    body: HTML;
-  }): HTML =>
-    settingsLayout({
+  app.locals.layouts.courseSettings = ({ req, res, head, body }) =>
+    app.locals.layouts.settings({
       req,
       res,
       head,
@@ -1081,7 +1093,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
       res.send(
-        courseSettingsLayout({
+        app.locals.layouts.courseSettings({
           req,
           res,
           head: html`
@@ -1213,7 +1225,7 @@ export default (app: Courselore): void => {
       )
         return next("validation");
 
-      database.run(
+      app.locals.database.run(
         sql`
           UPDATE "courses"
           SET "name" = ${req.body.name},
@@ -1242,7 +1254,7 @@ export default (app: Courselore): void => {
         `
       );
 
-      Flash.set({
+      app.locals.helpers.Flash.set({
         req,
         res,
         content: html`
@@ -1269,7 +1281,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
       res.send(
-        courseSettingsLayout({
+        app.locals.layouts.courseSettings({
           req,
           res,
           head: html`
@@ -1771,7 +1783,7 @@ export default (app: Courselore): void => {
 
       for (const tag of req.body.tags)
         if (tag.reference === undefined)
-          database.run(
+          app.locals.database.run(
             sql`
               INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
               VALUES (
@@ -1784,13 +1796,13 @@ export default (app: Courselore): void => {
             `
           );
         else if (tag.delete === "true")
-          database.run(
+          app.locals.database.run(
             sql`
               DELETE FROM "tags" WHERE "reference" = ${tag.reference}
             `
           );
         else
-          database.run(
+          app.locals.database.run(
             sql`
               UPDATE "tags"
               SET "name" = ${tag.name},
@@ -1801,7 +1813,7 @@ export default (app: Courselore): void => {
             `
           );
 
-      Flash.set({
+      app.locals.helpers.Flash.set({
         req,
         res,
         content: html`
@@ -1825,7 +1837,7 @@ export default (app: Courselore): void => {
     "/courses/:courseReference/settings/invitations",
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
-      const invitations = database.all<{
+      const invitations = app.locals.database.all<{
         id: number;
         expiresAt: string | null;
         usedAt: string | null;
@@ -1843,7 +1855,7 @@ export default (app: Courselore): void => {
       );
 
       res.send(
-        courseSettingsLayout({
+        app.locals.layouts.courseSettings({
           req,
           res,
           head: html`
@@ -2163,7 +2175,9 @@ export default (app: Courselore): void => {
               : html`
                   $${invitations.map((invitation) => {
                     const action = `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
-                    const isInvitationExpired = isExpired(invitation.expiresAt);
+                    const isInvitationExpired = app.locals.helpers.isExpired(
+                      invitation.expiresAt
+                    );
                     const isUsed = invitation.usedAt !== null;
 
                     return html`
@@ -2861,8 +2875,8 @@ export default (app: Courselore): void => {
         !enrollmentRoles.includes(req.body.role) ||
         (req.body.expiresAt !== undefined &&
           (typeof req.body.expiresAt !== "string" ||
-            !isDate(req.body.expiresAt) ||
-            isExpired(req.body.expiresAt))) ||
+            !app.locals.helpers.isDate(req.body.expiresAt) ||
+            app.locals.helpers.isExpired(req.body.expiresAt))) ||
         typeof req.body.type !== "string" ||
         !["link", "email"].includes(req.body.type)
       )
@@ -2870,7 +2884,7 @@ export default (app: Courselore): void => {
 
       switch (req.body.type) {
         case "link":
-          const invitation = database.get<{ reference: string }>(
+          const invitation = app.locals.database.get<{ reference: string }>(
             sql`
               INSERT INTO "invitations" ("createdAt", "expiresAt", "course", "reference", "role")
               VALUES (
@@ -2884,7 +2898,7 @@ export default (app: Courselore): void => {
           `
           )!;
 
-          Flash.set({
+          app.locals.helpers.Flash.set({
             req,
             res,
             content: html`
@@ -2931,13 +2945,16 @@ export default (app: Courselore): void => {
           }
           if (
             emails.length === 0 ||
-            emails.some(({ email }) => email.match(emailRegExp) === null)
+            emails.some(
+              ({ email }) =>
+                email.match(app.locals.helpers.emailRegExp) === null
+            )
           )
             return next("validation");
 
           for (const { email, name } of emails) {
             if (
-              database.get<{}>(
+              app.locals.database.get<{}>(
                 sql`
                   SELECT TRUE
                   FROM "enrollments"
@@ -2949,7 +2966,7 @@ export default (app: Courselore): void => {
             )
               continue;
 
-            const existingUnusedInvitation = database.get<{
+            const existingUnusedInvitation = app.locals.database.get<{
               id: number;
               name: string | null;
             }>(
@@ -2962,7 +2979,7 @@ export default (app: Courselore): void => {
               `
             );
             if (existingUnusedInvitation !== undefined) {
-              database.run(
+              app.locals.database.run(
                 sql`
                   UPDATE "invitations"
                   SET "expiresAt" = ${req.body.expiresAt},
@@ -2974,7 +2991,7 @@ export default (app: Courselore): void => {
               continue;
             }
 
-            const invitation = database.get<{
+            const invitation = app.locals.database.get<{
               id: number;
               expiresAt: string | null;
               usedAt: string | null;
@@ -2998,7 +3015,7 @@ export default (app: Courselore): void => {
               `
             )!;
 
-            sendInvitationEmail({
+            app.locals.mailers.invitation({
               req,
               res,
               invitation: {
@@ -3008,7 +3025,7 @@ export default (app: Courselore): void => {
             });
           }
 
-          Flash.set({
+          app.locals.helpers.Flash.set({
             req,
             res,
             content: html`
@@ -3046,16 +3063,16 @@ export default (app: Courselore): void => {
 
       if (req.body.resend === "true") {
         if (
-          isExpired(res.locals.invitation.expiresAt) ||
+          app.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
           res.locals.invitation.email === null
         )
           return next("validation");
-        sendInvitationEmail({
+        app.locals.mailers.invitation({
           req,
           res,
           invitation: res.locals.invitation,
         });
-        Flash.set({
+        app.locals.helpers.Flash.set({
           req,
           res,
           content: html`
@@ -3068,16 +3085,16 @@ export default (app: Courselore): void => {
 
       if (req.body.role !== undefined) {
         if (
-          isExpired(res.locals.invitation.expiresAt) ||
+          app.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
           !enrollmentRoles.includes(req.body.role)
         )
           return next("validation");
 
-        database.run(
+        app.locals.database.run(
           sql`UPDATE "invitations" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.invitation.id}`
         );
 
-        Flash.set({
+        app.locals.helpers.Flash.set({
           req,
           res,
           content: html`
@@ -3091,16 +3108,16 @@ export default (app: Courselore): void => {
       if (req.body.expiresAt !== undefined) {
         if (
           typeof req.body.expiresAt !== "string" ||
-          !isDate(req.body.expiresAt) ||
-          isExpired(req.body.expiresAt)
+          !app.locals.helpers.isDate(req.body.expiresAt) ||
+          app.locals.helpers.isExpired(req.body.expiresAt)
         )
           return next("validation");
 
-        database.run(
+        app.locals.database.run(
           sql`UPDATE "invitations" SET "expiresAt" = ${req.body.expiresAt} WHERE "id" = ${res.locals.invitation.id}`
         );
 
-        Flash.set({
+        app.locals.helpers.Flash.set({
           req,
           res,
           content: html`
@@ -3112,7 +3129,7 @@ export default (app: Courselore): void => {
       }
 
       if (req.body.removeExpiration === "true") {
-        database.run(
+        app.locals.database.run(
           sql`
             UPDATE "invitations"
             SET "expiresAt" = ${null}
@@ -3120,7 +3137,7 @@ export default (app: Courselore): void => {
           `
         );
 
-        Flash.set({
+        app.locals.helpers.Flash.set({
           req,
           res,
           content: html`
@@ -3132,7 +3149,7 @@ export default (app: Courselore): void => {
       }
 
       if (req.body.expire === "true") {
-        database.run(
+        app.locals.database.run(
           sql`
             UPDATE "invitations"
             SET "expiresAt" = ${new Date().toISOString()}
@@ -3140,7 +3157,7 @@ export default (app: Courselore): void => {
           `
         );
 
-        Flash.set({
+        app.locals.helpers.Flash.set({
           req,
           res,
           content: html`
@@ -3165,7 +3182,7 @@ export default (app: Courselore): void => {
     "/courses/:courseReference/settings/enrollments",
     ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
-      const enrollments = database
+      const enrollments = app.locals.database
         .all<{
           id: number;
           userId: number;
@@ -3214,7 +3231,7 @@ export default (app: Courselore): void => {
         }));
 
       res.send(
-        courseSettingsLayout({
+        app.locals.layouts.courseSettings({
           req,
           res,
           head: html`
@@ -3294,7 +3311,7 @@ export default (app: Courselore): void => {
                   `)}"
                 >
                   <div>
-                    $${userPartial({
+                    $${app.locals.partials.user({
                       req,
                       res,
                       enrollment,
@@ -3315,7 +3332,9 @@ export default (app: Courselore): void => {
                     <div>
                       <div
                         data-filterable-phrases="${JSON.stringify(
-                          splitFilterablePhrases(enrollment.user.name)
+                          app.locals.helpers.splitFilterablePhrases(
+                            enrollment.user.name
+                          )
                         )}"
                         class="strong"
                       >
@@ -3323,7 +3342,9 @@ export default (app: Courselore): void => {
                       </div>
                       <div
                         data-filterable-phrases="${JSON.stringify(
-                          splitFilterablePhrases(enrollment.user.email)
+                          app.locals.helpers.splitFilterablePhrases(
+                            enrollment.user.email
+                          )
                         )}"
                         class="secondary"
                       >
@@ -3597,7 +3618,7 @@ export default (app: Courselore): void => {
                       ? html`
                           <details class="details">
                             <summary>Biography</summary>
-                            $${processContent({
+                            $${app.locals.partials.content({
                               req,
                               res,
                               type: "preprocessed",
@@ -3624,15 +3645,15 @@ export default (app: Courselore): void => {
     MayManageEnrollmentMiddlewareLocals
   >(
     "/courses/:courseReference/settings/enrollments/:enrollmentReference",
-    ...mayManageEnrollmentMiddleware,
+    ...app.locals.middlewares.mayManageEnrollment,
     (req, res, next) => {
       if (typeof req.body.role === "string") {
         if (!enrollmentRoles.includes(req.body.role)) return next("validation");
-        database.run(
+        app.locals.database.run(
           sql`UPDATE "enrollments" SET "role" = ${req.body.role} WHERE "id" = ${res.locals.managedEnrollment.id}`
         );
 
-        Flash.set({
+        app.locals.helpers.Flash.set({
           req,
           res,
           content: html`
@@ -3657,13 +3678,13 @@ export default (app: Courselore): void => {
     MayManageEnrollmentMiddlewareLocals
   >(
     "/courses/:courseReference/settings/enrollments/:enrollmentReference",
-    ...mayManageEnrollmentMiddleware,
+    ...app.locals.middlewares.mayManageEnrollment,
     (req, res) => {
-      database.run(
+      app.locals.database.run(
         sql`DELETE FROM "enrollments" WHERE "id" = ${res.locals.managedEnrollment.id}`
       );
 
-      Flash.set({
+      app.locals.helpers.Flash.set({
         req,
         res,
         content: html`
@@ -3695,7 +3716,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
       res.send(
-        courseSettingsLayout({
+        app.locals.layouts.courseSettings({
           req,
           res,
           head: html`
@@ -3817,11 +3838,11 @@ export default (app: Courselore): void => {
       )
         return next("validation");
 
-      database.run(
+      app.locals.database.run(
         sql`UPDATE "enrollments" SET "accentColor" = ${req.body.accentColor} WHERE "id" = ${res.locals.enrollment.id}`
       );
 
-      Flash.set({
+      app.locals.helpers.Flash.set({
         req,
         res,
         content: html`
@@ -3848,7 +3869,7 @@ export default (app: Courselore): void => {
     asyncHandler(async (req, res) => {
       const link = `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`;
       res.send(
-        boxLayout({
+        app.locals.layouts.box({
           req,
           res,
           head: html`
@@ -3960,7 +3981,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
-        boxLayout({
+        app.locals.layouts.box({
           req,
           res,
           head: html`
@@ -4011,7 +4032,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isSignedIn,
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
-      database.run(
+      app.locals.database.run(
         sql`
           INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "role", "accentColor")
           VALUES (
@@ -4025,7 +4046,7 @@ export default (app: Courselore): void => {
         `
       );
       if (res.locals.invitation.email !== null)
-        database.run(
+        app.locals.database.run(
           sql`
             UPDATE "invitations"
             SET "usedAt" = ${new Date().toISOString()}
@@ -4051,7 +4072,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
-        boxLayout({
+        app.locals.layouts.box({
           req,
           res,
           head: html`
@@ -4139,7 +4160,7 @@ export default (app: Courselore): void => {
     "/courses/:courseReference/invitations/:invitationReference",
     (req, res) => {
       res.send(
-        boxLayout({
+        app.locals.layouts.box({
           req,
           res,
           head: html` <title>Invitation · Courselore</title> `,
