@@ -1,6 +1,7 @@
 import express from "express";
 import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
+import { javascript } from "@leafac/javascript";
 import lodash from "lodash";
 import {
   Courselore,
@@ -154,7 +155,9 @@ export default (app: Courselore): void => {
                   <h2 class="heading--display">Welcome to Courselore!</h2>
 
                   <div class="decorative-icon">
-                    $${logo({ size: 144 /* var(--space--36) */ })}
+                    $${app.locals.partials.logo({
+                      size: 144 /* var(--space--36) */,
+                    })}
                   </div>
 
                   <div class="menu-box">
@@ -228,7 +231,7 @@ export default (app: Courselore): void => {
                               .baseURL}/courses/${enrollment.course.reference}"
                             class="menu-box--item button button--tight button--transparent"
                           >
-                            $${coursePartial({
+                            $${app.locals.partials.course({
                               req,
                               res,
                               course: enrollment.course,
@@ -3825,7 +3828,7 @@ export default (app: Courselore): void => {
               <i class="bi bi-journal-arrow-down"></i>
               Invitation
             </h2>
-            $${coursePartial({
+            $${app.locals.partials.course({
               req,
               res,
               course: res.locals.invitation.course,
@@ -3939,7 +3942,7 @@ export default (app: Courselore): void => {
               <i class="bi bi-journal-arrow-down"></i>
               Invitation
             </h2>
-            $${coursePartial({
+            $${app.locals.partials.course({
               req,
               res,
               course: res.locals.invitation.course,
@@ -4030,7 +4033,7 @@ export default (app: Courselore): void => {
               <i class="bi bi-journal-arrow-down"></i>
               Invitation
             </h2>
-            $${coursePartial({
+            $${app.locals.partials.course({
               req,
               res,
               course: res.locals.invitation.course,
