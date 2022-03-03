@@ -2616,7 +2616,7 @@ export default (app: Courselore): void => {
           res,
           conversationReference: conversationRow.reference,
         })!;
-        sendNotificationEmails({
+        app.locals.mailers.notifications({
           req,
           res,
           conversation,

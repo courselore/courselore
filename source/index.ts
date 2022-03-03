@@ -171,6 +171,7 @@ export interface Courselore extends express.Express {
     mailers: {
       emailConfirmation: EmailConfirmationMailer;
       invitation: InvitationMailer;
+      notifications: any; // TODO
     };
     workers: {
       sendEmail: any; // TODO

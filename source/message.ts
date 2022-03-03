@@ -1,7 +1,7 @@
 import { Courselore } from "./index.js";
 
 export default (app: Courselore): void => {
-  const app.locals.helpers.getMessage = ({
+  app.locals.helpers.getMessage = ({
     req,
     res,
     conversation,
@@ -41,7 +41,7 @@ export default (app: Courselore): void => {
         }[];
       }
     | undefined => {
-    const messageRow =app.locals.database.get<{
+    const messageRow = app.locals.database.get<{
       id: number;
       createdAt: string;
       updatedAt: string | null;
@@ -345,7 +345,9 @@ export default (app: Courselore): void => {
 
   interface MessageExistsMiddlewareLocals
     extends IsConversationAccessibleMiddlewareLocals {
-    message: NonNullable<ReturnType<Courselore["locals"]["helpers"]["getMessage"]>>;
+    message: NonNullable<
+      ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
+    >;
   }
   const messageExistsMiddleware: express.RequestHandler<
     {
@@ -523,14 +525,14 @@ export default (app: Courselore): void => {
           content: contentSource,
           decorate: true,
         });
-       app.locals.database.run(
+        app.locals.database.run(
           sql`
             UPDATE "conversations"
             SET "updatedAt" = ${new Date().toISOString()}
             WHERE "id" = ${res.locals.conversation.id}
           `
         );
-       app.locals.database.run(
+        app.locals.database.run(
           sql`
             UPDATE "messages"
             SET "contentSource" = ${contentSource},
@@ -539,7 +541,7 @@ export default (app: Courselore): void => {
             WHERE "id" = ${mostRecentMessage.id}
           `
         );
-       app.locals.database.run(
+        app.locals.database.run(
           sql`
             DELETE FROM "readings"
             WHERE "message" = ${mostRecentMessage.id} AND
@@ -555,7 +557,7 @@ export default (app: Courselore): void => {
           content: req.body.content,
           decorate: true,
         });
-       app.locals.database.run(
+        app.locals.database.run(
           sql`
             UPDATE "conversations"
             SET "updatedAt" = ${new Date().toISOString()},
@@ -581,7 +583,10 @@ export default (app: Courselore): void => {
             WHERE "id" = ${res.locals.conversation.id}
           `
         );
-        const message =app.locals.database.get<{ id: number; reference: string }>(
+        const message = app.locals.database.get<{
+          id: number;
+          reference: string;
+        }>(
           sql`
             INSERT INTO "messages" (
               "createdAt",
@@ -608,7 +613,7 @@ export default (app: Courselore): void => {
             RETURNING *
           `
         )!;
-       app.locals.database.run(
+        app.locals.database.run(
           sql`
             INSERT INTO "readings" ("createdAt", "message", "enrollment")
             VALUES (
@@ -620,7 +625,7 @@ export default (app: Courselore): void => {
         );
         messageReference = message.reference;
       }
-      sendNotificationEmails({
+      app.locals.mailers.notifications({
         req,
         res,
         conversation: res.locals.conversation,
@@ -671,7 +676,7 @@ export default (app: Courselore): void => {
         )
           return next("validation");
         else
-         app.locals.database.run(
+          app.locals.database.run(
             sql`
               UPDATE "messages"
               SET "answerAt" = ${
@@ -694,7 +699,7 @@ export default (app: Courselore): void => {
         )
           return next("validation");
         else {
-         app.locals.database.run(
+          app.locals.database.run(
             sql`
               UPDATE "messages"
               SET "anonymousAt" = ${
@@ -706,7 +711,7 @@ export default (app: Courselore): void => {
             `
           );
           if (res.locals.message.reference === "1")
-           app.locals.database.run(
+            app.locals.database.run(
               sql`
                 UPDATE "conversations"
                 SET "anonymousAt" = ${
@@ -728,7 +733,7 @@ export default (app: Courselore): void => {
           content: req.body.content,
           decorate: true,
         });
-       app.locals.database.run(
+        app.locals.database.run(
           sql`
             UPDATE "messages"
             SET "contentSource" = ${req.body.content},
@@ -738,14 +743,14 @@ export default (app: Courselore): void => {
             WHERE "id" = ${res.locals.message.id}
           `
         );
-       app.locals.database.run(
+        app.locals.database.run(
           sql`
             UPDATE "conversations"
             SET "updatedAt" = ${new Date().toISOString()}
             WHERE "id" = ${res.locals.conversation.id}
           `
         );
-        sendNotificationEmails({
+        app.locals.mailers.notifications({
           req,
           res,
           conversation: res.locals.conversation,
@@ -777,7 +782,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isCourseStaff,
     ...messageExistsMiddleware,
     (req, res, next) => {
-     app.locals.database.run(
+      app.locals.database.run(
         sql`DELETE FROM "messages" WHERE "id" = ${res.locals.message.id}`
       );
 
@@ -812,7 +817,7 @@ export default (app: Courselore): void => {
       )
         return next("validation");
 
-     app.locals.database.run(
+      app.locals.database.run(
         sql`
           INSERT INTO "likes" ("createdAt", "message", "enrollment")
           VALUES (
@@ -852,7 +857,7 @@ export default (app: Courselore): void => {
       );
       if (like === undefined) return next("validation");
 
-     app.locals.database.run(
+      app.locals.database.run(
         sql`
           DELETE FROM "likes" WHERE "id" = ${like.id}
         `
@@ -935,7 +940,7 @@ export default (app: Courselore): void => {
       )
         return next("validation");
 
-     app.locals.database.run(
+      app.locals.database.run(
         sql`
           INSERT INTO "endorsements" ("createdAt", "message", "enrollment")
           VALUES (
@@ -946,7 +951,7 @@ export default (app: Courselore): void => {
         `
       );
       if (res.locals.conversation.resolvedAt === null)
-       app.locals.database.run(
+        app.locals.database.run(
           sql`
             UPDATE "conversations"
             SET "resolvedAt" = ${new Date().toISOString()}
@@ -983,7 +988,7 @@ export default (app: Courselore): void => {
       );
       if (endorsement === undefined) return next("validation");
 
-     app.locals.database.run(
+      app.locals.database.run(
         sql`DELETE FROM "endorsements" WHERE "id" = ${endorsement.id}`
       );
 
@@ -1012,7 +1017,7 @@ export default (app: Courselore): void => {
     }, 200);
   };
 
-  const sendNotificationEmails = ({
+  app.locals.mailers.notifications = ({
     req,
     res,
     conversation,
@@ -1024,10 +1029,12 @@ export default (app: Courselore): void => {
     conversation: NonNullable<
       ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
     >;
-    message: NonNullable<ReturnType<Courselore["locals"]["helpers"]["getMessage"]>>;
+    message: NonNullable<
+      ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
+    >;
     mentions: Set<string>;
   }): void => {
-   app.locals.database.run(
+    app.locals.database.run(
       sql`
         INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
         VALUES (
@@ -1038,7 +1045,7 @@ export default (app: Courselore): void => {
       `
     );
     if (message.authorEnrollment !== "no-longer-enrolled")
-     app.locals.database.run(
+      app.locals.database.run(
         sql`
           INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
           VALUES (
@@ -1049,8 +1056,8 @@ export default (app: Courselore): void => {
         `
       );
 
-   app.locals.database.executeTransaction(() => {
-      let enrollments =app.locals.database.all<{
+    app.locals.database.executeTransaction(() => {
+      let enrollments = app.locals.database.all<{
         id: number;
         userId: number;
         userEmail: string;
@@ -1111,7 +1118,7 @@ export default (app: Courselore): void => {
         );
 
       for (const enrollment of enrollments) {
-       app.locals.database.run(
+        app.locals.database.run(
           sql`
             INSERT INTO "sendEmailJobs" (
               "createdAt",
@@ -1165,7 +1172,7 @@ export default (app: Courselore): void => {
             )
           `
         );
-       app.locals.database.run(
+        app.locals.database.run(
           sql`
             INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")
             VALUES (
