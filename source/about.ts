@@ -134,8 +134,7 @@ export default (app: Courselore): void => {
 
                 <div>
                   <a
-                    href="${app.locals.options
-                      .canonicalBaseURL}/courses/8537410611/invitations/3667859788"
+                    href="${app.locals.options.metaCourseloreInvitation}"
                     class="button button--transparent ${res.locals.localCSS(
                       css`
                         align-items: center;
@@ -805,8 +804,7 @@ export default (app: Courselore): void => {
                   </a>
                 `}
             <a
-              href="${app.locals.options
-                .canonicalBaseURL}/courses/8537410611/invitations/3667859788"
+              href="${app.locals.options.metaCourseloreInvitation}"
               class="button button--transparent ${res.locals.localCSS(
                 css`
                   align-items: center;

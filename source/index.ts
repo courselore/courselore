@@ -81,6 +81,7 @@ export interface Courselore extends express.Express {
     options: {
       version: string;
       canonicalBaseURL: string;
+      metaCourseloreInvitation: string;
     } & Required<Options> &
       GlobalMiddlewaresOptions &
       AuthenticationOptions;
@@ -152,6 +153,8 @@ export default async function courselore(
         )
       ).version,
       canonicalBaseURL: "https://courselore.org",
+      metaCourseloreInvitation:
+        "https://courselore.org/courses/8537410611/invitations/3667859788",
       demonstration: process.env.NODE_ENV !== "production",
       hotReload: false,
     },

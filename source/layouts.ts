@@ -721,7 +721,7 @@ export default async (app: Courselore): Promise<void> => {
                         <div class="dropdown--menu">
                           <a
                             href="${app.locals.options
-                              .canonicalBaseURL}/courses/8537410611/invitations/3667859788"
+                              .metaCourseloreInvitation}"
                             target="_blank"
                             class="dropdown--menu--item button button--transparent ${res.locals.localCSS(
                               css`
