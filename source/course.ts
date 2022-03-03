@@ -9,6 +9,7 @@ import {
   Courselore,
   BaseMiddlewareLocals,
   IsSignedInMiddlewareLocals,
+  ConversationType,
 } from "./index.js";
 
 export type EnrollmentRole = typeof enrollmentRoles[number];
@@ -44,6 +45,28 @@ export type EnrollmentRoleIconPartial = {
     fill: HTML;
   };
 };
+
+export type defaultAccentColorHelper = ({
+  req,
+  res,
+}: {
+  req: express.Request<{}, any, {}, {}, IsSignedInMiddlewareLocals>;
+  res: express.Response<any, IsSignedInMiddlewareLocals>;
+}) => EnrollmentAccentColor;
+
+export interface IsEnrolledInCourseMiddlewareLocals
+  extends IsSignedInMiddlewareLocals {
+  enrollment: IsSignedInMiddlewareLocals["enrollments"][number];
+  course: IsSignedInMiddlewareLocals["enrollments"][number]["course"];
+  conversationsCount: number;
+  conversationTypes: ConversationType[];
+  tags: {
+    id: number;
+    reference: string;
+    name: string;
+    staffOnlyAt: string | null;
+  }[];
+}
 
 export default (app: Courselore): void => {
   app.locals.partials.course = ({
@@ -504,18 +527,22 @@ export default (app: Courselore): void => {
             ${course.id},
             ${cryptoRandomString({ length: 10, type: "numeric" })},
             ${"staff"},
-            ${defaultAccentColor(res.locals.enrollments)}
+            ${app.locals.helpers.defaultAccentColor({ req, res })}
           )
         `
     );
     res.redirect(`${app.locals.options.baseURL}/courses/${course.reference}`);
   });
 
-  const defaultAccentColor = (
-    enrollments: IsSignedInMiddlewareLocals["enrollments"]
-  ): EnrollmentAccentColor => {
+  app.locals.helpers.defaultAccentColor = ({
+    req,
+    res,
+  }: {
+    req: express.Request<{}, any, {}, {}, IsSignedInMiddlewareLocals>;
+    res: express.Response<any, IsSignedInMiddlewareLocals>;
+  }): EnrollmentAccentColor => {
     const accentColorsInUse = new Set<EnrollmentAccentColor>(
-      enrollments.map((enrollment) => enrollment.accentColor)
+      res.locals.enrollments.map((enrollment) => enrollment.accentColor)
     );
     const accentColorsAvailable = new Set<EnrollmentAccentColor>(
       enrollmentAccentColors
@@ -527,19 +554,6 @@ export default (app: Courselore): void => {
     return [...accentColorsAvailable][0];
   };
 
-  interface IsEnrolledInCourseMiddlewareLocals
-    extends IsSignedInMiddlewareLocals {
-    enrollment: IsSignedInMiddlewareLocals["enrollments"][number];
-    course: IsSignedInMiddlewareLocals["enrollments"][number]["course"];
-    conversationsCount: number;
-    conversationTypes: ConversationType[];
-    tags: {
-      id: number;
-      reference: string;
-      name: string;
-      staffOnlyAt: string | null;
-    }[];
-  }
   const isEnrolledInCourseMiddleware: express.RequestHandler<
     { courseReference: string },
     any,
@@ -3992,7 +4006,7 @@ export default (app: Courselore): void => {
             ${res.locals.invitation.course.id},
             ${cryptoRandomString({ length: 10, type: "numeric" })},
             ${res.locals.invitation.role},
-            ${defaultAccentColor(res.locals.enrollments)}
+            ${app.locals.helpers.defaultAccentColor({ req, res })}
           )
         `
       );

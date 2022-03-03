@@ -52,7 +52,11 @@ export {
   UserEmailNotifications,
   userEmailNotificationses,
 } from "./user.js";
-import course, { CoursePartial, EnrollmentRoleIconPartial } from "./course.js";
+import course, {
+  CoursePartial,
+  EnrollmentRoleIconPartial,
+  defaultAccentColorHelper,
+} from "./course.js";
 export {
   EnrollmentRole,
   enrollmentRoles,
@@ -116,6 +120,7 @@ export interface Courselore extends express.Express {
       Flash: FlashHelper;
       Session: SessionHelper;
       PasswordReset: PasswordResetHelper;
+      defaultAccentColor: defaultAccentColorHelper;
       emailRegExp: any; // TODO
     };
     mailers: {
