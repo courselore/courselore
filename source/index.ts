@@ -105,8 +105,11 @@ export {
   MayEditConversationMiddlewareLocals,
 } from "./conversation.js";
 
-import message, { GetMessageHelper } from "./message.js";
-export {} from "./message.js";
+import message, {
+  GetMessageHelper,
+  MessageExistsMiddleware,
+} from "./message.js";
+export { MessageExistsMiddlewareLocals } from "./message.js";
 
 import content from "./content.js";
 import email from "./email.js";
@@ -139,6 +142,7 @@ export interface Courselore extends express.Express {
       mayManageEnrollment: MayManageEnrollmentMiddleware;
       isConversationAccessible: IsConversationAccessibleMiddleware;
       mayEditConversation: MayEditConversationMiddleware;
+      messageExists: MessageExistsMiddleware;
     };
     layouts: {
       base: BaseLayout;

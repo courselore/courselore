@@ -7,6 +7,7 @@ import {
   EnrollmentRole,
   IsEnrolledInCourseMiddlewareLocals,
   AuthorEnrollment,
+  IsConversationAccessibleMiddlewareLocals,
 } from "./index.js";
 
 export type GetMessageHelper = ({
@@ -49,6 +50,24 @@ export type GetMessageHelper = ({
       }[];
     }
   | undefined;
+
+export type MessageExistsMiddleware = express.RequestHandler<
+  {
+    courseReference: string;
+    conversationReference: string;
+    messageReference: string;
+  },
+  any,
+  {},
+  {},
+  MessageExistsMiddlewareLocals
+>[];
+export interface MessageExistsMiddlewareLocals
+  extends IsConversationAccessibleMiddlewareLocals {
+  message: NonNullable<
+    ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
+  >;
+}
 
 export default (app: Courselore): void => {
   app.locals.helpers.getMessage = ({
@@ -359,23 +378,7 @@ export default (app: Courselore): void => {
     };
   };
 
-  interface MessageExistsMiddlewareLocals
-    extends IsConversationAccessibleMiddlewareLocals {
-    message: NonNullable<
-      ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
-    >;
-  }
-  const messageExistsMiddleware: express.RequestHandler<
-    {
-      courseReference: string;
-      conversationReference: string;
-      messageReference: string;
-    },
-    any,
-    {},
-    {},
-    MessageExistsMiddlewareLocals
-  >[] = [
+  const messageExistsMiddleware = [
     ...app.locals.middlewares.isConversationAccessible,
     (req, res, next) => {
       const message = app.locals.helpers.getMessage({
