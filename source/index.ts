@@ -217,7 +217,7 @@ if (import.meta.url.endsWith(process.argv[1]))
     await import(
       process.argv[2] === undefined
         ? url.fileURLToPath(
-            new URL("../configuration/development.mjs", import.meta.url)
+            new URL("../configuration/development.js", import.meta.url)
           )
         : path.resolve(process.argv[2])
     )

@@ -96,7 +96,8 @@ oninteractive="${javascript`
 
 ---
 
-- Do a minor release, because of changes to configuration.
+- Do a major release, because configuration changed.
+- Remove `.mjs` from staging & production.
 
 ### User Interface Improvements
 
