@@ -419,7 +419,7 @@ export default () => {
                   `)}"
                 >
                   <a
-                    href="${baseURL}/courses/${res.locals.course
+                    href="${app.locals.options.baseURL}/courses/${res.locals.course
                       .reference}/conversations/new${qs.stringify(
                       lodash.omit(req.query, [
                         "conversationLayoutSidebarOpenOnSmallScreen",
@@ -980,7 +980,7 @@ export default () => {
 
                             <form
                               method="POST"
-                              action="${baseURL}/courses/${res.locals.course
+                              action="${app.locals.options.baseURL}/courses/${res.locals.course
                                 .reference}/conversations/mark-all-conversations-as-read"
                               class="${res.locals.localCSS(css`
                                 display: flex;
@@ -1047,7 +1047,7 @@ export default () => {
                                   `)}"
                                 />
                                 <a
-                                  href="${baseURL}/courses/${res.locals.course
+                                  href="${app.locals.options.baseURL}/courses/${res.locals.course
                                     .reference}/conversations/${conversation.reference}${qs.stringify(
                                     lodash.omit(
                                       {
@@ -2215,7 +2215,7 @@ export default () => {
 
               <form
                 method="POST"
-                action="${baseURL}/courses/${res.locals.course
+                action="${app.locals.options.baseURL}/courses/${res.locals.course
                   .reference}/conversations"
                 novalidate
                 class="${res.locals.localCSS(css`
@@ -2445,7 +2445,7 @@ export default () => {
                                   `)}"
                                 >
                                   <a
-                                    href="${baseURL}/courses/${res.locals.course
+                                    href="${app.locals.options.baseURL}/courses/${res.locals.course
                                       .reference}/settings/tags"
                                     target="_blank"
                                     class="button button--tight button--tight--inline button--transparent secondary"
@@ -2469,7 +2469,7 @@ export default () => {
                           res.locals.enrollment.role === "staff"
                             ? html`
                                 <a
-                                  href="${baseURL}/courses/${res.locals.course
+                                  href="${app.locals.options.baseURL}/courses/${res.locals.course
                                     .reference}/settings/tags"
                                   target="_blank"
                                   class="button button--tight button--tight--inline button--inline button--transparent secondary"
@@ -2819,7 +2819,7 @@ export default () => {
       }
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.course.nextConversationReference}`
+        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.course.nextConversationReference}`
       );
 
       emitCourseRefresh(res.locals.course.id);
@@ -3272,7 +3272,7 @@ export default () => {
                                               (conversationType) => html`
                                                 <form
                                                   method="POST"
-                                                  action="${baseURL}/courses/${res
+                                                  action="${app.locals.options.baseURL}/courses/${res
                                                     .locals.course
                                                     .reference}/conversations/${res
                                                     .locals.conversation
@@ -3345,7 +3345,7 @@ export default () => {
                                 ? html`
                                     <form
                                       method="POST"
-                                      action="${baseURL}/courses/${res.locals
+                                      action="${app.locals.options.baseURL}/courses/${res.locals
                                         .course.reference}/conversations/${res
                                         .locals.conversation
                                         .reference}?_method=PATCH"
@@ -3434,7 +3434,7 @@ export default () => {
                           ? html`
                               <form
                                 method="POST"
-                                action="${baseURL}/courses/${res.locals.course
+                                action="${app.locals.options.baseURL}/courses/${res.locals.course
                                   .reference}/conversations/${res.locals
                                   .conversation.reference}?_method=PATCH"
                               >
@@ -3517,7 +3517,7 @@ export default () => {
                                       html`
                                         <form
                                           method="POST"
-                                          action="${baseURL}/courses/${res
+                                          action="${app.locals.options.baseURL}/courses/${res
                                             .locals.course
                                             .reference}/conversations/${res
                                             .locals.conversation
@@ -3664,7 +3664,7 @@ export default () => {
                                           content: "Copied",
                                         });
                                         this.addEventListener("click", async () => {
-                                          await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
+                                          await navigator.clipboard.writeText("${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
                                           copied.show();
                                           await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                                           copied.hide();
@@ -3705,7 +3705,7 @@ export default () => {
                                                     html`
                                                       <form
                                                         method="POST"
-                                                        action="${baseURL}/courses/${res
+                                                        action="${app.locals.options.baseURL}/courses/${res
                                                           .locals.course
                                                           .reference}/conversations/${res
                                                           .locals.conversation
@@ -3796,7 +3796,7 @@ export default () => {
                       ? html`
                           <form
                             method="POST"
-                            action="${baseURL}/courses/${res.locals.course
+                            action="${app.locals.options.baseURL}/courses/${res.locals.course
                               .reference}/conversations/${res.locals
                               .conversation.reference}?_method=PATCH"
                             novalidate
@@ -3926,7 +3926,7 @@ export default () => {
                                           (tagging) => html`
                                             <form
                                               method="POST"
-                                              action="${baseURL}/courses/${res
+                                              action="${app.locals.options.baseURL}/courses/${res
                                                 .locals.course
                                                 .reference}/conversations/${res
                                                 .locals.conversation
@@ -4021,7 +4021,7 @@ export default () => {
                                                           (tag) => html`
                                                             <form
                                                               method="POST"
-                                                              action="${baseURL}/courses/${res
+                                                              action="${app.locals.options.baseURL}/courses/${res
                                                                 .locals.course
                                                                 .reference}/conversations/${res
                                                                 .locals
@@ -4071,7 +4071,7 @@ export default () => {
                                                         .role === "staff"
                                                         ? html`
                                                             <a
-                                                              href="${baseURL}/courses/${res
+                                                              href="${app.locals.options.baseURL}/courses/${res
                                                                 .locals.course
                                                                 .reference}/settings/tags"
                                                               target="_blank"
@@ -4254,7 +4254,7 @@ export default () => {
                                       `)}"
                                     >
                                       <a
-                                        href="${baseURL}/courses/${res.locals
+                                        href="${app.locals.options.baseURL}/courses/${res.locals
                                           .course.reference}/conversations/${res
                                           .locals.conversation
                                           .reference}${qs.stringify(
@@ -4582,7 +4582,7 @@ export default () => {
                                                             ? html`
                                                                 <form
                                                                   method="POST"
-                                                                  action="${baseURL}/courses/${res
+                                                                  action="${app.locals.options.baseURL}/courses/${res
                                                                     .locals
                                                                     .course
                                                                     .reference}/conversations/${res
@@ -4662,7 +4662,7 @@ export default () => {
                                                                       if (!content.hidden) return;
                                                                       leafac.mount(
                                                                         content,
-                                                                        await (await fetch("${baseURL}/courses/${
+                                                                        await (await fetch("${app.locals.options.baseURL}/courses/${
                                                                     res.locals
                                                                       .course
                                                                       .reference
@@ -4751,7 +4751,7 @@ export default () => {
                                                                 content: "Copied",
                                                               });
                                                               this.addEventListener("click", async () => {
-                                                                await navigator.clipboard.writeText("${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${message.reference}");
+                                                                await navigator.clipboard.writeText("${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${message.reference}");
                                                                 this.copied.show();
                                                                 await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                                                                 this.copied.hide();
@@ -4782,7 +4782,7 @@ export default () => {
                                                             ? html`
                                                                 <form
                                                                   method="POST"
-                                                                  action="${baseURL}/courses/${res
+                                                                  action="${app.locals.options.baseURL}/courses/${res
                                                                     .locals
                                                                     .course
                                                                     .reference}/conversations/${res
@@ -4912,7 +4912,7 @@ export default () => {
                                                                           html`
                                                                             <form
                                                                               method="POST"
-                                                                              action="${baseURL}/courses/${res
+                                                                              action="${app.locals.options.baseURL}/courses/${res
                                                                                 .locals
                                                                                 .course
                                                                                 .reference}/conversations/${res
@@ -5018,7 +5018,7 @@ export default () => {
                                             headers.push(html`
                                               <form
                                                 method="POST"
-                                                action="${baseURL}/courses/${res
+                                                action="${app.locals.options.baseURL}/courses/${res
                                                   .locals.course
                                                   .reference}/conversations/${res
                                                   .locals.conversation
@@ -5108,7 +5108,7 @@ export default () => {
                                             headers.push(html`
                                               <form
                                                 method="POST"
-                                                action="${baseURL}/courses/${res
+                                                action="${app.locals.options.baseURL}/courses/${res
                                                   .locals.course
                                                   .reference}/conversations/${res
                                                   .locals.conversation
@@ -5633,7 +5633,7 @@ export default () => {
                                                 html`
                                                   <form
                                                     method="POST"
-                                                    action="${baseURL}/courses/${res
+                                                    action="${app.locals.options.baseURL}/courses/${res
                                                       .locals.course
                                                       .reference}/conversations/${res
                                                       .locals.conversation
@@ -5735,7 +5735,7 @@ export default () => {
                                                       if (!content.hidden) return;
                                                       leafac.mount(
                                                         content,
-                                                        await (await fetch("${baseURL}/courses/${
+                                                        await (await fetch("${app.locals.options.baseURL}/courses/${
                                                     res.locals.course.reference
                                                   }/conversations/${
                                                     res.locals.conversation
@@ -5788,7 +5788,7 @@ export default () => {
                                           ? html`
                                               <form
                                                 method="POST"
-                                                action="${baseURL}/courses/${res
+                                                action="${app.locals.options.baseURL}/courses/${res
                                                   .locals.course
                                                   .reference}/conversations/${res
                                                   .locals.conversation
@@ -5902,7 +5902,7 @@ export default () => {
                                       `)}"
                                     >
                                       <a
-                                        href="${baseURL}/courses/${res.locals
+                                        href="${app.locals.options.baseURL}/courses/${res.locals
                                           .course.reference}/conversations/${res
                                           .locals.conversation
                                           .reference}${qs.stringify(
@@ -5939,7 +5939,7 @@ export default () => {
 
               <form
                 method="POST"
-                action="${baseURL}/courses/${res.locals.course
+                action="${app.locals.options.baseURL}/courses/${res.locals.course
                   .reference}/conversations/${res.locals.conversation
                   .reference}/messages"
                 novalidate
@@ -6400,7 +6400,7 @@ export default () => {
           );
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
+        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
       );
 
       emitCourseRefresh(res.locals.course.id);
@@ -6422,7 +6422,7 @@ export default () => {
         sql`DELETE FROM "conversations" WHERE "id" = ${res.locals.conversation.id}`
       );
 
-      res.redirect(`${baseURL}/courses/${res.locals.course.reference}`);
+      res.redirect(`${app.locals.options.baseURL}/courses/${res.locals.course.reference}`);
 
       emitCourseRefresh(res.locals.course.id);
     }
@@ -6466,7 +6466,7 @@ export default () => {
       );
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
+        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
       );
     }
   );
@@ -6506,7 +6506,7 @@ export default () => {
       );
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
+        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
       );
     }
   );
@@ -6670,7 +6670,7 @@ export default () => {
       });
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.conversation.nextMessageReference}`
+        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.conversation.nextMessageReference}`
       );
 
       emitCourseRefresh(res.locals.course.id, req.query.eventSourceReference);
@@ -6791,7 +6791,7 @@ export default () => {
       }
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
+        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
       );
 
       emitCourseRefresh(res.locals.course.id);
@@ -6818,7 +6818,7 @@ export default () => {
       );
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
+        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
       );
 
       emitCourseRefresh(res.locals.course.id);
@@ -6860,7 +6860,7 @@ export default () => {
       );
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
+        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
       );
 
       emitCourseRefresh(res.locals.course.id, req.query.eventSourceReference);
@@ -6895,7 +6895,7 @@ export default () => {
       );
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
+        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
       );
 
       emitCourseRefresh(res.locals.course.id, req.query.eventSourceReference);
@@ -6991,7 +6991,7 @@ export default () => {
         );
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
+        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
       );
 
       emitCourseRefresh(res.locals.course.id);
@@ -7024,7 +7024,7 @@ export default () => {
       );
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
+        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
       );
 
       emitCourseRefresh(res.locals.course.id);
@@ -7163,7 +7163,7 @@ export default () => {
                 html: html`
                   <p>
                     <a
-                      href="${baseURL}/courses/${res.locals.course
+                      href="${app.locals.options.baseURL}/courses/${res.locals.course
                         .reference}/conversations/${conversation.reference}?messageReference=${message.reference}"
                       >${message.authorEnrollment === "no-longer-enrolled"
                         ? "Someone who is no longer enrolled"
@@ -7186,7 +7186,7 @@ export default () => {
 
                   <p>
                     <small>
-                      <a href="${baseURL}/settings/notifications-preferences"
+                      <a href="${app.locals.options.baseURL}/settings/notifications-preferences"
                         >Change Notifications Preferences</a
                       >
                     </small>

@@ -32,7 +32,7 @@ export default ({
     ...isSignedOutMiddleware,
     (req, res) => {
       res.redirect(
-        `${baseURL}/sign-in${qs.stringify(
+        `${app.locals.options.baseURL}/sign-in${qs.stringify(
           {
             redirect: req.originalUrl,
           },
@@ -47,7 +47,7 @@ export default ({
     ...isSignedInMiddleware,
     (req, res) => {
       if (typeof req.query.redirect === "string")
-        return res.redirect(`${baseURL}${req.query.redirect}`);
+        return res.redirect(`${app.locals.options.baseURL}${req.query.redirect}`);
       res.status(404).send(
         boxLayout({
           req,

@@ -126,7 +126,7 @@ export default () => {
                 leafac.mount(
                   preview,
                   await (
-                    await fetch("${baseURL}${
+                    await fetch("${app.locals.options.baseURL}${
               res.locals.course === undefined
                 ? ""
                 : `/courses/${res.locals.course.reference}`
@@ -1046,7 +1046,7 @@ export default () => {
                     textarea.disabled = true;
                     for (const file of fileList) body.append("attachments", file);
                     this.value = "";
-                    const response = await (await fetch("${baseURL}/content-editor/attachments", {
+                    const response = await (await fetch("${app.locals.options.baseURL}/content-editor/attachments", {
                       method: "POST",
                       body,
                     })).text();
@@ -1196,7 +1196,7 @@ export default () => {
                           {
                             trigger: "@",
                             route: ${JSON.stringify(
-                              `${baseURL}/courses/${
+                              `${app.locals.options.baseURL}/courses/${
                                 res.locals.course.reference
                               }/${
                                 res.locals.conversation !== undefined
@@ -1265,7 +1265,7 @@ export default () => {
                           {
                             trigger: "#",
                             route: ${JSON.stringify(
-                              `${baseURL}/courses/${res.locals.course.reference}/content-editor/refer-to-conversation-or-message-search`
+                              `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/content-editor/refer-to-conversation-or-message-search`
                             )},
                             dropdownMenu: tippy(dropdownMenuTarget, {
                               placement: "bottom-start",
@@ -2029,7 +2029,7 @@ ${contentSource}</textarea
         await attachment.mv(
           path.join(dataDirectory, `files/${folder}/${attachment.name}`)
         );
-        const href = `${baseURL}/files/${folder}/${encodeURIComponent(
+        const href = `${app.locals.options.baseURL}/files/${folder}/${encodeURIComponent(
           attachment.name
         )}`;
         if (attachment.mimetype.startsWith("image/"))
@@ -2058,7 +2058,7 @@ ${contentSource}</textarea
                 path.join(dataDirectory, `files/${folder}/${nameThumbnail}`)
               );
             attachmentsContentSources.push(
-              `[<img src="${baseURL}/files/${folder}/${encodeURIComponent(
+              `[<img src="${app.locals.options.baseURL}/files/${folder}/${encodeURIComponent(
                 nameThumbnail
               )}" alt="${attachment.name}" width="${
                 maximumWidth / 2
@@ -2208,14 +2208,14 @@ ${contentSource}</textarea
           element.innerHTML = html`<i class="bi bi-arrow-return-left"></i>`;
         if (
           (!href.startsWith("#") && !href.startsWith(baseURL)) ||
-          href.startsWith(`${baseURL}/files/`)
+          href.startsWith(`${app.locals.options.baseURL}/files/`)
         ) {
           element.setAttribute("target", "_blank");
           element.setAttribute(
             "oninteractive",
             javascript`
               ${
-                href.startsWith(`${baseURL}/files/`)
+                href.startsWith(`${app.locals.options.baseURL}/files/`)
                   ? javascript``
                   : javascript`
                       tippy(this, {
@@ -2410,7 +2410,7 @@ ${contentSource}</textarea
                       if (messageReference === undefined)
                         return html`<a
                           class="reference"
-                          href="${baseURL}/courses/${res.locals.course!
+                          href="${app.locals.options.baseURL}/courses/${res.locals.course!
                             .reference}/conversations/${conversation.reference}"
                           >${match}</a
                         >`;
@@ -2423,7 +2423,7 @@ ${contentSource}</textarea
                       if (message === undefined) return match;
                       return html`<a
                         class="reference"
-                        href="${baseURL}/courses/${res.locals.course!
+                        href="${app.locals.options.baseURL}/courses/${res.locals.course!
                           .reference}/conversations/${conversation.reference}?messageReference=${message.reference}"
                         >${match}</a
                       >`;

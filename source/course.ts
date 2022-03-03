@@ -194,7 +194,7 @@ export default (): { coursePartial: CoursePartial } => {
 
                   <div class="menu-box">
                     <a
-                      href="${baseURL}/settings/profile"
+                      href="${app.locals.options.baseURL}/settings/profile"
                       class="menu-box--item button button--blue"
                     >
                       <i class="bi bi-person-circle"></i>
@@ -213,7 +213,7 @@ export default (): { coursePartial: CoursePartial } => {
                       Enroll in an Existing Course
                     </button>
                     <a
-                      href="${baseURL}/courses/new"
+                      href="${app.locals.options.baseURL}/courses/new"
                       class="menu-box--item button button--transparent"
                     >
                       <i class="bi bi-journal-plus"></i>
@@ -228,7 +228,7 @@ export default (): { coursePartial: CoursePartial } => {
 
         case 1:
           res.redirect(
-            `${baseURL}/courses/${res.locals.enrollments[0].course.reference}`
+            `${app.locals.options.baseURL}/courses/${res.locals.enrollments[0].course.reference}`
           );
           break;
 
@@ -259,7 +259,7 @@ export default (): { coursePartial: CoursePartial } => {
                       (enrollment) =>
                         html`
                           <a
-                            href="${baseURL}/courses/${enrollment.course
+                            href="${app.locals.options.baseURL}/courses/${enrollment.course
                               .reference}"
                             class="menu-box--item button button--tight button--transparent"
                           >
@@ -362,7 +362,7 @@ export default (): { coursePartial: CoursePartial } => {
 
             <form
               method="POST"
-              action="${baseURL}/courses"
+              action="${app.locals.options.baseURL}/courses"
               novalidate
               class="${res.locals.localCSS(css`
                 display: flex;
@@ -537,7 +537,7 @@ export default (): { coursePartial: CoursePartial } => {
           )
         `
     );
-    res.redirect(`${baseURL}/courses/${course.reference}`);
+    res.redirect(`${app.locals.options.baseURL}/courses/${course.reference}`);
   });
 
   const defaultAccentColor = (
@@ -688,7 +688,7 @@ export default (): { coursePartial: CoursePartial } => {
                   $${res.locals.enrollment.role === "staff"
                     ? html`
                         <a
-                          href="${baseURL}/courses/${res.locals.course
+                          href="${app.locals.options.baseURL}/courses/${res.locals.course
                             .reference}/settings/tags"
                           class="menu-box--item button button--blue"
                         >
@@ -698,7 +698,7 @@ export default (): { coursePartial: CoursePartial } => {
                       `
                     : html``}
                   <a
-                    href="${baseURL}/courses/${res.locals.course
+                    href="${app.locals.options.baseURL}/courses/${res.locals.course
                       .reference}/conversations/new"
                     class="menu-box--item button ${res.locals.enrollment
                       .role === "staff"
@@ -863,7 +863,7 @@ export default (): { coursePartial: CoursePartial } => {
     res: express.Response<any, BaseMiddlewareLocals>;
     invitation: InvitationExistsMiddlewareLocals["invitation"];
   }): void => {
-    const link = `${baseURL}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
+    const link = `${app.locals.options.baseURL}/courses/${invitation.course.reference}/invitations/${invitation.reference}`;
     database.run(
       sql`
         INSERT INTO "sendEmailJobs" (
@@ -985,7 +985,7 @@ export default (): { coursePartial: CoursePartial } => {
         res.locals.enrollment.role === "staff"
           ? html`
               <a
-                href="${baseURL}/courses/${res.locals.course
+                href="${app.locals.options.baseURL}/courses/${res.locals.course
                   .reference}/settings/course-information"
                 class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings/course-information"
@@ -997,7 +997,7 @@ export default (): { coursePartial: CoursePartial } => {
                 Course Information
               </a>
               <a
-                href="${baseURL}/courses/${res.locals.course
+                href="${app.locals.options.baseURL}/courses/${res.locals.course
                   .reference}/settings/tags"
                 class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings/tags"
@@ -1009,7 +1009,7 @@ export default (): { coursePartial: CoursePartial } => {
                 Tags
               </a>
               <a
-                href="${baseURL}/courses/${res.locals.course
+                href="${app.locals.options.baseURL}/courses/${res.locals.course
                   .reference}/settings/invitations"
                 class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings/invitations"
@@ -1021,7 +1021,7 @@ export default (): { coursePartial: CoursePartial } => {
                 Invitations
               </a>
               <a
-                href="${baseURL}/courses/${res.locals.course
+                href="${app.locals.options.baseURL}/courses/${res.locals.course
                   .reference}/settings/enrollments"
                 class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings/enrollments"
@@ -1033,7 +1033,7 @@ export default (): { coursePartial: CoursePartial } => {
                 Enrollments
               </a>
               <a
-                href="${baseURL}/courses/${res.locals.course
+                href="${app.locals.options.baseURL}/courses/${res.locals.course
                   .reference}/settings/your-enrollment"
                 class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
                   "/settings/your-enrollment"
@@ -1060,7 +1060,7 @@ export default (): { coursePartial: CoursePartial } => {
     ...isEnrolledInCourseMiddleware,
     (req, res) => {
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/settings/${
+        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/${
           res.locals.enrollment.role === "staff"
             ? "course-information"
             : "your-enrollment"
@@ -1098,7 +1098,7 @@ export default (): { coursePartial: CoursePartial } => {
             </h2>
             <form
               method="POST"
-              action="${baseURL}/courses/${res.locals.course
+              action="${app.locals.options.baseURL}/courses/${res.locals.course
                 .reference}/settings/course-information?_method=PATCH"
               novalidate
               class="${res.locals.localCSS(css`
@@ -1252,7 +1252,7 @@ export default (): { coursePartial: CoursePartial } => {
       });
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/settings/course-information`
+        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/course-information`
       );
     }
   );
@@ -1304,7 +1304,7 @@ export default (): { coursePartial: CoursePartial } => {
 
             <form
               method="POST"
-              action="${baseURL}/courses/${res.locals.course
+              action="${app.locals.options.baseURL}/courses/${res.locals.course
                 .reference}/settings/tags?_method=PUT"
               novalidate
               class="${res.locals.localCSS(css`
@@ -1546,7 +1546,7 @@ export default (): { coursePartial: CoursePartial } => {
                             $${res.locals.conversationsCount > 0
                               ? html`
                                   <a
-                                    href="${baseURL}/courses/${res.locals.course
+                                    href="${app.locals.options.baseURL}/courses/${res.locals.course
                                       .reference}${qs.stringify(
                                       {
                                         conversationLayoutSidebarOpenOnSmallScreen:
@@ -1808,7 +1808,7 @@ export default (): { coursePartial: CoursePartial } => {
       });
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/settings/tags`
+        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/tags`
       );
     }
   );
@@ -1860,7 +1860,7 @@ export default (): { coursePartial: CoursePartial } => {
 
             <form
               method="POST"
-              action="${baseURL}/courses/${res.locals.course
+              action="${app.locals.options.baseURL}/courses/${res.locals.course
                 .reference}/settings/invitations"
               novalidate
               class="${res.locals.localCSS(css`
@@ -2158,7 +2158,7 @@ export default (): { coursePartial: CoursePartial } => {
               ? html``
               : html`
                   $${invitations.map((invitation) => {
-                    const action = `${baseURL}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
+                    const action = `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/invitations/${invitation.reference}`;
                     const isInvitationExpired = isExpired(invitation.expiresAt);
                     const isUsed = invitation.usedAt !== null;
 
@@ -2226,7 +2226,7 @@ export default (): { coursePartial: CoursePartial } => {
                                         interactive: true,
                                         maxWidth: "none",
                                         content: ${(() => {
-                                          const link = `${baseURL}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
+                                          const link = `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/invitations/${invitation.reference}`;
                                           return res.locals.HTMLForJavaScript(
                                             html`
                                               <div
@@ -3014,7 +3014,7 @@ export default (): { coursePartial: CoursePartial } => {
       }
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/settings/invitations`
+        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/invitations`
       );
     }
   );
@@ -3143,7 +3143,7 @@ export default (): { coursePartial: CoursePartial } => {
       }
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/settings/invitations`
+        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/invitations`
       );
     }
   );
@@ -3266,7 +3266,7 @@ export default (): { coursePartial: CoursePartial } => {
             </label>
 
             $${enrollments.map((enrollment) => {
-              const action = `${baseURL}/courses/${res.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
+              const action = `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
               const isSelf = enrollment.id === res.locals.enrollment.id;
               const isOnlyStaff =
                 isSelf &&
@@ -3633,8 +3633,8 @@ export default (): { coursePartial: CoursePartial } => {
 
       res.redirect(
         res.locals.managedEnrollment.isSelf
-          ? `${baseURL}/courses/${res.locals.course.reference}`
-          : `${baseURL}/courses/${res.locals.course.reference}/settings/enrollments`
+          ? `${app.locals.options.baseURL}/courses/${res.locals.course.reference}`
+          : `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/enrollments`
       );
     }
   );
@@ -3668,8 +3668,8 @@ export default (): { coursePartial: CoursePartial } => {
 
       res.redirect(
         res.locals.managedEnrollment.isSelf
-          ? `${baseURL}/`
-          : `${baseURL}/courses/${res.locals.course.reference}/settings/enrollments`
+          ? `${app.locals.options.baseURL}/`
+          : `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/enrollments`
       );
     }
   );
@@ -3704,7 +3704,7 @@ export default (): { coursePartial: CoursePartial } => {
 
             <form
               method="POST"
-              action="${baseURL}/courses/${res.locals.course
+              action="${app.locals.options.baseURL}/courses/${res.locals.course
                 .reference}/settings/your-enrollment?_method=PATCH"
               novalidate
               class="${res.locals.localCSS(css`
@@ -3820,7 +3820,7 @@ export default (): { coursePartial: CoursePartial } => {
       });
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.course.reference}/settings/your-enrollment`
+        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/your-enrollment`
       );
     }
   );
@@ -3836,7 +3836,7 @@ export default (): { coursePartial: CoursePartial } => {
     ...isEnrolledInCourseMiddleware,
     ...isInvitationUsableMiddleware,
     asyncHandler(async (req, res) => {
-      const link = `${baseURL}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`;
+      const link = `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`;
       res.send(
         boxLayout({
           req,
@@ -3916,7 +3916,7 @@ export default (): { coursePartial: CoursePartial } => {
 
               $${(
                 await QRCode.toString(
-                  `${baseURL}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`,
+                  `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`,
                   { type: "svg" }
                 )
               )
@@ -3925,7 +3925,7 @@ export default (): { coursePartial: CoursePartial } => {
             </div>
 
             <a
-              href="${baseURL}/courses/${res.locals.course.reference}"
+              href="${app.locals.options.baseURL}/courses/${res.locals.course.reference}"
               class="button button--blue"
             >
               Go to ${res.locals.course.name}
@@ -3969,7 +3969,7 @@ export default (): { coursePartial: CoursePartial } => {
             })}
             <form
               method="POST"
-              action="${baseURL}/courses/${res.locals.invitation.course
+              action="${app.locals.options.baseURL}/courses/${res.locals.invitation.course
                 .reference}/invitations/${res.locals.invitation.reference}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
@@ -4022,7 +4022,7 @@ export default (): { coursePartial: CoursePartial } => {
         );
 
       res.redirect(
-        `${baseURL}/courses/${res.locals.invitation.course.reference}`
+        `${app.locals.options.baseURL}/courses/${res.locals.invitation.course.reference}`
       );
     }
   );
@@ -4067,7 +4067,7 @@ export default (): { coursePartial: CoursePartial } => {
               `)}"
             >
               <a
-                href="${baseURL}/sign-up${qs.stringify(
+                href="${app.locals.options.baseURL}/sign-up${qs.stringify(
                   {
                     redirect: req.originalUrl,
                     ...(res.locals.invitation.email === null
@@ -4089,7 +4089,7 @@ export default (): { coursePartial: CoursePartial } => {
                 Sign up
               </a>
               <a
-                href="${baseURL}/sign-in${qs.stringify(
+                href="${app.locals.options.baseURL}/sign-in${qs.stringify(
                   {
                     redirect: req.originalUrl,
                     ...(res.locals.invitation.email === null

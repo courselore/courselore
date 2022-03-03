@@ -552,7 +552,7 @@ export default (app: Courselore): void => {
       `,
       menu: html`
         <a
-          href="${baseURL}/settings/profile"
+          href="${app.locals.options.baseURL}/settings/profile"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
             "/settings/profile"
           )
@@ -563,7 +563,7 @@ export default (app: Courselore): void => {
           Profile
         </a>
         <a
-          href="${baseURL}/settings/update-email-and-password"
+          href="${app.locals.options.baseURL}/settings/update-email-and-password"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
             "/settings/update-email-and-password"
           )
@@ -574,7 +574,7 @@ export default (app: Courselore): void => {
           Update Email & Password
         </a>
         <a
-          href="${baseURL}/settings/notifications-preferences"
+          href="${app.locals.options.baseURL}/settings/notifications-preferences"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
             "/settings/notifications-preferences"
           )
@@ -592,7 +592,7 @@ export default (app: Courselore): void => {
     "/settings",
     ...isSignedInMiddleware,
     (req, res) => {
-      res.redirect(`${baseURL}/settings/profile`);
+      res.redirect(`${app.locals.options.baseURL}/settings/profile`);
     }
   );
 
@@ -615,7 +615,7 @@ export default (app: Courselore): void => {
 
             <form
               method="POST"
-              action="${baseURL}/settings/profile?_method=PATCH"
+              action="${app.locals.options.baseURL}/settings/profile?_method=PATCH"
               novalidate
               class="${res.locals.localCSS(css`
                 display: flex;
@@ -794,7 +794,7 @@ export default (app: Courselore): void => {
                         this.value = "";
                         tippy.hideAll();
                         uploadingIndicator.show();
-                        const response = await fetch("${baseURL}/settings/profile/avatar", {
+                        const response = await fetch("${app.locals.options.baseURL}/settings/profile/avatar", {
                           method: "POST",
                           body,
                         });
@@ -922,7 +922,7 @@ export default (app: Courselore): void => {
         <div class="flash--green">Profile updated successfully.</div>
       `,
     });
-    res.redirect(`${baseURL}/settings/profile`);
+    res.redirect(`${app.locals.options.baseURL}/settings/profile`);
   });
 
   app.post<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
@@ -962,7 +962,7 @@ export default (app: Courselore): void => {
       } catch (error) {
         return next("validation");
       }
-      res.send(`${baseURL}/files/${folder}/${encodeURIComponent(nameAvatar)}`);
+      res.send(`${app.locals.options.baseURL}/files/${folder}/${encodeURIComponent(nameAvatar)}`);
     }),
     ((err, req, res, next) => {
       if (err === "validation")
@@ -996,7 +996,7 @@ export default (app: Courselore): void => {
 
             <form
               method="POST"
-              action="${baseURL}/settings/update-email-and-password?_method=PATCH"
+              action="${app.locals.options.baseURL}/settings/update-email-and-password?_method=PATCH"
               novalidate
               class="${res.locals.localCSS(css`
                 display: flex;
@@ -1040,7 +1040,7 @@ export default (app: Courselore): void => {
 
             <form
               method="POST"
-              action="${baseURL}/settings/update-email-and-password?_method=PATCH"
+              action="${app.locals.options.baseURL}/settings/update-email-and-password?_method=PATCH"
               novalidate
               class="${res.locals.localCSS(css`
                 display: flex;
@@ -1126,7 +1126,7 @@ export default (app: Courselore): void => {
           res,
           content: html`<div class="flash--rose">Incorrect password.</div>`,
         });
-        return res.redirect(`${baseURL}/settings/update-email-and-password`);
+        return res.redirect(`${app.locals.options.baseURL}/settings/update-email-and-password`);
       }
 
       if (typeof req.body.email === "string") {
@@ -1144,7 +1144,7 @@ export default (app: Courselore): void => {
             res,
             content: html`<div class="flash--rose">Email already taken.</div>`,
           });
-          return res.redirect(`${baseURL}/settings/update-email-and-password`);
+          return res.redirect(`${app.locals.options.baseURL}/settings/update-email-and-password`);
         }
 
         database.run(
@@ -1197,7 +1197,7 @@ export default (app: Courselore): void => {
         });
       }
 
-      res.redirect(`${baseURL}/settings/update-email-and-password`);
+      res.redirect(`${app.locals.options.baseURL}/settings/update-email-and-password`);
     })
   );
 
@@ -1222,7 +1222,7 @@ export default (app: Courselore): void => {
 
             <form
               method="POST"
-              action="${baseURL}/settings/notifications-preferences?_method=PATCH"
+              action="${app.locals.options.baseURL}/settings/notifications-preferences?_method=PATCH"
               novalidate
               class="${res.locals.localCSS(css`
                 display: flex;
@@ -1342,7 +1342,7 @@ export default (app: Courselore): void => {
         `,
       });
 
-      res.redirect(`${baseURL}/settings/notifications-preferences`);
+      res.redirect(`${app.locals.options.baseURL}/settings/notifications-preferences`);
     }
   );
 

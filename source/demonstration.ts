@@ -62,7 +62,7 @@ export default ({
               ${new Date().toISOString()},
               ${name},
               ${html`${name}`},
-              ${`${baseURL}/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`},
+              ${`${app.locals.options.baseURL}/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`},
               ${lodash.sample(userAvatarlessBackgroundColors)},
               ${biographySource},
               ${
@@ -120,7 +120,7 @@ export default ({
                 ${html`${name}`},
                 ${
                   Math.random() < 0.6
-                    ? `${baseURL}/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
+                    ? `${app.locals.options.baseURL}/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
                     : null
                 },
                 ${lodash.sample(userAvatarlessBackgroundColors)},

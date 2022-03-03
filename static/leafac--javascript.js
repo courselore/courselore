@@ -15,7 +15,7 @@ onclick="${javascript`
                                       event.preventDefault();
                                       window.history.pushState(undefined, "", this.getAttribute("href"));
                                       await eventSourceRefresh(await fetch(${JSON.stringify(
-                                        `${baseURL}/courses/${
+                                        `${app.locals.options.baseURL}/courses/${
                                           res.locals.course.reference
                                         }/conversations/${
                                           conversation.reference
