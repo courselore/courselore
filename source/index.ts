@@ -63,15 +63,18 @@ export {
   AuthorEnrollment,
   AuthorEnrollmentUser,
 } from "./course.js";
-
+import conversation from "./conversation.js";
 export {
   ConversationType,
   conversationTypes,
   conversationTypeIcon,
   conversationTypeTextColor,
 } from "./conversation.js";
-
+import content from "./content.js";
+import email from "./email.js";
+import demonstration from "./demonstration.js";
 import error from "./error.js";
+import helpers from "./helpers.js";
 
 export interface Courselore extends express.Express {
   locals: {
@@ -164,10 +167,10 @@ export default async function courselore(
   user(app);
   course(app);
   conversation(app);
-  error(app);
   content(app);
   email(app);
   demonstration(app);
+  error(app);
   helpers(app);
   return app;
 }

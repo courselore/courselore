@@ -5,13 +5,12 @@
 - Split the codebase into separate files.
   - `source/course.ts`
   - `source/conversation.ts`
-  - `source/error.ts`
   - `source/content.ts`
   - `source/email.ts`
   - `source/demonstration.ts`
+  - `source/error.ts`
   - `source/helpers.ts`
-  - `source/index.ts`
-  - configuration
+  - `configuration/`
   - TODO
 
 ---
