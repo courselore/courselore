@@ -886,7 +886,7 @@ export default (app: Courselore): void => {
     }
   );
 
-  const mayEndorseMessage = ({
+  app.locals.helpers.mayEndorseMessage = ({
     req,
     res,
     message,
@@ -926,7 +926,13 @@ export default (app: Courselore): void => {
   >[] = [
     ...messageExistsMiddleware,
     (req, res, next) => {
-      if (mayEndorseMessage({ req, res, message: res.locals.message }))
+      if (
+        app.locals.helpers.mayEndorseMessage({
+          req,
+          res,
+          message: res.locals.message,
+        })
+      )
         return next();
       next("route");
     },

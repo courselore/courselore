@@ -4831,11 +4831,13 @@ export default (app: Courselore): void => {
                                             `);
 
                                           if (
-                                            mayEndorseMessage({
-                                              req,
-                                              res,
-                                              message,
-                                            })
+                                            app.locals.helpers.mayEndorseMessage(
+                                              {
+                                                req,
+                                                res,
+                                                message,
+                                              }
+                                            )
                                           ) {
                                             const isEndorsed =
                                               message.endorsements.some(
