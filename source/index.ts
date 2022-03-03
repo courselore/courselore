@@ -58,6 +58,9 @@ import course, {
   defaultAccentColorHelper,
   IsEnrolledInCourseMiddleware,
   IsCourseStaffMiddleware,
+  InvitationExistsMiddleware,
+  MayManageInvitationMiddleware,
+  IsInvitationUsableMiddleware,
 } from "./course.js";
 export {
   EnrollmentRole,
@@ -66,6 +69,9 @@ export {
   enrollmentAccentColors,
   IsEnrolledInCourseMiddlewareLocals,
   IsCourseStaffMiddlewareLocals,
+  InvitationExistsMiddlewareLocals,
+  MayManageInvitationMiddlewareLocals,
+  IsInvitationUsableMiddlewareLocals,
   AuthorEnrollment,
   AuthorEnrollmentUser,
 } from "./course.js";
@@ -101,6 +107,9 @@ export interface Courselore extends express.Express {
       isSignedIn: IsSignedInMiddleware;
       isEnrolledInCourse: IsEnrolledInCourseMiddleware;
       isCourseStaff: IsCourseStaffMiddleware;
+      invitationExists: InvitationExistsMiddleware;
+      mayManageInvitation: MayManageInvitationMiddleware;
+      isInvitationUsable: IsInvitationUsableMiddleware;
     };
     layouts: {
       base: BaseLayout;
@@ -128,6 +137,7 @@ export interface Courselore extends express.Express {
       PasswordReset: PasswordResetHelper;
       defaultAccentColor: defaultAccentColorHelper;
       emailRegExp: any; // TODO
+      isExpired: any; // TODO
     };
     mailers: {
       emailConfirmation: EmailConfirmationMailer;

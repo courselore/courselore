@@ -56,6 +56,13 @@ export type defaultAccentColorHelper = ({
   res: express.Response<any, IsSignedInMiddlewareLocals>;
 }) => EnrollmentAccentColor;
 
+export type IsEnrolledInCourseMiddleware = express.RequestHandler<
+  { courseReference: string },
+  any,
+  {},
+  {},
+  IsEnrolledInCourseMiddlewareLocals
+>[];
 export interface IsEnrolledInCourseMiddlewareLocals
   extends IsSignedInMiddlewareLocals {
   enrollment: IsSignedInMiddlewareLocals["enrollments"][number];
@@ -69,16 +76,7 @@ export interface IsEnrolledInCourseMiddlewareLocals
     staffOnlyAt: string | null;
   }[];
 }
-export type IsEnrolledInCourseMiddleware = express.RequestHandler<
-  { courseReference: string },
-  any,
-  {},
-  {},
-  IsEnrolledInCourseMiddlewareLocals
->[];
 
-export interface IsCourseStaffMiddlewareLocals
-  extends IsEnrolledInCourseMiddlewareLocals {}
 export type IsCourseStaffMiddleware = express.RequestHandler<
   { courseReference: string },
   any,
@@ -86,6 +84,59 @@ export type IsCourseStaffMiddleware = express.RequestHandler<
   {},
   IsCourseStaffMiddlewareLocals
 >[];
+export interface IsCourseStaffMiddlewareLocals
+  extends IsEnrolledInCourseMiddlewareLocals {}
+
+export type InvitationExistsMiddleware = express.RequestHandler<
+  { courseReference: string; invitationReference: string },
+  any,
+  {},
+  {},
+  InvitationExistsMiddlewareLocals
+>[];
+export interface InvitationExistsMiddlewareLocals extends BaseMiddlewareLocals {
+  invitation: {
+    id: number;
+    expiresAt: string | null;
+    usedAt: string | null;
+    course: {
+      id: number;
+      reference: string;
+      name: string;
+      year: string | null;
+      term: string | null;
+      institution: string | null;
+      code: string | null;
+      nextConversationReference: number;
+    };
+    reference: string;
+    email: string | null;
+    name: string | null;
+    role: EnrollmentRole;
+  };
+}
+
+export type MayManageInvitationMiddleware = express.RequestHandler<
+  { courseReference: string; invitationReference: string },
+  any,
+  {},
+  {},
+  MayManageInvitationMiddlewareLocals
+>[];
+export interface MayManageInvitationMiddlewareLocals
+  extends IsCourseStaffMiddlewareLocals,
+    InvitationExistsMiddlewareLocals {}
+
+export type IsInvitationUsableMiddleware = express.RequestHandler<
+  { courseReference: string; invitationReference: string },
+  any,
+  {},
+  {},
+  IsInvitationUsableMiddlewareLocals
+>[];
+export interface IsInvitationUsableMiddlewareLocals
+  extends InvitationExistsMiddlewareLocals,
+    Omit<Partial<IsSignedInMiddlewareLocals>, keyof BaseMiddlewareLocals> {}
 
 export default (app: Courselore): void => {
   app.locals.partials.course = ({
@@ -716,36 +767,9 @@ export default (app: Courselore): void => {
     }
   );
 
-  interface InvitationExistsMiddlewareLocals extends BaseMiddlewareLocals {
-    invitation: {
-      id: number;
-      expiresAt: string | null;
-      usedAt: string | null;
-      course: {
-        id: number;
-        reference: string;
-        name: string;
-        year: string | null;
-        term: string | null;
-        institution: string | null;
-        code: string | null;
-        nextConversationReference: number;
-      };
-      reference: string;
-      email: string | null;
-      name: string | null;
-      role: EnrollmentRole;
-    };
-  }
-  const invitationExistsMiddleware: express.RequestHandler<
-    { courseReference: string; invitationReference: string },
-    any,
-    {},
-    {},
-    InvitationExistsMiddlewareLocals
-  >[] = [
+  app.locals.middlewares.invitationExists = [
     (req, res, next) => {
-      const invitation = database.get<{
+      const invitation = app.locals.database.get<{
         id: number;
         expiresAt: string | null;
         usedAt: string | null;
@@ -808,35 +832,17 @@ export default (app: Courselore): void => {
     },
   ];
 
-  interface MayManageInvitationMiddlewareLocals
-    extends IsCourseStaffMiddlewareLocals,
-      InvitationExistsMiddlewareLocals {}
-  const mayManageInvitationMiddleware: express.RequestHandler<
-    { courseReference: string; invitationReference: string },
-    any,
-    {},
-    {},
-    MayManageInvitationMiddlewareLocals
-  >[] = [
+  app.locals.middlewares.mayManageInvitation = [
     ...app.locals.middlewares.isCourseStaff,
-    ...invitationExistsMiddleware,
+    ...app.locals.middlewares.invitationExists,
   ];
 
-  interface IsInvitationUsableMiddlewareLocals
-    extends InvitationExistsMiddlewareLocals,
-      Omit<Partial<IsSignedInMiddlewareLocals>, keyof BaseMiddlewareLocals> {}
-  const isInvitationUsableMiddleware: express.RequestHandler<
-    { courseReference: string; invitationReference: string },
-    any,
-    {},
-    {},
-    IsInvitationUsableMiddlewareLocals
-  >[] = [
-    ...invitationExistsMiddleware,
+  app.locals.middlewares.isInvitationUsable = [
+    ...app.locals.middlewares.invitationExists,
     (req, res, next) => {
       if (
         res.locals.invitation.usedAt !== null ||
-        isExpired(res.locals.invitation.expiresAt) ||
+        app.locals.helpers.isExpired(res.locals.invitation.expiresAt) ||
         (res.locals.invitation.email !== null &&
           res.locals.user !== undefined &&
           res.locals.invitation.email.toLowerCase() !==
@@ -3034,7 +3040,7 @@ export default (app: Courselore): void => {
     MayManageInvitationMiddlewareLocals
   >(
     "/courses/:courseReference/settings/invitations/:invitationReference",
-    ...mayManageInvitationMiddleware,
+    ...app.locals.middlewares.mayManageInvitation,
     (req, res, next) => {
       if (res.locals.invitation.usedAt !== null) return next("validation");
 
@@ -3838,7 +3844,7 @@ export default (app: Courselore): void => {
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isEnrolledInCourse,
-    ...isInvitationUsableMiddleware,
+    ...app.locals.middlewares.isInvitationUsable,
     asyncHandler(async (req, res) => {
       const link = `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`;
       res.send(
@@ -3951,7 +3957,7 @@ export default (app: Courselore): void => {
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isSignedIn,
-    ...isInvitationUsableMiddleware,
+    ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
         boxLayout({
@@ -4003,7 +4009,7 @@ export default (app: Courselore): void => {
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isSignedIn,
-    ...isInvitationUsableMiddleware,
+    ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       database.run(
         sql`
@@ -4042,7 +4048,7 @@ export default (app: Courselore): void => {
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isSignedOut,
-    ...isInvitationUsableMiddleware,
+    ...app.locals.middlewares.isInvitationUsable,
     (req, res) => {
       res.send(
         boxLayout({
