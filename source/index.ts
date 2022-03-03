@@ -18,7 +18,7 @@ import eventSource, {
   eventSourceLocals,
   eventSourceMiddleware,
 } from "./event-source.js";
-export { eventSourceMiddlewareLocals as EventSourceMiddlewareLocals } from "./event-source.js";
+export { eventSourceMiddlewareLocals } from "./event-source.js";
 import layouts, {
   baseLayout,
   boxLayout,

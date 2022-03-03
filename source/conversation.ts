@@ -8,7 +8,7 @@ import { javascript } from "@leafac/javascript";
 import lodash from "lodash";
 import {
   Courselore,
-  EventSourceMiddlewareLocals,
+  eventSourceMiddlewareLocals,
   UserAvatarlessBackgroundColor,
   EnrollmentRole,
   isEnrolledInCourseMiddlewareLocals,
@@ -69,13 +69,13 @@ export type conversationLayout = ({
     },
     isEnrolledInCourseMiddlewareLocals &
       Partial<isConversationAccessibleMiddlewareLocals> &
-      Partial<EventSourceMiddlewareLocals>
+      Partial<eventSourceMiddlewareLocals>
   >;
   res: express.Response<
     HTML,
     isEnrolledInCourseMiddlewareLocals &
       Partial<isConversationAccessibleMiddlewareLocals> &
-      Partial<EventSourceMiddlewareLocals>
+      Partial<eventSourceMiddlewareLocals>
   >;
   head: HTML;
   onlyConversationLayoutSidebarOnSmallScreen?: boolean;
@@ -1994,7 +1994,7 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {},
-    isEnrolledInCourseMiddlewareLocals & EventSourceMiddlewareLocals
+    isEnrolledInCourseMiddlewareLocals & eventSourceMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/new",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -2729,7 +2729,7 @@ export default (app: Courselore): void => {
       beforeMessageReference?: string;
       afterMessageReference?: string;
     },
-    isConversationAccessibleMiddlewareLocals & EventSourceMiddlewareLocals
+    isConversationAccessibleMiddlewareLocals & eventSourceMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     ...app.locals.middlewares.isConversationAccessible,
