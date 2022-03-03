@@ -114,6 +114,9 @@ export interface Courselore extends express.Express {
       GlobalMiddlewaresOptions &
       AuthenticationOptions & {
         userAvatarlessBackgroundColors: any /* TODO */;
+        userEmailNotifications: any /* TODO */;
+        enrollmentRole: any /* TODO */;
+        enrollmentAccentColor: any /* TODO */;
       };
     handlers: {
       about: AboutHandler;

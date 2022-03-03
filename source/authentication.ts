@@ -8,14 +8,7 @@ import { javascript } from "@leafac/javascript";
 import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
 import lodash from "lodash";
-import {
-  Courselore,
-  BaseMiddlewareLocals,
-  UserAvatarlessBackgroundColor,
-  UserEmailNotifications,
-  EnrollmentRole,
-  EnrollmentAccentColor,
-} from "./index.js";
+import { Courselore, BaseMiddlewareLocals } from "./index.js";
 
 export interface SessionHelper {
   maxAge: number;
@@ -78,10 +71,10 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
     emailConfirmedAt: string | null;
     name: string;
     avatar: string | null;
-    avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+    avatarlessBackgroundColor: Courselore["locals"]["options"]["userAvatarlessBackgroundColors"];
     biographySource: string | null;
     biographyPreprocessed: HTML | null;
-    emailNotifications: UserEmailNotifications;
+    emailNotifications: Courselore["locals"]["options"]["userEmailNotifications"];
   };
   invitations: {
     id: number;
@@ -96,7 +89,7 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
       nextConversationReference: number;
     };
     reference: string;
-    role: EnrollmentRole;
+    role: Courselore["locals"]["options"]["enrollmentRole"];
   }[];
   enrollments: {
     id: number;
@@ -111,8 +104,8 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
       nextConversationReference: number;
     };
     reference: string;
-    role: EnrollmentRole;
-    accentColor: EnrollmentAccentColor;
+    role: Courselore["locals"]["options"]["enrollmentRole"];
+    accentColor: Courselore["locals"]["options"]["enrollmentAccentColor"];
   }[];
 }
 
@@ -253,10 +246,10 @@ export default (app: Courselore): void => {
         emailConfirmedAt: string | null;
         name: string;
         avatar: string | null;
-        avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+        avatarlessBackgroundColor: Courselore["locals"]["options"]["userAvatarlessBackgroundColors"];
         biographySource: string | null;
         biographyPreprocessed: HTML | null;
-        emailNotifications: UserEmailNotifications;
+        emailNotifications: Courselore["locals"]["options"]["userEmailNotifications"];
       }>(
         sql`
           SELECT "id",
@@ -287,7 +280,7 @@ export default (app: Courselore): void => {
           courseCode: string | null;
           courseNextConversationReference: number;
           reference: string;
-          role: EnrollmentRole;
+          role: Courselore["locals"]["options"]["enrollmentRole"];
         }>(
           sql`
             SELECT "invitations"."id",
@@ -340,8 +333,8 @@ export default (app: Courselore): void => {
           courseCode: string | null;
           courseNextConversationReference: number;
           reference: string;
-          role: EnrollmentRole;
-          accentColor: EnrollmentAccentColor;
+          role: Courselore["locals"]["options"]["enrollmentRole"];
+          accentColor: Courselore["locals"]["options"]["enrollmentAccentColor"];
         }>(
           sql`
             SELECT "enrollments"."id",
