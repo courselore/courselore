@@ -209,7 +209,6 @@ export default async function courselore(
   email(app);
   demonstration(app);
   helpers(app);
-
   return app;
 }
 
