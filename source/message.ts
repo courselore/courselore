@@ -1,11 +1,14 @@
 import express from "express";
 import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
+import { css } from "@leafac/css";
+import { javascript } from "@leafac/javascript";
 import {
   Courselore,
   UserAvatarlessBackgroundColor,
   EnrollmentRole,
   IsEnrolledInCourseMiddlewareLocals,
+  IsCourseStaffMiddlewareLocals,
   AuthorEnrollment,
   IsConversationAccessibleMiddlewareLocals,
 } from "./index.js";
@@ -98,6 +101,25 @@ export type MayEditMessageMiddleware = express.RequestHandler<
 >[];
 export interface MayEditMessageMiddlewareLocals
   extends MessageExistsMiddlewareLocals {}
+
+export type MayEndorseMessageHelper = ({
+  req,
+  res,
+  message,
+}: {
+  req: express.Request<
+    {
+      courseReference: string;
+      conversationReference: string;
+    },
+    any,
+    {},
+    {},
+    IsConversationAccessibleMiddlewareLocals
+  >;
+  res: express.Response<any, IsConversationAccessibleMiddlewareLocals>;
+  message: MessageExistsMiddlewareLocals["message"];
+}) => boolean;
 
 export default (app: Courselore): void => {
   app.locals.helpers.getMessage = ({
@@ -458,7 +480,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.messageExists,
     (req, res) => {
       res.send(
-        partialLayout({
+        app.locals.layouts.partial({
           req,
           res,
           body: html`
@@ -909,24 +931,7 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.locals.helpers.mayEndorseMessage = ({
-    req,
-    res,
-    message,
-  }: {
-    req: express.Request<
-      {
-        courseReference: string;
-        conversationReference: string;
-      },
-      any,
-      {},
-      {},
-      IsConversationAccessibleMiddlewareLocals
-    >;
-    res: express.Response<any, IsConversationAccessibleMiddlewareLocals>;
-    message: MessageExistsMiddlewareLocals["message"];
-  }): boolean =>
+  app.locals.helpers.mayEndorseMessage = ({ req, res, message }) =>
     res.locals.enrollment.role === "staff" &&
     res.locals.conversation.type === "question" &&
     message.reference !== "1" &&

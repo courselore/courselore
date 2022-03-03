@@ -1535,7 +1535,7 @@ ${contentSource}</textarea
       }));
 
     res.send(
-      partialLayout({
+       app.locals.layouts.partial({
         req,
         res,
         body: html`
@@ -1988,7 +1988,7 @@ ${contentSource}</textarea
       );
 
       res.send(
-        partialLayout({
+         app.locals.layouts.partial({
           req,
           res,
           body: html`
@@ -2585,7 +2585,7 @@ ${contentSource}</textarea
     if (typeof req.body.content !== "string" || req.body.content.trim() === "")
       return next("validation");
     res.send(
-      partialLayout({
+       app.locals.layouts.partial({
         req,
         res,
         body: app.locals.partials.content({

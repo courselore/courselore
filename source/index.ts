@@ -110,6 +110,7 @@ import message, {
   MessageExistsMiddleware,
   MayEditMessageHelper,
   MayEditMessageMiddleware,
+  MayEndorseMessageHelper,
 } from "./message.js";
 export {
   MessageExistsMiddlewareLocals,
@@ -183,7 +184,7 @@ export interface Courselore extends express.Express {
       mayEditConversation: MayEditConversationHelper;
       getMessage: GetMessageHelper;
       mayEditMessage: MayEditMessageHelper;
-      mayEndorseMessage: any; // TODO
+      mayEndorseMessage: MayEndorseMessageHelper;
       emailRegExp: any; // TODO
       isExpired: any; // TODO
       isDate: any; // TODO
