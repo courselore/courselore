@@ -33,7 +33,7 @@ export const enrollmentAccentColors = [
   "pink",
 ] as const;
 
-export type CoursePartial = ({
+export type coursePartial = ({
   req,
   res,
   course,
@@ -47,7 +47,7 @@ export type CoursePartial = ({
   tight?: boolean;
 }) => HTML;
 
-export type EnrollmentRoleIconPartial = {
+export type enrollmentRoleIconPartial = {
   [role in EnrollmentRole]: {
     regular: HTML;
     fill: HTML;
@@ -144,7 +144,7 @@ export interface IsInvitationUsableMiddlewareLocals
   extends InvitationExistsMiddlewareLocals,
     Omit<Partial<IsSignedInMiddlewareLocals>, keyof BaseMiddlewareLocals> {}
 
-export type InvitationMailer = ({
+export type invitationMailer = ({
   req,
   res,
   invitation,
@@ -171,7 +171,7 @@ export interface MayManageEnrollmentMiddlewareLocals
   };
 }
 
-export type CourseSettingsLayout = ({
+export type courseSettingsLayout = ({
   req,
   res,
   head,

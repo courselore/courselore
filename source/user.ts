@@ -48,7 +48,7 @@ export const userEmailNotificationses = [
   "none",
 ] as const;
 
-export type UserPartial = ({
+export type userPartial = ({
   req,
   res,
   enrollment,
@@ -81,7 +81,7 @@ export type UserPartial = ({
   size?: "xs" | "sm" | "xl";
 }) => HTML;
 
-export type UserSettingsLayout = ({
+export type userSettingsLayout = ({
   req,
   res,
   head,

@@ -15,7 +15,7 @@ import {
   IsEnrolledInCourseMiddlewareLocals,
 } from "./index.js";
 
-export type BaseLayout = ({
+export type baseLayout = ({
   req,
   res,
   head,
@@ -42,7 +42,7 @@ export type BaseLayout = ({
   body: HTML;
 }) => HTML;
 
-export type BoxLayout = ({
+export type boxLayout = ({
   req,
   res,
   head,
@@ -67,7 +67,7 @@ export type BoxLayout = ({
   body: HTML;
 }) => HTML;
 
-export type ApplicationLayout = ({
+export type applicationLayout = ({
   req,
   res,
   head,
@@ -96,7 +96,7 @@ export type ApplicationLayout = ({
   body: HTML;
 }) => HTML;
 
-export type MainLayout = ({
+export type mainLayout = ({
   req,
   res,
   head,
@@ -123,7 +123,7 @@ export type MainLayout = ({
   body: HTML;
 }) => HTML;
 
-export type SettingsLayout = ({
+export type settingsLayout = ({
   req,
   res,
   head,
@@ -148,9 +148,9 @@ export type SettingsLayout = ({
   body: HTML;
 }) => HTML;
 
-export type LogoPartial = ({ size }?: { size?: number }) => HTML;
+export type logoPartial = ({ size }?: { size?: number }) => HTML;
 
-export type PartialLayout = ({
+export type partialLayout = ({
   req,
   res,
   body,
@@ -160,7 +160,7 @@ export type PartialLayout = ({
   body: HTML;
 }) => HTML;
 
-export type SpinnerPartial = ({
+export type spinnerPartial = ({
   req,
   res,
 }: {
@@ -168,7 +168,7 @@ export type SpinnerPartial = ({
   res: express.Response<any, BaseMiddlewareLocals>;
 }) => HTML;
 
-export type ReportIssueHrefPartial = string;
+export type reportIssueHrefPartial = string;
 
 export interface FlashHelper {
   maxAge: number;

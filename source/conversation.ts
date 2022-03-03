@@ -41,7 +41,7 @@ export type AuthorEnrollment =
     }
   | "no-longer-enrolled";
 
-export type ConversationLayout = ({
+export type conversationLayout = ({
   req,
   res,
   head,
@@ -123,7 +123,7 @@ export type mayEditConversationMiddleware = express.RequestHandler<
 export interface MayEditConversationMiddlewareLocals
   extends IsConversationAccessibleMiddlewareLocals {}
 
-export type ConversationPartial = ({
+export type conversationPartial = ({
   req,
   res,
   conversation,
@@ -159,14 +159,14 @@ export type ConversationPartial = ({
   >;
 }) => HTML;
 
-export type ConversationTypeIconPartial = {
+export type conversationTypeIconPartial = {
   [conversationType in ConversationType]: {
     regular: HTML;
     fill: HTML;
   };
 };
 
-export type ConversationTypeTextColorPartial = {
+export type conversationTypeTextColorPartial = {
   [conversationType in ConversationType]: {
     display: string;
     select: string;

@@ -1,7 +1,7 @@
 import express from "express";
 import qs from "qs";
 import { HTML, html } from "@leafac/html";
-import { BoxLayout, ReportIssueHrefPartial } from "./layouts.js";
+import { boxLayout, reportIssueHrefPartial } from "./layouts.js";
 import { BaseMiddlewareLocals } from "./global-middlewares.js";
 import {
   isSignedOutMiddleware,
@@ -22,8 +22,8 @@ export default ({
   app: express.Express;
   baseURL: string;
   administratorEmail: string;
-  boxLayout: BoxLayout;
-  reportIssueHref: ReportIssueHrefPartial;
+  boxLayout: boxLayout;
+  reportIssueHref: reportIssueHrefPartial;
   isSignedOutMiddleware: isSignedOutMiddleware;
   isSignedInMiddleware: isSignedInMiddleware;
 }): void => {

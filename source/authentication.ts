@@ -135,7 +135,7 @@ export interface AuthenticationOptions {
   argon2: argon2.Options & { raw?: false };
 }
 
-export type EmailConfirmationMailer = ({
+export type emailConfirmationMailer = ({
   req,
   res,
   userId,

@@ -20,15 +20,15 @@ import eventSource, {
 } from "./event-source.js";
 export { EventSourceMiddlewareLocals } from "./event-source.js";
 import layouts, {
-  BaseLayout,
-  BoxLayout,
-  ApplicationLayout,
-  MainLayout,
-  SettingsLayout,
-  LogoPartial,
-  PartialLayout,
-  SpinnerPartial,
-  ReportIssueHrefPartial,
+  baseLayout,
+  boxLayout,
+  applicationLayout,
+  mainLayout,
+  settingsLayout,
+  logoPartial,
+  partialLayout,
+  spinnerPartial,
+  reportIssueHrefPartial,
   FlashHelper,
 } from "./layouts.js";
 import authentication, {
@@ -38,14 +38,14 @@ import authentication, {
   signInHandler,
   PasswordResetHelper,
   AuthenticationOptions,
-  EmailConfirmationMailer,
+  emailConfirmationMailer,
 } from "./authentication.js";
 export {
   IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
 } from "./authentication.js";
 import about, { aboutHandler } from "./about.js";
-import user, { UserPartial, UserSettingsLayout } from "./user.js";
+import user, { userPartial, userSettingsLayout } from "./user.js";
 export {
   UserAvatarlessBackgroundColor,
   userAvatarlessBackgroundColors,
@@ -53,17 +53,17 @@ export {
   userEmailNotificationses,
 } from "./user.js";
 import course, {
-  CoursePartial,
-  EnrollmentRoleIconPartial,
+  coursePartial,
+  enrollmentRoleIconPartial,
   defaultAccentColorHelper,
   isEnrolledInCourseMiddleware,
   isCourseStaffMiddleware,
   invitationExistsMiddleware,
   mayManageInvitationMiddleware,
   isInvitationUsableMiddleware,
-  InvitationMailer,
+  invitationMailer,
   mayManageEnrollmentMiddleware,
-  CourseSettingsLayout,
+  courseSettingsLayout,
 } from "./course.js";
 export {
   EnrollmentRole,
@@ -78,10 +78,10 @@ export {
   MayManageEnrollmentMiddlewareLocals,
 } from "./course.js";
 import conversation, {
-  ConversationLayout,
-  ConversationPartial,
-  ConversationTypeIconPartial,
-  ConversationTypeTextColorPartial,
+  conversationLayout,
+  conversationPartial,
+  conversationTypeIconPartial,
+  conversationTypeTextColorPartial,
   getConversationHelper,
   isConversationAccessibleMiddleware,
   mayEditConversationHelper,
@@ -132,26 +132,26 @@ export interface Courselore extends express.Express {
       mayEditConversation: mayEditConversationMiddleware;
     };
     layouts: {
-      base: BaseLayout;
-      box: BoxLayout;
-      application: ApplicationLayout;
-      main: MainLayout;
-      settings: SettingsLayout;
-      partial: PartialLayout;
-      userSettings: UserSettingsLayout;
-      courseSettings: CourseSettingsLayout;
-      conversation: ConversationLayout;
+      base: baseLayout;
+      box: boxLayout;
+      application: applicationLayout;
+      main: mainLayout;
+      settings: settingsLayout;
+      partial: partialLayout;
+      userSettings: userSettingsLayout;
+      courseSettings: courseSettingsLayout;
+      conversation: conversationLayout;
     };
     partials: {
-      logo: LogoPartial;
-      spinner: SpinnerPartial;
-      reportIssueHref: ReportIssueHrefPartial;
-      user: UserPartial;
-      course: CoursePartial;
-      enrollmentRoleIcon: EnrollmentRoleIconPartial;
-      conversation: ConversationPartial;
-      conversationTypeIcon: ConversationTypeIconPartial;
-      conversationTypeTextColor: ConversationTypeTextColorPartial;
+      logo: logoPartial;
+      spinner: spinnerPartial;
+      reportIssueHref: reportIssueHrefPartial;
+      user: userPartial;
+      course: coursePartial;
+      enrollmentRoleIcon: enrollmentRoleIconPartial;
+      conversation: conversationPartial;
+      conversationTypeIcon: conversationTypeIconPartial;
+      conversationTypeTextColor: conversationTypeTextColorPartial;
       content: any; // TODO
       contentEditor: any; // TODO
     };
@@ -171,8 +171,8 @@ export interface Courselore extends express.Express {
       highlightSearchResult: any; // TODO
     };
     mailers: {
-      emailConfirmation: EmailConfirmationMailer;
-      invitation: InvitationMailer;
+      emailConfirmation: emailConfirmationMailer;
+      invitation: invitationMailer;
     };
     workers: {
       sendEmail: any; // TODO
