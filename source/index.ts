@@ -56,6 +56,7 @@ import course, {
   CoursePartial,
   EnrollmentRoleIconPartial,
   defaultAccentColorHelper,
+  IsEnrolledInCourseMiddleware,
 } from "./course.js";
 export {
   EnrollmentRole,
@@ -96,6 +97,7 @@ export interface Courselore extends express.Express {
       eventSource: EventSourceMiddleware;
       isSignedOut: IsSignedOutMiddleware;
       isSignedIn: IsSignedInMiddleware;
+      isEnrolledInCourse: IsEnrolledInCourseMiddleware;
     };
     layouts: {
       base: BaseLayout;

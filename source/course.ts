@@ -10,6 +10,7 @@ import {
   BaseMiddlewareLocals,
   IsSignedInMiddlewareLocals,
   ConversationType,
+  conversationTypes,
 } from "./index.js";
 
 export type EnrollmentRole = typeof enrollmentRoles[number];
@@ -67,6 +68,13 @@ export interface IsEnrolledInCourseMiddlewareLocals
     staffOnlyAt: string | null;
   }[];
 }
+export type IsEnrolledInCourseMiddleware = express.RequestHandler<
+  { courseReference: string },
+  any,
+  {},
+  {},
+  IsEnrolledInCourseMiddlewareLocals
+>[];
 
 export default (app: Courselore): void => {
   app.locals.partials.course = ({
@@ -520,16 +528,16 @@ export default (app: Courselore): void => {
     )!;
     app.locals.database.run(
       sql`
-          INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "role", "accentColor")
-          VALUES (
-            ${new Date().toISOString()},
-            ${res.locals.user.id},
-            ${course.id},
-            ${cryptoRandomString({ length: 10, type: "numeric" })},
-            ${"staff"},
-            ${app.locals.helpers.defaultAccentColor({ req, res })}
-          )
-        `
+        INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "role", "accentColor")
+        VALUES (
+          ${new Date().toISOString()},
+          ${res.locals.user.id},
+          ${course.id},
+          ${cryptoRandomString({ length: 10, type: "numeric" })},
+          ${"staff"},
+          ${app.locals.helpers.defaultAccentColor({ req, res })}
+        )
+      `
     );
     res.redirect(`${app.locals.options.baseURL}/courses/${course.reference}`);
   });
@@ -554,13 +562,7 @@ export default (app: Courselore): void => {
     return [...accentColorsAvailable][0];
   };
 
-  const isEnrolledInCourseMiddleware: express.RequestHandler<
-    { courseReference: string },
-    any,
-    {},
-    {},
-    IsEnrolledInCourseMiddlewareLocals
-  >[] = [
+  app.locals.middlewares.isEnrolledInCourse = [
     ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
       const enrollment = res.locals.enrollments.find(
@@ -571,7 +573,7 @@ export default (app: Courselore): void => {
       res.locals.enrollment = enrollment;
       res.locals.course = enrollment.course;
 
-      res.locals.conversationsCount = database.get<{
+      res.locals.conversationsCount = app.locals.database.get<{
         count: number;
       }>(
         sql`
@@ -596,7 +598,7 @@ export default (app: Courselore): void => {
           )
       );
 
-      res.locals.tags = database.all<{
+      res.locals.tags = app.locals.database.all<{
         id: number;
         reference: string;
         name: string;
@@ -628,7 +630,7 @@ export default (app: Courselore): void => {
     {},
     IsCourseStaffMiddlewareLocals
   >[] = [
-    ...isEnrolledInCourseMiddleware,
+    ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       if (res.locals.enrollment.role === "staff") return next();
       next("route");
@@ -643,7 +645,7 @@ export default (app: Courselore): void => {
     IsEnrolledInCourseMiddlewareLocals & EventSourceMiddlewareLocals
   >(
     "/courses/:courseReference",
-    ...isEnrolledInCourseMiddleware,
+    ...app.locals.middlewares.isEnrolledInCourse,
     ...eventSourceMiddleware,
     (req, res) => {
       if (res.locals.conversationsCount === 0)
@@ -1042,7 +1044,7 @@ export default (app: Courselore): void => {
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/settings",
-    ...isEnrolledInCourseMiddleware,
+    ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
       res.redirect(
         `${app.locals.options.baseURL}/courses/${
@@ -3678,7 +3680,7 @@ export default (app: Courselore): void => {
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/settings/your-enrollment",
-    ...isEnrolledInCourseMiddleware,
+    ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
       res.send(
         courseSettingsLayout({
@@ -3795,7 +3797,7 @@ export default (app: Courselore): void => {
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/settings/your-enrollment",
-    ...isEnrolledInCourseMiddleware,
+    ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       if (
         typeof req.body.accentColor !== "string" ||
@@ -3829,7 +3831,7 @@ export default (app: Courselore): void => {
     IsEnrolledInCourseMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isEnrolledInCourseMiddleware,
+    ...app.locals.middlewares.isEnrolledInCourse,
     ...isInvitationUsableMiddleware,
     asyncHandler(async (req, res) => {
       const link = `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/invitations/${res.locals.invitation.reference}`;

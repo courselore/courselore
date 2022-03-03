@@ -2237,7 +2237,7 @@ export default () => {
     IsEnrolledInCourseMiddlewareLocals & EventSourceMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/new",
-    ...isEnrolledInCourseMiddleware,
+    ...app.locals.middlewares.isEnrolledInCourse,
     ...eventSourceMiddleware,
     (req, res) => {
       res.send(
@@ -2703,7 +2703,7 @@ export default () => {
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/conversations",
-    ...isEnrolledInCourseMiddleware,
+    ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       req.body.tagsReferences ??= [];
       if (
@@ -2881,7 +2881,7 @@ export default () => {
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/mark-all-conversations-as-read",
-    ...isEnrolledInCourseMiddleware,
+    ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
       const messages = database.all<{ id: number }>(
         sql`
@@ -2938,7 +2938,7 @@ export default () => {
     {},
     IsConversationAccessibleMiddlewareLocals
   >[] = [
-    ...isEnrolledInCourseMiddleware,
+    ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       const conversation = getConversation({
         req,

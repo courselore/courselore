@@ -1577,7 +1577,7 @@ ${contentSource}</textarea
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/content-editor/mention-user-search",
-    ...isEnrolledInCourseMiddleware,
+    ...app.locals.middlewares.isEnrolledInCourse,
     mentionUserSearchRequestHandler
   );
 
@@ -1601,7 +1601,7 @@ ${contentSource}</textarea
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/content-editor/refer-to-conversation-or-message-search",
-    ...isEnrolledInCourseMiddleware,
+    ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       if (
         typeof req.query.search !== "string" ||
@@ -2611,7 +2611,7 @@ ${contentSource}</textarea
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/content-editor/preview",
-    ...isEnrolledInCourseMiddleware,
+    ...app.locals.middlewares.isEnrolledInCourse,
     previewRequestHandler
   );
 };
