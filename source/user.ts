@@ -1,7 +1,14 @@
+import path from "node:path";
 import express from "express";
+import { asyncHandler } from "@leafac/express-async-handler";
+import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
+import filenamify from "filenamify";
+import cryptoRandomString from "crypto-random-string";
+import sharp from "sharp";
+import argon2 from "argon2";
 import {
   Courselore,
   BaseMiddlewareLocals,
@@ -543,7 +550,7 @@ export default (app: Courselore): void => {
       : html``;
   };
 
-  const userSettingsLayout = ({ req, res, head, body }) =>
+  app.locals.layouts.userSettings = ({ req, res, head, body }) =>
     app.locals.layouts.settings({
       req,
       res,
@@ -594,7 +601,7 @@ export default (app: Courselore): void => {
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings",
-    ...isSignedInMiddleware,
+    ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       res.redirect(`${app.locals.options.baseURL}/settings/profile`);
     }
@@ -602,10 +609,10 @@ export default (app: Courselore): void => {
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings/profile",
-    ...isSignedInMiddleware,
+    ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
-        userSettingsLayout({
+        app.locals.layouts.userSettings({
           req,
           res,
           head: html`<title>Profile · User Settings · Courselore</title>`,
@@ -685,7 +692,7 @@ export default (app: Courselore): void => {
                         });
                       `}"
                     >
-                      $${userPartial({
+                      $${app.locals.partials.user({
                         req,
                         res,
                         user: { ...res.locals.user, avatar: null },
@@ -785,7 +792,8 @@ export default (app: Courselore): void => {
                                 gap: var(--space--2);
                               `)}"
                             >
-                              $${spinner({ req, res })} Uploading…
+                              $${app.locals.partials.spinner({ req, res })}
+                              Uploading…
                             </div>
                           `
                         )},
@@ -860,7 +868,7 @@ export default (app: Courselore): void => {
 
               <div class="label">
                 <p class="label--text">Biography</p>
-                $${contentEditor({
+                $${app.locals.partials.contentEditor({
                   req,
                   res,
                   name: "biography",
@@ -890,16 +898,19 @@ export default (app: Courselore): void => {
     { name?: string; avatar?: string; biography?: string },
     {},
     IsSignedInMiddlewareLocals
-  >("/settings/profile", ...isSignedInMiddleware, (req, res, next) => {
-    if (
-      typeof req.body.name !== "string" ||
-      req.body.name.trim() === "" ||
-      typeof req.body.avatar !== "string" ||
-      typeof req.body.biography !== "string"
-    )
-      return next("validation");
-    database.run(
-      sql`
+  >(
+    "/settings/profile",
+    ...app.locals.middlewares.isSignedIn,
+    (req, res, next) => {
+      if (
+        typeof req.body.name !== "string" ||
+        req.body.name.trim() === "" ||
+        typeof req.body.avatar !== "string" ||
+        typeof req.body.biography !== "string"
+      )
+        return next("validation");
+      app.locals.database.run(
+        sql`
         UPDATE "users"
         SET "name" = ${req.body.name},
             "nameSearch" = ${html`${req.body.name}`},
@@ -912,7 +923,7 @@ export default (app: Courselore): void => {
             "biographyPreprocessed" = ${
               req.body.biography.trim() === ""
                 ? null
-                : processContent({
+                : app.locals.partials.content({
                     req,
                     res,
                     type: "source",
@@ -921,16 +932,17 @@ export default (app: Courselore): void => {
             }
         WHERE "id" = ${res.locals.user.id}
       `
-    );
-    Flash.set({
-      req,
-      res,
-      content: html`
-        <div class="flash--green">Profile updated successfully.</div>
-      `,
-    });
-    res.redirect(`${app.locals.options.baseURL}/settings/profile`);
-  });
+      );
+      app.locals.helpers.Flash.set({
+        req,
+        res,
+        content: html`
+          <div class="flash--green">Profile updated successfully.</div>
+        `,
+      });
+      res.redirect(`${app.locals.options.baseURL}/settings/profile`);
+    }
+  );
 
   app.post<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings/profile/avatar",
@@ -950,7 +962,7 @@ export default (app: Courselore): void => {
         type: "numeric",
       });
       await req.files.avatar.mv(
-        path.join(dataDirectory, `files/${folder}/${name}`)
+        path.join(app.locals.options.dataDirectory, `files/${folder}/${name}`)
       );
       const ext = path.extname(name);
       const nameAvatar = `${name.slice(
@@ -965,7 +977,12 @@ export default (app: Courselore): void => {
             height: 256 /* var(--space--64) */,
             position: sharp.strategy.attention,
           })
-          .toFile(path.join(dataDirectory, `files/${folder}/${nameAvatar}`));
+          .toFile(
+            path.join(
+              app.locals.options.dataDirectory,
+              `files/${folder}/${nameAvatar}`
+            )
+          );
       } catch (error) {
         return next("validation");
       }
@@ -980,7 +997,7 @@ export default (app: Courselore): void => {
         return res
           .status(422)
           .send(
-            `Something went wrong in uploading your avatar. Please report to the system administrator at ${administratorEmail}.`
+            `Something went wrong in uploading your avatar. Please report to the system administrator at ${app.locals.options.administratorEmail}.`
           );
       next(err);
     }) as express.ErrorRequestHandler<{}, any, {}, {}, BaseMiddlewareLocals>
@@ -988,10 +1005,10 @@ export default (app: Courselore): void => {
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings/update-email-and-password",
-    ...isSignedInMiddleware,
+    ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
-        userSettingsLayout({
+        app.locals.layouts.userSettings({
           req,
           res,
           head: html`<title>
@@ -1120,7 +1137,7 @@ export default (app: Courselore): void => {
     IsSignedInMiddlewareLocals
   >(
     "/settings/update-email-and-password",
-    ...isSignedInMiddleware,
+    ...app.locals.middlewares.isSignedIn,
     asyncHandler(async (req, res, next) => {
       if (
         typeof req.body.currentPassword !== "string" ||
@@ -1134,7 +1151,7 @@ export default (app: Courselore): void => {
           req.body.currentPassword
         ))
       ) {
-        Flash.set({
+        app.locals.helpers.Flash.set({
           req,
           res,
           content: html`<div class="flash--rose">Incorrect password.</div>`,
@@ -1145,16 +1162,16 @@ export default (app: Courselore): void => {
       }
 
       if (typeof req.body.email === "string") {
-        if (req.body.email.match(emailRegExp) === null)
+        if (req.body.email.match(app.locals.helpers.emailRegExp) === null)
           return next("validation");
         if (
-          database.get<{}>(
+          app.locals.database.get<{}>(
             sql`
               SELECT TRUE FROM "users" WHERE "email" = ${req.body.email}
             `
           ) !== undefined
         ) {
-          Flash.set({
+          app.locals.helpers.Flash.set({
             req,
             res,
             content: html`<div class="flash--rose">Email already taken.</div>`,
@@ -1164,7 +1181,7 @@ export default (app: Courselore): void => {
           );
         }
 
-        database.run(
+        app.locals.database.run(
           sql`
             UPDATE "users"
             SET "email" = ${req.body.email},
@@ -1172,13 +1189,13 @@ export default (app: Courselore): void => {
             WHERE "id" = ${res.locals.user.id}
           `
         );
-        sendEmailConfirmationEmail({
+        app.locals.mailers.emailConfirmation({
           req,
           res,
           userId: res.locals.user.id,
           userEmail: req.body.email,
         });
-        Flash.set({
+        app.locals.helpers.Flash.set({
           req,
           res,
           content: html`
@@ -1194,7 +1211,7 @@ export default (app: Courselore): void => {
         )
           return next("validation");
 
-        database.run(
+        app.locals.database.run(
           sql`
             UPDATE "users"
             SET "password" =  ${await argon2.hash(
@@ -1204,8 +1221,12 @@ export default (app: Courselore): void => {
             WHERE "id" = ${res.locals.user.id}
           `
         );
-        Session.closeAllAndReopen({ req, res, userId: res.locals.user.id });
-        Flash.set({
+        app.locals.helpers.Session.closeAllAndReopen({
+          req,
+          res,
+          userId: res.locals.user.id,
+        });
+        app.locals.helpers.Flash.set({
           req,
           res,
           content: html`
@@ -1222,10 +1243,10 @@ export default (app: Courselore): void => {
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings/notifications-preferences",
-    ...isSignedInMiddleware,
+    ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
-        userSettingsLayout({
+        app.locals.layouts.userSettings({
           req,
           res,
           head: html`<title>
@@ -1336,7 +1357,7 @@ export default (app: Courselore): void => {
     IsSignedInMiddlewareLocals
   >(
     "/settings/notifications-preferences",
-    ...isSignedInMiddleware,
+    ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
       if (
         typeof req.body.emailNotifications !== "string" ||
@@ -1344,7 +1365,7 @@ export default (app: Courselore): void => {
       )
         return next("validation");
 
-      database.run(
+      app.locals.database.run(
         sql`
           UPDATE "users"
           SET "emailNotifications" = ${req.body.emailNotifications}
@@ -1352,7 +1373,7 @@ export default (app: Courselore): void => {
         `
       );
 
-      Flash.set({
+      app.locals.helpers.Flash.set({
         req,
         res,
         content: html`
@@ -1367,8 +1388,4 @@ export default (app: Courselore): void => {
       );
     }
   );
-
-  return {
-    userPartial,
-  };
 };
