@@ -122,7 +122,7 @@ export default (app: Courselore): void => {
             ? html``
             : html`
                 <div>
-                  $${enrollmentRoleIcon[enrollment.role]
+                  $${app.locals.partials.enrollmentRoleIcon[enrollment.role]
                     .regular} ${lodash.capitalize(enrollment.role)}
                 </div>
               `}
@@ -2008,11 +2008,13 @@ export default (app: Courselore): void => {
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                           />
                           <span>
-                            $${enrollmentRoleIcon[role].regular}
+                            $${app.locals.partials.enrollmentRoleIcon[role]
+                              .regular}
                             ${lodash.capitalize(role)}
                           </span>
                           <span class="text--blue">
-                            $${enrollmentRoleIcon[role].fill}
+                            $${app.locals.partials.enrollmentRoleIcon[role]
+                              .fill}
                             ${lodash.capitalize(role)}
                           </span>
                         </label>
@@ -2466,7 +2468,8 @@ export default (app: Courselore): void => {
                                                           `
                                                         : html``}
                                                     >
-                                                      $${enrollmentRoleIcon[
+                                                      $${app.locals.partials
+                                                        .enrollmentRoleIcon[
                                                         role
                                                       ].regular}
                                                       ${lodash.capitalize(role)}
@@ -2480,7 +2483,9 @@ export default (app: Courselore): void => {
                                   });
                                 `}"
                               >
-                                $${enrollmentRoleIcon[invitation.role].regular}
+                                $${app.locals.partials.enrollmentRoleIcon[
+                                  invitation.role
+                                ].regular}
                                 ${lodash.capitalize(invitation.role)}
                                 <i class="bi bi-chevron-down"></i>
                               </button>
@@ -3449,7 +3454,8 @@ export default (app: Courselore): void => {
                                                       `
                                                     : html``}
                                                 >
-                                                  $${enrollmentRoleIcon[role]
+                                                  $${app.locals.partials
+                                                    .enrollmentRoleIcon[role]
                                                     .regular}
                                                   ${lodash.capitalize(role)}
                                                 </button>
@@ -3463,7 +3469,9 @@ export default (app: Courselore): void => {
                             });
                           `}"
                         >
-                          $${enrollmentRoleIcon[enrollment.role].regular}
+                          $${app.locals.partials.enrollmentRoleIcon[
+                            enrollment.role
+                          ].regular}
                           ${lodash.capitalize(enrollment.role)}
                           <i class="bi bi-chevron-down"></i>
                         </button>
