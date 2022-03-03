@@ -84,7 +84,7 @@ export {
   IsSignedInMiddlewareLocals,
 } from "./authentication.js";
 import about, { AboutHandler } from "./about.js";
-import user, { UserPartial } from "./user.js";
+import user, { UserPartial, UserSettingsLayout } from "./user.js";
 export {
   UserAvatarlessBackgroundColor,
   userAvatarlessBackgroundColors,
@@ -136,6 +136,7 @@ export interface Courselore extends express.Express {
       main: MainLayout;
       settings: SettingsLayout;
       partial: PartialLayout;
+      userSettings: UserSettingsLayout;
     };
     partials: {
       logo: LogoPartial;

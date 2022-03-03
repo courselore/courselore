@@ -74,6 +74,27 @@ export type UserPartial = ({
   size?: "xs" | "sm" | "xl";
 }) => HTML;
 
+export type UserSettingsLayout = ({
+  req,
+  res,
+  head,
+  body,
+}: {
+  req: express.Request<
+    {},
+    any,
+    {},
+    {},
+    IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+  >;
+  res: express.Response<
+    any,
+    IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+  >;
+  head: HTML;
+  body: HTML;
+}) => HTML;
+
 export default (app: Courselore): void => {
   app.locals.partials.user = ({
     req,
@@ -522,26 +543,7 @@ export default (app: Courselore): void => {
       : html``;
   };
 
-  const userSettingsLayout = ({
-    req,
-    res,
-    head,
-    body,
-  }: {
-    req: express.Request<
-      {},
-      any,
-      {},
-      {},
-      IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
-    >;
-    res: express.Response<
-      any,
-      IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
-    >;
-    head: HTML;
-    body: HTML;
-  }) =>
+  const userSettingsLayout = ({ req, res, head, body }) =>
     app.locals.layouts.settings({
       req,
       res,
@@ -563,7 +565,8 @@ export default (app: Courselore): void => {
           Profile
         </a>
         <a
-          href="${app.locals.options.baseURL}/settings/update-email-and-password"
+          href="${app.locals.options
+            .baseURL}/settings/update-email-and-password"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
             "/settings/update-email-and-password"
           )
@@ -574,7 +577,8 @@ export default (app: Courselore): void => {
           Update Email & Password
         </a>
         <a
-          href="${app.locals.options.baseURL}/settings/notifications-preferences"
+          href="${app.locals.options
+            .baseURL}/settings/notifications-preferences"
           class="dropdown--menu--item menu-box--item button ${req.path.endsWith(
             "/settings/notifications-preferences"
           )
@@ -615,7 +619,8 @@ export default (app: Courselore): void => {
 
             <form
               method="POST"
-              action="${app.locals.options.baseURL}/settings/profile?_method=PATCH"
+              action="${app.locals.options
+                .baseURL}/settings/profile?_method=PATCH"
               novalidate
               class="${res.locals.localCSS(css`
                 display: flex;
@@ -794,7 +799,9 @@ export default (app: Courselore): void => {
                         this.value = "";
                         tippy.hideAll();
                         uploadingIndicator.show();
-                        const response = await fetch("${app.locals.options.baseURL}/settings/profile/avatar", {
+                        const response = await fetch("${
+                          app.locals.options.baseURL
+                        }/settings/profile/avatar", {
                           method: "POST",
                           body,
                         });
@@ -962,7 +969,11 @@ export default (app: Courselore): void => {
       } catch (error) {
         return next("validation");
       }
-      res.send(`${app.locals.options.baseURL}/files/${folder}/${encodeURIComponent(nameAvatar)}`);
+      res.send(
+        `${app.locals.options.baseURL}/files/${folder}/${encodeURIComponent(
+          nameAvatar
+        )}`
+      );
     }),
     ((err, req, res, next) => {
       if (err === "validation")
@@ -996,7 +1007,8 @@ export default (app: Courselore): void => {
 
             <form
               method="POST"
-              action="${app.locals.options.baseURL}/settings/update-email-and-password?_method=PATCH"
+              action="${app.locals.options
+                .baseURL}/settings/update-email-and-password?_method=PATCH"
               novalidate
               class="${res.locals.localCSS(css`
                 display: flex;
@@ -1040,7 +1052,8 @@ export default (app: Courselore): void => {
 
             <form
               method="POST"
-              action="${app.locals.options.baseURL}/settings/update-email-and-password?_method=PATCH"
+              action="${app.locals.options
+                .baseURL}/settings/update-email-and-password?_method=PATCH"
               novalidate
               class="${res.locals.localCSS(css`
                 display: flex;
@@ -1126,7 +1139,9 @@ export default (app: Courselore): void => {
           res,
           content: html`<div class="flash--rose">Incorrect password.</div>`,
         });
-        return res.redirect(`${app.locals.options.baseURL}/settings/update-email-and-password`);
+        return res.redirect(
+          `${app.locals.options.baseURL}/settings/update-email-and-password`
+        );
       }
 
       if (typeof req.body.email === "string") {
@@ -1144,7 +1159,9 @@ export default (app: Courselore): void => {
             res,
             content: html`<div class="flash--rose">Email already taken.</div>`,
           });
-          return res.redirect(`${app.locals.options.baseURL}/settings/update-email-and-password`);
+          return res.redirect(
+            `${app.locals.options.baseURL}/settings/update-email-and-password`
+          );
         }
 
         database.run(
@@ -1197,7 +1214,9 @@ export default (app: Courselore): void => {
         });
       }
 
-      res.redirect(`${app.locals.options.baseURL}/settings/update-email-and-password`);
+      res.redirect(
+        `${app.locals.options.baseURL}/settings/update-email-and-password`
+      );
     })
   );
 
@@ -1222,7 +1241,8 @@ export default (app: Courselore): void => {
 
             <form
               method="POST"
-              action="${app.locals.options.baseURL}/settings/notifications-preferences?_method=PATCH"
+              action="${app.locals.options
+                .baseURL}/settings/notifications-preferences?_method=PATCH"
               novalidate
               class="${res.locals.localCSS(css`
                 display: flex;
@@ -1342,7 +1362,9 @@ export default (app: Courselore): void => {
         `,
       });
 
-      res.redirect(`${app.locals.options.baseURL}/settings/notifications-preferences`);
+      res.redirect(
+        `${app.locals.options.baseURL}/settings/notifications-preferences`
+      );
     }
   );
 
