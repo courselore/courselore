@@ -23,6 +23,14 @@ export const conversationTypes = [
   "chat",
 ] as const;
 
+export type AuthorEnrollment =
+  | {
+      id: number;
+      user: AuthorEnrollmentUser;
+      reference: string;
+      role: EnrollmentRole;
+    }
+  | "no-longer-enrolled";
 export type AuthorEnrollmentUser = {
   id: number;
   lastSeenOnlineAt: string;
@@ -33,14 +41,6 @@ export type AuthorEnrollmentUser = {
   biographySource: string | null;
   biographyPreprocessed: HTML | null;
 };
-export type AuthorEnrollment =
-  | {
-      id: number;
-      user: AuthorEnrollmentUser;
-      reference: string;
-      role: EnrollmentRole;
-    }
-  | "no-longer-enrolled";
 
 export type ConversationLayout = ({
   req,
@@ -82,47 +82,6 @@ export type ConversationLayout = ({
   mainIsAScrollingPane?: boolean;
   body: HTML;
 }) => HTML;
-
-export type IsConversationAccessibleMiddleware = express.RequestHandler<
-  { courseReference: string; conversationReference: string },
-  HTML,
-  {},
-  {},
-  IsConversationAccessibleMiddlewareLocals
->[];
-export interface IsConversationAccessibleMiddlewareLocals
-  extends IsEnrolledInCourseMiddlewareLocals {
-  conversation: NonNullable<
-    ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
-  >;
-}
-
-export type MayEditConversationHelper = ({
-  req,
-  res,
-}: {
-  req: express.Request<
-    { courseReference: string; conversationReference: string },
-    any,
-    {},
-    {},
-    IsConversationAccessibleMiddlewareLocals
-  >;
-  res: express.Response<any, IsConversationAccessibleMiddlewareLocals>;
-}) => boolean;
-
-export type MayEditConversationMiddleware = express.RequestHandler<
-  {
-    courseReference: string;
-    conversationReference: string;
-  },
-  any,
-  {},
-  {},
-  MayEditConversationMiddlewareLocals
->[];
-export interface MayEditConversationMiddlewareLocals
-  extends IsConversationAccessibleMiddlewareLocals {}
 
 export type ConversationPartial = ({
   req,
@@ -214,6 +173,47 @@ export type GetConversationHelper = ({
       }[];
     }
   | undefined;
+
+export type IsConversationAccessibleMiddleware = express.RequestHandler<
+  { courseReference: string; conversationReference: string },
+  HTML,
+  {},
+  {},
+  IsConversationAccessibleMiddlewareLocals
+>[];
+export interface IsConversationAccessibleMiddlewareLocals
+  extends IsEnrolledInCourseMiddlewareLocals {
+  conversation: NonNullable<
+    ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
+  >;
+}
+
+export type MayEditConversationHelper = ({
+  req,
+  res,
+}: {
+  req: express.Request<
+    { courseReference: string; conversationReference: string },
+    any,
+    {},
+    {},
+    IsConversationAccessibleMiddlewareLocals
+  >;
+  res: express.Response<any, IsConversationAccessibleMiddlewareLocals>;
+}) => boolean;
+
+export type MayEditConversationMiddleware = express.RequestHandler<
+  {
+    courseReference: string;
+    conversationReference: string;
+  },
+  any,
+  {},
+  {},
+  MayEditConversationMiddlewareLocals
+>[];
+export interface MayEditConversationMiddlewareLocals
+  extends IsConversationAccessibleMiddlewareLocals {}
 
 export default (app: Courselore): void => {
   app.locals.layouts.conversation = ({

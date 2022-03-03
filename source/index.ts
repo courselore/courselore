@@ -90,8 +90,6 @@ import conversation, {
 export {
   ConversationType,
   conversationTypes,
-  conversationTypeIcon,
-  conversationTypeTextColor,
   AuthorEnrollment,
   AuthorEnrollmentUser,
   IsConversationAccessibleMiddlewareLocals,
