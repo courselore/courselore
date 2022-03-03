@@ -2184,7 +2184,7 @@ export default (app: Courselore): void => {
                 />
               </div>
 
-              $${contentEditor({ req, res })}
+              $${app.locals.partials.contentEditor({ req, res })}
               $${res.locals.tags.length === 0 &&
               res.locals.enrollment.role !== "staff"
                 ? html``
@@ -2457,7 +2457,7 @@ export default (app: Courselore): void => {
       )
         return next("validation");
 
-      database.run(
+      app.locals.database.run(
         sql`
           UPDATE "courses"
           SET "nextConversationReference" = ${
@@ -2466,7 +2466,7 @@ export default (app: Courselore): void => {
           WHERE "id" = ${res.locals.course.id}
         `
       );
-      const conversationRow = database.get<{
+      const conversationRow = app.locals.database.get<{
         id: number;
         reference: string;
         type: ConversationType;
@@ -2504,7 +2504,7 @@ export default (app: Courselore): void => {
         `
       )!;
       for (const tagReference of req.body.tagsReferences)
-        database.run(
+        app.locals.database.run(
           sql`
             INSERT INTO "taggings" ("createdAt", "conversation", "tag")
             VALUES (
