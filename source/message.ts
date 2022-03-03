@@ -503,7 +503,7 @@ export default (app: Courselore): void => {
           res.locals.conversation.nextMessageReference - 1
         ),
       });
-      let processedContent: ReturnType<typeof processContent>;
+      let processedContent: ReturnType<typeof app.locals.partials.content>;
       let messageReference: string;
       if (
         res.locals.conversation.type === "chat" &&
@@ -516,7 +516,7 @@ export default (app: Courselore): void => {
           5 * 60 * 1000
       ) {
         const contentSource = `${mostRecentMessage.contentSource}\n\n${req.body.content}`;
-        processedContent = processContent({
+        processedContent = app.locals.partials.content({
           req,
           res,
           type: "source",
@@ -548,7 +548,7 @@ export default (app: Courselore): void => {
         );
         messageReference = mostRecentMessage.reference;
       } else {
-        processedContent = processContent({
+        processedContent = app.locals.partials.content({
           req,
           res,
           type: "source",
@@ -721,7 +721,7 @@ export default (app: Courselore): void => {
 
       if (typeof req.body.content === "string") {
         if (req.body.content.trim() === "") return next("validation");
-        const processedContent = processContent({
+        const processedContent = app.locals.partials.content({
           req,
           res,
           type: "source",

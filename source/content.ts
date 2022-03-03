@@ -2074,7 +2074,7 @@ ${contentSource}</textarea
     })
   );
 
-  const processContent = await(async () => {
+  app.locals.partials.content = await(async () => {
     const unifiedProcessor = unified()
       .use(remarkParse)
       .use(remarkGfm)
@@ -2552,7 +2552,10 @@ ${contentSource}</textarea
                     return;
                   parentElement.replaceChild(
                     JSDOM.fragment(
-                      app.locals.helpers.highlightSearchResult(html`${node.textContent}`, search)
+                      app.locals.helpers.highlightSearchResult(
+                        html`${node.textContent}`,
+                        search
+                      )
                     ),
                     node
                   );
@@ -2584,7 +2587,7 @@ ${contentSource}</textarea
       partialLayout({
         req,
         res,
-        body: processContent({
+        body: app.locals.partials.content({
           req,
           res,
           type: "source",

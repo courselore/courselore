@@ -66,7 +66,7 @@ export default ({
               ${lodash.sample(userAvatarlessBackgroundColors)},
               ${biographySource},
               ${
-                processContent({
+                app.locals.partials.content({
                   req,
                   res,
                   type: "source",
@@ -126,7 +126,7 @@ export default ({
                 ${lodash.sample(userAvatarlessBackgroundColors)},
                 ${biographySource},
                 ${
-                  processContent({
+                  app.locals.partials.content({
                     req,
                     res,
                     type: "source",
@@ -480,7 +480,7 @@ export default ({
                         casual.sentences(lodash.random(1, 6))
                       )
                       .join("\n\n");
-              const processedContent = processContent({
+              const processedContent = app.locals.partials.content({
                 req,
                 res,
                 type: "source",

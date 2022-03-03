@@ -2566,7 +2566,7 @@ export default (app: Courselore): void => {
         typeof req.body.content === "string" &&
         req.body.content.trim() !== ""
       ) {
-        const processedContent = processContent({
+        const processedContent = app.locals.partials.content({
           req,
           res,
           type: "source",
@@ -5339,7 +5339,7 @@ export default (app: Courselore): void => {
                                                 });
                                               `}"
                                             >
-                                              $${processContent({
+                                              $${app.locals.partials.content({
                                                 req,
                                                 res,
                                                 type: "preprocessed",
