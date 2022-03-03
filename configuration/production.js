@@ -58,7 +58,7 @@ export default async ({
           }
     
           www.courselore.org, courselore.com, www.courselore.com {
-            redir https://courselore.org{uri}
+            redir ${baseURL}{uri}
           }
         `,
       }),

@@ -265,7 +265,7 @@ export default (app: Courselore): void => {
               Create a New Course
             </h2>
 
-            $${baseURL === "https://courselore.org"
+            $${app.locals.options.baseURL === "https://courselore.org"
               ? html`
                   <div
                     class="${res.locals.localCSS(css`
