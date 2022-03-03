@@ -82,6 +82,7 @@ import conversation, {
   ConversationPartial,
   ConversationTypeIconPartial,
   ConversationTypeTextColorPartial,
+  GetConversationHelper as getConversationHelper,
 } from "./conversation.js";
 export {
   ConversationType,
@@ -150,6 +151,7 @@ export interface Courselore extends express.Express {
       Session: SessionHelper;
       PasswordReset: PasswordResetHelper;
       defaultAccentColor: defaultAccentColorHelper;
+      getConversation: getConversationHelper;
       emailRegExp: any; // TODO
       isExpired: any; // TODO
       isDate: any; // TODO

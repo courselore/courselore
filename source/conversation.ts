@@ -123,6 +123,47 @@ export type ConversationTypeTextColorPartial = {
   };
 };
 
+export type GetConversationHelper = ({
+  req,
+  res,
+  conversationReference,
+}: {
+  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
+  res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+  conversationReference: string;
+}) =>
+  | {
+      id: number;
+      createdAt: string;
+      updatedAt: string | null;
+      reference: string;
+      authorEnrollment: AuthorEnrollment;
+      anonymousAt: string | null;
+      type: ConversationType;
+      resolvedAt: string | null;
+      pinnedAt: string | null;
+      staffOnlyAt: string | null;
+      title: string;
+      titleSearch: string;
+      nextMessageReference: number;
+      taggings: {
+        id: number;
+        tag: {
+          id: number;
+          reference: string;
+          name: string;
+          staffOnlyAt: string | null;
+        };
+      }[];
+      messagesCount: number;
+      readingsCount: number;
+      endorsements: {
+        id: number;
+        enrollment: AuthorEnrollment;
+      }[];
+    }
+  | undefined;
+
 export default (app: Courselore): void => {
   app.locals.layouts.conversation = ({
     req,
@@ -1644,46 +1685,7 @@ export default (app: Courselore): void => {
     },
   };
 
-  const getConversation = ({
-    req,
-    res,
-    conversationReference,
-  }: {
-    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
-    res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
-    conversationReference: string;
-  }):
-    | {
-        id: number;
-        createdAt: string;
-        updatedAt: string | null;
-        reference: string;
-        authorEnrollment: AuthorEnrollment;
-        anonymousAt: string | null;
-        type: ConversationType;
-        resolvedAt: string | null;
-        pinnedAt: string | null;
-        staffOnlyAt: string | null;
-        title: string;
-        titleSearch: string;
-        nextMessageReference: number;
-        taggings: {
-          id: number;
-          tag: {
-            id: number;
-            reference: string;
-            name: string;
-            staffOnlyAt: string | null;
-          };
-        }[];
-        messagesCount: number;
-        readingsCount: number;
-        endorsements: {
-          id: number;
-          enrollment: AuthorEnrollment;
-        }[];
-      }
-    | undefined => {
+  const getConversation = ({ req, res, conversationReference }) => {
     const conversationRow = database.get<{
       id: number;
       createdAt: string;
