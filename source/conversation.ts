@@ -70,7 +70,7 @@ export type ConversationTypeTextColorPartial = {
 };
 
 export default (app: Courselore): void => {
-  const conversationLayout = ({
+  app.locals.layouts.conversation = ({
     req,
     res,
     head,
@@ -2275,7 +2275,7 @@ export default (app: Courselore): void => {
       res.send(
         (res.locals.conversationsCount === 0
           ? app.locals.layouts.main
-          : conversationLayout)({
+          : app.locals.layouts.conversation)({
           req,
           res,
           head: html`
@@ -3189,7 +3189,7 @@ export default (app: Courselore): void => {
         );
 
       res.send(
-        conversationLayout({
+        app.locals.layouts.conversation({
           req,
           res,
           head: html`

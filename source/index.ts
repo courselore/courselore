@@ -78,6 +78,7 @@ export {
   MayManageEnrollmentMiddlewareLocals,
 } from "./course.js";
 import conversation, {
+  ConversationLayout,
   ConversationTypeIconPartial,
   ConversationTypeTextColorPartial,
 } from "./conversation.js";
@@ -128,7 +129,7 @@ export interface Courselore extends express.Express {
       partial: PartialLayout;
       userSettings: UserSettingsLayout;
       courseSettings: CourseSettingsLayout;
-      conversation: any; // TODO
+      conversation: ConversationLayout;
     };
     partials: {
       logo: LogoPartial;
