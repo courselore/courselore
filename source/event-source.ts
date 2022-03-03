@@ -46,5 +46,5 @@ export default (app: Courselore): void => {
         }\t\t\t${req.originalUrl}`
       );
     },
-  ] as EventSourceMiddleware;
+  ];
 };

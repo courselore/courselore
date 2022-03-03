@@ -196,19 +196,20 @@ export default (app: Courselore): void => {
     setTimeout(worker, 24 * 60 * 60 * 1000);
   }, 10 * 60 * 1000);
 
-  const isSignedOutMiddleware = [
+  app.locals.middlewares.isSignedOut = [
     (req, res, next) => {
-      if (Session.get({ req, res }) !== undefined) return next("route");
+      if (app.locals.helpers.Session.get({ req, res }) !== undefined)
+        return next("route");
       next();
     },
   ];
 
-  const isSignedInMiddleware = [
+  app.locals.middlewares.isSignedIn = [
     (req, res, next) => {
-      const userId = Session.get({ req, res });
+      const userId = app.locals.helpers.Session.get({ req, res });
       if (userId === undefined) return next("route");
 
-      res.locals.user = database.get<{
+      res.locals.user = app.locals.database.get<{
         id: number;
         lastSeenOnlineAt: string;
         email: string;
