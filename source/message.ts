@@ -9,7 +9,9 @@ export default (app: Courselore): void => {
   }: {
     req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
-    conversation: NonNullable<ReturnType<getConversationHelper>>;
+    conversation: NonNullable<
+      ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
+    >;
     messageReference: string;
   }):
     | {
@@ -343,7 +345,7 @@ export default (app: Courselore): void => {
 
   interface MessageExistsMiddlewareLocals
     extends IsConversationAccessibleMiddlewareLocals {
-    message: NonNullable<ReturnType<typeof getMessage>>;
+    message: NonNullable<ReturnType<Courselore["locals"]["helpers"]["getMessage"]>>;
   }
   const messageExistsMiddleware: express.RequestHandler<
     {
@@ -1019,8 +1021,10 @@ export default (app: Courselore): void => {
   }: {
     req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
-    conversation: NonNullable<ReturnType<getConversationHelper>>;
-    message: NonNullable<ReturnType<typeof getMessage>>;
+    conversation: NonNullable<
+      ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
+    >;
+    message: NonNullable<ReturnType<Courselore["locals"]["helpers"]["getMessage"]>>;
     mentions: Set<string>;
   }): void => {
     database.run(

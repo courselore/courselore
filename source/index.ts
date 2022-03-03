@@ -154,6 +154,7 @@ export interface Courselore extends express.Express {
       PasswordReset: PasswordResetHelper;
       defaultAccentColor: defaultAccentColorHelper;
       getConversation: getConversationHelper;
+      getMessage: any; // TODO
       emailRegExp: any; // TODO
       isExpired: any; // TODO
       isDate: any; // TODO

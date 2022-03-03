@@ -90,7 +90,9 @@ export type ConversationPartial = ({
 }: {
   req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
   res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
-  conversation: NonNullable<ReturnType<getConversationHelper>>;
+  conversation: NonNullable<
+    ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
+  >;
   searchResult?:
     | {
         type: "conversationTitle";
@@ -98,15 +100,21 @@ export type ConversationPartial = ({
       }
     | {
         type: "messageAuthorUserName";
-        message: NonNullable<ReturnType<typeof getMessage>>;
+        message: NonNullable<
+          ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
+        >;
         highlight: HTML;
       }
     | {
         type: "messageContent";
-        message: NonNullable<ReturnType<typeof getMessage>>;
+        message: NonNullable<
+          ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
+        >;
         snippet: HTML;
       };
-  message?: NonNullable<ReturnType<typeof getMessage>>;
+  message?: NonNullable<
+    ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
+  >;
 }) => HTML;
 
 export type ConversationTypeIconPartial = {
@@ -2643,7 +2651,9 @@ export default (app: Courselore): void => {
 
   interface IsConversationAccessibleMiddlewareLocals
     extends IsEnrolledInCourseMiddlewareLocals {
-    conversation: NonNullable<ReturnType<getConversationHelper>>;
+    conversation: NonNullable<
+      ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
+    >;
   }
   const isConversationAccessibleMiddleware: express.RequestHandler<
     { courseReference: string; conversationReference: string },
