@@ -52,13 +52,12 @@ export {
   UserEmailNotifications,
   userEmailNotificationses,
 } from "./user.js";
-import course, { EnrollmentRoleIconPartial, CoursePartial } from "./course.js";
+import course, { CoursePartial, EnrollmentRoleIconPartial } from "./course.js";
 export {
   EnrollmentRole,
   enrollmentRoles,
   EnrollmentAccentColor,
   enrollmentAccentColors,
-  enrollmentRoleIcon,
   IsEnrolledInCourseMiddlewareLocals,
   AuthorEnrollment,
   AuthorEnrollmentUser,
@@ -108,8 +107,8 @@ export interface Courselore extends express.Express {
       spinner: SpinnerPartial;
       reportIssueHref: ReportIssueHrefPartial;
       user: UserPartial;
-      enrollmentRoleIcon: EnrollmentRoleIconPartial;
       course: CoursePartial;
+      enrollmentRoleIcon: EnrollmentRoleIconPartial;
       content: any; // TODO
       contentEditor: any; // TODO
     };

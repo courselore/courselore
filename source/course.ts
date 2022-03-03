@@ -1,7 +1,9 @@
 import express from "express";
+import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
+import cryptoRandomString from "crypto-random-string";
 import lodash from "lodash";
 import {
   Courselore,
@@ -22,13 +24,6 @@ export const enrollmentAccentColors = [
   "pink",
 ] as const;
 
-export type EnrollmentRoleIconPartial = {
-  [role in EnrollmentRole]: {
-    regular: HTML;
-    fill: HTML;
-  };
-};
-
 export type CoursePartial = ({
   req,
   res,
@@ -43,18 +38,14 @@ export type CoursePartial = ({
   tight?: boolean;
 }) => HTML;
 
-export default (app: Courselore): void => {
-  app.locals.partials.enrollmentRoleIcon = {
-    student: {
-      regular: html`<i class="bi bi-person"></i>`,
-      fill: html`<i class="bi bi-person-fill"></i>`,
-    },
-    staff: {
-      regular: html`<i class="bi bi-mortarboard"></i>`,
-      fill: html`<i class="bi bi-mortarboard-fill"></i>`,
-    },
+export type EnrollmentRoleIconPartial = {
+  [role in EnrollmentRole]: {
+    regular: HTML;
+    fill: HTML;
   };
+};
 
+export default (app: Courselore): void => {
   app.locals.partials.course = ({
     req,
     res,
@@ -131,6 +122,17 @@ export default (app: Courselore): void => {
       </div>
     </div>
   `;
+
+  app.locals.partials.enrollmentRoleIcon = {
+    student: {
+      regular: html`<i class="bi bi-person"></i>`,
+      fill: html`<i class="bi bi-person-fill"></i>`,
+    },
+    staff: {
+      regular: html`<i class="bi bi-mortarboard"></i>`,
+      fill: html`<i class="bi bi-mortarboard-fill"></i>`,
+    },
+  };
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/",
@@ -265,7 +267,8 @@ export default (app: Courselore): void => {
               Create a New Course
             </h2>
 
-            $${app.locals.options.baseURL === app.locals.options.canonicalBaseURL
+            $${app.locals.options.baseURL ===
+            app.locals.options.canonicalBaseURL
               ? html`
                   <div
                     class="${res.locals.localCSS(css`
@@ -447,7 +450,7 @@ export default (app: Courselore): void => {
     )
       return next("validation");
 
-    const course = database.get<{
+    const course = app.locals.database.get<{
       id: number;
       reference: string;
     }>(
@@ -492,7 +495,7 @@ export default (app: Courselore): void => {
         RETURNING *
       `
     )!;
-    database.run(
+    app.locals.database.run(
       sql`
           INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "role", "accentColor")
           VALUES (
