@@ -484,7 +484,7 @@ export default (app: Courselore): void => {
     "/",
     ...app.locals.middlewares.isSignedOut,
     app.locals.options.baseURL === app.locals.options.canonicalBaseURL
-      ? app.locals.handlers.about
+      ? (req, res, next) => app.locals.handlers.about(req, res, next)
       : app.locals.handlers.signIn
   );
   app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(

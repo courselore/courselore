@@ -159,7 +159,6 @@ export default async function courselore(
   globalMiddlewares(app);
   eventSource(app);
   await layouts(app);
-  // TODO: Fix mutual dependency between ‘authentication’ and ‘about’
   authentication(app);
   about(app);
   user(app);
