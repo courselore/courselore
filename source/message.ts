@@ -1,7 +1,7 @@
 import { Courselore } from "./index.js";
 
 export default (app: Courselore): void => {
-  const getMessage = ({
+  const app.locals.helpers.getMessage = ({
     req,
     res,
     conversation,
@@ -360,7 +360,7 @@ export default (app: Courselore): void => {
   >[] = [
     ...isConversationAccessibleMiddleware,
     (req, res, next) => {
-      const message = getMessage({
+      const message = app.locals.helpers.getMessage({
         req,
         res,
         conversation: res.locals.conversation,
@@ -495,7 +495,7 @@ export default (app: Courselore): void => {
       )
         return next("validation");
 
-      const mostRecentMessage = getMessage({
+      const mostRecentMessage = app.locals.helpers.getMessage({
         req,
         res,
         conversation: res.locals.conversation,
@@ -624,7 +624,7 @@ export default (app: Courselore): void => {
         req,
         res,
         conversation: res.locals.conversation,
-        message: getMessage({
+        message: app.locals.helpers.getMessage({
           req,
           res,
           conversation: res.locals.conversation,

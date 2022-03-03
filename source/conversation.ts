@@ -422,7 +422,7 @@ export default (app: Courselore): void => {
                 "string"
             ? ({
                 type: "messageAuthorUserName",
-                message: getMessage({
+                message: app.locals.helpers.getMessage({
                   req,
                   res,
                   conversation,
@@ -438,7 +438,7 @@ export default (app: Courselore): void => {
                 "string"
             ? ({
                 type: "messageContent",
-                message: getMessage({
+                message: app.locals.helpers.getMessage({
                   req,
                   res,
                   conversation,
@@ -2577,7 +2577,7 @@ export default (app: Courselore): void => {
           req,
           res,
           conversation,
-          message: getMessage({
+          message: app.locals.helpers.getMessage({
             req,
             res,
             conversation,
@@ -2784,7 +2784,7 @@ export default (app: Courselore): void => {
       if (messagesReverse) messagesRows.reverse();
       const messages = messagesRows.map(
         (message) =>
-          getMessage({
+          app.locals.helpers.getMessage({
             req,
             res,
             conversation: res.locals.conversation,

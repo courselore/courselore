@@ -1699,7 +1699,7 @@ ${contentSource}</textarea
                 `
               )
               .flatMap((messageRow) => {
-                const message = getMessage({
+                const message = app.locals.helpers.getMessage({
                   req,
                   res,
                   conversation,
@@ -1867,7 +1867,7 @@ ${contentSource}</textarea
               conversationReference: messageRow.conversationReference,
             });
             if (conversation === undefined) return [];
-            const message = getMessage({
+            const message = app.locals.helpers.getMessage({
               req,
               res,
               conversation,
@@ -1950,7 +1950,7 @@ ${contentSource}</textarea
               conversationReference: messageRow.conversationReference,
             });
             if (conversation === undefined) return [];
-            const message = getMessage({
+            const message = app.locals.helpers.getMessage({
               req,
               res,
               conversation,
@@ -2272,7 +2272,7 @@ ${contentSource}</textarea
               element.textContent = `#${conversation.reference}`;
               continue;
             }
-            const message = getMessage({
+            const message = app.locals.helpers.getMessage({
               req: narrowReq,
               res: narrowRes,
               conversation,
@@ -2417,7 +2417,7 @@ ${contentSource}</textarea
                             .reference}/conversations/${conversation.reference}"
                           >${match}</a
                         >`;
-                      const message = getMessage({
+                      const message = app.locals.helpers.getMessage({
                         req: narrowReq,
                         res: narrowRes,
                         conversation,
@@ -2502,7 +2502,7 @@ ${contentSource}</textarea
               );
               continue;
             }
-            const message = getMessage({
+            const message = app.locals.helpers.getMessage({
               req: narrowReq,
               res: narrowRes,
               conversation,
