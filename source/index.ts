@@ -77,7 +77,10 @@ export {
   IsInvitationUsableMiddlewareLocals,
   MayManageEnrollmentMiddlewareLocals,
 } from "./course.js";
-import conversation from "./conversation.js";
+import conversation, {
+  ConversationTypeIconPartial,
+  ConversationTypeTextColorPartial,
+} from "./conversation.js";
 export {
   ConversationType,
   conversationTypes,
@@ -134,6 +137,8 @@ export interface Courselore extends express.Express {
       user: UserPartial;
       course: CoursePartial;
       enrollmentRoleIcon: EnrollmentRoleIconPartial;
+      conversationTypeIcon: ConversationTypeIconPartial;
+      conversationTypeTextColor: ConversationTypeTextColorPartial;
       content: any; // TODO
       contentEditor: any; // TODO
     };

@@ -1,3 +1,5 @@
+import { HTML, html } from "@leafac/html";
+import { Courselore } from "./index.js";
 
 export type ConversationType = typeof conversationTypes[number];
 export const conversationTypes = [
@@ -7,45 +9,21 @@ export const conversationTypes = [
   "chat",
 ] as const;
 
-export const conversationTypeIcon = {
-  announcement: {
-    regular: html`<i class="bi bi-megaphone"></i>`,
-    fill: html`<i class="bi bi-megaphone-fill"></i>`,
-  },
-  question: {
-    regular: html`<i class="bi bi-patch-question"></i>`,
-    fill: html`<i class="bi bi-patch-question-fill"></i>`,
-  },
-  note: {
-    regular: html`<i class="bi bi-sticky"></i>`,
-    fill: html`<i class="bi bi-sticky-fill"></i>`,
-  },
-  chat: {
-    regular: html`<i class="bi bi-cup"></i>`,
-    fill: html`<i class="bi bi-cup-fill"></i>`,
-  },
+export type ConversationTypeIconPartial = {
+  [conversationType in ConversationType]: {
+    regular: HTML;
+    fill: HTML;
+  };
 };
 
-export const conversationTypeTextColor = {
-  announcement: {
-    display: "text--fuchsia",
-    select: "text--fuchsia",
-  },
-  question: {
-    display: "text--rose",
-    select: "text--rose",
-  },
-  note: {
-    display: "",
-    select: "text--blue",
-  },
-  chat: {
-    display: "text--cyan",
-    select: "text--cyan",
-  },
+export type ConversationTypeTextColorPartial = {
+  [conversationType in ConversationType]: {
+    display: string;
+    select: string;
+  };
 };
 
-export default () => {
+export default (app: Courselore): void => {
   const conversationLayout = ({
     req,
     res,
@@ -466,8 +444,8 @@ export default () => {
                   `)}"
                 >
                   <a
-                    href="${app.locals.options.baseURL}/courses/${res.locals.course
-                      .reference}/conversations/new${qs.stringify(
+                    href="${app.locals.options.baseURL}/courses/${res.locals
+                      .course.reference}/conversations/new${qs.stringify(
                       lodash.omit(req.query, [
                         "conversationLayoutSidebarOpenOnSmallScreen",
                         "messageReference",
@@ -1027,7 +1005,8 @@ export default () => {
 
                             <form
                               method="POST"
-                              action="${app.locals.options.baseURL}/courses/${res.locals.course
+                              action="${app.locals.options
+                                .baseURL}/courses/${res.locals.course
                                 .reference}/conversations/mark-all-conversations-as-read"
                               class="${res.locals.localCSS(css`
                                 display: flex;
@@ -1094,7 +1073,8 @@ export default () => {
                                   `)}"
                                 />
                                 <a
-                                  href="${app.locals.options.baseURL}/courses/${res.locals.course
+                                  href="${app.locals.options
+                                    .baseURL}/courses/${res.locals.course
                                     .reference}/conversations/${conversation.reference}${qs.stringify(
                                     lodash.omit(
                                       {
@@ -1581,6 +1561,44 @@ export default () => {
         : html``}
     </div>
   `;
+
+  app.locals.partials.conversationTypeIcon = {
+    announcement: {
+      regular: html`<i class="bi bi-megaphone"></i>`,
+      fill: html`<i class="bi bi-megaphone-fill"></i>`,
+    },
+    question: {
+      regular: html`<i class="bi bi-patch-question"></i>`,
+      fill: html`<i class="bi bi-patch-question-fill"></i>`,
+    },
+    note: {
+      regular: html`<i class="bi bi-sticky"></i>`,
+      fill: html`<i class="bi bi-sticky-fill"></i>`,
+    },
+    chat: {
+      regular: html`<i class="bi bi-cup"></i>`,
+      fill: html`<i class="bi bi-cup-fill"></i>`,
+    },
+  };
+
+  app.locals.partials.conversationTypeTextColor = {
+    announcement: {
+      display: "text--fuchsia",
+      select: "text--fuchsia",
+    },
+    question: {
+      display: "text--rose",
+      select: "text--rose",
+    },
+    note: {
+      display: "",
+      select: "text--blue",
+    },
+    chat: {
+      display: "text--cyan",
+      select: "text--cyan",
+    },
+  };
 
   type AuthorEnrollmentUser = {
     id: number;
@@ -2241,60 +2259,61 @@ export default () => {
     ...app.locals.middlewares.eventSource,
     (req, res) => {
       res.send(
-        (res.locals.conversationsCount === 0 ? app.locals.layouts.main : conversationLayout)(
-          {
-            req,
-            res,
-            head: html`
-              <title>
-                Start
-                ${res.locals.conversationsCount === 0 ? "the First" : "a New"}
-                Conversation · ${res.locals.course.name} · Courselore
-              </title>
-            `,
-            body: html`
-              <h2 class="heading">
-                <i class="bi bi-chat-left-text"></i>
-                Start
-                ${res.locals.conversationsCount === 0 ? "the First" : "a New"}
-                Conversation
-              </h2>
+        (res.locals.conversationsCount === 0
+          ? app.locals.layouts.main
+          : conversationLayout)({
+          req,
+          res,
+          head: html`
+            <title>
+              Start
+              ${res.locals.conversationsCount === 0 ? "the First" : "a New"}
+              Conversation · ${res.locals.course.name} · Courselore
+            </title>
+          `,
+          body: html`
+            <h2 class="heading">
+              <i class="bi bi-chat-left-text"></i>
+              Start
+              ${res.locals.conversationsCount === 0 ? "the First" : "a New"}
+              Conversation
+            </h2>
 
-              <form
-                method="POST"
-                action="${app.locals.options.baseURL}/courses/${res.locals.course
-                  .reference}/conversations"
-                novalidate
-                class="${res.locals.localCSS(css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                `)}"
-              >
-                <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+            <form
+              method="POST"
+              action="${app.locals.options.baseURL}/courses/${res.locals.course
+                .reference}/conversations"
+              novalidate
+              class="${res.locals.localCSS(css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `)}"
+            >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
 
-                <div class="label">
-                  <p class="label--text">Type</p>
-                  <div
-                    class="${res.locals.localCSS(css`
-                      display: flex;
-                      flex-wrap: wrap;
-                      column-gap: var(--space--8);
-                      row-gap: var(--space--2);
-                    `)}"
-                  >
-                    $${res.locals.conversationTypes.map(
-                      (conversationType) => html`
-                        <label
-                          class="button button--tight button--tight--inline button--transparent"
-                        >
-                          <input
-                            type="radio"
-                            name="type"
-                            value="${conversationType}"
-                            required
-                            class="visually-hidden input--radio-or-checkbox--multilabel"
-                            oninteractive="${javascript`
+              <div class="label">
+                <p class="label--text">Type</p>
+                <div
+                  class="${res.locals.localCSS(css`
+                    display: flex;
+                    flex-wrap: wrap;
+                    column-gap: var(--space--8);
+                    row-gap: var(--space--2);
+                  `)}"
+                >
+                  $${res.locals.conversationTypes.map(
+                    (conversationType) => html`
+                      <label
+                        class="button button--tight button--tight--inline button--transparent"
+                      >
+                        <input
+                          type="radio"
+                          name="type"
+                          value="${conversationType}"
+                          required
+                          class="visually-hidden input--radio-or-checkbox--multilabel"
+                          oninteractive="${javascript`
                               this.addEventListener("change", () => {
                                 const form = this.closest("form");
                                 for (const element of [...form.querySelectorAll('[name="tagsReferences[]"]'), form.querySelector('[name="content"]')])
@@ -2303,283 +2322,54 @@ export default () => {
                                   )};
                               });
                             `}"
-                          />
-                          <span>
-                            $${conversationTypeIcon[conversationType].regular}
-                            $${lodash.capitalize(conversationType)}
-                          </span>
-                          <span
-                            class="${conversationTypeTextColor[conversationType]
-                              .select}"
-                          >
-                            $${conversationTypeIcon[conversationType].fill}
-                            $${lodash.capitalize(conversationType)}
-                          </span>
-                        </label>
-                      `
-                    )}
-                  </div>
-                </div>
-
-                <div
-                  class="${res.locals.localCSS(css`
-                    display: flex;
-                    flex-wrap: wrap;
-                    column-gap: var(--space--8);
-                    row-gap: var(--space--4);
-                  `)}"
-                >
-                  $${res.locals.enrollment.role === "staff"
-                    ? html`
-                        <div
-                          class="label ${res.locals.localCSS(css`
-                            width: var(--space--24);
-                          `)}"
+                        />
+                        <span>
+                          $${conversationTypeIcon[conversationType].regular}
+                          $${lodash.capitalize(conversationType)}
+                        </span>
+                        <span
+                          class="${conversationTypeTextColor[conversationType]
+                            .select}"
                         >
-                          <div class="label--text">
-                            Pin
-                            <button
-                              type="button"
-                              class="button button--tight button--tight--inline button--transparent"
-                              oninteractive="${javascript`
+                          $${conversationTypeIcon[conversationType].fill}
+                          $${lodash.capitalize(conversationType)}
+                        </span>
+                      </label>
+                    `
+                  )}
+                </div>
+              </div>
+
+              <div
+                class="${res.locals.localCSS(css`
+                  display: flex;
+                  flex-wrap: wrap;
+                  column-gap: var(--space--8);
+                  row-gap: var(--space--4);
+                `)}"
+              >
+                $${res.locals.enrollment.role === "staff"
+                  ? html`
+                      <div
+                        class="label ${res.locals.localCSS(css`
+                          width: var(--space--24);
+                        `)}"
+                      >
+                        <div class="label--text">
+                          Pin
+                          <button
+                            type="button"
+                            class="button button--tight button--tight--inline button--transparent"
+                            oninteractive="${javascript`
                                 tippy(this, {
                                   trigger: "click",
                                   content: "Pinned conversations are listed first.",
                                 });
                               `}"
-                            >
-                              <i class="bi bi-info-circle"></i>
-                            </button>
-                          </div>
-                          <div
-                            class="${res.locals.localCSS(css`
-                              display: flex;
-                            `)}"
-                          >
-                            <label
-                              class="button button--tight button--tight--inline button--transparent"
-                            >
-                              <input
-                                type="checkbox"
-                                name="isPinned"
-                                class="visually-hidden input--radio-or-checkbox--multilabel"
-                              />
-                              <span
-                                oninteractive="${javascript`
-                                  tippy(this, {
-                                    touch: false,
-                                    content: "Pin",
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-pin-angle"></i>
-                                Unpinned
-                              </span>
-                              <span
-                                class="text--amber"
-                                oninteractive="${javascript`
-                                  tippy(this, {
-                                    touch: false,
-                                    content: "Unpin",
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-pin-fill"></i>
-                                Pinned
-                              </span>
-                            </label>
-                          </div>
-                        </div>
-                      `
-                    : html``}
-
-                  <div
-                    class="label ${res.locals.localCSS(css`
-                      width: var(--space--40);
-                    `)}"
-                  >
-                    <p class="label--text">Visibility</p>
-                    <div
-                      class="${res.locals.localCSS(css`
-                        display: flex;
-                      `)}"
-                    >
-                      <label
-                        class="button button--tight button--tight--inline button--transparent"
-                      >
-                        <input
-                          type="checkbox"
-                          name="isStaffOnly"
-                          class="visually-hidden input--radio-or-checkbox--multilabel"
-                          oninteractive="${javascript`
-                            this.addEventListener("change", () => {
-                              const anonymity = this.closest("form").querySelector(".anonymity");
-                              if (anonymity === null) return;
-                              anonymity.hidden = this.checked;
-                              for (const element of anonymity.querySelectorAll("*"))
-                                if (element.disabled !== null) element.disabled = this.checked;
-                            });
-                          `}"
-                        />
-                        <span
-                          oninteractive="${javascript`
-                            tippy(this, {
-                              touch: false,
-                              content: "Set as Visible by Staff Only",
-                            });
-                          `}"
-                        >
-                          <i class="bi bi-eye"></i>
-                          Visible by Everyone
-                        </span>
-                        <span
-                          class="text--sky"
-                          oninteractive="${javascript`
-                            tippy(this, {
-                              touch: false,
-                              content: "Set as Visible by Everyone",
-                            });
-                          `}"
-                        >
-                          <i class="bi bi-mortarboard-fill"></i>
-                          Visible by Staff Only
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="label">
-                  <p class="label--text">Title</p>
-                  <input
-                    type="text"
-                    name="title"
-                    required
-                    autocomplete="off"
-                    autofocus
-                    class="input--text"
-                  />
-                </div>
-
-                $${contentEditor({ req, res })}
-                $${res.locals.tags.length === 0 &&
-                res.locals.enrollment.role !== "staff"
-                  ? html``
-                  : html`
-                      <div class="label">
-                        <div class="label--text">
-                          Tags
-                          <button
-                            type="button"
-                            class="button button--tight button--tight--inline button--transparent"
-                            oninteractive="${javascript`
-                              tippy(this, {
-                                trigger: "click",
-                                content: "Tags help to organize conversations.",
-                              });
-                            `}"
                           >
                             <i class="bi bi-info-circle"></i>
                           </button>
-                          $${res.locals.tags.length > 0 &&
-                          res.locals.enrollment.role === "staff"
-                            ? html`
-                                <div
-                                  class="${res.locals.localCSS(css`
-                                    flex: 1;
-                                    display: flex;
-                                    justify-content: flex-end;
-                                  `)}"
-                                >
-                                  <a
-                                    href="${app.locals.options.baseURL}/courses/${res.locals.course
-                                      .reference}/settings/tags"
-                                    target="_blank"
-                                    class="button button--tight button--tight--inline button--transparent secondary"
-                                  >
-                                    <i class="bi bi-sliders"></i>
-                                    Manage Tags
-                                  </a>
-                                </div>
-                              `
-                            : html``}
                         </div>
-                        <div
-                          class="${res.locals.localCSS(css`
-                            display: flex;
-                            flex-wrap: wrap;
-                            column-gap: var(--space--8);
-                            row-gap: var(--space--2);
-                          `)}"
-                        >
-                          $${res.locals.tags.length === 0 &&
-                          res.locals.enrollment.role === "staff"
-                            ? html`
-                                <a
-                                  href="${app.locals.options.baseURL}/courses/${res.locals.course
-                                    .reference}/settings/tags"
-                                  target="_blank"
-                                  class="button button--tight button--tight--inline button--inline button--transparent secondary"
-                                >
-                                  <i class="bi bi-sliders"></i>
-                                  Create the First Tag
-                                </a>
-                              `
-                            : res.locals.tags.map(
-                                (tag) => html`
-                                  <div
-                                    class="${res.locals.localCSS(css`
-                                      display: flex;
-                                      gap: var(--space--2);
-                                    `)}"
-                                  >
-                                    <label
-                                      class="button button--tight button--tight--inline button--transparent"
-                                    >
-                                      <input
-                                        type="checkbox"
-                                        name="tagsReferences[]"
-                                        value="${tag.reference}"
-                                        required
-                                        class="visually-hidden input--radio-or-checkbox--multilabel"
-                                      />
-                                      <span>
-                                        <i class="bi bi-tag"></i>
-                                        ${tag.name}
-                                      </span>
-                                      <span class="text--teal">
-                                        <i class="bi bi-tag-fill"></i>
-                                        ${tag.name}
-                                      </span>
-                                    </label>
-                                    $${tag.staffOnlyAt !== null
-                                      ? html`
-                                          <span
-                                            class="text--sky"
-                                            oninteractive="${javascript`
-                                          tippy(this, {
-                                            touch: false,
-                                            content: "This tag is visible by staff only.",
-                                          });
-                                        `}"
-                                          >
-                                            <i
-                                              class="bi bi-mortarboard-fill"
-                                            ></i>
-                                          </span>
-                                        `
-                                      : html``}
-                                  </div>
-                                `
-                              )}
-                        </div>
-                      </div>
-                    `}
-                $${res.locals.enrollment.role === "staff"
-                  ? html``
-                  : html`
-                      <div class="anonymity label">
-                        <p class="label--text">Anonymity</p>
                         <div
                           class="${res.locals.localCSS(css`
                             display: flex;
@@ -2590,66 +2380,295 @@ export default () => {
                           >
                             <input
                               type="checkbox"
-                              name="isAnonymous"
+                              name="isPinned"
                               class="visually-hidden input--radio-or-checkbox--multilabel"
                             />
                             <span
                               oninteractive="${javascript`
+                                  tippy(this, {
+                                    touch: false,
+                                    content: "Pin",
+                                  });
+                                `}"
+                            >
+                              <i class="bi bi-pin-angle"></i>
+                              Unpinned
+                            </span>
+                            <span
+                              class="text--amber"
+                              oninteractive="${javascript`
+                                  tippy(this, {
+                                    touch: false,
+                                    content: "Unpin",
+                                  });
+                                `}"
+                            >
+                              <i class="bi bi-pin-fill"></i>
+                              Pinned
+                            </span>
+                          </label>
+                        </div>
+                      </div>
+                    `
+                  : html``}
+
+                <div
+                  class="label ${res.locals.localCSS(css`
+                    width: var(--space--40);
+                  `)}"
+                >
+                  <p class="label--text">Visibility</p>
+                  <div
+                    class="${res.locals.localCSS(css`
+                      display: flex;
+                    `)}"
+                  >
+                    <label
+                      class="button button--tight button--tight--inline button--transparent"
+                    >
+                      <input
+                        type="checkbox"
+                        name="isStaffOnly"
+                        class="visually-hidden input--radio-or-checkbox--multilabel"
+                        oninteractive="${javascript`
+                            this.addEventListener("change", () => {
+                              const anonymity = this.closest("form").querySelector(".anonymity");
+                              if (anonymity === null) return;
+                              anonymity.hidden = this.checked;
+                              for (const element of anonymity.querySelectorAll("*"))
+                                if (element.disabled !== null) element.disabled = this.checked;
+                            });
+                          `}"
+                      />
+                      <span
+                        oninteractive="${javascript`
+                            tippy(this, {
+                              touch: false,
+                              content: "Set as Visible by Staff Only",
+                            });
+                          `}"
+                      >
+                        <i class="bi bi-eye"></i>
+                        Visible by Everyone
+                      </span>
+                      <span
+                        class="text--sky"
+                        oninteractive="${javascript`
+                            tippy(this, {
+                              touch: false,
+                              content: "Set as Visible by Everyone",
+                            });
+                          `}"
+                      >
+                        <i class="bi bi-mortarboard-fill"></i>
+                        Visible by Staff Only
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="label">
+                <p class="label--text">Title</p>
+                <input
+                  type="text"
+                  name="title"
+                  required
+                  autocomplete="off"
+                  autofocus
+                  class="input--text"
+                />
+              </div>
+
+              $${contentEditor({ req, res })}
+              $${res.locals.tags.length === 0 &&
+              res.locals.enrollment.role !== "staff"
+                ? html``
+                : html`
+                    <div class="label">
+                      <div class="label--text">
+                        Tags
+                        <button
+                          type="button"
+                          class="button button--tight button--tight--inline button--transparent"
+                          oninteractive="${javascript`
+                              tippy(this, {
+                                trigger: "click",
+                                content: "Tags help to organize conversations.",
+                              });
+                            `}"
+                        >
+                          <i class="bi bi-info-circle"></i>
+                        </button>
+                        $${res.locals.tags.length > 0 &&
+                        res.locals.enrollment.role === "staff"
+                          ? html`
+                              <div
+                                class="${res.locals.localCSS(css`
+                                  flex: 1;
+                                  display: flex;
+                                  justify-content: flex-end;
+                                `)}"
+                              >
+                                <a
+                                  href="${app.locals.options
+                                    .baseURL}/courses/${res.locals.course
+                                    .reference}/settings/tags"
+                                  target="_blank"
+                                  class="button button--tight button--tight--inline button--transparent secondary"
+                                >
+                                  <i class="bi bi-sliders"></i>
+                                  Manage Tags
+                                </a>
+                              </div>
+                            `
+                          : html``}
+                      </div>
+                      <div
+                        class="${res.locals.localCSS(css`
+                          display: flex;
+                          flex-wrap: wrap;
+                          column-gap: var(--space--8);
+                          row-gap: var(--space--2);
+                        `)}"
+                      >
+                        $${res.locals.tags.length === 0 &&
+                        res.locals.enrollment.role === "staff"
+                          ? html`
+                              <a
+                                href="${app.locals.options
+                                  .baseURL}/courses/${res.locals.course
+                                  .reference}/settings/tags"
+                                target="_blank"
+                                class="button button--tight button--tight--inline button--inline button--transparent secondary"
+                              >
+                                <i class="bi bi-sliders"></i>
+                                Create the First Tag
+                              </a>
+                            `
+                          : res.locals.tags.map(
+                              (tag) => html`
+                                <div
+                                  class="${res.locals.localCSS(css`
+                                    display: flex;
+                                    gap: var(--space--2);
+                                  `)}"
+                                >
+                                  <label
+                                    class="button button--tight button--tight--inline button--transparent"
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      name="tagsReferences[]"
+                                      value="${tag.reference}"
+                                      required
+                                      class="visually-hidden input--radio-or-checkbox--multilabel"
+                                    />
+                                    <span>
+                                      <i class="bi bi-tag"></i>
+                                      ${tag.name}
+                                    </span>
+                                    <span class="text--teal">
+                                      <i class="bi bi-tag-fill"></i>
+                                      ${tag.name}
+                                    </span>
+                                  </label>
+                                  $${tag.staffOnlyAt !== null
+                                    ? html`
+                                        <span
+                                          class="text--sky"
+                                          oninteractive="${javascript`
+                                          tippy(this, {
+                                            touch: false,
+                                            content: "This tag is visible by staff only.",
+                                          });
+                                        `}"
+                                        >
+                                          <i class="bi bi-mortarboard-fill"></i>
+                                        </span>
+                                      `
+                                    : html``}
+                                </div>
+                              `
+                            )}
+                      </div>
+                    </div>
+                  `}
+              $${res.locals.enrollment.role === "staff"
+                ? html``
+                : html`
+                    <div class="anonymity label">
+                      <p class="label--text">Anonymity</p>
+                      <div
+                        class="${res.locals.localCSS(css`
+                          display: flex;
+                        `)}"
+                      >
+                        <label
+                          class="button button--tight button--tight--inline button--transparent"
+                        >
+                          <input
+                            type="checkbox"
+                            name="isAnonymous"
+                            class="visually-hidden input--radio-or-checkbox--multilabel"
+                          />
+                          <span
+                            oninteractive="${javascript`
                                 tippy(this, {
                                   touch: false,
                                   content: "Set as Anonymous to Other Students",
                                 });
                               `}"
-                            >
-                              <span>
-                                $${userPartial({
-                                  req,
-                                  res,
-                                  user: res.locals.user,
-                                  decorate: false,
-                                  name: false,
-                                })}
-                                <span
-                                  class="${res.locals.localCSS(css`
-                                    margin-left: var(--space--1);
-                                  `)}"
-                                >
-                                  Signed by You
-                                </span>
+                          >
+                            <span>
+                              $${userPartial({
+                                req,
+                                res,
+                                user: res.locals.user,
+                                decorate: false,
+                                name: false,
+                              })}
+                              <span
+                                class="${res.locals.localCSS(css`
+                                  margin-left: var(--space--1);
+                                `)}"
+                              >
+                                Signed by You
                               </span>
                             </span>
-                            <span
-                              oninteractive="${javascript`
+                          </span>
+                          <span
+                            oninteractive="${javascript`
                                 tippy(this, {
                                   touch: false,
                                   content: "Set as Signed by You",
                                 });
                               `}"
-                            >
-                              <span>
-                                $${userPartial({
-                                  req,
-                                  res,
-                                  name: false,
-                                })}
-                                <span
-                                  class="${res.locals.localCSS(css`
-                                    margin-left: var(--space--1);
-                                  `)}"
-                                >
-                                  Anonymous to Other Students
-                                </span>
+                          >
+                            <span>
+                              $${userPartial({
+                                req,
+                                res,
+                                name: false,
+                              })}
+                              <span
+                                class="${res.locals.localCSS(css`
+                                  margin-left: var(--space--1);
+                                `)}"
+                              >
+                                Anonymous to Other Students
                               </span>
                             </span>
-                          </label>
-                        </div>
+                          </span>
+                        </label>
                       </div>
-                    `}
+                    </div>
+                  `}
 
-                <div>
-                  <button
-                    class="button button--full-width-on-small-screen button--blue"
-                    oninteractive="${javascript`
+              <div>
+                <button
+                  class="button button--full-width-on-small-screen button--blue"
+                  oninteractive="${javascript`
                       Mousetrap(this.closest("form").querySelector(".content-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                       tippy(this, {
                         touch: false,
@@ -2674,15 +2693,14 @@ export default () => {
                         )},
                       });
                     `}"
-                  >
-                    <i class="bi bi-chat-left-text"></i>
-                    Start Conversation
-                  </button>
-                </div>
-              </form>
-            `,
-          }
-        )
+                >
+                  <i class="bi bi-chat-left-text"></i>
+                  Start Conversation
+                </button>
+              </div>
+            </form>
+          `,
+        })
       );
     }
   );
@@ -3319,7 +3337,8 @@ export default () => {
                                               (conversationType) => html`
                                                 <form
                                                   method="POST"
-                                                  action="${app.locals.options.baseURL}/courses/${res
+                                                  action="${app.locals.options
+                                                    .baseURL}/courses/${res
                                                     .locals.course
                                                     .reference}/conversations/${res
                                                     .locals.conversation
@@ -3392,10 +3411,10 @@ export default () => {
                                 ? html`
                                     <form
                                       method="POST"
-                                      action="${app.locals.options.baseURL}/courses/${res.locals
-                                        .course.reference}/conversations/${res
-                                        .locals.conversation
-                                        .reference}?_method=PATCH"
+                                      action="${app.locals.options
+                                        .baseURL}/courses/${res.locals.course
+                                        .reference}/conversations/${res.locals
+                                        .conversation.reference}?_method=PATCH"
                                     >
                                       <input
                                         type="hidden"
@@ -3481,7 +3500,8 @@ export default () => {
                           ? html`
                               <form
                                 method="POST"
-                                action="${app.locals.options.baseURL}/courses/${res.locals.course
+                                action="${app.locals.options
+                                  .baseURL}/courses/${res.locals.course
                                   .reference}/conversations/${res.locals
                                   .conversation.reference}?_method=PATCH"
                               >
@@ -3564,8 +3584,9 @@ export default () => {
                                       html`
                                         <form
                                           method="POST"
-                                          action="${app.locals.options.baseURL}/courses/${res
-                                            .locals.course
+                                          action="${app.locals.options
+                                            .baseURL}/courses/${res.locals
+                                            .course
                                             .reference}/conversations/${res
                                             .locals.conversation
                                             .reference}?_method=PATCH"
@@ -3752,7 +3773,9 @@ export default () => {
                                                     html`
                                                       <form
                                                         method="POST"
-                                                        action="${app.locals.options.baseURL}/courses/${res
+                                                        action="${app.locals
+                                                          .options
+                                                          .baseURL}/courses/${res
                                                           .locals.course
                                                           .reference}/conversations/${res
                                                           .locals.conversation
@@ -3843,9 +3866,9 @@ export default () => {
                       ? html`
                           <form
                             method="POST"
-                            action="${app.locals.options.baseURL}/courses/${res.locals.course
-                              .reference}/conversations/${res.locals
-                              .conversation.reference}?_method=PATCH"
+                            action="${app.locals.options.baseURL}/courses/${res
+                              .locals.course.reference}/conversations/${res
+                              .locals.conversation.reference}?_method=PATCH"
                             novalidate
                             hidden
                             class="title--edit ${res.locals.localCSS(css`
@@ -3973,8 +3996,9 @@ export default () => {
                                           (tagging) => html`
                                             <form
                                               method="POST"
-                                              action="${app.locals.options.baseURL}/courses/${res
-                                                .locals.course
+                                              action="${app.locals.options
+                                                .baseURL}/courses/${res.locals
+                                                .course
                                                 .reference}/conversations/${res
                                                 .locals.conversation
                                                 .reference}/taggings?_method=DELETE"
@@ -4068,7 +4092,9 @@ export default () => {
                                                           (tag) => html`
                                                             <form
                                                               method="POST"
-                                                              action="${app.locals.options.baseURL}/courses/${res
+                                                              action="${app
+                                                                .locals.options
+                                                                .baseURL}/courses/${res
                                                                 .locals.course
                                                                 .reference}/conversations/${res
                                                                 .locals
@@ -4118,7 +4144,9 @@ export default () => {
                                                         .role === "staff"
                                                         ? html`
                                                             <a
-                                                              href="${app.locals.options.baseURL}/courses/${res
+                                                              href="${app.locals
+                                                                .options
+                                                                .baseURL}/courses/${res
                                                                 .locals.course
                                                                 .reference}/settings/tags"
                                                               target="_blank"
@@ -4301,9 +4329,10 @@ export default () => {
                                       `)}"
                                     >
                                       <a
-                                        href="${app.locals.options.baseURL}/courses/${res.locals
-                                          .course.reference}/conversations/${res
-                                          .locals.conversation
+                                        href="${app.locals.options
+                                          .baseURL}/courses/${res.locals.course
+                                          .reference}/conversations/${res.locals
+                                          .conversation
                                           .reference}${qs.stringify(
                                           lodash.omit(
                                             {
@@ -4629,7 +4658,10 @@ export default () => {
                                                             ? html`
                                                                 <form
                                                                   method="POST"
-                                                                  action="${app.locals.options.baseURL}/courses/${res
+                                                                  action="${app
+                                                                    .locals
+                                                                    .options
+                                                                    .baseURL}/courses/${res
                                                                     .locals
                                                                     .course
                                                                     .reference}/conversations/${res
@@ -4709,7 +4741,12 @@ export default () => {
                                                                       if (!content.hidden) return;
                                                                       leafac.mount(
                                                                         content,
-                                                                        await (await fetch("${app.locals.options.baseURL}/courses/${
+                                                                        await (await fetch("${
+                                                                          app
+                                                                            .locals
+                                                                            .options
+                                                                            .baseURL
+                                                                        }/courses/${
                                                                     res.locals
                                                                       .course
                                                                       .reference
@@ -4829,7 +4866,10 @@ export default () => {
                                                             ? html`
                                                                 <form
                                                                   method="POST"
-                                                                  action="${app.locals.options.baseURL}/courses/${res
+                                                                  action="${app
+                                                                    .locals
+                                                                    .options
+                                                                    .baseURL}/courses/${res
                                                                     .locals
                                                                     .course
                                                                     .reference}/conversations/${res
@@ -4959,7 +4999,10 @@ export default () => {
                                                                           html`
                                                                             <form
                                                                               method="POST"
-                                                                              action="${app.locals.options.baseURL}/courses/${res
+                                                                              action="${app
+                                                                                .locals
+                                                                                .options
+                                                                                .baseURL}/courses/${res
                                                                                 .locals
                                                                                 .course
                                                                                 .reference}/conversations/${res
@@ -5065,8 +5108,9 @@ export default () => {
                                             headers.push(html`
                                               <form
                                                 method="POST"
-                                                action="${app.locals.options.baseURL}/courses/${res
-                                                  .locals.course
+                                                action="${app.locals.options
+                                                  .baseURL}/courses/${res.locals
+                                                  .course
                                                   .reference}/conversations/${res
                                                   .locals.conversation
                                                   .reference}/messages/${message.reference}?_method=PATCH"
@@ -5155,8 +5199,9 @@ export default () => {
                                             headers.push(html`
                                               <form
                                                 method="POST"
-                                                action="${app.locals.options.baseURL}/courses/${res
-                                                  .locals.course
+                                                action="${app.locals.options
+                                                  .baseURL}/courses/${res.locals
+                                                  .course
                                                   .reference}/conversations/${res
                                                   .locals.conversation
                                                   .reference}/messages/${message.reference}/endorsements${isEndorsed
@@ -5680,7 +5725,8 @@ export default () => {
                                                 html`
                                                   <form
                                                     method="POST"
-                                                    action="${app.locals.options.baseURL}/courses/${res
+                                                    action="${app.locals.options
+                                                      .baseURL}/courses/${res
                                                       .locals.course
                                                       .reference}/conversations/${res
                                                       .locals.conversation
@@ -5782,7 +5828,10 @@ export default () => {
                                                       if (!content.hidden) return;
                                                       leafac.mount(
                                                         content,
-                                                        await (await fetch("${app.locals.options.baseURL}/courses/${
+                                                        await (await fetch("${
+                                                          app.locals.options
+                                                            .baseURL
+                                                        }/courses/${
                                                     res.locals.course.reference
                                                   }/conversations/${
                                                     res.locals.conversation
@@ -5835,8 +5884,9 @@ export default () => {
                                           ? html`
                                               <form
                                                 method="POST"
-                                                action="${app.locals.options.baseURL}/courses/${res
-                                                  .locals.course
+                                                action="${app.locals.options
+                                                  .baseURL}/courses/${res.locals
+                                                  .course
                                                   .reference}/conversations/${res
                                                   .locals.conversation
                                                   .reference}/messages/${message.reference}?_method=PATCH"
@@ -5949,9 +5999,10 @@ export default () => {
                                       `)}"
                                     >
                                       <a
-                                        href="${app.locals.options.baseURL}/courses/${res.locals
-                                          .course.reference}/conversations/${res
-                                          .locals.conversation
+                                        href="${app.locals.options
+                                          .baseURL}/courses/${res.locals.course
+                                          .reference}/conversations/${res.locals
+                                          .conversation
                                           .reference}${qs.stringify(
                                           lodash.omit(
                                             {
@@ -5986,8 +6037,8 @@ export default () => {
 
               <form
                 method="POST"
-                action="${app.locals.options.baseURL}/courses/${res.locals.course
-                  .reference}/conversations/${res.locals.conversation
+                action="${app.locals.options.baseURL}/courses/${res.locals
+                  .course.reference}/conversations/${res.locals.conversation
                   .reference}/messages"
                 novalidate
                 class="${res.locals.localCSS(css`
@@ -6469,7 +6520,9 @@ export default () => {
         sql`DELETE FROM "conversations" WHERE "id" = ${res.locals.conversation.id}`
       );
 
-      res.redirect(`${app.locals.options.baseURL}/courses/${res.locals.course.reference}`);
+      res.redirect(
+        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}`
+      );
 
       emitCourseRefresh(res.locals.course.id);
     }
@@ -7210,7 +7263,8 @@ export default () => {
                 html: html`
                   <p>
                     <a
-                      href="${app.locals.options.baseURL}/courses/${res.locals.course
+                      href="${app.locals.options.baseURL}/courses/${res.locals
+                        .course
                         .reference}/conversations/${conversation.reference}?messageReference=${message.reference}"
                       >${message.authorEnrollment === "no-longer-enrolled"
                         ? "Someone who is no longer enrolled"
@@ -7233,7 +7287,9 @@ export default () => {
 
                   <p>
                     <small>
-                      <a href="${app.locals.options.baseURL}/settings/notifications-preferences"
+                      <a
+                        href="${app.locals.options
+                          .baseURL}/settings/notifications-preferences"
                         >Change Notifications Preferences</a
                       >
                     </small>
