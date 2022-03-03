@@ -1,5 +1,5 @@
 export default () => {
-  const sendEmailWorker = (() => {
+  app.locals.workers.sendEmail = (() => {
     let timeout = setTimeout(schedule, 2 * 60 * 1000);
     return schedule;
 
@@ -25,7 +25,7 @@ export default () => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\tsendEmailWorker\tEXPIRED\n${JSON.stringify(
+            `${new Date().toISOString()}\tworker.sendEmail\tEXPIRED\n${JSON.stringify(
               JSON.parse(job.mailOptions),
               undefined,
               2
@@ -52,7 +52,7 @@ export default () => {
             `
           );
           console.log(
-            `${new Date().toISOString()}\tsendEmailWorker\tTIMED OUT\n${JSON.stringify(
+            `${new Date().toISOString()}\tworker.sendEmail\tTIMED OUT\n${JSON.stringify(
               JSON.parse(job.mailOptions),
               undefined,
               2
@@ -116,7 +116,7 @@ export default () => {
             break;
         }
         console.log(
-          `${new Date().toISOString()}\tsendEmailWorker\t${result.status}\t\t${
+          `${new Date().toISOString()}\tworker.sendEmail\t${result.status}\t\t${
             result?.response ?? ""
           }\t\t${mailOptions.to}\t\t${mailOptions.subject}${
             process.env.NODE_ENV !== "production" ? `\n${mailOptions.html}` : ``

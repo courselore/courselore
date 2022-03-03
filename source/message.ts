@@ -1250,6 +1250,6 @@ export default (app: Courselore): void => {
       }
     });
 
-    sendEmailWorker();
+    app.locals.workers.sendEmail();
   };
 };
