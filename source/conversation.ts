@@ -8,6 +8,8 @@ import lodash from "lodash";
 import {
   Courselore,
   EventSourceMiddlewareLocals,
+  UserAvatarlessBackgroundColor,
+  EnrollmentRole,
   IsEnrolledInCourseMiddlewareLocals,
 } from "./index.js";
 
@@ -18,6 +20,25 @@ export const conversationTypes = [
   "note",
   "chat",
 ] as const;
+
+export type AuthorEnrollmentUser = {
+  id: number;
+  lastSeenOnlineAt: string;
+  email: string;
+  name: string;
+  avatar: string | null;
+  avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+  biographySource: string | null;
+  biographyPreprocessed: HTML | null;
+};
+export type AuthorEnrollment =
+  | {
+      id: number;
+      user: AuthorEnrollmentUser;
+      reference: string;
+      role: EnrollmentRole;
+    }
+  | "no-longer-enrolled";
 
 export type ConversationLayout = ({
   req,
@@ -1396,7 +1417,7 @@ export default (app: Courselore): void => {
           line-height: var(--line-height--xs);
         `)}"
       >
-        $${userPartial({
+        $${app.locals.partials.user({
           req,
           res,
           enrollment: conversation.authorEnrollment,
@@ -1508,7 +1529,7 @@ export default (app: Courselore): void => {
         ? html`
             <div>
               <div>
-                $${userPartial({
+                $${app.locals.partials.user({
                   req,
                   res,
                   enrollment: searchResult.message.authorEnrollment,
@@ -1527,7 +1548,7 @@ export default (app: Courselore): void => {
         ? html`
             <div>
               <div>
-                $${userPartial({
+                $${app.locals.partials.user({
                   req,
                   res,
                   enrollment: searchResult.message.authorEnrollment,
@@ -1550,7 +1571,7 @@ export default (app: Courselore): void => {
         ? html`
             <div>
               <div>
-                $${userPartial({
+                $${app.locals.partials.user({
                   req,
                   res,
                   enrollment: message.authorEnrollment,
@@ -1614,25 +1635,6 @@ export default (app: Courselore): void => {
       select: "text--cyan",
     },
   };
-
-  type AuthorEnrollmentUser = {
-    id: number;
-    lastSeenOnlineAt: string;
-    email: string;
-    name: string;
-    avatar: string | null;
-    avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-    biographySource: string | null;
-    biographyPreprocessed: HTML | null;
-  };
-  type AuthorEnrollment =
-    | {
-        id: number;
-        user: AuthorEnrollmentUser;
-        reference: string;
-        role: EnrollmentRole;
-      }
-    | "no-longer-enrolled";
 
   const getConversation = ({
     req,
@@ -2641,7 +2643,7 @@ export default (app: Courselore): void => {
                               `}"
                           >
                             <span>
-                              $${userPartial({
+                              $${app.locals.partials.user({
                                 req,
                                 res,
                                 user: res.locals.user,
@@ -2666,7 +2668,7 @@ export default (app: Courselore): void => {
                               `}"
                           >
                             <span>
-                              $${userPartial({
+                              $${app.locals.partials.user({
                                 req,
                                 res,
                                 name: false,
@@ -4919,7 +4921,7 @@ export default (app: Courselore): void => {
                                                                               );
                                                                             `)}"
                                                                           >
-                                                                            $${userPartial(
+                                                                            $${app.locals.partials.user(
                                                                               {
                                                                                 req,
                                                                                 res,
@@ -4953,7 +4955,7 @@ export default (app: Courselore): void => {
                                                                               );
                                                                             `)}"
                                                                           >
-                                                                            $${userPartial(
+                                                                            $${app.locals.partials.user(
                                                                               {
                                                                                 req,
                                                                                 res,
@@ -5508,7 +5510,7 @@ export default (app: Courselore): void => {
                                                     );
                                                   `)}"
                                                 >
-                                                  $${userPartial({
+                                                  $${app.locals.partials.user({
                                                     req,
                                                     res,
                                                     enrollment:
@@ -6252,7 +6254,7 @@ export default (app: Courselore): void => {
                                 `}"
                               >
                                 <span>
-                                  $${userPartial({
+                                  $${app.locals.partials.user({
                                     req,
                                     res,
                                     user: res.locals.user,
@@ -6277,7 +6279,7 @@ export default (app: Courselore): void => {
                                 `}"
                               >
                                 <span>
-                                  $${userPartial({
+                                  $${app.locals.partials.user({
                                     req,
                                     res,
                                     name: false,
@@ -6372,7 +6374,7 @@ export default (app: Courselore): void => {
               $${res.locals.message.readings.reverse().map(
                 (reading) => html`
                   <button class="dropdown--menu--item">
-                    $${userPartial({
+                    $${app.locals.partials.user({
                       req,
                       res,
                       enrollment: reading.enrollment,

@@ -1553,7 +1553,7 @@ ${contentSource}</textarea
                       });
                     `}"
                   >
-                    $${userPartial({
+                    $${app.locals.partials.user({
                       req,
                       res,
                       enrollment,
@@ -1893,7 +1893,7 @@ ${contentSource}</textarea
                         </div>
                         <div class="secondary">
                           <div>
-                            $${userPartial({
+                            $${app.locals.partials.user({
                               req,
                               res,
                               enrollment: message.authorEnrollment,
@@ -2318,7 +2318,7 @@ ${contentSource}</textarea
                           >`;
                           break;
                         case "anonymous":
-                          mentionHTML = html`@$${userPartial({
+                          mentionHTML = html`@$${app.locals.partials.user({
                             req,
                             res,
                             avatar: false,
@@ -2380,7 +2380,7 @@ ${contentSource}</textarea
                             role: enrollmentRow.role,
                           };
                           mentions!.add(enrollment.reference);
-                          mentionHTML = html`@$${userPartial({
+                          mentionHTML = html`@$${app.locals.partials.user({
                             req,
                             res,
                             enrollment,
