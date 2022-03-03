@@ -74,6 +74,8 @@ import authentication, {
   SessionHelper,
   IsSignedOutMiddleware,
   IsSignedInMiddleware,
+  SignInHandler,
+  PasswordResetHelper,
 } from "./authentication.js";
 export {
   IsSignedOutMiddlewareLocals,
@@ -110,6 +112,7 @@ export interface Courselore extends express.Express {
       GlobalMiddlewaresOptions;
     handlers: {
       about: AboutHandler;
+      signIn: SignInHandler;
     };
     middlewares: {
       eventSource: EventSourceMiddleware;
@@ -135,9 +138,14 @@ export interface Courselore extends express.Express {
     helpers: {
       Flash: FlashHelper;
       Session: SessionHelper;
+      PasswordReset: PasswordResetHelper;
+      emailRegExp: any; // TODO
     };
     mailers: {
       emailConfirmation: any; // TODO
+    };
+    workers: {
+      sendEmail: any; // TODO
     };
   } & DatabaseLocals &
     EventSourceLocals;
@@ -177,6 +185,7 @@ export default async function courselore(
   globalMiddlewares(app);
   eventSource(app);
   await layouts(app);
+  // TODO: Fix mutual dependency between ‘authentication’ and ‘about’
   authentication(app);
   about(app);
 

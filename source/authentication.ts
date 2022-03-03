@@ -1,7 +1,12 @@
 import express from "express";
+import qs from "qs";
+import { asyncHandler } from "@leafac/express-async-handler";
 import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
+import { css } from "@leafac/css";
+import { javascript } from "@leafac/javascript";
 import cryptoRandomString from "crypto-random-string";
+import argon2 from "argon2";
 import {
   Courselore,
   BaseMiddlewareLocals,
@@ -108,6 +113,20 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
     role: EnrollmentRole;
     accentColor: EnrollmentAccentColor;
   }[];
+}
+
+export type SignInHandler = express.RequestHandler<
+  {},
+  HTML,
+  {},
+  { email?: string },
+  IsSignedOutMiddlewareLocals
+>;
+
+export interface PasswordResetHelper {
+  maxAge: number;
+  create(userId: number): string;
+  get(nonce: string): number | undefined;
 }
 
 export default (app: Courselore): void => {
@@ -348,15 +367,9 @@ export default (app: Courselore): void => {
     },
   ];
 
-  const signInRequestHandler: express.RequestHandler<
-    {},
-    HTML,
-    {},
-    { email?: string },
-    IsSignedOutMiddlewareLocals
-  > = (req, res) => {
+  app.locals.handlers.signIn = (req, res) => {
     res.send(
-      boxLayout({
+      app.locals.layouts.box({
         req,
         res,
         head: html`
@@ -367,9 +380,12 @@ export default (app: Courselore): void => {
         body: html`
           <form
             method="POST"
-            action="${baseURL}/sign-in${qs.stringify(req.query, {
-              addQueryPrefix: true,
-            })}"
+            action="${app.locals.options.baseURL}/sign-in${qs.stringify(
+              req.query,
+              {
+                addQueryPrefix: true,
+              }
+            )}"
             novalidate
             class="${res.locals.localCSS(css`
               display: flex;
@@ -420,9 +436,12 @@ export default (app: Courselore): void => {
             <p>
               Don’t have an account?
               <a
-                href="${baseURL}/sign-up${qs.stringify(req.query, {
-                  addQueryPrefix: true,
-                })}"
+                href="${app.locals.options.baseURL}/sign-up${qs.stringify(
+                  req.query,
+                  {
+                    addQueryPrefix: true,
+                  }
+                )}"
                 class="link"
                 >Sign up</a
               >.
@@ -430,7 +449,8 @@ export default (app: Courselore): void => {
             <p>
               Forgot your password?
               <a
-                href="${baseURL}/reset-password${qs.stringify(req.query, {
+                href="${app.locals.options
+                  .baseURL}/reset-password${qs.stringify(req.query, {
                   addQueryPrefix: true,
                 })}"
                 class="link"
@@ -444,19 +464,21 @@ export default (app: Courselore): void => {
   };
   app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "/",
-    ...isSignedOutMiddleware,
-    baseURL === canonicalBaseURL ? aboutRequestHandler : signInRequestHandler
+    ...app.locals.middlewares.isSignedOut,
+    app.locals.options.baseURL === app.locals.options.canonicalBaseURL
+      ? app.locals.handlers.about
+      : app.locals.handlers.signIn
   );
   app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "/sign-in",
-    ...isSignedOutMiddleware,
-    signInRequestHandler
+    ...app.locals.middlewares.isSignedOut,
+    app.locals.handlers.signIn
   );
   app.get<{}, HTML, {}, { redirect?: string }, IsSignedInMiddlewareLocals>(
     "/sign-in",
-    ...isSignedInMiddleware,
+    ...app.locals.middlewares.isSignedIn,
     (req, res) => {
-      res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
+      res.redirect(`${app.locals.options.baseURL}${req.query.redirect ?? "/"}`);
     }
   );
 
@@ -468,23 +490,23 @@ export default (app: Courselore): void => {
     IsSignedOutMiddlewareLocals
   >(
     "/sign-in",
-    ...isSignedOutMiddleware,
+    ...app.locals.middlewares.isSignedOut,
     asyncHandler(async (req, res, next) => {
       if (
         typeof req.body.email !== "string" ||
-        req.body.email.match(emailRegExp) === null ||
+        req.body.email.match(app.locals.helpers.emailRegExp) === null ||
         typeof req.body.password !== "string" ||
         req.body.password.trim() === ""
       )
         return next("validation");
-      const user = database.get<{ id: number; password: string }>(
+      const user = app.locals.database.get<{ id: number; password: string }>(
         sql`SELECT "id", "password" FROM "users" WHERE "email" = ${req.body.email}`
       );
       if (
         user === undefined ||
         !(await argon2.verify(user.password, req.body.password))
       ) {
-        Flash.set({
+        app.locals.helpers.Flash.set({
           req,
           res,
           content: html`
@@ -492,26 +514,26 @@ export default (app: Courselore): void => {
           `,
         });
         return res.redirect(
-          `${baseURL}/sign-in${qs.stringify(req.query, {
+          `${app.locals.options.baseURL}/sign-in${qs.stringify(req.query, {
             addQueryPrefix: true,
           })}`
         );
       }
-      Session.open({ req, res, userId: user.id });
-      res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
+      app.locals.helpers.Session.open({ req, res, userId: user.id });
+      res.redirect(`${app.locals.options.baseURL}${req.query.redirect ?? "/"}`);
     })
   );
 
-  const PasswordReset = {
+  app.locals.helpers.PasswordReset = {
     maxAge: 10 * 60 * 1000,
 
-    create(userId: number): string {
-      database.run(
+    create(userId) {
+      app.locals.database.run(
         sql`
           DELETE FROM "passwordResets" WHERE "user" = ${userId}
         `
       );
-      return database.get<{ nonce: string }>(
+      return app.locals.database.get<{ nonce: string }>(
         sql`
           INSERT INTO "passwordResets" ("createdAt", "user", "nonce")
           VALUES (
@@ -524,31 +546,31 @@ export default (app: Courselore): void => {
       )!.nonce;
     },
 
-    get(nonce: string): number | undefined {
-      const passwordReset = database.get<{
+    get(nonce) {
+      const passwordReset = app.locals.database.get<{
         createdAt: string;
         user: number;
       }>(
         sql`SELECT "createdAt", "user" FROM "passwordResets" WHERE "nonce" = ${nonce}`
       );
-      database.run(
+      app.locals.database.run(
         sql`
           DELETE FROM "passwordResets" WHERE "nonce" = ${nonce}
         `
       );
       return passwordReset === undefined ||
         new Date(passwordReset.createdAt).getTime() <
-          Date.now() - PasswordReset.maxAge
+          Date.now() - app.locals.helpers.PasswordReset.maxAge
         ? undefined
         : passwordReset.user;
     },
   };
   setTimeout(function worker() {
-    database.run(
+    app.locals.database.run(
       sql`
         DELETE FROM "passwordResets"
         WHERE "createdAt" < ${new Date(
-          Date.now() - PasswordReset.maxAge
+          Date.now() - app.locals.helpers.PasswordReset.maxAge
         ).toISOString()}
       `
     );
@@ -559,7 +581,7 @@ export default (app: Courselore): void => {
     "/reset-password",
     (req, res) => {
       res.send(
-        boxLayout({
+        app.locals.layouts.box({
           req,
           res,
           head: html`
@@ -570,7 +592,8 @@ export default (app: Courselore): void => {
           body: html`
             <form
               method="POST"
-              action="${baseURL}/reset-password${qs.stringify(req.query, {
+              action="${app.locals.options
+                .baseURL}/reset-password${qs.stringify(req.query, {
                 addQueryPrefix: true,
               })}"
               novalidate
@@ -611,9 +634,12 @@ export default (app: Courselore): void => {
               <p>
                 Don’t have an account?
                 <a
-                  href="${baseURL}/sign-up${qs.stringify(req.query, {
-                    addQueryPrefix: true,
-                  })}"
+                  href="${app.locals.options.baseURL}/sign-up${qs.stringify(
+                    req.query,
+                    {
+                      addQueryPrefix: true,
+                    }
+                  )}"
                   class="link"
                   >Sign up</a
                 >.
@@ -621,9 +647,12 @@ export default (app: Courselore): void => {
               <p>
                 Remember your password?
                 <a
-                  href="${baseURL}/sign-in${qs.stringify(req.query, {
-                    addQueryPrefix: true,
-                  })}"
+                  href="${app.locals.options.baseURL}/sign-in${qs.stringify(
+                    req.query,
+                    {
+                      addQueryPrefix: true,
+                    }
+                  )}"
                   class="link"
                   >Sign in</a
                 >.
@@ -644,30 +673,34 @@ export default (app: Courselore): void => {
   >("/reset-password", (req, res, next) => {
     if (
       typeof req.body.email !== "string" ||
-      req.body.email.match(emailRegExp) === null
+      req.body.email.match(app.locals.helpers.emailRegExp) === null
     )
       return next("validation");
 
-    const user = database.get<{ id: number; email: string }>(
+    const user = app.locals.database.get<{ id: number; email: string }>(
       sql`SELECT "id", "email" FROM "users" WHERE "email" = ${req.body.email}`
     );
     if (user === undefined) {
-      Flash.set({
+      app.locals.helpers.Flash.set({
         req,
         res,
         content: html`<div class="flash--rose">Email not found.</div>`,
       });
       return res.redirect(
-        `${baseURL}/reset-password${qs.stringify(req.query, {
+        `${app.locals.options.baseURL}/reset-password${qs.stringify(req.query, {
           addQueryPrefix: true,
         })}`
       );
     }
 
-    const link = `${baseURL}/reset-password/${PasswordReset.create(
+    const link = `${
+      app.locals.options.baseURL
+    }/reset-password/${app.locals.helpers.PasswordReset.create(
       user.id
-    )}${qs.stringify(req.query, { addQueryPrefix: true })}`;
-    database.run(
+    )}${qs.stringify(req.query, {
+      addQueryPrefix: true,
+    })}`;
+    app.locals.database.run(
       sql`
         INSERT INTO "sendEmailJobs" (
           "createdAt",
@@ -696,15 +729,15 @@ export default (app: Courselore): void => {
         )
       `
     );
-    sendEmailWorker();
+    app.locals.workers.sendEmail();
     if (req.body.resend === "true")
-      Flash.set({
+      app.locals.helpers.Flash.set({
         req,
         res,
         content: html`<div class="flash--green">Email resent.</div>`,
       });
     res.send(
-      boxLayout({
+      app.locals.layouts.box({
         req,
         res,
         head: html`
@@ -720,9 +753,12 @@ export default (app: Courselore): void => {
           </p>
           <form
             method="POST"
-            action="${baseURL}/reset-password${qs.stringify(req.query, {
-              addQueryPrefix: true,
-            })}"
+            action="${app.locals.options.baseURL}/reset-password${qs.stringify(
+              req.query,
+              {
+                addQueryPrefix: true,
+              }
+            )}"
           >
             <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
             <input type="hidden" name="email" value="${req.body.email}" />
@@ -740,9 +776,11 @@ export default (app: Courselore): void => {
   app.get<{ passwordResetNonce: string }, HTML, {}, {}, BaseMiddlewareLocals>(
     "/reset-password/:passwordResetNonce",
     (req, res) => {
-      const userId = PasswordReset.get(req.params.passwordResetNonce);
+      const userId = app.locals.helpers.PasswordReset.get(
+        req.params.passwordResetNonce
+      );
       if (userId === undefined) {
-        Flash.set({
+        app.locals.helpers.Flash.set({
           req,
           res,
           content: html`
@@ -752,13 +790,16 @@ export default (app: Courselore): void => {
           `,
         });
         return res.redirect(
-          `${baseURL}/reset-password${qs.stringify(req.query, {
-            addQueryPrefix: true,
-          })}`
+          `${app.locals.options.baseURL}/reset-password${qs.stringify(
+            req.query,
+            {
+              addQueryPrefix: true,
+            }
+          )}`
         );
       }
       res.send(
-        boxLayout({
+        app.locals.layouts.box({
           req,
           res,
           head: html`
@@ -769,7 +810,8 @@ export default (app: Courselore): void => {
           body: html`
             <form
               method="POST"
-              action="${baseURL}/reset-password/${PasswordReset.create(
+              action="${app.locals.options
+                .baseURL}/reset-password/${app.locals.helpers.PasswordReset.create(
                 userId
               )}${qs.stringify(req.query, { addQueryPrefix: true })}"
               novalidate
@@ -832,9 +874,11 @@ export default (app: Courselore): void => {
       )
         return next("validation");
 
-      const userId = PasswordReset.get(req.params.passwordResetNonce);
+      const userId = app.locals.helpers.PasswordReset.get(
+        req.params.passwordResetNonce
+      );
       if (userId === undefined) {
-        Flash.set({
+        app.locals.helpers.Flash.set({
           req,
           res,
           content: html`
@@ -844,13 +888,16 @@ export default (app: Courselore): void => {
           `,
         });
         return res.redirect(
-          `${baseURL}/reset-password${qs.stringify(req.query, {
-            addQueryPrefix: true,
-          })}`
+          `${app.locals.options.baseURL}/reset-password${qs.stringify(
+            req.query,
+            {
+              addQueryPrefix: true,
+            }
+          )}`
         );
       }
 
-      database.run(
+      app.locals.database.run(
         sql`
           UPDATE "users"
           SET "password" = ${await argon2.hash(
@@ -860,15 +907,15 @@ export default (app: Courselore): void => {
           WHERE "id" = ${userId}
         `
       )!;
-      Session.closeAllAndReopen({ req, res, userId });
-      Flash.set({
+      app.locals.helpers.Session.closeAllAndReopen({ req, res, userId });
+      app.locals.helpers.Flash.set({
         req,
         res,
         content: html`
           <div class="flash--green">Password reset successfully.</div>
         `,
       });
-      res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
+      res.redirect(`${app.locals.options.baseURL}${req.query.redirect ?? "/"}`);
     })
   );
 
@@ -878,9 +925,9 @@ export default (app: Courselore): void => {
     {},
     { name?: string; email?: string },
     IsSignedOutMiddlewareLocals
-  >("/sign-up", ...isSignedOutMiddleware, (req, res) => {
+  >("/sign-up", ...app.locals.middlewares.isSignedOut, (req, res) => {
     res.send(
-      boxLayout({
+      app.locals.layouts.box({
         req,
         res,
         head: html`
@@ -891,9 +938,12 @@ export default (app: Courselore): void => {
         body: html`
           <form
             method="POST"
-            action="${baseURL}/sign-up${qs.stringify(req.query, {
-              addQueryPrefix: true,
-            })}"
+            action="${app.locals.options.baseURL}/sign-up${qs.stringify(
+              req.query,
+              {
+                addQueryPrefix: true,
+              }
+            )}"
             novalidate
             class="${res.locals.localCSS(css`
               display: flex;
@@ -964,9 +1014,12 @@ export default (app: Courselore): void => {
             <p>
               Already have an account account?
               <a
-                href="${baseURL}/sign-in${qs.stringify(req.query, {
-                  addQueryPrefix: true,
-                })}"
+                href="${app.locals.options.baseURL}/sign-in${qs.stringify(
+                  req.query,
+                  {
+                    addQueryPrefix: true,
+                  }
+                )}"
                 class="link"
                 >Sign in</a
               >.
@@ -974,7 +1027,8 @@ export default (app: Courselore): void => {
             <p>
               Forgot your password?
               <a
-                href="${baseURL}/reset-password${qs.stringify(req.query, {
+                href="${app.locals.options
+                  .baseURL}/reset-password${qs.stringify(req.query, {
                   addQueryPrefix: true,
                 })}"
                 class="link"
@@ -988,9 +1042,9 @@ export default (app: Courselore): void => {
   });
   app.get<{}, HTML, {}, { redirect?: string }, IsSignedInMiddlewareLocals>(
     "/sign-up",
-    ...isSignedInMiddleware,
+    ...app.locals.middlewares.isSignedIn,
     (req, res) => {
-      res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
+      res.redirect(`${app.locals.options.baseURL}${req.query.redirect ?? "/"}`);
     }
   );
 
@@ -1012,13 +1066,13 @@ export default (app: Courselore): void => {
     userId: number;
     userEmail: string;
   }): void => {
-    const emailConfirmation = database.executeTransaction(() => {
-      database.run(
+    const emailConfirmation = app.locals.database.executeTransaction(() => {
+      app.locals.database.run(
         sql`
           DELETE FROM "emailConfirmations" WHERE "user" = ${userId}
         `
       );
-      return database.get<{
+      return app.locals.database.get<{
         nonce: string;
       }>(
         sql`
@@ -1033,7 +1087,7 @@ export default (app: Courselore): void => {
       )!;
     });
 
-    const link = `${baseURL}/email-confirmation/${
+    const link = `${app.locals.options.baseURL}/email-confirmation/${
       emailConfirmation.nonce
     }${qs.stringify({ redirect: req.originalUrl }, { addQueryPrefix: true })}`;
     database.run(
@@ -1109,7 +1163,7 @@ export default (app: Courselore): void => {
           content: html`<div class="flash--rose">Email already taken.</div>`,
         });
         return res.redirect(
-          `${baseURL}/sign-in${qs.stringify(req.query, {
+          `${app.locals.options.baseURL}/sign-in${qs.stringify(req.query, {
             addQueryPrefix: true,
           })}`
         );
@@ -1150,7 +1204,7 @@ export default (app: Courselore): void => {
         userEmail: user.email,
       });
       Session.open({ req, res, userId: user.id });
-      res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
+      res.redirect(`${app.locals.options.baseURL}${req.query.redirect ?? "/"}`);
     })
   );
 
@@ -1219,7 +1273,9 @@ export default (app: Courselore): void => {
             </div>
           `,
         });
-        return res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
+        return res.redirect(
+          `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
+        );
       }
       database.run(
         sql`
@@ -1235,7 +1291,7 @@ export default (app: Courselore): void => {
           <div class="flash--green">Email confirmed successfully.</div>
         `,
       });
-      res.redirect(`${baseURL}${req.query.redirect ?? "/"}`);
+      res.redirect(`${app.locals.options.baseURL}${req.query.redirect ?? "/"}`);
     }
   );
 
@@ -1244,7 +1300,7 @@ export default (app: Courselore): void => {
     ...isSignedInMiddleware,
     (req, res) => {
       Session.close({ req, res });
-      res.redirect(`${baseURL}/`);
+      res.redirect(`${app.locals.options.baseURL}/`);
     }
   );
 

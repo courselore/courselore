@@ -170,7 +170,7 @@ export type SpinnerPartial = ({
 
 export type ReportIssueHrefPartial = string;
 
-export type FlashHelper = {
+export interface FlashHelper {
   maxAge: number;
   set({
     req,
@@ -188,7 +188,7 @@ export type FlashHelper = {
     req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
     res: express.Response<any, BaseMiddlewareLocals>;
   }): HTML | undefined;
-};
+}
 
 export default async (app: Courselore): Promise<void> => {
   app.locals.layouts.base = ({
