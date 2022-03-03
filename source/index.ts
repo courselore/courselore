@@ -203,41 +203,12 @@ export default async function courselore(
   about(app);
   user(app);
   course(app);
-
-  const {
-    baseLayout,
-    boxLayout,
-    applicationLayout,
-    app.locals.layouts.main,
-    settingsLayout,
-    logo,
-    partialLayout,
-    spinner,
-    reportIssueHref,
-    Flash,
-  } = await layouts({
-    baseURL,
-    administratorEmail,
-    demonstration,
-    hotReload,
-    courseloreVersion,
-    database,
-    cookieOptions,
-  });
-  const {} = authentication({ database, cookieOptions });
-  const { userPartial } = user();
-  const { coursePartial } = course();
-  const { aboutRequestHandler } = about({ baseURL, baseLayout });
-
-  error({
-    app,
-    baseURL,
-    administratorEmail,
-    boxLayout,
-    reportIssueHref,
-    isSignedOutMiddleware,
-    isSignedInMiddleware,
-  });
+  conversation(app);
+  error(app);
+  content(app);
+  email(app);
+  demonstration(app);
+  helpers(app);
 
   return app;
 }
@@ -252,9 +223,6 @@ if (import.meta.url.endsWith(process.argv[1]))
         : path.resolve(process.argv[2])
     )
   ).default({
-    courselore,
     courseloreImport: async (modulePath: string) => await import(modulePath),
     courseloreImportMetaURL: import.meta.url,
-    courseloreVersion,
-    userFileExtensionsWhichMayBeShownInBrowser,
   });
