@@ -4,6 +4,7 @@
 
 - Split the codebase into separate files.
   - `source/conversation.ts`
+  - `source/message.ts`
   - `source/content.ts`
   - `source/email.ts`
   - `source/demonstration.ts`

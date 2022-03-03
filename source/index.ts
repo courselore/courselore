@@ -92,6 +92,8 @@ export {
   AuthorEnrollment,
   AuthorEnrollmentUser,
 } from "./conversation.js";
+import message from "./message.js";
+export {} from "./message.js";
 import content from "./content.js";
 import email from "./email.js";
 import demonstration from "./demonstration.js";
@@ -210,6 +212,7 @@ export default async function courselore(
   user(app);
   course(app);
   conversation(app);
+  message(app);
   content(app);
   email(app);
   demonstration(app);
