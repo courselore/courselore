@@ -428,7 +428,7 @@ export default (app: Courselore): void => {
     (message.authorEnrollment !== "no-longer-enrolled" &&
       message.authorEnrollment.id === res.locals.enrollment.id);
 
-  const mayEditMessageMiddleware = [
+  app.locals.middlewares.mayEditMessage = [
     ...app.locals.middlewares.messageExists,
     (req, res, next) => {
       if (
@@ -694,7 +694,7 @@ export default (app: Courselore): void => {
     MayEditMessageMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
-    ...mayEditMessageMiddleware,
+    ...app.locals.middlewares.mayEditMessage,
     (req, res, next) => {
       if (typeof req.body.isAnswer === "string")
         if (
