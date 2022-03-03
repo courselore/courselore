@@ -5,8 +5,10 @@ import url from "node:url";
 import fs from "fs-extra";
 import express from "express";
 import nodemailer from "nodemailer";
+
 import database, { DatabaseLocals } from "./database.js";
 import logging from "./logging.js";
+
 import globalMiddlewares, {
   GlobalMiddlewaresOptions,
 } from "./global-middlewares.js";
@@ -14,11 +16,13 @@ export {
   BaseMiddlewareLocals,
   userFileExtensionsWhichMayBeShownInBrowser,
 } from "./global-middlewares.js";
+
 import eventSource, {
   EventSourceLocals,
   EventSourceMiddleware,
 } from "./event-source.js";
 export { EventSourceMiddlewareLocals } from "./event-source.js";
+
 import layouts, {
   BaseLayout,
   BoxLayout,
@@ -31,6 +35,7 @@ import layouts, {
   ReportIssueHrefPartial,
   FlashHelper,
 } from "./layouts.js";
+
 import authentication, {
   SessionHelper,
   IsSignedOutMiddleware,
@@ -44,7 +49,9 @@ export {
   IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
 } from "./authentication.js";
+
 import about, { AboutHandler } from "./about.js";
+
 import user, { UserPartial, UserSettingsLayout } from "./user.js";
 export {
   UserAvatarlessBackgroundColor,
@@ -52,6 +59,7 @@ export {
   UserEmailNotifications,
   userEmailNotificationses,
 } from "./user.js";
+
 import course, {
   CoursePartial,
   EnrollmentRoleIconPartial,
@@ -77,6 +85,7 @@ export {
   IsInvitationUsableMiddlewareLocals,
   MayManageEnrollmentMiddlewareLocals,
 } from "./course.js";
+
 import conversation, {
   ConversationLayout,
   ConversationPartial,
@@ -95,8 +104,10 @@ export {
   IsConversationAccessibleMiddlewareLocals,
   MayEditConversationMiddlewareLocals,
 } from "./conversation.js";
+
 import message from "./message.js";
 export {} from "./message.js";
+
 import content from "./content.js";
 import email from "./email.js";
 import demonstration from "./demonstration.js";
