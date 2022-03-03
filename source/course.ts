@@ -2,7 +2,11 @@ import express from "express";
 import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
 import lodash from "lodash";
-import { BaseMiddlewareLocals } from "./index.js";
+import {
+  Courselore,
+  BaseMiddlewareLocals,
+  IsSignedInMiddlewareLocals,
+} from "./index.js";
 
 export type EnrollmentRole = typeof enrollmentRoles[number];
 export const enrollmentRoles = ["student", "staff"] as const;
@@ -17,18 +21,14 @@ export const enrollmentAccentColors = [
   "pink",
 ] as const;
 
-export const enrollmentRoleIcon = {
-  student: {
-    regular: html`<i class="bi bi-person"></i>`,
-    fill: html`<i class="bi bi-person-fill"></i>`,
-  },
-  staff: {
-    regular: html`<i class="bi bi-mortarboard"></i>`,
-    fill: html`<i class="bi bi-mortarboard-fill"></i>`,
-  },
+export type EnrollmentRoleIconPartial = {
+  [role in EnrollmentRole]: {
+    regular: HTML;
+    fill: HTML;
+  };
 };
 
-type CoursePartial = ({
+export type CoursePartial = ({
   req,
   res,
   course,
@@ -42,8 +42,19 @@ type CoursePartial = ({
   tight?: boolean;
 }) => HTML;
 
-export default (): { coursePartial: CoursePartial } => {
-  const coursePartial: CoursePartial = ({
+export default (app: Courselore): void => {
+  app.locals.partials.enrollmentRoleIcon = {
+    student: {
+      regular: html`<i class="bi bi-person"></i>`,
+      fill: html`<i class="bi bi-person-fill"></i>`,
+    },
+    staff: {
+      regular: html`<i class="bi bi-mortarboard"></i>`,
+      fill: html`<i class="bi bi-mortarboard-fill"></i>`,
+    },
+  };
+
+  app.locals.partials.course = ({
     req,
     res,
     course,
@@ -122,7 +133,7 @@ export default (): { coursePartial: CoursePartial } => {
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/",
-    ...isSignedInMiddleware,
+    ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       switch (res.locals.enrollments.length) {
         case 0:
@@ -238,7 +249,7 @@ export default (): { coursePartial: CoursePartial } => {
 
   app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/courses/new",
-    ...isSignedInMiddleware,
+    ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
         mainLayout({
@@ -422,7 +433,7 @@ export default (): { coursePartial: CoursePartial } => {
     },
     {},
     IsSignedInMiddlewareLocals
-  >("/courses", ...isSignedInMiddleware, (req, res, next) => {
+  >("/courses", ...app.locals.middlewares.isSignedIn, (req, res, next) => {
     if (
       typeof req.body.name !== "string" ||
       req.body.name.trim() === "" ||
@@ -530,7 +541,7 @@ export default (): { coursePartial: CoursePartial } => {
     {},
     IsEnrolledInCourseMiddlewareLocals
   >[] = [
-    ...isSignedInMiddleware,
+    ...app.locals.middlewares.isSignedIn,
     (req, res, next) => {
       const enrollment = res.locals.enrollments.find(
         (enrollment) =>
@@ -3903,7 +3914,7 @@ export default (): { coursePartial: CoursePartial } => {
     IsSignedInMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isSignedInMiddleware,
+    ...app.locals.middlewares.isSignedIn,
     ...isInvitationUsableMiddleware,
     (req, res) => {
       res.send(
@@ -3955,7 +3966,7 @@ export default (): { coursePartial: CoursePartial } => {
     IsSignedInMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isSignedInMiddleware,
+    ...app.locals.middlewares.isSignedIn,
     ...isInvitationUsableMiddleware,
     (req, res) => {
       database.run(
@@ -3994,7 +4005,7 @@ export default (): { coursePartial: CoursePartial } => {
     IsSignedOutMiddlewareLocals & IsInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
-    ...isSignedOutMiddleware,
+    ...app.locals.middlewares.isSignedOut,
     ...isInvitationUsableMiddleware,
     (req, res) => {
       res.send(
@@ -4105,8 +4116,4 @@ export default (): { coursePartial: CoursePartial } => {
       );
     }
   );
-
-  return {
-    coursePartial,
-  };
 };

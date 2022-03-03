@@ -29,7 +29,7 @@ export default ({
 }): void => {
   app.all<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "*",
-    ...isSignedOutMiddleware,
+    ...app.locals.middlewares.isSignedOut,
     (req, res) => {
       res.redirect(
         `${app.locals.options.baseURL}/sign-in${qs.stringify(
@@ -44,7 +44,7 @@ export default ({
 
   app.all<{}, HTML, {}, { redirect?: string }, IsSignedInMiddlewareLocals>(
     "*",
-    ...isSignedInMiddleware,
+    ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       if (typeof req.query.redirect === "string")
         return res.redirect(`${app.locals.options.baseURL}${req.query.redirect}`);

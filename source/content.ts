@@ -2004,7 +2004,7 @@ ${contentSource}</textarea
 
   app.post<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/content-editor/attachments",
-    ...isSignedInMiddleware,
+    ...app.locals.middlewares.isSignedIn,
     asyncHandler(async (req, res, next) => {
       if (req.files?.attachments === undefined) return next("validation");
       const attachments = Array.isArray(req.files.attachments)
@@ -2593,13 +2593,13 @@ ${contentSource}</textarea
 
   app.post<{}, any, { content?: string }, {}, IsSignedInMiddlewareLocals>(
     "/content-editor/preview",
-    ...isSignedInMiddleware,
+    ...app.locals.middlewares.isSignedIn,
     previewRequestHandler
   );
 
   app.post<{}, any, { content?: string }, {}, IsSignedOutMiddlewareLocals>(
     "/content-editor/preview",
-    ...isSignedOutMiddleware,
+    ...app.locals.middlewares.isSignedOut,
     previewRequestHandler
   );
 

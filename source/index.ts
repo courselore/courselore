@@ -91,7 +91,7 @@ export {
   UserEmailNotifications,
   userEmailNotificationses,
 } from "./user.js";
-import course from "./course.js";
+import course, { EnrollmentRoleIconPartial, CoursePartial } from "./course.js";
 export {
   EnrollmentRole,
   enrollmentRoles,
@@ -143,7 +143,8 @@ export interface Courselore extends express.Express {
       spinner: SpinnerPartial;
       reportIssueHref: ReportIssueHrefPartial;
       user: UserPartial;
-      course: any; // TODO
+      enrollmentRoleIcon: EnrollmentRoleIconPartial;
+      course: CoursePartial;
       content: any; // TODO
       contentEditor: any; // TODO
     };
