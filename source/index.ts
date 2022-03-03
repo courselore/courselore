@@ -2,48 +2,9 @@
 
 import path from "node:path";
 import url from "node:url";
-import assert from "node:assert/strict";
-
-import express from "express";
-
-import { asyncHandler } from "@leafac/express-async-handler";
-import qs from "qs";
-
-import { sql } from "@leafac/sqlite";
-import { HTML, html } from "@leafac/html";
-import { css } from "@leafac/css";
-import { javascript } from "@leafac/javascript";
-import dedent from "dedent";
-
-import { unified } from "unified";
-import remarkParse from "remark-parse";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
-import remarkRehype from "remark-rehype";
-import rehypeRaw from "rehype-raw";
-import rehypeSanitize, {
-  defaultSchema as rehypeSanitizeDefaultSchema,
-} from "rehype-sanitize";
-import deepMerge from "deepmerge";
-import rehypeKatex from "rehype-katex";
-import rehypeShiki from "@leafac/rehype-shiki";
-import * as shiki from "shiki";
-import { visit as unistUtilVisit } from "unist-util-visit";
-import rehypeStringify from "rehype-stringify";
-import { JSDOM } from "jsdom";
-
 import fs from "fs-extra";
+import express from "express";
 import nodemailer from "nodemailer";
-import cryptoRandomString from "crypto-random-string";
-import argon2 from "argon2";
-import sharp from "sharp";
-import lodash from "lodash";
-import slugify from "@sindresorhus/slugify";
-import filenamify from "filenamify";
-import escapeStringRegexp from "escape-string-regexp";
-import QRCode from "qrcode";
-import casual from "casual";
-
 import database, { DatabaseLocals } from "./database.js";
 import logging from "./logging.js";
 import globalMiddlewares, {
