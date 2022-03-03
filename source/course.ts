@@ -8,6 +8,7 @@ import lodash from "lodash";
 import {
   Courselore,
   BaseMiddlewareLocals,
+  EventSourceMiddlewareLocals,
   IsSignedInMiddlewareLocals,
   ConversationType,
   conversationTypes,
@@ -74,6 +75,16 @@ export type IsEnrolledInCourseMiddleware = express.RequestHandler<
   {},
   {},
   IsEnrolledInCourseMiddlewareLocals
+>[];
+
+export interface IsCourseStaffMiddlewareLocals
+  extends IsEnrolledInCourseMiddlewareLocals {}
+export type IsCourseStaffMiddleware = express.RequestHandler<
+  { courseReference: string },
+  any,
+  {},
+  {},
+  IsCourseStaffMiddlewareLocals
 >[];
 
 export default (app: Courselore): void => {
@@ -621,15 +632,7 @@ export default (app: Courselore): void => {
     },
   ];
 
-  interface IsCourseStaffMiddlewareLocals
-    extends IsEnrolledInCourseMiddlewareLocals {}
-  const isCourseStaffMiddleware: express.RequestHandler<
-    { courseReference: string },
-    any,
-    {},
-    {},
-    IsCourseStaffMiddlewareLocals
-  >[] = [
+  app.locals.middlewares.isCourseStaff = [
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       if (res.locals.enrollment.role === "staff") return next();
@@ -646,7 +649,7 @@ export default (app: Courselore): void => {
   >(
     "/courses/:courseReference",
     ...app.locals.middlewares.isEnrolledInCourse,
-    ...eventSourceMiddleware,
+    ...app.locals.middlewares.eventSource,
     (req, res) => {
       if (res.locals.conversationsCount === 0)
         return res.send(
@@ -702,7 +705,7 @@ export default (app: Courselore): void => {
         );
 
       res.send(
-        conversationLayout({
+        app.locals.layouts.conversation({
           req,
           res,
           head: html`<title>${res.locals.course.name} · Courselore</title>`,
@@ -814,7 +817,10 @@ export default (app: Courselore): void => {
     {},
     {},
     MayManageInvitationMiddlewareLocals
-  >[] = [...isCourseStaffMiddleware, ...invitationExistsMiddleware];
+  >[] = [
+    ...app.locals.middlewares.isCourseStaff,
+    ...invitationExistsMiddleware,
+  ];
 
   interface IsInvitationUsableMiddlewareLocals
     extends InvitationExistsMiddlewareLocals,
@@ -905,7 +911,7 @@ export default (app: Courselore): void => {
     {},
     MayManageEnrollmentMiddlewareLocals
   >[] = [
-    ...isCourseStaffMiddleware,
+    ...app.locals.middlewares.isCourseStaff,
     (req, res, next) => {
       const managedEnrollment = database.get<{
         id: number;
@@ -1066,7 +1072,7 @@ export default (app: Courselore): void => {
     IsCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/course-information",
-    ...isCourseStaffMiddleware,
+    ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
       res.send(
         courseSettingsLayout({
@@ -1189,7 +1195,7 @@ export default (app: Courselore): void => {
     IsCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/course-information",
-    ...isCourseStaffMiddleware,
+    ...app.locals.middlewares.isCourseStaff,
     (req, res, next) => {
       if (
         typeof req.body.name !== "string" ||
@@ -1254,7 +1260,7 @@ export default (app: Courselore): void => {
     IsCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/tags",
-    ...isCourseStaffMiddleware,
+    ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
       res.send(
         courseSettingsLayout({
@@ -1738,7 +1744,7 @@ export default (app: Courselore): void => {
     IsCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/tags",
-    ...isCourseStaffMiddleware,
+    ...app.locals.middlewares.isCourseStaff,
     (req, res, next) => {
       if (
         !Array.isArray(req.body.tags) ||
@@ -1811,7 +1817,7 @@ export default (app: Courselore): void => {
     IsCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/invitations",
-    ...isCourseStaffMiddleware,
+    ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
       const invitations = database.all<{
         id: number;
@@ -2842,7 +2848,7 @@ export default (app: Courselore): void => {
     IsCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/invitations",
-    ...isCourseStaffMiddleware,
+    ...app.locals.middlewares.isCourseStaff,
     (req, res, next) => {
       if (
         typeof req.body.role !== "string" ||
@@ -3151,7 +3157,7 @@ export default (app: Courselore): void => {
     IsCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/enrollments",
-    ...isCourseStaffMiddleware,
+    ...app.locals.middlewares.isCourseStaff,
     (req, res) => {
       const enrollments = database
         .all<{

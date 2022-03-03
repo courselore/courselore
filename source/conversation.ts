@@ -2238,7 +2238,7 @@ export default () => {
   >(
     "/courses/:courseReference/conversations/new",
     ...app.locals.middlewares.isEnrolledInCourse,
-    ...eventSourceMiddleware,
+    ...app.locals.middlewares.eventSource,
     (req, res) => {
       res.send(
         (res.locals.conversationsCount === 0 ? app.locals.layouts.main : conversationLayout)(
@@ -3070,7 +3070,7 @@ export default () => {
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     ...isConversationAccessibleMiddleware,
-    ...eventSourceMiddleware,
+    ...app.locals.middlewares.eventSource,
     (req, res) => {
       const beforeMessage =
         FEATURE_PAGINATION &&
@@ -6462,7 +6462,7 @@ export default () => {
     IsCourseStaffMiddlewareLocals & IsConversationAccessibleMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
-    ...isCourseStaffMiddleware,
+    ...app.locals.middlewares.isCourseStaff,
     ...isConversationAccessibleMiddleware,
     (req, res) => {
       database.run(
@@ -6857,7 +6857,7 @@ export default () => {
     IsCourseStaffMiddlewareLocals & MessageExistsMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
-    ...isCourseStaffMiddleware,
+    ...app.locals.middlewares.isCourseStaff,
     ...messageExistsMiddleware,
     (req, res, next) => {
       database.run(

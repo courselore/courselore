@@ -57,6 +57,7 @@ import course, {
   EnrollmentRoleIconPartial,
   defaultAccentColorHelper,
   IsEnrolledInCourseMiddleware,
+  IsCourseStaffMiddleware,
 } from "./course.js";
 export {
   EnrollmentRole,
@@ -64,6 +65,7 @@ export {
   EnrollmentAccentColor,
   enrollmentAccentColors,
   IsEnrolledInCourseMiddlewareLocals,
+  IsCourseStaffMiddlewareLocals,
   AuthorEnrollment,
   AuthorEnrollmentUser,
 } from "./course.js";
@@ -98,6 +100,7 @@ export interface Courselore extends express.Express {
       isSignedOut: IsSignedOutMiddleware;
       isSignedIn: IsSignedInMiddleware;
       isEnrolledInCourse: IsEnrolledInCourseMiddleware;
+      isCourseStaff: IsCourseStaffMiddleware;
     };
     layouts: {
       base: BaseLayout;
@@ -107,6 +110,7 @@ export interface Courselore extends express.Express {
       settings: SettingsLayout;
       partial: PartialLayout;
       userSettings: UserSettingsLayout;
+      conversation: any; // TODO
     };
     partials: {
       logo: LogoPartial;
