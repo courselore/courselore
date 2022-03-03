@@ -138,7 +138,7 @@ export default (app: Courselore): void => {
       switch (res.locals.enrollments.length) {
         case 0:
           res.send(
-            mainLayout({
+            app.locals.layouts.main({
               req,
               res,
               head: html`<title>Courselore</title>`,
@@ -199,7 +199,7 @@ export default (app: Courselore): void => {
 
         default:
           res.send(
-            mainLayout({
+            app.locals.layouts.main({
               req,
               res,
               head: html`<title>Courselore</title>`,
@@ -252,7 +252,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       res.send(
-        mainLayout({
+        app.locals.layouts.main({
           req,
           res,
           head: html`<title>Create a New Course · Courselore</title>`,
@@ -628,7 +628,7 @@ export default (app: Courselore): void => {
     (req, res) => {
       if (res.locals.conversationsCount === 0)
         return res.send(
-          mainLayout({
+          app.locals.layouts.main({
             req,
             res,
             head: html`<title>${res.locals.course.name} · Courselore</title>`,

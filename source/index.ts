@@ -202,12 +202,13 @@ export default async function courselore(
   authentication(app);
   about(app);
   user(app);
+  course(app);
 
   const {
     baseLayout,
     boxLayout,
     applicationLayout,
-    mainLayout,
+    app.locals.layouts.main,
     settingsLayout,
     logo,
     partialLayout,

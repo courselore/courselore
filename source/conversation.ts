@@ -2241,7 +2241,7 @@ export default () => {
     ...eventSourceMiddleware,
     (req, res) => {
       res.send(
-        (res.locals.conversationsCount === 0 ? mainLayout : conversationLayout)(
+        (res.locals.conversationsCount === 0 ? app.locals.layouts.main : conversationLayout)(
           {
             req,
             res,
