@@ -54,7 +54,7 @@ export interface SessionHelper {
   }): void;
 }
 
-export type IsSignedOutMiddleware = express.RequestHandler<
+export type isSignedOutMiddleware = express.RequestHandler<
   {},
   any,
   {},
@@ -63,7 +63,7 @@ export type IsSignedOutMiddleware = express.RequestHandler<
 >[];
 export interface IsSignedOutMiddlewareLocals extends BaseMiddlewareLocals {}
 
-export type IsSignedInMiddleware = express.RequestHandler<
+export type isSignedInMiddleware = express.RequestHandler<
   {},
   any,
   {},
@@ -117,7 +117,7 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
   }[];
 }
 
-export type SignInHandler = express.RequestHandler<
+export type signInHandler = express.RequestHandler<
   {},
   HTML,
   {},

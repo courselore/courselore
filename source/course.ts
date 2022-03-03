@@ -62,7 +62,7 @@ export type defaultAccentColorHelper = ({
   res: express.Response<any, IsSignedInMiddlewareLocals>;
 }) => EnrollmentAccentColor;
 
-export type IsEnrolledInCourseMiddleware = express.RequestHandler<
+export type isEnrolledInCourseMiddleware = express.RequestHandler<
   { courseReference: string },
   any,
   {},
@@ -83,7 +83,7 @@ export interface IsEnrolledInCourseMiddlewareLocals
   }[];
 }
 
-export type IsCourseStaffMiddleware = express.RequestHandler<
+export type isCourseStaffMiddleware = express.RequestHandler<
   { courseReference: string },
   any,
   {},
@@ -93,7 +93,7 @@ export type IsCourseStaffMiddleware = express.RequestHandler<
 export interface IsCourseStaffMiddlewareLocals
   extends IsEnrolledInCourseMiddlewareLocals {}
 
-export type InvitationExistsMiddleware = express.RequestHandler<
+export type invitationExistsMiddleware = express.RequestHandler<
   { courseReference: string; invitationReference: string },
   any,
   {},
@@ -122,7 +122,7 @@ export interface InvitationExistsMiddlewareLocals extends BaseMiddlewareLocals {
   };
 }
 
-export type MayManageInvitationMiddleware = express.RequestHandler<
+export type mayManageInvitationMiddleware = express.RequestHandler<
   { courseReference: string; invitationReference: string },
   any,
   {},
@@ -133,7 +133,7 @@ export interface MayManageInvitationMiddlewareLocals
   extends IsCourseStaffMiddlewareLocals,
     InvitationExistsMiddlewareLocals {}
 
-export type IsInvitationUsableMiddleware = express.RequestHandler<
+export type isInvitationUsableMiddleware = express.RequestHandler<
   { courseReference: string; invitationReference: string },
   any,
   {},
@@ -154,7 +154,7 @@ export type InvitationMailer = ({
   invitation: InvitationExistsMiddlewareLocals["invitation"];
 }) => void;
 
-export type MayManageEnrollmentMiddleware = express.RequestHandler<
+export type mayManageEnrollmentMiddleware = express.RequestHandler<
   { courseReference: string; enrollmentReference: string },
   any,
   {},

@@ -82,7 +82,7 @@ export type ConversationLayout = ({
   body: HTML;
 }) => HTML;
 
-export type IsConversationAccessibleMiddleware = express.RequestHandler<
+export type isConversationAccessibleMiddleware = express.RequestHandler<
   { courseReference: string; conversationReference: string },
   HTML,
   {},

@@ -4,9 +4,9 @@ import { HTML, html } from "@leafac/html";
 import { BoxLayout, ReportIssueHrefPartial } from "./layouts.js";
 import { BaseMiddlewareLocals } from "./global-middlewares.js";
 import {
-  IsSignedOutMiddleware,
+  isSignedOutMiddleware,
   IsSignedOutMiddlewareLocals,
-  IsSignedInMiddleware,
+  isSignedInMiddleware,
   IsSignedInMiddlewareLocals,
 } from "./authentication.js";
 
@@ -24,8 +24,8 @@ export default ({
   administratorEmail: string;
   boxLayout: BoxLayout;
   reportIssueHref: ReportIssueHrefPartial;
-  isSignedOutMiddleware: IsSignedOutMiddleware;
-  isSignedInMiddleware: IsSignedInMiddleware;
+  isSignedOutMiddleware: isSignedOutMiddleware;
+  isSignedInMiddleware: isSignedInMiddleware;
 }): void => {
   app.all<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "*",

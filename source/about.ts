@@ -10,7 +10,7 @@ import {
   IsSignedInMiddlewareLocals,
 } from "./index.js";
 
-export type AboutHandler = express.RequestHandler<
+export type aboutHandler = express.RequestHandler<
   {},
   any,
   {},

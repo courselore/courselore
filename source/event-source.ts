@@ -9,7 +9,7 @@ export interface EventSourceLocals {
   }>;
 }
 
-export type EventSourceMiddleware = express.RequestHandler<
+export type eventSourceMiddleware = express.RequestHandler<
   {},
   any,
   {},

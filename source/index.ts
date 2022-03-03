@@ -16,7 +16,7 @@ export {
 } from "./global-middlewares.js";
 import eventSource, {
   EventSourceLocals,
-  EventSourceMiddleware,
+  eventSourceMiddleware,
 } from "./event-source.js";
 export { EventSourceMiddlewareLocals } from "./event-source.js";
 import layouts, {
@@ -33,9 +33,9 @@ import layouts, {
 } from "./layouts.js";
 import authentication, {
   SessionHelper,
-  IsSignedOutMiddleware,
-  IsSignedInMiddleware,
-  SignInHandler,
+  isSignedOutMiddleware,
+  isSignedInMiddleware,
+  signInHandler,
   PasswordResetHelper,
   AuthenticationOptions,
   EmailConfirmationMailer,
@@ -44,7 +44,7 @@ export {
   IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
 } from "./authentication.js";
-import about, { AboutHandler } from "./about.js";
+import about, { aboutHandler } from "./about.js";
 import user, { UserPartial, UserSettingsLayout } from "./user.js";
 export {
   UserAvatarlessBackgroundColor,
@@ -56,13 +56,13 @@ import course, {
   CoursePartial,
   EnrollmentRoleIconPartial,
   defaultAccentColorHelper,
-  IsEnrolledInCourseMiddleware,
-  IsCourseStaffMiddleware,
-  InvitationExistsMiddleware,
-  MayManageInvitationMiddleware,
-  IsInvitationUsableMiddleware,
+  isEnrolledInCourseMiddleware,
+  isCourseStaffMiddleware,
+  invitationExistsMiddleware,
+  mayManageInvitationMiddleware,
+  isInvitationUsableMiddleware,
   InvitationMailer,
-  MayManageEnrollmentMiddleware,
+  mayManageEnrollmentMiddleware,
   CourseSettingsLayout,
 } from "./course.js";
 export {
@@ -83,7 +83,7 @@ import conversation, {
   ConversationTypeIconPartial,
   ConversationTypeTextColorPartial,
   getConversationHelper,
-  IsConversationAccessibleMiddleware,
+  isConversationAccessibleMiddleware,
   mayEditConversationHelper,
   mayEditConversationMiddleware,
 } from "./conversation.js";
@@ -115,20 +115,20 @@ export interface Courselore extends express.Express {
       GlobalMiddlewaresOptions &
       AuthenticationOptions;
     handlers: {
-      about: AboutHandler;
-      signIn: SignInHandler;
+      about: aboutHandler;
+      signIn: signInHandler;
     };
     middlewares: {
-      eventSource: EventSourceMiddleware;
-      isSignedOut: IsSignedOutMiddleware;
-      isSignedIn: IsSignedInMiddleware;
-      isEnrolledInCourse: IsEnrolledInCourseMiddleware;
-      isCourseStaff: IsCourseStaffMiddleware;
-      invitationExists: InvitationExistsMiddleware;
-      mayManageInvitation: MayManageInvitationMiddleware;
-      isInvitationUsable: IsInvitationUsableMiddleware;
-      mayManageEnrollment: MayManageEnrollmentMiddleware;
-      isConversationAccessible: IsConversationAccessibleMiddleware;
+      eventSource: eventSourceMiddleware;
+      isSignedOut: isSignedOutMiddleware;
+      isSignedIn: isSignedInMiddleware;
+      isEnrolledInCourse: isEnrolledInCourseMiddleware;
+      isCourseStaff: isCourseStaffMiddleware;
+      invitationExists: invitationExistsMiddleware;
+      mayManageInvitation: mayManageInvitationMiddleware;
+      isInvitationUsable: isInvitationUsableMiddleware;
+      mayManageEnrollment: mayManageEnrollmentMiddleware;
+      isConversationAccessible: isConversationAccessibleMiddleware;
       mayEditConversation: mayEditConversationMiddleware;
     };
     layouts: {
