@@ -2,7 +2,6 @@
 
 ### Performance
 
-- `shouldDisplayAbout`
 - `/courses/8537410611/invitations/3667859788`
 
 ---

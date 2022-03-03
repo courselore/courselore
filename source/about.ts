@@ -854,25 +854,22 @@ export default (app: Courselore): void => {
     );
   };
 
-  const shouldDisplayAbout =
+  if (
     app.locals.options.baseURL === app.locals.options.canonicalBaseURL ||
-    process.env.NODE_ENV !== "production";
-  app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
-    "/about",
-    ...app.locals.middlewares.isSignedOut,
-    shouldDisplayAbout
-      ? app.locals.handlers.about
-      : (req, res) => {
-          res.redirect(`${app.locals.options.canonicalBaseURL}/about`);
-        }
-  );
-  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
-    "/about",
-    ...app.locals.middlewares.isSignedIn,
-    shouldDisplayAbout
-      ? app.locals.handlers.about
-      : (req, res) => {
-          res.redirect(`${app.locals.options.canonicalBaseURL}/about`);
-        }
-  );
+    process.env.NODE_ENV !== "production"
+  ) {
+    app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
+      "/about",
+      ...app.locals.middlewares.isSignedOut,
+      app.locals.handlers.about
+    );
+    app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+      "/about",
+      ...app.locals.middlewares.isSignedIn,
+      app.locals.handlers.about
+    );
+  } else
+    app.get<{}, HTML, {}, {}, BaseMiddlewareLocals>("/about", (req, res) => {
+      res.redirect(`${app.locals.options.canonicalBaseURL}/about`);
+    });
 };
