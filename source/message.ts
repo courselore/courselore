@@ -121,6 +121,20 @@ export type MayEndorseMessageHelper = ({
   message: MessageExistsMiddlewareLocals["message"];
 }) => boolean;
 
+export type MayEndorseMessageMiddleware = express.RequestHandler<
+  {
+    courseReference: string;
+    conversationReference: string;
+    messageReference: string;
+  },
+  any,
+  {},
+  {},
+  MayEndorseMessageMiddlewareLocals
+>[];
+export interface MayEndorseMessageMiddlewareLocals
+  extends MessageExistsMiddlewareLocals {}
+
 export default (app: Courselore): void => {
   app.locals.helpers.getMessage = ({
     req,
@@ -939,19 +953,7 @@ export default (app: Courselore): void => {
     (message.authorEnrollment === "no-longer-enrolled" ||
       message.authorEnrollment.role !== "staff");
 
-  interface MayEndorseMessageMiddlewareLocals
-    extends MessageExistsMiddlewareLocals {}
-  const mayEndorseMessageMiddleware: express.RequestHandler<
-    {
-      courseReference: string;
-      conversationReference: string;
-      messageReference: string;
-    },
-    any,
-    {},
-    {},
-    MayEndorseMessageMiddlewareLocals
-  >[] = [
+  mayEndorseMessageMiddleware = [
     ...app.locals.middlewares.messageExists,
     (req, res, next) => {
       if (
