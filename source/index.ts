@@ -76,8 +76,6 @@ export {
   MayManageInvitationMiddlewareLocals,
   IsInvitationUsableMiddlewareLocals,
   MayManageEnrollmentMiddlewareLocals,
-  AuthorEnrollment,
-  AuthorEnrollmentUser,
 } from "./course.js";
 import conversation from "./conversation.js";
 export {
@@ -85,6 +83,8 @@ export {
   conversationTypes,
   conversationTypeIcon,
   conversationTypeTextColor,
+  AuthorEnrollment,
+  AuthorEnrollmentUser,
 } from "./conversation.js";
 import content from "./content.js";
 import email from "./email.js";
