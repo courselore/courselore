@@ -105,7 +105,7 @@ export {
   MayEditConversationMiddlewareLocals,
 } from "./conversation.js";
 
-import message from "./message.js";
+import message, { GetMessageHelper } from "./message.js";
 export {} from "./message.js";
 
 import content from "./content.js";
@@ -171,7 +171,7 @@ export interface Courselore extends express.Express {
       defaultAccentColor: DefaultAccentColorHelper;
       getConversation: GetConversationHelper;
       mayEditConversation: MayEditConversationHelper;
-      getMessage: any; // TODO
+      getMessage: GetMessageHelper;
       mayEditMessage: any; // TODO
       mayEndorseMessage: any; // TODO
       emailRegExp: any; // TODO

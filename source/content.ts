@@ -1459,7 +1459,7 @@ ${contentSource}</textarea
     if (typeof req.query.search !== "string" || req.query.search.trim() === "")
       return next("validation");
 
-    const enrollments = database
+    const enrollments = app.locals.database
       .all<{
         id: number;
         userId: number;

@@ -1,4 +1,54 @@
-import { Courselore } from "./index.js";
+import express from "express";
+import { sql } from "@leafac/sqlite";
+import { HTML, html } from "@leafac/html";
+import {
+  Courselore,
+  UserAvatarlessBackgroundColor,
+  EnrollmentRole,
+  IsEnrolledInCourseMiddlewareLocals,
+  AuthorEnrollment,
+} from "./index.js";
+
+export type GetMessageHelper = ({
+  req,
+  res,
+  conversation,
+  messageReference,
+}: {
+  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
+  res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+  conversation: NonNullable<
+    ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
+  >;
+  messageReference: string;
+}) =>
+  | {
+      id: number;
+      createdAt: string;
+      updatedAt: string | null;
+      reference: string;
+      authorEnrollment: AuthorEnrollment;
+      anonymousAt: string | null;
+      answerAt: string | null;
+      contentSource: string;
+      contentPreprocessed: HTML;
+      contentSearch: string;
+      reading: { id: number } | null;
+      readings: {
+        id: number;
+        createdAt: string;
+        enrollment: AuthorEnrollment;
+      }[];
+      endorsements: {
+        id: number;
+        enrollment: AuthorEnrollment;
+      }[];
+      likes: {
+        id: number;
+        enrollment: AuthorEnrollment;
+      }[];
+    }
+  | undefined;
 
 export default (app: Courselore): void => {
   app.locals.helpers.getMessage = ({
@@ -6,41 +56,7 @@ export default (app: Courselore): void => {
     res,
     conversation,
     messageReference,
-  }: {
-    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
-    res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
-    conversation: NonNullable<
-      ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
-    >;
-    messageReference: string;
-  }):
-    | {
-        id: number;
-        createdAt: string;
-        updatedAt: string | null;
-        reference: string;
-        authorEnrollment: AuthorEnrollment;
-        anonymousAt: string | null;
-        answerAt: string | null;
-        contentSource: string;
-        contentPreprocessed: HTML;
-        contentSearch: string;
-        reading: { id: number } | null;
-        readings: {
-          id: number;
-          createdAt: string;
-          enrollment: AuthorEnrollment;
-        }[];
-        endorsements: {
-          id: number;
-          enrollment: AuthorEnrollment;
-        }[];
-        likes: {
-          id: number;
-          enrollment: AuthorEnrollment;
-        }[];
-      }
-    | undefined => {
+  }) => {
     const messageRow = app.locals.database.get<{
       id: number;
       createdAt: string;
@@ -138,7 +154,7 @@ export default (app: Courselore): void => {
         messageRow.readingId === null ? null : { id: messageRow.readingId },
     };
 
-    const readings = database
+    const readings = app.locals.database
       .all<{
         id: number;
         createdAt: string;
@@ -206,7 +222,7 @@ export default (app: Courselore): void => {
             : ("no-longer-enrolled" as const),
       }));
 
-    const endorsements = database
+    const endorsements = app.locals.database
       .all<{
         id: number;
         enrollmentId: number | null;
@@ -271,7 +287,7 @@ export default (app: Courselore): void => {
             : ("no-longer-enrolled" as const),
       }));
 
-    const likes = database
+    const likes = app.locals.database
       .all<{
         id: number;
         enrollmentId: number | null;
