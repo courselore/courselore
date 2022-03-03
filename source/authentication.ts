@@ -239,7 +239,7 @@ export default (app: Courselore): void => {
         `
       )!;
 
-      res.locals.invitations = database
+      res.locals.invitations = app.locals.database
         .all<{
           id: number;
           courseId: number;
@@ -268,10 +268,10 @@ export default (app: Courselore): void => {
             FROM "invitations"
             JOIN "courses" ON "invitations"."course" = "courses"."id"
             WHERE "invitations"."usedAt" IS NULL AND (
-                    "invitations"."expiresAt" IS NULL OR
-                    ${new Date().toISOString()} < "invitations"."expiresAt"
-                  ) AND
-                  "invitations"."email" = ${res.locals.user.email}
+                  "invitations"."expiresAt" IS NULL OR
+                  ${new Date().toISOString()} < "invitations"."expiresAt"
+                ) AND
+                "invitations"."email" = ${res.locals.user.email}
             ORDER BY "invitations"."id" DESC
           `
         )
@@ -292,7 +292,7 @@ export default (app: Courselore): void => {
           role: invitation.role,
         }));
 
-      res.locals.enrollments = database
+      res.locals.enrollments = app.locals.database
         .all<{
           id: number;
           courseId: number;
