@@ -77,6 +77,7 @@ import authentication, {
   SignInHandler,
   PasswordResetHelper,
   AuthenticationOptions,
+  EmailConfirmationMailer
 } from "./authentication.js";
 export {
   IsSignedOutMiddlewareLocals,
@@ -144,7 +145,7 @@ export interface Courselore extends express.Express {
       emailRegExp: any; // TODO
     };
     mailers: {
-      emailConfirmation: any; // TODO
+      emailConfirmation: EmailConfirmationMailer;
     };
     workers: {
       sendEmail: any; // TODO

@@ -7,6 +7,7 @@ import { css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
 import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
+import lodash from "lodash";
 import {
   Courselore,
   BaseMiddlewareLocals,
@@ -130,8 +131,20 @@ export interface PasswordResetHelper {
 }
 
 export interface AuthenticationOptions {
-  argon2: argon2.Options;
+  argon2: argon2.Options & { raw?: false };
 }
+
+export type EmailConfirmationMailer = ({
+  req,
+  res,
+  userId,
+  userEmail,
+}: {
+  req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+  res: express.Response<any, BaseMiddlewareLocals>;
+  userId: number;
+  userEmail: string;
+}) => void;
 
 export default (app: Courselore): void => {
   app.locals.helpers.Session = {
@@ -1059,17 +1072,7 @@ export default (app: Courselore): void => {
     parallelism: 1,
   };
 
-  const sendEmailConfirmationEmail = ({
-    req,
-    res,
-    userId,
-    userEmail,
-  }: {
-    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-    res: express.Response<any, BaseMiddlewareLocals>;
-    userId: number;
-    userEmail: string;
-  }): void => {
+  app.locals.mailers.emailConfirmation = ({ req, res, userId, userEmail }) => {
     const emailConfirmation = app.locals.database.executeTransaction(() => {
       app.locals.database.run(
         sql`
@@ -1094,7 +1097,7 @@ export default (app: Courselore): void => {
     const link = `${app.locals.options.baseURL}/email-confirmation/${
       emailConfirmation.nonce
     }${qs.stringify({ redirect: req.originalUrl }, { addQueryPrefix: true })}`;
-    database.run(
+    app.locals.database.run(
       sql`
         INSERT INTO "sendEmailJobs" (
           "createdAt",
@@ -1119,10 +1122,10 @@ export default (app: Courselore): void => {
         )
       `
     );
-    sendEmailWorker();
+    app.locals.workers.sendEmail();
   };
   setTimeout(function worker() {
-    database.run(
+    app.locals.database.run(
       sql`
         DELETE FROM "emailConfirmations"
         WHERE "createdAt" < ${new Date(
@@ -1141,13 +1144,13 @@ export default (app: Courselore): void => {
     IsSignedOutMiddlewareLocals
   >(
     "/sign-up",
-    ...isSignedOutMiddleware,
+    ...app.locals.middlewares.isSignedOut,
     asyncHandler(async (req, res, next) => {
       if (
         typeof req.body.name !== "string" ||
         req.body.name.trim() === "" ||
         typeof req.body.email !== "string" ||
-        req.body.email.match(emailRegExp) === null ||
+        req.body.email.match(app.locals.helpers.emailRegExp) === null ||
         typeof req.body.password !== "string" ||
         req.body.password.trim() === "" ||
         req.body.password.length < 8
@@ -1155,13 +1158,13 @@ export default (app: Courselore): void => {
         return next("validation");
 
       if (
-        database.get<{}>(
+        app.locals.database.get<{}>(
           sql`
             SELECT TRUE FROM "users" WHERE "email" = ${req.body.email}
           `
         ) !== undefined
       ) {
-        Flash.set({
+        app.locals.helpers.Flash.set({
           req,
           res,
           content: html`<div class="flash--rose">Email already taken.</div>`,
@@ -1173,7 +1176,7 @@ export default (app: Courselore): void => {
         );
       }
 
-      const user = database.get<{ id: number; email: string }>(
+      const user = app.locals.database.get<{ id: number; email: string }>(
         sql`
           INSERT INTO "users" (
             "createdAt",
