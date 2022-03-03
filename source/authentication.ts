@@ -1,7 +1,15 @@
 import express from "express";
-import { Database, sql } from "@leafac/sqlite";
+import { sql } from "@leafac/sqlite";
+import { HTML, html } from "@leafac/html";
 import cryptoRandomString from "crypto-random-string";
-import { Courselore, BaseMiddlewareLocals } from "./index.js";
+import {
+  Courselore,
+  BaseMiddlewareLocals,
+  UserAvatarlessBackgroundColor,
+  UserEmailNotifications,
+  EnrollmentRole,
+  EnrollmentAccentColor,
+} from "./index.js";
 
 export interface SessionHelper {
   maxAge: number;
@@ -39,19 +47,74 @@ export interface SessionHelper {
   }): void;
 }
 
+export type IsSignedOutMiddleware = express.RequestHandler<
+  {},
+  any,
+  {},
+  {},
+  IsSignedOutMiddlewareLocals
+>[];
+export interface IsSignedOutMiddlewareLocals extends BaseMiddlewareLocals {}
+
+export type IsSignedInMiddleware = express.RequestHandler<
+  {},
+  any,
+  {},
+  {},
+  IsSignedInMiddlewareLocals
+>[];
+export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
+  user: {
+    id: number;
+    lastSeenOnlineAt: string;
+    email: string;
+    password: string;
+    emailConfirmedAt: string | null;
+    name: string;
+    avatar: string | null;
+    avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
+    biographySource: string | null;
+    biographyPreprocessed: HTML | null;
+    emailNotifications: UserEmailNotifications;
+  };
+  invitations: {
+    id: number;
+    course: {
+      id: number;
+      reference: string;
+      name: string;
+      year: string | null;
+      term: string | null;
+      institution: string | null;
+      code: string | null;
+      nextConversationReference: number;
+    };
+    reference: string;
+    role: EnrollmentRole;
+  }[];
+  enrollments: {
+    id: number;
+    course: {
+      id: number;
+      reference: string;
+      name: string;
+      year: string | null;
+      term: string | null;
+      institution: string | null;
+      code: string | null;
+      nextConversationReference: number;
+    };
+    reference: string;
+    role: EnrollmentRole;
+    accentColor: EnrollmentAccentColor;
+  }[];
+}
+
 export default (app: Courselore): void => {
   app.locals.helpers.Session = {
     maxAge: 180 * 24 * 60 * 60 * 1000,
 
-    open({
-      req,
-      res,
-      userId,
-    }: {
-      req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-      res: express.Response<any, BaseMiddlewareLocals>;
-      userId: number;
-    }): void {
+    open({ req, res, userId }) {
       const session = app.locals.database.get<{
         token: string;
       }>(
@@ -72,13 +135,7 @@ export default (app: Courselore): void => {
       });
     },
 
-    get({
-      req,
-      res,
-    }: {
-      req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-      res: express.Response<any, BaseMiddlewareLocals>;
-    }): number | undefined {
+    get({ req, res }) {
       if (req.cookies.session === undefined) return undefined;
       const session = app.locals.database.get<{
         createdAt: string;
@@ -88,7 +145,8 @@ export default (app: Courselore): void => {
       );
       if (
         session === undefined ||
-        new Date(session.createdAt).getTime() < Date.now() - Session.maxAge
+        new Date(session.createdAt).getTime() <
+          Date.now() - app.locals.helpers.Session.maxAge
       ) {
         app.locals.helpers.Session.close({ req, res });
         return undefined;
@@ -109,13 +167,7 @@ export default (app: Courselore): void => {
       return session.user;
     },
 
-    close({
-      req,
-      res,
-    }: {
-      req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-      res: express.Response<any, BaseMiddlewareLocals>;
-    }): void {
+    close({ req, res }) {
       if (req.cookies.session === undefined) return;
       delete req.cookies.session;
       res.clearCookie("session", app.locals.options.cookies);
@@ -124,15 +176,7 @@ export default (app: Courselore): void => {
       );
     },
 
-    closeAllAndReopen({
-      req,
-      res,
-      userId,
-    }: {
-      req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-      res: express.Response<any, BaseMiddlewareLocals>;
-      userId: number;
-    }): void {
+    closeAllAndReopen({ req, res, userId }) {
       app.locals.helpers.Session.close({ req, res });
       app.locals.database.run(
         sql`DELETE FROM "sessions" WHERE "user" = ${userId}`
@@ -152,73 +196,14 @@ export default (app: Courselore): void => {
     setTimeout(worker, 24 * 60 * 60 * 1000);
   }, 10 * 60 * 1000);
 
-  interface IsSignedOutMiddlewareLocals extends BaseMiddlewareLocals {}
-  const isSignedOutMiddleware: express.RequestHandler<
-    {},
-    any,
-    {},
-    {},
-    IsSignedOutMiddlewareLocals
-  >[] = [
+  const isSignedOutMiddleware = [
     (req, res, next) => {
       if (Session.get({ req, res }) !== undefined) return next("route");
       next();
     },
   ];
 
-  interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
-    user: {
-      id: number;
-      lastSeenOnlineAt: string;
-      email: string;
-      password: string;
-      emailConfirmedAt: string | null;
-      name: string;
-      avatar: string | null;
-      avatarlessBackgroundColor: UserAvatarlessBackgroundColor;
-      biographySource: string | null;
-      biographyPreprocessed: HTML | null;
-      emailNotifications: UserEmailNotifications;
-    };
-    invitations: {
-      id: number;
-      course: {
-        id: number;
-        reference: string;
-        name: string;
-        year: string | null;
-        term: string | null;
-        institution: string | null;
-        code: string | null;
-        nextConversationReference: number;
-      };
-      reference: string;
-      role: EnrollmentRole;
-    }[];
-    enrollments: {
-      id: number;
-      course: {
-        id: number;
-        reference: string;
-        name: string;
-        year: string | null;
-        term: string | null;
-        institution: string | null;
-        code: string | null;
-        nextConversationReference: number;
-      };
-      reference: string;
-      role: EnrollmentRole;
-      accentColor: EnrollmentAccentColor;
-    }[];
-  }
-  const isSignedInMiddleware: express.RequestHandler<
-    {},
-    any,
-    {},
-    {},
-    IsSignedInMiddlewareLocals
-  >[] = [
+  const isSignedInMiddleware = [
     (req, res, next) => {
       const userId = Session.get({ req, res });
       if (userId === undefined) return next("route");

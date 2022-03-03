@@ -70,7 +70,15 @@ import layouts, {
   ReportIssueHrefPartial,
   FlashHelper,
 } from "./layouts.js";
-import authentication, { SessionHelper } from "./authentication.js";
+import authentication, {
+  SessionHelper,
+  IsSignedOutMiddleware,
+  IsSignedInMiddleware,
+} from "./authentication.js";
+export {
+  IsSignedOutMiddlewareLocals,
+  IsSignedInMiddlewareLocals,
+} from "./authentication.js";
 import about, { AboutHandler } from "./about.js";
 
 import user, {
@@ -105,8 +113,8 @@ export interface Courselore extends express.Express {
     };
     middlewares: {
       eventSource: EventSourceMiddleware;
-      isSignedOut: any; // TODO
-      isSignedIn: any; // TODO
+      isSignedOut: IsSignedOutMiddleware;
+      isSignedIn: IsSignedInMiddleware;
     };
     layouts: {
       base: BaseLayout;
