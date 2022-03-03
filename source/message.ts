@@ -953,7 +953,7 @@ export default (app: Courselore): void => {
     (message.authorEnrollment === "no-longer-enrolled" ||
       message.authorEnrollment.role !== "staff");
 
-  mayEndorseMessageMiddleware = [
+  app.locals.middlewares.mayEndorseMessage = [
     ...app.locals.middlewares.messageExists,
     (req, res, next) => {
       if (
@@ -980,7 +980,7 @@ export default (app: Courselore): void => {
     MayEndorseMessageMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/endorsements",
-    ...mayEndorseMessageMiddleware,
+    ...app.locals.middlewares.mayEndorseMessage,
     (req, res, next) => {
       if (
         res.locals.message.endorsements.some(
@@ -1030,7 +1030,7 @@ export default (app: Courselore): void => {
     MayEndorseMessageMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/endorsements",
-    ...mayEndorseMessageMiddleware,
+    ...app.locals.middlewares.mayEndorseMessage,
     (req, res, next) => {
       const endorsement = res.locals.message.endorsements.find(
         (endorsement) =>
