@@ -6,6 +6,7 @@ import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
 import lodash from "lodash";
+import slugify from "@sindresorhus/slugify";
 import {
   Courselore,
   EventSourceMiddlewareLocals,
@@ -4606,11 +4607,13 @@ export default (app: Courselore): void => {
                                                                 </form>
                                                               `
                                                             : html``}
-                                                          $${mayEditMessage({
-                                                            req,
-                                                            res,
-                                                            message,
-                                                          })
+                                                          $${app.locals.helpers.mayEditMessage(
+                                                            {
+                                                              req,
+                                                              res,
+                                                              message,
+                                                            }
+                                                          )
                                                             ? html`
                                                                 <button
                                                                   class="dropdown--menu--item button button--transparent"
@@ -4743,7 +4746,7 @@ export default (app: Courselore): void => {
                                           const headers: HTML[] = [];
 
                                           if (
-                                            mayEditMessage({
+                                            app.locals.helpers.mayEditMessage({
                                               req,
                                               res,
                                               message,
@@ -5529,7 +5532,11 @@ export default (app: Courselore): void => {
                                           })()}
                                         </div>
 
-                                        $${mayEditMessage({ req, res, message })
+                                        $${app.locals.helpers.mayEditMessage({
+                                          req,
+                                          res,
+                                          message,
+                                        })
                                           ? html`
                                               <form
                                                 method="POST"

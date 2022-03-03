@@ -374,7 +374,7 @@ export default (app: Courselore): void => {
     },
   ];
 
-  const mayEditMessage = ({
+  app.locals.helpers.mayEditMessage = ({
     req,
     res,
     message,
@@ -408,7 +408,13 @@ export default (app: Courselore): void => {
   >[] = [
     ...messageExistsMiddleware,
     (req, res, next) => {
-      if (mayEditMessage({ req, res, message: res.locals.message }))
+      if (
+        app.locals.helpers.mayEditMessage({
+          req,
+          res,
+          message: res.locals.message,
+        })
+      )
         return next();
       next("route");
     },

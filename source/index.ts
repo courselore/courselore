@@ -161,6 +161,7 @@ export interface Courselore extends express.Express {
       getConversation: GetConversationHelper;
       mayEditConversation: MayEditConversationHelper;
       getMessage: any; // TODO
+      mayEditMessage: any; // TODO
       emailRegExp: any; // TODO
       isExpired: any; // TODO
       isDate: any; // TODO
