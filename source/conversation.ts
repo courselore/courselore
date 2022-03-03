@@ -12,6 +12,7 @@ import {
   UserAvatarlessBackgroundColor,
   EnrollmentRole,
   IsEnrolledInCourseMiddlewareLocals,
+  IsCourseStaffMiddlewareLocals,
 } from "./index.js";
 
 export type ConversationType = typeof conversationTypes[number];
