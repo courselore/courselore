@@ -4362,7 +4362,7 @@ export default (app: Courselore): void => {
                                                                           `
                                                                         )}"
                                                                       >
-                                                                        $${spinner(
+                                                                        $${app.locals.partials.spinner(
                                                                           {
                                                                             req,
                                                                             res,
@@ -5451,10 +5451,12 @@ export default (app: Courselore): void => {
                                                           `
                                                         )}"
                                                       >
-                                                        $${spinner({
-                                                          req,
-                                                          res,
-                                                        })}
+                                                        $${app.locals.partials.spinner(
+                                                          {
+                                                            req,
+                                                            res,
+                                                          }
+                                                        )}
                                                         Loading…
                                                       </div>
                                                       <div

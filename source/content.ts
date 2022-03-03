@@ -1032,7 +1032,7 @@ export default () => {
                             gap: var(--space--2);
                           `)}"
                         >
-                          $${spinner({ req, res })} Uploading…
+                          $${app.locals.partials.spinner({ req, res })} Uploading…
                         </div>
                       `
                     )},
@@ -1434,7 +1434,7 @@ ${contentSource}</textarea
             gap: var(--space--2);
           `)}"
         >
-          $${spinner({ req, res })} Loading…
+          $${app.locals.partials.spinner({ req, res })} Loading…
         </div>
 
         <div
