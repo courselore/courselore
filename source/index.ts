@@ -202,6 +202,13 @@ export default async function courselore(
     },
     options
   );
+  app.locals.handlers = {} as any;
+  app.locals.middlewares = {} as any;
+  app.locals.layouts = {} as any;
+  app.locals.partials = {} as any;
+  app.locals.helpers = {} as any;
+  app.locals.mailers = {} as any;
+  app.locals.workers = {} as any;
   await database(app);
   logging(app);
   globalMiddlewares(app);
