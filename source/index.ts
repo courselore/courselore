@@ -70,7 +70,7 @@ import layouts, {
   ReportIssueHrefPartial,
   FlashHelper,
 } from "./layouts.js";
-import authentication from "./authentication.js";
+import authentication, { SessionHelper } from "./authentication.js";
 import about, { AboutHandler } from "./about.js";
 
 import user, {
@@ -126,6 +126,7 @@ export interface Courselore extends express.Express {
     };
     helpers: {
       Flash: FlashHelper;
+      Session: SessionHelper;
     };
     mailers: {
       emailConfirmation: any; // TODO

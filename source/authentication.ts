@@ -1,16 +1,46 @@
 import express from "express";
 import { Database, sql } from "@leafac/sqlite";
 import cryptoRandomString from "crypto-random-string";
-import { BaseMiddlewareLocals } from "./global-middlewares.js";
+import { Courselore, BaseMiddlewareLocals } from "./index.js";
 
-export default ({
-  database,
-  cookieOptions,
-}: {
-  database: Database;
-  cookieOptions: express.CookieOptions;
-}): {} => {
-  const Session = {
+export interface SessionHelper {
+  maxAge: number;
+  open({
+    req,
+    res,
+    userId,
+  }: {
+    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+    res: express.Response<any, BaseMiddlewareLocals>;
+    userId: number;
+  }): void;
+  get({
+    req,
+    res,
+  }: {
+    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+    res: express.Response<any, BaseMiddlewareLocals>;
+  }): number | undefined;
+  close({
+    req,
+    res,
+  }: {
+    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+    res: express.Response<any, BaseMiddlewareLocals>;
+  }): void;
+  closeAllAndReopen({
+    req,
+    res,
+    userId,
+  }: {
+    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+    res: express.Response<any, BaseMiddlewareLocals>;
+    userId: number;
+  }): void;
+}
+
+export default (app: Courselore): void => {
+  app.locals.helpers.Session = {
     maxAge: 180 * 24 * 60 * 60 * 1000,
 
     open({
@@ -22,7 +52,7 @@ export default ({
       res: express.Response<any, BaseMiddlewareLocals>;
       userId: number;
     }): void {
-      const session = database.get<{
+      const session = app.locals.database.get<{
         token: string;
       }>(
         sql`
@@ -37,8 +67,8 @@ export default ({
       )!;
       req.cookies.session = session.token;
       res.cookie("session", session.token, {
-        ...cookieOptions,
-        maxAge: Session.maxAge,
+        ...app.locals.options.cookies,
+        maxAge: app.locals.helpers.Session.maxAge,
       });
     },
 
@@ -50,7 +80,7 @@ export default ({
       res: express.Response<any, BaseMiddlewareLocals>;
     }): number | undefined {
       if (req.cookies.session === undefined) return undefined;
-      const session = database.get<{
+      const session = app.locals.database.get<{
         createdAt: string;
         user: number;
       }>(
@@ -60,16 +90,16 @@ export default ({
         session === undefined ||
         new Date(session.createdAt).getTime() < Date.now() - Session.maxAge
       ) {
-        Session.close({ req, res });
+        app.locals.helpers.Session.close({ req, res });
         return undefined;
       } else if (
         new Date(session.createdAt).getTime() <
-        Date.now() - Session.maxAge / 2
+        Date.now() - app.locals.helpers.Session.maxAge / 2
       ) {
-        Session.close({ req, res });
-        Session.open({ req, res, userId: session.user });
+        app.locals.helpers.Session.close({ req, res });
+        app.locals.helpers.Session.open({ req, res, userId: session.user });
       }
-      database.run(
+      app.locals.database.run(
         sql`
           UPDATE "users"
           SET "lastSeenOnlineAt" = ${new Date().toISOString()}
@@ -88,8 +118,8 @@ export default ({
     }): void {
       if (req.cookies.session === undefined) return;
       delete req.cookies.session;
-      res.clearCookie("session", cookieOptions);
-      database.run(
+      res.clearCookie("session", app.locals.options.cookies);
+      app.locals.database.run(
         sql`DELETE FROM "sessions" WHERE "token" = ${req.cookies.session}`
       );
     },
@@ -103,17 +133,19 @@ export default ({
       res: express.Response<any, BaseMiddlewareLocals>;
       userId: number;
     }): void {
-      Session.close({ req, res });
-      database.run(sql`DELETE FROM "sessions" WHERE "user" = ${userId}`);
-      Session.open({ req, res, userId });
+      app.locals.helpers.Session.close({ req, res });
+      app.locals.database.run(
+        sql`DELETE FROM "sessions" WHERE "user" = ${userId}`
+      );
+      app.locals.helpers.Session.open({ req, res, userId });
     },
   };
   setTimeout(function worker() {
-    database.run(
+    app.locals.database.run(
       sql`
         DELETE FROM "sessions"
         WHERE "createdAt" < ${new Date(
-          Date.now() - Session.maxAge
+          Date.now() - app.locals.helpers.Session.maxAge
         ).toISOString()}
       `
     );
