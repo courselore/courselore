@@ -109,8 +109,12 @@ import message, {
   GetMessageHelper,
   MessageExistsMiddleware,
   MayEditMessageHelper,
+  MayEditMessageMiddleware,
 } from "./message.js";
-export { MessageExistsMiddlewareLocals } from "./message.js";
+export {
+  MessageExistsMiddlewareLocals,
+  MayEditMessageMiddlewareLocals,
+} from "./message.js";
 
 import content from "./content.js";
 import email from "./email.js";
@@ -144,6 +148,7 @@ export interface Courselore extends express.Express {
       isConversationAccessible: IsConversationAccessibleMiddleware;
       mayEditConversation: MayEditConversationMiddleware;
       messageExists: MessageExistsMiddleware;
+      mayEditMessage: MayEditMessageMiddleware;
     };
     layouts: {
       base: BaseLayout;
