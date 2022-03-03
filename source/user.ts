@@ -2,7 +2,15 @@ import express from "express";
 import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
-import { BaseMiddlewareLocals } from "./index.js";
+import {
+  Courselore,
+  BaseMiddlewareLocals,
+  IsSignedInMiddlewareLocals,
+  EventSourceMiddlewareLocals,
+  IsEnrolledInCourseMiddlewareLocals,
+  AuthorEnrollment,
+  AuthorEnrollmentUser,
+} from "./index.js";
 
 export type UserAvatarlessBackgroundColor =
   typeof userAvatarlessBackgroundColors[number];
@@ -66,8 +74,8 @@ export type UserPartial = ({
   size?: "xs" | "sm" | "xl";
 }) => HTML;
 
-export default (): { userPartial: UserPartial } => {
-  const userPartial: UserPartial = ({
+export default (app: Courselore): void => {
+  app.locals.partials.user = ({
     req,
     res,
     enrollment = undefined,
@@ -339,7 +347,7 @@ export default (): { userPartial: UserPartial } => {
                     `)}"
                   >
                     <div>
-                      $${userPartial({
+                      $${app.locals.partials.user({
                         req,
                         res,
                         enrollment,
@@ -416,7 +424,7 @@ export default (): { userPartial: UserPartial } => {
                   </div>
                   $${user !== "no-longer-enrolled" &&
                   user!.biographyPreprocessed !== null
-                    ? processContent({
+                    ? app.locals.partials.content({
                         req,
                         res,
                         type: "preprocessed",
@@ -534,7 +542,7 @@ export default (): { userPartial: UserPartial } => {
     head: HTML;
     body: HTML;
   }) =>
-    settingsLayout({
+    app.locals.layouts.settings({
       req,
       res,
       head,

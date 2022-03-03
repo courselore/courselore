@@ -94,6 +94,9 @@ export {
 
 export type EnrollmentRole = any; // TODO
 export type EnrollmentAccentColor = any; // TODO
+export type IsEnrolledInCourseMiddlewareLocals = any; // TODO
+export type AuthorEnrollment = any; // TODO
+export type AuthorEnrollmentUser = any; // TODO
 
 import course, {
   EnrollmentRole,
@@ -140,6 +143,7 @@ export interface Courselore extends express.Express {
       reportIssueHref: ReportIssueHrefPartial;
       user: UserPartial;
       course: any; // TODO
+      content: any; // TODO
       contentEditor: any; // TODO
     };
     helpers: {
