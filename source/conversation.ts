@@ -90,7 +90,7 @@ export type ConversationPartial = ({
 }: {
   req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
   res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
-  conversation: NonNullable<ReturnType<GetConversationHelper>>;
+  conversation: NonNullable<ReturnType<getConversationHelper>>;
   searchResult?:
     | {
         type: "conversationTitle";
@@ -123,7 +123,7 @@ export type ConversationTypeTextColorPartial = {
   };
 };
 
-export type GetConversationHelper = ({
+export type getConversationHelper = ({
   req,
   res,
   conversationReference,
@@ -2643,7 +2643,7 @@ export default (app: Courselore): void => {
 
   interface IsConversationAccessibleMiddlewareLocals
     extends IsEnrolledInCourseMiddlewareLocals {
-    conversation: NonNullable<ReturnType<GetConversationHelper>>;
+    conversation: NonNullable<ReturnType<getConversationHelper>>;
   }
   const isConversationAccessibleMiddleware: express.RequestHandler<
     { courseReference: string; conversationReference: string },

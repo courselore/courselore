@@ -9,7 +9,7 @@ export default (app: Courselore): void => {
   }: {
     req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
-    conversation: NonNullable<ReturnType<GetConversationHelper>>;
+    conversation: NonNullable<ReturnType<getConversationHelper>>;
     messageReference: string;
   }):
     | {
@@ -1019,7 +1019,7 @@ export default (app: Courselore): void => {
   }: {
     req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
-    conversation: NonNullable<ReturnType<GetConversationHelper>>;
+    conversation: NonNullable<ReturnType<getConversationHelper>>;
     message: NonNullable<ReturnType<typeof getMessage>>;
     mentions: Set<string>;
   }): void => {

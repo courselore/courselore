@@ -82,7 +82,7 @@ import conversation, {
   ConversationPartial,
   ConversationTypeIconPartial,
   ConversationTypeTextColorPartial,
-  GetConversationHelper as getConversationHelper,
+  getConversationHelper,
 } from "./conversation.js";
 export {
   ConversationType,
