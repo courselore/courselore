@@ -358,7 +358,7 @@ export default (app: Courselore): void => {
     {},
     MessageExistsMiddlewareLocals
   >[] = [
-    ...isConversationAccessibleMiddleware,
+    ...app.locals.middlewares.isConversationAccessible,
     (req, res, next) => {
       const message = app.locals.helpers.getMessage({
         req,
@@ -483,7 +483,7 @@ export default (app: Courselore): void => {
     IsConversationAccessibleMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages",
-    ...isConversationAccessibleMiddleware,
+    ...app.locals.middlewares.isConversationAccessible,
     (req, res, next) => {
       if (
         (req.body.isAnswer && res.locals.conversation.type !== "question") ||

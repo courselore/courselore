@@ -83,6 +83,9 @@ import conversation, {
   ConversationTypeIconPartial,
   ConversationTypeTextColorPartial,
   getConversationHelper,
+  IsConversationAccessibleMiddleware,
+  mayEditConversationHelper,
+  mayEditConversationMiddleware,
 } from "./conversation.js";
 export {
   ConversationType,
@@ -91,6 +94,8 @@ export {
   conversationTypeTextColor,
   AuthorEnrollment,
   AuthorEnrollmentUser,
+  IsConversationAccessibleMiddlewareLocals,
+  MayEditConversationMiddlewareLocals,
 } from "./conversation.js";
 import message from "./message.js";
 export {} from "./message.js";
@@ -123,6 +128,8 @@ export interface Courselore extends express.Express {
       mayManageInvitation: MayManageInvitationMiddleware;
       isInvitationUsable: IsInvitationUsableMiddleware;
       mayManageEnrollment: MayManageEnrollmentMiddleware;
+      isConversationAccessible: IsConversationAccessibleMiddleware;
+      mayEditConversation: mayEditConversationMiddleware;
     };
     layouts: {
       base: BaseLayout;
@@ -154,6 +161,7 @@ export interface Courselore extends express.Express {
       PasswordReset: PasswordResetHelper;
       defaultAccentColor: defaultAccentColorHelper;
       getConversation: getConversationHelper;
+      mayEditConversation: mayEditConversationHelper;
       getMessage: any; // TODO
       emailRegExp: any; // TODO
       isExpired: any; // TODO

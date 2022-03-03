@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import express from "express";
+import qs from "qs";
 import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
@@ -80,6 +81,47 @@ export type ConversationLayout = ({
   mainIsAScrollingPane?: boolean;
   body: HTML;
 }) => HTML;
+
+export type IsConversationAccessibleMiddleware = express.RequestHandler<
+  { courseReference: string; conversationReference: string },
+  HTML,
+  {},
+  {},
+  IsConversationAccessibleMiddlewareLocals
+>[];
+export interface IsConversationAccessibleMiddlewareLocals
+  extends IsEnrolledInCourseMiddlewareLocals {
+  conversation: NonNullable<
+    ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
+  >;
+}
+
+export type mayEditConversationHelper = ({
+  req,
+  res,
+}: {
+  req: express.Request<
+    { courseReference: string; conversationReference: string },
+    any,
+    {},
+    {},
+    IsConversationAccessibleMiddlewareLocals
+  >;
+  res: express.Response<any, IsConversationAccessibleMiddlewareLocals>;
+}) => boolean;
+
+export type mayEditConversationMiddleware = express.RequestHandler<
+  {
+    courseReference: string;
+    conversationReference: string;
+  },
+  any,
+  {},
+  {},
+  MayEditConversationMiddlewareLocals
+>[];
+export interface MayEditConversationMiddlewareLocals
+  extends IsConversationAccessibleMiddlewareLocals {}
 
 export type ConversationPartial = ({
   req,
@@ -2530,7 +2572,7 @@ export default (app: Courselore): void => {
           content: req.body.content,
           decorate: true,
         });
-        const message =app.locals.database.get<{
+        const message = app.locals.database.get<{
           id: number;
           reference: string;
         }>(
@@ -2558,7 +2600,7 @@ export default (app: Courselore): void => {
             RETURNING *
           `
         )!;
-       app.locals.database.run(
+        app.locals.database.run(
           sql`
             INSERT INTO "readings" ("createdAt", "message", "enrollment")
             VALUES (
@@ -2605,7 +2647,7 @@ export default (app: Courselore): void => {
     "/courses/:courseReference/conversations/mark-all-conversations-as-read",
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
-      const messages =app.locals.database.all<{ id: number }>(
+      const messages = app.locals.database.all<{ id: number }>(
         sql`
           SELECT "messages"."id"
           FROM "messages"
@@ -2635,7 +2677,7 @@ export default (app: Courselore): void => {
         `
       );
       for (const message of messages)
-       app.locals.database.run(
+        app.locals.database.run(
           sql`
             INSERT INTO "readings" ("createdAt", "message", "enrollment")
             VALUES (
@@ -2649,19 +2691,7 @@ export default (app: Courselore): void => {
     }
   );
 
-  interface IsConversationAccessibleMiddlewareLocals
-    extends IsEnrolledInCourseMiddlewareLocals {
-    conversation: NonNullable<
-      ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
-    >;
-  }
-  const isConversationAccessibleMiddleware: express.RequestHandler<
-    { courseReference: string; conversationReference: string },
-    HTML,
-    {},
-    {},
-    IsConversationAccessibleMiddlewareLocals
-  >[] = [
+  app.locals.middlewares.isConversationAccessible = [
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       const conversation = app.locals.helpers.getConversation({
@@ -2675,38 +2705,15 @@ export default (app: Courselore): void => {
     },
   ];
 
-  const mayEditConversation = ({
-    req,
-    res,
-  }: {
-    req: express.Request<
-      { courseReference: string; conversationReference: string },
-      any,
-      {},
-      {},
-      IsConversationAccessibleMiddlewareLocals
-    >;
-    res: express.Response<any, IsConversationAccessibleMiddlewareLocals>;
-  }): boolean =>
+  app.locals.helpers.mayEditConversation = ({ req, res }) =>
     res.locals.enrollment.role === "staff" ||
     (res.locals.conversation.authorEnrollment !== "no-longer-enrolled" &&
       res.locals.conversation.authorEnrollment.id === res.locals.enrollment.id);
 
-  interface MayEditConversationMiddlewareLocals
-    extends IsConversationAccessibleMiddlewareLocals {}
-  const mayEditConversationMiddleware: express.RequestHandler<
-    {
-      courseReference: string;
-      conversationReference: string;
-    },
-    any,
-    {},
-    {},
-    MayEditConversationMiddlewareLocals
-  >[] = [
-    ...isConversationAccessibleMiddleware,
+  app.locals.middlewares.mayEditConversation = [
+    ...app.locals.middlewares.isConversationAccessible,
     (req, res, next) => {
-      if (mayEditConversation({ req, res })) return next();
+      if (app.locals.helpers.mayEditConversation({ req, res })) return next();
       next("route");
     },
   ];
@@ -2724,12 +2731,12 @@ export default (app: Courselore): void => {
     IsConversationAccessibleMiddlewareLocals & EventSourceMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
-    ...isConversationAccessibleMiddleware,
+    ...app.locals.middlewares.isConversationAccessible,
     ...app.locals.middlewares.eventSource,
     (req, res) => {
       const beforeMessage =
         typeof req.query.beforeMessageReference === "string"
-          ?app.locals.database.get<{ id: number }>(
+          ? app.locals.database.get<{ id: number }>(
               sql`
                 SELECT "id"
                 FROM "messages"
@@ -2742,7 +2749,7 @@ export default (app: Courselore): void => {
       const afterMessage =
         beforeMessage === undefined &&
         typeof req.query.afterMessageReference === "string"
-          ?app.locals.database.get<{ id: number }>(
+          ? app.locals.database.get<{ id: number }>(
               sql`
                 SELECT "id"
                 FROM "messages"
@@ -2756,7 +2763,7 @@ export default (app: Courselore): void => {
         beforeMessage !== undefined ||
         (afterMessage === undefined && res.locals.conversation.type === "chat");
 
-      const messagesRows =app.locals.database.all<{ reference: string }>(
+      const messagesRows = app.locals.database.all<{ reference: string }>(
         sql`
           SELECT "reference"
           FROM "messages"
@@ -2793,7 +2800,7 @@ export default (app: Courselore): void => {
       );
 
       for (const message of messages)
-       app.locals.database.run(
+        app.locals.database.run(
           sql`
             INSERT INTO "readings" ("createdAt", "message", "enrollment")
             VALUES (
@@ -2941,7 +2948,7 @@ export default (app: Courselore): void => {
                           }
                         `)}"
                       >
-                        $${mayEditConversation({ req, res })
+                        $${app.locals.helpers.mayEditConversation({ req, res })
                           ? html`
                               <div>
                                 <button
@@ -3377,7 +3384,10 @@ export default (app: Courselore): void => {
                                       <i class="bi bi-link"></i>
                                       Copy Conversation Permanent Link
                                     </button>
-                                    $${mayEditConversation({ req, res })
+                                    $${app.locals.helpers.mayEditConversation({
+                                      req,
+                                      res,
+                                    })
                                       ? html`
                                           <button
                                             class="dropdown--menu--item button button--transparent"
@@ -3497,7 +3507,7 @@ export default (app: Courselore): void => {
                       )}
                     </h2>
 
-                    $${mayEditConversation({ req, res })
+                    $${app.locals.helpers.mayEditConversation({ req, res })
                       ? html`
                           <form
                             method="POST"
@@ -3584,7 +3594,10 @@ export default (app: Courselore): void => {
                               }
                             `)}"
                           >
-                            $${mayEditConversation({ req, res })
+                            $${app.locals.helpers.mayEditConversation({
+                              req,
+                              res,
+                            })
                               ? html`
                                   $${res.locals.conversation.taggings.length ===
                                   1
@@ -5973,13 +5986,13 @@ export default (app: Courselore): void => {
     MayEditConversationMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
-    ...mayEditConversationMiddleware,
+    ...app.locals.middlewares.mayEditConversation,
     (req, res, next) => {
       if (typeof req.body.type === "string")
         if (!res.locals.conversationTypes.includes(req.body.type))
           return next("validation");
         else
-         app.locals.database.run(
+          app.locals.database.run(
             sql`
               UPDATE "conversations"
               SET "type" = ${req.body.type}
@@ -5999,7 +6012,7 @@ export default (app: Courselore): void => {
         )
           return next("validation");
         else
-         app.locals.database.run(
+          app.locals.database.run(
             sql`
               UPDATE "conversations"
               SET "resolvedAt" = ${
@@ -6020,7 +6033,7 @@ export default (app: Courselore): void => {
         )
           return next("validation");
         else
-         app.locals.database.run(
+          app.locals.database.run(
             sql`
               UPDATE "conversations"
               SET "pinnedAt" = ${
@@ -6041,7 +6054,7 @@ export default (app: Courselore): void => {
         )
           return next("validation");
         else
-         app.locals.database.run(
+          app.locals.database.run(
             sql`
               UPDATE "conversations"
               SET "staffOnlyAt" = ${
@@ -6056,7 +6069,7 @@ export default (app: Courselore): void => {
       if (typeof req.body.title === "string")
         if (req.body.title.trim() === "") return next("validation");
         else
-         app.locals.database.run(
+          app.locals.database.run(
             sql`
               UPDATE "conversations"
               SET "updatedAt" = ${new Date().toISOString()},
@@ -6083,9 +6096,9 @@ export default (app: Courselore): void => {
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     ...app.locals.middlewares.isCourseStaff,
-    ...isConversationAccessibleMiddleware,
+    ...app.locals.middlewares.isConversationAccessible,
     (req, res) => {
-     app.locals.database.run(
+      app.locals.database.run(
         sql`DELETE FROM "conversations" WHERE "id" = ${res.locals.conversation.id}`
       );
 
@@ -6108,7 +6121,7 @@ export default (app: Courselore): void => {
     MayEditConversationMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/taggings",
-    ...mayEditConversationMiddleware,
+    ...app.locals.middlewares.mayEditConversation,
     (req, res, next) => {
       if (
         typeof req.body.reference !== "string" ||
@@ -6119,7 +6132,7 @@ export default (app: Courselore): void => {
       )
         return next("validation");
 
-     app.locals.database.run(
+      app.locals.database.run(
         sql`
           INSERT INTO "taggings" ("createdAt", "conversation", "tag")
           VALUES (
@@ -6151,7 +6164,7 @@ export default (app: Courselore): void => {
     MayEditConversationMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/taggings",
-    ...mayEditConversationMiddleware,
+    ...app.locals.middlewares.mayEditConversation,
     (req, res, next) => {
       if (
         res.locals.conversation.taggings.length === 1 ||
@@ -6162,7 +6175,7 @@ export default (app: Courselore): void => {
       )
         return next("validation");
 
-     app.locals.database.run(
+      app.locals.database.run(
         sql`
           DELETE FROM "taggings"
           WHERE "conversation" = ${res.locals.conversation.id} AND

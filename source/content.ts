@@ -1591,7 +1591,7 @@ ${contentSource}</textarea
     IsConversationAccessibleMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/content-editor/mention-user-search",
-    ...isConversationAccessibleMiddleware,
+    ...app.locals.middlewares.isConversationAccessible,
     mentionUserSearchRequestHandler
   );
 
