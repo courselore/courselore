@@ -1197,30 +1197,30 @@ export default (app: Courselore): void => {
             ${null},
             ${req.body.name},
             ${html`${req.body.name}`},
-            ${lodash.sample(userAvatarlessBackgroundColors)},
+            ${lodash.sample(app.locals.options.userAvatarlessBackgroundColors)},
             ${"staff-announcements-and-mentions"}
           )
           RETURNING *
         `
       )!;
 
-      sendEmailConfirmationEmail({
+      app.locals.mailers.emailConfirmation({
         req,
         res,
         userId: user.id,
         userEmail: user.email,
       });
-      Session.open({ req, res, userId: user.id });
+      app.locals.helpers.Session.open({ req, res, userId: user.id });
       res.redirect(`${app.locals.options.baseURL}${req.query.redirect ?? "/"}`);
     })
   );
 
   app.post<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/resend-confirmation-email",
-    ...isSignedInMiddleware,
+    ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       if (res.locals.user.emailConfirmedAt !== null) {
-        Flash.set({
+        app.locals.helpers.Flash.set({
           req,
           res,
           content: html`
@@ -1229,13 +1229,13 @@ export default (app: Courselore): void => {
         });
         return res.redirect("back");
       }
-      sendEmailConfirmationEmail({
+      app.locals.mailers.emailConfirmation({
         req,
         res,
         userId: res.locals.user.id,
         userEmail: res.locals.user.email,
       });
-      Flash.set({
+      app.locals.helpers.Flash.set({
         req,
         res,
         content: html`
@@ -1254,14 +1254,14 @@ export default (app: Courselore): void => {
     IsSignedInMiddlewareLocals
   >(
     "/email-confirmation/:emailConfirmationNonce",
-    ...isSignedInMiddleware,
+    ...app.locals.middlewares.isSignedIn,
     (req, res) => {
-      const emailConfirmation = database.get<{ user: number }>(
+      const emailConfirmation = app.locals.database.get<{ user: number }>(
         sql`
           SELECT "user" FROM "emailConfirmations" WHERE "nonce" = ${req.params.emailConfirmationNonce}
         `
       );
-      database.run(
+      app.locals.database.run(
         sql`
           DELETE FROM "emailConfirmations" WHERE "nonce" = ${req.params.emailConfirmationNonce}
         `
@@ -1270,7 +1270,7 @@ export default (app: Courselore): void => {
         emailConfirmation === undefined ||
         emailConfirmation.user !== res.locals.user.id
       ) {
-        Flash.set({
+        app.locals.helpers.Flash.set({
           req,
           res,
           content: html`
@@ -1284,14 +1284,14 @@ export default (app: Courselore): void => {
           `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
         );
       }
-      database.run(
+      app.locals.database.run(
         sql`
           UPDATE "users"
           SET "emailConfirmedAt" = ${new Date().toISOString()}
           WHERE "id" = ${res.locals.user.id}
         `
       );
-      Flash.set({
+      app.locals.helpers.Flash.set({
         req,
         res,
         content: html`
@@ -1304,12 +1304,10 @@ export default (app: Courselore): void => {
 
   app.delete<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
     "/sign-out",
-    ...isSignedInMiddleware,
+    ...app.locals.middlewares.isSignedIn,
     (req, res) => {
-      Session.close({ req, res });
+      app.locals.helpers.Session.close({ req, res });
       res.redirect(`${app.locals.options.baseURL}/`);
     }
   );
-
-  return {};
 };
