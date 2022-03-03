@@ -84,13 +84,17 @@ export {
   IsSignedInMiddlewareLocals,
 } from "./authentication.js";
 import about, { AboutHandler } from "./about.js";
-
-import user, {
+import user, { UserPartial } from "./user.js";
+export {
   UserAvatarlessBackgroundColor,
   userAvatarlessBackgroundColors,
   UserEmailNotifications,
   userEmailNotificationses,
 } from "./user.js";
+
+export type EnrollmentRole = any; // TODO
+export type EnrollmentAccentColor = any; // TODO
+
 import course, {
   EnrollmentRole,
   enrollmentRoles,
@@ -112,12 +116,7 @@ export interface Courselore extends express.Express {
       canonicalBaseURL: string;
     } & Required<Options> &
       GlobalMiddlewaresOptions &
-      AuthenticationOptions & {
-        userAvatarlessBackgroundColors: any /* TODO */;
-        userEmailNotifications: any /* TODO */;
-        enrollmentRole: any /* TODO */;
-        enrollmentAccentColor: any /* TODO */;
-      };
+      AuthenticationOptions;
     handlers: {
       about: AboutHandler;
       signIn: SignInHandler;
@@ -139,8 +138,8 @@ export interface Courselore extends express.Express {
       logo: LogoPartial;
       spinner: SpinnerPartial;
       reportIssueHref: ReportIssueHrefPartial;
+      user: UserPartial;
       course: any; // TODO
-      user: any; // TODO
       contentEditor: any; // TODO
     };
     helpers: {
@@ -196,6 +195,7 @@ export default async function courselore(
   // TODO: Fix mutual dependency between ‘authentication’ and ‘about’
   authentication(app);
   about(app);
+  user(app);
 
   const {
     baseLayout,

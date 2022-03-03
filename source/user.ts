@@ -33,7 +33,7 @@ export const userEmailNotificationses = [
   "none",
 ] as const;
 
-type UserPartial = ({
+export type UserPartial = ({
   req,
   res,
   enrollment,
