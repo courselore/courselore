@@ -642,7 +642,10 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.conversation.nextMessageReference}`
       );
 
-      emitCourseRefresh(res.locals.course.id, req.query.eventSourceReference);
+      app.locals.realTimeUpdaters.course(
+        res.locals.course.id,
+        req.query.eventSourceReference
+      );
     }
   );
 
@@ -763,7 +766,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
       );
 
-      emitCourseRefresh(res.locals.course.id);
+      app.locals.realTimeUpdaters.course(res.locals.course.id);
     }
   );
 
@@ -790,7 +793,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
       );
 
-      emitCourseRefresh(res.locals.course.id);
+      app.locals.realTimeUpdaters.course(res.locals.course.id);
     }
   );
 
@@ -832,7 +835,10 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
       );
 
-      emitCourseRefresh(res.locals.course.id, req.query.eventSourceReference);
+      app.locals.realTimeUpdaters.course(
+        res.locals.course.id,
+        req.query.eventSourceReference
+      );
     }
   );
 
@@ -867,7 +873,10 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
       );
 
-      emitCourseRefresh(res.locals.course.id, req.query.eventSourceReference);
+      app.locals.realTimeUpdaters.course(
+        res.locals.course.id,
+        req.query.eventSourceReference
+      );
     }
   );
 
@@ -963,7 +972,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
       );
 
-      emitCourseRefresh(res.locals.course.id);
+      app.locals.realTimeUpdaters.course(res.locals.course.id);
     }
   );
 
@@ -996,11 +1005,11 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
       );
 
-      emitCourseRefresh(res.locals.course.id);
+      app.locals.realTimeUpdaters.course(res.locals.course.id);
     }
   );
 
-  const emitCourseRefresh = (
+  app.locals.realTimeUpdaters.course = (
     courseId: number,
     eventDestinationReference?: string | undefined
   ): void => {

@@ -176,6 +176,9 @@ export interface Courselore extends express.Express {
     workers: {
       sendEmail: any; // TODO
     };
+    realTimeUpdaters: {
+      course: any; // TODO
+    };
   } & DatabaseLocals &
     EventSourceLocals;
 }

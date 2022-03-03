@@ -2634,7 +2634,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.course.nextConversationReference}`
       );
 
-      emitCourseRefresh(res.locals.course.id);
+      app.locals.realTimeUpdaters.course(res.locals.course.id);
     }
   );
 
@@ -6084,7 +6084,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
       );
 
-      emitCourseRefresh(res.locals.course.id);
+      app.locals.realTimeUpdaters.course(res.locals.course.id);
     }
   );
 
@@ -6107,7 +6107,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}`
       );
 
-      emitCourseRefresh(res.locals.course.id);
+      app.locals.realTimeUpdaters.course(res.locals.course.id);
     }
   );
 
