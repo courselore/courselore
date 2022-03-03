@@ -6,6 +6,7 @@ import { javascript } from "@leafac/javascript";
 import {
   Courselore,
   UserAvatarlessBackgroundColor,
+  UserEmailNotifications,
   EnrollmentRole,
   IsEnrolledInCourseMiddlewareLocals,
   IsCourseStaffMiddlewareLocals,
@@ -139,6 +140,24 @@ export type CourseRealTimeUpdater = (
   courseId: number,
   eventDestinationReference?: string | undefined
 ) => void;
+
+export type NotificationsMailer = ({
+  req,
+  res,
+  conversation,
+  message,
+  mentions,
+}: {
+  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
+  res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+  conversation: NonNullable<
+    ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
+  >;
+  message: NonNullable<
+    ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
+  >;
+  mentions: Set<string>;
+}) => void;
 
 export default (app: Courselore): void => {
   app.locals.helpers.getMessage = ({
@@ -1079,17 +1098,7 @@ export default (app: Courselore): void => {
     conversation,
     message,
     mentions,
-  }: {
-    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
-    res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
-    conversation: NonNullable<
-      ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
-    >;
-    message: NonNullable<
-      ReturnType<Courselore["locals"]["helpers"]["getMessage"]>
-    >;
-    mentions: Set<string>;
-  }): void => {
+  }) => {
     app.locals.database.run(
       sql`
         INSERT INTO "notificationDeliveries" ("createdAt", "message", "enrollment")

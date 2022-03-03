@@ -113,6 +113,7 @@ import message, {
   MayEndorseMessageHelper,
   MayEndorseMessageMiddleware,
   CourseRealTimeUpdater,
+  NotificationsMailer,
 } from "./message.js";
 export {
   MessageExistsMiddlewareLocals,
@@ -199,7 +200,7 @@ export interface Courselore extends express.Express {
     mailers: {
       emailConfirmation: EmailConfirmationMailer;
       invitation: InvitationMailer;
-      notifications: any; // TODO
+      notifications: NotificationsMailer;
     };
     workers: {
       sendEmail: any; // TODO
