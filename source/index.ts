@@ -168,6 +168,7 @@ export interface Courselore extends express.Express {
       isDate: any; // TODO
       splitFilterablePhrases: any; // TODO
       sanitizeSearch: any; // TODO
+      highlightSearchResult: any; // TODO
     };
     mailers: {
       emailConfirmation: EmailConfirmationMailer;

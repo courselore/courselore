@@ -2900,7 +2900,7 @@ export default (app: Courselore): void => {
                               text-overflow: ellipsis;
                             `)}"
                           >
-                            $${highlightSearchResult(
+                            $${app.locals.helpers.highlightSearchResult(
                               html`${res.locals.conversation.title}`,
                               req.query.search
                             )}
@@ -3501,7 +3501,7 @@ export default (app: Courselore): void => {
                         this.hidden = this.wasHidden;
                       `}"
                     >
-                      $${highlightSearchResult(
+                      $${app.locals.helpers.highlightSearchResult(
                         html`${res.locals.conversation.title}`,
                         req.query.search
                       )}
@@ -5162,7 +5162,7 @@ export default (app: Courselore): void => {
                                                       message.authorEnrollment ===
                                                       "no-longer-enrolled"
                                                         ? undefined
-                                                        : highlightSearchResult(
+                                                        : app.locals.helpers.highlightSearchResult(
                                                             html`${message
                                                               .authorEnrollment
                                                               .user.name}`,

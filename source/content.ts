@@ -1651,7 +1651,7 @@ ${contentSource}</textarea
                       >
                         <span>
                           <span class="secondary">
-                            $${highlightSearchResult(
+                            $${app.locals.helpers.highlightSearchResult(
                               `#${conversation.reference}`,
                               `#${req.query.search}`,
                               { prefix: true }
@@ -1721,7 +1721,7 @@ ${contentSource}</textarea
                           <div>
                             <div>
                               <span class="secondary">
-                                $${highlightSearchResult(
+                                $${app.locals.helpers.highlightSearchResult(
                                   `#${conversation.reference}/${message.reference}`,
                                   `#${req.query.search}`,
                                   { prefix: true }
@@ -1756,7 +1756,7 @@ ${contentSource}</textarea
               >
                 <span>
                   <span class="secondary">
-                    $${highlightSearchResult(
+                    $${app.locals.helpers.highlightSearchResult(
                       `#${conversation.reference}`,
                       `#${conversationReference}`
                     )}
@@ -2552,7 +2552,7 @@ ${contentSource}</textarea
                     return;
                   parentElement.replaceChild(
                     JSDOM.fragment(
-                      highlightSearchResult(html`${node.textContent}`, search)
+                      app.locals.helpers.highlightSearchResult(html`${node.textContent}`, search)
                     ),
                     node
                   );
