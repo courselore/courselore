@@ -152,6 +152,7 @@ export interface Courselore extends express.Express {
       isExpired: any; // TODO
       isDate: any; // TODO
       splitFilterablePhrases: any; // TODO
+      sanitizeSearch: any; // TODO
     };
     mailers: {
       emailConfirmation: EmailConfirmationMailer;

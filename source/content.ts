@@ -1489,7 +1489,7 @@ ${contentSource}</textarea
                           "enrollments"."course" = ${res.locals.course.id} AND
                           "users"."id" != ${res.locals.user.id}
           JOIN "usersNameSearchIndex" ON "users"."id" = "usersNameSearchIndex"."rowid" AND
-                                        "usersNameSearchIndex" MATCH ${sanitizeSearch(
+                                        "usersNameSearchIndex" MATCH ${app.locals.helpers.sanitizeSearch(
                                           req.query.search,
                                           { prefix: true }
                                         )}
@@ -1619,7 +1619,7 @@ ${contentSource}</textarea
                 SELECT "conversations"."reference"
                 FROM "conversations"
                 JOIN "conversationsReferenceIndex" ON "conversations"."id" = "conversationsReferenceIndex"."rowid" AND
-                                                      "conversationsReferenceIndex" MATCH ${sanitizeSearch(
+                                                      "conversationsReferenceIndex" MATCH ${app.locals.helpers.sanitizeSearch(
                                                         req.query.search,
                                                         { prefix: true }
                                                       )}
@@ -1685,7 +1685,7 @@ ${contentSource}</textarea
                       ? sql``
                       : sql`
                         JOIN "messagesReferenceIndex" ON "messages"."id" = "messagesReferenceIndex"."rowid" AND
-                                                         "messagesReferenceIndex" MATCH ${sanitizeSearch(
+                                                         "messagesReferenceIndex" MATCH ${app.locals.helpers.sanitizeSearch(
                                                            messageReferenceSearch,
                                                            { prefix: true }
                                                          )}
@@ -1778,7 +1778,7 @@ ${contentSource}</textarea
                      highlight("conversationsTitleSearchIndex", 0, '<mark class="mark">', '</mark>') AS "conversationTitleSearchResultHighlight"
               FROM "conversations"
               JOIN "conversationsTitleSearchIndex" ON "conversations"."id" = "conversationsTitleSearchIndex"."rowid" AND
-                                                      "conversationsTitleSearchIndex" MATCH ${sanitizeSearch(
+                                                      "conversationsTitleSearchIndex" MATCH ${app.locals.helpers.sanitizeSearch(
                                                         req.query.search,
                                                         { prefix: true }
                                                       )}
@@ -1835,7 +1835,7 @@ ${contentSource}</textarea
               FROM "messages"
               JOIN "enrollments" ON "messages"."authorEnrollment" = "enrollments"."id"
               JOIN "usersNameSearchIndex" ON "enrollments"."user" = "usersNameSearchIndex"."rowid" AND
-                                             "usersNameSearchIndex" MATCH ${sanitizeSearch(
+                                             "usersNameSearchIndex" MATCH ${app.locals.helpers.sanitizeSearch(
                                                req.query.search,
                                                { prefix: true }
                                              )}
@@ -1928,7 +1928,7 @@ ${contentSource}</textarea
                      snippet("messagesContentSearchIndex", 0, '<mark class="mark">', '</mark>', '…', 16) AS "messageContentSearchResultSnippet"
               FROM "messages"
               JOIN "messagesContentSearchIndex" ON "messages"."id" = "messagesContentSearchIndex"."rowid" AND
-                                                   "messagesContentSearchIndex" MATCH ${sanitizeSearch(
+                                                   "messagesContentSearchIndex" MATCH ${app.locals.helpers.sanitizeSearch(
                                                      req.query.search,
                                                      { prefix: true }
                                                    )}

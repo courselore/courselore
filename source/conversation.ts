@@ -1,5 +1,10 @@
+import assert from "node:assert/strict";
 import express from "express";
+import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
+import { css } from "@leafac/css";
+import { javascript } from "@leafac/javascript";
+import lodash from "lodash";
 import {
   Courselore,
   EventSourceMiddlewareLocals,
@@ -80,7 +85,7 @@ export default (app: Courselore): void => {
   }) => {
     const search =
       typeof req.query.search === "string" && req.query.search.trim() !== ""
-        ? sanitizeSearch(req.query.search)
+        ? app.locals.helpers.sanitizeSearch(req.query.search)
         : undefined;
 
     const filters: {
@@ -138,7 +143,7 @@ export default (app: Courselore): void => {
         ? Number(req.query.conversationsPage)
         : 1;
 
-    const conversationsWithSearchResults = database
+    const conversationsWithSearchResults = app.locals.database
       .all<{
         reference: string;
         conversationTitleSearchResultHighlight?: string | null;
@@ -294,13 +299,7 @@ export default (app: Courselore): void => {
                           `
                     }
                     coalesce("conversations"."updatedAt", "conversations"."createdAt") DESC
-          $${
-            FEATURE_PAGINATION
-              ? sql`
-                  LIMIT 16 OFFSET ${(conversationsPage - 1) * 15}
-                `
-              : sql``
-          }
+          LIMIT 16 OFFSET ${(conversationsPage - 1) * 15}
         `
       )
       .map((conversationWithSearchResult) => {
@@ -355,12 +354,10 @@ export default (app: Courselore): void => {
 
         return { conversation, searchResult };
       });
-    const moreConversationsExist =
-      FEATURE_PAGINATION && conversationsWithSearchResults.length === 16;
-    if (FEATURE_PAGINATION && moreConversationsExist)
-      conversationsWithSearchResults.pop();
+    const moreConversationsExist = conversationsWithSearchResults.length === 16;
+    if (moreConversationsExist) conversationsWithSearchResults.pop();
 
-    return applicationLayout({
+    return app.locals.layouts.application({
       req,
       res,
       head,
@@ -631,16 +628,19 @@ export default (app: Courselore): void => {
                                 `}"
                               />
                               <span>
-                                $${conversationTypeIcon[conversationType]
-                                  .regular}
+                                $${app.locals.partials.conversationTypeIcon[
+                                  conversationType
+                                ].regular}
                                 $${lodash.capitalize(conversationType)}
                               </span>
                               <span
-                                class="${conversationTypeTextColor[
-                                  conversationType
-                                ].select}"
+                                class="${app.locals.partials
+                                  .conversationTypeTextColor[conversationType]
+                                  .select}"
                               >
-                                $${conversationTypeIcon[conversationType].fill}
+                                $${app.locals.partials.conversationTypeIcon[
+                                  conversationType
+                                ].fill}
                                 $${lodash.capitalize(conversationType)}
                               </span>
                             </label>
@@ -1045,7 +1045,7 @@ export default (app: Courselore): void => {
                             </form>
                           `
                         : html``}
-                      $${FEATURE_PAGINATION && conversationsPage > 1
+                      $${conversationsPage > 1
                         ? html`
                             <div
                               class="${res.locals.localCSS(css`
@@ -1196,7 +1196,7 @@ export default (app: Courselore): void => {
                           }
                         )}
                       </div>
-                      $${FEATURE_PAGINATION && moreConversationsExist
+                      $${moreConversationsExist
                         ? html`
                             <div
                               class="${res.locals.localCSS(css`
@@ -1335,9 +1335,10 @@ export default (app: Courselore): void => {
           class="${conversation.type === "question" &&
           conversation.resolvedAt !== null
             ? "text--emerald"
-            : conversationTypeTextColor[conversation.type].display}"
+            : app.locals.partials.conversationTypeTextColor[conversation.type]
+                .display}"
         >
-          $${conversationTypeIcon[conversation.type].fill}
+          $${app.locals.partials.conversationTypeIcon[conversation.type].fill}
           ${lodash.capitalize(conversation.type)}
         </div>
         $${conversation.type === "question"
@@ -2338,14 +2339,19 @@ export default (app: Courselore): void => {
                             `}"
                         />
                         <span>
-                          $${conversationTypeIcon[conversationType].regular}
+                          $${app.locals.partials.conversationTypeIcon[
+                            conversationType
+                          ].regular}
                           $${lodash.capitalize(conversationType)}
                         </span>
                         <span
-                          class="${conversationTypeTextColor[conversationType]
+                          class="${app.locals.partials
+                            .conversationTypeTextColor[conversationType]
                             .select}"
                         >
-                          $${conversationTypeIcon[conversationType].fill}
+                          $${app.locals.partials.conversationTypeIcon[
+                            conversationType
+                          ].fill}
                           $${lodash.capitalize(conversationType)}
                         </span>
                       </label>
@@ -3105,7 +3111,6 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.eventSource,
     (req, res) => {
       const beforeMessage =
-        FEATURE_PAGINATION &&
         typeof req.query.beforeMessageReference === "string"
           ? database.get<{ id: number }>(
               sql`
@@ -3118,7 +3123,6 @@ export default (app: Courselore): void => {
             )
           : undefined;
       const afterMessage =
-        FEATURE_PAGINATION &&
         beforeMessage === undefined &&
         typeof req.query.afterMessageReference === "string"
           ? database.get<{ id: number }>(
@@ -3132,10 +3136,8 @@ export default (app: Courselore): void => {
             )
           : undefined;
       const messagesReverse =
-        FEATURE_PAGINATION &&
-        (beforeMessage !== undefined ||
-          (afterMessage === undefined &&
-            res.locals.conversation.type === "chat"));
+        beforeMessage !== undefined ||
+        (afterMessage === undefined && res.locals.conversation.type === "chat");
 
       const messagesRows = database.all<{ reference: string }>(
         sql`
@@ -3143,29 +3145,26 @@ export default (app: Courselore): void => {
           FROM "messages"
           WHERE "conversation" = ${res.locals.conversation.id}
                 $${
-                  FEATURE_PAGINATION && beforeMessage !== undefined
+                  beforeMessage !== undefined
                     ? sql`
                         AND "id" < ${beforeMessage.id}
                       `
                     : sql``
                 }
                 $${
-                  FEATURE_PAGINATION && afterMessage !== undefined
+                  afterMessage !== undefined
                     ? sql`
                         AND "id" > ${afterMessage.id}
                       `
                     : sql``
                 }
-          ORDER BY "id" $${
-            FEATURE_PAGINATION && messagesReverse ? sql`DESC` : sql`ASC`
-          }
-          $${FEATURE_PAGINATION ? sql`LIMIT 26` : sql``}
+          ORDER BY "id" $${messagesReverse ? sql`DESC` : sql`ASC`}
+          LIMIT 26
         `
       );
-      const moreMessagesExist =
-        FEATURE_PAGINATION && messagesRows.length === 26;
-      if (FEATURE_PAGINATION && moreMessagesExist) messagesRows.pop();
-      if (FEATURE_PAGINATION && messagesReverse) messagesRows.reverse();
+      const moreMessagesExist = messagesRows.length === 26;
+      if (moreMessagesExist) messagesRows.pop();
+      if (messagesReverse) messagesRows.reverse();
       const messages = messagesRows.map(
         (message) =>
           getMessage({
@@ -3333,7 +3332,8 @@ export default (app: Courselore): void => {
                                     .locals.conversation.type === "question" &&
                                   res.locals.conversation.resolvedAt !== null
                                     ? "text--emerald"
-                                    : conversationTypeTextColor[
+                                    : app.locals.partials
+                                        .conversationTypeTextColor[
                                         res.locals.conversation.type
                                       ].display}"
                                   oninteractive="${javascript`
@@ -3372,11 +3372,14 @@ export default (app: Courselore): void => {
                                                     class="dropdown--menu--item button ${conversationType ===
                                                     res.locals.conversation.type
                                                       ? "button--blue"
-                                                      : "button--transparent"} ${conversationTypeTextColor[
+                                                      : "button--transparent"} ${app
+                                                      .locals.partials
+                                                      .conversationTypeTextColor[
                                                       conversationType
                                                     ].display}"
                                                   >
-                                                    $${conversationTypeIcon[
+                                                    $${app.locals.partials
+                                                      .conversationTypeIcon[
                                                       conversationType
                                                     ].fill}
                                                     $${lodash.capitalize(
@@ -3392,7 +3395,7 @@ export default (app: Courselore): void => {
                                     });
                                   `}"
                                 >
-                                  $${conversationTypeIcon[
+                                  $${app.locals.partials.conversationTypeIcon[
                                     res.locals.conversation.type
                                   ].fill}
                                   $${lodash.capitalize(
@@ -3407,11 +3410,12 @@ export default (app: Courselore): void => {
                                   "question" &&
                                 res.locals.conversation.resolvedAt !== null
                                   ? "text--emerald"
-                                  : conversationTypeTextColor[
+                                  : app.locals.partials
+                                      .conversationTypeTextColor[
                                       res.locals.conversation.type
                                     ].display}"
                               >
-                                $${conversationTypeIcon[
+                                $${app.locals.partials.conversationTypeIcon[
                                   res.locals.conversation.type
                                 ].fill}
                                 $${lodash.capitalize(
@@ -4312,9 +4316,8 @@ export default (app: Courselore): void => {
                                 <i class="bi bi-chat-left-text"></i>
                               </div>
                               <p class="secondary">
-                                ${FEATURE_PAGINATION &&
-                                (afterMessage !== undefined ||
-                                  beforeMessage !== undefined)
+                                ${afterMessage !== undefined ||
+                                beforeMessage !== undefined
                                   ? "No more messages."
                                   : res.locals.conversation.type === "chat"
                                   ? "Start the chat by sending the first message!"
@@ -4332,9 +4335,8 @@ export default (app: Courselore): void => {
                                   : css``}
                               `)}"
                             >
-                              $${FEATURE_PAGINATION &&
-                              (afterMessage !== undefined ||
-                                (moreMessagesExist && messagesReverse))
+                              $${afterMessage !== undefined ||
+                              (moreMessagesExist && messagesReverse)
                                 ? html`
                                     <div
                                       class="${res.locals.localCSS(css`
@@ -6002,9 +6004,8 @@ export default (app: Courselore): void => {
                                     </div>
                                   `
                               )}
-                              $${FEATURE_PAGINATION &&
-                              (beforeMessage !== undefined ||
-                                (moreMessagesExist && !messagesReverse))
+                              $${beforeMessage !== undefined ||
+                              (moreMessagesExist && !messagesReverse)
                                 ? html`
                                     <div
                                       class="${res.locals.localCSS(css`
