@@ -1,8 +1,8 @@
 import express from "express";
-import { BaseMiddlewareLocals } from "./global-middlewares.js";
 import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
+import { BaseMiddlewareLocals } from "./index.js";
 
 export type UserAvatarlessBackgroundColor =
   typeof userAvatarlessBackgroundColors[number];

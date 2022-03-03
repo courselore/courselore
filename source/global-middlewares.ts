@@ -17,6 +17,8 @@ export interface BaseMiddlewareLocals {
   HTMLForJavaScript: ReturnType<typeof HTMLForJavaScript>;
 }
 
+export type UserFileExtensionsWhichMayBeShownInBrowser =
+  typeof userFileExtensionsWhichMayBeShownInBrowser[number];
 export const userFileExtensionsWhichMayBeShownInBrowser = [
   "png",
   "svg",
@@ -32,7 +34,7 @@ export const userFileExtensionsWhichMayBeShownInBrowser = [
   "avi",
   "pdf",
   "txt",
-];
+] as const;
 
 export default (app: Courselore): void => {
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
