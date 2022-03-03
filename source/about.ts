@@ -50,7 +50,7 @@ export default (app: Courselore): void => {
               `)}"
             >
               <a
-                href="https://courselore.org/about"
+                href="${app.locals.options.baseURL}/about"
                 class="heading--display button button--transparent ${res.locals
                   .localCSS(css`
                   font-size: var(--font-size--5xl);
@@ -95,7 +95,7 @@ export default (app: Courselore): void => {
                   $${res.locals.user === undefined
                     ? html`
                         <a
-                          href="https://courselore.org/sign-up"
+                          href="${app.locals.options.canonicalBaseURL}/sign-up"
                           class="button button--blue"
                           oninteractive="${javascript`
                             tippy(this, {
@@ -108,7 +108,7 @@ export default (app: Courselore): void => {
                           Sign up
                         </a>
                         <a
-                          href="https://courselore.org/sign-in"
+                          href="${app.locals.options.canonicalBaseURL}/sign-in"
                           class="button button--transparent"
                           oninteractive="${javascript`
                             tippy(this, {
@@ -134,7 +134,8 @@ export default (app: Courselore): void => {
 
                 <div>
                   <a
-                    href="https://courselore.org/courses/8537410611/invitations/3667859788"
+                    href="${app.locals.options
+                      .canonicalBaseURL}/courses/8537410611/invitations/3667859788"
                     class="button button--transparent ${res.locals.localCSS(
                       css`
                         align-items: center;
@@ -768,7 +769,7 @@ export default (app: Courselore): void => {
             $${res.locals.user === undefined
               ? html`
                   <a
-                    href="https://courselore.org/sign-up"
+                    href="${app.locals.options.canonicalBaseURL}/sign-up"
                     class="button button--blue"
                     oninteractive="${javascript`
                       tippy(this, {
@@ -781,7 +782,7 @@ export default (app: Courselore): void => {
                     Sign up
                   </a>
                   <a
-                    href="https://courselore.org/sign-in"
+                    href="${app.locals.options.canonicalBaseURL}/sign-in"
                     class="button button--transparent"
                     oninteractive="${javascript`
                       tippy(this, {
@@ -804,7 +805,8 @@ export default (app: Courselore): void => {
                   </a>
                 `}
             <a
-              href="https://courselore.org/courses/8537410611/invitations/3667859788"
+              href="${app.locals.options
+                .canonicalBaseURL}/courses/8537410611/invitations/3667859788"
               class="button button--transparent ${res.locals.localCSS(
                 css`
                   align-items: center;

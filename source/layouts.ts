@@ -680,7 +680,7 @@ export default async (app: Courselore): Promise<void> => {
                         </h3>
                         <div class="dropdown--menu">
                           <a
-                            href="https://courselore.org/about"
+                            href="${app.locals.options.baseURL}/about"
                             target="_blank"
                             class="dropdown--menu--item button button--transparent"
                           >
@@ -720,7 +720,8 @@ export default async (app: Courselore): Promise<void> => {
                         </h3>
                         <div class="dropdown--menu">
                           <a
-                            href="https://courselore.org/courses/8537410611/invitations/3667859788"
+                            href="${app.locals.options
+                              .canonicalBaseURL}/courses/8537410611/invitations/3667859788"
                             target="_blank"
                             class="dropdown--menu--item button button--transparent ${res.locals.localCSS(
                               css`

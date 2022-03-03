@@ -2,6 +2,11 @@
 
 ### Performance
 
+- `shouldDisplayAbout`
+- `/courses/8537410611/invitations/3667859788`
+
+---
+
 - Split the codebase into separate files.
   - `source/course.ts`
   - `source/conversation.ts`
