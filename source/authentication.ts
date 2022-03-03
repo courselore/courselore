@@ -129,6 +129,10 @@ export interface PasswordResetHelper {
   get(nonce: string): number | undefined;
 }
 
+export interface AuthenticationOptions {
+  argon2: argon2.Options;
+}
+
 export default (app: Courselore): void => {
   app.locals.helpers.Session = {
     maxAge: 180 * 24 * 60 * 60 * 1000,
@@ -902,7 +906,7 @@ export default (app: Courselore): void => {
           UPDATE "users"
           SET "password" = ${await argon2.hash(
             req.body.password,
-            argon2Options
+            app.locals.options.argon2
           )}
           WHERE "id" = ${userId}
         `
@@ -1048,7 +1052,7 @@ export default (app: Courselore): void => {
     }
   );
 
-  const argon2Options = {
+  app.locals.options.argon2 = {
     type: argon2.argon2id,
     memoryCost: 15 * 2 ** 10,
     timeCost: 2,
@@ -1186,7 +1190,7 @@ export default (app: Courselore): void => {
             ${new Date().toISOString()},
             ${new Date().toISOString()},
             ${req.body.email},
-            ${await argon2.hash(req.body.password, argon2Options)},
+            ${await argon2.hash(req.body.password, app.locals.options.argon2)},
             ${null},
             ${req.body.name},
             ${html`${req.body.name}`},

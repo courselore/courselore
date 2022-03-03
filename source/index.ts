@@ -76,6 +76,7 @@ import authentication, {
   IsSignedInMiddleware,
   SignInHandler,
   PasswordResetHelper,
+  AuthenticationOptions,
 } from "./authentication.js";
 export {
   IsSignedOutMiddlewareLocals,
@@ -109,7 +110,8 @@ export interface Courselore extends express.Express {
       version: string;
       canonicalBaseURL: string;
     } & Required<Options> &
-      GlobalMiddlewaresOptions;
+      GlobalMiddlewaresOptions &
+      AuthenticationOptions;
     handlers: {
       about: AboutHandler;
       signIn: SignInHandler;

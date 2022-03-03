@@ -1174,7 +1174,7 @@ export default (): { userPartial: UserPartial } => {
             UPDATE "users"
             SET "password" =  ${await argon2.hash(
               req.body.newPassword,
-              argon2Options
+              app.locals.options.argon2
             )}
             WHERE "id" = ${res.locals.user.id}
           `

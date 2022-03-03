@@ -15,21 +15,21 @@ export default ({
   baseURL,
   demonstration,
   database,
-  argon2Options,
+  app.locals.options.argon2,
   userAvatarlessBackgroundColors,
 }: {
   app: express.Express;
   baseURL: string;
   demonstration: boolean;
   database: Database;
-  argon2Options: argon2.Options & { raw: true };
+  app.locals.options.argon2: argon2.Options & { raw: true };
   userAvatarlessBackgroundColors: UserAvatarlessBackgroundColors;
 }): void => {
   if (demonstration)
     app.post<{}, any, {}, {}, BaseMiddlewareLocals>(
       "/demonstration-data",
       asyncHandler(async (req, res) => {
-        const password = await argon2.hash("courselore", argon2Options);
+        const password = await argon2.hash("courselore", app.locals.options.argon2);
         const name = casual.full_name;
         const avatarIndices = lodash.shuffle(lodash.range(250));
         const biographySource = casual.sentences(lodash.random(5, 7));
