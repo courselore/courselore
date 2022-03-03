@@ -2530,7 +2530,7 @@ export default (app: Courselore): void => {
           content: req.body.content,
           decorate: true,
         });
-        const message = database.get<{
+        const message =app.locals.database.get<{
           id: number;
           reference: string;
         }>(
@@ -2558,7 +2558,7 @@ export default (app: Courselore): void => {
             RETURNING *
           `
         )!;
-        database.run(
+       app.locals.database.run(
           sql`
             INSERT INTO "readings" ("createdAt", "message", "enrollment")
             VALUES (
@@ -2605,7 +2605,7 @@ export default (app: Courselore): void => {
     "/courses/:courseReference/conversations/mark-all-conversations-as-read",
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
-      const messages = database.all<{ id: number }>(
+      const messages =app.locals.database.all<{ id: number }>(
         sql`
           SELECT "messages"."id"
           FROM "messages"
@@ -2635,7 +2635,7 @@ export default (app: Courselore): void => {
         `
       );
       for (const message of messages)
-        database.run(
+       app.locals.database.run(
           sql`
             INSERT INTO "readings" ("createdAt", "message", "enrollment")
             VALUES (
@@ -2729,7 +2729,7 @@ export default (app: Courselore): void => {
     (req, res) => {
       const beforeMessage =
         typeof req.query.beforeMessageReference === "string"
-          ? database.get<{ id: number }>(
+          ?app.locals.database.get<{ id: number }>(
               sql`
                 SELECT "id"
                 FROM "messages"
@@ -2742,7 +2742,7 @@ export default (app: Courselore): void => {
       const afterMessage =
         beforeMessage === undefined &&
         typeof req.query.afterMessageReference === "string"
-          ? database.get<{ id: number }>(
+          ?app.locals.database.get<{ id: number }>(
               sql`
                 SELECT "id"
                 FROM "messages"
@@ -2756,7 +2756,7 @@ export default (app: Courselore): void => {
         beforeMessage !== undefined ||
         (afterMessage === undefined && res.locals.conversation.type === "chat");
 
-      const messagesRows = database.all<{ reference: string }>(
+      const messagesRows =app.locals.database.all<{ reference: string }>(
         sql`
           SELECT "reference"
           FROM "messages"
@@ -2793,7 +2793,7 @@ export default (app: Courselore): void => {
       );
 
       for (const message of messages)
-        database.run(
+       app.locals.database.run(
           sql`
             INSERT INTO "readings" ("createdAt", "message", "enrollment")
             VALUES (
@@ -5979,7 +5979,7 @@ export default (app: Courselore): void => {
         if (!res.locals.conversationTypes.includes(req.body.type))
           return next("validation");
         else
-          database.run(
+         app.locals.database.run(
             sql`
               UPDATE "conversations"
               SET "type" = ${req.body.type}
@@ -5999,7 +5999,7 @@ export default (app: Courselore): void => {
         )
           return next("validation");
         else
-          database.run(
+         app.locals.database.run(
             sql`
               UPDATE "conversations"
               SET "resolvedAt" = ${
@@ -6020,7 +6020,7 @@ export default (app: Courselore): void => {
         )
           return next("validation");
         else
-          database.run(
+         app.locals.database.run(
             sql`
               UPDATE "conversations"
               SET "pinnedAt" = ${
@@ -6041,7 +6041,7 @@ export default (app: Courselore): void => {
         )
           return next("validation");
         else
-          database.run(
+         app.locals.database.run(
             sql`
               UPDATE "conversations"
               SET "staffOnlyAt" = ${
@@ -6056,7 +6056,7 @@ export default (app: Courselore): void => {
       if (typeof req.body.title === "string")
         if (req.body.title.trim() === "") return next("validation");
         else
-          database.run(
+         app.locals.database.run(
             sql`
               UPDATE "conversations"
               SET "updatedAt" = ${new Date().toISOString()},
@@ -6085,7 +6085,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isCourseStaff,
     ...isConversationAccessibleMiddleware,
     (req, res) => {
-      database.run(
+     app.locals.database.run(
         sql`DELETE FROM "conversations" WHERE "id" = ${res.locals.conversation.id}`
       );
 
@@ -6119,7 +6119,7 @@ export default (app: Courselore): void => {
       )
         return next("validation");
 
-      database.run(
+     app.locals.database.run(
         sql`
           INSERT INTO "taggings" ("createdAt", "conversation", "tag")
           VALUES (
@@ -6162,7 +6162,7 @@ export default (app: Courselore): void => {
       )
         return next("validation");
 
-      database.run(
+     app.locals.database.run(
         sql`
           DELETE FROM "taggings"
           WHERE "conversation" = ${res.locals.conversation.id} AND

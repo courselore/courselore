@@ -1046,7 +1046,9 @@ export default () => {
                     textarea.disabled = true;
                     for (const file of fileList) body.append("attachments", file);
                     this.value = "";
-                    const response = await (await fetch("${app.locals.options.baseURL}/content-editor/attachments", {
+                    const response = await (await fetch("${
+                      app.locals.options.baseURL
+                    }/content-editor/attachments", {
                       method: "POST",
                       body,
                     })).text();
@@ -2029,9 +2031,9 @@ ${contentSource}</textarea
         await attachment.mv(
           path.join(dataDirectory, `files/${folder}/${attachment.name}`)
         );
-        const href = `${app.locals.options.baseURL}/files/${folder}/${encodeURIComponent(
-          attachment.name
-        )}`;
+        const href = `${
+          app.locals.options.baseURL
+        }/files/${folder}/${encodeURIComponent(attachment.name)}`;
         if (attachment.mimetype.startsWith("image/"))
           try {
             const image = sharp(attachment.data, { limitInputPixels: false });
@@ -2058,11 +2060,11 @@ ${contentSource}</textarea
                 path.join(dataDirectory, `files/${folder}/${nameThumbnail}`)
               );
             attachmentsContentSources.push(
-              `[<img src="${app.locals.options.baseURL}/files/${folder}/${encodeURIComponent(
-                nameThumbnail
-              )}" alt="${attachment.name}" width="${
-                maximumWidth / 2
-              }" />](${href})`
+              `[<img src="${
+                app.locals.options.baseURL
+              }/files/${folder}/${encodeURIComponent(nameThumbnail)}" alt="${
+                attachment.name
+              }" width="${maximumWidth / 2}" />](${href})`
             );
             continue;
           } catch {}
@@ -2326,7 +2328,7 @@ ${contentSource}</textarea
                           break;
                         default:
                           const enrollmentReference = mention.split("--")[0];
-                          const enrollmentRow = database.get<{
+                          const enrollmentRow = app.locals.database.get<{
                             id: number;
                             userId: number;
                             userLastSeenOnlineAt: string;
@@ -2410,7 +2412,8 @@ ${contentSource}</textarea
                       if (messageReference === undefined)
                         return html`<a
                           class="reference"
-                          href="${app.locals.options.baseURL}/courses/${res.locals.course!
+                          href="${app.locals.options.baseURL}/courses/${res
+                            .locals.course!
                             .reference}/conversations/${conversation.reference}"
                           >${match}</a
                         >`;
@@ -2423,7 +2426,8 @@ ${contentSource}</textarea
                       if (message === undefined) return match;
                       return html`<a
                         class="reference"
-                        href="${app.locals.options.baseURL}/courses/${res.locals.course!
+                        href="${app.locals.options.baseURL}/courses/${res.locals
+                          .course!
                           .reference}/conversations/${conversation.reference}?messageReference=${message.reference}"
                         >${match}</a
                       >`;

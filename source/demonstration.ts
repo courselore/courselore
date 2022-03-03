@@ -33,7 +33,7 @@ export default ({
         const name = casual.full_name;
         const avatarIndices = lodash.shuffle(lodash.range(250));
         const biographySource = casual.sentences(lodash.random(5, 7));
-        const demonstrationUser = database.get<{ id: number; name: string }>(
+        const demonstrationUser =app.locals.database.get<{ id: number; name: string }>(
           sql`
             INSERT INTO "users" (
               "createdAt",
@@ -82,7 +82,7 @@ export default ({
         const users = lodash.times(150, () => {
           const name = casual.full_name;
           const biographySource = casual.sentences(lodash.random(5, 7));
-          return database.get<{
+          returnapp.locals.database.get<{
             id: number;
             email: string;
             name: string;
@@ -160,7 +160,7 @@ export default ({
             enrollmentsUsers: users.slice(50, 150),
           },
         ].reverse()) {
-          const course = database.get<{
+          const course =app.locals.database.get<{
             id: number;
             nextConversationReference: number;
           }>(
@@ -189,7 +189,7 @@ export default ({
             `
           )!;
 
-          const enrollment = database.get<{
+          const enrollment =app.locals.database.get<{
             id: number;
             role: EnrollmentRole;
           }>(
@@ -219,7 +219,7 @@ export default ({
                   ).toISOString()
                 : null;
             const user = Math.random() < 0.5 ? lodash.sample(users)! : null;
-            database.run(
+           app.locals.database.run(
               sql`
                 INSERT INTO "invitations" (
                   "createdAt",
@@ -260,7 +260,7 @@ export default ({
             enrollment,
             ...enrollmentsUsers.map(
               (enrollmentUser) =>
-                database.get<{
+               app.locals.database.get<{
                   id: number;
                   role: EnrollmentRole;
                 }>(
@@ -334,7 +334,7 @@ export default ({
             },
           ].map(
             ({ name, staffOnlyAt }) =>
-              database.get<{ id: number }>(
+             app.locals.database.get<{ id: number }>(
                 sql`
                     INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
                     VALUES (
@@ -403,7 +403,7 @@ export default ({
               casual.words(lodash.random(3, 9))
             )}${type === "question" ? "?" : ""}`;
             const conversationAuthorEnrollment = lodash.sample(enrollments)!;
-            const conversation = database.get<{
+            const conversation =app.locals.database.get<{
               id: number;
               authorEnrollment: number | null;
               anonymousAt: string | null;
@@ -455,7 +455,7 @@ export default ({
               `
             )!;
 
-            database.run(
+           app.locals.database.run(
               sql`
                 INSERT INTO "taggings" ("createdAt", "conversation", "tag")
                 VALUES (
@@ -493,7 +493,7 @@ export default ({
                   : Math.random() < 0.05
                   ? null
                   : lodash.sample(enrollments)!;
-              const message = database.get<{ id: number }>(
+              const message =app.locals.database.get<{ id: number }>(
                 sql`
                   INSERT INTO "messages" (
                     "createdAt",
@@ -557,7 +557,7 @@ export default ({
                       lodash.random(12 * 60 * 60 * 1000)
                   )
                 ).toISOString();
-                database.run(
+               app.locals.database.run(
                   sql`
                     INSERT INTO "readings" ("createdAt", "message", "enrollment")
                     VALUES (
@@ -573,7 +573,7 @@ export default ({
                 staff,
                 Math.random() < 0.8 ? 0 : lodash.random(2)
               ))
-                database.run(
+               app.locals.database.run(
                   sql`
                     INSERT INTO "endorsements" ("createdAt", "message", "enrollment")
                     VALUES (
@@ -590,7 +590,7 @@ export default ({
                   ? 0
                   : lodash.random(5)
               ))
-                database.run(
+               app.locals.database.run(
                   sql`
                     INSERT INTO "likes" ("createdAt", "message", "enrollment")
                     VALUES (

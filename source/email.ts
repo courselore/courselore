@@ -11,15 +11,15 @@ export default () => {
     }
 
     function clean(): void {
-      database.executeTransaction(() => {
-        for (const job of database.all<{ id: number; mailOptions: string }>(
+     app.locals.database.executeTransaction(() => {
+        for (const job ofapp.locals.database.all<{ id: number; mailOptions: string }>(
           sql`
             SELECT "id", "mailOptions"
             FROM "sendEmailJobs"
             WHERE "expiresAt" < ${new Date().toISOString()}
           `
         )) {
-          database.run(
+         app.locals.database.run(
             sql`
               DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
             `
@@ -34,8 +34,8 @@ export default () => {
         }
       });
 
-      database.executeTransaction(() => {
-        for (const job of database.all<{ id: number; mailOptions: string }>(
+     app.locals.database.executeTransaction(() => {
+        for (const job ofapp.locals.database.all<{ id: number; mailOptions: string }>(
           sql`
             SELECT "id", "mailOptions"
             FROM "sendEmailJobs"
@@ -44,7 +44,7 @@ export default () => {
             ).toISOString()}
           `
         )) {
-          database.run(
+         app.locals.database.run(
             sql`
               UPDATE "sendEmailJobs"
               SET "startedAt" = NULL
@@ -64,8 +64,8 @@ export default () => {
 
     async function work(): Promise<void> {
       while (true) {
-        const job = database.executeTransaction(() => {
-          const job = database.get<{ id: number; mailOptions: string }>(
+        const job =app.locals.database.executeTransaction(() => {
+          const job =app.locals.database.get<{ id: number; mailOptions: string }>(
             sql`
               SELECT "id", "mailOptions"
               FROM "sendEmailJobs"
@@ -76,7 +76,7 @@ export default () => {
             `
           );
           if (job !== undefined)
-            database.run(
+           app.locals.database.run(
               sql`
                 UPDATE "sendEmailJobs"
                 SET "startedAt" = ${new Date().toISOString()}
@@ -96,14 +96,14 @@ export default () => {
         }
         switch (result.status) {
           case "SUCCEEDED":
-            database.run(
+           app.locals.database.run(
               sql`
                 DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
               `
             );
             break;
           case "FAILED":
-            database.run(
+           app.locals.database.run(
               sql`
                 UPDATE "sendEmailJobs"
                 SET "startAt" = ${new Date(
