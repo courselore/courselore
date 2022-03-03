@@ -69,6 +69,22 @@ export interface MessageExistsMiddlewareLocals
   >;
 }
 
+export type MayEditMessageHelper = ({
+  req,
+  res,
+  message,
+}: {
+  req: express.Request<
+    { courseReference: string; conversationReference: string },
+    any,
+    {},
+    {},
+    IsConversationAccessibleMiddlewareLocals
+  >;
+  res: express.Response<any, IsConversationAccessibleMiddlewareLocals>;
+  message: MessageExistsMiddlewareLocals["message"];
+}) => boolean;
+
 export default (app: Courselore): void => {
   app.locals.helpers.getMessage = ({
     req,
@@ -378,7 +394,7 @@ export default (app: Courselore): void => {
     };
   };
 
-  const messageExistsMiddleware = [
+  app.locals.middlewares.messageExists = [
     ...app.locals.middlewares.isConversationAccessible,
     (req, res, next) => {
       const message = app.locals.helpers.getMessage({
@@ -393,21 +409,7 @@ export default (app: Courselore): void => {
     },
   ];
 
-  app.locals.helpers.mayEditMessage = ({
-    req,
-    res,
-    message,
-  }: {
-    req: express.Request<
-      { courseReference: string; conversationReference: string },
-      any,
-      {},
-      {},
-      IsConversationAccessibleMiddlewareLocals
-    >;
-    res: express.Response<any, IsConversationAccessibleMiddlewareLocals>;
-    message: MessageExistsMiddlewareLocals["message"];
-  }) =>
+  app.locals.helpers.mayEditMessage = ({ req, res, message }) =>
     res.locals.enrollment.role === "staff" ||
     (message.authorEnrollment !== "no-longer-enrolled" &&
       message.authorEnrollment.id === res.locals.enrollment.id);
@@ -425,7 +427,7 @@ export default (app: Courselore): void => {
     {},
     MayEditMessageMiddlewareLocals
   >[] = [
-    ...messageExistsMiddleware,
+    ...app.locals.middlewares.messageExists,
     (req, res, next) => {
       if (
         app.locals.helpers.mayEditMessage({
@@ -451,7 +453,7 @@ export default (app: Courselore): void => {
     MessageExistsMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/views",
-    ...messageExistsMiddleware,
+    ...app.locals.middlewares.messageExists,
     (req, res) => {
       res.send(
         partialLayout({
@@ -808,7 +810,7 @@ export default (app: Courselore): void => {
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference",
     ...app.locals.middlewares.isCourseStaff,
-    ...messageExistsMiddleware,
+    ...app.locals.middlewares.messageExists,
     (req, res, next) => {
       app.locals.database.run(
         sql`DELETE FROM "messages" WHERE "id" = ${res.locals.message.id}`
@@ -834,7 +836,7 @@ export default (app: Courselore): void => {
     MessageExistsMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
-    ...messageExistsMiddleware,
+    ...app.locals.middlewares.messageExists,
     (req, res, next) => {
       if (
         res.locals.message.likes.some(
@@ -879,7 +881,7 @@ export default (app: Courselore): void => {
     MessageExistsMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
-    ...messageExistsMiddleware,
+    ...app.locals.middlewares.messageExists,
     (req, res, next) => {
       const like = res.locals.message.likes.find(
         (like) =>
@@ -943,7 +945,7 @@ export default (app: Courselore): void => {
     {},
     MayEndorseMessageMiddlewareLocals
   >[] = [
-    ...messageExistsMiddleware,
+    ...app.locals.middlewares.messageExists,
     (req, res, next) => {
       if (
         app.locals.helpers.mayEndorseMessage({
