@@ -7,7 +7,7 @@ import casual from "casual";
 import lodash from "lodash";
 import slugify from "@sindresorhus/slugify";
 import cryptoRandomString from "crypto-random-string";
-import { baseMiddlewareLocals } from "./global-middlewares.js";
+import { BaseMiddlewareLocals } from "./global-middlewares.js";
 import { UserAvatarlessBackgroundColors } from "./user.js";
 
 export default ({
@@ -26,7 +26,7 @@ export default ({
   userAvatarlessBackgroundColors: UserAvatarlessBackgroundColors;
 }): void => {
   if (demonstration)
-    app.post<{}, any, {}, {}, baseMiddlewareLocals>(
+    app.post<{}, any, {}, {}, BaseMiddlewareLocals>(
       "/demonstration-data",
       asyncHandler(async (req, res) => {
         const password = await argon2.hash("courselore", app.locals.options.argon2);
@@ -625,7 +625,7 @@ export default ({
     );
 
   if (demonstration && process.env.NODE_ENV !== "production")
-    app.delete<{}, any, {}, {}, baseMiddlewareLocals>(
+    app.delete<{}, any, {}, {}, BaseMiddlewareLocals>(
       "/turn-off",
       (req, res, next) => {
         res.send(`Thanks for trying Courselore.`);

@@ -5,47 +5,47 @@ import url from "node:url";
 import fs from "fs-extra";
 import express from "express";
 import nodemailer from "nodemailer";
-import database, { databaseLocals } from "./database.js";
+import database, { DatabaseLocals } from "./database.js";
 import logging from "./logging.js";
 import globalMiddlewares, {
-  globalMiddlewaresOptions,
+  GlobalMiddlewaresOptions,
 } from "./global-middlewares.js";
 export {
-  baseMiddlewareLocals,
+  BaseMiddlewareLocals,
   userFileExtensionsWhichMayBeShownInBrowser,
 } from "./global-middlewares.js";
 import eventSource, {
-  eventSourceLocals,
-  eventSourceMiddleware,
+  EventSourceLocals,
+  EventSourceMiddleware,
 } from "./event-source.js";
-export { eventSourceMiddlewareLocals } from "./event-source.js";
+export { EventSourceMiddlewareLocals } from "./event-source.js";
 import layouts, {
-  baseLayout,
-  boxLayout,
-  applicationLayout,
-  mainLayout,
-  settingsLayout,
-  logoPartial,
-  partialLayout,
-  spinnerPartial,
-  reportIssueHrefPartial,
+  BaseLayout,
+  BoxLayout,
+  ApplicationLayout,
+  MainLayout,
+  SettingsLayout,
+  LogoPartial,
+  PartialLayout,
+  SpinnerPartial,
+  ReportIssueHrefPartial,
   FlashHelper,
 } from "./layouts.js";
 import authentication, {
   SessionHelper,
-  isSignedOutMiddleware,
-  isSignedInMiddleware,
-  signInHandler,
+  IsSignedOutMiddleware,
+  IsSignedInMiddleware,
+  SignInHandler,
   PasswordResetHelper,
-  authenticationOptions,
-  emailConfirmationMailer,
+  AuthenticationOptions,
+  EmailConfirmationMailer,
 } from "./authentication.js";
 export {
-  isSignedOutMiddlewareLocals,
-  isSignedInMiddlewareLocals,
+  IsSignedOutMiddlewareLocals,
+  IsSignedInMiddlewareLocals,
 } from "./authentication.js";
-import about, { aboutHandler } from "./about.js";
-import user, { userPartial, userSettingsLayout } from "./user.js";
+import about, { AboutHandler } from "./about.js";
+import user, { UserPartial, UserSettingsLayout } from "./user.js";
 export {
   UserAvatarlessBackgroundColor,
   userAvatarlessBackgroundColors,
@@ -53,39 +53,39 @@ export {
   userEmailNotificationses,
 } from "./user.js";
 import course, {
-  coursePartial,
-  enrollmentRoleIconPartial,
-  defaultAccentColorHelper,
-  isEnrolledInCourseMiddleware,
-  isCourseStaffMiddleware,
-  invitationExistsMiddleware,
-  mayManageInvitationMiddleware,
-  isInvitationUsableMiddleware,
-  invitationMailer,
-  mayManageEnrollmentMiddleware,
-  courseSettingsLayout,
+  CoursePartial,
+  EnrollmentRoleIconPartial,
+  DefaultAccentColorHelper,
+  IsEnrolledInCourseMiddleware,
+  IsCourseStaffMiddleware,
+  InvitationExistsMiddleware,
+  MayManageInvitationMiddleware,
+  IsInvitationUsableMiddleware,
+  InvitationMailer,
+  MayManageEnrollmentMiddleware,
+  CourseSettingsLayout,
 } from "./course.js";
 export {
   EnrollmentRole,
   enrollmentRoles,
   EnrollmentAccentColor,
   enrollmentAccentColors,
-  isEnrolledInCourseMiddlewareLocals,
-  isCourseStaffMiddlewareLocals,
-  invitationExistsMiddlewareLocals,
-  mayManageInvitationMiddlewareLocals,
-  isInvitationUsableMiddlewareLocals,
-  mayManageEnrollmentMiddlewareLocals,
+  IsEnrolledInCourseMiddlewareLocals,
+  IsCourseStaffMiddlewareLocals,
+  InvitationExistsMiddlewareLocals,
+  MayManageInvitationMiddlewareLocals,
+  IsInvitationUsableMiddlewareLocals,
+  MayManageEnrollmentMiddlewareLocals,
 } from "./course.js";
 import conversation, {
-  conversationLayout,
-  conversationPartial,
-  conversationTypeIconPartial,
-  conversationTypeTextColorPartial,
-  getConversationHelper,
-  isConversationAccessibleMiddleware,
-  mayEditConversationHelper,
-  mayEditConversationMiddleware,
+  ConversationLayout,
+  ConversationPartial,
+  ConversationTypeIconPartial,
+  ConversationTypeTextColorPartial,
+  GetConversationHelper,
+  IsConversationAccessibleMiddleware,
+  MayEditConversationHelper,
+  MayEditConversationMiddleware,
 } from "./conversation.js";
 export {
   ConversationType,
@@ -94,8 +94,8 @@ export {
   conversationTypeTextColor,
   AuthorEnrollment,
   AuthorEnrollmentUser,
-  isConversationAccessibleMiddlewareLocals,
-  mayEditConversationMiddlewareLocals,
+  IsConversationAccessibleMiddlewareLocals,
+  MayEditConversationMiddlewareLocals,
 } from "./conversation.js";
 import message from "./message.js";
 export {} from "./message.js";
@@ -112,46 +112,46 @@ export interface Courselore extends express.Express {
       canonicalBaseURL: string;
       metaCourseloreInvitation: string;
     } & Required<Options> &
-      globalMiddlewaresOptions &
-      authenticationOptions;
+      GlobalMiddlewaresOptions &
+      AuthenticationOptions;
     handlers: {
-      about: aboutHandler;
-      signIn: signInHandler;
+      about: AboutHandler;
+      signIn: SignInHandler;
     };
     middlewares: {
-      eventSource: eventSourceMiddleware;
-      isSignedOut: isSignedOutMiddleware;
-      isSignedIn: isSignedInMiddleware;
-      isEnrolledInCourse: isEnrolledInCourseMiddleware;
-      isCourseStaff: isCourseStaffMiddleware;
-      invitationExists: invitationExistsMiddleware;
-      mayManageInvitation: mayManageInvitationMiddleware;
-      isInvitationUsable: isInvitationUsableMiddleware;
-      mayManageEnrollment: mayManageEnrollmentMiddleware;
-      isConversationAccessible: isConversationAccessibleMiddleware;
-      mayEditConversation: mayEditConversationMiddleware;
+      eventSource: EventSourceMiddleware;
+      isSignedOut: IsSignedOutMiddleware;
+      isSignedIn: IsSignedInMiddleware;
+      isEnrolledInCourse: IsEnrolledInCourseMiddleware;
+      isCourseStaff: IsCourseStaffMiddleware;
+      invitationExists: InvitationExistsMiddleware;
+      mayManageInvitation: MayManageInvitationMiddleware;
+      isInvitationUsable: IsInvitationUsableMiddleware;
+      mayManageEnrollment: MayManageEnrollmentMiddleware;
+      isConversationAccessible: IsConversationAccessibleMiddleware;
+      mayEditConversation: MayEditConversationMiddleware;
     };
     layouts: {
-      base: baseLayout;
-      box: boxLayout;
-      application: applicationLayout;
-      main: mainLayout;
-      settings: settingsLayout;
-      partial: partialLayout;
-      userSettings: userSettingsLayout;
-      courseSettings: courseSettingsLayout;
-      conversation: conversationLayout;
+      base: BaseLayout;
+      box: BoxLayout;
+      application: ApplicationLayout;
+      main: MainLayout;
+      settings: SettingsLayout;
+      partial: PartialLayout;
+      userSettings: UserSettingsLayout;
+      courseSettings: CourseSettingsLayout;
+      conversation: ConversationLayout;
     };
     partials: {
-      logo: logoPartial;
-      spinner: spinnerPartial;
-      reportIssueHref: reportIssueHrefPartial;
-      user: userPartial;
-      course: coursePartial;
-      enrollmentRoleIcon: enrollmentRoleIconPartial;
-      conversation: conversationPartial;
-      conversationTypeIcon: conversationTypeIconPartial;
-      conversationTypeTextColor: conversationTypeTextColorPartial;
+      logo: LogoPartial;
+      spinner: SpinnerPartial;
+      reportIssueHref: ReportIssueHrefPartial;
+      user: UserPartial;
+      course: CoursePartial;
+      enrollmentRoleIcon: EnrollmentRoleIconPartial;
+      conversation: ConversationPartial;
+      conversationTypeIcon: ConversationTypeIconPartial;
+      conversationTypeTextColor: ConversationTypeTextColorPartial;
       content: any; // TODO
       contentEditor: any; // TODO
     };
@@ -159,9 +159,9 @@ export interface Courselore extends express.Express {
       Flash: FlashHelper;
       Session: SessionHelper;
       PasswordReset: PasswordResetHelper;
-      defaultAccentColor: defaultAccentColorHelper;
-      getConversation: getConversationHelper;
-      mayEditConversation: mayEditConversationHelper;
+      defaultAccentColor: DefaultAccentColorHelper;
+      getConversation: GetConversationHelper;
+      mayEditConversation: MayEditConversationHelper;
       getMessage: any; // TODO
       emailRegExp: any; // TODO
       isExpired: any; // TODO
@@ -171,14 +171,14 @@ export interface Courselore extends express.Express {
       highlightSearchResult: any; // TODO
     };
     mailers: {
-      emailConfirmation: emailConfirmationMailer;
-      invitation: invitationMailer;
+      emailConfirmation: EmailConfirmationMailer;
+      invitation: InvitationMailer;
     };
     workers: {
       sendEmail: any; // TODO
     };
-  } & databaseLocals &
-    eventSourceLocals;
+  } & DatabaseLocals &
+    EventSourceLocals;
 }
 
 export interface Options {

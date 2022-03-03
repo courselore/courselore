@@ -8,11 +8,11 @@ import { localCSS } from "@leafac/css";
 import { HTMLForJavaScript } from "@leafac/javascript";
 import { Courselore } from "./index.js";
 
-export interface globalMiddlewaresOptions {
+export interface GlobalMiddlewaresOptions {
   cookies: express.CookieOptions;
 }
 
-export interface baseMiddlewareLocals {
+export interface BaseMiddlewareLocals {
   localCSS: ReturnType<typeof localCSS>;
   HTMLForJavaScript: ReturnType<typeof HTMLForJavaScript>;
 }
@@ -37,16 +37,16 @@ export const userFileExtensionsWhichMayBeShownInBrowser = [
 ] as const;
 
 export default (app: Courselore): void => {
-  app.use<{}, any, {}, {}, baseMiddlewareLocals>((req, res, next) => {
+  app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
     res.locals.localCSS = localCSS();
     res.locals.HTMLForJavaScript = HTMLForJavaScript();
     next();
   });
 
-  app.use<{}, any, {}, {}, baseMiddlewareLocals>(
+  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
     express.static(url.fileURLToPath(new URL("../static", import.meta.url)))
   );
-  app.get<{}, any, {}, {}, baseMiddlewareLocals>(
+  app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
     "/files/*",
     express.static(app.locals.options.dataDirectory, {
       index: false,
@@ -64,9 +64,9 @@ export default (app: Courselore): void => {
     })
   );
 
-  app.use<{}, any, {}, {}, baseMiddlewareLocals>(methodOverride("_method"));
+  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(methodOverride("_method"));
 
-  app.use<{}, any, {}, {}, baseMiddlewareLocals>(cookieParser());
+  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(cookieParser());
   const baseURL = new URL(app.locals.options.baseURL);
   app.locals.options.cookies = {
     domain: baseURL.hostname,
@@ -76,17 +76,17 @@ export default (app: Courselore): void => {
     secure: true,
   } as const;
 
-  app.use<{}, any, {}, {}, baseMiddlewareLocals>(
+  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
     express.urlencoded({ extended: true })
   );
-  app.use<{}, any, {}, {}, baseMiddlewareLocals>(
+  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
     expressFileUpload({
       createParentPath: true,
       limits: { fileSize: 10 * 1024 * 1024 },
     })
   );
 
-  app.use<{}, any, {}, {}, baseMiddlewareLocals>(
+  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
     csurf({
       cookie: {
         ...app.locals.options.cookies,
@@ -96,7 +96,7 @@ export default (app: Courselore): void => {
   );
 
   if (app.locals.options.hotReload)
-    app.get<{}, any, {}, {}, baseMiddlewareLocals>(
+    app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
       "/hot-reload",
       (req, res) => {
         res.type("text/event-stream").write(":\n\n");

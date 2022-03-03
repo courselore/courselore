@@ -9,13 +9,13 @@ import fs from "fs-extra";
 import cryptoRandomString from "crypto-random-string";
 import {
   Courselore,
-  baseMiddlewareLocals,
-  eventSourceMiddlewareLocals,
-  isSignedInMiddlewareLocals,
-  isEnrolledInCourseMiddlewareLocals,
+  BaseMiddlewareLocals,
+  EventSourceMiddlewareLocals,
+  IsSignedInMiddlewareLocals,
+  IsEnrolledInCourseMiddlewareLocals,
 } from "./index.js";
 
-export type baseLayout = ({
+export type BaseLayout = ({
   req,
   res,
   head,
@@ -27,22 +27,22 @@ export type baseLayout = ({
     any,
     {},
     {},
-    baseMiddlewareLocals &
-      Partial<isEnrolledInCourseMiddlewareLocals> &
-      Partial<eventSourceMiddlewareLocals>
+    BaseMiddlewareLocals &
+      Partial<IsEnrolledInCourseMiddlewareLocals> &
+      Partial<EventSourceMiddlewareLocals>
   >;
   res: express.Response<
     any,
-    baseMiddlewareLocals &
-      Partial<isEnrolledInCourseMiddlewareLocals> &
-      Partial<eventSourceMiddlewareLocals>
+    BaseMiddlewareLocals &
+      Partial<IsEnrolledInCourseMiddlewareLocals> &
+      Partial<EventSourceMiddlewareLocals>
   >;
   head: HTML;
   extraHeaders?: HTML;
   body: HTML;
 }) => HTML;
 
-export type boxLayout = ({
+export type BoxLayout = ({
   req,
   res,
   head,
@@ -53,21 +53,21 @@ export type boxLayout = ({
     any,
     {},
     {},
-    baseMiddlewareLocals &
-      Partial<isEnrolledInCourseMiddlewareLocals> &
-      Partial<eventSourceMiddlewareLocals>
+    BaseMiddlewareLocals &
+      Partial<IsEnrolledInCourseMiddlewareLocals> &
+      Partial<EventSourceMiddlewareLocals>
   >;
   res: express.Response<
     any,
-    baseMiddlewareLocals &
-      Partial<isEnrolledInCourseMiddlewareLocals> &
-      Partial<eventSourceMiddlewareLocals>
+    BaseMiddlewareLocals &
+      Partial<IsEnrolledInCourseMiddlewareLocals> &
+      Partial<EventSourceMiddlewareLocals>
   >;
   head: HTML;
   body: HTML;
 }) => HTML;
 
-export type applicationLayout = ({
+export type ApplicationLayout = ({
   req,
   res,
   head,
@@ -80,15 +80,15 @@ export type applicationLayout = ({
     any,
     {},
     {},
-    isSignedInMiddlewareLocals &
-      Partial<isEnrolledInCourseMiddlewareLocals> &
-      Partial<eventSourceMiddlewareLocals>
+    IsSignedInMiddlewareLocals &
+      Partial<IsEnrolledInCourseMiddlewareLocals> &
+      Partial<EventSourceMiddlewareLocals>
   >;
   res: express.Response<
     any,
-    isSignedInMiddlewareLocals &
-      Partial<isEnrolledInCourseMiddlewareLocals> &
-      Partial<eventSourceMiddlewareLocals>
+    IsSignedInMiddlewareLocals &
+      Partial<IsEnrolledInCourseMiddlewareLocals> &
+      Partial<EventSourceMiddlewareLocals>
   >;
   head: HTML;
   showCourseSwitcher?: boolean;
@@ -96,7 +96,7 @@ export type applicationLayout = ({
   body: HTML;
 }) => HTML;
 
-export type mainLayout = ({
+export type MainLayout = ({
   req,
   res,
   head,
@@ -108,22 +108,22 @@ export type mainLayout = ({
     any,
     {},
     {},
-    isSignedInMiddlewareLocals &
-      Partial<isEnrolledInCourseMiddlewareLocals> &
-      Partial<eventSourceMiddlewareLocals>
+    IsSignedInMiddlewareLocals &
+      Partial<IsEnrolledInCourseMiddlewareLocals> &
+      Partial<EventSourceMiddlewareLocals>
   >;
   res: express.Response<
     any,
-    isSignedInMiddlewareLocals &
-      Partial<isEnrolledInCourseMiddlewareLocals> &
-      Partial<eventSourceMiddlewareLocals>
+    IsSignedInMiddlewareLocals &
+      Partial<IsEnrolledInCourseMiddlewareLocals> &
+      Partial<EventSourceMiddlewareLocals>
   >;
   head: HTML;
   showCourseSwitcher?: boolean;
   body: HTML;
 }) => HTML;
 
-export type settingsLayout = ({
+export type SettingsLayout = ({
   req,
   res,
   head,
@@ -136,11 +136,11 @@ export type settingsLayout = ({
     any,
     {},
     {},
-    isSignedInMiddlewareLocals & Partial<eventSourceMiddlewareLocals>
+    IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
   >;
   res: express.Response<
     any,
-    isSignedInMiddlewareLocals & Partial<eventSourceMiddlewareLocals>
+    IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
   >;
   head: HTML;
   menuButton: HTML;
@@ -148,27 +148,27 @@ export type settingsLayout = ({
   body: HTML;
 }) => HTML;
 
-export type logoPartial = ({ size }?: { size?: number }) => HTML;
+export type LogoPartial = ({ size }?: { size?: number }) => HTML;
 
-export type partialLayout = ({
+export type PartialLayout = ({
   req,
   res,
   body,
 }: {
-  req: express.Request<{}, any, {}, {}, baseMiddlewareLocals>;
-  res: express.Response<any, baseMiddlewareLocals>;
+  req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+  res: express.Response<any, BaseMiddlewareLocals>;
   body: HTML;
 }) => HTML;
 
-export type spinnerPartial = ({
+export type SpinnerPartial = ({
   req,
   res,
 }: {
-  req: express.Request<{}, any, {}, {}, baseMiddlewareLocals>;
-  res: express.Response<any, baseMiddlewareLocals>;
+  req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+  res: express.Response<any, BaseMiddlewareLocals>;
 }) => HTML;
 
-export type reportIssueHrefPartial = string;
+export type ReportIssueHrefPartial = string;
 
 export interface FlashHelper {
   maxAge: number;
@@ -177,16 +177,16 @@ export interface FlashHelper {
     res,
     content,
   }: {
-    req: express.Request<{}, any, {}, {}, baseMiddlewareLocals>;
-    res: express.Response<any, baseMiddlewareLocals>;
+    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+    res: express.Response<any, BaseMiddlewareLocals>;
     content: HTML;
   }): void;
   get({
     req,
     res,
   }: {
-    req: express.Request<{}, any, {}, {}, baseMiddlewareLocals>;
-    res: express.Response<any, baseMiddlewareLocals>;
+    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+    res: express.Response<any, BaseMiddlewareLocals>;
   }): HTML | undefined;
 }
 

@@ -11,10 +11,10 @@ import sharp from "sharp";
 import argon2 from "argon2";
 import {
   Courselore,
-  baseMiddlewareLocals,
-  isSignedInMiddlewareLocals,
-  eventSourceMiddlewareLocals,
-  isEnrolledInCourseMiddlewareLocals,
+  BaseMiddlewareLocals,
+  IsSignedInMiddlewareLocals,
+  EventSourceMiddlewareLocals,
+  IsEnrolledInCourseMiddlewareLocals,
   AuthorEnrollment,
   AuthorEnrollmentUser,
 } from "./index.js";
@@ -48,7 +48,7 @@ export const userEmailNotificationses = [
   "none",
 ] as const;
 
-export type userPartial = ({
+export type UserPartial = ({
   req,
   res,
   enrollment,
@@ -65,11 +65,11 @@ export type userPartial = ({
     any,
     {},
     {},
-    baseMiddlewareLocals & Partial<isEnrolledInCourseMiddlewareLocals>
+    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
   >;
   res: express.Response<
     any,
-    baseMiddlewareLocals & Partial<isEnrolledInCourseMiddlewareLocals>
+    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
   >;
   enrollment?: AuthorEnrollment;
   user?: AuthorEnrollmentUser | "no-longer-enrolled";
@@ -81,7 +81,7 @@ export type userPartial = ({
   size?: "xs" | "sm" | "xl";
 }) => HTML;
 
-export type userSettingsLayout = ({
+export type UserSettingsLayout = ({
   req,
   res,
   head,
@@ -92,11 +92,11 @@ export type userSettingsLayout = ({
     any,
     {},
     {},
-    isSignedInMiddlewareLocals & Partial<eventSourceMiddlewareLocals>
+    IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
   >;
   res: express.Response<
     any,
-    isSignedInMiddlewareLocals & Partial<eventSourceMiddlewareLocals>
+    IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
   >;
   head: HTML;
   body: HTML;
@@ -599,7 +599,7 @@ export default (app: Courselore): void => {
       body,
     });
 
-  app.get<{}, HTML, {}, {}, isSignedInMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -607,7 +607,7 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.get<{}, HTML, {}, {}, isSignedInMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings/profile",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -897,7 +897,7 @@ export default (app: Courselore): void => {
     any,
     { name?: string; avatar?: string; biography?: string },
     {},
-    isSignedInMiddlewareLocals
+    IsSignedInMiddlewareLocals
   >(
     "/settings/profile",
     ...app.locals.middlewares.isSignedIn,
@@ -944,7 +944,7 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.post<{}, HTML, {}, {}, isSignedInMiddlewareLocals>(
+  app.post<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings/profile/avatar",
     asyncHandler(async (req, res, next) => {
       if (
@@ -1000,10 +1000,10 @@ export default (app: Courselore): void => {
             `Something went wrong in uploading your avatar. Please report to the system administrator at ${app.locals.options.administratorEmail}.`
           );
       next(err);
-    }) as express.ErrorRequestHandler<{}, any, {}, {}, baseMiddlewareLocals>
+    }) as express.ErrorRequestHandler<{}, any, {}, {}, BaseMiddlewareLocals>
   );
 
-  app.get<{}, HTML, {}, {}, isSignedInMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings/update-email-and-password",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1134,7 +1134,7 @@ export default (app: Courselore): void => {
     any,
     { email?: string; currentPassword?: string; newPassword?: string },
     {},
-    isSignedInMiddlewareLocals
+    IsSignedInMiddlewareLocals
   >(
     "/settings/update-email-and-password",
     ...app.locals.middlewares.isSignedIn,
@@ -1241,7 +1241,7 @@ export default (app: Courselore): void => {
     })
   );
 
-  app.get<{}, HTML, {}, {}, isSignedInMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings/notifications-preferences",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1354,7 +1354,7 @@ export default (app: Courselore): void => {
     any,
     { emailNotifications?: UserEmailNotifications },
     {},
-    isSignedInMiddlewareLocals
+    IsSignedInMiddlewareLocals
   >(
     "/settings/notifications-preferences",
     ...app.locals.middlewares.isSignedIn,

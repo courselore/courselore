@@ -1,13 +1,13 @@
 import express from "express";
 import qs from "qs";
 import { HTML, html } from "@leafac/html";
-import { boxLayout, reportIssueHrefPartial } from "./layouts.js";
-import { baseMiddlewareLocals } from "./global-middlewares.js";
+import { BoxLayout, ReportIssueHrefPartial } from "./layouts.js";
+import { BaseMiddlewareLocals } from "./global-middlewares.js";
 import {
-  isSignedOutMiddleware,
-  isSignedOutMiddlewareLocals,
-  isSignedInMiddleware,
-  isSignedInMiddlewareLocals,
+  IsSignedOutMiddleware,
+  IsSignedOutMiddlewareLocals,
+  IsSignedInMiddleware,
+  IsSignedInMiddlewareLocals,
 } from "./authentication.js";
 
 export default ({
@@ -22,12 +22,12 @@ export default ({
   app: express.Express;
   baseURL: string;
   administratorEmail: string;
-  boxLayout: boxLayout;
-  reportIssueHref: reportIssueHrefPartial;
-  isSignedOutMiddleware: isSignedOutMiddleware;
-  isSignedInMiddleware: isSignedInMiddleware;
+  boxLayout: BoxLayout;
+  reportIssueHref: ReportIssueHrefPartial;
+  isSignedOutMiddleware: IsSignedOutMiddleware;
+  isSignedInMiddleware: IsSignedInMiddleware;
 }): void => {
-  app.all<{}, HTML, {}, {}, isSignedOutMiddlewareLocals>(
+  app.all<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "*",
     ...app.locals.middlewares.isSignedOut,
     (req, res) => {
@@ -42,7 +42,7 @@ export default ({
     }
   );
 
-  app.all<{}, HTML, {}, { redirect?: string }, isSignedInMiddlewareLocals>(
+  app.all<{}, HTML, {}, { redirect?: string }, IsSignedInMiddlewareLocals>(
     "*",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -71,7 +71,7 @@ export default ({
     }
   );
 
-  app.use<{}, HTML, {}, {}, baseMiddlewareLocals>(((err, req, res, next) => {
+  app.use<{}, HTML, {}, {}, BaseMiddlewareLocals>(((err, req, res, next) => {
     console.error(`${new Date().toISOString()}\tERROR\t${err}`);
     const isCSRF = err.code === "EBADCSRFTOKEN";
     const isValidation = err === "validation";
@@ -116,5 +116,5 @@ export default ({
         `,
       })
     );
-  }) as express.ErrorRequestHandler<{}, any, {}, {}, baseMiddlewareLocals>);
+  }) as express.ErrorRequestHandler<{}, any, {}, {}, BaseMiddlewareLocals>);
 };
