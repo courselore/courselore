@@ -1,3 +1,50 @@
+
+export type ConversationType = typeof conversationTypes[number];
+export const conversationTypes = [
+  "announcement",
+  "question",
+  "note",
+  "chat",
+] as const;
+
+export const conversationTypeIcon = {
+  announcement: {
+    regular: html`<i class="bi bi-megaphone"></i>`,
+    fill: html`<i class="bi bi-megaphone-fill"></i>`,
+  },
+  question: {
+    regular: html`<i class="bi bi-patch-question"></i>`,
+    fill: html`<i class="bi bi-patch-question-fill"></i>`,
+  },
+  note: {
+    regular: html`<i class="bi bi-sticky"></i>`,
+    fill: html`<i class="bi bi-sticky-fill"></i>`,
+  },
+  chat: {
+    regular: html`<i class="bi bi-cup"></i>`,
+    fill: html`<i class="bi bi-cup-fill"></i>`,
+  },
+};
+
+export const conversationTypeTextColor = {
+  announcement: {
+    display: "text--fuchsia",
+    select: "text--fuchsia",
+  },
+  question: {
+    display: "text--rose",
+    select: "text--rose",
+  },
+  note: {
+    display: "",
+    select: "text--blue",
+  },
+  chat: {
+    display: "text--cyan",
+    select: "text--cyan",
+  },
+};
+
 export default () => {
   const conversationLayout = ({
     req,

@@ -91,24 +91,24 @@ export {
   UserEmailNotifications,
   userEmailNotificationses,
 } from "./user.js";
-
-export type EnrollmentRole = any; // TODO
-export type EnrollmentAccentColor = any; // TODO
-export type IsEnrolledInCourseMiddlewareLocals = any; // TODO
-export type AuthorEnrollment = any; // TODO
-export type AuthorEnrollmentUser = any; // TODO
-
-import course, {
+import course from "./course.js";
+export {
   EnrollmentRole,
   enrollmentRoles,
   EnrollmentAccentColor,
   enrollmentAccentColors,
+  enrollmentRoleIcon,
+  IsEnrolledInCourseMiddlewareLocals,
+  AuthorEnrollment,
+  AuthorEnrollmentUser,
+} from "./course.js";
+
+export {
   ConversationType,
   conversationTypes,
-  enrollmentRoleIcon,
   conversationTypeIcon,
   conversationTypeTextColor,
-} from "./course.js";
+} from "./conversation.js";
 
 import error from "./error.js";
 

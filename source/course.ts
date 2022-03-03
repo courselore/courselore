@@ -1,8 +1,8 @@
 import express from "express";
-import { BaseMiddlewareLocals } from "./global-middlewares.js";
 import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
 import lodash from "lodash";
+import { BaseMiddlewareLocals } from "./index.js";
 
 export type EnrollmentRole = typeof enrollmentRoles[number];
 export const enrollmentRoles = ["student", "staff"] as const;
@@ -17,14 +17,6 @@ export const enrollmentAccentColors = [
   "pink",
 ] as const;
 
-export type ConversationType = typeof conversationTypes[number];
-export const conversationTypes = [
-  "announcement",
-  "question",
-  "note",
-  "chat",
-] as const;
-
 export const enrollmentRoleIcon = {
   student: {
     regular: html`<i class="bi bi-person"></i>`,
@@ -33,44 +25,6 @@ export const enrollmentRoleIcon = {
   staff: {
     regular: html`<i class="bi bi-mortarboard"></i>`,
     fill: html`<i class="bi bi-mortarboard-fill"></i>`,
-  },
-};
-
-export const conversationTypeIcon = {
-  announcement: {
-    regular: html`<i class="bi bi-megaphone"></i>`,
-    fill: html`<i class="bi bi-megaphone-fill"></i>`,
-  },
-  question: {
-    regular: html`<i class="bi bi-patch-question"></i>`,
-    fill: html`<i class="bi bi-patch-question-fill"></i>`,
-  },
-  note: {
-    regular: html`<i class="bi bi-sticky"></i>`,
-    fill: html`<i class="bi bi-sticky-fill"></i>`,
-  },
-  chat: {
-    regular: html`<i class="bi bi-cup"></i>`,
-    fill: html`<i class="bi bi-cup-fill"></i>`,
-  },
-};
-
-export const conversationTypeTextColor = {
-  announcement: {
-    display: "text--fuchsia",
-    select: "text--fuchsia",
-  },
-  question: {
-    display: "text--rose",
-    select: "text--rose",
-  },
-  note: {
-    display: "",
-    select: "text--blue",
-  },
-  chat: {
-    display: "text--cyan",
-    select: "text--cyan",
   },
 };
 
@@ -259,8 +213,8 @@ export default (): { coursePartial: CoursePartial } => {
                       (enrollment) =>
                         html`
                           <a
-                            href="${app.locals.options.baseURL}/courses/${enrollment.course
-                              .reference}"
+                            href="${app.locals.options
+                              .baseURL}/courses/${enrollment.course.reference}"
                             class="menu-box--item button button--tight button--transparent"
                           >
                             $${coursePartial({
@@ -688,8 +642,8 @@ export default (): { coursePartial: CoursePartial } => {
                   $${res.locals.enrollment.role === "staff"
                     ? html`
                         <a
-                          href="${app.locals.options.baseURL}/courses/${res.locals.course
-                            .reference}/settings/tags"
+                          href="${app.locals.options.baseURL}/courses/${res
+                            .locals.course.reference}/settings/tags"
                           class="menu-box--item button button--blue"
                         >
                           <i class="bi bi-sliders"></i>
@@ -698,8 +652,8 @@ export default (): { coursePartial: CoursePartial } => {
                       `
                     : html``}
                   <a
-                    href="${app.locals.options.baseURL}/courses/${res.locals.course
-                      .reference}/conversations/new"
+                    href="${app.locals.options.baseURL}/courses/${res.locals
+                      .course.reference}/conversations/new"
                     class="menu-box--item button ${res.locals.enrollment
                       .role === "staff"
                       ? "button--transparent"
@@ -1060,7 +1014,9 @@ export default (): { coursePartial: CoursePartial } => {
     ...isEnrolledInCourseMiddleware,
     (req, res) => {
       res.redirect(
-        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/${
+        `${app.locals.options.baseURL}/courses/${
+          res.locals.course.reference
+        }/settings/${
           res.locals.enrollment.role === "staff"
             ? "course-information"
             : "your-enrollment"
@@ -1546,7 +1502,8 @@ export default (): { coursePartial: CoursePartial } => {
                             $${res.locals.conversationsCount > 0
                               ? html`
                                   <a
-                                    href="${app.locals.options.baseURL}/courses/${res.locals.course
+                                    href="${app.locals.options
+                                      .baseURL}/courses/${res.locals.course
                                       .reference}${qs.stringify(
                                       {
                                         conversationLayoutSidebarOpenOnSmallScreen:
@@ -3925,7 +3882,8 @@ export default (): { coursePartial: CoursePartial } => {
             </div>
 
             <a
-              href="${app.locals.options.baseURL}/courses/${res.locals.course.reference}"
+              href="${app.locals.options.baseURL}/courses/${res.locals.course
+                .reference}"
               class="button button--blue"
             >
               Go to ${res.locals.course.name}
@@ -3969,8 +3927,9 @@ export default (): { coursePartial: CoursePartial } => {
             })}
             <form
               method="POST"
-              action="${app.locals.options.baseURL}/courses/${res.locals.invitation.course
-                .reference}/invitations/${res.locals.invitation.reference}"
+              action="${app.locals.options.baseURL}/courses/${res.locals
+                .invitation.course.reference}/invitations/${res.locals
+                .invitation.reference}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <button
