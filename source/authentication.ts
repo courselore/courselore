@@ -10,7 +10,7 @@ import argon2 from "argon2";
 import lodash from "lodash";
 import {
   Courselore,
-  BaseMiddlewareLocals,
+  baseMiddlewareLocals,
   UserAvatarlessBackgroundColor,
   userAvatarlessBackgroundColors,
   UserEmailNotifications,
@@ -25,31 +25,31 @@ export interface SessionHelper {
     res,
     userId,
   }: {
-    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-    res: express.Response<any, BaseMiddlewareLocals>;
+    req: express.Request<{}, any, {}, {}, baseMiddlewareLocals>;
+    res: express.Response<any, baseMiddlewareLocals>;
     userId: number;
   }): void;
   get({
     req,
     res,
   }: {
-    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-    res: express.Response<any, BaseMiddlewareLocals>;
+    req: express.Request<{}, any, {}, {}, baseMiddlewareLocals>;
+    res: express.Response<any, baseMiddlewareLocals>;
   }): number | undefined;
   close({
     req,
     res,
   }: {
-    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-    res: express.Response<any, BaseMiddlewareLocals>;
+    req: express.Request<{}, any, {}, {}, baseMiddlewareLocals>;
+    res: express.Response<any, baseMiddlewareLocals>;
   }): void;
   closeAllAndReopen({
     req,
     res,
     userId,
   }: {
-    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-    res: express.Response<any, BaseMiddlewareLocals>;
+    req: express.Request<{}, any, {}, {}, baseMiddlewareLocals>;
+    res: express.Response<any, baseMiddlewareLocals>;
     userId: number;
   }): void;
 }
@@ -59,18 +59,18 @@ export type isSignedOutMiddleware = express.RequestHandler<
   any,
   {},
   {},
-  IsSignedOutMiddlewareLocals
+  isSignedOutMiddlewareLocals
 >[];
-export interface IsSignedOutMiddlewareLocals extends BaseMiddlewareLocals {}
+export interface isSignedOutMiddlewareLocals extends baseMiddlewareLocals {}
 
 export type isSignedInMiddleware = express.RequestHandler<
   {},
   any,
   {},
   {},
-  IsSignedInMiddlewareLocals
+  isSignedInMiddlewareLocals
 >[];
-export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
+export interface isSignedInMiddlewareLocals extends baseMiddlewareLocals {
   user: {
     id: number;
     lastSeenOnlineAt: string;
@@ -122,7 +122,7 @@ export type signInHandler = express.RequestHandler<
   HTML,
   {},
   { email?: string },
-  IsSignedOutMiddlewareLocals
+  isSignedOutMiddlewareLocals
 >;
 
 export interface PasswordResetHelper {
@@ -131,7 +131,7 @@ export interface PasswordResetHelper {
   get(nonce: string): number | undefined;
 }
 
-export interface AuthenticationOptions {
+export interface authenticationOptions {
   argon2: argon2.Options & { raw?: false };
 }
 
@@ -141,8 +141,8 @@ export type emailConfirmationMailer = ({
   userId,
   userEmail,
 }: {
-  req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-  res: express.Response<any, BaseMiddlewareLocals>;
+  req: express.Request<{}, any, {}, {}, baseMiddlewareLocals>;
+  res: express.Response<any, baseMiddlewareLocals>;
   userId: number;
   userEmail: string;
 }) => void;
@@ -480,19 +480,19 @@ export default (app: Courselore): void => {
       })
     );
   };
-  app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, isSignedOutMiddlewareLocals>(
     "/",
     ...app.locals.middlewares.isSignedOut,
     app.locals.options.baseURL === app.locals.options.canonicalBaseURL
       ? (req, res, next) => app.locals.handlers.about(req, res, next)
       : app.locals.handlers.signIn
   );
-  app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, isSignedOutMiddlewareLocals>(
     "/sign-in",
     ...app.locals.middlewares.isSignedOut,
     app.locals.handlers.signIn
   );
-  app.get<{}, HTML, {}, { redirect?: string }, IsSignedInMiddlewareLocals>(
+  app.get<{}, HTML, {}, { redirect?: string }, isSignedInMiddlewareLocals>(
     "/sign-in",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -505,7 +505,7 @@ export default (app: Courselore): void => {
     HTML,
     { email?: string; password?: string },
     { redirect?: string },
-    IsSignedOutMiddlewareLocals
+    isSignedOutMiddlewareLocals
   >(
     "/sign-in",
     ...app.locals.middlewares.isSignedOut,
@@ -595,7 +595,7 @@ export default (app: Courselore): void => {
     setTimeout(worker, 24 * 60 * 60 * 1000);
   }, 10 * 60 * 1000);
 
-  app.get<{}, HTML, {}, { email?: string }, BaseMiddlewareLocals>(
+  app.get<{}, HTML, {}, { email?: string }, baseMiddlewareLocals>(
     "/reset-password",
     (req, res) => {
       res.send(
@@ -687,7 +687,7 @@ export default (app: Courselore): void => {
     HTML,
     { email?: string; resend?: "true" },
     {},
-    BaseMiddlewareLocals
+    baseMiddlewareLocals
   >("/reset-password", (req, res, next) => {
     if (
       typeof req.body.email !== "string" ||
@@ -791,7 +791,7 @@ export default (app: Courselore): void => {
     );
   });
 
-  app.get<{ passwordResetNonce: string }, HTML, {}, {}, BaseMiddlewareLocals>(
+  app.get<{ passwordResetNonce: string }, HTML, {}, {}, baseMiddlewareLocals>(
     "/reset-password/:passwordResetNonce",
     (req, res) => {
       const userId = app.locals.helpers.PasswordReset.get(
@@ -881,7 +881,7 @@ export default (app: Courselore): void => {
     HTML,
     { password?: string },
     { redirect?: string },
-    BaseMiddlewareLocals
+    baseMiddlewareLocals
   >(
     "/reset-password/:passwordResetNonce",
     asyncHandler(async (req, res, next) => {
@@ -942,7 +942,7 @@ export default (app: Courselore): void => {
     HTML,
     {},
     { name?: string; email?: string },
-    IsSignedOutMiddlewareLocals
+    isSignedOutMiddlewareLocals
   >("/sign-up", ...app.locals.middlewares.isSignedOut, (req, res) => {
     res.send(
       app.locals.layouts.box({
@@ -1058,7 +1058,7 @@ export default (app: Courselore): void => {
       })
     );
   });
-  app.get<{}, HTML, {}, { redirect?: string }, IsSignedInMiddlewareLocals>(
+  app.get<{}, HTML, {}, { redirect?: string }, isSignedInMiddlewareLocals>(
     "/sign-up",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1142,7 +1142,7 @@ export default (app: Courselore): void => {
     HTML,
     { name?: string; email?: string; password?: string },
     { redirect?: string },
-    IsSignedOutMiddlewareLocals
+    isSignedOutMiddlewareLocals
   >(
     "/sign-up",
     ...app.locals.middlewares.isSignedOut,
@@ -1216,7 +1216,7 @@ export default (app: Courselore): void => {
     })
   );
 
-  app.post<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+  app.post<{}, HTML, {}, {}, isSignedInMiddlewareLocals>(
     "/resend-confirmation-email",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1252,7 +1252,7 @@ export default (app: Courselore): void => {
     HTML,
     {},
     { redirect?: string },
-    IsSignedInMiddlewareLocals
+    isSignedInMiddlewareLocals
   >(
     "/email-confirmation/:emailConfirmationNonce",
     ...app.locals.middlewares.isSignedIn,
@@ -1303,7 +1303,7 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.delete<{}, any, {}, {}, IsSignedInMiddlewareLocals>(
+  app.delete<{}, any, {}, {}, isSignedInMiddlewareLocals>(
     "/sign-out",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {

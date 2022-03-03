@@ -5,20 +5,20 @@ import url from "node:url";
 import fs from "fs-extra";
 import express from "express";
 import nodemailer from "nodemailer";
-import database, { DatabaseLocals } from "./database.js";
+import database, { databaseLocals } from "./database.js";
 import logging from "./logging.js";
 import globalMiddlewares, {
-  GlobalMiddlewaresOptions,
+  globalMiddlewaresOptions,
 } from "./global-middlewares.js";
 export {
-  BaseMiddlewareLocals,
+  baseMiddlewareLocals,
   userFileExtensionsWhichMayBeShownInBrowser,
 } from "./global-middlewares.js";
 import eventSource, {
-  EventSourceLocals,
+  eventSourceLocals,
   eventSourceMiddleware,
 } from "./event-source.js";
-export { EventSourceMiddlewareLocals } from "./event-source.js";
+export { eventSourceMiddlewareLocals as EventSourceMiddlewareLocals } from "./event-source.js";
 import layouts, {
   baseLayout,
   boxLayout,
@@ -37,12 +37,12 @@ import authentication, {
   isSignedInMiddleware,
   signInHandler,
   PasswordResetHelper,
-  AuthenticationOptions,
+  authenticationOptions,
   emailConfirmationMailer,
 } from "./authentication.js";
 export {
-  IsSignedOutMiddlewareLocals,
-  IsSignedInMiddlewareLocals,
+  isSignedOutMiddlewareLocals,
+  isSignedInMiddlewareLocals,
 } from "./authentication.js";
 import about, { aboutHandler } from "./about.js";
 import user, { userPartial, userSettingsLayout } from "./user.js";
@@ -70,12 +70,12 @@ export {
   enrollmentRoles,
   EnrollmentAccentColor,
   enrollmentAccentColors,
-  IsEnrolledInCourseMiddlewareLocals,
-  IsCourseStaffMiddlewareLocals,
-  InvitationExistsMiddlewareLocals,
-  MayManageInvitationMiddlewareLocals,
-  IsInvitationUsableMiddlewareLocals,
-  MayManageEnrollmentMiddlewareLocals,
+  isEnrolledInCourseMiddlewareLocals,
+  isCourseStaffMiddlewareLocals,
+  invitationExistsMiddlewareLocals,
+  mayManageInvitationMiddlewareLocals,
+  isInvitationUsableMiddlewareLocals,
+  mayManageEnrollmentMiddlewareLocals,
 } from "./course.js";
 import conversation, {
   conversationLayout,
@@ -94,8 +94,8 @@ export {
   conversationTypeTextColor,
   AuthorEnrollment,
   AuthorEnrollmentUser,
-  IsConversationAccessibleMiddlewareLocals,
-  MayEditConversationMiddlewareLocals,
+  isConversationAccessibleMiddlewareLocals,
+  mayEditConversationMiddlewareLocals,
 } from "./conversation.js";
 import message from "./message.js";
 export {} from "./message.js";
@@ -112,8 +112,8 @@ export interface Courselore extends express.Express {
       canonicalBaseURL: string;
       metaCourseloreInvitation: string;
     } & Required<Options> &
-      GlobalMiddlewaresOptions &
-      AuthenticationOptions;
+      globalMiddlewaresOptions &
+      authenticationOptions;
     handlers: {
       about: aboutHandler;
       signIn: signInHandler;
@@ -177,8 +177,8 @@ export interface Courselore extends express.Express {
     workers: {
       sendEmail: any; // TODO
     };
-  } & DatabaseLocals &
-    EventSourceLocals;
+  } & databaseLocals &
+    eventSourceLocals;
 }
 
 export interface Options {

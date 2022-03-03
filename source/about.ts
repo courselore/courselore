@@ -5,9 +5,9 @@ import { javascript } from "@leafac/javascript";
 import dedent from "dedent";
 import {
   Courselore,
-  BaseMiddlewareLocals,
-  IsSignedOutMiddlewareLocals,
-  IsSignedInMiddlewareLocals,
+  baseMiddlewareLocals,
+  isSignedOutMiddlewareLocals,
+  isSignedInMiddlewareLocals,
 } from "./index.js";
 
 export type aboutHandler = express.RequestHandler<
@@ -15,7 +15,7 @@ export type aboutHandler = express.RequestHandler<
   any,
   {},
   {},
-  BaseMiddlewareLocals & Partial<IsSignedInMiddlewareLocals>
+  baseMiddlewareLocals & Partial<isSignedInMiddlewareLocals>
 >;
 
 export default (app: Courselore): void => {
@@ -856,18 +856,18 @@ export default (app: Courselore): void => {
     app.locals.options.baseURL === app.locals.options.canonicalBaseURL ||
     process.env.NODE_ENV !== "production"
   ) {
-    app.get<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
+    app.get<{}, HTML, {}, {}, isSignedOutMiddlewareLocals>(
       "/about",
       ...app.locals.middlewares.isSignedOut,
       app.locals.handlers.about
     );
-    app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+    app.get<{}, HTML, {}, {}, isSignedInMiddlewareLocals>(
       "/about",
       ...app.locals.middlewares.isSignedIn,
       app.locals.handlers.about
     );
   } else
-    app.get<{}, HTML, {}, {}, BaseMiddlewareLocals>("/about", (req, res) => {
+    app.get<{}, HTML, {}, {}, baseMiddlewareLocals>("/about", (req, res) => {
       res.redirect(`${app.locals.options.canonicalBaseURL}/about`);
     });
 };

@@ -4,7 +4,7 @@ import { Database, sql } from "@leafac/sqlite";
 import fs from "fs-extra";
 import { Courselore } from "./index.js";
 
-export interface DatabaseLocals {
+export interface databaseLocals {
   database: Database;
 }
 

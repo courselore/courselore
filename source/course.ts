@@ -11,10 +11,10 @@ import lodash from "lodash";
 import QRCode from "qrcode";
 import {
   Courselore,
-  BaseMiddlewareLocals,
+  baseMiddlewareLocals,
   EventSourceMiddlewareLocals,
-  IsSignedOutMiddlewareLocals,
-  IsSignedInMiddlewareLocals,
+  isSignedOutMiddlewareLocals,
+  isSignedInMiddlewareLocals,
   UserAvatarlessBackgroundColor,
   ConversationType,
   conversationTypes,
@@ -40,10 +40,10 @@ export type coursePartial = ({
   enrollment,
   tight,
 }: {
-  req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-  res: express.Response<any, BaseMiddlewareLocals>;
-  course: IsSignedInMiddlewareLocals["enrollments"][number]["course"];
-  enrollment?: IsSignedInMiddlewareLocals["enrollments"][number];
+  req: express.Request<{}, any, {}, {}, baseMiddlewareLocals>;
+  res: express.Response<any, baseMiddlewareLocals>;
+  course: isSignedInMiddlewareLocals["enrollments"][number]["course"];
+  enrollment?: isSignedInMiddlewareLocals["enrollments"][number];
   tight?: boolean;
 }) => HTML;
 
@@ -58,8 +58,8 @@ export type defaultAccentColorHelper = ({
   req,
   res,
 }: {
-  req: express.Request<{}, any, {}, {}, IsSignedInMiddlewareLocals>;
-  res: express.Response<any, IsSignedInMiddlewareLocals>;
+  req: express.Request<{}, any, {}, {}, isSignedInMiddlewareLocals>;
+  res: express.Response<any, isSignedInMiddlewareLocals>;
 }) => EnrollmentAccentColor;
 
 export type isEnrolledInCourseMiddleware = express.RequestHandler<
@@ -67,12 +67,12 @@ export type isEnrolledInCourseMiddleware = express.RequestHandler<
   any,
   {},
   {},
-  IsEnrolledInCourseMiddlewareLocals
+  isEnrolledInCourseMiddlewareLocals
 >[];
-export interface IsEnrolledInCourseMiddlewareLocals
-  extends IsSignedInMiddlewareLocals {
-  enrollment: IsSignedInMiddlewareLocals["enrollments"][number];
-  course: IsSignedInMiddlewareLocals["enrollments"][number]["course"];
+export interface isEnrolledInCourseMiddlewareLocals
+  extends isSignedInMiddlewareLocals {
+  enrollment: isSignedInMiddlewareLocals["enrollments"][number];
+  course: isSignedInMiddlewareLocals["enrollments"][number]["course"];
   conversationsCount: number;
   conversationTypes: ConversationType[];
   tags: {
@@ -88,19 +88,19 @@ export type isCourseStaffMiddleware = express.RequestHandler<
   any,
   {},
   {},
-  IsCourseStaffMiddlewareLocals
+  isCourseStaffMiddlewareLocals
 >[];
-export interface IsCourseStaffMiddlewareLocals
-  extends IsEnrolledInCourseMiddlewareLocals {}
+export interface isCourseStaffMiddlewareLocals
+  extends isEnrolledInCourseMiddlewareLocals {}
 
 export type invitationExistsMiddleware = express.RequestHandler<
   { courseReference: string; invitationReference: string },
   any,
   {},
   {},
-  InvitationExistsMiddlewareLocals
+  invitationExistsMiddlewareLocals
 >[];
-export interface InvitationExistsMiddlewareLocals extends BaseMiddlewareLocals {
+export interface invitationExistsMiddlewareLocals extends baseMiddlewareLocals {
   invitation: {
     id: number;
     expiresAt: string | null;
@@ -127,31 +127,31 @@ export type mayManageInvitationMiddleware = express.RequestHandler<
   any,
   {},
   {},
-  MayManageInvitationMiddlewareLocals
+  mayManageInvitationMiddlewareLocals
 >[];
-export interface MayManageInvitationMiddlewareLocals
-  extends IsCourseStaffMiddlewareLocals,
-    InvitationExistsMiddlewareLocals {}
+export interface mayManageInvitationMiddlewareLocals
+  extends isCourseStaffMiddlewareLocals,
+    invitationExistsMiddlewareLocals {}
 
 export type isInvitationUsableMiddleware = express.RequestHandler<
   { courseReference: string; invitationReference: string },
   any,
   {},
   {},
-  IsInvitationUsableMiddlewareLocals
+  isInvitationUsableMiddlewareLocals
 >[];
-export interface IsInvitationUsableMiddlewareLocals
-  extends InvitationExistsMiddlewareLocals,
-    Omit<Partial<IsSignedInMiddlewareLocals>, keyof BaseMiddlewareLocals> {}
+export interface isInvitationUsableMiddlewareLocals
+  extends invitationExistsMiddlewareLocals,
+    Omit<Partial<isSignedInMiddlewareLocals>, keyof baseMiddlewareLocals> {}
 
 export type invitationMailer = ({
   req,
   res,
   invitation,
 }: {
-  req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-  res: express.Response<any, BaseMiddlewareLocals>;
-  invitation: InvitationExistsMiddlewareLocals["invitation"];
+  req: express.Request<{}, any, {}, {}, baseMiddlewareLocals>;
+  res: express.Response<any, baseMiddlewareLocals>;
+  invitation: invitationExistsMiddlewareLocals["invitation"];
 }) => void;
 
 export type mayManageEnrollmentMiddleware = express.RequestHandler<
@@ -159,10 +159,10 @@ export type mayManageEnrollmentMiddleware = express.RequestHandler<
   any,
   {},
   {},
-  MayManageEnrollmentMiddlewareLocals
+  mayManageEnrollmentMiddlewareLocals
 >[];
-export interface MayManageEnrollmentMiddlewareLocals
-  extends IsCourseStaffMiddlewareLocals {
+export interface mayManageEnrollmentMiddlewareLocals
+  extends isCourseStaffMiddlewareLocals {
   managedEnrollment: {
     id: number;
     reference: string;
@@ -182,11 +182,11 @@ export type courseSettingsLayout = ({
     any,
     {},
     {},
-    IsEnrolledInCourseMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+    isEnrolledInCourseMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
   >;
   res: express.Response<
     any,
-    IsEnrolledInCourseMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+    isEnrolledInCourseMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
   >;
   head: HTML;
   body: HTML;
@@ -281,7 +281,7 @@ export default (app: Courselore): void => {
     },
   };
 
-  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, isSignedInMiddlewareLocals>(
     "/",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -399,7 +399,7 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.get<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+  app.get<{}, HTML, {}, {}, isSignedInMiddlewareLocals>(
     "/courses/new",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -585,7 +585,7 @@ export default (app: Courselore): void => {
       code?: string;
     },
     {},
-    IsSignedInMiddlewareLocals
+    isSignedInMiddlewareLocals
   >("/courses", ...app.locals.middlewares.isSignedIn, (req, res, next) => {
     if (
       typeof req.body.name !== "string" ||
@@ -662,8 +662,8 @@ export default (app: Courselore): void => {
     req,
     res,
   }: {
-    req: express.Request<{}, any, {}, {}, IsSignedInMiddlewareLocals>;
-    res: express.Response<any, IsSignedInMiddlewareLocals>;
+    req: express.Request<{}, any, {}, {}, isSignedInMiddlewareLocals>;
+    res: express.Response<any, isSignedInMiddlewareLocals>;
   }): EnrollmentAccentColor => {
     const accentColorsInUse = new Set<EnrollmentAccentColor>(
       res.locals.enrollments.map((enrollment) => enrollment.accentColor)
@@ -750,7 +750,7 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {},
-    IsEnrolledInCourseMiddlewareLocals & EventSourceMiddlewareLocals
+    isEnrolledInCourseMiddlewareLocals & EventSourceMiddlewareLocals
   >(
     "/courses/:courseReference",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -1065,7 +1065,7 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {},
-    IsEnrolledInCourseMiddlewareLocals
+    isEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/settings",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -1087,7 +1087,7 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {},
-    IsCourseStaffMiddlewareLocals
+    isCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/course-information",
     ...app.locals.middlewares.isCourseStaff,
@@ -1210,7 +1210,7 @@ export default (app: Courselore): void => {
       code?: string;
     },
     {},
-    IsCourseStaffMiddlewareLocals
+    isCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/course-information",
     ...app.locals.middlewares.isCourseStaff,
@@ -1275,7 +1275,7 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {},
-    IsCourseStaffMiddlewareLocals
+    isCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/tags",
     ...app.locals.middlewares.isCourseStaff,
@@ -1759,7 +1759,7 @@ export default (app: Courselore): void => {
       }[];
     },
     {},
-    IsCourseStaffMiddlewareLocals
+    isCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/tags",
     ...app.locals.middlewares.isCourseStaff,
@@ -1832,7 +1832,7 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {},
-    IsCourseStaffMiddlewareLocals
+    isCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/invitations",
     ...app.locals.middlewares.isCourseStaff,
@@ -2865,7 +2865,7 @@ export default (app: Courselore): void => {
       emails?: string;
     },
     {},
-    IsCourseStaffMiddlewareLocals
+    isCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/invitations",
     ...app.locals.middlewares.isCourseStaff,
@@ -3054,7 +3054,7 @@ export default (app: Courselore): void => {
       expire?: "true";
     },
     {},
-    MayManageInvitationMiddlewareLocals
+    mayManageInvitationMiddlewareLocals
   >(
     "/courses/:courseReference/settings/invitations/:invitationReference",
     ...app.locals.middlewares.mayManageInvitation,
@@ -3177,7 +3177,7 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {},
-    IsCourseStaffMiddlewareLocals
+    isCourseStaffMiddlewareLocals
   >(
     "/courses/:courseReference/settings/enrollments",
     ...app.locals.middlewares.isCourseStaff,
@@ -3642,7 +3642,7 @@ export default (app: Courselore): void => {
     HTML,
     { role?: EnrollmentRole },
     {},
-    MayManageEnrollmentMiddlewareLocals
+    mayManageEnrollmentMiddlewareLocals
   >(
     "/courses/:courseReference/settings/enrollments/:enrollmentReference",
     ...app.locals.middlewares.mayManageEnrollment,
@@ -3675,7 +3675,7 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {},
-    MayManageEnrollmentMiddlewareLocals
+    mayManageEnrollmentMiddlewareLocals
   >(
     "/courses/:courseReference/settings/enrollments/:enrollmentReference",
     ...app.locals.middlewares.mayManageEnrollment,
@@ -3710,7 +3710,7 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {},
-    IsEnrolledInCourseMiddlewareLocals
+    isEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/settings/your-enrollment",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -3827,7 +3827,7 @@ export default (app: Courselore): void => {
     HTML,
     { accentColor?: EnrollmentAccentColor },
     {},
-    IsEnrolledInCourseMiddlewareLocals
+    isEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/settings/your-enrollment",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -3861,7 +3861,7 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {},
-    IsEnrolledInCourseMiddlewareLocals & IsInvitationUsableMiddlewareLocals
+    isEnrolledInCourseMiddlewareLocals & isInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -3974,7 +3974,7 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {},
-    IsSignedInMiddlewareLocals & IsInvitationUsableMiddlewareLocals
+    isSignedInMiddlewareLocals & isInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isSignedIn,
@@ -4026,7 +4026,7 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {},
-    IsSignedInMiddlewareLocals & IsInvitationUsableMiddlewareLocals
+    isSignedInMiddlewareLocals & isInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isSignedIn,
@@ -4065,7 +4065,7 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {},
-    IsSignedOutMiddlewareLocals & IsInvitationUsableMiddlewareLocals
+    isSignedOutMiddlewareLocals & isInvitationUsableMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     ...app.locals.middlewares.isSignedOut,
@@ -4155,7 +4155,7 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {},
-    BaseMiddlewareLocals
+    baseMiddlewareLocals
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     (req, res) => {

@@ -2,12 +2,12 @@ import express from "express";
 import qs from "qs";
 import { HTML, html } from "@leafac/html";
 import { boxLayout, reportIssueHrefPartial } from "./layouts.js";
-import { BaseMiddlewareLocals } from "./global-middlewares.js";
+import { baseMiddlewareLocals } from "./global-middlewares.js";
 import {
   isSignedOutMiddleware,
-  IsSignedOutMiddlewareLocals,
+  isSignedOutMiddlewareLocals,
   isSignedInMiddleware,
-  IsSignedInMiddlewareLocals,
+  isSignedInMiddlewareLocals,
 } from "./authentication.js";
 
 export default ({
@@ -27,7 +27,7 @@ export default ({
   isSignedOutMiddleware: isSignedOutMiddleware;
   isSignedInMiddleware: isSignedInMiddleware;
 }): void => {
-  app.all<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
+  app.all<{}, HTML, {}, {}, isSignedOutMiddlewareLocals>(
     "*",
     ...app.locals.middlewares.isSignedOut,
     (req, res) => {
@@ -42,7 +42,7 @@ export default ({
     }
   );
 
-  app.all<{}, HTML, {}, { redirect?: string }, IsSignedInMiddlewareLocals>(
+  app.all<{}, HTML, {}, { redirect?: string }, isSignedInMiddlewareLocals>(
     "*",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -71,7 +71,7 @@ export default ({
     }
   );
 
-  app.use<{}, HTML, {}, {}, BaseMiddlewareLocals>(((err, req, res, next) => {
+  app.use<{}, HTML, {}, {}, baseMiddlewareLocals>(((err, req, res, next) => {
     console.error(`${new Date().toISOString()}\tERROR\t${err}`);
     const isCSRF = err.code === "EBADCSRFTOKEN";
     const isValidation = err === "validation";
@@ -116,5 +116,5 @@ export default ({
         `,
       })
     );
-  }) as express.ErrorRequestHandler<{}, any, {}, {}, BaseMiddlewareLocals>);
+  }) as express.ErrorRequestHandler<{}, any, {}, {}, baseMiddlewareLocals>);
 };

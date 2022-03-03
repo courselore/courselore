@@ -1,7 +1,7 @@
 import express from "express";
-import { Courselore, BaseMiddlewareLocals } from "./index.js";
+import { Courselore, baseMiddlewareLocals } from "./index.js";
 
-export interface EventSourceLocals {
+export interface eventSourceLocals {
   eventDestinations: Set<{
     reference: string;
     req: express.Request;
@@ -14,9 +14,9 @@ export type eventSourceMiddleware = express.RequestHandler<
   any,
   {},
   {},
-  EventSourceMiddlewareLocals
+  eventSourceMiddlewareLocals
 >[];
-export interface EventSourceMiddlewareLocals extends BaseMiddlewareLocals {
+export interface eventSourceMiddlewareLocals extends baseMiddlewareLocals {
   eventSource: boolean;
 }
 

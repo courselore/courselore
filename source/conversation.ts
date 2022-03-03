@@ -11,8 +11,8 @@ import {
   EventSourceMiddlewareLocals,
   UserAvatarlessBackgroundColor,
   EnrollmentRole,
-  IsEnrolledInCourseMiddlewareLocals,
-  IsCourseStaffMiddlewareLocals,
+  isEnrolledInCourseMiddlewareLocals,
+  isCourseStaffMiddlewareLocals,
 } from "./index.js";
 
 export type ConversationType = typeof conversationTypes[number];
@@ -67,14 +67,14 @@ export type conversationLayout = ({
       scrollToConversation?: "false";
       conversationsPage?: string;
     },
-    IsEnrolledInCourseMiddlewareLocals &
-      Partial<IsConversationAccessibleMiddlewareLocals> &
+    isEnrolledInCourseMiddlewareLocals &
+      Partial<isConversationAccessibleMiddlewareLocals> &
       Partial<EventSourceMiddlewareLocals>
   >;
   res: express.Response<
     HTML,
-    IsEnrolledInCourseMiddlewareLocals &
-      Partial<IsConversationAccessibleMiddlewareLocals> &
+    isEnrolledInCourseMiddlewareLocals &
+      Partial<isConversationAccessibleMiddlewareLocals> &
       Partial<EventSourceMiddlewareLocals>
   >;
   head: HTML;
@@ -88,10 +88,10 @@ export type isConversationAccessibleMiddleware = express.RequestHandler<
   HTML,
   {},
   {},
-  IsConversationAccessibleMiddlewareLocals
+  isConversationAccessibleMiddlewareLocals
 >[];
-export interface IsConversationAccessibleMiddlewareLocals
-  extends IsEnrolledInCourseMiddlewareLocals {
+export interface isConversationAccessibleMiddlewareLocals
+  extends isEnrolledInCourseMiddlewareLocals {
   conversation: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
   >;
@@ -106,9 +106,9 @@ export type mayEditConversationHelper = ({
     any,
     {},
     {},
-    IsConversationAccessibleMiddlewareLocals
+    isConversationAccessibleMiddlewareLocals
   >;
-  res: express.Response<any, IsConversationAccessibleMiddlewareLocals>;
+  res: express.Response<any, isConversationAccessibleMiddlewareLocals>;
 }) => boolean;
 
 export type mayEditConversationMiddleware = express.RequestHandler<
@@ -119,10 +119,10 @@ export type mayEditConversationMiddleware = express.RequestHandler<
   any,
   {},
   {},
-  MayEditConversationMiddlewareLocals
+  mayEditConversationMiddlewareLocals
 >[];
-export interface MayEditConversationMiddlewareLocals
-  extends IsConversationAccessibleMiddlewareLocals {}
+export interface mayEditConversationMiddlewareLocals
+  extends isConversationAccessibleMiddlewareLocals {}
 
 export type conversationPartial = ({
   req,
@@ -131,8 +131,8 @@ export type conversationPartial = ({
   searchResult,
   message,
 }: {
-  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
-  res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+  req: express.Request<{}, any, {}, {}, isEnrolledInCourseMiddlewareLocals>;
+  res: express.Response<any, isEnrolledInCourseMiddlewareLocals>;
   conversation: NonNullable<
     ReturnType<Courselore["locals"]["helpers"]["getConversation"]>
   >;
@@ -179,8 +179,8 @@ export type getConversationHelper = ({
   res,
   conversationReference,
 }: {
-  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
-  res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+  req: express.Request<{}, any, {}, {}, isEnrolledInCourseMiddlewareLocals>;
+  res: express.Response<any, isEnrolledInCourseMiddlewareLocals>;
   conversationReference: string;
 }) =>
   | {
@@ -1994,7 +1994,7 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {},
-    IsEnrolledInCourseMiddlewareLocals & EventSourceMiddlewareLocals
+    isEnrolledInCourseMiddlewareLocals & EventSourceMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/new",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -2465,7 +2465,7 @@ export default (app: Courselore): void => {
       isAnonymous?: boolean;
     },
     {},
-    IsEnrolledInCourseMiddlewareLocals
+    isEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/conversations",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -2643,7 +2643,7 @@ export default (app: Courselore): void => {
     any,
     {},
     {},
-    IsEnrolledInCourseMiddlewareLocals
+    isEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/mark-all-conversations-as-read",
     ...app.locals.middlewares.isEnrolledInCourse,
@@ -2729,7 +2729,7 @@ export default (app: Courselore): void => {
       beforeMessageReference?: string;
       afterMessageReference?: string;
     },
-    IsConversationAccessibleMiddlewareLocals & EventSourceMiddlewareLocals
+    isConversationAccessibleMiddlewareLocals & EventSourceMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     ...app.locals.middlewares.isConversationAccessible,
@@ -5984,7 +5984,7 @@ export default (app: Courselore): void => {
       title?: string;
     },
     {},
-    MayEditConversationMiddlewareLocals
+    mayEditConversationMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     ...app.locals.middlewares.mayEditConversation,
@@ -6093,7 +6093,7 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {},
-    IsCourseStaffMiddlewareLocals & IsConversationAccessibleMiddlewareLocals
+    isCourseStaffMiddlewareLocals & isConversationAccessibleMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     ...app.locals.middlewares.isCourseStaff,
@@ -6119,7 +6119,7 @@ export default (app: Courselore): void => {
     any,
     { reference?: string },
     {},
-    MayEditConversationMiddlewareLocals
+    mayEditConversationMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/taggings",
     ...app.locals.middlewares.mayEditConversation,
@@ -6162,7 +6162,7 @@ export default (app: Courselore): void => {
     any,
     { reference?: string },
     {},
-    MayEditConversationMiddlewareLocals
+    mayEditConversationMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/taggings",
     ...app.locals.middlewares.mayEditConversation,
