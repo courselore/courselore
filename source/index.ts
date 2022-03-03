@@ -79,6 +79,7 @@ export {
 } from "./course.js";
 import conversation, {
   ConversationLayout,
+  ConversationPartial,
   ConversationTypeIconPartial,
   ConversationTypeTextColorPartial,
 } from "./conversation.js";
@@ -138,6 +139,7 @@ export interface Courselore extends express.Express {
       user: UserPartial;
       course: CoursePartial;
       enrollmentRoleIcon: EnrollmentRoleIconPartial;
+      conversation: ConversationPartial;
       conversationTypeIcon: ConversationTypeIconPartial;
       conversationTypeTextColor: ConversationTypeTextColorPartial;
       content: any; // TODO

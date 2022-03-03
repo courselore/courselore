@@ -81,6 +81,34 @@ export type ConversationLayout = ({
   body: HTML;
 }) => HTML;
 
+export type ConversationPartial = ({
+  req,
+  res,
+  conversation,
+  searchResult,
+  message,
+}: {
+  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
+  res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+  conversation: NonNullable<ReturnType<typeof getConversation>>;
+  searchResult?:
+    | {
+        type: "conversationTitle";
+        highlight: HTML;
+      }
+    | {
+        type: "messageAuthorUserName";
+        message: NonNullable<ReturnType<typeof getMessage>>;
+        highlight: HTML;
+      }
+    | {
+        type: "messageContent";
+        message: NonNullable<ReturnType<typeof getMessage>>;
+        snippet: HTML;
+      };
+  message?: NonNullable<ReturnType<typeof getMessage>>;
+}) => HTML;
+
 export type ConversationTypeIconPartial = {
   [conversationType in ConversationType]: {
     regular: HTML;
@@ -1161,7 +1189,7 @@ export default (app: Courselore): void => {
                                       flex: 1;
                                     `)}"
                                   >
-                                    $${conversationPartial({
+                                    $${app.locals.partials.conversation({
                                       req,
                                       res,
                                       conversation,
@@ -1303,33 +1331,13 @@ export default (app: Courselore): void => {
     });
   };
 
-  const conversationPartial = ({
+  app.locals.partials.conversation = ({
     req,
     res,
     conversation,
     searchResult = undefined,
     message = undefined,
-  }: {
-    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
-    res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
-    conversation: NonNullable<ReturnType<typeof getConversation>>;
-    searchResult?:
-      | {
-          type: "conversationTitle";
-          highlight: HTML;
-        }
-      | {
-          type: "messageAuthorUserName";
-          message: NonNullable<ReturnType<typeof getMessage>>;
-          highlight: HTML;
-        }
-      | {
-          type: "messageContent";
-          message: NonNullable<ReturnType<typeof getMessage>>;
-          snippet: HTML;
-        };
-    message?: NonNullable<ReturnType<typeof getMessage>>;
-  }): HTML => html`
+  }) => html`
     <div
       class="${res.locals.localCSS(css`
         display: flex;

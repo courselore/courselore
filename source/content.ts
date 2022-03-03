@@ -2485,7 +2485,7 @@ ${contentSource}</textarea
                             padding: var(--space--2);
                           `)}"
                         >
-                          $${conversationPartial({
+                          $${app.locals.partials.conversation({
                             req: narrowReq,
                             res: narrowRes,
                             conversation,
@@ -2520,7 +2520,7 @@ ${contentSource}</textarea
                           gap: var(--space--2);
                         `)}"
                       >
-                        $${conversationPartial({
+                        $${app.locals.partials.conversation({
                           req: narrowReq,
                           res: narrowRes,
                           conversation,
