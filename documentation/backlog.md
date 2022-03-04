@@ -2,10 +2,6 @@
 
 ### Performance
 
-- Look into how we could expand the type of `Courselore` globally. (See how `csurf` does it.)
-
----
-
 - Split the codebase into separate files.
   - `source/email.ts`
   - `source/demonstration.ts`
