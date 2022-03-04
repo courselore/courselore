@@ -88,7 +88,6 @@ oninteractive="${javascript`
 ---
 
 - Do a major release, because configuration changed.
-- Remove `.mjs` from staging & production.
 
 ### User Interface Improvements
 
