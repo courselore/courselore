@@ -1,39 +1,38 @@
-import express from "express";
 import { asyncHandler } from "@leafac/express-async-handler";
-import { Database, sql } from "@leafac/sqlite";
+import { sql } from "@leafac/sqlite";
 import { html } from "@leafac/html";
 import argon2 from "argon2";
 import casual from "casual";
 import lodash from "lodash";
 import slugify from "@sindresorhus/slugify";
 import cryptoRandomString from "crypto-random-string";
-import { BaseMiddlewareLocals } from "./global-middlewares.js";
-import { UserAvatarlessBackgroundColors } from "./user.js";
-
-export default ({
-  app,
-  baseURL,
-  demonstration,
-  database,
-  app.locals.options.argon2,
+import {
+  Courselore,
+  BaseMiddlewareLocals,
   userAvatarlessBackgroundColors,
-}: {
-  app: express.Express;
-  baseURL: string;
-  demonstration: boolean;
-  database: Database;
-  app.locals.options.argon2: argon2.Options & { raw: true };
-  userAvatarlessBackgroundColors: UserAvatarlessBackgroundColors;
-}): void => {
-  if (demonstration)
+  EnrollmentRole,
+  enrollmentRoles,
+  enrollmentAccentColors,
+  ConversationType,
+  conversationTypes,
+} from "./index.js";
+
+export default (app: Courselore): void => {
+  if (app.locals.options.demonstration)
     app.post<{}, any, {}, {}, BaseMiddlewareLocals>(
       "/demonstration-data",
       asyncHandler(async (req, res) => {
-        const password = await argon2.hash("courselore", app.locals.options.argon2);
+        const password = await argon2.hash(
+          "courselore",
+          app.locals.options.argon2
+        );
         const name = casual.full_name;
         const avatarIndices = lodash.shuffle(lodash.range(250));
         const biographySource = casual.sentences(lodash.random(5, 7));
-        const demonstrationUser =app.locals.database.get<{ id: number; name: string }>(
+        const demonstrationUser = app.locals.database.get<{
+          id: number;
+          name: string;
+        }>(
           sql`
             INSERT INTO "users" (
               "createdAt",
@@ -62,7 +61,9 @@ export default ({
               ${new Date().toISOString()},
               ${name},
               ${html`${name}`},
-              ${`${app.locals.options.baseURL}/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`},
+              ${`${
+                app.locals.options.baseURL
+              }/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`},
               ${lodash.sample(userAvatarlessBackgroundColors)},
               ${biographySource},
               ${
@@ -82,7 +83,7 @@ export default ({
         const users = lodash.times(150, () => {
           const name = casual.full_name;
           const biographySource = casual.sentences(lodash.random(5, 7));
-          returnapp.locals.database.get<{
+          return app.locals.database.get<{
             id: number;
             email: string;
             name: string;
@@ -120,7 +121,9 @@ export default ({
                 ${html`${name}`},
                 ${
                   Math.random() < 0.6
-                    ? `${app.locals.options.baseURL}/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
+                    ? `${
+                        app.locals.options.baseURL
+                      }/node_modules/fake-avatars/avatars/${avatarIndices.shift()}.png`
                     : null
                 },
                 ${lodash.sample(userAvatarlessBackgroundColors)},
@@ -160,7 +163,7 @@ export default ({
             enrollmentsUsers: users.slice(50, 150),
           },
         ].reverse()) {
-          const course =app.locals.database.get<{
+          const course = app.locals.database.get<{
             id: number;
             nextConversationReference: number;
           }>(
@@ -189,7 +192,7 @@ export default ({
             `
           )!;
 
-          const enrollment =app.locals.database.get<{
+          const enrollment = app.locals.database.get<{
             id: number;
             role: EnrollmentRole;
           }>(
@@ -219,7 +222,7 @@ export default ({
                   ).toISOString()
                 : null;
             const user = Math.random() < 0.5 ? lodash.sample(users)! : null;
-           app.locals.database.run(
+            app.locals.database.run(
               sql`
                 INSERT INTO "invitations" (
                   "createdAt",
@@ -260,7 +263,7 @@ export default ({
             enrollment,
             ...enrollmentsUsers.map(
               (enrollmentUser) =>
-               app.locals.database.get<{
+                app.locals.database.get<{
                   id: number;
                   role: EnrollmentRole;
                 }>(
@@ -334,7 +337,7 @@ export default ({
             },
           ].map(
             ({ name, staffOnlyAt }) =>
-             app.locals.database.get<{ id: number }>(
+              app.locals.database.get<{ id: number }>(
                 sql`
                     INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
                     VALUES (
@@ -403,7 +406,7 @@ export default ({
               casual.words(lodash.random(3, 9))
             )}${type === "question" ? "?" : ""}`;
             const conversationAuthorEnrollment = lodash.sample(enrollments)!;
-            const conversation =app.locals.database.get<{
+            const conversation = app.locals.database.get<{
               id: number;
               authorEnrollment: number | null;
               anonymousAt: string | null;
@@ -455,7 +458,7 @@ export default ({
               `
             )!;
 
-           app.locals.database.run(
+            app.locals.database.run(
               sql`
                 INSERT INTO "taggings" ("createdAt", "conversation", "tag")
                 VALUES (
@@ -493,7 +496,7 @@ export default ({
                   : Math.random() < 0.05
                   ? null
                   : lodash.sample(enrollments)!;
-              const message =app.locals.database.get<{ id: number }>(
+              const message = app.locals.database.get<{ id: number }>(
                 sql`
                   INSERT INTO "messages" (
                     "createdAt",
@@ -557,7 +560,7 @@ export default ({
                       lodash.random(12 * 60 * 60 * 1000)
                   )
                 ).toISOString();
-               app.locals.database.run(
+                app.locals.database.run(
                   sql`
                     INSERT INTO "readings" ("createdAt", "message", "enrollment")
                     VALUES (
@@ -573,7 +576,7 @@ export default ({
                 staff,
                 Math.random() < 0.8 ? 0 : lodash.random(2)
               ))
-               app.locals.database.run(
+                app.locals.database.run(
                   sql`
                     INSERT INTO "endorsements" ("createdAt", "message", "enrollment")
                     VALUES (
@@ -590,7 +593,7 @@ export default ({
                   ? 0
                   : lodash.random(5)
               ))
-               app.locals.database.run(
+                app.locals.database.run(
                   sql`
                     INSERT INTO "likes" ("createdAt", "message", "enrollment")
                     VALUES (
@@ -604,8 +607,12 @@ export default ({
           }
         }
 
-        Session.open({ req, res, userId: demonstrationUser.id });
-        Flash.set({
+        app.locals.helpers.Session.open({
+          req,
+          res,
+          userId: demonstrationUser.id,
+        });
+        app.locals.helpers.Flash.set({
           req,
           res,
           content: html`
@@ -620,11 +627,11 @@ export default ({
             </div>
           `,
         });
-        res.redirect(baseURL);
+        res.redirect(app.locals.options.baseURL);
       })
     );
 
-  if (demonstration && process.env.NODE_ENV !== "production")
+  if (app.locals.options.demonstration && process.env.NODE_ENV !== "production")
     app.delete<{}, any, {}, {}, BaseMiddlewareLocals>(
       "/turn-off",
       (req, res, next) => {
