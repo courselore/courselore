@@ -20,6 +20,7 @@ import { visit as unistUtilVisit } from "unist-util-visit";
 import rehypeStringify from "rehype-stringify";
 import { JSDOM } from "jsdom";
 import escapeStringRegexp from "escape-string-regexp";
+import slugify from "@sindresorhus/slugify";
 import lodash from "lodash";
 import {
   Courselore,
@@ -90,6 +91,15 @@ export type ContentEditorPartial = ({
   compact?: boolean;
   isModified?: boolean | undefined;
 }) => HTML;
+
+export type MentionUserSearchHandler = express.RequestHandler<
+  { courseReference: string; conversationReference?: string },
+  any,
+  {},
+  { search?: string },
+  IsEnrolledInCourseMiddlewareLocals &
+    Partial<IsConversationAccessibleMiddlewareLocals>
+>;
 
 export default async (app: Courselore): Promise<void> => {
   app.locals.partials.content = await (async () => {
@@ -2000,14 +2010,7 @@ ${contentSource}</textarea
     </div>
   `;
 
-  const mentionUserSearchRequestHandler: express.RequestHandler<
-    { courseReference: string; conversationReference?: string },
-    any,
-    {},
-    { search?: string },
-    IsEnrolledInCourseMiddlewareLocals &
-      Partial<IsConversationAccessibleMiddlewareLocals>
-  > = (req, res, next) => {
+  app.locals.handlers.mentionUserSearch = (req, res, next) => {
     if (typeof req.query.search !== "string" || req.query.search.trim() === "")
       return next("validation");
 
@@ -2133,7 +2136,7 @@ ${contentSource}</textarea
   >(
     "/courses/:courseReference/content-editor/mention-user-search",
     ...app.locals.middlewares.isEnrolledInCourse,
-    mentionUserSearchRequestHandler
+    app.locals.handlers.mentionUserSearch
   );
 
   app.get<
@@ -2145,7 +2148,7 @@ ${contentSource}</textarea
   >(
     "/courses/:courseReference/conversations/:conversationReference/content-editor/mention-user-search",
     ...app.locals.middlewares.isConversationAccessible,
-    mentionUserSearchRequestHandler
+    app.locals.handlers.mentionUserSearch
   );
 
   app.get<
@@ -2168,7 +2171,7 @@ ${contentSource}</textarea
 
       if (req.query.search.match(/^\d+$/) !== null)
         results.push(
-          ...database
+          ...app.locals.database
             .all<{ reference: string }>(
               sql`
                 SELECT "conversations"."reference"

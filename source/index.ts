@@ -121,7 +121,11 @@ export {
   MayEndorseMessageMiddlewareLocals,
 } from "./message.js";
 
-import content, { ContentPartial, ContentEditorPartial } from "./content.js";
+import content, {
+  ContentPartial,
+  ContentEditorPartial,
+  MentionUserSearchHandler,
+} from "./content.js";
 
 import email from "./email.js";
 import demonstration from "./demonstration.js";
@@ -140,6 +144,7 @@ export interface Courselore extends express.Express {
     handlers: {
       about: AboutHandler;
       signIn: SignInHandler;
+      mentionUserSearch: MentionUserSearchHandler;
     };
     middlewares: {
       eventSource: EventSourceMiddleware;
