@@ -1,9 +1,14 @@
-export default () => {
+import { sql } from "@leafac/sqlite";
+import { Courselore } from "./index.js";
+
+export type SendEmailWorker = () => Promise<void>;
+
+export default (app: Courselore): void => {
   app.locals.workers.sendEmail = (() => {
     let timeout = setTimeout(schedule, 2 * 60 * 1000);
     return schedule;
 
-    async function schedule(): Promise<void> {
+    async function schedule() {
       clearTimeout(timeout);
       clean();
       await work();
@@ -11,15 +16,18 @@ export default () => {
     }
 
     function clean(): void {
-     app.locals.database.executeTransaction(() => {
-        for (const job ofapp.locals.database.all<{ id: number; mailOptions: string }>(
+      app.locals.database.executeTransaction(() => {
+        for (const job of app.locals.database.all<{
+          id: number;
+          mailOptions: string;
+        }>(
           sql`
             SELECT "id", "mailOptions"
             FROM "sendEmailJobs"
             WHERE "expiresAt" < ${new Date().toISOString()}
           `
         )) {
-         app.locals.database.run(
+          app.locals.database.run(
             sql`
               DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
             `
@@ -34,8 +42,11 @@ export default () => {
         }
       });
 
-     app.locals.database.executeTransaction(() => {
-        for (const job ofapp.locals.database.all<{ id: number; mailOptions: string }>(
+      app.locals.database.executeTransaction(() => {
+        for (const job of app.locals.database.all<{
+          id: number;
+          mailOptions: string;
+        }>(
           sql`
             SELECT "id", "mailOptions"
             FROM "sendEmailJobs"
@@ -44,7 +55,7 @@ export default () => {
             ).toISOString()}
           `
         )) {
-         app.locals.database.run(
+          app.locals.database.run(
             sql`
               UPDATE "sendEmailJobs"
               SET "startedAt" = NULL
@@ -64,8 +75,11 @@ export default () => {
 
     async function work(): Promise<void> {
       while (true) {
-        const job =app.locals.database.executeTransaction(() => {
-          const job =app.locals.database.get<{ id: number; mailOptions: string }>(
+        const job = app.locals.database.executeTransaction(() => {
+          const job = app.locals.database.get<{
+            id: number;
+            mailOptions: string;
+          }>(
             sql`
               SELECT "id", "mailOptions"
               FROM "sendEmailJobs"
@@ -76,7 +90,7 @@ export default () => {
             `
           );
           if (job !== undefined)
-           app.locals.database.run(
+            app.locals.database.run(
               sql`
                 UPDATE "sendEmailJobs"
                 SET "startedAt" = ${new Date().toISOString()}
@@ -89,21 +103,23 @@ export default () => {
         const mailOptions = JSON.parse(job.mailOptions);
         let result: { status: "SUCCEEDED" | "FAILED"; response: string };
         try {
-          const sentMessageInfo = await sendMail(mailOptions);
+          const sentMessageInfo = await app.locals.options.sendMail(
+            mailOptions
+          );
           result = { status: "SUCCEEDED", ...sentMessageInfo };
         } catch (error: any) {
           result = { status: "FAILED", ...error };
         }
         switch (result.status) {
           case "SUCCEEDED":
-           app.locals.database.run(
+            app.locals.database.run(
               sql`
                 DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
               `
             );
             break;
           case "FAILED":
-           app.locals.database.run(
+            app.locals.database.run(
               sql`
                 UPDATE "sendEmailJobs"
                 SET "startAt" = ${new Date(
