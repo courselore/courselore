@@ -3,7 +3,6 @@
 ### Performance
 
 - Split the codebase into separate files.
-  - `source/demonstration.ts`
   - `source/error.ts`
   - `source/helpers.ts`
   - `configuration/`

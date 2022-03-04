@@ -129,7 +129,6 @@ import content, {
 } from "./content.js";
 
 import email, { SendEmailWorker } from "./email.js";
-
 import demonstration from "./demonstration.js";
 import error from "./error.js";
 import helpers from "./helpers.js";
