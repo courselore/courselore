@@ -76,7 +76,7 @@ export default (app: Courselore): void => {
       path: baseURL.pathname,
       sameSite: "lax",
       secure: true,
-    } as const;
+    };
   })();
 
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
