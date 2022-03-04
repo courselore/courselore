@@ -1,45 +1,67 @@
 import escapeStringRegexp from "escape-string-regexp";
 import { HTML, html } from "@leafac/html";
+import { Courselore } from "./index.js";
 
-export const emailRegExp = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+export type EmailRegExpHelper = RegExp;
 
-export const isDate = (string: string): boolean =>
-  string.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/) !== null &&
-  !isNaN(new Date(string).getTime());
+export type IsDateHelper = (string: string) => boolean;
 
-export const isExpired = (expiresAt: string | null): boolean =>
-  expiresAt !== null && new Date(expiresAt).getTime() <= Date.now();
+export type IsExpiredHelper = (expiresAt: string | null) => boolean;
 
-export const sanitizeSearch = (
+export type SanitizeSearchHelper = (
   search: string,
-  { prefix = false }: { prefix?: boolean } = {}
-): string =>
-  splitSearchPhrases(search)
-    .map((phrase) => `"${phrase.replaceAll('"', '""')}"${prefix ? "*" : ""}`)
-    .join(" ");
+  { prefix }: { prefix?: boolean }
+) => string;
 
-export const highlightSearchResult = (
+export type HighlightSearchResultHelper = (
   searchResult: string,
   searchPhrases: string | string[] | undefined,
-  { prefix = false }: { prefix?: boolean } = {}
-): HTML => {
-  if (searchPhrases === undefined) return searchResult;
-  if (typeof searchPhrases === "string")
-    searchPhrases = splitSearchPhrases(searchPhrases);
-  if (searchPhrases.length === 0) return searchResult;
-  return searchResult.replace(
-    new RegExp(
-      `(?<!\\w)(?:${searchPhrases
-        .map((searchPhrase) => escapeStringRegexp(searchPhrase))
-        .join("|")})${prefix ? "" : "(?!\\w)"}`,
-      "gi"
-    ),
-    (searchPhrase) => html`<mark class="mark">$${searchPhrase}</mark>`
-  );
+  { prefix }: { prefix?: boolean }
+) => HTML;
+
+export type SplitSearchPhrasesHelper = (search: string) => string[];
+
+export type SplitFilterablePhrasesHelper = (filterable: string) => string[];
+
+export default (app: Courselore): void => {
+  app.locals.helpers.emailRegExp = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+
+  app.locals.helpers.isDate = (string) =>
+    string.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/) !== null &&
+    !isNaN(new Date(string).getTime());
+
+  app.locals.helpers.isExpired = (expiresAt) =>
+    expiresAt !== null && new Date(expiresAt).getTime() <= Date.now();
+
+  app.locals.helpers.sanitizeSearch = (search, { prefix = false } = {}) =>
+    app.locals.helpers
+      .splitSearchPhrases(search)
+      .map((phrase) => `"${phrase.replaceAll('"', '""')}"${prefix ? "*" : ""}`)
+      .join(" ");
+
+  app.locals.helpers.highlightSearchResult = (
+    searchResult,
+    searchPhrases,
+    { prefix = false } = {}
+  ) => {
+    if (searchPhrases === undefined) return searchResult;
+    if (typeof searchPhrases === "string")
+      searchPhrases = app.locals.helpers.splitSearchPhrases(searchPhrases);
+    if (searchPhrases.length === 0) return searchResult;
+    return searchResult.replace(
+      new RegExp(
+        `(?<!\\w)(?:${searchPhrases
+          .map((searchPhrase) => escapeStringRegexp(searchPhrase))
+          .join("|")})${prefix ? "" : "(?!\\w)"}`,
+        "gi"
+      ),
+      (searchPhrase) => html`<mark class="mark">$${searchPhrase}</mark>`
+    );
+  };
+
+  app.locals.helpers.splitSearchPhrases = (search) =>
+    search.split(/\s+/).filter((searchPhrase) => searchPhrase.trim() !== "");
+
+  app.locals.helpers.splitFilterablePhrases = (filterable) =>
+    filterable.split(/(?<=[^a-z0-9])(?=[a-z0-9])|(?<=[a-z0-9])(?=[^a-z0-9])/i);
 };
-
-export const splitSearchPhrases = (search: string): string[] =>
-  search.split(/\s+/).filter((searchPhrase) => searchPhrase.trim() !== "");
-
-export const splitFilterablePhrases = (filterable: string): string[] =>
-  filterable.split(/(?<=[^a-z0-9])(?=[a-z0-9])|(?<=[a-z0-9])(?=[^a-z0-9])/i);

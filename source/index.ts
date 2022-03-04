@@ -131,7 +131,16 @@ import content, {
 import email, { SendEmailWorker } from "./email.js";
 import demonstration from "./demonstration.js";
 import error from "./error.js";
-import helpers from "./helpers.js";
+
+import helpers, {
+  EmailRegExpHelper,
+  IsDateHelper,
+  IsExpiredHelper,
+  SanitizeSearchHelper,
+  HighlightSearchResultHelper,
+  SplitSearchPhrasesHelper,
+  SplitFilterablePhrasesHelper,
+} from "./helpers.js";
 
 export interface Courselore extends express.Express {
   locals: {
@@ -198,12 +207,13 @@ export interface Courselore extends express.Express {
       getMessage: GetMessageHelper;
       mayEditMessage: MayEditMessageHelper;
       mayEndorseMessage: MayEndorseMessageHelper;
-      emailRegExp: any; // TODO
-      isExpired: any; // TODO
-      isDate: any; // TODO
-      splitFilterablePhrases: any; // TODO
-      sanitizeSearch: any; // TODO
-      highlightSearchResult: any; // TODO
+      emailRegExp: EmailRegExpHelper;
+      isDate: IsDateHelper;
+      isExpired: IsExpiredHelper;
+      sanitizeSearch: SanitizeSearchHelper;
+      highlightSearchResult: HighlightSearchResultHelper;
+      splitSearchPhrases: SplitSearchPhrasesHelper;
+      splitFilterablePhrases: SplitFilterablePhrasesHelper;
     };
     mailers: {
       emailConfirmation: EmailConfirmationMailer;
