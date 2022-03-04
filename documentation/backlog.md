@@ -7,7 +7,6 @@
 ---
 
 - Split the codebase into separate files.
-  - `source/content.ts`
   - `source/email.ts`
   - `source/demonstration.ts`
   - `source/error.ts`
