@@ -1,32 +1,14 @@
 import express from "express";
 import qs from "qs";
 import { HTML, html } from "@leafac/html";
-import { BoxLayout, ReportIssueHrefPartial } from "./layouts.js";
-import { BaseMiddlewareLocals } from "./global-middlewares.js";
 import {
-  IsSignedOutMiddleware,
+  Courselore,
+  BaseMiddlewareLocals,
   IsSignedOutMiddlewareLocals,
-  IsSignedInMiddleware,
   IsSignedInMiddlewareLocals,
-} from "./authentication.js";
+} from "./index.js";
 
-export default ({
-  app,
-  baseURL,
-  administratorEmail,
-  boxLayout,
-  reportIssueHref,
-  isSignedOutMiddleware,
-  isSignedInMiddleware,
-}: {
-  app: express.Express;
-  baseURL: string;
-  administratorEmail: string;
-  boxLayout: BoxLayout;
-  reportIssueHref: ReportIssueHrefPartial;
-  isSignedOutMiddleware: IsSignedOutMiddleware;
-  isSignedInMiddleware: IsSignedInMiddleware;
-}): void => {
+export default (app: Courselore): void => {
   app.all<{}, HTML, {}, {}, IsSignedOutMiddlewareLocals>(
     "*",
     ...app.locals.middlewares.isSignedOut,
@@ -47,9 +29,11 @@ export default ({
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       if (typeof req.query.redirect === "string")
-        return res.redirect(`${app.locals.options.baseURL}${req.query.redirect}`);
+        return res.redirect(
+          `${app.locals.options.baseURL}${req.query.redirect}`
+        );
       res.status(404).send(
-        boxLayout({
+        app.locals.layouts.box({
           req,
           res,
           head: html`<title>404 Not Found · Courselore</title>`,
@@ -61,8 +45,11 @@ export default ({
             <p>
               If you think there should be something here, please contact your
               course staff or the system administrator at
-              <a href="${reportIssueHref}" target="_blank" class="link"
-                >${administratorEmail}</a
+              <a
+                href="${app.locals.partials.reportIssueHref}"
+                target="_blank"
+                class="link"
+                >${app.locals.options.administratorEmail}</a
               >.
             </p>
           `,
@@ -81,7 +68,7 @@ export default ({
       ? "Validation"
       : "Server";
     res.status(isCSRF ? 403 : isValidation ? 422 : 500).send(
-      boxLayout({
+      app.locals.layouts.box({
         req,
         res,
         head: html`<title>${message} Error · Courselore</title>`,
@@ -99,8 +86,11 @@ export default ({
                 <p>
                   If the issue persists, please report to the system
                   administrator at
-                  <a href="${reportIssueHref}" target="_blank" class="link"
-                    >${administratorEmail}</a
+                  <a
+                    href="${app.locals.partials.reportIssueHref}"
+                    target="_blank"
+                    class="link"
+                    >${app.locals.options.administratorEmail}</a
                   >.
                 </p>
               `
@@ -108,8 +98,11 @@ export default ({
                 <p>
                   This is an issue in Courselore, please report to the system
                   administrator at
-                  <a href="${reportIssueHref}" target="_blank" class="link"
-                    >${administratorEmail}</a
+                  <a
+                    href="${app.locals.partials.reportIssueHref}"
+                    target="_blank"
+                    class="link"
+                    >${app.locals.options.administratorEmail}</a
                   >.
                 </p>
               `}
