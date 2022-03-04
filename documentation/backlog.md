@@ -2,8 +2,7 @@
 
 ### Performance
 
-- Split the codebase into separate files.
-  - `configuration/`
+- Test the whole application.
 
 ---
 
