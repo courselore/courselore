@@ -4,7 +4,6 @@
 
 - Split the codebase into separate files.
   - `configuration/`
-  - TODO
 
 ---
 
