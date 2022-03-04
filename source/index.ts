@@ -121,7 +121,7 @@ export {
   MayEndorseMessageMiddlewareLocals,
 } from "./message.js";
 
-import content, { ContentEditorPartial } from "./content.js";
+import content, { ContentPartial, ContentEditorPartial } from "./content.js";
 
 import email from "./email.js";
 import demonstration from "./demonstration.js";
@@ -178,7 +178,7 @@ export interface Courselore extends express.Express {
       conversation: ConversationPartial;
       conversationTypeIcon: ConversationTypeIconPartial;
       conversationTypeTextColor: ConversationTypeTextColorPartial;
-      content: any; // TODO
+      content: ContentPartial;
       contentEditor: ContentEditorPartial;
     };
     helpers: {
@@ -262,7 +262,7 @@ export default async function courselore(
   course(app);
   conversation(app);
   message(app);
-  content(app);
+  await content(app);
   email(app);
   demonstration(app);
   error(app);
