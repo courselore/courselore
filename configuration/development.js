@@ -1,13 +1,10 @@
-export default async ({
-  courselore,
-  courseloreImport,
-  courseloreImportMetaURL,
-  userFileExtensionsWhichMayBeShownInBrowser,
-}) => {
+export default async ({ courseloreImport, courseloreImportMetaURL }) => {
   const baseURL = process.env.BASE_URL ?? `https://localhost:4000`;
   const administratorEmail = "development@courselore.org";
   const path = await courseloreImport("node:path");
   const dataDirectory = path.join(process.cwd(), "data");
+  const { default: courselore, userFileExtensionsWhichMayBeShownInBrowser } =
+    await courseloreImport("./index.js");
   if (process.argv[3] === undefined) {
     const url = await courseloreImport("node:url");
     const execa = (await courseloreImport("execa")).execa;

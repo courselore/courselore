@@ -241,9 +241,7 @@ export interface Options {
   hotReload?: boolean;
 }
 
-export default async function courselore(
-  options: Options
-): Promise<Courselore> {
+export default async (options: Options): Promise<Courselore> => {
   const app = express() as Courselore;
   app.locals.options = Object.assign<any, any>(
     {
@@ -285,7 +283,7 @@ export default async function courselore(
   error(app);
   helpers(app);
   return app;
-}
+};
 
 if (import.meta.url.endsWith(process.argv[1]))
   await (
