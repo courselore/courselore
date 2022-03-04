@@ -10,13 +10,13 @@ export type IsExpiredHelper = (expiresAt: string | null) => boolean;
 
 export type SanitizeSearchHelper = (
   search: string,
-  { prefix }: { prefix?: boolean }
+  options?: { prefix?: boolean }
 ) => string;
 
 export type HighlightSearchResultHelper = (
   searchResult: string,
   searchPhrases: string | string[] | undefined,
-  { prefix }: { prefix?: boolean }
+  options?: { prefix?: boolean }
 ) => HTML;
 
 export type SplitSearchPhrasesHelper = (search: string) => string[];

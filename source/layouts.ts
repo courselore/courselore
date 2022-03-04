@@ -148,7 +148,7 @@ export type SettingsLayout = ({
   body: HTML;
 }) => HTML;
 
-export type LogoPartial = ({ size }?: { size?: number }) => HTML;
+export type LogoPartial = (options?: { size?: number }) => HTML;
 
 export type PartialLayout = ({
   req,
