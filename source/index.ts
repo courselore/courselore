@@ -121,7 +121,8 @@ export {
   MayEndorseMessageMiddlewareLocals,
 } from "./message.js";
 
-import content from "./content.js";
+import content, { ContentEditorPartial } from "./content.js";
+
 import email from "./email.js";
 import demonstration from "./demonstration.js";
 import error from "./error.js";
@@ -178,7 +179,7 @@ export interface Courselore extends express.Express {
       conversationTypeIcon: ConversationTypeIconPartial;
       conversationTypeTextColor: ConversationTypeTextColorPartial;
       content: any; // TODO
-      contentEditor: any; // TODO
+      contentEditor: ContentEditorPartial;
     };
     helpers: {
       Flash: FlashHelper;

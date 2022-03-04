@@ -1,4 +1,47 @@
-export default () => {
+import express from "express";
+import { sql } from "@leafac/sqlite";
+import { HTML, html } from "@leafac/html";
+import { css } from "@leafac/css";
+import { javascript } from "@leafac/javascript";
+import {
+  Courselore,
+  BaseMiddlewareLocals,
+  IsEnrolledInCourseMiddlewareLocals,
+  IsConversationAccessibleMiddlewareLocals,
+} from "./index.js";
+
+export type ContentEditorPartial = ({
+  req,
+  res,
+  name,
+  contentSource,
+  required,
+  compact,
+  isModified,
+}: {
+  req: express.Request<
+    {},
+    any,
+    {},
+    {},
+    BaseMiddlewareLocals &
+      Partial<IsEnrolledInCourseMiddlewareLocals> &
+      Partial<IsConversationAccessibleMiddlewareLocals>
+  >;
+  res: express.Response<
+    any,
+    BaseMiddlewareLocals &
+      Partial<IsEnrolledInCourseMiddlewareLocals> &
+      Partial<IsConversationAccessibleMiddlewareLocals>
+  >;
+  name?: string;
+  contentSource?: string;
+  required?: boolean;
+  compact?: boolean;
+  isModified?: boolean | undefined;
+}) => HTML;
+
+export default (app: Courselore): void => {
   app.locals.partials.contentEditor = ({
     req,
     res,
@@ -7,28 +50,7 @@ export default () => {
     required = true,
     compact = false,
     isModified,
-  }: {
-    req: express.Request<
-      {},
-      any,
-      {},
-      {},
-      BaseMiddlewareLocals &
-        Partial<IsEnrolledInCourseMiddlewareLocals> &
-        Partial<IsConversationAccessibleMiddlewareLocals>
-    >;
-    res: express.Response<
-      any,
-      BaseMiddlewareLocals &
-        Partial<IsEnrolledInCourseMiddlewareLocals> &
-        Partial<IsConversationAccessibleMiddlewareLocals>
-    >;
-    name?: string;
-    contentSource?: string;
-    required?: boolean;
-    compact?: boolean;
-    isModified?: boolean | undefined;
-  }): HTML => html`
+  }) => html`
     <div
       class="content-editor ${res.locals.localCSS(css`
         min-width: var(--space--0);
@@ -1535,7 +1557,7 @@ ${contentSource}</textarea
       }));
 
     res.send(
-       app.locals.layouts.partial({
+      app.locals.layouts.partial({
         req,
         res,
         body: html`
@@ -1988,7 +2010,7 @@ ${contentSource}</textarea
       );
 
       res.send(
-         app.locals.layouts.partial({
+        app.locals.layouts.partial({
           req,
           res,
           body: html`
@@ -2585,7 +2607,7 @@ ${contentSource}</textarea
     if (typeof req.body.content !== "string" || req.body.content.trim() === "")
       return next("validation");
     res.send(
-       app.locals.layouts.partial({
+      app.locals.layouts.partial({
         req,
         res,
         body: app.locals.partials.content({
