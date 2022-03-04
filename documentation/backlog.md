@@ -4,6 +4,7 @@
 
 - Split the codebase into separate files.
   - `configuration/`
+  - `index.js` -> `binary.js`
 
 ---
 

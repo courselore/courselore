@@ -1,6 +1,3 @@
-#!/usr/bin/env node
-
-import path from "node:path";
 import url from "node:url";
 import fs from "fs-extra";
 import express from "express";
@@ -266,6 +263,7 @@ export default async (options: Options): Promise<Courselore> => {
   app.locals.helpers = {} as any;
   app.locals.mailers = {} as any;
   app.locals.workers = {} as any;
+  app.locals.realTimeUpdaters = {} as any;
   await database(app);
   logging(app);
   globalMiddlewares(app);
@@ -284,17 +282,3 @@ export default async (options: Options): Promise<Courselore> => {
   helpers(app);
   return app;
 };
-
-if (import.meta.url.endsWith(process.argv[1]))
-  await (
-    await import(
-      process.argv[2] === undefined
-        ? url.fileURLToPath(
-            new URL("../configuration/development.js", import.meta.url)
-          )
-        : path.resolve(process.argv[2])
-    )
-  ).default({
-    courseloreImport: async (modulePath: string) => await import(modulePath),
-    courseloreImportMetaURL: import.meta.url,
-  });

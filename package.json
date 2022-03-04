@@ -4,9 +4,7 @@
   "description": "Communication Platform for Education",
   "exports": "./distribution/index.js",
   "types": "./distribution/index.d.ts",
-  "bin": {
-    "courselore": "./distribution/index.js"
-  },
+  "bin": "./distribution/binary.js",
   "repository": "courselore/courselore",
   "keywords": [
     "education",
@@ -23,7 +21,7 @@
   "type": "module",
   "scripts": {
     "postinstall": "npm --prefix ./static/ install",
-    "start": "nodemon --watch \"./source/\" --ext ts --exec \"npm run prepare && node ./distribution/index.js\"",
+    "start": "nodemon --watch \"./source/\" --ext ts --exec \"npm run prepare && node ./distribution/binary.js\"",
     "test": "prettier --check \"./source/**/*\" --end-of-line auto",
     "prepare": "tsc",
     "clean": "shx rm -rf ./distribution/"
