@@ -1,9 +1,4 @@
-export default async ({
-  courselore,
-  courseloreImport,
-  courseloreImportMetaURL,
-  userFileExtensionsWhichMayBeShownInBrowser,
-}) => {
+export default async ({ courseloreImport, courseloreImportMetaURL }) => {
   const baseURL = "https://YOUR-DOMAIN.EDU";
   const administratorEmail = "administrator@YOUR-DOMAIN.EDU";
   const url = await courseloreImport("node:url");
@@ -58,7 +53,7 @@ export default async ({
           }
     
           WWW.YOUR-DOMAIN.EDU, AND-OTHER-DOMAINS-YOU-WOULD-LIKE-TO-REDIRECT {
-            redir https://YOUR-DOMAIN.EDU{uri}
+            redir ${baseURL}{uri}
           }
         `,
       }),
