@@ -1,4 +1,6 @@
+import path from "node:path";
 import express from "express";
+import { asyncHandler } from "@leafac/express-async-handler";
 import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
@@ -19,12 +21,17 @@ import * as shiki from "shiki";
 import { visit as unistUtilVisit } from "unist-util-visit";
 import rehypeStringify from "rehype-stringify";
 import { JSDOM } from "jsdom";
+import sharp from "sharp";
 import escapeStringRegexp from "escape-string-regexp";
 import slugify from "@sindresorhus/slugify";
+import filenamify from "filenamify";
+import cryptoRandomString from "crypto-random-string";
 import lodash from "lodash";
 import {
   Courselore,
   BaseMiddlewareLocals,
+  IsSignedOutMiddlewareLocals,
+  IsSignedInMiddlewareLocals,
   UserAvatarlessBackgroundColor,
   EnrollmentRole,
   IsEnrolledInCourseMiddlewareLocals,
@@ -99,6 +106,14 @@ export type MentionUserSearchHandler = express.RequestHandler<
   { search?: string },
   IsEnrolledInCourseMiddlewareLocals &
     Partial<IsConversationAccessibleMiddlewareLocals>
+>;
+
+export type ContentPreviewHandler = express.RequestHandler<
+  {},
+  any,
+  { content?: string },
+  {},
+  BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
 >;
 
 export default async (app: Courselore): Promise<void> => {
@@ -2233,7 +2248,7 @@ ${contentSource}</textarea
         });
         if (conversation !== undefined) {
           results.push(
-            ...database
+            ...app.locals.database
               .all<{ reference: string }>(
                 sql`
                   SELECT "messages"."reference"
@@ -2326,7 +2341,7 @@ ${contentSource}</textarea
       }
 
       results.push(
-        ...database
+        ...app.locals.database
           .all<{
             reference: string;
             conversationTitleSearchResultHighlight: string;
@@ -2380,7 +2395,7 @@ ${contentSource}</textarea
       );
 
       results.push(
-        ...database
+        ...app.locals.database
           .all<{
             messageReference: string;
             conversationReference: string;
@@ -2474,7 +2489,7 @@ ${contentSource}</textarea
       );
 
       results.push(
-        ...database
+        ...app.locals.database
           .all<{
             messageReference: string;
             conversationReference: string;
@@ -2585,7 +2600,10 @@ ${contentSource}</textarea
           type: "numeric",
         });
         await attachment.mv(
-          path.join(dataDirectory, `files/${folder}/${attachment.name}`)
+          path.join(
+            app.locals.options.dataDirectory,
+            `files/${folder}/${attachment.name}`
+          )
         );
         const href = `${
           app.locals.options.baseURL
@@ -2613,7 +2631,10 @@ ${contentSource}</textarea
               .rotate()
               .resize({ width: maximumWidth })
               .toFile(
-                path.join(dataDirectory, `files/${folder}/${nameThumbnail}`)
+                path.join(
+                  app.locals.options.dataDirectory,
+                  `files/${folder}/${nameThumbnail}`
+                )
               );
             attachmentsContentSources.push(
               `[<img src="${
@@ -2630,13 +2651,7 @@ ${contentSource}</textarea
     })
   );
 
-  const previewRequestHandler: express.RequestHandler<
-    {},
-    any,
-    { content?: string },
-    {},
-    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
-  > = (req, res, next) => {
+  app.locals.handlers.contentPreview = (req, res, next) => {
     if (typeof req.body.content !== "string" || req.body.content.trim() === "")
       return next("validation");
     res.send(
@@ -2657,13 +2672,13 @@ ${contentSource}</textarea
   app.post<{}, any, { content?: string }, {}, IsSignedInMiddlewareLocals>(
     "/content-editor/preview",
     ...app.locals.middlewares.isSignedIn,
-    previewRequestHandler
+    app.locals.handlers.contentPreview
   );
 
   app.post<{}, any, { content?: string }, {}, IsSignedOutMiddlewareLocals>(
     "/content-editor/preview",
     ...app.locals.middlewares.isSignedOut,
-    previewRequestHandler
+    app.locals.handlers.contentPreview
   );
 
   app.post<
@@ -2675,6 +2690,6 @@ ${contentSource}</textarea
   >(
     "/courses/:courseReference/content-editor/preview",
     ...app.locals.middlewares.isEnrolledInCourse,
-    previewRequestHandler
+    app.locals.handlers.contentPreview
   );
 };

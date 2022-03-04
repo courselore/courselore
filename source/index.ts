@@ -125,6 +125,7 @@ import content, {
   ContentPartial,
   ContentEditorPartial,
   MentionUserSearchHandler,
+  ContentPreviewHandler,
 } from "./content.js";
 
 import email from "./email.js";
@@ -145,6 +146,7 @@ export interface Courselore extends express.Express {
       about: AboutHandler;
       signIn: SignInHandler;
       mentionUserSearch: MentionUserSearchHandler;
+      contentPreview: ContentPreviewHandler;
     };
     middlewares: {
       eventSource: EventSourceMiddleware;
