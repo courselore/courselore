@@ -67,14 +67,17 @@ export default (app: Courselore): void => {
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>(methodOverride("_method"));
 
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>(cookieParser());
-  const baseURL = new URL(app.locals.options.baseURL);
-  app.locals.options.cookies = {
-    domain: baseURL.hostname,
-    httpOnly: true,
-    path: baseURL.pathname,
-    sameSite: "lax",
-    secure: true,
-  } as const;
+
+  app.locals.options.cookies = (() => {
+    const baseURL = new URL(app.locals.options.baseURL);
+    return {
+      domain: baseURL.hostname,
+      httpOnly: true,
+      path: baseURL.pathname,
+      sameSite: "lax",
+      secure: true,
+    } as const;
+  })();
 
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
     express.urlencoded({ extended: true })
