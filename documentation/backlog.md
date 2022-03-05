@@ -84,10 +84,6 @@ oninteractive="${javascript`
   - On sending message on non-chat, it’s scrolling back to the first page.
   - Remove feature flag.
 
----
-
-- Do a major release, because configuration changed.
-
 ### User Interface Improvements
 
 - SVG when resized (avatar or thumbnail) change extension into PNG, but we’re producing the wrong filename.
