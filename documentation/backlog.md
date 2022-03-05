@@ -7,34 +7,22 @@
 ---
 
 - Review leafac--javascript.
-  - `on[a-z]*\s*=`
-    - `oninteractive`
-    - `onelupdated`
-    - `onrefresh`
-    - `onnodeadded`
-    - `onbeforenodediscarded`
-    - `onbeforeelupdated`
-    - `onbeforeelchildrenupdated`
-
-```
-oninteractive="${javascript`
-  this.addEventListener("click", () => {
-  });
-`}"
-```
+  - `onmount`
+  - `onelupdated`
+  - `onrefresh`
+  - `onnodeadded`
+  - `onbeforenodediscarded`
+  - `onbeforeelupdated`
+  - `onbeforeelchildrenupdated`
 
 ---
 
-- Come up with a strategy to manage the lifecycle of components in page.
-  - `onrefresh` → `onrefreshed`
-  - `onmount`
 - Cache busting on assets
 - Make sure that eventSources for live-updates are disconnected from the previous page and reconnected to the new page when navigating.
 
 ---
 
 - Live navigation
-  - `TODO`
 - Do the Turbo Drive thing everywhere.
   - Reasoning:
     - It isn’t only for performance, but also to keep the state of the world on the client-side. For example, the scrolling position on the sidebar.
