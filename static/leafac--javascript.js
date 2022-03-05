@@ -180,11 +180,7 @@ const leafac = {
       }
     });
     document.addEventListener("submit", (event) => {
-      const action = new URL(
-        event.target.getAttribute("action"),
-        document.baseURI
-      ).toString();
-      if (!action.startsWith(baseURL)) return;
+      if (!event.target.action.startsWith(baseURL)) return;
     });
   },
 
