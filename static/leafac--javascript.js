@@ -158,17 +158,14 @@ const leafac = {
 
   onLoad() {
     window.addEventListener("DOMContentLoaded", () => {
-      leafac.evaluateElementsAttribute(document);
+      for (const element of document.querySelectorAll("[onload]"))
+        new Function(element.getAttribute("onload")).call(element);
     });
   },
 
   evaluateElementsAttribute: (() => {
     const elementsAlreadyEvaluated = new Map();
-    return (
-      parentElement,
-      attribute = "onload",
-      runMultipleTimes = false
-    ) => {
+    return (parentElement, attribute = "onload", runMultipleTimes = false) => {
       let elementsAlreadyEvaluatedAttribute =
         elementsAlreadyEvaluated.get(attribute);
       if (elementsAlreadyEvaluatedAttribute === undefined) {
