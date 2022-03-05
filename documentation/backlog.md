@@ -24,7 +24,6 @@ oninteractive="${javascript`
 ---
 
 - Come up with a strategy to manage the lifecycle of components in page.
-  - Remove `data-` in favor of non-standard attributes?
   - `onrefresh` → `onrefreshed`
   - `onmount`
 - Cache busting on assets
