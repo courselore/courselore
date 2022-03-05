@@ -19,6 +19,8 @@
 
 - Cache busting on assets
 - Make sure that eventSources for live-updates are disconnected from the previous page and reconnected to the new page when navigating.
+- What happens when person clicks on several links in a row and the responses come back out of order?
+  - Stop undergoing request.
 
 ---
 
