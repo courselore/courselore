@@ -124,12 +124,9 @@ const leafac = {
 
   liveNavigation() {
     document.addEventListener("click", async (event) => {
-      const link = event.target.closest(
-        "a[href]:not([target^=_]):not([download])"
-      );
       if (
-        link === null ||
-        (event.target && event.target.isContentEditable) ||
+        event.target === undefined ||
+        event.target.isContentEditable ||
         event.defaultPrevented ||
         event.which > 1 ||
         event.altKey ||
@@ -138,6 +135,10 @@ const leafac = {
         event.shiftKey
       )
         return;
+      const link = event.target.closest(
+        `a[href]:not([target^="_"]):not([download])`
+      );
+      if (link === null) return;
       event.preventDefault();
       const href = link.getAttribute("href");
       window.history.pushState(undefined, "", href);
