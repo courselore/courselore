@@ -125,9 +125,6 @@ const leafac = {
   liveNavigation(baseURL) {
     document.addEventListener("click", async (event) => {
       if (
-        event.target === undefined ||
-        event.target.isContentEditable ||
-        event.defaultPrevented ||
         event.which > 1 ||
         event.altKey ||
         event.ctrlKey ||
@@ -139,14 +136,14 @@ const leafac = {
         `a[href]:not([target^="_"]):not([download])`
       );
       if (link === null) return;
-      const url = new URL(
+      const href = new URL(
         link.getAttribute("href"),
         document.baseURI
       ).toString();
-      if (!url.startsWith(baseURL)) return;
+      if (!href.startsWith(baseURL)) return;
       event.preventDefault();
-      window.history.pushState(undefined, "", url);
-      const response = await fetch(url);
+      window.history.pushState(undefined, "", href);
+      const response = await fetch(href);
       if (!response.ok) throw new Error("TODO");
       const newDocument = new DOMParser().parseFromString(
         await response.text(),
@@ -186,7 +183,13 @@ const leafac = {
         new Function(onload).call(element);
       }
     });
-    document.addEventListener("submit", (event) => {});
+    document.addEventListener("submit", (event) => {
+      const action = new URL(
+        event.target.getAttribute("action"),
+        document.baseURI
+      ).toString();
+      if (!action.startsWith(baseURL)) return;
+    });
   },
 
   mount(element, partialString) {
