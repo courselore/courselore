@@ -137,7 +137,7 @@ const leafac = {
       );
       if (link === null) return;
       if (!link.href.startsWith(baseURL)) return;
-      await navigate(event, link.href, fetch(link.href));
+      await navigate(event, fetch(link.href));
     });
 
     document.addEventListener("submit", async (event) => {
@@ -145,7 +145,6 @@ const leafac = {
       // TODO: Think about file uploads (because they have a different ‘enctype’)
       await navigate(
         event,
-        event.target.action,
         fetch(event.target.action, {
           method: event.target.method,
           body: event.target,
@@ -153,11 +152,11 @@ const leafac = {
       );
     });
 
-    async function navigate(event, url, responsePromise) {
+    async function navigate(event, responsePromise) {
       event.preventDefault();
-      window.history.pushState(undefined, "", url);
       const response = await responsePromise;
       if (!response.ok) throw new Error("TODO");
+      window.history.pushState(undefined, "", response.url);
       const newDocument = new DOMParser().parseFromString(
         await response.text(),
         "text/html"
