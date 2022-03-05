@@ -1038,7 +1038,9 @@ export default async (app: Courselore): Promise<void> => {
             leafac.warnAboutLosingInputs();
             leafac.disableButtonsOnSubmit();
             leafac.tippySetDefaultProps();
-            leafac.liveNavigation();
+            leafac.liveNavigation(
+              $${JSON.stringify(app.locals.options.baseURL)}
+            );
           </script>
           $${res?.locals.eventSource
             ? html`

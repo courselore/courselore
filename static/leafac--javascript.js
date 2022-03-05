@@ -122,7 +122,7 @@ const leafac = {
     });
   },
 
-  liveNavigation() {
+  liveNavigation(baseURL) {
     document.addEventListener("click", async (event) => {
       if (
         event.target === undefined ||
@@ -139,10 +139,14 @@ const leafac = {
         `a[href]:not([target^="_"]):not([download])`
       );
       if (link === null) return;
+      const url = new URL(
+        link.getAttribute("href"),
+        document.baseURI
+      ).toString();
+      if (!url.startsWith(baseURL)) return;
       event.preventDefault();
-      const href = link.getAttribute("href");
-      window.history.pushState(undefined, "", href);
-      const response = await fetch(href);
+      window.history.pushState(undefined, "", url);
+      const response = await fetch(url);
       if (!response.ok) throw new Error("TODO");
       const newDocument = new DOMParser().parseFromString(
         await response.text(),
@@ -182,6 +186,7 @@ const leafac = {
         new Function(onload).call(element);
       }
     });
+    document.addEventListener("submit", (event) => {});
   },
 
   mount(element, partialString) {
