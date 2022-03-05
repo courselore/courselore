@@ -1,6 +1,15 @@
 # Meeting Notes
 
 <details>
+<summary>2021-03-05</summary>
+
+- Deployed a new version with some optimizations (for example, Caddy serving static files), but still not `liveNavigation` and pagination.
+- Broke the codebase into multiple files.
+- Made `eventSource` more robust: It’ll try to reconnect no matter what.
+
+</details>
+
+<details>
 <summary>2021-02-26</summary>
 
 - Module bundling.
