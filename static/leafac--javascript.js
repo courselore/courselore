@@ -143,12 +143,15 @@ const leafac = {
     document.addEventListener("submit", async (event) => {
       if (!event.target.action.startsWith(baseURL)) return;
       // TODO: Think about file uploads (because they have a different ‘enctype’)
+      const body = new URLSearchParams(new FormData(event.target));
       await navigate(
         event,
-        fetch(event.target.action, {
-          method: event.target.method,
-          body: event.target,
-        })
+        ["GET", "HEAD"].includes(event.target.method.toUpperCase())
+          ? fetch(new URL(`?${body}`, event.target.action))
+          : fetch(event.target.action, {
+              method: event.target.method,
+              body,
+            })
       );
     });
 
