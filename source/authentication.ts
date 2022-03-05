@@ -422,7 +422,7 @@ export default (app: Courselore): void => {
                 required
                 autofocus
                 class="input--text"
-                oninteractive="${javascript`
+                onload="${javascript`
                   this.isModified = false;
                 `}"
               />
@@ -434,7 +434,7 @@ export default (app: Courselore): void => {
                 name="password"
                 required
                 class="input--text"
-                oninteractive="${javascript`
+                onload="${javascript`
                   this.isModified = false;
                 `}"
               />
@@ -632,7 +632,7 @@ export default (app: Courselore): void => {
                   required
                   autofocus
                   class="input--text"
-                  oninteractive="${javascript`
+                  onload="${javascript`
                     this.isModified = false;
                   `}"
                 />
@@ -856,7 +856,7 @@ export default (app: Courselore): void => {
                   type="password"
                   required
                   class="input--text"
-                  oninteractive="${javascript`
+                  onload="${javascript`
                     this.addEventListener("validate", (event) => {
                       if (this.value === this.closest("form").querySelector('[name="password"]').value) return;
                       event.stopImmediatePropagation();
@@ -1008,7 +1008,7 @@ export default (app: Courselore): void => {
                 type="password"
                 required
                 class="input--text"
-                oninteractive="${javascript`
+                onload="${javascript`
                   this.addEventListener("validate", (event) => {
                     if (this.value === this.closest("form").querySelector('[name="password"]').value) return;
                     event.stopImmediatePropagation();

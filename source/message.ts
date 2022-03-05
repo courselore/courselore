@@ -548,7 +548,7 @@ export default (app: Courselore): void => {
                     >
                       <time
                         datetime="${new Date(reading.createdAt).toISOString()}"
-                        oninteractive="${javascript`
+                        onload="${javascript`
                           leafac.relativizeDateTimeElement(this, { capitalize: true });
                         `}"
                         onbeforeelchildrenupdated="${javascript`

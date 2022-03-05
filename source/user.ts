@@ -292,7 +292,7 @@ export default (app: Courselore): void => {
                 border-radius: var(--border-radius--circle);
                 place-self: end;
               `)}"
-              oninteractive="${javascript`
+              onload="${javascript`
                 const element = this;
                 const lastSeenOnlineAt = ${new Date(
                   user.lastSeenOnlineAt
@@ -327,7 +327,7 @@ export default (app: Courselore): void => {
           enrollment.role === "staff"
             ? html`<span
                 class="text--sky"
-                oninteractive="${javascript`
+                onload="${javascript`
                     tippy(this, {
                       touch: false,
                       content: "Staff",
@@ -350,7 +350,7 @@ export default (app: Courselore): void => {
 
     if (tooltip && userHTML !== undefined)
       userHTML = html`<span
-        oninteractive="${javascript`
+        onload="${javascript`
           tippy(this, {
             interactive: true,
             appendTo: document.body,
@@ -421,7 +421,7 @@ export default (app: Courselore): void => {
                                   datetime="${new Date(
                                     user!.lastSeenOnlineAt
                                   ).toISOString()}"
-                                  oninteractive="${javascript`
+                                  onload="${javascript`
                                     leafac.relativizeDateTimeElement(this, { preposition: "on" });
                                   `}"
                                   onbeforeelchildrenupdated="${javascript`
@@ -532,7 +532,7 @@ export default (app: Courselore): void => {
 
     if (tooltip && anonymousHTML !== undefined)
       anonymousHTML = html`<span
-        oninteractive="${javascript`
+        onload="${javascript`
           tippy(this, {
             touch: false,
             content: "Anonymous to Other Students",
@@ -655,7 +655,7 @@ export default (app: Courselore): void => {
                       height: var(--space--32);
                     }
                   `)}"
-                  oninteractive="${javascript`
+                  onload="${javascript`
                     this.addEventListener("dragover", (event) => {
                       event.preventDefault();
                     });
@@ -682,7 +682,7 @@ export default (app: Courselore): void => {
                         margin: var(--space---px);
                         border-radius: var(--border-radius--circle);
                       `)}"
-                      oninteractive="${javascript`
+                      onload="${javascript`
                         tippy(this, {
                           touch: false,
                           content: "Add Avatar",
@@ -720,7 +720,7 @@ export default (app: Courselore): void => {
                         margin: var(--space---2);
                         border-radius: var(--border-radius--circle);
                       `)}"
-                      oninteractive="${javascript`
+                      onload="${javascript`
                         tippy(this, {
                           touch: false,
                           content: "Update Avatar",
@@ -752,7 +752,7 @@ export default (app: Courselore): void => {
                         transform: translate(-20%, -20%);
                         align-items: center;
                       `)}"
-                      oninteractive="${javascript`
+                      onload="${javascript`
                         tippy(this, {
                           theme: "rose",
                           touch: false,
@@ -775,7 +775,7 @@ export default (app: Courselore): void => {
                     class="avatar-chooser--upload"
                     accept="image/*"
                     hidden
-                    oninteractive="${javascript`
+                    onload="${javascript`
                       this.isModified = false;
                       const avatarChooser = this.closest(".avatar-chooser");
                       const avatar = avatarChooser.querySelector('[name="avatar"]');
@@ -1104,7 +1104,7 @@ export default (app: Courselore): void => {
                   type="password"
                   required
                   class="input--text"
-                  oninteractive="${javascript`
+                  onload="${javascript`
                     this.addEventListener("validate", (event) => {
                       if (this.value === this.closest("form").querySelector('[name="newPassword"]').value) return;
                       event.stopImmediatePropagation();

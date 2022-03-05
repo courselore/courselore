@@ -166,7 +166,7 @@ const leafac = {
     const elementsAlreadyEvaluated = new Map();
     return (
       parentElement,
-      attribute = "oninteractive",
+      attribute = "onload",
       runMultipleTimes = false
     ) => {
       let elementsAlreadyEvaluatedAttribute =

@@ -521,7 +521,7 @@ export default (app: Courselore): void => {
               >
                 <button
                   class="button button--transparent"
-                  oninteractive="${javascript`
+                  onload="${javascript`
                     this.addEventListener("click", () => {
                       document.querySelector(".conversation--layout--sidebar").classList.toggle("hidden-on-small-screen");
                       document.querySelector(".conversation--layout--main").classList.toggle("hidden-on-small-screen");
@@ -629,7 +629,7 @@ export default (app: Courselore): void => {
                     flex-direction: column;
                     gap: var(--space--1);
                   `)}"
-                  oninteractive="${javascript`
+                  onload="${javascript`
                     this.isModified = false;
                   `}"
                 >
@@ -659,7 +659,7 @@ export default (app: Courselore): void => {
                     />
                     <button
                       class="button button--tight button--tight--inline button--transparent"
-                      oninteractive="${javascript`
+                      onload="${javascript`
                         tippy(this, {
                           touch: false,
                           content: "Search",
@@ -681,7 +681,7 @@ export default (app: Courselore): void => {
                               { addQueryPrefix: true }
                             )}"
                             class="button button--tight button--tight--inline button--transparent"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               tippy(this, {
                                 touch: false,
                                 content: "Clear Search & Filters",
@@ -708,7 +708,7 @@ export default (app: Courselore): void => {
                         $${req.query.filters === undefined
                           ? html``
                           : html`checked`}
-                        oninteractive="${javascript`
+                        onload="${javascript`
                           this.addEventListener("change", () => {
                             const filters = this.closest("form").querySelector(".filters");
                             filters.hidden = !this.checked;
@@ -761,7 +761,7 @@ export default (app: Courselore): void => {
                                   ? html`checked`
                                   : html``}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                oninteractive="${javascript`
+                                onload="${javascript`
                                   ${
                                     conversationType === "question"
                                       ? javascript`
@@ -821,7 +821,7 @@ export default (app: Courselore): void => {
                               ? html`checked`
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.addEventListener("change", () => {
                                 if (this.checked)
                                   for (const element of this.closest(".filters--resolved").querySelectorAll("input"))
@@ -850,7 +850,7 @@ export default (app: Courselore): void => {
                               ? html`checked`
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.addEventListener("change", () => {
                                 if (this.checked)
                                   for (const element of this.closest(".filters--resolved").querySelectorAll("input"))
@@ -877,7 +877,7 @@ export default (app: Courselore): void => {
                         <button
                           type="button"
                           class="button button--tight button--tight--inline button--transparent"
-                          oninteractive="${javascript`
+                          onload="${javascript`
                             tippy(this, {
                               trigger: "click",
                               content: "Pinned conversations are listed first.",
@@ -906,7 +906,7 @@ export default (app: Courselore): void => {
                               ? html`checked`
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.addEventListener("change", () => {
                                 if (this.checked) this.closest("form").querySelector('[name="filters[isPinned]"][value="false"]').checked = false;
                               });
@@ -932,7 +932,7 @@ export default (app: Courselore): void => {
                               ? html`checked`
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.addEventListener("change", () => {
                                 if (this.checked) this.closest("form").querySelector('[name="filters[isPinned]"][value="true"]').checked = false;
                               });
@@ -971,7 +971,7 @@ export default (app: Courselore): void => {
                               ? html`checked`
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.addEventListener("change", () => {
                                 if (this.checked) this.closest("form").querySelector('[name="filters[isStaffOnly]"][value="true"]').checked = false;
                               });
@@ -997,7 +997,7 @@ export default (app: Courselore): void => {
                               ? html`checked`
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.addEventListener("change", () => {
                                 if (this.checked) this.closest("form").querySelector('[name="filters[isStaffOnly]"][value="false"]').checked = false;
                               });
@@ -1024,7 +1024,7 @@ export default (app: Courselore): void => {
                               <button
                                 type="button"
                                 class="button button--tight button--tight--inline button--transparent"
-                                oninteractive="${javascript`
+                                onload="${javascript`
                                   tippy(this, {
                                     trigger: "click",
                                     content: "Tags help to organize conversations.",
@@ -1077,7 +1077,7 @@ export default (app: Courselore): void => {
                                       ? html`
                                           <span
                                             class="text--sky"
-                                            oninteractive="${javascript`
+                                            onload="${javascript`
                                               tippy(this, {
                                                 touch: false,
                                                 content: "This tag is visible by staff only.",
@@ -1270,7 +1270,7 @@ export default (app: Courselore): void => {
                                         `
                                       : css``}
                                   `)}"
-                                  oninteractive="${javascript`
+                                  onload="${javascript`
                                     ${
                                       isSelected &&
                                       req.query.scrollToConversation !== "false"
@@ -1319,7 +1319,7 @@ export default (app: Courselore): void => {
                                                   --line-height--2xs
                                                 );
                                               `)}"
-                                              oninteractive="${javascript`
+                                              onload="${javascript`
                                                 tippy(this, {
                                                   touch: false,
                                                   content: "Mark as Read",
@@ -1488,7 +1488,7 @@ export default (app: Courselore): void => {
           ? html`
               <div
                 class="text--amber"
-                oninteractive="${javascript`
+                onload="${javascript`
                   tippy(this, {
                     touch: false,
                     content: "Pinned conversations are listed first.",
@@ -1549,7 +1549,7 @@ export default (app: Courselore): void => {
         `)}"
       >
         <div
-          oninteractive="${javascript`
+          onload="${javascript`
           tippy(this, {
             touch: false,
             content: "Conversation Reference",
@@ -1561,7 +1561,7 @@ export default (app: Courselore): void => {
 
         <time
           datetime="${new Date(conversation.createdAt).toISOString()}"
-          oninteractive="${javascript`
+          onload="${javascript`
             leafac.relativizeDateTimeElement(this, { capitalize: true });
           `}"
           onbeforeelchildrenupdated="${javascript`
@@ -1575,7 +1575,7 @@ export default (app: Courselore): void => {
                 Updated
                 <time
                   datetime="${new Date(conversation.updatedAt).toISOString()}"
-                  oninteractive="${javascript`
+                  onload="${javascript`
                     leafac.relativizeDateTimeElement(this, { preposition: "on" });
                   `}"
                   onbeforeelchildrenupdated="${javascript`
@@ -1614,7 +1614,7 @@ export default (app: Courselore): void => {
                       ? html`
                           <span
                             class="text--sky"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               tippy(this, {
                                 touch: false,
                                 content: "This tag is visible by staff only.",
@@ -2060,7 +2060,7 @@ export default (app: Courselore): void => {
                           value="${conversationType}"
                           required
                           class="visually-hidden input--radio-or-checkbox--multilabel"
-                          oninteractive="${javascript`
+                          onload="${javascript`
                               this.addEventListener("change", () => {
                                 const form = this.closest("form");
                                 for (const element of [...form.querySelectorAll('[name="tagsReferences[]"]'), form.querySelector('[name="content"]')])
@@ -2112,7 +2112,7 @@ export default (app: Courselore): void => {
                           <button
                             type="button"
                             class="button button--tight button--tight--inline button--transparent"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                                 tippy(this, {
                                   trigger: "click",
                                   content: "Pinned conversations are listed first.",
@@ -2136,7 +2136,7 @@ export default (app: Courselore): void => {
                               class="visually-hidden input--radio-or-checkbox--multilabel"
                             />
                             <span
-                              oninteractive="${javascript`
+                              onload="${javascript`
                                   tippy(this, {
                                     touch: false,
                                     content: "Pin",
@@ -2148,7 +2148,7 @@ export default (app: Courselore): void => {
                             </span>
                             <span
                               class="text--amber"
-                              oninteractive="${javascript`
+                              onload="${javascript`
                                   tippy(this, {
                                     touch: false,
                                     content: "Unpin",
@@ -2182,7 +2182,7 @@ export default (app: Courselore): void => {
                         type="checkbox"
                         name="isStaffOnly"
                         class="visually-hidden input--radio-or-checkbox--multilabel"
-                        oninteractive="${javascript`
+                        onload="${javascript`
                             this.addEventListener("change", () => {
                               const anonymity = this.closest("form").querySelector(".anonymity");
                               if (anonymity === null) return;
@@ -2193,7 +2193,7 @@ export default (app: Courselore): void => {
                           `}"
                       />
                       <span
-                        oninteractive="${javascript`
+                        onload="${javascript`
                             tippy(this, {
                               touch: false,
                               content: "Set as Visible by Staff Only",
@@ -2205,7 +2205,7 @@ export default (app: Courselore): void => {
                       </span>
                       <span
                         class="text--sky"
-                        oninteractive="${javascript`
+                        onload="${javascript`
                             tippy(this, {
                               touch: false,
                               content: "Set as Visible by Everyone",
@@ -2243,7 +2243,7 @@ export default (app: Courselore): void => {
                         <button
                           type="button"
                           class="button button--tight button--tight--inline button--transparent"
-                          oninteractive="${javascript`
+                          onload="${javascript`
                               tippy(this, {
                                 trigger: "click",
                                 content: "Tags help to organize conversations.",
@@ -2329,7 +2329,7 @@ export default (app: Courselore): void => {
                                     ? html`
                                         <span
                                           class="text--sky"
-                                          oninteractive="${javascript`
+                                          onload="${javascript`
                                           tippy(this, {
                                             touch: false,
                                             content: "This tag is visible by staff only.",
@@ -2365,7 +2365,7 @@ export default (app: Courselore): void => {
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                           />
                           <span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                                 tippy(this, {
                                   touch: false,
                                   content: "Set as Anonymous to Other Students",
@@ -2390,7 +2390,7 @@ export default (app: Courselore): void => {
                             </span>
                           </span>
                           <span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                                 tippy(this, {
                                   touch: false,
                                   content: "Set as Signed by You",
@@ -2420,7 +2420,7 @@ export default (app: Courselore): void => {
               <div>
                 <button
                   class="button button--full-width-on-small-screen button--blue"
-                  oninteractive="${javascript`
+                  onload="${javascript`
                       Mousetrap(this.closest("form").querySelector(".content-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                       tippy(this, {
                         touch: false,
@@ -2428,13 +2428,13 @@ export default (app: Courselore): void => {
                           html`
                             <span class="keyboard-shortcut">
                               <span
-                                oninteractive="${javascript`
+                                onload="${javascript`
                                   this.hidden = leafac.isAppleDevice;
                                 `}"
                                 >Ctrl+Enter</span
                               ><span
                                 class="keyboard-shortcut--cluster"
-                                oninteractive="${javascript`
+                                onload="${javascript`
                                   this.hidden = !leafac.isAppleDevice;
                                 `}"
                                 ><i class="bi bi-command"></i
@@ -2886,7 +2886,7 @@ export default (app: Courselore): void => {
                             max-width: calc(100% + var(--space--2));
                             margin-top: var(--space---2);
                           `)}"
-                          oninteractive="${javascript`
+                          onload="${javascript`
                             this.addEventListener("click", () => {
                               this.closest(".conversation--header").querySelector(".conversation--header--compact").hidden = true;
                               this.closest(".conversation--header").querySelector(".conversation--header--full").hidden = false;
@@ -2968,7 +2968,7 @@ export default (app: Courselore): void => {
                                         .conversationTypeTextColor[
                                         res.locals.conversation.type
                                       ].display}"
-                                  oninteractive="${javascript`
+                                  onload="${javascript`
                                     tippy(this, {
                                       touch: false,
                                       content: "Update Conversation Type",
@@ -3081,7 +3081,7 @@ export default (app: Courselore): void => {
                                             />
                                             <button
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--rose"
-                                              oninteractive="${javascript`
+                                              onload="${javascript`
                                                 tippy(this, {
                                                   touch: false,
                                                   content: "Set as Resolved",
@@ -3102,7 +3102,7 @@ export default (app: Courselore): void => {
                                             />
                                             <button
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
-                                              oninteractive="${javascript`
+                                              onload="${javascript`
                                                 tippy(this, {
                                                   touch: false,
                                                   content: "Set as Unresolved",
@@ -3169,7 +3169,7 @@ export default (app: Courselore): void => {
                                       />
                                       <button
                                         class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                        oninteractive="${javascript`
+                                        onload="${javascript`
                                           tippy(this, {
                                             touch: false,
                                             content: "Pin",
@@ -3188,7 +3188,7 @@ export default (app: Courselore): void => {
                                       />
                                       <button
                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--amber"
-                                        oninteractive="${javascript`
+                                        onload="${javascript`
                                           tippy(this, {
                                             touch: false,
                                             content: "Unpin",
@@ -3216,7 +3216,7 @@ export default (app: Courselore): void => {
                                   .locals.conversation.staffOnlyAt === null
                                   ? ""
                                   : "text--sky"}"
-                                oninteractive="${javascript`
+                                onload="${javascript`
                                   tippy(this, {
                                     touch: false,
                                     content: "Set as ${
@@ -3357,7 +3357,7 @@ export default (app: Courselore): void => {
                       <div>
                         <button
                           class="button button--tight button--tight--inline button--transparent secondary"
-                          oninteractive="${javascript`
+                          onload="${javascript`
                             tippy(this, {
                               touch: false,
                               content: "Actions",
@@ -3375,7 +3375,7 @@ export default (app: Courselore): void => {
                                   <div class="dropdown--menu">
                                     <button
                                       class="dropdown--menu--item button button--transparent"
-                                      oninteractive="${javascript`
+                                      onload="${javascript`
                                         const copied = tippy(this, {
                                           theme: "green",
                                           trigger: "manual",
@@ -3399,7 +3399,7 @@ export default (app: Courselore): void => {
                                       ? html`
                                           <button
                                             class="dropdown--menu--item button button--transparent"
-                                            oninteractive="${javascript`
+                                            onload="${javascript`
                                               this.addEventListener("click", () => {
                                                 this.closest(".conversation--header--full").querySelector(".title--show").hidden = true;
                                                 this.closest(".conversation--header--full").querySelector(".title--edit").hidden = false;
@@ -3417,7 +3417,7 @@ export default (app: Courselore): void => {
                                           <div>
                                             <button
                                               class="dropdown--menu--item button button--transparent"
-                                              oninteractive="${javascript`
+                                              onload="${javascript`
                                                 tippy(this, {
                                                   theme: "rose",
                                                   trigger: "click",
@@ -3554,7 +3554,7 @@ export default (app: Courselore): void => {
                                 .locals.localCSS(css`
                                 flex: 1;
                               `)}"
-                              oninteractive="${javascript`
+                              onload="${javascript`
                                 tippy(this, {
                                   theme: "green",
                                   touch: false,
@@ -3567,7 +3567,7 @@ export default (app: Courselore): void => {
                             <button
                               type="reset"
                               class="button button--tight button--tight--inline button--transparent text--rose"
-                              oninteractive="${javascript`
+                              onload="${javascript`
                                 tippy(this, {
                                   theme: "rose",
                                   touch: false,
@@ -3616,7 +3616,7 @@ export default (app: Courselore): void => {
                                               .locals.localCSS(css`
                                               text-align: left;
                                             `)}"
-                                            oninteractive="${javascript`
+                                            onload="${javascript`
                                               tippy(this, {
                                                 theme: "rose",
                                                 touch: false,
@@ -3633,7 +3633,7 @@ export default (app: Courselore): void => {
                                             ? html`
                                                 <span
                                                   class="text--sky"
-                                                  oninteractive="${javascript`
+                                                  onload="${javascript`
                                                     tippy(this, {
                                                       content: "This tag is visible by staff only.",
                                                     });
@@ -3678,7 +3678,7 @@ export default (app: Courselore): void => {
                                                   .locals.localCSS(css`
                                                   text-align: left;
                                                 `)}"
-                                                oninteractive="${javascript`
+                                                onload="${javascript`
                                                   tippy(this, {
                                                     theme: "rose",
                                                     touch: false,
@@ -3694,7 +3694,7 @@ export default (app: Courselore): void => {
                                                 ? html`
                                                     <span
                                                       class="text--sky"
-                                                      oninteractive="${javascript`
+                                                      onload="${javascript`
                                                         tippy(this, {
                                                           content: "This tag is visible by staff only.",
                                                         });
@@ -3716,7 +3716,7 @@ export default (app: Courselore): void => {
                                         <div>
                                           <button
                                             class="button button--tight button--tight--inline button--transparent text--teal"
-                                            oninteractive="${javascript`
+                                            onload="${javascript`
                                               tippy(this, {
                                                 touch: false,
                                                 content: "Add Tag",
@@ -3779,7 +3779,7 @@ export default (app: Courselore): void => {
                                                                   ? html`
                                                                       <span
                                                                         class="text--sky"
-                                                                        oninteractive="${javascript`
+                                                                        onload="${javascript`
                                                                           tippy(this, {
                                                                             touch: false,
                                                                             content: "This tag is visible by staff only.",
@@ -3842,7 +3842,7 @@ export default (app: Courselore): void => {
                       ? html`
                           <button
                             class="button button--tight button--tight--inline button--transparent"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.addEventListener("click", () => {
                                 this.closest(".conversation--header").querySelector(".conversation--header--full").hidden = true;
                                 this.closest(".conversation--header").querySelector(".conversation--header--compact").hidden = false;
@@ -3902,7 +3902,7 @@ export default (app: Courselore): void => {
                           `
                         : css``}
                     `)}"
-                    oninteractive="${javascript`
+                    onload="${javascript`
                       ${
                         shouldScroll
                           ? javascript`
@@ -4036,7 +4036,7 @@ export default (app: Courselore): void => {
                                               }
                                             `}
                                       `)}"
-                                      oninteractive="${javascript`
+                                      onload="${javascript`
                                         ${
                                           (shouldScrollToMessage &&
                                             req.query.messageReference ===
@@ -4068,7 +4068,7 @@ export default (app: Courselore): void => {
                                                 gap: var(--space--4);
                                                 align-items: center;
                                               `)}"
-                                              oninteractive="${javascript`
+                                              onload="${javascript`
                                                 tippy(this, {
                                                   touch: false,
                                                   content: "Close",
@@ -4145,7 +4145,7 @@ export default (app: Courselore): void => {
                                                   message.createdAt
                                                 ).toISOString()}"
                                                 class="heading secondary"
-                                                oninteractive="${javascript`
+                                                onload="${javascript`
                                                   const element = this;
                                                   leafac.relativizeDateElement(element);
                                                   (function update() {
@@ -4282,7 +4282,7 @@ export default (app: Courselore): void => {
                                                       `
                                                     : css``}
                                                 `)}"
-                                                oninteractive="${javascript`
+                                                onload="${javascript`
                                                   tippy(this, {
                                                     touch: false,
                                                     content: "Actions",
@@ -4322,7 +4322,7 @@ export default (app: Courselore): void => {
                                                                     .locals
                                                                     .conversation
                                                                     .reference}/messages/${message.reference}/likes"
-                                                                  oninteractive="${javascript`
+                                                                  onload="${javascript`
                                                                     this.addEventListener("submit", () => {
                                                                       tippy.hideAll();
                                                                       window.setTimeout(() => { this.remove(); }, 0);
@@ -4354,7 +4354,7 @@ export default (app: Courselore): void => {
                                                             ? html`
                                                                 <button
                                                                   class="dropdown--menu--item button button--transparent"
-                                                                  oninteractive="${javascript`
+                                                                  onload="${javascript`
                                                                     const tooltip = ${res
                                                                       .locals
                                                                       .HTMLForJavaScript(html`
@@ -4431,7 +4431,7 @@ export default (app: Courselore): void => {
 
                                                           <button
                                                             class="dropdown--menu--item button button--transparent"
-                                                            oninteractive="${javascript`
+                                                            onload="${javascript`
                                                               this.addEventListener("click", () => {
                                                                 const content = JSON.parse(this.closest("[data-content-source]").dataset.contentSource);
                                                                 const newMessage = document.querySelector(".new-message");
@@ -4482,7 +4482,7 @@ export default (app: Courselore): void => {
 
                                                           <button
                                                             class="dropdown--menu--item button button--transparent"
-                                                            oninteractive="${javascript`
+                                                            onload="${javascript`
                                                               this.copied = tippy(this, {
                                                                 theme: "green",
                                                                 trigger: "manual",
@@ -4623,7 +4623,7 @@ export default (app: Courselore): void => {
                                                             ? html`
                                                                 <button
                                                                   class="dropdown--menu--item button button--transparent"
-                                                                  oninteractive="${javascript`
+                                                                  onload="${javascript`
                                                                     this.addEventListener("click", () => {
                                                                       this.closest(".message").querySelector(".message--show").hidden = true;
                                                                       this.closest(".message").querySelector(".message--edit").hidden = false;
@@ -4646,7 +4646,7 @@ export default (app: Courselore): void => {
                                                                 <div>
                                                                   <button
                                                                     class="dropdown--menu--item button button--transparent"
-                                                                    oninteractive="${javascript`
+                                                                    onload="${javascript`
                                                                       tippy(this, {
                                                                         theme: "rose",
                                                                         trigger: "click",
@@ -4785,7 +4785,7 @@ export default (app: Courselore): void => {
                                                       />
                                                       <button
                                                         class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                                        oninteractive="${javascript`
+                                                        onload="${javascript`
                                                           tippy(this, {
                                                             touch: false,
                                                             content: "Set as Answer",
@@ -4806,7 +4806,7 @@ export default (app: Courselore): void => {
                                                       />
                                                       <button
                                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
-                                                        oninteractive="${javascript`
+                                                        onload="${javascript`
                                                           tippy(this, {
                                                             touch: false,
                                                             content: "Set as Not an Answer",
@@ -4880,7 +4880,7 @@ export default (app: Courselore): void => {
                                                       />
                                                       <button
                                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--blue"
-                                                        oninteractive="${javascript`
+                                                        onload="${javascript`
                                                           tippy(this, {
                                                             touch: false,
                                                             content: ${JSON.stringify(
@@ -4960,7 +4960,7 @@ export default (app: Courselore): void => {
                                                         ).length === 0
                                                           ? html``
                                                           : html`
-                                                              oninteractive="${javascript`
+                                                              onload="${javascript`
                                                                 tippy(this, {
                                                                   touch: false,
                                                                   content: ${JSON.stringify(
@@ -5025,7 +5025,7 @@ export default (app: Courselore): void => {
                                             headers.push(html`
                                               <div
                                                 class="text--lime"
-                                                oninteractive="${javascript`
+                                                onload="${javascript`
                                                   ${
                                                     message.endorsements.filter(
                                                       (endorsement) =>
@@ -5187,7 +5187,7 @@ export default (app: Courselore): void => {
                                                   datetime="${new Date(
                                                     message.createdAt
                                                   ).toISOString()}"
-                                                  oninteractive="${javascript`
+                                                  onload="${javascript`
                                                     leafac.relativizeDateTimeElement(this, { capitalize: true });
                                                   `}"
                                                   onbeforeelchildrenupdated="${javascript`
@@ -5203,7 +5203,7 @@ export default (app: Courselore): void => {
                                                           datetime="${new Date(
                                                             message.updatedAt
                                                           ).toISOString()}"
-                                                          oninteractive="${javascript`
+                                                          onload="${javascript`
                                                             leafac.relativizeDateTimeElement(this, { preposition: "on" });
                                                           `}"
                                                           onbeforeelchildrenupdated="${javascript`
@@ -5252,7 +5252,7 @@ export default (app: Courselore): void => {
                                             ></div>
                                             <div
                                               class="message--show--content-area--content"
-                                              oninteractive="${javascript`
+                                              onload="${javascript`
                                                 const dropdownMenuTarget = this.closest(".message--show--content-area").querySelector(".message--show--content-area--dropdown-menu-target");
                                                 const dropdownMenu = tippy(dropdownMenuTarget, {
                                                   trigger: "manual",
@@ -5264,7 +5264,7 @@ export default (app: Courselore): void => {
                                                       >
                                                         <button
                                                           class="dropdown--menu--item button button--transparent"
-                                                          oninteractive="${javascript`
+                                                          onload="${javascript`
                                                             this.addEventListener("click", () => {
                                                               tippy.hideAll();
                                                               const selection = window.getSelection();
@@ -5404,7 +5404,7 @@ export default (app: Courselore): void => {
                                                       $${likesCount === 0
                                                         ? html``
                                                         : html`
-                                                            oninteractive="${javascript`
+                                                            onload="${javascript`
                                                               tippy(this, {
                                                                 touch: false,
                                                                 content: ${JSON.stringify(
@@ -5448,7 +5448,7 @@ export default (app: Courselore): void => {
                                               content.push(html`
                                                 <button
                                                   class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                                  oninteractive="${javascript`
+                                                  onload="${javascript`
                                                     const tooltip = ${res.locals
                                                       .HTMLForJavaScript(html`
                                                       <div
@@ -5598,7 +5598,7 @@ export default (app: Courselore): void => {
                                                 >
                                                   <button
                                                     class="button button--blue"
-                                                    oninteractive="${javascript`
+                                                    onload="${javascript`
                                                       Mousetrap(this.closest("form").querySelector(".content-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                                                       tippy(this, {
                                                         touch: false,
@@ -5608,13 +5608,13 @@ export default (app: Courselore): void => {
                                                               class="keyboard-shortcut"
                                                             >
                                                               <span
-                                                                oninteractive="${javascript`
+                                                                onload="${javascript`
                                                                     this.hidden = leafac.isAppleDevice;
                                                                   `}"
                                                                 >Ctrl+Enter</span
                                                               ><span
                                                                 class="keyboard-shortcut--cluster"
-                                                                oninteractive="${javascript`
+                                                                onload="${javascript`
                                                                     this.hidden = !leafac.isAppleDevice;
                                                                   `}"
                                                                 ><i
@@ -5636,7 +5636,7 @@ export default (app: Courselore): void => {
                                                   <button
                                                     type="reset"
                                                     class="button button--transparent"
-                                                    oninteractive="${javascript`
+                                                    onload="${javascript`
                                                       this.addEventListener("click", () => {
                                                         this.closest(".message").querySelector(".message--show").hidden = false;
                                                         this.closest(".message").querySelector(".message--edit").hidden = true;
@@ -5768,7 +5768,7 @@ export default (app: Courselore): void => {
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                               />
                               <span
-                                oninteractive="${javascript`
+                                onload="${javascript`
                                   tippy(this, {
                                     touch: false,
                                     content: "Set as Answer",
@@ -5780,7 +5780,7 @@ export default (app: Courselore): void => {
                               </span>
                               <span
                                 class="text--emerald"
-                                oninteractive="${javascript`
+                                onload="${javascript`
                                   tippy(this, {
                                     touch: false,
                                     content: "Set as Not an Answer",
@@ -5811,7 +5811,7 @@ export default (app: Courselore): void => {
                           `
                         : css``}
                     `)}"
-                    oninteractive="${javascript`
+                    onload="${javascript`
                       leafac.saveFormInputValue(this.querySelector(".content-editor--write--textarea"), "new-message");
                     `}"
                   >
@@ -5834,7 +5834,7 @@ export default (app: Courselore): void => {
                               margin: var(--space--1);
                               align-items: center;
                             `)}"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               tippy(this, {
                                 touch: false,
                                 content: ${res.locals.HTMLForJavaScript(
@@ -5842,13 +5842,13 @@ export default (app: Courselore): void => {
                                     Send Message
                                     <span class="keyboard-shortcut">
                                       <span
-                                        oninteractive="${javascript`
+                                        onload="${javascript`
                                           this.hidden = leafac.isAppleDevice;
                                         `}"
                                         >Ctrl+Enter</span
                                       ><span
                                         class="keyboard-shortcut--cluster"
-                                        oninteractive="${javascript`
+                                        onload="${javascript`
                                           this.hidden = !leafac.isAppleDevice;
                                         `}"
                                         ><i class="bi bi-command"></i
@@ -5894,7 +5894,7 @@ export default (app: Courselore): void => {
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                               />
                               <span
-                                oninteractive="${javascript`
+                                onload="${javascript`
                                   tippy(this, {
                                     touch: false,
                                     content: "Set as Anonymous to Other Students",
@@ -5919,7 +5919,7 @@ export default (app: Courselore): void => {
                                 </span>
                               </span>
                               <span
-                                oninteractive="${javascript`
+                                onload="${javascript`
                                   tippy(this, {
                                     touch: false,
                                     content: "Set as Signed by You",
@@ -5953,7 +5953,7 @@ export default (app: Courselore): void => {
                   >
                     <button
                       class="button button--full-width-on-small-screen button--blue"
-                      oninteractive="${javascript`
+                      onload="${javascript`
                         Mousetrap(this.closest("form").querySelector(".content-editor--write--textarea")).bind("mod+enter", () => { this.click(); return false; });
                         tippy(this, {
                           touch: false,
@@ -5961,13 +5961,13 @@ export default (app: Courselore): void => {
                             html`
                               <span class="keyboard-shortcut">
                                 <span
-                                  oninteractive="${javascript`
+                                  onload="${javascript`
                                     this.hidden = leafac.isAppleDevice;
                                   `}"
                                   >Ctrl+Enter</span
                                 ><span
                                   class="keyboard-shortcut--cluster"
-                                  oninteractive="${javascript`
+                                  onload="${javascript`
                                     this.hidden = !leafac.isAppleDevice;
                                   `}"
                                   ><i class="bi bi-command"></i

@@ -223,7 +223,7 @@ export default async (app: Courselore): Promise<void> => {
             flex-direction: column;
             overflow: hidden;
           `)}"
-          oninteractive="${javascript`
+          onload="${javascript`
             this.addEventListener("scroll", () => {
               this.scroll(0, 0);
             });
@@ -251,7 +251,7 @@ export default async (app: Courselore): Promise<void> => {
                       border-radius: var(--border-radius--none);
                       flex: 1;
                     `)}"
-                    oninteractive="${javascript`
+                    onload="${javascript`
                       tippy(this, {
                         touch: false,
                         content: "What’s This?",
@@ -326,7 +326,7 @@ export default async (app: Courselore): Promise<void> => {
                     <div>
                       <button
                         class="button button--transparent"
-                        oninteractive="${javascript`
+                        onload="${javascript`
                           tippy(this, {
                             trigger: "click",
                             interactive: true,
@@ -610,7 +610,7 @@ export default async (app: Courselore): Promise<void> => {
                         margin-top: var(--space--0-5);
                         margin-right: var(--space--3);
                       `)}"
-                      oninteractive="${javascript`
+                      onload="${javascript`
                         this.addEventListener("click", () => {
                           this.closest(".flash").remove();
                         });
@@ -655,7 +655,7 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--transparent ${res.locals.localCSS(css`
                   align-items: center;
                 `)}"
-                oninteractive="${javascript`
+                onload="${javascript`
                   tippy(this, {
                     trigger: "click",
                     interactive: true,
@@ -708,7 +708,7 @@ export default async (app: Courselore): Promise<void> => {
             <div>
               <button
                 class="button button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   tippy(this, {
                     trigger: "click",
                     interactive: true,
@@ -2291,7 +2291,7 @@ export default async (app: Courselore): Promise<void> => {
           <a
             href="${app.locals.options.baseURL}/"
             class="button button--tight button--tight--inline button--transparent"
-            oninteractive="${javascript`
+            onload="${javascript`
               tippy(this, {
                 touch: false,
                 content: "Courselore",
@@ -2342,7 +2342,7 @@ export default async (app: Courselore): Promise<void> => {
                         .locals.localCSS(css`
                         max-width: 100%;
                       `)}"
-                      oninteractive="${javascript`
+                      onload="${javascript`
                         tippy(this, {
                           trigger: "click",
                           interactive: true,
@@ -2426,7 +2426,7 @@ export default async (app: Courselore): Promise<void> => {
                         .locals.localCSS(css`
                         max-width: 100%;
                       `)}"
-                      oninteractive="${javascript`
+                      onload="${javascript`
                         tippy(this, {
                           trigger: "click",
                           interactive: true,
@@ -2447,7 +2447,7 @@ export default async (app: Courselore): Promise<void> => {
           <div>
             <button
               class="button button--tight button--tight--inline button--transparent"
-              oninteractive="${javascript`
+              onload="${javascript`
                 tippy(this, {
                   touch: false,
                   content: ${JSON.stringify(
@@ -2503,7 +2503,7 @@ export default async (app: Courselore): Promise<void> => {
                         <div class="dropdown--menu">
                           <button
                             class="dropdown--menu--item button button--transparent"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               tippy(this, {
                                 trigger: "click",
                                 content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
@@ -2576,7 +2576,7 @@ export default async (app: Courselore): Promise<void> => {
                 padding: var(--space--1);
                 border-radius: var(--border-radius--circle);
               `)}"
-              oninteractive="${javascript`
+              onload="${javascript`
                 tippy(this, {
                   touch: false,
                   content: ${JSON.stringify(res.locals.user.name)},
@@ -2707,7 +2707,7 @@ export default async (app: Courselore): Promise<void> => {
               >
                 <button
                   class="button button--transparent"
-                  oninteractive="${javascript`
+                  onload="${javascript`
                     tippy(this, {
                       trigger: "click",
                       interactive: true,

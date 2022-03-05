@@ -237,7 +237,7 @@ export default async (app: Courselore): Promise<void> => {
         ) {
           element.setAttribute("target", "_blank");
           element.setAttribute(
-            "oninteractive",
+            "onload",
             javascript`
               ${
                 href.startsWith(`${app.locals.options.baseURL}/files/`)
@@ -334,7 +334,7 @@ export default async (app: Courselore): Promise<void> => {
                         case "students":
                           mentions!.add(mention);
                           mentionHTML = html`<span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               tippy(this, {
                                 content: "Mention ${mention} in the conversation",
                               });
@@ -501,7 +501,7 @@ export default async (app: Courselore): Promise<void> => {
             if (conversation === undefined) continue;
             if (hrefMessageReference === undefined) {
               element.setAttribute(
-                "oninteractive",
+                "onload",
                 javascript`
                   tippy(this, {
                     touch: false,
@@ -533,7 +533,7 @@ export default async (app: Courselore): Promise<void> => {
             });
             if (message === undefined) continue;
             element.setAttribute(
-              "oninteractive",
+              "onload",
               javascript`
                 tippy(this, {
                   touch: false,
@@ -652,7 +652,7 @@ export default async (app: Courselore): Promise<void> => {
             name="content-editor--mode"
             checked
             class="content-editor--button--write visually-hidden"
-            oninteractive="${javascript`
+            onload="${javascript`
               this.isModified = false;
               this.addEventListener("click", () => {
                 this.closest(".content-editor").querySelector(".content-editor--write").hidden = false;
@@ -671,7 +671,7 @@ export default async (app: Courselore): Promise<void> => {
             type="radio"
             name="content-editor--mode"
             class="content-editor--button--preview visually-hidden"
-            oninteractive="${javascript`
+            onload="${javascript`
               this.isModified = false;
               this.addEventListener("click", async (event) => {
                 const write = this.closest(".content-editor").querySelector(".content-editor--write");
@@ -724,7 +724,7 @@ export default async (app: Courselore): Promise<void> => {
           />
           <span
             class="button button--transparent"
-            oninteractive="${javascript`
+            onload="${javascript`
             ${
               compact
                 ? javascript``
@@ -738,13 +738,13 @@ export default async (app: Courselore): Promise<void> => {
                   html`
                     <span class="keyboard-shortcut">
                       <span
-                        oninteractive="${javascript`
+                        onload="${javascript`
                           this.hidden = leafac.isAppleDevice;
                         `}"
                         >Ctrl+Shift+P</span
                       ><span
                         class="keyboard-shortcut--cluster"
-                        oninteractive="${javascript`
+                        onload="${javascript`
                           this.hidden = !leafac.isAppleDevice;
                         `}"
                         ><i class="bi bi-shift"></i
@@ -796,7 +796,7 @@ export default async (app: Courselore): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   tippy(this, {
                     touch: false,
                     content: "Help",
@@ -834,7 +834,7 @@ export default async (app: Courselore): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+1", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
@@ -843,13 +843,13 @@ export default async (app: Courselore): Promise<void> => {
                         Heading 1
                         <span class="keyboard-shortcut">
                           (<span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Alt+1</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-alt"></i
@@ -871,7 +871,7 @@ export default async (app: Courselore): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+2", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
@@ -880,13 +880,13 @@ export default async (app: Courselore): Promise<void> => {
                         Heading 2
                         <span class="keyboard-shortcut">
                           (<span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Alt+2</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-alt"></i
@@ -908,7 +908,7 @@ export default async (app: Courselore): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+3", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
@@ -917,13 +917,13 @@ export default async (app: Courselore): Promise<void> => {
                         Heading 3
                         <span class="keyboard-shortcut">
                           (<span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Alt+3</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-alt"></i
@@ -947,7 +947,7 @@ export default async (app: Courselore): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+b", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
@@ -956,13 +956,13 @@ export default async (app: Courselore): Promise<void> => {
                         Bold
                         <span class="keyboard-shortcut">
                           (<span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+B</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-command"></i>B</span
@@ -983,7 +983,7 @@ export default async (app: Courselore): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+i", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
@@ -992,13 +992,13 @@ export default async (app: Courselore): Promise<void> => {
                         Italic
                         <span class="keyboard-shortcut">
                           (<span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+I</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-command"></i>I</span
@@ -1019,7 +1019,7 @@ export default async (app: Courselore): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+k", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
@@ -1028,13 +1028,13 @@ export default async (app: Courselore): Promise<void> => {
                         Link
                         <span class="keyboard-shortcut">
                           (<span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+K</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-command"></i>K</span
@@ -1057,7 +1057,7 @@ export default async (app: Courselore): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+8", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
@@ -1066,13 +1066,13 @@ export default async (app: Courselore): Promise<void> => {
                         Bulleted List
                         <span class="keyboard-shortcut">
                           (<span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Shift+8</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-shift"></i
@@ -1094,7 +1094,7 @@ export default async (app: Courselore): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+7", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
@@ -1103,13 +1103,13 @@ export default async (app: Courselore): Promise<void> => {
                         Numbered List
                         <span class="keyboard-shortcut">
                           (<span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Shift+7</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-shift"></i
@@ -1131,7 +1131,7 @@ export default async (app: Courselore): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+9", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
@@ -1140,13 +1140,13 @@ export default async (app: Courselore): Promise<void> => {
                         Checklist
                         <span class="keyboard-shortcut">
                           (<span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Shift+9</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-shift"></i
@@ -1170,7 +1170,7 @@ export default async (app: Courselore): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+'", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
@@ -1179,13 +1179,13 @@ export default async (app: Courselore): Promise<void> => {
                         Quote
                         <span class="keyboard-shortcut">
                           (<span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+'</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-command"></i>'</span
@@ -1206,7 +1206,7 @@ export default async (app: Courselore): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+t", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
@@ -1215,13 +1215,13 @@ export default async (app: Courselore): Promise<void> => {
                         Table
                         <span class="keyboard-shortcut">
                           (<span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Alt+T</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-alt"></i
@@ -1244,7 +1244,7 @@ export default async (app: Courselore): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+d", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
@@ -1253,13 +1253,13 @@ export default async (app: Courselore): Promise<void> => {
                         Disclosure
                         <span class="keyboard-shortcut">
                           (<span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Shift+D</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-shift"></i
@@ -1281,7 +1281,7 @@ export default async (app: Courselore): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+f", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
@@ -1290,13 +1290,13 @@ export default async (app: Courselore): Promise<void> => {
                         Footnote
                         <span class="keyboard-shortcut">
                           (<span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Shift+F</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-shift"></i
@@ -1320,7 +1320,7 @@ export default async (app: Courselore): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+e", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
@@ -1329,13 +1329,13 @@ export default async (app: Courselore): Promise<void> => {
                         Inline Code
                         <span class="keyboard-shortcut">
                           (<span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+E</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-command"></i>E</span
@@ -1356,7 +1356,7 @@ export default async (app: Courselore): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+e", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
@@ -1365,13 +1365,13 @@ export default async (app: Courselore): Promise<void> => {
                         Code Block
                         <span class="keyboard-shortcut">
                           (<span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Shift+E</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-shift"></i
@@ -1395,7 +1395,7 @@ export default async (app: Courselore): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+e", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
@@ -1404,13 +1404,13 @@ export default async (app: Courselore): Promise<void> => {
                         Inline Equation
                         <span class="keyboard-shortcut">
                           (<span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Alt+E</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-alt"></i
@@ -1432,7 +1432,7 @@ export default async (app: Courselore): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+shift+e", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
@@ -1441,13 +1441,13 @@ export default async (app: Courselore): Promise<void> => {
                         Equation Block
                         <span class="keyboard-shortcut">
                           (<span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Alt+Shift+E</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-shift"></i><i class="bi bi-alt"></i
@@ -1473,7 +1473,7 @@ export default async (app: Courselore): Promise<void> => {
                     <button
                       type="button"
                       class="button button--tight button--transparent"
-                      oninteractive="${javascript`
+                      onload="${javascript`
                         tippy(this, {
                           touch: false,
                           content: ${res.locals.HTMLForJavaScript(
@@ -1495,7 +1495,7 @@ export default async (app: Courselore): Promise<void> => {
                     <button
                       type="button"
                       class="button button--tight button--transparent"
-                      oninteractive="${javascript`
+                      onload="${javascript`
                         tippy(this, {
                           touch: false,
                           content: ${res.locals.HTMLForJavaScript(
@@ -1521,7 +1521,7 @@ export default async (app: Courselore): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+i", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
@@ -1530,13 +1530,13 @@ export default async (app: Courselore): Promise<void> => {
                         Image
                         <span class="keyboard-shortcut">
                           (<span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Shift+I</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-shift"></i
@@ -1557,7 +1557,7 @@ export default async (app: Courselore): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+k", () => { this.click(); return false; });
                   tippy(this, {
                     touch: false,
@@ -1566,13 +1566,13 @@ export default async (app: Courselore): Promise<void> => {
                         Attachment
                         <span class="keyboard-shortcut">
                           (<span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Shift+K</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-shift"></i
@@ -1595,7 +1595,7 @@ export default async (app: Courselore): Promise<void> => {
                 class="attachments"
                 multiple
                 hidden
-                oninteractive="${javascript`
+                onload="${javascript`
                   this.isModified = false;
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   const uploadingIndicator = tippy(textarea, {
@@ -1667,7 +1667,7 @@ export default async (app: Courselore): Promise<void> => {
             <div>
               <label
                 class="button button--tight button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   tippy(this, {
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
@@ -1676,13 +1676,13 @@ export default async (app: Courselore): Promise<void> => {
                         <span class="secondary">(Monospaced Font)</span>
                         <span class="keyboard-shortcut">
                           (<span
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Alt+0</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            oninteractive="${javascript`
+                            onload="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-alt"></i
@@ -1697,7 +1697,7 @@ export default async (app: Courselore): Promise<void> => {
                 <input
                   type="checkbox"
                   class="visually-hidden input--radio-or-checkbox--multilabel"
-                  oninteractive="${javascript`
+                  onload="${javascript`
                     this.isModified = false;
                     this.addEventListener("click", () => {
                       const enabled = this.checked;
@@ -1758,7 +1758,7 @@ export default async (app: Courselore): Promise<void> => {
                   font-variant-ligatures: none;
                 }
               `)}"
-              oninteractive="${javascript`
+              onload="${javascript`
                 ${
                   isModified !== undefined
                     ? javascript`
@@ -1806,7 +1806,7 @@ export default async (app: Courselore): Promise<void> => {
                                       <button
                                         type="button"
                                         class="dropdown--menu--item button button--transparent"
-                                        oninteractive="${javascript`
+                                        onload="${javascript`
                                           this.addEventListener("click", () => {
                                             this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("everyone");
                                           });
@@ -1817,7 +1817,7 @@ export default async (app: Courselore): Promise<void> => {
                                       <button
                                         type="button"
                                         class="dropdown--menu--item button button--transparent"
-                                        oninteractive="${javascript`
+                                        onload="${javascript`
                                           this.addEventListener("click", () => {
                                             this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("staff");
                                           });
@@ -1828,7 +1828,7 @@ export default async (app: Courselore): Promise<void> => {
                                       <button
                                         type="button"
                                         class="dropdown--menu--item button button--transparent"
-                                        oninteractive="${javascript`
+                                        onload="${javascript`
                                           this.addEventListener("click", () => {
                                             this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("students");
                                           });
@@ -2118,7 +2118,7 @@ ${contentSource}</textarea
                   <button
                     type="button"
                     class="dropdown--menu--item button button--transparent"
-                    oninteractive="${javascript`
+                    onload="${javascript`
                       this.addEventListener("click", () => {
                         this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${
                           enrollment.reference
@@ -2214,7 +2214,7 @@ ${contentSource}</textarea
                       <button
                         type="button"
                         class="dropdown--menu--item button button--transparent"
-                        oninteractive="${javascript`
+                        onload="${javascript`
                           this.addEventListener("click", () => {
                             this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
                           });
@@ -2283,7 +2283,7 @@ ${contentSource}</textarea
                         <button
                           type="button"
                           class="dropdown--menu--item button button--transparent"
-                          oninteractive="${javascript`
+                          onload="${javascript`
                             this.addEventListener("click", () => {
                               this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
                             });
@@ -2319,7 +2319,7 @@ ${contentSource}</textarea
               <button
                 type="button"
                 class="dropdown--menu--item button button--transparent"
-                oninteractive="${javascript`
+                onload="${javascript`
                   this.addEventListener("click", () => {
                     this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
                   });              
@@ -2374,7 +2374,7 @@ ${contentSource}</textarea
                     <button
                       type="button"
                       class="dropdown--menu--item button button--transparent"
-                      oninteractive="${javascript`
+                      onload="${javascript`
                         this.addEventListener("click", () => {
                           this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
                         });                    
@@ -2451,7 +2451,7 @@ ${contentSource}</textarea
                     <button
                       type="button"
                       class="dropdown--menu--item button button--transparent"
-                      oninteractive="${javascript`
+                      onload="${javascript`
                         this.addEventListener("click", () => {
                           this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
                         });                    
@@ -2534,7 +2534,7 @@ ${contentSource}</textarea
                     <button
                       type="button"
                       class="dropdown--menu--item button button--transparent"
-                      oninteractive="${javascript`
+                      onload="${javascript`
                         this.addEventListener("click", () => {
                           this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
                         });                    
