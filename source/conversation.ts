@@ -6121,11 +6121,16 @@ export default (app: Courselore): void => {
       app.locals.database.run(
         sql`DELETE FROM "conversations" WHERE "id" = ${res.locals.conversation.id}`
       );
-
+      app.locals.helpers.Flash.set({
+        req,
+        res,
+        content: html`
+          <div class="flash--green">Conversation removed successfully.</div>
+        `,
+      });
       res.redirect(
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}`
       );
-
       app.locals.realTimeUpdaters.course(res.locals.course.id);
     }
   );
