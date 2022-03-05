@@ -279,7 +279,7 @@ export default (app: Courselore): void => {
       }
     }
 
-    const conversationsPageSize = 15;
+    const conversationsPageSize = 999999; // TODO: 15
     const conversationsPage =
       typeof req.query.conversationsPage === "string" &&
       req.query.conversationsPage.match(/^[1-9][0-9]*$/)
@@ -2769,7 +2769,7 @@ export default (app: Courselore): void => {
         beforeMessage !== undefined ||
         (afterMessage === undefined && res.locals.conversation.type === "chat");
 
-      const messagesPageSize = 25;
+      const messagesPageSize = 999999; // TODO: 25
 
       const messagesRows = app.locals.database.all<{ reference: string }>(
         sql`

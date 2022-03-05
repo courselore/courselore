@@ -72,6 +72,7 @@ oninteractive="${javascript`
 ---
 
 - Pagination.
+  - TODO
   - Smarter default page for when the page isn’t specified explicitly:
     - Messages
       - Deep links should go to the page containing the referred message
