@@ -103,7 +103,7 @@ export default (app: Courselore): void => {
       "/live-reload",
       (req, res) => {
         res.type("text/event-stream").write(":\n\n");
-        console.log(`${new Date().toISOString()}\tHOT RELOAD\t${req.ip}`);
+        console.log(`${new Date().toISOString()}\tLIVE RELOAD\t${req.ip}`);
       }
     );
 };
