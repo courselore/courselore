@@ -2460,7 +2460,10 @@ export default (app: Courselore): void => {
                               `)}"
                             >
                               <button
-                                class="button button--tight button--tight--inline button--transparent"
+                                class="button button--tight button--tight--inline button--transparent ${invitation.role ===
+                                "staff"
+                                  ? "text--sky"
+                                  : ""}"
                                 oninteractive="${javascript`
                                   tippy(this, {
                                     touch: false,
