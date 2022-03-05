@@ -1699,8 +1699,6 @@ export default async (app: Courselore): Promise<void> => {
                   class="visually-hidden input--radio-or-checkbox--multilabel"
                   oninteractive="${javascript`
                     this.isModified = false;
-                    Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+0", () => { this.click(); return false; });
-                    if (localStorage.getItem("content-editor--write--textarea--programmer-mode") === "true") this.click();
                     this.addEventListener("click", () => {
                       const enabled = this.checked;
                       const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
@@ -1708,6 +1706,8 @@ export default async (app: Courselore): Promise<void> => {
                       else textarea.classList.remove("content-editor--write--textarea--programmer-mode");
                       localStorage.setItem("content-editor--write--textarea--programmer-mode", enabled);  
                     });
+                    Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+0", () => { this.click(); return false; });
+                    if (localStorage.getItem("content-editor--write--textarea--programmer-mode") === "true") this.click();
                   `}"
                 />
                 <span>
