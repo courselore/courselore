@@ -279,6 +279,7 @@ export default (app: Courselore): void => {
       }
     }
 
+    const conversationsPageSize = 15;
     const conversationsPage =
       typeof req.query.conversationsPage === "string" &&
       req.query.conversationsPage.match(/^[1-9][0-9]*$/)
@@ -441,7 +442,9 @@ export default (app: Courselore): void => {
                           `
                     }
                     coalesce("conversations"."updatedAt", "conversations"."createdAt") DESC
-          LIMIT 16 OFFSET ${(conversationsPage - 1) * 15}
+          LIMIT ${conversationsPageSize + 1} OFFSET ${
+          (conversationsPage - 1) * conversationsPageSize
+        }
         `
       )
       .map((conversationWithSearchResult) => {
@@ -496,7 +499,8 @@ export default (app: Courselore): void => {
 
         return { conversation, searchResult };
       });
-    const moreConversationsExist = conversationsWithSearchResults.length === 16;
+    const moreConversationsExist =
+      conversationsWithSearchResults.length === conversationsPageSize + 1;
     if (moreConversationsExist) conversationsWithSearchResults.pop();
 
     return app.locals.layouts.application({
@@ -2765,6 +2769,8 @@ export default (app: Courselore): void => {
         beforeMessage !== undefined ||
         (afterMessage === undefined && res.locals.conversation.type === "chat");
 
+      const messagesPageSize = 25;
+
       const messagesRows = app.locals.database.all<{ reference: string }>(
         sql`
           SELECT "reference"
@@ -2785,10 +2791,10 @@ export default (app: Courselore): void => {
                     : sql``
                 }
           ORDER BY "id" $${messagesReverse ? sql`DESC` : sql`ASC`}
-          LIMIT 26
+          LIMIT ${messagesPageSize + 1}
         `
       );
-      const moreMessagesExist = messagesRows.length === 26;
+      const moreMessagesExist = messagesRows.length === messagesPageSize + 1;
       if (moreMessagesExist) messagesRows.pop();
       if (messagesReverse) messagesRows.reverse();
       const messages = messagesRows.map(
