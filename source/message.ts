@@ -728,7 +728,7 @@ export default (app: Courselore): void => {
       });
 
       res.redirect(
-        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.conversation.nextMessageReference}`
+        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${messageReference}`
       );
 
       app.locals.realTimeUpdaters.course(
