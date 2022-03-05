@@ -1038,7 +1038,7 @@ export default async (app: Courselore): Promise<void> => {
             leafac.warnAboutLosingInputs();
             leafac.disableButtonsOnSubmit();
             leafac.tippySetDefaultProps();
-            leafac.turboDrive();
+            leafac.liveNavigation();
           </script>
           $${res?.locals.eventSource
             ? html`
@@ -1055,12 +1055,12 @@ export default async (app: Courselore): Promise<void> => {
                 </script>
               `
             : html``}
-          $${app.locals.options.hotReload
+          $${app.locals.options.liveReload
             ? html`
                 <script>
-                  leafac.hotReload(
+                  leafac.liveReload(
                     $${JSON.stringify(
-                      `${app.locals.options.baseURL}/hot-reload`
+                      `${app.locals.options.baseURL}/live-reload`
                     )}
                   );
                 </script>

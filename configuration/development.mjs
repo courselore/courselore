@@ -75,7 +75,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
         );
         return async (mailOptions) => await transporter.sendMail(mailOptions);
       })(),
-      hotReload: true,
+      liveReload: true,
     });
     const server = app.listen(4001, "127.0.0.1");
     app.emit("listen");

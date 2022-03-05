@@ -115,7 +115,7 @@ window.onpopstate = async () => {
 };
 
 const leafac = {
-  turboDrive() {
+  liveNavigation() {
     document.addEventListener("click", async (event) => {
       const link = event.target.closest(
         "a[href]:not([target^=_]):not([download])"
@@ -524,7 +524,7 @@ const leafac = {
   // https://github.com/ccampbell/mousetrap/blob/2f9a476ba6158ba69763e4fcf914966cc72ef433/mousetrap.js#L135
   isAppleDevice: /Mac|iPod|iPhone|iPad/.test(navigator.platform),
 
-  async hotReload(url = "/hot-reload") {
+  async liveReload(url = "/live-reload") {
     const eventSource = new ReconnectingEventSource(url);
     await new Promise((resolve) => {
       eventSource.addEventListener("open", resolve, { once: true });

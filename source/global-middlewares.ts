@@ -98,9 +98,9 @@ export default (app: Courselore): void => {
     })
   );
 
-  if (app.locals.options.hotReload)
+  if (app.locals.options.liveReload)
     app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
-      "/hot-reload",
+      "/live-reload",
       (req, res) => {
         res.type("text/event-stream").write(":\n\n");
         console.log(`${new Date().toISOString()}\tHOT RELOAD\t${req.ip}`);

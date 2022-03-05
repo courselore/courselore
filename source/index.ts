@@ -235,7 +235,7 @@ export interface Options {
     mailOptions: nodemailer.SendMailOptions
   ) => Promise<nodemailer.SentMessageInfo>;
   demonstration?: boolean;
-  hotReload?: boolean;
+  liveReload?: boolean;
 }
 
 export default async (options: Options): Promise<Courselore> => {
@@ -252,7 +252,7 @@ export default async (options: Options): Promise<Courselore> => {
       metaCourseloreInvitation:
         "https://courselore.org/courses/8537410611/invitations/3667859788",
       demonstration: process.env.NODE_ENV !== "production",
-      hotReload: false,
+      liveReload: false,
     },
     options
   );
