@@ -115,6 +115,13 @@ window.onpopstate = async () => {
 };
 
 const leafac = {
+  onLoad() {
+    window.addEventListener("DOMContentLoaded", () => {
+      for (const element of document.querySelectorAll("[onload]"))
+        new Function(element.getAttribute("onload")).call(element);
+    });
+  },
+
   liveNavigation() {
     document.addEventListener("click", async (event) => {
       const link = event.target.closest(
@@ -154,13 +161,6 @@ const leafac = {
     partialHTML.querySelector(".html-for-javascript").remove();
     element.innerHTML = partialHTML.querySelector("body").innerHTML;
     leafac.evaluateElementsAttribute(element);
-  },
-
-  onLoad() {
-    window.addEventListener("DOMContentLoaded", () => {
-      for (const element of document.querySelectorAll("[onload]"))
-        new Function(element.getAttribute("onload")).call(element);
-    });
   },
 
   evaluateElementsAttribute: (() => {
