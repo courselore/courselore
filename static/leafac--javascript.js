@@ -152,11 +152,16 @@ const leafac = {
         document
           .querySelector("head")
           .insertAdjacentElement("beforeend", element);
+      const addedElements = new Set();
       morphdom(document.body, newDocument.body, {
         onBeforeNodeAdded(node) {
           return node;
         },
-        onNodeAdded(node) {},
+        onNodeAdded(node) {
+          if (node.nodeType !== node.ELEMENT_NODE) return;
+          for (const element of leafac.descendants(node))
+            addedElements.add(element);
+        },
         onBeforeElUpdated(from, to) {
           return true;
         },
@@ -170,6 +175,11 @@ const leafac = {
         },
       });
       for (const element of localCSSToRemove) element.remove();
+      for (const element of addedElements) {
+        const onload = element.getAttribute("onload");
+        if (onload === null) continue;
+        new Function(onload).call(element);
+      }
     });
   },
 
