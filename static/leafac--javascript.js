@@ -141,7 +141,10 @@ const leafac = {
       event.preventDefault();
       const href = link.getAttribute("href");
       window.history.pushState(undefined, "", href);
-      await eventSourceRefresh(await fetch(href));
+      const response = await fetch(href);
+      if (!response.ok) "TODO";
+      // for (const element of document.querySelectorAll("[onload]"))
+      //   new Function(element.getAttribute("onload")).call(element);
     });
   },
 
