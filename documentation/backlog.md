@@ -17,7 +17,6 @@
 
 ---
 
-- Cache busting on assets
 - Make sure that eventSources for live-updates are disconnected from the previous page and reconnected to the new page when navigating.
 - What happens when person clicks on several links in a row and the responses come back out of order?
   - Stop undergoing request.
@@ -395,6 +394,12 @@
 
 ### Infrastructure
 
+- Asset fingerprinting?
+  - Right now we’re relying on ETags, but they require a roundtrip to the server to get the 304. With asset fingerprinting, we could prevent the roundtrip by setting a long expiration time.
+  - Two ways to do it:
+    - Fingerprint on query param: Seems acceptable, probably easier to setup (when server starts, read file and compute fingerprint).
+    - Fingerprint on file names: It’s what Rails does (but their reason seems to be based on an article from 2008 which may no longer be relevant, and they compare it to a naïve implementation in which the fingerprint is the file modification timestamp), harder to setup.
+  - Consider that dependencies of dependencies don’t necessarily fingerprint (as far as I can tell, only bootstrap-icons does), so we’d have to use a module bundler to get this 100% right.
 - Minify assets?
   - Right now we’re relying on gzip
   - Potential solutions
