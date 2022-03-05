@@ -31,6 +31,7 @@ oninteractive="${javascript`
   - `onrefresh` → `onrefreshed`
   - `onmount`
 - Cache busting on assets
+- Make sure that eventSources for live-updates are disconnected from the previous page and reconnected to the new page when navigating.
 
 ---
 
