@@ -110,10 +110,6 @@ const eventSourceRefresh = async (response) => {
   }
 };
 
-window.onpopstate = async () => {
-  await eventSourceRefresh(await fetch(document.location));
-};
-
 const leafac = {
   onLoad() {
     window.addEventListener("DOMContentLoaded", () => {
@@ -137,31 +133,38 @@ const leafac = {
       );
       if (link === null) return;
       if (!link.href.startsWith(baseURL)) return;
-      await navigate(event, fetch(link.href));
+      event.preventDefault();
+      const response = await fetch(link.href);
+      if (!response.ok) throw new Error("TODO");
+      window.history.pushState(undefined, "", response.url);
+      load(await response.text());
     });
 
     document.addEventListener("submit", async (event) => {
       if (!event.target.action.startsWith(baseURL)) return;
+      event.preventDefault();
       // TODO: Think about file uploads (because they have a different ‘enctype’)
       const body = new URLSearchParams(new FormData(event.target));
-      await navigate(
-        event,
-        ["GET", "HEAD"].includes(event.target.method.toUpperCase())
-          ? fetch(new URL(`?${body}`, event.target.action))
-          : fetch(event.target.action, {
-              method: event.target.method,
-              body,
-            })
-      );
-    });
-
-    async function navigate(event, responsePromise) {
-      event.preventDefault();
-      const response = await responsePromise;
+      const response = ["GET", "HEAD"].includes(
+        event.target.method.toUpperCase()
+      )
+        ? await fetch(new URL(`?${body}`, event.target.action))
+        : await fetch(event.target.action, {
+            method: event.target.method,
+            body,
+          });
       if (!response.ok) throw new Error("TODO");
       window.history.pushState(undefined, "", response.url);
+      load(await response.text());
+    });
+
+    window.addEventListener("popstate", () => {
+      load(await(await fetch(document.location)).text());
+    });
+
+    function load(newDocumentHTML) {
       const newDocument = new DOMParser().parseFromString(
-        await response.text(),
+        newDocumentHTML,
         "text/html"
       );
       const localCSSToRemove = document.querySelectorAll(".local-css");
