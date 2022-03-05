@@ -2,10 +2,6 @@
 
 ### Performance
 
-- Test the whole application.
-
----
-
 - Review leafac--javascript.
   - `on[a-z]*\s*=`
     - `onelupdated`
