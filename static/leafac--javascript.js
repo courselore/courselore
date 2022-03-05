@@ -158,8 +158,8 @@ const leafac = {
       load(await response.text());
     });
 
-    window.addEventListener("popstate", () => {
-      load(await(await fetch(document.location)).text());
+    window.addEventListener("popstate", async () => {
+      load(await (await fetch(document.location)).text());
     });
 
     function load(newDocumentHTML) {
