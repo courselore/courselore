@@ -136,14 +136,10 @@ const leafac = {
         `a[href]:not([target^="_"]):not([download])`
       );
       if (link === null) return;
-      const href = new URL(
-        link.getAttribute("href"),
-        document.baseURI
-      ).toString();
-      if (!href.startsWith(baseURL)) return;
+      if (!link.href.startsWith(baseURL)) return;
       event.preventDefault();
-      window.history.pushState(undefined, "", href);
-      const response = await fetch(href);
+      window.history.pushState(undefined, "", link.href);
+      const response = await fetch(link.href);
       if (!response.ok) throw new Error("TODO");
       const newDocument = new DOMParser().parseFromString(
         await response.text(),
