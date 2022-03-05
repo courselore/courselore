@@ -156,7 +156,7 @@ const leafac = {
     leafac.evaluateElementsAttribute(element);
   },
 
-  evaluateOnInteractive() {
+  onLoad() {
     window.addEventListener("DOMContentLoaded", () => {
       leafac.evaluateElementsAttribute(document);
     });

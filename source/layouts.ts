@@ -1033,7 +1033,7 @@ export default async (app: Courselore): Promise<void> => {
           <script src="${app.locals.options
               .baseURL}/leafac--javascript.js"></script>
           <script>
-            leafac.evaluateOnInteractive();
+            leafac.onLoad();
             leafac.customFormValidation();
             leafac.warnAboutLosingInputs();
             leafac.disableButtonsOnSubmit();
