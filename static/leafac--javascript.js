@@ -142,9 +142,34 @@ const leafac = {
       const href = link.getAttribute("href");
       window.history.pushState(undefined, "", href);
       const response = await fetch(href);
-      if (!response.ok) "TODO";
-      // for (const element of document.querySelectorAll("[onload]"))
-      //   new Function(element.getAttribute("onload")).call(element);
+      if (!response.ok) throw new Error("TODO");
+      const newDocument = new DOMParser().parseFromString(
+        await response.text(),
+        "text/html"
+      );
+      const localCSSToRemove = document.querySelectorAll(".local-css");
+      for (const element of newDocument.querySelectorAll(".local-css"))
+        document
+          .querySelector("head")
+          .insertAdjacentElement("beforeend", element);
+      morphdom(document.body, newDocument.body, {
+        onBeforeNodeAdded(node) {
+          return node;
+        },
+        onNodeAdded(node) {},
+        onBeforeElUpdated(from, to) {
+          return true;
+        },
+        onElUpdated(element) {},
+        onBeforeNodeDiscarded(node) {
+          return true;
+        },
+        onNodeDiscarded(node) {},
+        onBeforeElChildrenUpdated(from, to) {
+          return true;
+        },
+      });
+      for (const element of localCSSToRemove) element.remove();
     });
   },
 
