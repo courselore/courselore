@@ -169,7 +169,7 @@ export default (app: Courselore): void => {
 
                 <div>
                   <a
-                    href="https://try.courselore.org/sign-in"
+                    href="https://try.courselore.org/"
                     class="button button--transparent"
                     oninteractive="${javascript`
                       tippy(this, {
@@ -834,7 +834,7 @@ export default (app: Courselore): void => {
               Source Code
             </a>
             <a
-              href="https://try.courselore.org/sign-in"
+              href="https://try.courselore.org/"
               class="button button--transparent"
               oninteractive="${javascript`
                 tippy(this, {
