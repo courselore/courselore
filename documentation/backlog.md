@@ -2,6 +2,12 @@
 
 ### Performance
 
+- `src/core/index.ts`
+- `src/observers/form_submit_observer.ts`
+- `src/observers/link_click_observer.ts`
+
+---
+
 - `TODO`
 
 ---

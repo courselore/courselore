@@ -33,13 +33,13 @@ export default (app: Courselore): void => {
         req,
         res,
       };
-      app.locals.eventDestinations.add(eventDestination);
       res.once("close", () => {
         app.locals.eventDestinations.delete(eventDestination);
       });
       res
         .type("text/event-stream")
         .write(`event: reference\ndata: ${eventDestination.reference}\n\n`);
+      app.locals.eventDestinations.add(eventDestination);
       console.log(
         `${new Date().toISOString()}\tSSE\topen\t${req.ip}\t${
           eventDestination.reference
