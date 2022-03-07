@@ -2669,18 +2669,6 @@ ${contentSource}</textarea
     );
   };
 
-  app.post<{}, any, { content?: string }, {}, IsSignedInMiddlewareLocals>(
-    "/content-editor/preview",
-    ...app.locals.middlewares.isSignedIn,
-    app.locals.handlers.contentPreview
-  );
-
-  app.post<{}, any, { content?: string }, {}, IsSignedOutMiddlewareLocals>(
-    "/content-editor/preview",
-    ...app.locals.middlewares.isSignedOut,
-    app.locals.handlers.contentPreview
-  );
-
   app.post<
     { courseReference: string },
     any,
@@ -2690,6 +2678,18 @@ ${contentSource}</textarea
   >(
     "/courses/:courseReference/content-editor/preview",
     ...app.locals.middlewares.isEnrolledInCourse,
+    app.locals.handlers.contentPreview
+  );
+
+  app.post<{}, any, { content?: string }, {}, IsSignedInMiddlewareLocals>(
+    "/content-editor/preview",
+    ...app.locals.middlewares.isSignedIn,
+    app.locals.handlers.contentPreview
+  );
+
+  app.post<{}, any, { content?: string }, {}, IsSignedOutMiddlewareLocals>(
+    "/content-editor/preview",
+    ...app.locals.middlewares.isSignedOut,
     app.locals.handlers.contentPreview
   );
 };
