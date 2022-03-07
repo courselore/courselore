@@ -229,8 +229,20 @@
 
 ### Chat
 
+- Redesign:
+  - Clearer separation between messages
+    - More space
+    - Avatars on side
+    - Higher contrast between background and text.
+  - Blockquotes (replies) should have a faint background color to help differentiate them.
+    - Collapse long blockquotes
+  - Add more options to the hover menu (besides the ellipses), similar to Slack & Discord.
+  - Bigger font (15pt).
+  - Wider columns
 - Currently typing.
 - “Truncate” long messages.
+- Show accent colors for different people (for example, faint background colors), to help identify messages.
+- Nested replies (similar to Slack’s threads).
 
 ### Anonymity
 

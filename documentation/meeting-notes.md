@@ -5,7 +5,26 @@
 
 - Deployed a new version with some optimizations (for example, Caddy serving static files), but still not `liveNavigation` and pagination.
 - Broke the codebase into multiple files.
-- Made `eventSource` more robust: It’ll try to reconnect no matter what.
+- Made `eventSource` more robust: It’ll try to reconnect no matter what happens.
+
+---
+
+- Chat
+  - Look & feel, and speed.
+  - Difficulty tracking what’s going on.
+  - Maybe get an specialist in user-interface design after the next iteration.
+  - Alternating 10 background colors.
+  - Don’t just copy Slack, do better.
+  - Nested chats (later).
+  - More separation between messages.
+  - Avatars on side.
+  - More space.
+  - More contrast.
+  - Improve replies.
+  - Little hover menu a la Slack.
+  - Bigger font (Slack is 15pt).
+  - Wider column for forums.
+  - Wide as possible for chats.
 
 </details>
 
