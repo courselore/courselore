@@ -857,11 +857,13 @@ export default (app: Courselore): void => {
                   required
                   class="input--text"
                   onload="${javascript`
-                    this.addEventListener("validate", (event) => {
+                    this.validateHandler ??= (event) => {
                       if (this.value === this.closest("form").querySelector('[name="password"]').value) return;
                       event.stopImmediatePropagation();
                       event.detail.error = "Password & Password Confirmation don’t match.";
-                    });
+                    };
+                    this.removeEventListener("validate", this.validateHandler);
+                    this.addEventListener("validate", this.validateHandler);
                   `}"
                 />
               </label>
@@ -1009,11 +1011,13 @@ export default (app: Courselore): void => {
                 required
                 class="input--text"
                 onload="${javascript`
-                  this.addEventListener("validate", (event) => {
+                  this.validateHandler ??= (event) => {
                     if (this.value === this.closest("form").querySelector('[name="password"]').value) return;
                     event.stopImmediatePropagation();
                     event.detail.error = "Password & Password Confirmation don’t match.";
-                  });
+                  };
+                  this.removeEventListener("validate", this.validateHandler);
+                  this.addEventListener("validate", this.validateHandler);
                 `}"
               />
             </label>
