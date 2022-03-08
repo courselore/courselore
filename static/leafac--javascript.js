@@ -111,14 +111,9 @@ const eventSourceRefresh = async (response) => {
 };
 
 const leafac = {
-  onLoad() {
-    window.addEventListener("DOMContentLoaded", () => {
-      for (const element of document.querySelectorAll("[onload]"))
-        new Function(element.getAttribute("onload")).call(element);
-    });
-  },
-
   liveNavigation(baseURL) {
+    window.addEventListener("DOMContentLoaded", dispatchLoadEvent);
+
     document.addEventListener("click", async (event) => {
       const link = event.target.closest(
         `a[href]:not([target^="_"]):not([download])`
@@ -200,6 +195,10 @@ const leafac = {
         }
       );
       for (const element of localCSSToRemove) element.remove();
+      dispatchLoadEvent();
+    }
+
+    function dispatchLoadEvent() {
       for (const element of document.querySelectorAll("[onload]"))
         new Function(element.getAttribute("onload")).call(element);
     }
