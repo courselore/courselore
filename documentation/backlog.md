@@ -4,12 +4,12 @@
 
 - Make `onload` idempotent.
 
-  ```javascript
-  this.tooltip?.destroy();
-  this.tooltip =
-  ```
+```javascript
+this.tooltip?.destroy();
+this.tooltip =
+```
 
-  - Stopped at `content.ts`.
+- Stopped at `content.ts`.
 
 ---
 
