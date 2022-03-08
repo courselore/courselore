@@ -142,17 +142,15 @@ const leafac = {
 
     document.addEventListener("submit", async (event) => {
       if (!event.target.action.startsWith(baseURL)) return;
-      event.preventDefault();
       // TODO: Think about file uploads (because they have a different ‘enctype’)
+      const method = (
+        event.submitter.getAttribute("formmethod") ?? event.target.method
+      ).toUpperCase();
       const body = new URLSearchParams(new FormData(event.target));
-      const response = ["GET", "HEAD"].includes(
-        event.target.method.toUpperCase()
-      )
-        ? await fetch(new URL(`?${body}`, event.target.action))
-        : await fetch(event.target.action, {
-            method: event.target.method,
-            body,
-          });
+      event.preventDefault();
+      const response = ["GET", "HEAD"].includes(method)
+        ? await fetch(new URL(`?${body}`, event.target.action), { method })
+        : await fetch(event.target.action, { method, body });
       if (!response.ok) throw new Error("TODO");
       window.history.pushState(undefined, "", response.url);
       load(await response.text());
