@@ -2,7 +2,6 @@
 
 ### Performance
 
-- Remove `onbeforenavigate` & `onnavigate`.
 - Make `onload` idempotent.
 
 ---

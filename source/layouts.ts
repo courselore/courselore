@@ -211,9 +211,6 @@ export default async (app: Courselore): Promise<void> => {
             background-color: var(--color--gray--medium--900);
           }
         `)}"
-        onbeforenavigate="${javascript`
-          tippy.hideAll();
-        `}"
       >
         <div
           class="${res.locals.localCSS(css`
@@ -630,7 +627,7 @@ export default async (app: Courselore): Promise<void> => {
               flex: 1;
               overflow: auto;
             `)}"
-            onnavigate="${javascript`
+            onload="${javascript`
               this.scroll(0, 0);
             `}"
           >
@@ -2716,17 +2713,13 @@ export default async (app: Courselore): Promise<void> => {
                 <button
                   class="button button--transparent"
                   onload="${javascript`
-                    this.tooltip = tippy(this, {
+                    tippy(this, {
                       trigger: "click",
                       interactive: true,
-                    });
-                  `}"
-                  onnavigate="${javascript`
-                    this.tooltip.setContent(
-                      ${res.locals.HTMLForJavaScript(
+                      content: ${res.locals.HTMLForJavaScript(
                         html`<div class="dropdown--menu">$${menu}</div>`
-                      )}
-                    );
+                      )},
+                    });
                   `}"
                 >
                   $${menuButton}
