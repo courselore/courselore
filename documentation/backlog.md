@@ -2,10 +2,6 @@
 
 ### Performance
 
-- `TODO`
-
----
-
 - Review leafac--javascript.
   - `onmount`
   - `onelupdated`
@@ -57,6 +53,7 @@
 - Remove special cases
   - Chat message submission & like
   - Look for `onsubmit`.
+- `TODO`
 
 ---
 
