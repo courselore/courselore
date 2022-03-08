@@ -98,8 +98,7 @@ export default (app: Courselore): void => {
                           href="${app.locals.options.canonicalBaseURL}/sign-up"
                           class="button button--blue"
                           onload="${javascript`
-                            this.tooltip?.destroy();
-                            this.tooltip = tippy(this, {
+                            this.tooltip ??= tippy(this, {
                               touch: false,
                               content: "Sign up on a Courselore installation managed by the developers of Courselore. Free for a limited time.",
                             });
@@ -112,8 +111,7 @@ export default (app: Courselore): void => {
                           href="${app.locals.options.canonicalBaseURL}/sign-in"
                           class="button button--transparent"
                           onload="${javascript`
-                            this.tooltip?.destroy();
-                            this.tooltip = tippy(this, {
+                            this.tooltip ??= tippy(this, {
                               touch: false,
                               content: "Sign in on a Courselore installation managed by the developers of Courselore. Free for a limited time.",
                             });
@@ -143,8 +141,7 @@ export default (app: Courselore): void => {
                       `
                     )}"
                     onload="${javascript`
-                      this.tooltip?.destroy();
-                      this.tooltip = tippy(this, {
+                      this.tooltip ??= tippy(this, {
                         touch: false,
                         content: "Join the Courselore community on Meta Courselore, a Courselore course that isn’t really a course, but a place to talk about Courselore itself.",
                       });
@@ -159,8 +156,7 @@ export default (app: Courselore): void => {
                     href="https://github.com/courselore/courselore"
                     class="button button--transparent"
                     onload="${javascript`
-                      this.tooltip?.destroy();
-                      this.tooltip = tippy(this, {
+                      this.tooltip ??= tippy(this, {
                         touch: false,
                         content: "Courselore is open source and will be free forever for installing on your own server.",
                       });
@@ -176,8 +172,7 @@ export default (app: Courselore): void => {
                     href="https://try.courselore.org/"
                     class="button button--transparent"
                     onload="${javascript`
-                      this.tooltip?.destroy();
-                      this.tooltip = tippy(this, {
+                      this.tooltip ??= tippy(this, {
                         touch: false,
                         content: "A Courselore installation running the latest development version. Not for use with real courses.",
                       });
@@ -546,8 +541,7 @@ export default (app: Courselore): void => {
                     line-height: var(--line-height--base);
                   `)}"
                   onload="${javascript`
-                    this.tooltip?.destroy();
-                    this.tooltip = tippy(this, {
+                    this.tooltip ??= tippy(this, {
                       trigger: "click",
                       content: "A straightforward way to make text bold, include links, and so forth.",
                     });
@@ -564,8 +558,7 @@ export default (app: Courselore): void => {
                     line-height: var(--line-height--base);
                   `)}"
                   onload="${javascript`
-                    this.tooltip?.destroy();
-                    this.tooltip = tippy(this, {
+                    this.tooltip ??= tippy(this, {
                       trigger: "click",
                       content: "A way to write mathematical formulas.",
                     });
@@ -582,8 +575,7 @@ export default (app: Courselore): void => {
                     line-height: var(--line-height--base);
                   `)}"
                   onload="${javascript`
-                    this.tooltip?.destroy();
-                    this.tooltip = tippy(this, {
+                    this.tooltip ??= tippy(this, {
                       trigger: "click",
                       content: "Color computer code to make it easier to read.",
                     });
@@ -779,8 +771,7 @@ export default (app: Courselore): void => {
                     href="${app.locals.options.canonicalBaseURL}/sign-up"
                     class="button button--blue"
                     onload="${javascript`
-                      this.tooltip?.destroy();
-                      this.tooltip = tippy(this, {
+                      this.tooltip ??= tippy(this, {
                         touch: false,
                         content: "Sign up on a Courselore installation managed by the developers of Courselore. Free for a limited time.",
                       });
@@ -793,8 +784,7 @@ export default (app: Courselore): void => {
                     href="${app.locals.options.canonicalBaseURL}/sign-in"
                     class="button button--transparent"
                     onload="${javascript`
-                      this.tooltip?.destroy();
-                      this.tooltip = tippy(this, {
+                      this.tooltip ??= tippy(this, {
                         touch: false,
                         content: "Sign in on a Courselore installation managed by the developers of Courselore. Free for a limited time.",
                       });
@@ -821,8 +811,7 @@ export default (app: Courselore): void => {
                 `
               )}"
               onload="${javascript`
-                this.tooltip?.destroy();
-                this.tooltip = tippy(this, {
+                this.tooltip ??= tippy(this, {
                   touch: false,
                   content: "Join the Courselore community on Meta Courselore, a Courselore course that isn’t really a course, but a place to talk about Courselore itself.",
                 });
@@ -835,8 +824,7 @@ export default (app: Courselore): void => {
               href="https://github.com/courselore/courselore"
               class="button button--transparent"
               onload="${javascript`
-                this.tooltip?.destroy();
-                this.tooltip = tippy(this, {
+                this.tooltip ??= tippy(this, {
                   touch: false,
                   content: "Courselore is open source and will be free forever for installing on your own server.",
                 });
@@ -849,8 +837,7 @@ export default (app: Courselore): void => {
               href="https://try.courselore.org/"
               class="button button--transparent"
               onload="${javascript`
-                this.tooltip?.destroy();
-                this.tooltip = tippy(this, {
+                this.tooltip ??= tippy(this, {
                   touch: false,
                   content: "A Courselore installation running the latest development version. Not for use with real courses.",
                 });

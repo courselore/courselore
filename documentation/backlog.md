@@ -6,6 +6,7 @@
 
 ```javascript
 this.tooltip ??= 
+if (this.once) return; this.once = true;
 ```
 
 - Stopped at `content.ts`.
