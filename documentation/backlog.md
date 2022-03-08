@@ -9,6 +9,8 @@ this.tooltip?.destroy();
 this.tooltip =
 ```
 
+  - Stopped at `content.ts`.
+
 ---
 
 - Review leafac--javascript.
