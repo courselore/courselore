@@ -3,9 +3,10 @@
 ### Performance
 
 - Make `onload` idempotent.
+
 ```javascript
 this.tooltip?.destroy();
-this.tooltip = 
+this.tooltip =
 ```
 
 ---
