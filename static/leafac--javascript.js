@@ -120,19 +120,21 @@ const leafac = {
 
   liveNavigation(baseURL) {
     document.addEventListener("click", async (event) => {
-      if (
-        event.which > 1 ||
-        event.altKey ||
-        event.ctrlKey ||
-        event.metaKey ||
-        event.shiftKey
-      )
-        return;
       const link = event.target.closest(
         `a[href]:not([target^="_"]):not([download])`
       );
-      if (link === null) return;
-      if (!link.href.startsWith(baseURL)) return;
+      const mainButton = 0;
+      if (
+        event.button !== mainButton ||
+        event.altKey ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.shiftKey ||
+        event.target.isContentEditable ||
+        link === null ||
+        !link.href.startsWith(baseURL)
+      )
+        return;
       event.preventDefault();
       const response = await fetch(link.href);
       if (!response.ok) throw new Error("TODO");
@@ -141,16 +143,22 @@ const leafac = {
     });
 
     document.addEventListener("submit", async (event) => {
-      if (!event.target.action.startsWith(baseURL)) return;
-      // TODO: Think about file uploads (because they have a different ‘enctype’)
       const method = (
-        event.submitter.getAttribute("formmethod") ?? event.target.method
+        event.submitter?.getAttribute("formmethod") ?? event.target.method
       ).toUpperCase();
-      const body = new URLSearchParams(new FormData(event.target));
+      const action =
+        event.submitter?.getAttribute("formaction") ?? event.target.action;
+      const enctype =
+        event.submitter?.getAttribute("formenctype") ?? event.target.enctype;
+      const body =
+        enctype === "multipart/form-data"
+          ? new FormData(event.target)
+          : new URLSearchParams(new FormData(event.target));
+      if (!action.startsWith(baseURL)) return;
       event.preventDefault();
       const response = ["GET", "HEAD"].includes(method)
-        ? await fetch(new URL(`?${body}`, event.target.action), { method })
-        : await fetch(event.target.action, { method, body });
+        ? await fetch(new URL(`?${body}`, action), { method })
+        : await fetch(action, { method, body });
       if (!response.ok) throw new Error("TODO");
       window.history.pushState(undefined, "", response.url);
       load(await response.text());

@@ -2,12 +2,6 @@
 
 ### Performance
 
-- `src/core/index.ts`
-- `src/observers/form_submit_observer.ts`
-- `src/observers/link_click_observer.ts`
-
----
-
 - `TODO`
 
 ---
@@ -25,7 +19,7 @@
 
 - Make sure that eventSources for live-updates are disconnected from the previous page and reconnected to the new page when navigating.
 - What happens when person clicks on several links in a row and the responses come back out of order?
-  - Stop undergoing request.
+  - Abort undergoing request.
 
 ---
 
