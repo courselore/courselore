@@ -120,6 +120,8 @@ const leafac = {
 
   liveNavigation(baseURL) {
     window.addEventListener("DOMContentLoaded", () => {
+      for (const element of document.querySelectorAll("[onbeforenavigate]"))
+        new Function(element.getAttribute("onbeforenavigate")).call(element);
       for (const element of document.querySelectorAll("[onnavigate]"))
         new Function(element.getAttribute("onnavigate")).call(element);
     });
@@ -144,7 +146,7 @@ const leafac = {
       const response = await fetch(link.href);
       if (!response.ok) throw new Error("TODO");
       window.history.pushState(undefined, "", response.url);
-      load(await response.text());
+      navigate(await response.text());
     });
 
     document.addEventListener("submit", async (event) => {
@@ -166,14 +168,16 @@ const leafac = {
         : await fetch(action, { method, body });
       if (!response.ok) throw new Error("TODO");
       window.history.pushState(undefined, "", response.url);
-      load(await response.text());
+      navigate(await response.text());
     });
 
     window.addEventListener("popstate", async () => {
-      load(await (await fetch(document.location)).text());
+      navigate(await (await fetch(document.location)).text());
     });
 
-    function load(newDocumentHTML) {
+    function navigate(newDocumentHTML) {
+      for (const element of document.querySelectorAll("[onbeforenavigate]"))
+        new Function(element.getAttribute("onbeforenavigate")).call(element);
       const newDocument = new DOMParser().parseFromString(
         newDocumentHTML,
         "text/html"
