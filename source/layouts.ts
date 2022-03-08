@@ -2713,7 +2713,8 @@ export default async (app: Courselore): Promise<void> => {
                 <button
                   class="button button--transparent"
                   onload="${javascript`
-                    tippy(this, {
+                    this.tooltip?.destroy();
+                    this.tooltip = tippy(this, {
                       trigger: "click",
                       interactive: true,
                       content: ${res.locals.HTMLForJavaScript(
