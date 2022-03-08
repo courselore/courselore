@@ -627,6 +627,11 @@ export default async (app: Courselore): Promise<void> => {
               flex: 1;
               overflow: auto;
             `)}"
+            onload="${javascript`
+              this.addEventListener("liveload", () => {
+                this.scroll(0, 0);
+              });
+            `}"
           >
             $${body}
           </div>
