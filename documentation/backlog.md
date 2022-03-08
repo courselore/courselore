@@ -5,8 +5,7 @@
 - Make `onload` idempotent.
 
 ```javascript
-this.tooltip?.destroy();
-this.tooltip =
+this.tooltip ??= 
 ```
 
 - Stopped at `content.ts`.
