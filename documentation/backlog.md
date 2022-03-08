@@ -5,8 +5,8 @@
 - Make `onload` idempotent.
 
 ```javascript
-this.tooltip ??= 
 if (this.once) return; this.once = true;
+this.tooltip ??= 
 ```
 
 - Stopped at `content.ts`.
