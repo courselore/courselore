@@ -179,33 +179,39 @@ const leafac = {
           .querySelector("head")
           .insertAdjacentElement("beforeend", element);
       const addedElements = new Set();
-      morphdom(document.body, newDocument.body, {
-        onBeforeNodeAdded(node) {
-          return node;
-        },
-        onNodeAdded(node) {
-          if (node.nodeType !== node.ELEMENT_NODE) return;
-          for (const element of leafac.descendants(node))
-            addedElements.add(element);
-        },
-        onBeforeElUpdated(from, to) {
-          return true;
-        },
-        onElUpdated(element) {},
-        onBeforeNodeDiscarded(node) {
-          return true;
-        },
-        onNodeDiscarded(node) {},
-        onBeforeElChildrenUpdated(from, to) {
-          return true;
-        },
-      });
+      morphdom(
+        document.querySelector("body"),
+        newDocument.querySelector("body"),
+        {
+          onBeforeNodeAdded(node) {
+            return node;
+          },
+          onNodeAdded(node) {
+            if (node.nodeType !== node.ELEMENT_NODE) return;
+            for (const element of leafac.descendants(node))
+              addedElements.add(element);
+          },
+          onBeforeElUpdated(from, to) {
+            return true;
+          },
+          onElUpdated(element) {},
+          onBeforeNodeDiscarded(node) {
+            return true;
+          },
+          onNodeDiscarded(node) {},
+          onBeforeElChildrenUpdated(from, to) {
+            return true;
+          },
+        }
+      );
       for (const element of localCSSToRemove) element.remove();
       for (const element of addedElements) {
         const onload = element.getAttribute("onload");
         if (onload === null) continue;
         new Function(onload).call(element);
       }
+      for (const element of leafac.descendants(document.querySelector("body")))
+        element.dispatchEvent(new Event("liveload"));
     }
   },
 
@@ -346,7 +352,7 @@ const leafac = {
 
   warnAboutLosingInputs() {
     const warner = (event) => {
-      if (!leafac.isModified(document.body)) return;
+      if (!leafac.isModified(document.querySelector("body"))) return;
       event.preventDefault();
       event.returnValue = "";
     };
