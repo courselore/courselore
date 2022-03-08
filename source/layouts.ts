@@ -627,10 +627,8 @@ export default async (app: Courselore): Promise<void> => {
               flex: 1;
               overflow: auto;
             `)}"
-            onload="${javascript`
-              this.addEventListener("liveload", () => {
-                this.scroll(0, 0);
-              });
+            onnavigate="${javascript`
+              this.scroll(0, 0);
             `}"
           >
             $${body}
@@ -2715,13 +2713,17 @@ export default async (app: Courselore): Promise<void> => {
                 <button
                   class="button button--transparent"
                   onload="${javascript`
-                    tippy(this, {
+                    this.tooltip = tippy(this, {
                       trigger: "click",
                       interactive: true,
-                      content: ${res.locals.HTMLForJavaScript(
-                        html`<div class="dropdown--menu">$${menu}</div>`
-                      )},
                     });
+                  `}"
+                  onnavigate="${javascript`
+                    this.tooltip.setContent(
+                      ${res.locals.HTMLForJavaScript(
+                        html`<div class="dropdown--menu">$${menu}</div>`
+                      )}
+                    );
                   `}"
                 >
                   $${menuButton}

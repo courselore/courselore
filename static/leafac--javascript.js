@@ -119,6 +119,11 @@ const leafac = {
   },
 
   liveNavigation(baseURL) {
+    window.addEventListener("DOMContentLoaded", () => {
+      for (const element of document.querySelectorAll("[onnavigate]"))
+        new Function(element.getAttribute("onnavigate")).call(element);
+    });
+
     document.addEventListener("click", async (event) => {
       const link = event.target.closest(
         `a[href]:not([target^="_"]):not([download])`
@@ -210,8 +215,8 @@ const leafac = {
         if (onload === null) continue;
         new Function(onload).call(element);
       }
-      for (const element of leafac.descendants(document.querySelector("body")))
-        element.dispatchEvent(new Event("liveload"));
+      for (const element of document.querySelectorAll("[onnavigate]"))
+        new Function(element.getAttribute("onnavigate")).call(element);
     }
   },
 
