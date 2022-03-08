@@ -2,6 +2,11 @@
 
 ### Performance
 
+- `onload` will not rerun in case of `liveNavigation`.
+  - Check every `onload` to see if it’s a problem for them.
+
+---
+
 - Review leafac--javascript.
   - `onmount`
   - `onelupdated`
