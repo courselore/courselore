@@ -119,13 +119,6 @@ const leafac = {
   },
 
   liveNavigation(baseURL) {
-    window.addEventListener("DOMContentLoaded", () => {
-      for (const element of document.querySelectorAll("[onbeforenavigate]"))
-        new Function(element.getAttribute("onbeforenavigate")).call(element);
-      for (const element of document.querySelectorAll("[onnavigate]"))
-        new Function(element.getAttribute("onnavigate")).call(element);
-    });
-
     document.addEventListener("click", async (event) => {
       const link = event.target.closest(
         `a[href]:not([target^="_"]):not([download])`
@@ -146,7 +139,7 @@ const leafac = {
       const response = await fetch(link.href);
       if (!response.ok) throw new Error("TODO");
       window.history.pushState(undefined, "", response.url);
-      navigate(await response.text());
+      load(await response.text());
     });
 
     document.addEventListener("submit", async (event) => {
@@ -168,16 +161,14 @@ const leafac = {
         : await fetch(action, { method, body });
       if (!response.ok) throw new Error("TODO");
       window.history.pushState(undefined, "", response.url);
-      navigate(await response.text());
+      load(await response.text());
     });
 
     window.addEventListener("popstate", async () => {
-      navigate(await (await fetch(document.location)).text());
+      load(await (await fetch(document.location)).text());
     });
 
-    function navigate(newDocumentHTML) {
-      for (const element of document.querySelectorAll("[onbeforenavigate]"))
-        new Function(element.getAttribute("onbeforenavigate")).call(element);
+    function load(newDocumentHTML) {
       const newDocument = new DOMParser().parseFromString(
         newDocumentHTML,
         "text/html"
@@ -187,7 +178,6 @@ const leafac = {
         document
           .querySelector("head")
           .insertAdjacentElement("beforeend", element);
-      const addedElements = new Set();
       morphdom(
         document.querySelector("body"),
         newDocument.querySelector("body"),
@@ -195,11 +185,7 @@ const leafac = {
           onBeforeNodeAdded(node) {
             return node;
           },
-          onNodeAdded(node) {
-            if (node.nodeType !== node.ELEMENT_NODE) return;
-            for (const element of leafac.descendants(node))
-              addedElements.add(element);
-          },
+          onNodeAdded(node) {},
           onBeforeElUpdated(from, to) {
             return true;
           },
@@ -214,13 +200,8 @@ const leafac = {
         }
       );
       for (const element of localCSSToRemove) element.remove();
-      for (const element of addedElements) {
-        const onload = element.getAttribute("onload");
-        if (onload === null) continue;
-        new Function(onload).call(element);
-      }
-      for (const element of document.querySelectorAll("[onnavigate]"))
-        new Function(element.getAttribute("onnavigate")).call(element);
+      for (const element of document.querySelectorAll("[onload]"))
+        new Function(element.getAttribute("onload")).call(element);
     }
   },
 
