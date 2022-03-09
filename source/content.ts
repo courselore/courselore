@@ -1858,13 +1858,6 @@ export default async (app: Courselore): Promise<void> => {
                 }
               `)}"
               onload="${javascript`
-                ${
-                  isModified !== undefined
-                    ? javascript`
-                        this.isModified = ${JSON.stringify(isModified)};
-                      `
-                    : javascript``
-                }
                 autosize(this);
                 ${
                   res.locals.course !== undefined
@@ -2094,6 +2087,9 @@ export default async (app: Courselore): Promise<void> => {
                   event.preventDefault();
                   this.closest(".content-editor").querySelector(".attachments").upload(event.clipboardData.files);
                 });
+              `}"
+              onnavigate="${javascript`
+                this.isModified = ${JSON.stringify(isModified)};
               `}"
             >
 ${contentSource}</textarea
