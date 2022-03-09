@@ -206,6 +206,7 @@
 
 ### Conversations
 
+- Let staff endorse other staff answers.
 - Add the notion of “staff considers this a good question.” Similar to the notion of “endorsement,” but for questions.
 - Change the meaning of “views”: Instead of using “readings”, only count as “viewed” if the message has appeared on the person’s screen.
   - Tracking pixel on email for people who will read the notification on their email and just “mark as read” on Courselore?
