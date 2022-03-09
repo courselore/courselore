@@ -685,21 +685,10 @@ export default async (app: Courselore): Promise<void> => {
                 const loading = this.closest(".content-editor").querySelector(".content-editor--loading");
                 const preview = this.closest(".content-editor").querySelector(".content-editor--preview");
                 const textarea = write.querySelector("textarea");
-                ${
-                  required
-                    ? javascript``
-                    : javascript`
-                        textarea.setAttribute("required", "");
-                      `
-                }
+                const textareaWasRequired = textarea.required;
+                textarea.setAttribute("required", "");
                 const isWriteValid = leafac.validate(write);
-                ${
-                  required
-                    ? javascript``
-                    : javascript`
-                        textarea.removeAttribute("required");
-                      `
-                }
+                textarea.required = textareaWasRequired;
                 if (!isWriteValid) {
                   event.preventDefault();
                   return;
@@ -710,14 +699,10 @@ export default async (app: Courselore): Promise<void> => {
                 leafac.mount(
                   preview,
                   await (
-                    await fetch("${app.locals.options.baseURL}${
-              res.locals.course === undefined
-                ? ""
-                : `/courses/${res.locals.course.reference}`
-            }/content-editor/preview", {
+                    await fetch(this.url, {
                       method: "POST",
                       body: new URLSearchParams({
-                        _csrf: ${JSON.stringify(req.csrfToken())},
+                        _csrf: this.csrf,
                         content: textarea.value,
                       }),
                     })
@@ -727,6 +712,16 @@ export default async (app: Courselore): Promise<void> => {
                 loading.hidden = true;
                 preview.hidden = false;
               });            
+            `}"
+            onnavigate="${javascript`
+              this.url = ${JSON.stringify(
+                `${app.locals.options.baseURL}${
+                  res.locals.course === undefined
+                    ? ""
+                    : `/courses/${res.locals.course.reference}`
+                }/content-editor/preview`
+              )};
+              this.csrf = ${JSON.stringify(req.csrfToken())};
             `}"
           />
           <span
