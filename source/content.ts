@@ -2217,10 +2217,15 @@ ${contentSource}</textarea
                     class="dropdown--menu--item button button--transparent"
                     onload="${javascript`
                       this.addEventListener("click", () => {
-                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${
-                          enrollment.reference
-                        }--${slugify(enrollment.user.name)}");  
+                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(this.reference);  
                       });
+                    `}"
+                    onnavigate="${javascript`
+                      this.reference = ${JSON.stringify(
+                        `${enrollment.reference}--${slugify(
+                          enrollment.user.name
+                        )}`
+                      )};
                     `}"
                   >
                     $${app.locals.partials.user({
@@ -2313,8 +2318,13 @@ ${contentSource}</textarea
                         class="dropdown--menu--item button button--transparent"
                         onload="${javascript`
                           this.addEventListener("click", () => {
-                            this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
+                            this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(this.reference);
                           });
+                        `}"
+                        onnavigate="${javascript`
+                          this.reference = ${JSON.stringify(
+                            conversation.reference
+                          )};
                         `}"
                       >
                         <span>
@@ -2382,8 +2392,13 @@ ${contentSource}</textarea
                           class="dropdown--menu--item button button--transparent"
                           onload="${javascript`
                             this.addEventListener("click", () => {
-                              this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
+                              this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(this.reference);
                             });
+                          `}"
+                          onnavigate="${javascript`
+                            this.reference = ${JSON.stringify(
+                              `${conversation.reference}/${message.reference}`
+                            )};
                           `}"
                         >
                           <div>
@@ -2418,8 +2433,11 @@ ${contentSource}</textarea
                 class="dropdown--menu--item button button--transparent"
                 onload="${javascript`
                   this.addEventListener("click", () => {
-                    this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
-                  });              
+                    this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(this.reference);
+                  });
+                `}"
+                onnavigate="${javascript`
+                  this.reference = ${JSON.stringify(conversation.reference)};
                 `}"
               >
                 <span>
@@ -2473,8 +2491,13 @@ ${contentSource}</textarea
                       class="dropdown--menu--item button button--transparent"
                       onload="${javascript`
                         this.addEventListener("click", () => {
-                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}");
+                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(this.reference);
                         });                    
+                      `}"
+                      onnavigate="${javascript`
+                        this.reference = ${JSON.stringify(
+                          conversation.reference
+                        )};
                       `}"
                     >
                       <span>
@@ -2550,8 +2573,13 @@ ${contentSource}</textarea
                       class="dropdown--menu--item button button--transparent"
                       onload="${javascript`
                         this.addEventListener("click", () => {
-                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
+                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(this.reference);
                         });                    
+                      `}"
+                      onnavigate="${javascript`
+                        this.reference = ${JSON.stringify(
+                          `${conversation.reference}/${message.reference}`
+                        )};
                       `}"
                     >
                       <div>
@@ -2633,8 +2661,13 @@ ${contentSource}</textarea
                       class="dropdown--menu--item button button--transparent"
                       onload="${javascript`
                         this.addEventListener("click", () => {
-                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("${conversation.reference}/${message.reference}");
+                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(this.reference);
                         });                    
+                      `}"
+                      onnavigate="${javascript`
+                        this.reference = ${JSON.stringify(
+                          `${conversation.reference}/${message.reference}`
+                        )};
                       `}"
                     >
                       <div>
