@@ -804,12 +804,12 @@ export default async (app: Courselore): Promise<void> => {
                     touch: false,
                     content: "Help",
                   });
-                  this.tooltip = tippy(this, {
+                `}"
+                onnavigate="${javascript`
+                  this.tooltip ??= tippy(this, {
                     trigger: "click",
                     interactive: true,
                   });
-                `}"
-                onnavigate="${javascript`
                   this.tooltip.setContent(
                     ${res.locals.HTMLForJavaScript(
                       html`
@@ -843,9 +843,18 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--tight button--transparent"
                 onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+1", () => { this.click(); return false; });
-                  tippy(this, {
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
+                    element.focus();  
+                  });                
+                `}"
+                onnavigate="${javascript`
+                  this.tooltip ??= tippy(this, {
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         Heading 1
                         <span class="keyboard-shortcut">
@@ -864,13 +873,8 @@ export default async (app: Courselore): Promise<void> => {
                           >)
                         </span>
                       `
-                    )},
-                  });
-                  this.addEventListener("click", () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
-                    element.focus();  
-                  });                
+                    )}
+                  );
                 `}"
               >
                 <i class="bi bi-type-h1"></i>
@@ -880,9 +884,18 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--tight button--transparent"
                 onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+2", () => { this.click(); return false; });
-                  tippy(this, {
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
+                    element.focus();
+                  });
+                `}"
+                onnavigate="${javascript`
+                  this.tooltip ??= tippy(this, {
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         Heading 2
                         <span class="keyboard-shortcut">
@@ -901,13 +914,8 @@ export default async (app: Courselore): Promise<void> => {
                           >)
                         </span>
                       `
-                    )},
-                  });
-                  this.addEventListener("click", () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
-                    element.focus();
-                  });
+                    )}
+                  );
                 `}"
               >
                 <i class="bi bi-type-h2"></i>
@@ -917,9 +925,18 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--tight button--transparent"
                 onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+3", () => { this.click(); return false; });
-                  tippy(this, {
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
+                    element.focus();
+                  });
+                `}"
+                onnavigate="${javascript`
+                  this.tooltip ??= tippy(this, {
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         Heading 3
                         <span class="keyboard-shortcut">
@@ -938,13 +955,8 @@ export default async (app: Courselore): Promise<void> => {
                           >)
                         </span>
                       `
-                    )},
-                  });
-                  this.addEventListener("click", () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
-                    element.focus();
-                  });
+                    )}
+                  );
                 `}"
               >
                 <i class="bi bi-type-h3"></i>
@@ -956,9 +968,18 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--tight button--transparent"
                 onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+b", () => { this.click(); return false; });
-                  tippy(this, {
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, "**");
+                    element.focus();
+                  });
+                `}"
+                onnavigate="${javascript`
+                  this.tooltip ??= tippy(this, {
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         Bold
                         <span class="keyboard-shortcut">
@@ -976,13 +997,8 @@ export default async (app: Courselore): Promise<void> => {
                           >)
                         </span>
                       `
-                    )},
-                  });
-                  this.addEventListener("click", () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, "**");
-                    element.focus();
-                  });
+                    )}
+                  );
                 `}"
               >
                 <i class="bi bi-type-bold"></i>
@@ -992,9 +1008,18 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--tight button--transparent"
                 onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+i", () => { this.click(); return false; });
-                  tippy(this, {
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, "_");
+                    element.focus();
+                  });
+                `}"
+                onnavigate="${javascript`
+                  this.tooltip ??= tippy(this, {
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         Italic
                         <span class="keyboard-shortcut">
@@ -1012,13 +1037,8 @@ export default async (app: Courselore): Promise<void> => {
                           >)
                         </span>
                       `
-                    )},
-                  });
-                  this.addEventListener("click", () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, "_");
-                    element.focus();
-                  });
+                    )}
+                  );
                 `}"
               >
                 <i class="bi bi-type-italic"></i>
@@ -1028,9 +1048,18 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--tight button--transparent"
                 onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+k", () => { this.click(); return false; });
-                  tippy(this, {
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, "[", "](https://example.com)");
+                    element.focus();
+                  });
+                `}"
+                onnavigate="${javascript`
+                  this.tooltip ??= tippy(this, {
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         Link
                         <span class="keyboard-shortcut">
@@ -1048,13 +1077,8 @@ export default async (app: Courselore): Promise<void> => {
                           >)
                         </span>
                       `
-                    )},
-                  });
-                  this.addEventListener("click", () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, "[", "](https://example.com)");
-                    element.focus();
-                  });
+                    )}
+                  );
                 `}"
               >
                 <i class="bi bi-link"></i>
@@ -1066,9 +1090,18 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--tight button--transparent"
                 onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+8", () => { this.click(); return false; });
-                  tippy(this, {
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- ", "\\n\\n");
+                    element.focus();
+                  });
+                `}"
+                onnavigate="${javascript`
+                  this.tooltip ??= tippy(this, {
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         Bulleted List
                         <span class="keyboard-shortcut">
@@ -1087,13 +1120,8 @@ export default async (app: Courselore): Promise<void> => {
                           >)
                         </span>
                       `
-                    )},
-                  });
-                  this.addEventListener("click", () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- ", "\\n\\n");
-                    element.focus();
-                  });
+                    )}
+                  );
                 `}"
               >
                 <i class="bi bi-list-ul"></i>
@@ -1103,9 +1131,18 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--tight button--transparent"
                 onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+7", () => { this.click(); return false; });
-                  tippy(this, {
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "1. ", "\\n\\n");
+                    element.focus();
+                  });
+                `}"
+                onnavigate="${javascript`
+                  this.tooltip ??= tippy(this, {
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         Numbered List
                         <span class="keyboard-shortcut">
@@ -1124,13 +1161,8 @@ export default async (app: Courselore): Promise<void> => {
                           >)
                         </span>
                       `
-                    )},
-                  });
-                  this.addEventListener("click", () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "1. ", "\\n\\n");
-                    element.focus();
-                  });
+                    )}
+                  );
                 `}"
               >
                 <i class="bi bi-list-ol"></i>
@@ -1140,9 +1172,18 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--tight button--transparent"
                 onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+9", () => { this.click(); return false; });
-                  tippy(this, {
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ", "\\n\\n");
+                    element.focus();
+                  });
+                `}"
+                onnavigate="${javascript`
+                  this.tooltip ??= tippy(this, {
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         Checklist
                         <span class="keyboard-shortcut">
@@ -1161,13 +1202,8 @@ export default async (app: Courselore): Promise<void> => {
                           >)
                         </span>
                       `
-                    )},
-                  });
-                  this.addEventListener("click", () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ", "\\n\\n");
-                    element.focus();
-                  });
+                    )}
+                  );
                 `}"
               >
                 <i class="bi bi-ui-checks"></i>
@@ -1179,9 +1215,18 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--tight button--transparent"
                 onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+'", () => { this.click(); return false; });
-                  tippy(this, {
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> ", "\\n\\n");
+                    element.focus();
+                  });
+                `}"
+                onnavigate="${javascript`
+                  this.tooltip ??= tippy(this, {
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         Quote
                         <span class="keyboard-shortcut">
@@ -1199,13 +1244,8 @@ export default async (app: Courselore): Promise<void> => {
                           >)
                         </span>
                       `
-                    )},
-                  });
-                  this.addEventListener("click", () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> ", "\\n\\n");
-                    element.focus();
-                  });
+                    )}
+                  );
                 `}"
               >
                 <i class="bi bi-chat-left-quote"></i>
@@ -1215,9 +1255,19 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--tight button--transparent"
                 onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+t", () => { this.click(); return false; });
-                  tippy(this, {
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    const gapLength = element.selectionEnd - element.selectionStart + 2;
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "| ", " |  |\\n|" + "-".repeat(gapLength) + "|--|\\n|" + " ".repeat(gapLength) + "|  |\\n\\n");
+                    element.focus();
+                  });
+                `}"
+                onnavigate="${javascript`
+                  this.tooltip ??= tippy(this, {
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         Table
                         <span class="keyboard-shortcut">
@@ -1236,14 +1286,8 @@ export default async (app: Courselore): Promise<void> => {
                           >)
                         </span>
                       `
-                    )},
-                  });
-                  this.addEventListener("click", () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    const gapLength = element.selectionEnd - element.selectionStart + 2;
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "| ", " |  |\\n|" + "-".repeat(gapLength) + "|--|\\n|" + " ".repeat(gapLength) + "|  |\\n\\n");
-                    element.focus();
-                  });
+                    )}
+                  );
                 `}"
               >
                 <i class="bi bi-table"></i>
@@ -1253,9 +1297,18 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--tight button--transparent"
                 onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+d", () => { this.click(); return false; });
-                  tippy(this, {
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>", "</summary>\\n\\nContent\\n\\n</details>\\n\\n");
+                    element.focus();
+                  });
+                `}"
+                onnavigate="${javascript`
+                  this.tooltip ??= tippy(this, {
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         Disclosure
                         <span class="keyboard-shortcut">
@@ -1274,13 +1327,8 @@ export default async (app: Courselore): Promise<void> => {
                           >)
                         </span>
                       `
-                    )},
-                  });
-                  this.addEventListener("click", () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>", "</summary>\\n\\nContent\\n\\n</details>\\n\\n");
-                    element.focus();
-                  });
+                    )}
+                  );
                 `}"
               >
                 <i class="bi bi-chevron-bar-expand"></i>
@@ -1290,9 +1338,18 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--tight button--transparent"
                 onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+f", () => { this.click(); return false; });
-                  tippy(this, {
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, "[^", "<identifier>]\\n\\n[^<identifier>]: <footnote>");
+                    element.focus();
+                  });
+                `}"
+                onnavigate="${javascript`
+                  this.tooltip ??= tippy(this, {
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         Footnote
                         <span class="keyboard-shortcut">
@@ -1311,13 +1368,8 @@ export default async (app: Courselore): Promise<void> => {
                           >)
                         </span>
                       `
-                    )},
-                  });
-                  this.addEventListener("click", () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, "[^", "<identifier>]\\n\\n[^<identifier>]: <footnote>");
-                    element.focus();
-                  });
+                    )}
+                  );
                 `}"
               >
                 <i class="bi bi-card-text"></i>
@@ -1329,9 +1381,18 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--tight button--transparent"
                 onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+e", () => { this.click(); return false; });
-                  tippy(this, {
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, "\`");
+                    element.focus();
+                  });
+                `}"
+                onnavigate="${javascript`
+                  this.tooltip ??= tippy(this, {
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         Inline Code
                         <span class="keyboard-shortcut">
@@ -1349,13 +1410,8 @@ export default async (app: Courselore): Promise<void> => {
                           >)
                         </span>
                       `
-                    )},
-                  });
-                  this.addEventListener("click", () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, "\`");
-                    element.focus();
-                  });
+                    )}
+                  );
                 `}"
               >
                 <i class="bi bi-code"></i>
@@ -1365,9 +1421,18 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--tight button--transparent"
                 onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+e", () => { this.click(); return false; });
-                  tippy(this, {
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`language\\n", "\\n\`\`\`\\n\\n");
+                    element.focus();
+                  });
+                `}"
+                onnavigate="${javascript`
+                  this.tooltip ??= tippy(this, {
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         Code Block
                         <span class="keyboard-shortcut">
@@ -1386,13 +1451,8 @@ export default async (app: Courselore): Promise<void> => {
                           >)
                         </span>
                       `
-                    )},
-                  });
-                  this.addEventListener("click", () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`language\\n", "\\n\`\`\`\\n\\n");
-                    element.focus();
-                  });
+                    )}
+                  );
                 `}"
               >
                 <i class="bi bi-code-square"></i>
@@ -1404,9 +1464,18 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--tight button--transparent"
                 onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+e", () => { this.click(); return false; });
-                  tippy(this, {
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, "$");
+                    element.focus();
+                  });
+                `}"
+                onnavigate="${javascript`
+                  this.tooltip ??= tippy(this, {
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         Inline Equation
                         <span class="keyboard-shortcut">
@@ -1425,13 +1494,8 @@ export default async (app: Courselore): Promise<void> => {
                           >)
                         </span>
                       `
-                    )},
-                  });
-                  this.addEventListener("click", () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, "$");
-                    element.focus();
-                  });
+                    )}
+                  );
                 `}"
               >
                 <i class="bi bi-calculator"></i>
@@ -1441,9 +1505,18 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--tight button--transparent"
                 onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+alt+shift+e", () => { this.click(); return false; });
-                  tippy(this, {
+                  this.addEventListener("click", () => {
+                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
+                    element.focus();
+                  });
+                `}"
+                onnavigate="${javascript`
+                  this.tooltip ??= tippy(this, {
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         Equation Block
                         <span class="keyboard-shortcut">
@@ -1462,13 +1535,8 @@ export default async (app: Courselore): Promise<void> => {
                           >)
                         </span>
                       `
-                    )},
-                  });
-                  this.addEventListener("click", () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
-                    element.focus();
-                  });
+                    )}
+                  );
                 `}"
               >
                 <i class="bi bi-calculator-fill"></i>
@@ -1481,20 +1549,24 @@ export default async (app: Courselore): Promise<void> => {
                       type="button"
                       class="button button--tight button--transparent"
                       onload="${javascript`
-                        tippy(this, {
-                          touch: false,
-                          content: ${res.locals.HTMLForJavaScript(
-                            html`
-                              Mention User
-                              <span class="keyboard-shortcut">(@)</span>
-                            `
-                          )},
-                        });
                         this.addEventListener("click", () => {
                           const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                           textFieldEdit.wrapSelection(element, "@", "");
                           element.focus();
                         });
+                      `}"
+                      onnavigate="${javascript`
+                        this.tooltip ??= tippy(this, {
+                          touch: false,
+                        });
+                        this.tooltip.setContent(
+                          ${res.locals.HTMLForJavaScript(
+                            html`
+                              Mention User
+                              <span class="keyboard-shortcut">(@)</span>
+                            `
+                          )}
+                        );
                       `}"
                     >
                       <i class="bi bi-at"></i>
@@ -1503,20 +1575,24 @@ export default async (app: Courselore): Promise<void> => {
                       type="button"
                       class="button button--tight button--transparent"
                       onload="${javascript`
-                        tippy(this, {
-                          touch: false,
-                          content: ${res.locals.HTMLForJavaScript(
-                            html`
-                              Refer to Conversation or Message
-                              <span class="keyboard-shortcut">(#)</span>
-                            `
-                          )},
-                        });
                         this.addEventListener("click", () => {
                           const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                           textFieldEdit.wrapSelection(element, "#", "");
                           element.focus();
                         });
+                      `}"
+                      onnavigate="${javascript`
+                        this.tooltip ??= tippy(this, {
+                          touch: false,
+                        });
+                        this.tooltip.setContent(
+                          ${res.locals.HTMLForJavaScript(
+                            html`
+                              Refer to Conversation or Message
+                              <span class="keyboard-shortcut">(#)</span>
+                            `
+                          )}
+                        );
                       `}"
                     >
                       <i class="bi bi-hash"></i>
@@ -1530,9 +1606,16 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--tight button--transparent"
                 onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+i", () => { this.click(); return false; });
-                  tippy(this, {
+                  this.addEventListener("click", () => {
+                    this.closest(".content-editor").querySelector(".attachments").click();
+                  });
+                `}"
+                onnavigate="${javascript`
+                  this.tooltip ??= tippy(this, {
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         Image
                         <span class="keyboard-shortcut">
@@ -1552,11 +1635,8 @@ export default async (app: Courselore): Promise<void> => {
                           or drag-and-drop or copy-and-paste)
                         </span>
                       `
-                    )},
-                  });
-                  this.addEventListener("click", () => {
-                    this.closest(".content-editor").querySelector(".attachments").click();
-                  });
+                    )}
+                  );
                 `}"
               >
                 <i class="bi bi-image"></i>
@@ -1566,9 +1646,16 @@ export default async (app: Courselore): Promise<void> => {
                 class="button button--tight button--transparent"
                 onload="${javascript`
                   Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+k", () => { this.click(); return false; });
-                  tippy(this, {
+                  this.addEventListener("click", () => {
+                    this.closest(".content-editor").querySelector(".attachments").click();
+                  });
+                `}"
+                onnavigate="${javascript`
+                  this.tooltip ??= tippy(this, {
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         Attachment
                         <span class="keyboard-shortcut">
@@ -1588,11 +1675,8 @@ export default async (app: Courselore): Promise<void> => {
                           or drag-and-drop or copy-and-paste)
                         </span>
                       `
-                    )},
-                  });
-                  this.addEventListener("click", () => {
-                    this.closest(".content-editor").querySelector(".attachments").click();
-                  });
+                    )}
+                  );
                 `}"
               >
                 <i class="bi bi-paperclip"></i>
@@ -1674,10 +1758,12 @@ export default async (app: Courselore): Promise<void> => {
             <div>
               <label
                 class="button button--tight button--transparent"
-                onload="${javascript`
-                  tippy(this, {
+                onnavigate="${javascript`
+                  this.tooltip ??= tippy(this, {
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         Programmer Mode
                         <span class="secondary">(Monospaced Font)</span>
@@ -1697,8 +1783,8 @@ export default async (app: Courselore): Promise<void> => {
                           >)
                         </span>
                       `
-                    )},
-                  });
+                    )}
+                  );
                 `}"
               >
                 <input
