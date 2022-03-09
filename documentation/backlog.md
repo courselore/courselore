@@ -2,14 +2,7 @@
 
 ### Performance
 
-- Make `onload` idempotent.
-
-```javascript
-if (this.once) return; this.once = true;
-this.tooltip ??= 
-```
-
-- Stopped at `content.ts`.
+- Review `onload` and extract portions that should be on `onnavigate`.
 
 ---
 
