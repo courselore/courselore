@@ -1696,15 +1696,13 @@ export default async (app: Courselore): Promise<void> => {
                   this.upload = async (fileList) => {
                     if (this.errorIfNotSignedIn()) return;
                     const body = new FormData();
-                    body.append("_csrf", ${JSON.stringify(req.csrfToken())});
+                    body.append("_csrf", this.csrf);
                     tippy.hideAll();
                     this.uploadingIndicator.show();
                     textarea.disabled = true;
                     for (const file of fileList) body.append("attachments", file);
                     this.value = "";
-                    const response = await (await fetch("${
-                      app.locals.options.baseURL
-                    }/content-editor/attachments", {
+                    const response = await (await fetch(this.url, {
                       method: "POST",
                       body,
                     })).text();
@@ -1712,26 +1710,6 @@ export default async (app: Courselore): Promise<void> => {
                     this.uploadingIndicator.hide();
                     textFieldEdit.wrapSelection(textarea, response, "");
                     textarea.focus();
-                  };
-                  this.errorIfNotSignedIn = () => {
-                    ${
-                      res.locals.user === undefined
-                        ? javascript`
-                            const tooltip = tippy(this.closest(".content-editor").querySelector(".content-editor--write--textarea"), {
-                              trigger: "manual",
-                              theme: "rose",
-                              showOnCreate: true,
-                              onHidden: () => {
-                                tooltip.destroy();
-                              },
-                              content: "You must sign in to upload files.",
-                            });
-                            return true;
-                          `
-                        : javascript`
-                            return false;
-                          `
-                    }
                   };
                   this.addEventListener("click", (event) => {
                     if (this.errorIfNotSignedIn()) event.preventDefault();
@@ -1756,6 +1734,30 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )}
                   );
+                  this.csrf = ${JSON.stringify(req.csrfToken())};
+                  this.url = ${JSON.stringify(
+                    `${app.locals.options.baseURL}/content-editor/attachments`
+                  )};
+                  this.errorIfNotSignedIn = () => {
+                    ${
+                      res.locals.user === undefined
+                        ? javascript`
+                            const tooltip = tippy(this.closest(".content-editor").querySelector(".content-editor--write--textarea"), {
+                              trigger: "manual",
+                              theme: "rose",
+                              showOnCreate: true,
+                              onHidden: () => {
+                                tooltip.destroy();
+                              },
+                              content: "You must sign in to upload files.",
+                            });
+                            return true;
+                          `
+                        : javascript`
+                            return false;
+                          `
+                    }
+                  };
                 `}"
               />
             </div>
