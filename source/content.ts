@@ -1689,29 +1689,16 @@ export default async (app: Courselore): Promise<void> => {
                 onload="${javascript`
                   this.isModified = false;
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                  const uploadingIndicator = tippy(textarea, {
+                  this.uploadingIndicator = tippy(textarea, {
                     trigger: "manual",
                     hideOnClick: false,
-                    content: ${res.locals.HTMLForJavaScript(
-                      html`
-                        <div
-                          class="${res.locals.localCSS(css`
-                            display: flex;
-                            gap: var(--space--2);
-                          `)}"
-                        >
-                          $${app.locals.partials.spinner({ req, res })}
-                          Uploading…
-                        </div>
-                      `
-                    )},
                   });
                   this.upload = async (fileList) => {
                     if (this.errorIfNotSignedIn()) return;
                     const body = new FormData();
                     body.append("_csrf", ${JSON.stringify(req.csrfToken())});
                     tippy.hideAll();
-                    uploadingIndicator.show();
+                    this.uploadingIndicator.show();
                     textarea.disabled = true;
                     for (const file of fileList) body.append("attachments", file);
                     this.value = "";
@@ -1722,7 +1709,7 @@ export default async (app: Courselore): Promise<void> => {
                       body,
                     })).text();
                     textarea.disabled = false;
-                    uploadingIndicator.hide();
+                    this.uploadingIndicator.hide();
                     textFieldEdit.wrapSelection(textarea, response, "");
                     textarea.focus();
                   };
@@ -1752,6 +1739,23 @@ export default async (app: Courselore): Promise<void> => {
                   this.addEventListener("change", () => {
                     this.upload(this.files);
                   });
+                `}"
+                onnavigate="${javascript`
+                  this.uploadingIndicator.setContent(
+                    ${res.locals.HTMLForJavaScript(
+                      html`
+                        <div
+                          class="${res.locals.localCSS(css`
+                            display: flex;
+                            gap: var(--space--2);
+                          `)}"
+                        >
+                          $${app.locals.partials.spinner({ req, res })}
+                          Uploading…
+                        </div>
+                      `
+                    )}
+                  );
                 `}"
               />
             </div>
