@@ -2057,7 +2057,6 @@ export default async (app: Courselore): Promise<void> => {
                                 buttonToHover.classList.add("hover");
                                 scrollIntoView(buttonToHover, { scrollMode: "if-needed" });
                                 break;
-
                               case "Enter":
                               case "Tab":
                                 const buttonHover = content.querySelector(".button.hover");
@@ -2067,7 +2066,6 @@ export default async (app: Courselore): Promise<void> => {
                                   buttonHover.click();
                                 }
                                 break;
-
                               case "Escape":
                               case "ArrowLeft":
                               case "ArrowRight":
