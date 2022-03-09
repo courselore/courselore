@@ -1561,7 +1561,7 @@ export default (app: Courselore): void => {
 
         <time
           datetime="${new Date(conversation.createdAt).toISOString()}"
-          onload="${javascript`
+          onnavigate="${javascript`
             leafac.relativizeDateTimeElement(this, { capitalize: true });
           `}"
           onbeforeelchildrenupdated="${javascript`
@@ -1575,7 +1575,7 @@ export default (app: Courselore): void => {
                 Updated
                 <time
                   datetime="${new Date(conversation.updatedAt).toISOString()}"
-                  onload="${javascript`
+                  onnavigate="${javascript`
                     leafac.relativizeDateTimeElement(this, { preposition: "on" });
                   `}"
                   onbeforeelchildrenupdated="${javascript`

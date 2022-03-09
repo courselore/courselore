@@ -420,12 +420,20 @@ const leafac = {
   },
 
   relativizeDateTimeElement(element, options = {}) {
-    const tooltip = tippy(element, { touch: false });
+    element.relativizeDateTimeElementTooltip ??= tippy(element, {
+      touch: false,
+    });
     (function update() {
       const dateTime = element.getAttribute("datetime");
-      tooltip.setContent(leafac.formatUTCDateTime(dateTime));
+      element.relativizeDateTimeElementTooltip.setContent(
+        leafac.formatUTCDateTime(dateTime)
+      );
       element.textContent = leafac.relativizeDateTime(dateTime, options);
-      window.setTimeout(update, 10 * 1000);
+      window.clearTimeout(element.relativizeDateTimeElementUpdateTimeout);
+      element.relativizeDateTimeElementUpdateTimeout = window.setTimeout(
+        update,
+        10 * 1000
+      );
     })();
   },
 
@@ -434,7 +442,11 @@ const leafac = {
       element.textContent = leafac.relativizeDate(
         element.getAttribute("datetime")
       );
-      window.setTimeout(update, 60 * 1000);
+      window.clearTimeout(element.relativizeDateElementUpdateTimeout);
+      element.relativizeDateElementUpdateTimeout = window.setTimeout(
+        update,
+        60 * 1000
+      );
     })();
   },
 

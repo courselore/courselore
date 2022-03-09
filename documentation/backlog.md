@@ -76,6 +76,7 @@
       - Create indices for `CAST("reference" AS INTEGER)` or convert `"reference"` into number (and then create an index for that!).
   - On sending message on non-chat, it’s scrolling back to the first page.
   - Remove feature flag.
+  - The “mark as read” button won’t work because it doesn’t visit all pages.
 
 ### User Interface Improvements
 
@@ -382,6 +383,7 @@
     - Only send refresh events to people who need it (those who have open a page that’s affected)
     - Spread refresh events over time, or you’re DoS the server
   - When Morphdom refreshes the page, what happens to timers? Are they leaking?
+    - `relativizeDateTimeElement` & `relativizeDateElement` probably are leaking.
 - Tooltip showing the views for a message:
   - The counter is sometimes lagging behind the actual count, because we don’t send refresh events on every GET everyone ever does (’cause **that** would be silly 😛)
     - Another consequence of not sending refresh events on every GET is that the number of unread messages on the sidebar becomes inconsistent when you have multiple tabs open and you read messages on one of them (the rest still show the unread indicator).
