@@ -804,10 +804,14 @@ export default async (app: Courselore): Promise<void> => {
                     touch: false,
                     content: "Help",
                   });
-                  tippy(this, {
+                  this.tooltip = tippy(this, {
                     trigger: "click",
                     interactive: true,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                `}"
+                onnavigate="${javascript`
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         <p>
                           You may style text with
@@ -826,8 +830,8 @@ export default async (app: Courselore): Promise<void> => {
                           >.
                         </p>
                       `
-                    )},
-                  });
+                    )}
+                  );
                 `}"
               >
                 <i class="bi bi-info-circle"></i>
