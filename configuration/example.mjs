@@ -3,6 +3,8 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
   const administratorEmail = "administrator@YOUR-DOMAIN.EDU";
   const url = await courseloreImport("node:url");
   const dataDirectory = url.fileURLToPath(new URL("./data/", import.meta.url));
+  const { default: courselore, userFileExtensionsWhichMayBeShownInBrowser } =
+    await courseloreImport("./index.js");
   if (process.argv[3] === undefined) {
     const url = await courseloreImport("node:url");
     const execa = (await courseloreImport("execa")).execa;
