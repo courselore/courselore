@@ -113,9 +113,11 @@ const eventSourceRefresh = async (response) => {
 const leafac = {
   liveNavigation(baseURL) {
     window.addEventListener("DOMContentLoaded", () => {
-      for (const element of document.querySelectorAll("[onload]"))
+      const onloadElements = document.querySelectorAll("[onload]");
+      const onnavigateElements = document.querySelectorAll("[onnavigate]");
+      for (const element of onloadElements)
         new Function(element.getAttribute("onload")).call(element);
-      for (const element of document.querySelectorAll("[onnavigate]"))
+      for (const element of onnavigateElements)
         new Function(element.getAttribute("onnavigate")).call(element);
     });
 
@@ -208,12 +210,13 @@ const leafac = {
         }
       );
       for (const element of localCSSToRemove) element.remove();
+      const onnavigateElements = document.querySelectorAll("[onnavigate]");
       for (const element of loadedElements) {
         const onload = element.getAttribute("onload");
         if (onload === null) continue;
         new Function(onload).call(element);
       }
-      for (const element of document.querySelectorAll("[onnavigate]"))
+      for (const element of onnavigateElements)
         new Function(element.getAttribute("onnavigate")).call(element);
     }
   },
@@ -233,9 +236,11 @@ const leafac = {
       partialHTML.querySelector(".html-for-javascript").innerHTML;
     partialHTML.querySelector(".html-for-javascript").remove();
     parentElement.innerHTML = partialHTML.querySelector("body").innerHTML;
-    for (const element of parentElement.querySelectorAll("[onload]"))
+    const onloadElements = parentElement.querySelectorAll("[onload]");
+    const onnavigateElements = parentElement.querySelectorAll("[onnavigate]");
+    for (const element of onloadElements)
       new Function(element.getAttribute("onload")).call(element);
-    for (const element of parentElement.querySelectorAll("[onnavigate]"))
+    for (const element of onnavigateElements)
       new Function(element.getAttribute("onnavigate")).call(element);
   },
 
