@@ -218,7 +218,7 @@ const leafac = {
     }
   },
 
-  mount(element, partialString) {
+  mount(parentElement, partialString) {
     const partialHTML = new DOMParser().parseFromString(
       partialString,
       "text/html"
@@ -232,8 +232,11 @@ const leafac = {
     document.querySelector(".html-for-javascript").innerHTML =
       partialHTML.querySelector(".html-for-javascript").innerHTML;
     partialHTML.querySelector(".html-for-javascript").remove();
-    element.innerHTML = partialHTML.querySelector("body").innerHTML;
-    leafac.evaluateElementsAttribute(element);
+    parentElement.innerHTML = partialHTML.querySelector("body").innerHTML;
+    for (const element of parentElement.querySelectorAll("[onload]"))
+      new Function(element.getAttribute("onload")).call(element);
+    for (const element of parentElement.querySelectorAll("[onnavigate]"))
+      new Function(element.getAttribute("onnavigate")).call(element);
   },
 
   evaluateElementsAttribute: (() => {
