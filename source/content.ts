@@ -75,7 +75,6 @@ export type ContentEditorPartial = ({
   contentSource,
   required,
   compact,
-  isModified,
 }: {
   req: express.Request<
     {},
@@ -96,7 +95,6 @@ export type ContentEditorPartial = ({
   contentSource?: string;
   required?: boolean;
   compact?: boolean;
-  isModified?: boolean | undefined;
 }) => HTML;
 
 export type MentionUserSearchHandler = express.RequestHandler<
@@ -611,7 +609,6 @@ export default async (app: Courselore): Promise<void> => {
     contentSource = "",
     required = true,
     compact = false,
-    isModified,
   }) => html`
     <div
       class="content-editor ${res.locals.localCSS(css`
@@ -1886,7 +1883,6 @@ export default async (app: Courselore): Promise<void> => {
                 });
               `}"
               onnavigate="${javascript`
-                this.isModified = ${JSON.stringify(isModified)};
                 ${
                   res.locals.course !== undefined
                     ? javascript`
@@ -2089,7 +2085,10 @@ export default async (app: Courselore): Promise<void> => {
                           this.focus();
                         };
                       `
-                    : javascript``
+                    : javascript`
+                        delete this.mentionsAndReferencesHandleInput;
+                        delete this.mentionsAndReferencesHandleKeydown;
+                      `
                 }
               `}"
             >

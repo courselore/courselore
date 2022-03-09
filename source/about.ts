@@ -593,6 +593,9 @@ export default (app: Courselore): void => {
                 flex: 1;
                 max-width: calc(min(var(--width--xl), 100%));
               `)}"
+              onload="${javascript`
+                this.isModified = false;
+              `}"
             >
               $${app.locals.partials.contentEditor({
                 req,
@@ -624,7 +627,6 @@ export default (app: Courselore): void => {
                   Add images & attachments by simply drag-and-dropping or copy-and-pasting.
                 `,
                 required: false,
-                isModified: false,
               })}
             </div>
           </div>
