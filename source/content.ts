@@ -621,148 +621,149 @@ export default async (app: Courselore): Promise<void> => {
         return false;
       `}"
     >
-      <div
-        $${compact ? html`hidden` : html``}
-        class="${res.locals.localCSS(css`
-          display: flex;
-          gap: var(--space--1);
+      $${compact
+        ? html``
+        : html`
+            <div
+              class="${res.locals.localCSS(css`
+                display: flex;
+                gap: var(--space--1);
 
-          .button {
-            font-size: var(--font-size--xs);
-            line-height: var(--line-height--xs);
-            padding-bottom: var(--space--4);
-            margin-bottom: var(--space---3);
-          }
-          & + * {
-            position: relative;
-          }
-
-          :checked + .button--transparent {
-            background-color: var(--color--gray--medium--100);
-          }
-          :focus-within + .button--transparent {
-            background-color: var(--color--gray--medium--200);
-          }
-          @media (prefers-color-scheme: dark) {
-            :checked + .button--transparent {
-              background-color: var(--color--gray--medium--800);
-            }
-            :focus-within + .button--transparent {
-              background-color: var(--color--gray--medium--700);
-            }
-          }
-        `)}"
-      >
-        <label>
-          <input
-            type="radio"
-            name="content-editor--mode"
-            checked
-            class="content-editor--button--write visually-hidden"
-            onload="${javascript`
-              this.isModified = false;
-              this.addEventListener("click", () => {
-                this.closest(".content-editor").querySelector(".content-editor--write").hidden = false;
-                this.closest(".content-editor").querySelector(".content-editor--loading").hidden = true;
-                this.closest(".content-editor").querySelector(".content-editor--preview").hidden = true;  
-              });            
-            `}"
-          />
-          <span class="button button--transparent">
-            <i class="bi bi-pencil"></i>
-            Write
-          </span>
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="content-editor--mode"
-            class="content-editor--button--preview visually-hidden"
-            onload="${javascript`
-              this.isModified = false;
-              this.addEventListener("click", async (event) => {
-                const write = this.closest(".content-editor").querySelector(".content-editor--write");
-                const loading = this.closest(".content-editor").querySelector(".content-editor--loading");
-                const preview = this.closest(".content-editor").querySelector(".content-editor--preview");
-                const textarea = write.querySelector("textarea");
-                const textareaWasRequired = textarea.required;
-                textarea.setAttribute("required", "");
-                const isWriteValid = leafac.validate(write);
-                textarea.required = textareaWasRequired;
-                if (!isWriteValid) {
-                  event.preventDefault();
-                  return;
+                .button {
+                  font-size: var(--font-size--xs);
+                  line-height: var(--line-height--xs);
+                  padding-bottom: var(--space--4);
+                  margin-bottom: var(--space---3);
                 }
-                write.hidden = true;
-                loading.hidden = false;
-                preview.hidden = true;
-                leafac.mount(
-                  preview,
-                  await (
-                    await fetch(this.url, {
-                      method: "POST",
-                      body: new URLSearchParams({
-                        _csrf: this.csrf,
-                        content: textarea.value,
-                      }),
-                    })
-                  ).text()
-                );
-                write.hidden = true;
-                loading.hidden = true;
-                preview.hidden = false;
-              });            
-            `}"
-            onnavigate="${javascript`
-              this.url = ${JSON.stringify(
-                `${app.locals.options.baseURL}${
-                  res.locals.course === undefined
-                    ? ""
-                    : `/courses/${res.locals.course.reference}`
-                }/content-editor/preview`
-              )};
-              this.csrf = ${JSON.stringify(req.csrfToken())};
-            `}"
-          />
-          <span
-            class="button button--transparent"
-            onload="${javascript`
-              ${
-                compact
-                  ? javascript``
-                  : javascript`
-                      Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+p", () => { this.click(); return false; });
-                    `
-              }
-              tippy(this, {
-                touch: false,
-                content: ${res.locals.HTMLForJavaScript(
-                  html`
-                    <span class="keyboard-shortcut">
-                      <span
-                        onload="${javascript`
-                          this.hidden = leafac.isAppleDevice;
-                        `}"
-                        >Ctrl+Shift+P</span
-                      ><span
-                        class="keyboard-shortcut--cluster"
-                        onload="${javascript`
-                          this.hidden = !leafac.isAppleDevice;
-                        `}"
-                        ><i class="bi bi-shift"></i
-                        ><i class="bi bi-command"></i>P</span
-                      >
-                    </span>
-                  `
-                )},
-              });
-            `}"
-          >
-            <i class="bi bi-eyeglasses"></i>
-            Preview
-          </span>
-        </label>
-      </div>
+                & + * {
+                  position: relative;
+                }
+
+                :checked + .button--transparent {
+                  background-color: var(--color--gray--medium--100);
+                }
+                :focus-within + .button--transparent {
+                  background-color: var(--color--gray--medium--200);
+                }
+                @media (prefers-color-scheme: dark) {
+                  :checked + .button--transparent {
+                    background-color: var(--color--gray--medium--800);
+                  }
+                  :focus-within + .button--transparent {
+                    background-color: var(--color--gray--medium--700);
+                  }
+                }
+              `)}"
+            >
+              <label>
+                <input
+                  type="radio"
+                  name="content-editor--mode"
+                  checked
+                  class="content-editor--button--write visually-hidden"
+                  onload="${javascript`
+                    this.isModified = false;
+                    this.addEventListener("click", () => {
+                      this.closest(".content-editor").querySelector(".content-editor--write").hidden = false;
+                      this.closest(".content-editor").querySelector(".content-editor--loading").hidden = true;
+                      this.closest(".content-editor").querySelector(".content-editor--preview").hidden = true;  
+                    });            
+                  `}"
+                />
+                <span class="button button--transparent">
+                  <i class="bi bi-pencil"></i>
+                  Write
+                </span>
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="content-editor--mode"
+                  class="content-editor--button--preview visually-hidden"
+                  onload="${javascript`
+                    this.isModified = false;
+                    this.addEventListener("click", async (event) => {
+                      const write = this.closest(".content-editor").querySelector(".content-editor--write");
+                      const loading = this.closest(".content-editor").querySelector(".content-editor--loading");
+                      const preview = this.closest(".content-editor").querySelector(".content-editor--preview");
+                      const textarea = write.querySelector("textarea");
+                      const textareaWasRequired = textarea.required;
+                      textarea.setAttribute("required", "");
+                      const isWriteValid = leafac.validate(write);
+                      textarea.required = textareaWasRequired;
+                      if (!isWriteValid) {
+                        event.preventDefault();
+                        return;
+                      }
+                      write.hidden = true;
+                      loading.hidden = false;
+                      preview.hidden = true;
+                      leafac.mount(
+                        preview,
+                        await (
+                          await fetch(this.url, {
+                            method: "POST",
+                            body: new URLSearchParams({
+                              _csrf: this.csrf,
+                              content: textarea.value,
+                            }),
+                          })
+                        ).text()
+                      );
+                      write.hidden = true;
+                      loading.hidden = true;
+                      preview.hidden = false;
+                    });            
+                  `}"
+                  onnavigate="${javascript`
+                    this.url = ${JSON.stringify(
+                      `${app.locals.options.baseURL}${
+                        res.locals.course === undefined
+                          ? ""
+                          : `/courses/${res.locals.course.reference}`
+                      }/content-editor/preview`
+                    )};
+                    this.csrf = ${JSON.stringify(req.csrfToken())};
+                  `}"
+                />
+                <span
+                  class="button button--transparent"
+                  onload="${javascript`
+                    Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+p", () => { this.click(); return false; });
+                  `}"
+                  onnavigate="${javascript`
+                    this.tooltip ??= tippy(this, {
+                      touch: false,
+                    });
+                    this.tooltip.setContent(
+                      ${res.locals.HTMLForJavaScript(
+                        html`
+                          <span class="keyboard-shortcut">
+                            <span
+                              onload="${javascript`
+                                this.hidden = leafac.isAppleDevice;
+                              `}"
+                              >Ctrl+Shift+P</span
+                            ><span
+                              class="keyboard-shortcut--cluster"
+                              onload="${javascript`
+                                this.hidden = !leafac.isAppleDevice;
+                              `}"
+                              ><i class="bi bi-shift"></i
+                              ><i class="bi bi-command"></i>P</span
+                            >
+                          </span>
+                        `
+                      )}
+                    );
+                  `}"
+                >
+                  <i class="bi bi-eyeglasses"></i>
+                  Preview
+                </span>
+              </label>
+            </div>
+          `}
       <div
         class="${res.locals.localCSS(css`
           background-color: var(--color--gray--medium--100);

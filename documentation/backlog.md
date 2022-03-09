@@ -253,6 +253,7 @@
 
 ### Notifications
 
+- Notifications for the same conversation should be “reply” to email on same thread.
 - Email notification subjects could include the fact that you were mentioned, to make it easier to set up filters.
 - Change the page title when there are new messages on that conversation, to make it stand out on the browser tabs.
   - Or change the favicon.
