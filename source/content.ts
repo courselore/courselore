@@ -230,26 +230,40 @@ export default async (app: Courselore): Promise<void> => {
           element.innerHTML === "↩"
         )
           element.innerHTML = html`<i class="bi bi-arrow-return-left"></i>`;
+        const isFile = href.startsWith(`${app.locals.options.baseURL}/files/`);
         if (
           (!href.startsWith("#") &&
             !href.startsWith(app.locals.options.baseURL)) ||
-          href.startsWith(`${app.locals.options.baseURL}/files/`)
+          isFile
         ) {
           element.setAttribute("target", "_blank");
           element.setAttribute(
             "onload",
             javascript`
               ${
-                href.startsWith(`${app.locals.options.baseURL}/files/`)
+                isFile
                   ? javascript``
                   : javascript`
-                      tippy(this, {
+                      this.tooltip = tippy(this, {
                         touch: false,
-                        content: ${res.locals.HTMLForJavaScript(
+                      });
+                    `
+              }
+            `
+          );
+          element.setAttribute(
+            "onnavigate",
+            javascript`
+              ${
+                isFile
+                  ? javascript``
+                  : javascript`
+                      this.tooltip.setContent(
+                        ${res.locals.HTMLForJavaScript(
                           html`External link to
                             <code class="code">${href}</code>`
-                        )},
-                      });
+                        )}
+                      );
                     `
               }
             `
@@ -335,9 +349,12 @@ export default async (app: Courselore): Promise<void> => {
                           mentions!.add(mention);
                           mentionHTML = html`<span
                             onload="${javascript`
-                              tippy(this, {
-                                content: "Mention ${mention} in the conversation",
+                              this.tooltip = tippy(this, {
+                                touch: false,
                               });
+                            `}"
+                            onnavigate="${javascript`
+                              this.tooltip.setContent("Mention ${mention} in the conversation");
                             `}"
                             >@${lodash.capitalize(mention)}</span
                           >`;
@@ -503,9 +520,16 @@ export default async (app: Courselore): Promise<void> => {
               element.setAttribute(
                 "onload",
                 javascript`
-                  tippy(this, {
+                  this.tooltip = tippy(this, {
                     touch: false,
-                    content: ${res.locals.HTMLForJavaScript(
+                  });
+                `
+              );
+              element.setAttribute(
+                "onnavigate",
+                javascript`
+                  this.tooltip.setContent(
+                    ${res.locals.HTMLForJavaScript(
                       html`
                         <div
                           class="${res.locals.localCSS(css`
@@ -519,8 +543,8 @@ export default async (app: Courselore): Promise<void> => {
                           })}
                         </div>
                       `
-                    )},
-                  });
+                    )}
+                  );
                 `
               );
               continue;
@@ -535,9 +559,16 @@ export default async (app: Courselore): Promise<void> => {
             element.setAttribute(
               "onload",
               javascript`
-                tippy(this, {
+                this.tooltip = tippy(this, {
                   touch: false,
-                  content: ${res.locals.HTMLForJavaScript(
+                });
+              `
+            );
+            element.setAttribute(
+              "onnavigate",
+              javascript`
+                this.tooltip.setContent(
+                  ${res.locals.HTMLForJavaScript(
                     html`
                       <div
                         class="${res.locals.localCSS(css`
@@ -555,8 +586,8 @@ export default async (app: Courselore): Promise<void> => {
                         })}
                       </div>
                     `
-                  )},
-                });
+                  )}
+                );
               `
             );
           }

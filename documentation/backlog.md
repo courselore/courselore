@@ -3,6 +3,7 @@
 ### Performance
 
 - Review `onload` and extract portions that should be on `onnavigate`.
+- At the end, there should be no stray `html-for-javascript`.
 
 ---
 
