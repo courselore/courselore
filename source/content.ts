@@ -1859,6 +1859,34 @@ export default async (app: Courselore): Promise<void> => {
               `)}"
               onload="${javascript`
                 autosize(this);
+                this.addEventListener("input", () => {
+                  this.mentionsAndReferencesHandleInput?.();
+                });
+                this.addEventListener("keydown", (event) => {
+                  this.mentionsAndReferencesHandleKeydown?.(event);
+                });
+                this.addEventListener("dragenter", () => {
+                  this.classList.add("drag");
+                });
+                this.addEventListener("dragover", (event) => {
+                  event.preventDefault();
+                });
+                this.addEventListener("drop", (event) => {
+                  event.preventDefault();
+                  this.classList.remove("drag");
+                  this.closest(".content-editor").querySelector(".attachments").upload(event.dataTransfer.files);
+                });
+                this.addEventListener("dragleave", () => {
+                  this.classList.remove("drag");
+                });
+                this.addEventListener("paste", (event) => {
+                  if (event.clipboardData.files.length === 0) return;
+                  event.preventDefault();
+                  this.closest(".content-editor").querySelector(".attachments").upload(event.clipboardData.files);
+                });
+              `}"
+              onnavigate="${javascript`
+                this.isModified = ${JSON.stringify(isModified)};
                 ${
                   res.locals.course !== undefined
                     ? javascript`
@@ -1966,57 +1994,53 @@ export default async (app: Courselore): Promise<void> => {
                           },
                         ];
                         let anchorIndex = null;
-
-                        this.addEventListener("input", (() => {
-                          let isUpdating = false;
-                          let shouldUpdateAgain = false;
-                          return async function onInput() {
-                            const value = this.value;
-                            const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
-                            const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
-                            for (const { trigger, route, dropdownMenu } of dropdownMenus) {
-                              if (!dropdownMenu.state.isShown) {
-                                if (
-                                  value[selectionMin - 1] !== trigger ||
-                                  (selectionMin > 1 && value[selectionMin - 2].match(/\\w/) !== null)
-                                ) continue;
-                                anchorIndex = selectionMin;
-                                const caretCoordinates = getCaretCoordinates(this, anchorIndex - 1);
-                                dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
-                                dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
-                                tippy.hideAll();
-                                dropdownMenu.show();
-                              }
-                              if (selectionMin < anchorIndex || value[anchorIndex - 1] !== trigger) {
-                                dropdownMenu.hide();
-                                continue;
-                              }
-                              if (isUpdating) {
-                                shouldUpdateAgain = true;
-                                continue;
-                              }
-                              isUpdating = true;
-                              shouldUpdateAgain = false;
-                              const content = dropdownMenu.props.content;
-                              const searchResults = content.querySelector(".search-results");
-                              const search = value.slice(anchorIndex, selectionMax).trim();
-                              if (search === "")
-                                searchResults.innerHTML = "";
-                              else
-                                leafac.mount(
-                                  searchResults,
-                                  await (await fetch(route + "?" + new URLSearchParams({ search }))).text()
-                                );
-                              const buttons = content.querySelectorAll(".button");
-                              for (const button of buttons) button.classList.remove("hover");
-                              if (buttons.length > 0) buttons[0].classList.add("hover");
-                              isUpdating = false;
-                              if (shouldUpdateAgain) onInput();
+                        let isUpdating = false;
+                        let shouldUpdateAgain = false;
+                        this.mentionsAndReferencesHandleInput = async () => {
+                          const value = this.value;
+                          const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
+                          const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
+                          for (const { trigger, route, dropdownMenu } of dropdownMenus) {
+                            if (!dropdownMenu.state.isShown) {
+                              if (
+                                value[selectionMin - 1] !== trigger ||
+                                (selectionMin > 1 && value[selectionMin - 2].match(/\\w/) !== null)
+                              ) continue;
+                              anchorIndex = selectionMin;
+                              const caretCoordinates = getCaretCoordinates(this, anchorIndex - 1);
+                              dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
+                              dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
+                              tippy.hideAll();
+                              dropdownMenu.show();
                             }
+                            if (selectionMin < anchorIndex || value[anchorIndex - 1] !== trigger) {
+                              dropdownMenu.hide();
+                              continue;
+                            }
+                            if (isUpdating) {
+                              shouldUpdateAgain = true;
+                              continue;
+                            }
+                            isUpdating = true;
+                            shouldUpdateAgain = false;
+                            const content = dropdownMenu.props.content;
+                            const searchResults = content.querySelector(".search-results");
+                            const search = value.slice(anchorIndex, selectionMax).trim();
+                            if (search === "")
+                              searchResults.innerHTML = "";
+                            else
+                              leafac.mount(
+                                searchResults,
+                                await (await fetch(route + "?" + new URLSearchParams({ search }))).text()
+                              );
+                            const buttons = content.querySelectorAll(".button");
+                            for (const button of buttons) button.classList.remove("hover");
+                            if (buttons.length > 0) buttons[0].classList.add("hover");
+                            isUpdating = false;
+                            if (shouldUpdateAgain) this.mentionsAndReferencesHandleInput?.();
                           }
-                        })());
-
-                        this.addEventListener("keydown", (event) => {
+                        };
+                        this.mentionsAndReferencesHandleKeydown = (event) => {
                           for (const { dropdownMenu } of dropdownMenus) {
                             if (!dropdownMenu.state.isShown) continue;
                             const content = dropdownMenu.props.content;
@@ -2057,8 +2081,7 @@ export default async (app: Courselore): Promise<void> => {
                                 break;
                             }
                           }
-                        });
-
+                        };
                         this.dropdownMenuComplete = (text) => {
                           this.setSelectionRange(anchorIndex, Math.max(this.selectionStart, this.selectionEnd));
                           textFieldEdit.insert(this, text + " ");
@@ -2068,28 +2091,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     : javascript``
                 }
-                this.addEventListener("dragenter", () => {
-                  this.classList.add("drag");
-                });
-                this.addEventListener("dragover", (event) => {
-                  event.preventDefault();
-                });
-                this.addEventListener("drop", (event) => {
-                  event.preventDefault();
-                  this.classList.remove("drag");
-                  this.closest(".content-editor").querySelector(".attachments").upload(event.dataTransfer.files);
-                });
-                this.addEventListener("dragleave", () => {
-                  this.classList.remove("drag");
-                });
-                this.addEventListener("paste", (event) => {
-                  if (event.clipboardData.files.length === 0) return;
-                  event.preventDefault();
-                  this.closest(".content-editor").querySelector(".attachments").upload(event.clipboardData.files);
-                });
-              `}"
-              onnavigate="${javascript`
-                this.isModified = ${JSON.stringify(isModified)};
               `}"
             >
 ${contentSource}</textarea
