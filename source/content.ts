@@ -727,13 +727,13 @@ export default async (app: Courselore): Promise<void> => {
           <span
             class="button button--transparent"
             onload="${javascript`
-            ${
-              compact
-                ? javascript``
-                : javascript`
-                    Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+p", () => { this.click(); return false; });
-                  `
-            }
+              ${
+                compact
+                  ? javascript``
+                  : javascript`
+                      Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea")).bind("mod+shift+p", () => { this.click(); return false; });
+                    `
+              }
               tippy(this, {
                 touch: false,
                 content: ${res.locals.HTMLForJavaScript(
