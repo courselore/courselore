@@ -230,34 +230,22 @@ export default async (app: Courselore): Promise<void> => {
           element.innerHTML === "↩"
         )
           element.innerHTML = html`<i class="bi bi-arrow-return-left"></i>`;
-        const isFile = href.startsWith(`${app.locals.options.baseURL}/files/`);
         if (
           (!href.startsWith("#") &&
             !href.startsWith(app.locals.options.baseURL)) ||
-          isFile
+          href.startsWith(`${app.locals.options.baseURL}/files/`)
         ) {
           element.setAttribute("target", "_blank");
-          element.setAttribute(
-            "onload",
-            javascript`
-              ${
-                isFile
-                  ? javascript``
-                  : javascript`
-                      this.tooltip = tippy(this, {
-                        touch: false,
-                      });
-                    `
-              }
-            `
-          );
           element.setAttribute(
             "onnavigate",
             javascript`
               ${
-                isFile
+                href.startsWith(`${app.locals.options.baseURL}/files/`)
                   ? javascript``
                   : javascript`
+                      this.tooltip ??= tippy(this, {
+                        touch: false,
+                      });
                       this.tooltip.setContent(
                         ${res.locals.HTMLForJavaScript(
                           html`External link to
@@ -348,12 +336,10 @@ export default async (app: Courselore): Promise<void> => {
                         case "students":
                           mentions!.add(mention);
                           mentionHTML = html`<span
-                            onload="${javascript`
-                              this.tooltip = tippy(this, {
+                            onnavigate="${javascript`
+                              this.tooltip ??= tippy(this, {
                                 touch: false,
                               });
-                            `}"
-                            onnavigate="${javascript`
                               this.tooltip.setContent("Mention ${mention} in the conversation");
                             `}"
                             >@${lodash.capitalize(mention)}</span
@@ -518,16 +504,11 @@ export default async (app: Courselore): Promise<void> => {
             if (conversation === undefined) continue;
             if (hrefMessageReference === undefined) {
               element.setAttribute(
-                "onload",
-                javascript`
-                  this.tooltip = tippy(this, {
-                    touch: false,
-                  });
-                `
-              );
-              element.setAttribute(
                 "onnavigate",
                 javascript`
+                  this.tooltip ??= tippy(this, {
+                    touch: false,
+                  });
                   this.tooltip.setContent(
                     ${res.locals.HTMLForJavaScript(
                       html`
@@ -557,16 +538,11 @@ export default async (app: Courselore): Promise<void> => {
             });
             if (message === undefined) continue;
             element.setAttribute(
-              "onload",
-              javascript`
-                this.tooltip = tippy(this, {
-                  touch: false,
-                });
-              `
-            );
-            element.setAttribute(
               "onnavigate",
               javascript`
+                this.tooltip ??= tippy(this, {
+                  touch: false,
+                });
                 this.tooltip.setContent(
                   ${res.locals.HTMLForJavaScript(
                     html`
