@@ -857,7 +857,6 @@ export default (app: Courselore): void => {
                   required
                   class="input--text"
                   onload="${javascript`
-                    if (this.once) return; this.once = true;
                     this.addEventListener("validate", (event) => {
                       if (this.value === this.closest("form").querySelector('[name="password"]').value) return;
                       event.stopImmediatePropagation();
@@ -1010,7 +1009,6 @@ export default (app: Courselore): void => {
                 required
                 class="input--text"
                 onload="${javascript`
-                  if (this.once) return; this.once = true;
                   this.addEventListener("validate", (event) => {
                     if (this.value === this.closest("form").querySelector('[name="password"]').value) return;
                     event.stopImmediatePropagation();
