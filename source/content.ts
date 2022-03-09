@@ -2005,25 +2005,29 @@ ${contentSource}</textarea
           </div>
         </div>
 
-        <div
-          hidden
-          class="content-editor--loading strong ${res.locals.localCSS(css`
-            padding: var(--space--4);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: var(--space--2);
-          `)}"
-        >
-          $${app.locals.partials.spinner({ req, res })} Loading…
-        </div>
+        $${compact
+          ? html``
+          : html`
+              <div
+                hidden
+                class="content-editor--loading strong ${res.locals.localCSS(css`
+                  padding: var(--space--4);
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  gap: var(--space--2);
+                `)}"
+              >
+                $${app.locals.partials.spinner({ req, res })} Loading…
+              </div>
 
-        <div
-          hidden
-          class="content-editor--preview ${res.locals.localCSS(css`
-            padding: var(--space--4);
-          `)}"
-        ></div>
+              <div
+                hidden
+                class="content-editor--preview ${res.locals.localCSS(css`
+                  padding: var(--space--4);
+                `)}"
+              ></div>
+            `}
       </div>
     </div>
   `;

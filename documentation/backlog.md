@@ -128,8 +128,6 @@
     - Use `data-content-source` that’s already used by the quoting mechanism.
     - Implement a more proper solution than the current use of `autosize.update()`
     - Should also fix the bug in which you send a couple messages in a row, they coalesce, and then you try to edit.
-  - When `contentEditor` is in `compact` mode, don’t just hide elements, prevent them from outputting HTML at all
-    - But pay attention to buttons that are hidden but still accessible via keyboard shortcuts.
   - Conversation navigation shouldn’t refresh the whole page:
     - List of conversations shouldn’t jump when you go to a particular conversation.
   - On mobile, decouple the list of conversation (the sidebar on desktop) from the conversation itself, to push less data on the wire
