@@ -181,6 +181,7 @@ const leafac = {
       for (const element of document.querySelectorAll("[onbeforenavigate]"))
         new Function(element.getAttribute("onbeforenavigate")).call(element);
       const loadedElements = new Set();
+      // TODO: Remove unnecessary handlers.
       morphdom(
         document.querySelector("body"),
         newDocument.querySelector("body"),
