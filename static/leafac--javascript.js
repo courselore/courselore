@@ -383,22 +383,25 @@ const leafac = {
     });
   },
 
-  relativizeDateTimeElement(element, options = {}) {
-    element.relativizeDateTimeElementTooltip ??= tippy(element, {
+  setRelativizeDateTime(element, options = {}) {
+    const tooltip = tippy(element, {
       touch: false,
     });
+    let timeoutID;
     (function update() {
       const dateTime = element.getAttribute("datetime");
-      element.relativizeDateTimeElementTooltip.setContent(
-        leafac.formatUTCDateTime(dateTime)
-      );
+      tooltip.setContent(leafac.formatUTCDateTime(dateTime));
       element.textContent = leafac.relativizeDateTime(dateTime, options);
-      window.clearTimeout(element.relativizeDateTimeElementUpdateTimeout);
-      element.relativizeDateTimeElementUpdateTimeout = window.setTimeout(
-        update,
-        10 * 1000
-      );
+      timeoutID = window.setTimeout(update, 10 * 1000);
     })();
+    return () => {
+      tooltip.destroy();
+      window.clearTimeout(timeoutID);
+    };
+  },
+
+  clearRelativizeDateTime(relativizeDateTimeID) {
+    relativizeDateTimeID();
   },
 
   relativizeDateElement(element) {

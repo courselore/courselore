@@ -1576,8 +1576,9 @@ export default (app: Courselore): void => {
                 Updated
                 <time
                   datetime="${new Date(conversation.updatedAt).toISOString()}"
-                  onnavigate="${javascript`
-                    leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                  onload="${javascript`
+                    const relativizeDateTimeID = leafac.setRelativizeDateTime(this, { preposition: "on" });
+                    this.addEventListener("beforeunload", () => { leafac.clearRelativizeDateTime(relativizeDateTimeID); }, { once: true });
                   `}"
                   onbeforeelchildrenupdated="${javascript`
                     return false;
@@ -5189,7 +5190,7 @@ export default (app: Courselore): void => {
                                                     message.createdAt
                                                   ).toISOString()}"
                                                   onload="${javascript`
-                                                    leafac.relativizeDateTimeElement(this, { capitalize: true });
+                                                    leafac.setRelativizeDateTime(this, { capitalize: true });
                                                   `}"
                                                   onbeforeelchildrenupdated="${javascript`
                                                     return false;
@@ -5205,7 +5206,7 @@ export default (app: Courselore): void => {
                                                             message.updatedAt
                                                           ).toISOString()}"
                                                           onload="${javascript`
-                                                            leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                            leafac.setRelativizeDateTime(this, { preposition: "on" });
                                                           `}"
                                                           onbeforeelchildrenupdated="${javascript`
                                                             return false;

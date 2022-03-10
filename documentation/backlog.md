@@ -394,8 +394,6 @@ this.addEventListener("beforeunload", () => {
   - Improve the refreshing mechanism
     - Only send refresh events to people who need it (those who have open a page that’s affected)
     - Spread refresh events over time, or you’re DoS the server
-  - When Morphdom refreshes the page, what happens to timers? Are they leaking?
-    - `relativizeDateTimeElement` & `relativizeDateElement` probably are leaking.
 - Tooltip showing the views for a message:
   - The counter is sometimes lagging behind the actual count, because we don’t send refresh events on every GET everyone ever does (’cause **that** would be silly 😛)
     - Another consequence of not sending refresh events on every GET is that the number of unread messages on the sidebar becomes inconsistent when you have multiple tabs open and you read messages on one of them (the rest still show the unread indicator).

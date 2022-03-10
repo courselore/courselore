@@ -2660,7 +2660,7 @@ export default (app: Courselore): void => {
                                                       invitation.usedAt!
                                                     ).toISOString()}"
                                                     onload="${javascript`
-                                                      leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                      leafac.setRelativizeDateTime(this, { preposition: "on" });
                                                     `}"
                                                     onbeforeelchildrenupdated="${javascript`
                                                       return false;
@@ -2710,7 +2710,7 @@ export default (app: Courselore): void => {
                                                             invitation.expiresAt!
                                                           ).toISOString()}"
                                                           onload="${javascript`
-                                                            leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                            leafac.setRelativizeDateTime(this, { preposition: "on" });
                                                           `}"
                                                           onbeforeelchildrenupdated="${javascript`
                                                             return false;
@@ -2813,7 +2813,7 @@ export default (app: Courselore): void => {
                                                             invitation.expiresAt
                                                           ).toISOString()}"
                                                           onload="${javascript`
-                                                            leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                            leafac.setRelativizeDateTime(this, { preposition: "on" });
                                                           `}"
                                                           onbeforeelchildrenupdated="${javascript`
                                                             return false;
@@ -3364,7 +3364,7 @@ export default (app: Courselore): void => {
                             enrollment.user.lastSeenOnlineAt
                           ).toISOString()}"
                           onload="${javascript`
-                            leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                            leafac.setRelativizeDateTime(this, { preposition: "on" });
                           `}"
                           onbeforeelchildrenupdated="${javascript`
                             return false;

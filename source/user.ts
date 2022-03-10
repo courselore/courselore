@@ -422,7 +422,7 @@ export default (app: Courselore): void => {
                                     user!.lastSeenOnlineAt
                                   ).toISOString()}"
                                   onload="${javascript`
-                                    leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                    leafac.setRelativizeDateTime(this, { preposition: "on" });
                                   `}"
                                   onbeforeelchildrenupdated="${javascript`
                                     return false;
