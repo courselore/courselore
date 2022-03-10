@@ -112,10 +112,7 @@ const eventSourceRefresh = async (response) => {
 
 const leafac = {
   liveNavigation(baseURL) {
-    window.addEventListener("DOMContentLoaded", () => {
-      for (const element of document.querySelectorAll("[onload]"))
-        new Function(element.getAttribute("onload")).call(element);
-    });
+    window.addEventListener("DOMContentLoaded", dispatchLoadEvent);
 
     document.addEventListener("click", async (event) => {
       const link = event.target.closest(
@@ -175,13 +172,17 @@ const leafac = {
         document
           .querySelector("head")
           .insertAdjacentElement("beforeend", element);
-      for (const element of document.querySelectorAll("[onbeforeunload]"))
-        new Function(element.getAttribute("onbeforeunload")).call(element);
+      for (const element of leafac.descendants(document.querySelector("body")))
+        element.dispatchEvent(new Event("beforeunload"));
       morphdom(
         document.querySelector("body"),
         newDocument.querySelector("body")
       );
       for (const element of previousLocalCSS) element.remove();
+      dispatchLoadEvent();
+    }
+
+    function dispatchLoadEvent() {
       for (const element of document.querySelectorAll("[onload]"))
         new Function(element.getAttribute("onload")).call(element);
     }

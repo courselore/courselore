@@ -211,9 +211,6 @@ export default async (app: Courselore): Promise<void> => {
             background-color: var(--color--gray--medium--900);
           }
         `)}"
-        onbeforenavigate="${javascript`
-          tippy.hideAll();
-        `}"
       >
         <div
           class="${res.locals.localCSS(css`
