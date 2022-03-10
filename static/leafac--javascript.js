@@ -113,21 +113,16 @@ const eventSourceRefresh = async (response) => {
 const leafac = {
   liveNavigation(baseURL) {
     window.addEventListener("DOMContentLoaded", () => {
-      const onloadElements = document.querySelectorAll("[onload]");
-      const onnavigateElements = document.querySelectorAll("[onnavigate]");
-      for (const element of onloadElements)
+      for (const element of document.querySelectorAll("[onload]"))
         new Function(element.getAttribute("onload")).call(element);
-      for (const element of onnavigateElements)
-        new Function(element.getAttribute("onnavigate")).call(element);
     });
 
     document.addEventListener("click", async (event) => {
       const link = event.target.closest(
         `a[href]:not([target^="_"]):not([download])`
       );
-      const mainButton = 0;
       if (
-        event.button !== mainButton ||
+        event.button !== 0 ||
         event.altKey ||
         event.ctrlKey ||
         event.metaKey ||
@@ -141,7 +136,7 @@ const leafac = {
       const response = await fetch(link.href);
       if (!response.ok) throw new Error("TODO");
       window.history.pushState(undefined, "", response.url);
-      navigate(await response.text());
+      load(await response.text());
     });
 
     document.addEventListener("submit", async (event) => {
@@ -163,61 +158,32 @@ const leafac = {
         : await fetch(action, { method, body });
       if (!response.ok) throw new Error("TODO");
       window.history.pushState(undefined, "", response.url);
-      navigate(await response.text());
+      load(await response.text());
     });
 
     window.addEventListener("popstate", async () => {
-      navigate(await (await fetch(document.location)).text());
+      load(await (await fetch(document.location)).text());
     });
 
-    function navigate(newDocumentHTML) {
+    function load(newDocumentHTML) {
       const newDocument = new DOMParser().parseFromString(
         newDocumentHTML,
         "text/html"
       );
-      const localCSSToRemove = document.querySelectorAll(".local-css");
+      const previousLocalCSS = document.querySelectorAll(".local-css");
       for (const element of newDocument.querySelectorAll(".local-css"))
         document
           .querySelector("head")
           .insertAdjacentElement("beforeend", element);
-      for (const element of document.querySelectorAll("[onbeforenavigate]"))
-        new Function(element.getAttribute("onbeforenavigate")).call(element);
-      const loadedElements = new Set();
-      // TODO: Remove unnecessary handlers.
+      for (const element of document.querySelectorAll("[onbeforeunload]"))
+        new Function(element.getAttribute("onbeforeunload")).call(element);
       morphdom(
         document.querySelector("body"),
-        newDocument.querySelector("body"),
-        {
-          onBeforeNodeAdded(node) {
-            return node;
-          },
-          onNodeAdded(node) {
-            if (node.nodeType !== node.ELEMENT_NODE) return;
-            for (const element of leafac.descendants(node))
-              loadedElements.add(element);
-          },
-          onBeforeElUpdated(from, to) {
-            return true;
-          },
-          onElUpdated(element) {},
-          onBeforeNodeDiscarded(node) {
-            return true;
-          },
-          onNodeDiscarded(node) {},
-          onBeforeElChildrenUpdated(from, to) {
-            return true;
-          },
-        }
+        newDocument.querySelector("body")
       );
-      for (const element of localCSSToRemove) element.remove();
-      const onnavigateElements = document.querySelectorAll("[onnavigate]");
-      for (const element of loadedElements) {
-        const onload = element.getAttribute("onload");
-        if (onload === null) continue;
-        new Function(onload).call(element);
-      }
-      for (const element of onnavigateElements)
-        new Function(element.getAttribute("onnavigate")).call(element);
+      for (const element of previousLocalCSS) element.remove();
+      for (const element of document.querySelectorAll("[onload]"))
+        new Function(element.getAttribute("onload")).call(element);
     }
   },
 
