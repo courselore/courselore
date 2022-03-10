@@ -2,7 +2,8 @@
 
 ### Performance
 
-- Review `onload` and extract portions that should be on `onnavigate`.
+- Remove `onnavigate`.
+- Review `onload`.
 - At the end, there should be no stray `html-for-javascript`.
 
 ---
