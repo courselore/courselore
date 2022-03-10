@@ -112,9 +112,12 @@ const eventSourceRefresh = async (response) => {
 
 const leafac = {
   liveNavigation(baseURL) {
-    if (document.readyState === "loading")
-      window.addEventListener("DOMContentLoaded", leafac.dispatchLoadEvent);
-    else leafac.dispatchLoadEvent();
+    window.addEventListener("DOMContentLoaded", () => {
+      for (const element of document.querySelectorAll("[onload]"))
+        new Function(element.getAttribute("onload")).call(element);
+    });
+    if (document.readyState !== "loading")
+      window.dispatchEvent(new Event("DOMContentLoaded"));
 
     document.addEventListener("click", async (event) => {
       const link = event.target.closest(
@@ -181,7 +184,7 @@ const leafac = {
         newDocument.querySelector("body")
       );
       for (const element of previousLocalCSS) element.remove();
-      leafac.dispatchLoadEvent();
+      window.dispatchEvent(new Event("DOMContentLoaded"));
     }
   },
 
@@ -200,12 +203,7 @@ const leafac = {
       partialHTML.querySelector(".html-for-javascript").innerHTML;
     partialHTML.querySelector(".html-for-javascript").remove();
     parentElement.innerHTML = partialHTML.querySelector("body").innerHTML;
-    leafac.dispatchLoadEvent();
-  },
-
-  dispatchLoadEvent() {
-    for (const element of document.querySelectorAll("[onload]"))
-      new Function(element.getAttribute("onload")).call(element);
+    // window.dispatchEvent(new Event("DOMContentLoaded"));
   },
 
   evaluateElementsAttribute: (() => {
