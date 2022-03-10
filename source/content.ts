@@ -1881,8 +1881,6 @@ export default async (app: Courselore): Promise<void> => {
                   event.preventDefault();
                   this.closest(".content-editor").querySelector(".attachments").upload(event.clipboardData.files);
                 });
-              `}"
-              onnavigate="${javascript`
                 ${
                   res.locals.course !== undefined
                     ? javascript`
@@ -2084,8 +2082,6 @@ export default async (app: Courselore): Promise<void> => {
                         };
                       `
                     : javascript`
-                        delete this.mentionsAndReferencesHandleInput;
-                        delete this.mentionsAndReferencesHandleKeydown;
                       `
                 }
               `}"
@@ -2216,17 +2212,16 @@ ${contentSource}</textarea
                     type="button"
                     class="dropdown--menu--item button button--transparent"
                     onload="${javascript`
-                      this.addEventListener("click", () => {
-                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(this.reference);  
-                      });
-                    `}"
-                    onnavigate="${javascript`
-                      this.reference = ${JSON.stringify(
-                        `${enrollment.reference}--${slugify(
-                          enrollment.user.name
-                        )}`
-                      )};
-                    `}"
+                      const handleClick = () => {
+                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
+                          `${enrollment.reference}--${slugify(
+                            enrollment.user.name
+                          )}`
+                        )});  
+                      };
+                      this.addEventListener("click", handleClick);
+                      this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
+                  `}"
                   >
                     $${app.locals.partials.user({
                       req,
@@ -2317,14 +2312,13 @@ ${contentSource}</textarea
                         type="button"
                         class="dropdown--menu--item button button--transparent"
                         onload="${javascript`
-                          this.addEventListener("click", () => {
-                            this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(this.reference);
-                          });
-                        `}"
-                        onnavigate="${javascript`
-                          this.reference = ${JSON.stringify(
-                            conversation.reference
-                          )};
+                          const handleClick = () => {
+                            this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
+                              conversation.reference
+                            )});
+                          };
+                          this.addEventListener("click", handleClick);
+                          this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                         `}"
                       >
                         <span>
@@ -2391,14 +2385,13 @@ ${contentSource}</textarea
                           type="button"
                           class="dropdown--menu--item button button--transparent"
                           onload="${javascript`
-                            this.addEventListener("click", () => {
-                              this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(this.reference);
-                            });
-                          `}"
-                          onnavigate="${javascript`
-                            this.reference = ${JSON.stringify(
-                              `${conversation.reference}/${message.reference}`
-                            )};
+                            const handleClick = () => {
+                              this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
+                                `${conversation.reference}/${message.reference}`
+                              )});
+                            };
+                            this.addEventListener("click", handleClick);
+                            this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                           `}"
                         >
                           <div>
@@ -2432,12 +2425,13 @@ ${contentSource}</textarea
                 type="button"
                 class="dropdown--menu--item button button--transparent"
                 onload="${javascript`
-                  this.addEventListener("click", () => {
-                    this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(this.reference);
-                  });
-                `}"
-                onnavigate="${javascript`
-                  this.reference = ${JSON.stringify(conversation.reference)};
+                  const handleClick = () => {
+                    this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
+                      conversation.reference
+                    )});
+                  };
+                  this.addEventListener("click", handleClick);
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                 `}"
               >
                 <span>
@@ -2490,14 +2484,13 @@ ${contentSource}</textarea
                       type="button"
                       class="dropdown--menu--item button button--transparent"
                       onload="${javascript`
-                        this.addEventListener("click", () => {
-                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(this.reference);
-                        });                    
-                      `}"
-                      onnavigate="${javascript`
-                        this.reference = ${JSON.stringify(
-                          conversation.reference
-                        )};
+                        const handleClick = () => {
+                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
+                            conversation.reference
+                          )});
+                        };
+                        this.addEventListener("click", handleClick);   
+                        this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                       `}"
                     >
                       <span>
@@ -2572,14 +2565,13 @@ ${contentSource}</textarea
                       type="button"
                       class="dropdown--menu--item button button--transparent"
                       onload="${javascript`
-                        this.addEventListener("click", () => {
-                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(this.reference);
-                        });                    
-                      `}"
-                      onnavigate="${javascript`
-                        this.reference = ${JSON.stringify(
-                          `${conversation.reference}/${message.reference}`
-                        )};
+                        const handleClick = () => {
+                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
+                            `${conversation.reference}/${message.reference}`
+                          )});
+                        };
+                        this.addEventListener("click", handleClick);
+                        this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                       `}"
                     >
                       <div>
@@ -2660,14 +2652,13 @@ ${contentSource}</textarea
                       type="button"
                       class="dropdown--menu--item button button--transparent"
                       onload="${javascript`
-                        this.addEventListener("click", () => {
-                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(this.reference);
-                        });                    
-                      `}"
-                      onnavigate="${javascript`
-                        this.reference = ${JSON.stringify(
-                          `${conversation.reference}/${message.reference}`
-                        )};
+                        const handleClick = () => {
+                          this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
+                            `${conversation.reference}/${message.reference}`
+                          )});
+                        };
+                        this.addEventListener("click", handleClick);
+                        this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                       `}"
                     >
                       <div>
