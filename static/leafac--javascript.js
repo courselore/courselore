@@ -112,7 +112,9 @@ const eventSourceRefresh = async (response) => {
 
 const leafac = {
   liveNavigation(baseURL) {
-    window.addEventListener("DOMContentLoaded", dispatchLoadEvent);
+    if (document.readyState === "loading")
+      window.addEventListener("DOMContentLoaded", dispatchLoadEvent);
+    else dispatchLoadEvent();
 
     document.addEventListener("click", async (event) => {
       const link = event.target.closest(
