@@ -627,7 +627,7 @@ export default async (app: Courselore): Promise<void> => {
               flex: 1;
               overflow: auto;
             `)}"
-            onnavigate="${javascript`
+            onload="${javascript`
               this.scroll(0, 0);
             `}"
           >

@@ -113,8 +113,8 @@ const eventSourceRefresh = async (response) => {
 const leafac = {
   liveNavigation(baseURL) {
     if (document.readyState === "loading")
-      window.addEventListener("DOMContentLoaded", dispatchLoadEvent);
-    else dispatchLoadEvent();
+      window.addEventListener("DOMContentLoaded", leafac.dispatchLoadEvent);
+    else leafac.dispatchLoadEvent();
 
     document.addEventListener("click", async (event) => {
       const link = event.target.closest(
@@ -181,12 +181,7 @@ const leafac = {
         newDocument.querySelector("body")
       );
       for (const element of previousLocalCSS) element.remove();
-      dispatchLoadEvent();
-    }
-
-    function dispatchLoadEvent() {
-      for (const element of document.querySelectorAll("[onload]"))
-        new Function(element.getAttribute("onload")).call(element);
+      leafac.dispatchLoadEvent();
     }
   },
 
@@ -205,12 +200,12 @@ const leafac = {
       partialHTML.querySelector(".html-for-javascript").innerHTML;
     partialHTML.querySelector(".html-for-javascript").remove();
     parentElement.innerHTML = partialHTML.querySelector("body").innerHTML;
-    const onloadElements = parentElement.querySelectorAll("[onload]");
-    const onnavigateElements = parentElement.querySelectorAll("[onnavigate]");
-    for (const element of onloadElements)
+    leafac.dispatchLoadEvent();
+  },
+
+  dispatchLoadEvent() {
+    for (const element of document.querySelectorAll("[onload]"))
       new Function(element.getAttribute("onload")).call(element);
-    for (const element of onnavigateElements)
-      new Function(element.getAttribute("onnavigate")).call(element);
   },
 
   evaluateElementsAttribute: (() => {
