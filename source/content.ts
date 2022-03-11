@@ -750,10 +750,10 @@ export default async (app: Courselore): Promise<void> => {
                     });
                     this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
-                    const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    const mousetrap = new Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea"));
                     const keys = "mod+shift+p";
-                    Mousetrap(textarea).bind(keys, () => { this.click(); return false; });
-                    this.addEventListener("beforeunload", () => { Mousetrap(textarea).unbind(keys) }, { once: true });
+                    mousetrap.bind(keys, () => { this.click(); return false; });
+                    this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
                   `}"
                 >
                   <i class="bi bi-eyeglasses"></i>
@@ -864,18 +864,19 @@ export default async (app: Courselore): Promise<void> => {
                   });
                   this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
+                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
                   const handleClick = () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
-                    element.focus();  
+                    textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
+                    textarea.focus();  
                   };
                   this.addEventListener("click", handleClick);
                   this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+alt+1";
-                  Mousetrap(textarea).bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { Mousetrap(textarea).unbind(keys) }, { once: true });
+                  mousetrap.bind(keys, () => { this.click(); return false; });
+                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
                 `}"
               >
                 <i class="bi bi-type-h1"></i>
@@ -909,18 +910,19 @@ export default async (app: Courselore): Promise<void> => {
                   });
                   this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
+                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
                   const handleClick = () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
-                    element.focus();
+                    textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
+                    textarea.focus();
                   };
                   this.addEventListener("click", handleClick);
                   this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+alt+2";
-                  Mousetrap(textarea).bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { Mousetrap(textarea).unbind(keys) }, { once: true });
+                  mousetrap.bind(keys, () => { this.click(); return false; });
+                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
                 `}"
               >
                 <i class="bi bi-type-h2"></i>
@@ -954,18 +956,19 @@ export default async (app: Courselore): Promise<void> => {
                   });
                   this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
+                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
                   const handleClick = () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
-                    element.focus();
+                    textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
+                    textarea.focus();
                   };
                   this.addEventListener("click", handleClick);
                   this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+alt+3";
-                  Mousetrap(textarea).bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { Mousetrap(textarea).unbind(keys) }, { once: true });
+                  mousetrap.bind(keys, () => { this.click(); return false; });
+                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
                 `}"
               >
                 <i class="bi bi-type-h3"></i>
@@ -1000,18 +1003,19 @@ export default async (app: Courselore): Promise<void> => {
                   });
                   this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
+                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
                   const handleClick = () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, "**");
-                    element.focus();
+                    textFieldEdit.wrapSelection(textarea, "**");
+                    textarea.focus();
                   };
                   this.addEventListener("click", handleClick);
                   this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+b";
-                  Mousetrap(textarea).bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { Mousetrap(textarea).unbind(keys) }, { once: true });
+                  mousetrap.bind(keys, () => { this.click(); return false; });
+                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
                 `}"
               >
                 <i class="bi bi-type-bold"></i>
@@ -1020,14 +1024,6 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const handleClick = () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, "_");
-                    element.focus();
-                  };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });                  
-
                   const tooltip = tippy(this, {
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
@@ -1053,9 +1049,18 @@ export default async (app: Courselore): Promise<void> => {
                   this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
+                  const handleClick = () => {
+                    textFieldEdit.wrapSelection(textarea, "_");
+                    textarea.focus();
+                  };
+                  this.addEventListener("click", handleClick);
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });                  
+
+                  const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+i";
-                  Mousetrap(textarea).bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { Mousetrap(textarea).unbind(keys) }, { once: true });
+                  mousetrap.bind(keys, () => { this.click(); return false; });
+                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
                 `}"
               >
                 <i class="bi bi-type-italic"></i>
@@ -1088,18 +1093,19 @@ export default async (app: Courselore): Promise<void> => {
                   });
                   this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
+                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
                   const handleClick = () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, "[", "](https://example.com)");
-                    element.focus();
+                    textFieldEdit.wrapSelection(textarea, "[", "](https://example.com)");
+                    textarea.focus();
                   };
                   this.addEventListener("click", handleClick);
                   this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+k";
-                  Mousetrap(textarea).bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { Mousetrap(textarea).unbind(keys) }, { once: true });
+                  mousetrap.bind(keys, () => { this.click(); return false; });
+                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
                 `}"
               >
                 <i class="bi bi-link"></i>
@@ -1135,18 +1141,19 @@ export default async (app: Courselore): Promise<void> => {
                   });
                   this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
+                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
                   const handleClick = () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- ", "\\n\\n");
-                    element.focus();
+                    textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "- ", "\\n\\n");
+                    textarea.focus();
                   };
                   this.addEventListener("click", handleClick);
                   this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+shift+8";
-                  Mousetrap(textarea).bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { Mousetrap(textarea).unbind(keys) }, { once: true });
+                  mousetrap.bind(keys, () => { this.click(); return false; });
+                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
                 `}"
               >
                 <i class="bi bi-list-ul"></i>
@@ -1180,18 +1187,19 @@ export default async (app: Courselore): Promise<void> => {
                   });
                   this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
+                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
                   const handleClick = () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "1. ", "\\n\\n");
-                    element.focus();
+                    textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "1. ", "\\n\\n");
+                    textarea.focus();
                   };
                   this.addEventListener("click", handleClick);
                   this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
-                  
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
+                  const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+shift+7";
-                  Mousetrap(textarea).bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { Mousetrap(textarea).unbind(keys) }, { once: true });
+                  mousetrap.bind(keys, () => { this.click(); return false; });
+                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
                 `}"
               >
                 <i class="bi bi-list-ol"></i>
@@ -1200,14 +1208,6 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const handleClick = () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ", "\\n\\n");
-                    element.focus();
-                  };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
-
                   const tooltip = tippy(this, {
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
@@ -1234,9 +1234,18 @@ export default async (app: Courselore): Promise<void> => {
                   this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
+                  const handleClick = () => {
+                    textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ", "\\n\\n");
+                    textarea.focus();
+                  };
+                  this.addEventListener("click", handleClick);
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
+
+                  const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+shift+9";
-                  Mousetrap(textarea).bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { Mousetrap(textarea).unbind(keys) }, { once: true });
+                  mousetrap.bind(keys, () => { this.click(); return false; });
+                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
                 `}"
               >
                 <i class="bi bi-ui-checks"></i>
@@ -1271,18 +1280,19 @@ export default async (app: Courselore): Promise<void> => {
                   });
                   this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
+                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
                   const handleClick = () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "> ", "\\n\\n");
-                    element.focus();
+                    textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "> ", "\\n\\n");
+                    textarea.focus();
                   };
                   this.addEventListener("click", handleClick);
                   this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+'";
-                  Mousetrap(textarea).bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { Mousetrap(textarea).unbind(keys) }, { once: true });
+                  mousetrap.bind(keys, () => { this.click(); return false; });
+                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
                 `}"
               >
                 <i class="bi bi-chat-left-quote"></i>
@@ -1317,18 +1327,19 @@ export default async (app: Courselore): Promise<void> => {
                   this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                  const keys = "mod+alt+t";
-                  Mousetrap(textarea).bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { Mousetrap(textarea).unbind(keys) }, { once: true });
 
                   const handleClick = () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    const gapLength = element.selectionEnd - element.selectionStart + 2;
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "| ", " |  |\\n|" + "-".repeat(gapLength) + "|--|\\n|" + " ".repeat(gapLength) + "|  |\\n\\n");
-                    element.focus();
+                    const gapLength = textarea.selectionEnd - textarea.selectionStart + 2;
+                    textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "| ", " |  |\\n|" + "-".repeat(gapLength) + "|--|\\n|" + " ".repeat(gapLength) + "|  |\\n\\n");
+                    textarea.focus();
                   };
                   this.addEventListener("click", handleClick);
                   this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
+
+                  const mousetrap = new Mousetrap(textarea);
+                  const keys = "mod+alt+t";
+                  mousetrap.bind(keys, () => { this.click(); return false; });
+                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
                 `}"
               >
                 <i class="bi bi-table"></i>
@@ -1362,18 +1373,19 @@ export default async (app: Courselore): Promise<void> => {
                   });
                   this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
+                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
                   const handleClick = () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>", "</summary>\\n\\nContent\\n\\n</details>\\n\\n");
-                    element.focus();
+                    textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>", "</summary>\\n\\nContent\\n\\n</details>\\n\\n");
+                    textarea.focus();
                   };
                   this.addEventListener("click", handleClick);
                   this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                   
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+shift+d";
-                  Mousetrap(textarea).bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { Mousetrap(textarea).unbind(keys) }, { once: true });
+                  mousetrap.bind(keys, () => { this.click(); return false; });
+                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
                 `}"
               >
                 <i class="bi bi-chevron-bar-expand"></i>
@@ -1407,18 +1419,19 @@ export default async (app: Courselore): Promise<void> => {
                   });
                   this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
+                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
                   const handleClick = () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, "[^", "<identifier>]\\n\\n[^<identifier>]: <footnote>");
-                    element.focus();
+                    textFieldEdit.wrapSelection(textarea, "[^", "<identifier>]\\n\\n[^<identifier>]: <footnote>");
+                    textarea.focus();
                   };
                   this.addEventListener("click", handleClick);
                   this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+shift+f";
-                  Mousetrap(textarea).bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { Mousetrap(textarea).unbind(keys) }, { once: true });
+                  mousetrap.bind(keys, () => { this.click(); return false; });
+                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
                 `}"
               >
                 <i class="bi bi-card-text"></i>
@@ -1453,18 +1466,19 @@ export default async (app: Courselore): Promise<void> => {
                   });
                   this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
+                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
                   const handleClick = () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, "\`");
-                    element.focus();
+                    textFieldEdit.wrapSelection(textarea, "\`");
+                    textarea.focus();
                   };
                   this.addEventListener("click", handleClick);
                   this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+e";
-                  Mousetrap(textarea).bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { Mousetrap(textarea).unbind(keys) }, { once: true });
+                  mousetrap.bind(keys, () => { this.click(); return false; });
+                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
                 `}"
               >
                 <i class="bi bi-code"></i>
@@ -1498,18 +1512,19 @@ export default async (app: Courselore): Promise<void> => {
                   });
                   this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
+                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
                   const handleClick = () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`language\\n", "\\n\`\`\`\\n\\n");
-                    element.focus();
+                    textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`language\\n", "\\n\`\`\`\\n\\n");
+                    textarea.focus();
                   };
                   this.addEventListener("click", handleClick);
                   this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+shift+e";
-                  Mousetrap(textarea).bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { Mousetrap(textarea).unbind(keys) }, { once: true });
+                  mousetrap.bind(keys, () => { this.click(); return false; });
+                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
                 `}"
               >
                 <i class="bi bi-code-square"></i>
@@ -1545,18 +1560,19 @@ export default async (app: Courselore): Promise<void> => {
                   });
                   this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                   
+                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
                   const handleClick = () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, "$");
-                    element.focus();
+                    textFieldEdit.wrapSelection(textarea, "$");
+                    textarea.focus();
                   };
                   this.addEventListener("click", handleClick);
                   this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+alt+e";
-                  Mousetrap(textarea).bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { Mousetrap(textarea).unbind(keys) }, { once: true });
+                  mousetrap.bind(keys, () => { this.click(); return false; });
+                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
                 `}"
               >
                 <i class="bi bi-calculator"></i>
@@ -1590,18 +1606,19 @@ export default async (app: Courselore): Promise<void> => {
                   });
                   this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
+                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
                   const handleClick = () => {
-                    const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                    textFieldEdit.wrapSelection(element, ((element.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
-                    element.focus();
+                    textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
+                    textarea.focus();
                   };
                   this.addEventListener("click", handleClick);
                   this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+alt+shift+e";
-                  Mousetrap(textarea).bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { Mousetrap(textarea).unbind(keys) }, { once: true });
+                  mousetrap.bind(keys, () => { this.click(); return false; });
+                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
                 `}"
               >
                 <i class="bi bi-calculator-fill"></i>
@@ -1625,10 +1642,11 @@ export default async (app: Courselore): Promise<void> => {
                         });
                         this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
+                        const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
                         const handleClick = () => {
-                          const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                          textFieldEdit.wrapSelection(element, "@", "");
-                          element.focus();
+                          textFieldEdit.wrapSelection(textarea, "@", "");
+                          textarea.focus();
                         };
                         this.addEventListener("click", handleClick);
                         this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
@@ -1651,10 +1669,11 @@ export default async (app: Courselore): Promise<void> => {
                         });
                         this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
+                        const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
                         const handleClick = () => {
-                          const element = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
-                          textFieldEdit.wrapSelection(element, "#", "");
-                          element.focus();
+                          textFieldEdit.wrapSelection(textarea, "#", "");
+                          textarea.focus();
                         };
                         this.addEventListener("click", handleClick);
                         this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
@@ -1702,10 +1721,10 @@ export default async (app: Courselore): Promise<void> => {
                   this.addEventListener("click", handleClick);
                   this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const mousetrap = new Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea"));
                   const keys = "mod+shift+i";
-                  Mousetrap(textarea).bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { Mousetrap(textarea).unbind(keys) }, { once: true });
+                  mousetrap.bind(keys, () => { this.click(); return false; });
+                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
                 `}"
               >
                 <i class="bi bi-image"></i>
@@ -1746,10 +1765,10 @@ export default async (app: Courselore): Promise<void> => {
                   this.addEventListener("click", handleClick);
                   this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
-                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                  const mousetrap = new Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea"));
                   const keys = "mod+shift+k";
-                  Mousetrap(textarea).bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { Mousetrap(textarea).unbind(keys) }, { once: true });
+                  mousetrap.bind(keys, () => { this.click(); return false; });
+                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
                 `}"
               >
                 <i class="bi bi-paperclip"></i>
@@ -1876,8 +1895,9 @@ export default async (app: Courselore): Promise<void> => {
                   onload="${javascript`
                     this.isModified = false;
 
+                    const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
                     const handleClick = () => {
-                      const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                       if (this.checked) textarea.classList.add("content-editor--write--textarea--programmer-mode");
                       else textarea.classList.remove("content-editor--write--textarea--programmer-mode");
                       localStorage.setItem("content-editor--write--textarea--programmer-mode", JSON.stringify(this.checked));  
@@ -1885,10 +1905,10 @@ export default async (app: Courselore): Promise<void> => {
                     this.addEventListener("click", handleClick);
                     this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                     
-                    const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+                    const mousetrap = new Mousetrap(textarea);
                     const keys = "mod+alt+0";
-                    Mousetrap(textarea).bind(keys, () => { this.click(); return false; });
-                    this.addEventListener("beforeunload", () => { Mousetrap(textarea).unbind(keys) }, { once: true });
+                    mousetrap.bind(keys, () => { this.click(); return false; });
+                    this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
 
                     if (JSON.parse(localStorage.getItem("content-editor--write--textarea--programmer-mode") ?? "false")) this.click();
                   `}"

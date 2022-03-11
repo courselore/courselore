@@ -334,6 +334,7 @@ this.addEventListener("beforeunload", () => {
 
 ### Content Processor
 
+- Potential issue: It’s possible to send a message such as `<!-- -->` which is visually empty.
 - Syntax highlighter isn’t kicking in on blockquote.
 - `#references` into the same conversation don’t need to load the whole `conversationPartial`, just the message part of it.
 - Add support for underline in Markdown.
