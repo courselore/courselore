@@ -233,7 +233,7 @@ const leafac = {
       leafac.elementsToUnload.set(element, leafac.ancestors(element));
     for (const element of [
       ...parentElement.querySelectorAll("[onload]"),
-      ...documentHTMLForJavaScript("[onload]"),
+      ...documentHTMLForJavaScript.querySelectorAll("[onload]"),
     ])
       new Function(element.getAttribute("onload")).call(element);
   },
