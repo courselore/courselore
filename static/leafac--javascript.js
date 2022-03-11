@@ -111,8 +111,12 @@ const eventSourceRefresh = async (response) => {
 };
 
 const leafac = {
+  elementsToUnload: new Map(),
+
   liveNavigation(baseURL) {
     window.addEventListener("DOMContentLoaded", () => {
+      for (const element of leafac.descendants(document.querySelector("body")))
+        leafac.elementsToUnload.set(element, leafac.ancestors(element));
       for (const element of document.querySelectorAll("[onload]"))
         new Function(element.getAttribute("onload")).call(element);
     });
@@ -177,8 +181,10 @@ const leafac = {
         document
           .querySelector("head")
           .insertAdjacentElement("beforeend", element);
-      for (const element of leafac.descendants(document.querySelector("body")))
+      for (const element of [...leafac.elementsToUnload.keys()]) {
         element.dispatchEvent(new Event("beforeunload"));
+        leafac.elementsToUnload.delete(element);
+      }
       morphdom(
         document.querySelector("body"),
         newDocument.querySelector("body")
@@ -205,14 +211,24 @@ const leafac = {
     const partialHTMLForJavaScript = partialHTML.querySelector(
       ".html-for-javascript"
     );
+    for (const [element, ancestors] of [...leafac.elementsToUnload.entries()]) {
+      if (
+        ![parentElement, documentHTMLForJavaScript].some((maybeAncestor) =>
+          ancestors.includes(maybeAncestor)
+        )
+      )
+        continue;
+      element.dispatchEvent(new Event("beforeunload"));
+      leafac.elementsToUnload.delete(element);
+    }
+    documentHTMLForJavaScript.innerHTML = partialHTMLForJavaScript.innerHTML;
+    partialHTMLForJavaScript.remove();
+    parentElement.innerHTML = partialHTML.querySelector("body").innerHTML;
     for (const element of [
       ...parentElement.querySelectorAll("*"),
       ...documentHTMLForJavaScript.querySelectorAll("*"),
     ])
-      element.dispatchEvent(new Event("beforeunload"));
-    documentHTMLForJavaScript.innerHTML = partialHTMLForJavaScript.innerHTML;
-    partialHTMLForJavaScript.remove();
-    parentElement.innerHTML = partialHTML.querySelector("body").innerHTML;
+      leafac.elementsToUnload.set(element, leafac.ancestors(element));
     for (const element of [
       ...parentElement.querySelectorAll("[onload]"),
       ...documentHTMLForJavaScript("[onload]"),
