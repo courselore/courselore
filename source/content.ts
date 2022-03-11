@@ -1783,18 +1783,10 @@ export default async (app: Courselore): Promise<void> => {
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                  this.upload = async (fileList) => {
-                    if (!checkIsSignedIn()) return;
-                    const body = new FormData();
-                    body.append("_csrf", ${JSON.stringify(req.csrfToken())});
-                    for (const file of fileList) body.append("attachments", file);
-                    this.value = "";
-                    textarea.disabled = true;
-                    tippy.hideAll();
+                  this.upload = (() => {
                     const uploadingIndicator = tippy(textarea, {
                       trigger: "manual",
                       hideOnClick: false,
-                      showOnCreate: true,
                       content: ${res.locals.HTMLForJavaScript(
                         html`
                           <div
@@ -1810,39 +1802,49 @@ export default async (app: Courselore): Promise<void> => {
                       )},
                     });
                     this.addEventListener("beforeunload", () => { uploadingIndicator.destroy(); }, { once: true });
-                    const response = await (await fetch(${JSON.stringify(
-                      `${app.locals.options.baseURL}/content-editor/attachments`
-                    )}, {
-                      method: "POST",
-                      body,
-                    })).text();
-                    uploadingIndicator.destroy();
-                    textarea.disabled = false;
-                    textFieldEdit.wrapSelection(textarea, response, "");
-                    textarea.focus();
-                  };
 
-                  const checkIsSignedIn = () => {
-                    ${
-                      res.locals.user === undefined
-                        ? javascript`
+                    return async (fileList) => {
+                      if (!checkIsSignedIn()) return;
+                      const body = new FormData();
+                      body.append("_csrf", ${JSON.stringify(req.csrfToken())});
+                      for (const file of fileList) body.append("attachments", file);
+                      this.value = "";
+                      tippy.hideAll();
+                      uploadingIndicator.show();
+                      textarea.disabled = true;
+                      const response = await (await fetch(${JSON.stringify(
+                        `${app.locals.options.baseURL}/content-editor/attachments`
+                      )}, {
+                        method: "POST",
+                        body,
+                      })).text();
+                      textarea.disabled = false;
+                      uploadingIndicator.hide();
+                      textFieldEdit.wrapSelection(textarea, response, "");
+                      textarea.focus();
+                    };
+                  })();
+
+                  const checkIsSignedIn = ${
+                    res.locals.user === undefined
+                      ? javascript`
+                          (() => {
                             const tooltip = tippy(textarea, {
                               trigger: "manual",
                               theme: "rose",
-                              showOnCreate: true,
-                              onHidden: () => {
-                                tooltip.destroy();
-                              },
                               content: "You must sign in to upload files.",
                             });
                             this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
-                            return false;
-                          `
-                        : javascript`
-                            return true;
-                          `
-                    }
-                  };
+                            return () => {
+                              tooltip.show();
+                              return false;
+                            };
+                          })();
+                        `
+                      : javascript`
+                          () => true;
+                        `
+                  }
 
                   const handleClick = (event) => {
                     if (!checkIsSignedIn()) event.preventDefault();
@@ -2107,6 +2109,7 @@ export default async (app: Courselore): Promise<void> => {
                             }),
                           },
                         ];
+                        this.addEventListener("beforeunload", () => { for (const { dropdownMenu } of dropdownMenus) dropdownMenu.destroy(); }, { once: true });
                         let anchorIndex = null;
 
                         const handleInput = (() => {
