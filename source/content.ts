@@ -665,7 +665,7 @@ export default async (app: Courselore): Promise<void> => {
                       this.closest(".content-editor").querySelector(".content-editor--preview").hidden = true;  
                     };
                     this.addEventListener("click", handleClick);
-                    this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                    this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                   `}"
                 />
                 <span class="button button--transparent">
@@ -720,7 +720,7 @@ export default async (app: Courselore): Promise<void> => {
                       preview.hidden = false;
                     };
                     this.addEventListener("click", handleClick);
-                    this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                    this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                   `}"
                 />
                 <span
@@ -870,7 +870,7 @@ export default async (app: Courselore): Promise<void> => {
                     element.focus();  
                   };
                   this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   const keys = "mod+alt+1";
@@ -915,7 +915,7 @@ export default async (app: Courselore): Promise<void> => {
                     element.focus();
                   };
                   this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   const keys = "mod+alt+2";
@@ -960,7 +960,7 @@ export default async (app: Courselore): Promise<void> => {
                     element.focus();
                   };
                   this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   const keys = "mod+alt+3";
@@ -1006,7 +1006,7 @@ export default async (app: Courselore): Promise<void> => {
                     element.focus();
                   };
                   this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   const keys = "mod+b";
@@ -1026,7 +1026,7 @@ export default async (app: Courselore): Promise<void> => {
                     element.focus();
                   };
                   this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });                  
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });                  
 
                   const tooltip = tippy(this, {
                     touch: false,
@@ -1094,7 +1094,7 @@ export default async (app: Courselore): Promise<void> => {
                     element.focus();
                   };
                   this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   const keys = "mod+k";
@@ -1141,7 +1141,7 @@ export default async (app: Courselore): Promise<void> => {
                     element.focus();
                   };
                   this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   const keys = "mod+shift+8";
@@ -1186,7 +1186,7 @@ export default async (app: Courselore): Promise<void> => {
                     element.focus();
                   };
                   this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                   
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   const keys = "mod+shift+7";
@@ -1206,7 +1206,7 @@ export default async (app: Courselore): Promise<void> => {
                     element.focus();
                   };
                   this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const tooltip = tippy(this, {
                     touch: false,
@@ -1277,7 +1277,7 @@ export default async (app: Courselore): Promise<void> => {
                     element.focus();
                   };
                   this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   const keys = "mod+'";
@@ -1328,7 +1328,7 @@ export default async (app: Courselore): Promise<void> => {
                     element.focus();
                   };
                   this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                 `}"
               >
                 <i class="bi bi-table"></i>
@@ -1368,7 +1368,7 @@ export default async (app: Courselore): Promise<void> => {
                     element.focus();
                   };
                   this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                   
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   const keys = "mod+shift+d";
@@ -1413,7 +1413,7 @@ export default async (app: Courselore): Promise<void> => {
                     element.focus();
                   };
                   this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   const keys = "mod+shift+f";
@@ -1459,7 +1459,7 @@ export default async (app: Courselore): Promise<void> => {
                     element.focus();
                   };
                   this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   const keys = "mod+e";
@@ -1504,7 +1504,7 @@ export default async (app: Courselore): Promise<void> => {
                     element.focus();
                   };
                   this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   const keys = "mod+shift+e";
@@ -1551,7 +1551,7 @@ export default async (app: Courselore): Promise<void> => {
                     element.focus();
                   };
                   this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   const keys = "mod+alt+e";
@@ -1596,7 +1596,7 @@ export default async (app: Courselore): Promise<void> => {
                     element.focus();
                   };
                   this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   const keys = "mod+alt+shift+e";
@@ -1631,7 +1631,7 @@ export default async (app: Courselore): Promise<void> => {
                           element.focus();
                         };
                         this.addEventListener("click", handleClick);
-                        this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                        this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                       `}"
                     >
                       <i class="bi bi-at"></i>
@@ -1657,7 +1657,7 @@ export default async (app: Courselore): Promise<void> => {
                           element.focus();
                         };
                         this.addEventListener("click", handleClick);
-                        this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                        this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                       `}"
                     >
                       <i class="bi bi-hash"></i>
@@ -1700,7 +1700,7 @@ export default async (app: Courselore): Promise<void> => {
                     this.closest(".content-editor").querySelector(".content-editor--write--attachments").click();
                   };
                   this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   const keys = "mod+shift+i";
@@ -1744,7 +1744,7 @@ export default async (app: Courselore): Promise<void> => {
                     this.closest(".content-editor").querySelector(".content-editor--write--attachments").click();
                   };
                   this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                   const keys = "mod+shift+k";
@@ -1829,7 +1829,7 @@ export default async (app: Courselore): Promise<void> => {
                     if (!checkIsSignedIn()) event.preventDefault();
                   };
                   this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const handleChange = () => {
                     this.upload(this.files);
@@ -1883,7 +1883,7 @@ export default async (app: Courselore): Promise<void> => {
                       localStorage.setItem("content-editor--write--textarea--programmer-mode", JSON.stringify(this.checked));  
                     };
                     this.addEventListener("click", handleClick);
-                    this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
+                    this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                     
                     const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
                     const keys = "mod+alt+0";
@@ -1943,31 +1943,38 @@ export default async (app: Courselore): Promise<void> => {
               `)}"
               onload="${javascript`
                 autosize(this);
-                this.addEventListener("input", () => {
-                  this.mentionsAndReferencesHandleInput?.();
-                });
-                this.addEventListener("keydown", (event) => {
-                  this.mentionsAndReferencesHandleKeydown?.(event);
-                });
-                this.addEventListener("dragenter", () => {
+                this.addEventListener("beforeunload", () => { autosize.destroy(this); }, { once: true });
+
+                const handleDragenter = () => {
                   this.classList.add("drag");
-                });
-                this.addEventListener("dragover", (event) => {
+                };
+                this.addEventListener("dragenter", handleDragenter);
+                this.addEventListener("beforeunload", () => { this.removeEventListener("dragenter", handleDragenter);  }, { once: true });
+                const handleDragover = (event) => {
                   event.preventDefault();
-                });
-                this.addEventListener("drop", (event) => {
+                };
+                this.addEventListener("dragover", handleDragover);
+                this.addEventListener("beforeunload", () => { this.removeEventListener("dragover", handleDragover);  }, { once: true });
+                const handleDrop = (event) => {
                   event.preventDefault();
                   this.classList.remove("drag");
                   this.closest(".content-editor").querySelector(".content-editor--write--attachments").upload(event.dataTransfer.files);
-                });
-                this.addEventListener("dragleave", () => {
+                };
+                this.addEventListener("drop", handleDrop);
+                this.addEventListener("beforeunload", () => { this.removeEventListener("drop", handleDrop);  }, { once: true });
+                const handleDragleave = () => {
                   this.classList.remove("drag");
-                });
-                this.addEventListener("paste", (event) => {
+                };
+                this.addEventListener("dragleave", handleDragleave);
+                this.addEventListener("beforeunload", () => { this.removeEventListener("dragleave", handleDragleave);  }, { once: true });
+                const handlePaste = (event) => {
                   if (event.clipboardData.files.length === 0) return;
                   event.preventDefault();
                   this.closest(".content-editor").querySelector(".content-editor--write--attachments").upload(event.clipboardData.files);
-                });
+                };
+                this.addEventListener("paste", handlePaste);
+                this.addEventListener("beforeunload", () => { this.removeEventListener("paste", handlePaste);  }, { once: true });
+
                 ${
                   res.locals.course !== undefined
                     ? javascript`
@@ -2008,9 +2015,11 @@ export default async (app: Courselore): Promise<void> => {
                                         type="button"
                                         class="dropdown--menu--item button button--transparent"
                                         onload="${javascript`
-                                          this.addEventListener("click", () => {
+                                          const handleClick = () => {
                                             this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("everyone");
-                                          });
+                                          };
+                                          this.addEventListener("click", handleClick);
+                                          this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                                         `}"
                                       >
                                         Everyone in the Conversation
@@ -2019,9 +2028,11 @@ export default async (app: Courselore): Promise<void> => {
                                         type="button"
                                         class="dropdown--menu--item button button--transparent"
                                         onload="${javascript`
-                                          this.addEventListener("click", () => {
+                                          const handleClick = () => {
                                             this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("staff");
-                                          });
+                                          };
+                                          this.addEventListener("click", handleClick);
+                                          this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                                         `}"
                                       >
                                         Staff in the Conversation
@@ -2030,9 +2041,11 @@ export default async (app: Courselore): Promise<void> => {
                                         type="button"
                                         class="dropdown--menu--item button button--transparent"
                                         onload="${javascript`
-                                          this.addEventListener("click", () => {
+                                          const handleClick = () => {
                                             this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("students");
-                                          });
+                                          };
+                                          this.addEventListener("click", handleClick);
+                                          this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                                         `}"
                                       >
                                         Students in the Conversation
@@ -2075,53 +2088,59 @@ export default async (app: Courselore): Promise<void> => {
                           },
                         ];
                         let anchorIndex = null;
-                        let isUpdating = false;
-                        let shouldUpdateAgain = false;
-                        this.mentionsAndReferencesHandleInput = async () => {
-                          const value = this.value;
-                          const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
-                          const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
-                          for (const { trigger, route, dropdownMenu } of dropdownMenus) {
-                            if (!dropdownMenu.state.isShown) {
-                              if (
-                                value[selectionMin - 1] !== trigger ||
-                                (selectionMin > 1 && value[selectionMin - 2].match(/\\w/) !== null)
-                              ) continue;
-                              anchorIndex = selectionMin;
-                              const caretCoordinates = getCaretCoordinates(this, anchorIndex - 1);
-                              dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
-                              dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
-                              tippy.hideAll();
-                              dropdownMenu.show();
+
+                        const handleInput = (() => {
+                          let isUpdating = false;
+                          let shouldUpdateAgain = false;
+                          return async () => {
+                            const value = this.value;
+                            const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
+                            const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
+                            for (const { trigger, route, dropdownMenu } of dropdownMenus) {
+                              if (!dropdownMenu.state.isShown) {
+                                if (
+                                  value[selectionMin - 1] !== trigger ||
+                                  (selectionMin > 1 && value[selectionMin - 2].match(/\\w/) !== null)
+                                ) continue;
+                                anchorIndex = selectionMin;
+                                const caretCoordinates = getCaretCoordinates(this, anchorIndex - 1);
+                                dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
+                                dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
+                                tippy.hideAll();
+                                dropdownMenu.show();
+                              }
+                              if (selectionMin < anchorIndex || value[anchorIndex - 1] !== trigger) {
+                                dropdownMenu.hide();
+                                continue;
+                              }
+                              if (isUpdating) {
+                                shouldUpdateAgain = true;
+                                continue;
+                              }
+                              isUpdating = true;
+                              shouldUpdateAgain = false;
+                              const content = dropdownMenu.props.content;
+                              const searchResults = content.querySelector(".search-results");
+                              const search = value.slice(anchorIndex, selectionMax).trim();
+                              if (search === "")
+                                searchResults.innerHTML = "";
+                              else
+                                leafac.loadPartial(
+                                  searchResults,
+                                  await (await fetch(route + "?" + new URLSearchParams({ search }))).text()
+                                );
+                              const buttons = content.querySelectorAll(".button");
+                              for (const button of buttons) button.classList.remove("hover");
+                              if (buttons.length > 0) buttons[0].classList.add("hover");
+                              isUpdating = false;
+                              if (shouldUpdateAgain) handleInput();
                             }
-                            if (selectionMin < anchorIndex || value[anchorIndex - 1] !== trigger) {
-                              dropdownMenu.hide();
-                              continue;
-                            }
-                            if (isUpdating) {
-                              shouldUpdateAgain = true;
-                              continue;
-                            }
-                            isUpdating = true;
-                            shouldUpdateAgain = false;
-                            const content = dropdownMenu.props.content;
-                            const searchResults = content.querySelector(".search-results");
-                            const search = value.slice(anchorIndex, selectionMax).trim();
-                            if (search === "")
-                              searchResults.innerHTML = "";
-                            else
-                              leafac.loadPartial(
-                                searchResults,
-                                await (await fetch(route + "?" + new URLSearchParams({ search }))).text()
-                              );
-                            const buttons = content.querySelectorAll(".button");
-                            for (const button of buttons) button.classList.remove("hover");
-                            if (buttons.length > 0) buttons[0].classList.add("hover");
-                            isUpdating = false;
-                            if (shouldUpdateAgain) this.mentionsAndReferencesHandleInput?.();
                           }
-                        };
-                        this.mentionsAndReferencesHandleKeydown = (event) => {
+                        })();
+                        this.addEventListener("input", handleInput);
+                        this.addEventListener("beforeunload", () => { this.removeEventListener("input", handleInput); }, { once: true });
+
+                        const handleKeydown = (event) => {
                           for (const { dropdownMenu } of dropdownMenus) {
                             if (!dropdownMenu.state.isShown) continue;
                             const content = dropdownMenu.props.content;
@@ -2161,6 +2180,9 @@ export default async (app: Courselore): Promise<void> => {
                             }
                           }
                         };
+                        this.addEventListener("keydown", handleKeydown);
+                        this.addEventListener("beforeunload", () => { this.removeEventListener("keydown", handleKeydown); }, { once: true });
+
                         this.dropdownMenuComplete = (text) => {
                           this.setSelectionRange(anchorIndex, Math.max(this.selectionStart, this.selectionEnd));
                           textFieldEdit.insert(this, text + " ");
