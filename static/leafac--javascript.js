@@ -111,8 +111,6 @@ const eventSourceRefresh = async (response) => {
 };
 
 const leafac = {
-  elementsToUnload: new Map(),
-
   liveNavigation(baseURL) {
     window.addEventListener("DOMContentLoaded", () => {
       for (const element of leafac.descendants(document.querySelector("body")))
@@ -221,9 +219,13 @@ const leafac = {
       element.dispatchEvent(new Event("beforeunload"));
       leafac.elementsToUnload.delete(element);
     }
-    documentHTMLForJavaScript.innerHTML = partialHTMLForJavaScript.innerHTML;
     partialHTMLForJavaScript.remove();
-    parentElement.innerHTML = partialHTML.querySelector("body").innerHTML;
+    morphdom(parentElement, partialHTML.querySelector("body"), {
+      childrenOnly: true,
+    });
+    morphdom(documentHTMLForJavaScript, partialHTMLForJavaScript, {
+      childrenOnly: true,
+    });
     for (const element of [
       ...parentElement.querySelectorAll("*"),
       ...documentHTMLForJavaScript.querySelectorAll("*"),
@@ -235,6 +237,8 @@ const leafac = {
     ])
       new Function(element.getAttribute("onload")).call(element);
   },
+
+  elementsToUnload: new Map(),
 
   evaluateElementsAttribute: (() => {
     const elementsAlreadyEvaluated = new Map();
