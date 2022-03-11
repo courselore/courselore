@@ -2,13 +2,17 @@
 
 ### Performance
 
-- Remove `onnavigate`.
 - Review `onload`.
+- Review `onHidden` (should make sure to clean tooltip `onbeforeunload`).
 - At the end, there should be no stray `html-for-javascript`.
 
 ```
-const tooltip =
+const tooltip = ;
 this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+
+const handleClick = ;
+this.addEventListener("click", handleClick);
+this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick);  }, { once: true });
 
 this.addEventListener("beforeunload", () => {  }, { once: true });
 

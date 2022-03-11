@@ -4395,7 +4395,7 @@ export default (app: Courselore): void => {
 
                                                                     const load = async () => {
                                                                       if (!content.hidden) return;
-                                                                      leafac.mount(
+                                                                      leafac.loadPartial(
                                                                         content,
                                                                         await (await fetch("${
                                                                           app
@@ -5488,7 +5488,7 @@ export default (app: Courselore): void => {
 
                                                     const load = async () => {
                                                       if (!content.hidden) return;
-                                                      leafac.mount(
+                                                      leafac.loadPartial(
                                                         content,
                                                         await (await fetch("${
                                                           app.locals.options

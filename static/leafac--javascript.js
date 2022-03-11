@@ -188,7 +188,7 @@ const leafac = {
     }
   },
 
-  mount(parentElement, partialString) {
+  loadPartial(parentElement, partialString) {
     const partialHTML = new DOMParser().parseFromString(
       partialString,
       "text/html"
@@ -199,11 +199,25 @@ const leafac = {
         "beforeend",
         partialHTML.querySelector("head").innerHTML
       );
-    document.querySelector(".html-for-javascript").innerHTML =
-      partialHTML.querySelector(".html-for-javascript").innerHTML;
-    partialHTML.querySelector(".html-for-javascript").remove();
+    const documentHTMLForJavaScript = document.querySelector(
+      ".html-for-javascript"
+    );
+    const partialHTMLForJavaScript = partialHTML.querySelector(
+      ".html-for-javascript"
+    );
+    for (const element of [
+      ...parentElement.querySelectorAll("*"),
+      ...documentHTMLForJavaScript.querySelectorAll("*"),
+    ])
+      element.dispatchEvent(new Event("beforeunload"));
+    documentHTMLForJavaScript.innerHTML = partialHTMLForJavaScript.innerHTML;
+    partialHTMLForJavaScript.remove();
     parentElement.innerHTML = partialHTML.querySelector("body").innerHTML;
-    // window.dispatchEvent(new Event("DOMContentLoaded"));
+    for (const element of [
+      ...parentElement.querySelectorAll("[onload]"),
+      ...documentHTMLForJavaScript("[onload]"),
+    ])
+      new Function(element.getAttribute("onload")).call(element);
   },
 
   evaluateElementsAttribute: (() => {
