@@ -1080,10 +1080,7 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.locals.liveUpdaters.course = (
-    courseId,
-    eventDestinationReference
-  ) => {
+  app.locals.liveUpdaters.course = (courseId, eventDestinationReference) => {
     return; // TODO
     setTimeout(() => {
       for (const { reference, req, res } of app.locals.eventDestinations) {
