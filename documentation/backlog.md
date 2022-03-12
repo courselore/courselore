@@ -38,45 +38,27 @@ this.addEventListener("beforeunload", () => {
 
 ---
 
+- Show “loading”
+- Ignore link clicks & form submissions when there’s an undergoing request.
+- Form submissions: Confirm that `onsubmit` handlers are being called appropriately.
 - Make sure that eventSources for live-updates are disconnected from the previous page and reconnected to the new page when navigating.
-- What happens when person clicks on several links in a row and the responses come back out of order?
-  - Abort undergoing request.
+- Cache
+  - Scroll
+- Progress bar
+- `leafac.warnAboutLosingInputs()` doesn’t work.
+- `autofocus`.
+- Reenable live updates
+  - Prevent live updates to originating browser tab: `"?eventSourceReference=" + eventSource.reference`
+- `saveFormInputValue()` is misbehaving.
 
 ---
 
-- Live navigation
-- Do the Turbo Drive thing everywhere.
-  - Reasoning:
-    - It isn’t only for performance, but also to keep the state of the world on the client-side. For example, the scrolling position on the sidebar.
-    - Existing solutions such as https://github.com/hotwired/turbo & https://github.com/MoOx/pjax won’t do it because we want to use Morphdom.
-  - Features
-    - Capture
-      - Internal links
-      - Form submissions
-        - Confirm that form validation is happening
-        - Confirm that `onsubmit` handlers are being called appropriately.
-        - Reset form
-    - Cache
-    - Scroll
-    - Progress bar
-    - Selective fetching: the server doesn’t need to send the whole page all the time. It can send only what changed.
-    - `leafac.warnAboutLosingInputs()` doesn’t work when using `eventSourceRefresh`.
-    - `autofocus`.
-  - Close eventSources that may no longer be relevant.
-  - `"?eventSourceReference=" + eventSource.reference`
-  - `saveFormInputValue()` is misbehaving in Turbo Drive.
-  - Should `onpopstate` just refresh the page?
-  - References
-    - https://github.com/MoOx/pjax
-    - https://github.com/hotwired/turbo
-    - https://github.com/falsandtru/pjax-api
 - Framing.
   - Pagination links.
     - Conversations in sidebar.
     - Messages in conversation.
   - Filters.
 - Remove special cases
-  - Chat message submission & like
   - Look for `onsubmit`.
 - `TODO`
 - Good to have: Don’t scroll back to top on some kinds of updates, like invitation role.
@@ -98,6 +80,10 @@ this.addEventListener("beforeunload", () => {
   - On sending message on non-chat, it’s scrolling back to the first page.
   - Remove feature flag.
   - The “mark as read” button won’t work because it doesn’t visit all pages.
+
+---
+
+- Selective fetching: the server doesn’t need to send the whole page all the time. It can send only what changed.
 
 ### User Interface Improvements
 
