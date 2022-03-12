@@ -136,7 +136,7 @@ export type MayEndorseMessageMiddleware = express.RequestHandler<
 export interface MayEndorseMessageMiddlewareLocals
   extends MessageExistsMiddlewareLocals {}
 
-export type CourseRealTimeUpdater = (
+export type CourseLiveUpdater = (
   courseId: number,
   eventDestinationReference?: string | undefined
 ) => void;
@@ -732,7 +732,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${messageReference}`
       );
 
-      app.locals.realTimeUpdaters.course(
+      app.locals.liveUpdaters.course(
         res.locals.course.id,
         req.query.eventSourceReference
       );
@@ -856,7 +856,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
       );
 
-      app.locals.realTimeUpdaters.course(res.locals.course.id);
+      app.locals.liveUpdaters.course(res.locals.course.id);
     }
   );
 
@@ -888,7 +888,7 @@ export default (app: Courselore): void => {
       res.redirect(
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
       );
-      app.locals.realTimeUpdaters.course(res.locals.course.id);
+      app.locals.liveUpdaters.course(res.locals.course.id);
     }
   );
 
@@ -930,7 +930,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
       );
 
-      app.locals.realTimeUpdaters.course(
+      app.locals.liveUpdaters.course(
         res.locals.course.id,
         req.query.eventSourceReference
       );
@@ -968,7 +968,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
       );
 
-      app.locals.realTimeUpdaters.course(
+      app.locals.liveUpdaters.course(
         res.locals.course.id,
         req.query.eventSourceReference
       );
@@ -1044,7 +1044,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
       );
 
-      app.locals.realTimeUpdaters.course(res.locals.course.id);
+      app.locals.liveUpdaters.course(res.locals.course.id);
     }
   );
 
@@ -1077,11 +1077,11 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
       );
 
-      app.locals.realTimeUpdaters.course(res.locals.course.id);
+      app.locals.liveUpdaters.course(res.locals.course.id);
     }
   );
 
-  app.locals.realTimeUpdaters.course = (
+  app.locals.liveUpdaters.course = (
     courseId,
     eventDestinationReference
   ) => {

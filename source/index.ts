@@ -109,7 +109,7 @@ import message, {
   MayEditMessageMiddleware,
   MayEndorseMessageHelper,
   MayEndorseMessageMiddleware,
-  CourseRealTimeUpdater,
+  CourseLiveUpdater,
   NotificationsMailer,
 } from "./message.js";
 export {
@@ -220,8 +220,8 @@ export interface Courselore extends express.Express {
     workers: {
       sendEmail: SendEmailWorker;
     };
-    realTimeUpdaters: {
-      course: CourseRealTimeUpdater;
+    liveUpdaters: {
+      course: CourseLiveUpdater;
     };
   } & DatabaseLocals &
     EventSourceLocals;
@@ -263,7 +263,7 @@ export default async (options: Options): Promise<Courselore> => {
   app.locals.helpers = {} as any;
   app.locals.mailers = {} as any;
   app.locals.workers = {} as any;
-  app.locals.realTimeUpdaters = {} as any;
+  app.locals.liveUpdaters = {} as any;
   await database(app);
   logging(app);
   globalMiddlewares(app);
