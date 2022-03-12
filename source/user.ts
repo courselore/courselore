@@ -853,6 +853,7 @@ export default (app: Courselore): void => {
                             },
                             content: await response.text(),
                           });
+                          this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                           return;
                         }
                         const avatarURL = await response.text();
@@ -979,14 +980,12 @@ export default (app: Courselore): void => {
   app.post<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
     "/settings/profile/avatar",
     asyncHandler(async (req, res, next) => {
-      if (
-        req.files?.avatar === undefined ||
-        Array.isArray(req.files.avatar) ||
-        !req.files.avatar.mimetype.startsWith("image/")
-      )
+      if (req.files?.avatar === undefined || Array.isArray(req.files.avatar))
         return next("validation");
+      if (!req.files.avatar.mimetype.startsWith("image/"))
+        return res.status(413).send("The avatar must be an image.");
       if (req.files.avatar.truncated)
-        return res.status(413).send("Avatars must be smaller than 10MB.");
+        return res.status(413).send("The avatar must be smaller than 10MB.");
       const name = filenamify(req.files.avatar.name, { replacement: "-" });
       if (name.trim() === "") return next("validation");
       const folder = cryptoRandomString({
