@@ -22,11 +22,10 @@ this.addEventListener("beforeunload", () => {
 }, { once: true });
 ```
 
-- message
-- user
-- layouts
-- course
-- conversation
+- `source/user.ts`
+- `source/layouts.ts`
+- `source/course.ts`
+- `source/conversation.ts`
 
 ---
 

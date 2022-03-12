@@ -549,7 +549,8 @@ export default (app: Courselore): void => {
                       <time
                         datetime="${new Date(reading.createdAt).toISOString()}"
                         onload="${javascript`
-                          leafac.setRelativizeDateTime(this, { capitalize: true });
+                          const relativizeDateTimeID = leafac.setRelativizeDateTime(this, { capitalize: true });
+                          this.addEventListener("beforeunload", () => { leafac.clearRelativizeDateTime(relativizeDateTimeID); }, { once: true });
                         `}"
                         onbeforeelchildrenupdated="${javascript`
                           return false;
