@@ -2598,11 +2598,13 @@ export default async (app: Courselore): Promise<void> => {
                 border-radius: var(--border-radius--circle);
               `)}"
               onload="${javascript`
-                tippy(this, {
+                const tooltip = tippy(this, {
                   touch: false,
                   content: ${JSON.stringify(res.locals.user.name)},
                 });
-                tippy(this, {
+                this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+
+                const dropdown = tippy(this, {
                   trigger: "click",
                   interactive: true,
                   content: ${res.locals.HTMLForJavaScript(
@@ -2655,6 +2657,7 @@ export default async (app: Courselore): Promise<void> => {
                     `
                   )},
                 });
+                this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(dropdown.props.content); dropdown.destroy(); }, { once: true });
               `}"
             >
               $${app.locals.partials.user({
@@ -2729,14 +2732,14 @@ export default async (app: Courselore): Promise<void> => {
                 <button
                   class="button button--transparent"
                   onload="${javascript`
-                    this.tooltip?.destroy();
-                    this.tooltip = tippy(this, {
+                    const tooltip = tippy(this, {
                       trigger: "click",
                       interactive: true,
                       content: ${res.locals.HTMLForJavaScript(
                         html`<div class="dropdown--menu">$${menu}</div>`
                       )},
                     });
+                    this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
                   `}"
                 >
                   $${menuButton}
