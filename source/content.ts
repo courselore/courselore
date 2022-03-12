@@ -1834,7 +1834,7 @@ export default async (app: Courselore): Promise<void> => {
                               theme: "rose",
                               content: "You must sign in to upload files.",
                             });
-                            this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
+                            this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                             return () => {
                               tooltip.show();
                               return false;
