@@ -3,6 +3,7 @@
 ### Performance
 
 - Review `onload`.
+  - `source/conversation.ts`
 - At the end, there should be no stray `html-for-javascript`.
 - Look into Firefox not dispatching events on disabled elements.
 
@@ -23,9 +24,6 @@ this.addEventListener("beforeunload", () => {
 
 }, { once: true });
 ```
-
-- `source/course.ts`
-- `source/conversation.ts`
 
 ---
 
