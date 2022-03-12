@@ -803,6 +803,53 @@ export default async (app: Courselore): Promise<void> => {
           </div>
         </div>
 
+        <div
+          class="${res.locals.localCSS(css`
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            cursor: wait;
+          `)}"
+          onload="${javascript`
+            const tooltip = tippy(this, {
+              touch: false,
+              content: "Loading…",
+            });
+            this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+          `}"
+        >
+          <div
+            class="${res.locals.localCSS(css`
+              height: var(--border-width--4);
+              background-color: var(--color--blue--500);
+              @media (prefers-color-scheme: dark) {
+                background-color: var(--color--blue--600);
+              }
+              border: var(--border-width--1) solid var(--color--blue--600);
+              border-top-width: var(--border-width--0);
+              border-left-width: var(--border-width--0);
+              @media (prefers-color-scheme: dark) {
+                border-color: var(--color--blue--700);
+              }
+              transition-property: width;
+              transition-duration: var(--transition-duration--500);
+              transition-timing-function: var(
+                --transition-timing-function--in-out
+              );
+            `)}"
+            onload="${javascript`
+              const element = this;
+              let width = 10;
+              (function update() {
+                element.style.width = width.toString() + "%";
+                width += (90 - width) / (15 + Math.random() * 15);
+                window.setTimeout(update, 750 + Math.random() * 750);
+              })();
+            `}"
+          ></div>
+        </div>
+
         $${res.locals.HTMLForJavaScript.toString()}
       </body>
     `;
