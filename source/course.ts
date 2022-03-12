@@ -2981,9 +2981,7 @@ export default (app: Courselore): void => {
                     class="link"
                     onload="${javascript`
                       const handleClick = () => {
-                        const id = "#invitation--${invitation.reference}";
-                        window.location.hash = id;
-                        const button = document.querySelector(id);
+                        const button = document.querySelector("#invitation--${invitation.reference}");
                         button.click();
                         button.tooltip.hide();
                         this.closest(".flash").remove();

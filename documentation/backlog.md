@@ -2,9 +2,6 @@
 
 ### Performance
 
-- “See invitation link” button on Flash isn’t working
-- Good to have: Don’t scroll back to top on some kinds of updates, like invitation role.
-
 - Review `onload`.
 - At the end, there should be no stray `html-for-javascript`.
 - Look into Firefox not dispatching events on disabled elements.
@@ -84,6 +81,7 @@ this.addEventListener("beforeunload", () => {
   - Chat message submission & like
   - Look for `onsubmit`.
 - `TODO`
+- Good to have: Don’t scroll back to top on some kinds of updates, like invitation role.
 
 ---
 
