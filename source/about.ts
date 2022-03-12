@@ -677,7 +677,7 @@ export default (app: Courselore): void => {
               class="${res.locals.localCSS(css`
                 display: flex;
                 gap: var(--space--14);
-                @media (max-width: 1289px) {
+                @media (max-width: 1299px) {
                   flex-direction: column;
                 }
                 & > * {
@@ -690,10 +690,16 @@ export default (app: Courselore): void => {
                     width: var(--space--24);
                     border-radius: var(--border-radius--circle);
                   }
+                  & > p {
+                    flex: 1;
+                  }
                 }
               `)}"
             >
-              <div>
+              <a
+                href="https://www.cs.jhu.edu/~scott/"
+                class="button button--transparent"
+              >
                 <img
                   src="/team/scott-smith.png"
                   alt="Dr. Scott Smith"
@@ -701,21 +707,19 @@ export default (app: Courselore): void => {
                   class="img"
                 />
                 <p>
-                  <a
-                    href="https://www.cs.jhu.edu/~scott/"
-                    class="button button--tight button--tight--inline button--inline button--transparent strong"
-                  >
-                    Dr. Scott Smith
-                  </a>
+                  <strong class="strong"> Dr. Scott Smith </strong>
                   <br />
                   <span class="secondary">
                     CEO. Professor of Computer Science at The Johns Hopkins
                     University.
                   </span>
                 </p>
-              </div>
+              </a>
 
-              <div>
+              <a
+                href="https://www.cs.jhu.edu/faculty/ali-madooei/"
+                class="button button--transparent"
+              >
                 <img
                   src="/team/ali-madooei.png"
                   alt="Dr. Ali Madooei"
@@ -723,21 +727,16 @@ export default (app: Courselore): void => {
                   class="img"
                 />
                 <p>
-                  <a
-                    href="https://www.cs.jhu.edu/faculty/ali-madooei/"
-                    class="button button--tight button--tight--inline button--inline button--transparent strong"
-                  >
-                    Dr. Ali Madooei
-                  </a>
+                  <strong class="strong"> Dr. Ali Madooei </strong>
                   <br />
                   <span class="secondary">
                     Consultant. Lecturer of Computer Science at The Johns
                     Hopkins University.
                   </span>
                 </p>
-              </div>
+              </a>
 
-              <div>
+              <a href="https://leafac.com" class="button button--transparent">
                 <img
                   src="/team/leandro-facchinetti.png"
                   alt="Leandro Facchinetti"
@@ -745,18 +744,13 @@ export default (app: Courselore): void => {
                   class="img"
                 />
                 <p>
-                  <a
-                    href="https://leafac.com"
-                    class="button button--tight button--tight--inline button--inline button--transparent strong"
-                  >
-                    Leandro Facchinetti
-                  </a>
+                  <strong class="strong"> Leandro Facchinetti </strong>
                   <br />
                   <span class="secondary">
                     Software Developer & Designer.
                   </span>
                 </p>
-              </div>
+              </a>
             </div>
           </div>
 
