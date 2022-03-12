@@ -282,7 +282,8 @@ const leafac = {
         },
         content: error,
       });
-      element.focus();
+      target.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+      target.focus();
       return false;
     }
     return true;

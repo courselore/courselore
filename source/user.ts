@@ -827,6 +827,12 @@ export default (app: Courselore): void => {
                       });
                       this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(uploadingIndicator.props.content); uploadingIndicator.destroy(); }, { once: true });
 
+                      const uploadingError = tippy(avatarChooser, {
+                        theme: "validation--error",
+                        trigger: "manual",
+                      });
+                      this.addEventListener("beforeunload", () => { uploadingError.destroy(); }, { once: true });
+
                       this.upload = async (fileList) => {
                         const body = new FormData();
                         body.append("_csrf", ${JSON.stringify(
@@ -844,16 +850,8 @@ export default (app: Courselore): void => {
                         });
                         uploadingIndicator.hide();
                         if (!response.ok) {
-                          const tooltip = tippy(avatarChooser, {
-                            theme: "validation--error",
-                            trigger: "manual",
-                            showOnCreate: true,
-                            onHidden: () => {
-                              tooltip.destroy();
-                            },
-                            content: await response.text(),
-                          });
-                          this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                          uploadingError.setContent(await response.text());
+                          uploadingError.show();
                           return;
                         }
                         const avatarURL = await response.text();

@@ -3,7 +3,6 @@
 ### Performance
 
 - Review `onload`.
-- Review `onHidden` (should make sure to clean tooltip `onbeforeunload`).
 - At the end, there should be no stray `html-for-javascript`.
 - Look into Firefox not dispatching events on disabled elements.
 
