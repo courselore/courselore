@@ -2144,8 +2144,10 @@ export default async (app: Courselore): Promise<void> => {
                               const content = dropdownMenu.props.content;
                               const searchResults = content.querySelector(".search-results");
                               const search = value.slice(anchorIndex, selectionMax).trim();
-                              if (search === "")
+                              if (search === "") {
+                                leafac.dispatchBeforeunload(searchResults);
                                 searchResults.innerHTML = "";
+                              }
                               else
                                 leafac.loadPartial(
                                   searchResults,
