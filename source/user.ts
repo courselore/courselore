@@ -294,17 +294,21 @@ export default (app: Courselore): void => {
               `)}"
               onload="${javascript`
                 const element = this;
-                const lastSeenOnlineAt = ${new Date(
-                  user.lastSeenOnlineAt
-                ).getTime()};
-                tippy(element, {
+
+                const tooltip = tippy(element, {
                   touch: false,
                   content: "Online",
                 });
+                this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+
+                let updateTimeoutID;
                 (function update() {
-                  element.hidden = Date.now() - lastSeenOnlineAt > 5 * 60 * 1000;
-                  window.setTimeout(update, 60 * 1000);
+                  element.hidden = Date.now() - ${new Date(
+                    user.lastSeenOnlineAt
+                  ).getTime()} > 5 * 60 * 1000;
+                  updateTimeoutID = window.setTimeout(update, 60 * 1000);
                 })();
+                this.addEventListener("beforeunload", () => { window.clearTimeout(updateTimeoutID); }, { once: true });
               `}"
               onbeforeelupdated="${javascript`
                 return false;
