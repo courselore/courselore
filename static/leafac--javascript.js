@@ -196,7 +196,7 @@ const leafac = {
       .querySelector("head")
       .insertAdjacentHTML(
         "beforeend",
-        partialHTML.querySelector("head").innerHTML
+        partialDocument.querySelector("head").innerHTML
       );
     const HTMLForJavaScript = document.querySelector(".html-for-javascript");
     const partialHTMLForJavaScript = partialDocument.querySelector(
