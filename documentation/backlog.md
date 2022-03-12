@@ -7,18 +7,15 @@
 - Look into Firefox not dispatching events on disabled elements.
 
 ```
-const tooltip = ;
+const tooltip =
 this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
-const tooltip = ;
+const tooltip =
 this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
 const handleClick = ;
 this.addEventListener("click", handleClick);
 this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
-
-const relativizeDateTimeID = 
-this.addEventListener("beforeunload", () => { leafac.clearRelativizeDateTime(relativizeDateTimeID); }, { once: true });
 
 this.addEventListener("beforeunload", () => {  }, { once: true });
 

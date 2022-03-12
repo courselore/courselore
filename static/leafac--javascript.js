@@ -282,7 +282,13 @@ const leafac = {
         },
         content: error,
       });
-      target.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+      target.addEventListener(
+        "beforeunload",
+        () => {
+          tooltip.destroy();
+        },
+        { once: true }
+      );
       target.focus();
       return false;
     }
@@ -399,7 +405,7 @@ const leafac = {
     });
   },
 
-  setRelativizeDateTime(element, options = {}) {
+  relativizeDateTimeElement(element, options = {}) {
     const tooltip = tippy(element, {
       touch: false,
     });
@@ -410,32 +416,36 @@ const leafac = {
       element.textContent = leafac.relativizeDateTime(dateTime, options);
       timeoutID = window.setTimeout(update, 10 * 1000);
     })();
-    return () => {
-      tooltip.destroy();
-      window.clearTimeout(timeoutID);
-    };
-  },
-
-  clearRelativizeDateTime(relativizeDateTimeID) {
-    relativizeDateTimeID();
+    element.addEventListener(
+      "beforeunload",
+      () => {
+        tooltip.destroy();
+        window.clearTimeout(timeoutID);
+      },
+      { once: true }
+    );
   },
 
   relativizeDateElement(element) {
+    let timeoutID;
     (function update() {
       element.textContent = leafac.relativizeDate(
         element.getAttribute("datetime")
       );
-      window.clearTimeout(element.relativizeDateElementUpdateTimeout);
-      element.relativizeDateElementUpdateTimeout = window.setTimeout(
-        update,
-        60 * 1000
-      );
+      timeoutID = window.setTimeout(update, 60 * 1000);
     })();
+    element.addEventListener(
+      "beforeunload",
+      () => {
+        window.clearTimeout(timeoutID);
+      },
+      { once: true }
+    );
   },
 
   localizeDateTimeInput(element) {
     element.defaultValue = leafac.localizeDateTime(element.defaultValue);
-    element.addEventListener("validate", (event) => {
+    const handleValidate = (event) => {
       const date = leafac.UTCizeDateTime(element.value);
       if (date === undefined) {
         event.stopImmediatePropagation();
@@ -444,7 +454,15 @@ const leafac = {
         return;
       }
       element.value = date.toISOString();
-    });
+    };
+    element.addEventListener("validate", handleValidate);
+    element.addEventListener(
+      "beforeunload",
+      () => {
+        element.removeEventListener("validate", handleValidate);
+      },
+      { once: true }
+    );
   },
 
   relativizeDateTime: (() => {
@@ -552,13 +570,24 @@ const leafac = {
     element.defaultValue =
       getLocalStorageItem()?.[window.location.pathname]?.[identifier] ?? "";
     element.isModified = false;
-    element.addEventListener("input", () => {
+
+    const handleInput = () => {
       const localStorageItem = getLocalStorageItem();
       localStorageItem[window.location.pathname] ??= {};
       localStorageItem[window.location.pathname][identifier] = element.value;
       setLocalStorageItem(localStorageItem);
-    });
-    element.closest("form").addEventListener("submit", () => {
+    };
+    element.addEventListener("input", handleInput);
+    element.addEventListener(
+      "beforeunload",
+      () => {
+        element.removeEventListener("input", handleInput);
+      },
+      { once: true }
+    );
+
+    const form = element.closest("form");
+    const handleSubmit = () => {
       const localStorageItem = getLocalStorageItem();
       delete localStorageItem?.[window.location.pathname]?.[identifier];
       if (
@@ -567,12 +596,22 @@ const leafac = {
       )
         delete localStorageItem?.[window.location.pathname];
       setLocalStorageItem(localStorageItem);
-    });
+    };
+    form.addEventListener("submit", handleSubmit);
+    form.addEventListener(
+      "beforeunload",
+      () => {
+        form.removeEventListener("submit", handleSubmit);
+      },
+      { once: true }
+    );
+
     function getLocalStorageItem() {
       return JSON.parse(
         localStorage.getItem("leafac.saveFormInputValue") ?? "{}"
       );
     }
+
     function setLocalStorageItem(localStorageItem) {
       localStorage.setItem(
         "leafac.saveFormInputValue",

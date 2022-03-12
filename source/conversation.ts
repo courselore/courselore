@@ -1562,8 +1562,7 @@ export default (app: Courselore): void => {
         <time
           datetime="${new Date(conversation.createdAt).toISOString()}"
           onload="${javascript`
-            const relativizeDateTimeID = leafac.setRelativizeDateTime(this, { capitalize: true });
-            this.addEventListener("beforeunload", () => { leafac.clearRelativizeDateTime(relativizeDateTimeID); }, { once: true });
+            leafac.relativizeDateTimeElement(this, { capitalize: true });
           `}"
           onbeforeelchildrenupdated="${javascript`
             return false;
@@ -1577,8 +1576,7 @@ export default (app: Courselore): void => {
                 <time
                   datetime="${new Date(conversation.updatedAt).toISOString()}"
                   onload="${javascript`
-                    const relativizeDateTimeID = leafac.setRelativizeDateTime(this, { preposition: "on" });
-                    this.addEventListener("beforeunload", () => { leafac.clearRelativizeDateTime(relativizeDateTimeID); }, { once: true });
+                    leafac.relativizeDateTimeElement(this, { preposition: "on" });
                   `}"
                   onbeforeelchildrenupdated="${javascript`
                     return false;
@@ -5190,7 +5188,7 @@ export default (app: Courselore): void => {
                                                     message.createdAt
                                                   ).toISOString()}"
                                                   onload="${javascript`
-                                                    leafac.setRelativizeDateTime(this, { capitalize: true });
+                                                    leafac.relativizeDateTimeElement(this, { capitalize: true });
                                                   `}"
                                                   onbeforeelchildrenupdated="${javascript`
                                                     return false;
@@ -5206,7 +5204,7 @@ export default (app: Courselore): void => {
                                                             message.updatedAt
                                                           ).toISOString()}"
                                                           onload="${javascript`
-                                                            leafac.setRelativizeDateTime(this, { preposition: "on" });
+                                                            leafac.relativizeDateTimeElement(this, { preposition: "on" });
                                                           `}"
                                                           onbeforeelchildrenupdated="${javascript`
                                                             return false;
