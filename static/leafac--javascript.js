@@ -113,8 +113,6 @@ const eventSourceRefresh = async (response) => {
 const leafac = {
   liveNavigation(baseURL) {
     window.addEventListener("DOMContentLoaded", () => {
-      for (const element of leafac.descendants(document.querySelector("body")))
-        leafac.elementsToUnload.set(element, leafac.ancestors(element));
       for (const element of document.querySelectorAll("[onload]"))
         new Function(element.getAttribute("onload")).call(element);
     });
@@ -179,21 +177,18 @@ const leafac = {
         document
           .querySelector("head")
           .insertAdjacentElement("beforeend", element);
-      for (const element of [...leafac.elementsToUnload.keys()]) {
-        element.dispatchEvent(new Event("beforeunload"));
-        leafac.elementsToUnload.delete(element);
-      }
-      morphdom(
-        document.querySelector("body"),
-        newDocument.querySelector("body")
-      );
+      const documentBody = document.querySelector("body");
+      leafac.dispatchBeforeunload(documentBody);
+      morphdom(documentBody, newDocument.querySelector("body"), {
+        childrenOnly: true,
+      });
       for (const element of previousLocalCSS) element.remove();
       window.dispatchEvent(new Event("DOMContentLoaded"));
     }
   },
 
   loadPartial(parentElement, partialString) {
-    const partialHTML = new DOMParser().parseFromString(
+    const partialDocument = new DOMParser().parseFromString(
       partialString,
       "text/html"
     );
@@ -203,42 +198,30 @@ const leafac = {
         "beforeend",
         partialHTML.querySelector("head").innerHTML
       );
-    const documentHTMLForJavaScript = document.querySelector(
+    const HTMLForJavaScript = document.querySelector(".html-for-javascript");
+    const partialHTMLForJavaScript = partialDocument.querySelector(
       ".html-for-javascript"
     );
-    const partialHTMLForJavaScript = partialHTML.querySelector(
-      ".html-for-javascript"
-    );
-    for (const [element, ancestors] of [...leafac.elementsToUnload.entries()]) {
-      if (
-        ![parentElement, documentHTMLForJavaScript].some((maybeAncestor) =>
-          ancestors.includes(maybeAncestor)
-        )
-      )
-        continue;
-      element.dispatchEvent(new Event("beforeunload"));
-      leafac.elementsToUnload.delete(element);
-    }
     partialHTMLForJavaScript.remove();
-    morphdom(parentElement, partialHTML.querySelector("body"), {
+    leafac.dispatchBeforeunload(parentElement);
+    leafac.dispatchBeforeunload(HTMLForJavaScript);
+    morphdom(parentElement, partialDocument.querySelector("body"), {
       childrenOnly: true,
     });
-    morphdom(documentHTMLForJavaScript, partialHTMLForJavaScript, {
+    morphdom(HTMLForJavaScript, partialHTMLForJavaScript, {
       childrenOnly: true,
     });
-    for (const element of [
-      ...parentElement.querySelectorAll("*"),
-      ...documentHTMLForJavaScript.querySelectorAll("*"),
-    ])
-      leafac.elementsToUnload.set(element, leafac.ancestors(element));
     for (const element of [
       ...parentElement.querySelectorAll("[onload]"),
-      ...documentHTMLForJavaScript.querySelectorAll("[onload]"),
+      ...HTMLForJavaScript.querySelectorAll("[onload]"),
     ])
       new Function(element.getAttribute("onload")).call(element);
   },
 
-  elementsToUnload: new Map(),
+  dispatchBeforeunload(parentElement) {
+    for (const element of parentElement.querySelectorAll("*"))
+      element.dispatchEvent(new Event("beforeunload"));
+  },
 
   evaluateElementsAttribute: (() => {
     const elementsAlreadyEvaluated = new Map();
