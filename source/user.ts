@@ -332,10 +332,11 @@ export default (app: Courselore): void => {
             ? html`<span
                 class="text--sky"
                 onload="${javascript`
-                    tippy(this, {
+                    const tooltip = tippy(this, {
                       touch: false,
                       content: "Staff",
                     });
+                    this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                   `}"
                 >  <i class="bi bi-mortarboard-fill"></i
               ></span>`
