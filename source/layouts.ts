@@ -2475,7 +2475,7 @@ export default async (app: Courselore): Promise<void> => {
                         }`
                   )},
                 });
-                this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
+                this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
                 const dropdown = tippy(this, {
                   trigger: "click",
