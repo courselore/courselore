@@ -17,6 +17,7 @@ const handleClick = ;
 this.addEventListener("click", handleClick);
 this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
+const relativizeDateTimeID = 
 this.addEventListener("beforeunload", () => { leafac.clearRelativizeDateTime(relativizeDateTimeID); }, { once: true });
 
 this.addEventListener("beforeunload", () => {  }, { once: true });
