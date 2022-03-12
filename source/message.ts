@@ -1084,6 +1084,7 @@ export default (app: Courselore): void => {
     courseId,
     eventDestinationReference
   ) => {
+    return; // TODO
     setTimeout(() => {
       for (const { reference, req, res } of app.locals.eventDestinations) {
         if (reference === eventDestinationReference) continue;
