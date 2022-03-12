@@ -1645,7 +1645,7 @@ export default async (app: Courselore): Promise<void> => {
                         const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
                         const handleClick = () => {
-                          textFieldEdit.wrapSelection(textarea, "@", "");
+                          textFieldEdit.wrapSelection(textarea, " @", "");
                           textarea.focus();
                         };
                         this.addEventListener("click", handleClick);
@@ -1672,7 +1672,7 @@ export default async (app: Courselore): Promise<void> => {
                         const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
                         const handleClick = () => {
-                          textFieldEdit.wrapSelection(textarea, "#", "");
+                          textFieldEdit.wrapSelection(textarea, " #", "");
                           textarea.focus();
                         };
                         this.addEventListener("click", handleClick);

@@ -24,7 +24,6 @@ this.addEventListener("beforeunload", () => {
 
 - `source/authentication.ts`
 - `source/binary.ts`
-- `source/content.ts`
 - `source/conversation.ts`
 - `source/course.ts`
 - `source/database.ts`
