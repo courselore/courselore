@@ -22,21 +22,11 @@ this.addEventListener("beforeunload", () => {
 }, { once: true });
 ```
 
-- `source/authentication.ts`
-- `source/binary.ts`
-- `source/conversation.ts`
-- `source/course.ts`
-- `source/database.ts`
-- `source/demonstration.ts`
-- `source/email.ts`
-- `source/error.ts`
-- `source/event-source.ts`
-- `source/global-middlewares.ts`
-- `source/helpers.ts`
-- `source/index.ts`
-- `source/layouts.ts`
-- `source/logging.ts`
-- `source/message.ts`
+- message
+- user
+- layouts
+- course
+- conversation
 
 ---
 
