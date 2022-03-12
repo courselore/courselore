@@ -216,6 +216,7 @@ this.addEventListener("beforeunload", () => {
   - 2-Factor Authentication.
 - Pronoun.
 - A short audio with the name’s pronunciation.
+- Give visual indication on dragging-and-dropping avatar on `/settings/profile`.
 
 ### Courses
 

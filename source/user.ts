@@ -540,10 +540,11 @@ export default (app: Courselore): void => {
     if (tooltip && anonymousHTML !== undefined)
       anonymousHTML = html`<span
         onload="${javascript`
-          tippy(this, {
+          const tooltip = tippy(this, {
             touch: false,
             content: "Anonymous to Other Students",
           });
+          this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
         `}"
         >$${anonymousHTML}</span
       >`;
@@ -663,13 +664,18 @@ export default (app: Courselore): void => {
                     }
                   `)}"
                   onload="${javascript`
-                    this.addEventListener("dragover", (event) => {
+                    const handleDragover = (event) => {
                       event.preventDefault();
-                    });
-                    this.addEventListener("drop", (event) => {
+                    };
+                    this.addEventListener("dragover", handleDragover);
+                    this.addEventListener("beforeunload", () => { this.removeEventListener("dragover", handleDragover); }, { once: true });
+
+                    const handleDrop = (event) => {
                       event.preventDefault();
                       this.querySelector(".avatar-chooser--upload").upload(event.dataTransfer.files);
-                    });
+                    };
+                    this.addEventListener("drop", handleDrop);
+                    this.addEventListener("beforeunload", () => { this.removeEventListener("drop", handleDrop); }, { once: true });
                   `}"
                 >
                   <div
@@ -690,13 +696,17 @@ export default (app: Courselore): void => {
                         border-radius: var(--border-radius--circle);
                       `)}"
                       onload="${javascript`
-                        tippy(this, {
+                        const tooltip = tippy(this, {
                           touch: false,
                           content: "Add Avatar",
                         });
-                        this.addEventListener("click", () => {
+                        this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                        
+                        const handleClick = () => {
                           this.closest("form").querySelector(".avatar-chooser--upload").click();
-                        });
+                        };
+                        this.addEventListener("click", handleClick);
+                        this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                       `}"
                     >
                       $${app.locals.partials.user({
@@ -728,13 +738,17 @@ export default (app: Courselore): void => {
                         border-radius: var(--border-radius--circle);
                       `)}"
                       onload="${javascript`
-                        tippy(this, {
+                        const tooltip = tippy(this, {
                           touch: false,
                           content: "Update Avatar",
                         });
-                        this.addEventListener("click", () => {
+                        this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                        
+                        const handleClick = () => {
                           this.closest("form").querySelector(".avatar-chooser--upload").click();
-                        });
+                        };
+                        this.addEventListener("click", handleClick);
+                        this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                       `}"
                     >
                       <img
@@ -760,18 +774,22 @@ export default (app: Courselore): void => {
                         align-items: center;
                       `)}"
                       onload="${javascript`
-                        tippy(this, {
+                        const tooltip = tippy(this, {
                           theme: "rose",
                           touch: false,
                           content: "Remove Avatar",
                         });
-                        this.addEventListener("click", () => {
+                        this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                        
+                        const handleClick = () => {
                           const form = this.closest("form");
                           const avatar = form.querySelector('[name="avatar"]')
                           avatar.value = "";
                           form.querySelector(".avatar-chooser--empty").hidden = false;
                           form.querySelector(".avatar-chooser--filled").hidden = true;
-                        });
+                        };
+                        this.addEventListener("click", handleClick);
+                        this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                       `}"
                     >
                       <i class="bi bi-trash"></i>
@@ -784,10 +802,12 @@ export default (app: Courselore): void => {
                     hidden
                     onload="${javascript`
                       this.isModified = false;
+
                       const avatarChooser = this.closest(".avatar-chooser");
                       const avatar = avatarChooser.querySelector('[name="avatar"]');
                       const avatarEmpty = avatarChooser.querySelector(".avatar-chooser--empty");
                       const avatarFilled = avatarChooser.querySelector(".avatar-chooser--filled");
+
                       const uploadingIndicator = tippy(avatarChooser, {
                         trigger: "manual",
                         hideOnClick: false,
@@ -805,6 +825,8 @@ export default (app: Courselore): void => {
                           `
                         )},
                       });
+                      this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(uploadingIndicator.props.content); uploadingIndicator.destroy(); }, { once: true });
+
                       this.upload = async (fileList) => {
                         const body = new FormData();
                         body.append("_csrf", ${JSON.stringify(
@@ -839,9 +861,12 @@ export default (app: Courselore): void => {
                         avatarFilled.hidden = false;
                         avatarFilled.querySelector("img").setAttribute("src", avatarURL);
                       };
-                      this.addEventListener("change", () => {
+
+                      const handleChange = () => {
                         this.upload(this.files);
-                      });
+                      };
+                      this.addEventListener("change", handleChange);
+                      this.addEventListener("beforeunload", () => { this.removeEventListener("change", handleChange); }, { once: true });
                     `}"
                   />
                   <input
