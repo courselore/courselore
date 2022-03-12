@@ -18,6 +18,8 @@ const handleClick = ;
 this.addEventListener("click", handleClick);
 this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
+this.addEventListener("beforeunload", () => { leafac.clearRelativizeDateTime(relativizeDateTimeID); }, { once: true });
+
 this.addEventListener("beforeunload", () => {  }, { once: true });
 
 this.addEventListener("beforeunload", () => {

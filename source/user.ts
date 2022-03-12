@@ -356,7 +356,7 @@ export default (app: Courselore): void => {
     if (tooltip && userHTML !== undefined)
       userHTML = html`<span
         onload="${javascript`
-          tippy(this, {
+          const tooltip = tippy(this, {
             interactive: true,
             appendTo: document.body,
             delay: [1000, null],
@@ -427,7 +427,8 @@ export default (app: Courselore): void => {
                                     user!.lastSeenOnlineAt
                                   ).toISOString()}"
                                   onload="${javascript`
-                                    leafac.setRelativizeDateTime(this, { preposition: "on" });
+                                    const relativizeDateTimeID = leafac.setRelativizeDateTime(this, { preposition: "on" });
+                                    this.addEventListener("beforeunload", () => { leafac.clearRelativizeDateTime(relativizeDateTimeID); }, { once: true });
                                   `}"
                                   onbeforeelchildrenupdated="${javascript`
                                     return false;
@@ -468,6 +469,7 @@ export default (app: Courselore): void => {
               `
             )},
           });
+          this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
         `}"
         >$${userHTML}</span
       >`;
