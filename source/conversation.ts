@@ -1220,7 +1220,22 @@ export default (app: Courselore): void => {
                           `
                         : html``}
 
-                      <div>
+                      <div
+                        onload="${javascript`
+                        ${
+                          req.query.scrollToConversation !== "false" &&
+                          res.locals.conversation !== undefined
+                            ? javascript`
+                                window.setTimeout(() => {
+                                  if (this.alreadyScrolledToConversation) return;
+                                  this.alreadyScrolledToConversation = true;
+                                  this.querySelector("#conversation--${res.locals.conversation.reference}")?.scrollIntoView({ block: "center" });
+                                }, 0);
+                              `
+                            : javascript``
+                        }
+                      `}"
+                      >
                         $${conversationsWithSearchResults.map(
                           ({ conversation, searchResult }) => {
                             const isSelected =
@@ -1270,16 +1285,6 @@ export default (app: Courselore): void => {
                                         `
                                       : css``}
                                   `)}"
-                                  onload="${javascript`
-                                    ${
-                                      isSelected &&
-                                      req.query.scrollToConversation !== "false"
-                                        ? javascript`
-                                            window.setTimeout(() => { this.scrollIntoView({ block: "center" }); }, 0);
-                                          `
-                                        : javascript``
-                                    }
-                                  `}"
                                 >
                                   <div
                                     class="${res.locals.localCSS(css`
