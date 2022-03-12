@@ -1134,11 +1134,13 @@ export default (app: Courselore): void => {
                   required
                   class="input--text"
                   onload="${javascript`
-                    this.addEventListener("validate", (event) => {
+                    const handleValidate = (event) => {
                       if (this.value === this.closest("form").querySelector('[name="newPassword"]').value) return;
                       event.stopImmediatePropagation();
                       event.detail.error = "New Password & New Password Confirmation don’t match.";
-                    });
+                    };
+                    this.addEventListener("validate", handleValidate);
+                    this.addEventListener("beforeunload", () => { this.removeEventListener("validate", handleValidate); }, { once: true });
                   `}"
                 />
               </label>
