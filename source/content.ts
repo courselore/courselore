@@ -2000,8 +2000,7 @@ export default async (app: Courselore): Promise<void> => {
                 ${
                   res.locals.course !== undefined
                     ? javascript`
-                        const contentEditor = this.closest(".content-editor");
-                        const dropdownMenuTarget = contentEditor.querySelector(".content-editor--write--textarea--dropdown-menu-target");
+                        const dropdownMenuTarget = this.closest(".content-editor").querySelector(".content-editor--write--textarea--dropdown-menu-target");
                         const dropdownMenus = [
                           {
                             trigger: "@",
