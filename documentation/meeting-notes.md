@@ -1,6 +1,13 @@
 # Meeting Notes
 
 <details>
+<summary>2021-03-12</summary>
+
+- Almost finished live navigation, which speeds things up and makes some pagination details more straightforward to implement.
+
+</details>
+
+<details>
 <summary>2021-03-05</summary>
 
 - Deployed a new version with some optimizations (for example, Caddy serving static files), but still not `liveNavigation` and pagination.
