@@ -135,6 +135,7 @@ const leafac = {
       )
         return;
       event.preventDefault();
+      window.dispatchEvent(new Event("beforelivenavigationfetch"));
       const response = await fetch(link.href);
       if (!response.ok) throw new Error("TODO");
       window.history.pushState(undefined, "", response.url);
@@ -155,6 +156,7 @@ const leafac = {
           : new URLSearchParams(new FormData(event.target));
       if (!action.startsWith(baseURL)) return;
       event.preventDefault();
+      window.dispatchEvent(new Event("beforelivenavigationfetch"));
       const response = ["GET", "HEAD"].includes(method)
         ? await fetch(new URL(`?${body}`, action), { method })
         : await fetch(action, { method, body });
@@ -164,6 +166,7 @@ const leafac = {
     });
 
     window.addEventListener("popstate", async () => {
+      window.dispatchEvent(new Event("beforelivenavigationfetch"));
       load(await (await fetch(document.location)).text());
     });
 

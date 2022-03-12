@@ -38,7 +38,6 @@ this.addEventListener("beforeunload", () => {
 
 ---
 
-- Show “loading”
 - Ignore link clicks & form submissions when there’s an undergoing request.
 - Form submissions: Confirm that `onsubmit` handlers are being called appropriately.
 - Make sure that eventSources for live-updates are disconnected from the previous page and reconnected to the new page when navigating.

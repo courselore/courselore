@@ -804,6 +804,7 @@ export default async (app: Courselore): Promise<void> => {
         </div>
 
         <div
+          hidden
           class="${res.locals.localCSS(css`
             position: fixed;
             top: 0;
@@ -817,6 +818,19 @@ export default async (app: Courselore): Promise<void> => {
               content: "Loading…",
             });
             this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+
+            let updateTimeoutID;
+            window.addEventListener("beforelivenavigationfetch", () => {
+              this.hidden = false;
+              const element = this.querySelector("div");
+              let width = 10;
+              (function update() {
+                element.style.width = width.toString() + "%";
+                width += (90 - width) / (5 + Math.random() * 15);
+                updateTimeoutID = window.setTimeout(update, 100 + Math.random() * 100);
+              })();
+            }, { once: true });
+            this.addEventListener("beforeunload", () => { window.clearTimeout(updateTimeoutID); }, { once: true });
           `}"
         >
           <div
@@ -833,20 +847,11 @@ export default async (app: Courselore): Promise<void> => {
                 border-color: var(--color--blue--700);
               }
               transition-property: width;
-              transition-duration: var(--transition-duration--500);
+              transition-duration: var(--transition-duration--150);
               transition-timing-function: var(
                 --transition-timing-function--in-out
               );
             `)}"
-            onload="${javascript`
-              const element = this;
-              let width = 10;
-              (function update() {
-                element.style.width = width.toString() + "%";
-                width += (90 - width) / (15 + Math.random() * 15);
-                window.setTimeout(update, 750 + Math.random() * 750);
-              })();
-            `}"
           ></div>
         </div>
 
