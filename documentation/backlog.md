@@ -27,7 +27,6 @@ this.addEventListener("beforeunload", () => {
 }, { once: true });
 ```
 
-- `source/layouts.ts`
 - `source/course.ts`
 - `source/conversation.ts`
 
