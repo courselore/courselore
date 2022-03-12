@@ -9,7 +9,7 @@
 
 ```
 const tooltip = ;
-this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
 const handleClick = ;
 this.addEventListener("click", handleClick);

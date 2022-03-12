@@ -248,7 +248,7 @@ export default async (app: Courselore): Promise<void> => {
                             <code class="code">${href}</code>`
                         )},
                       });
-                      this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                      this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
                     `
               }
             `
@@ -522,7 +522,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
                 `
               );
               continue;
@@ -559,7 +559,7 @@ export default async (app: Courselore): Promise<void> => {
                     `
                   )},
                 });
-                this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
               `
             );
           }
@@ -748,7 +748,7 @@ export default async (app: Courselore): Promise<void> => {
                         `
                       )},
                     });
-                    this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                    this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                     const mousetrap = new Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea"));
                     const keys = "mod+shift+p";
@@ -828,7 +828,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { dropdown.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(dropdown.props.content); dropdown.destroy(); }, { once: true });
                 `}"
               >
                 <i class="bi bi-info-circle"></i>
@@ -862,7 +862,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -908,7 +908,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -954,7 +954,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1001,7 +1001,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1046,7 +1046,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1091,7 +1091,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1139,7 +1139,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1185,7 +1185,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1231,7 +1231,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1278,7 +1278,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1324,7 +1324,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1371,7 +1371,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1417,7 +1417,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1464,7 +1464,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1510,7 +1510,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1558,7 +1558,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
                   
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1604,7 +1604,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1640,7 +1640,7 @@ export default async (app: Courselore): Promise<void> => {
                             `
                           )},
                         });
-                        this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                        this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                         const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1667,7 +1667,7 @@ export default async (app: Courselore): Promise<void> => {
                             `
                           )},
                         });
-                        this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                        this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                         const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1713,7 +1713,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const handleClick = () => {
                     this.closest(".content-editor").querySelector(".content-editor--write--attachments").click();
@@ -1757,7 +1757,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const handleClick = () => {
                     this.closest(".content-editor").querySelector(".content-editor--write--attachments").click();
@@ -1801,7 +1801,7 @@ export default async (app: Courselore): Promise<void> => {
                         `
                       )},
                     });
-                    this.addEventListener("beforeunload", () => { uploadingIndicator.destroy(); }, { once: true });
+                    this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(uploadingIndicator.props.content); uploadingIndicator.destroy(); }, { once: true });
 
                     return async (fileList) => {
                       if (!checkIsSignedIn()) return;
@@ -1834,7 +1834,7 @@ export default async (app: Courselore): Promise<void> => {
                               theme: "rose",
                               content: "You must sign in to upload files.",
                             });
-                            this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                            this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
                             return () => {
                               tooltip.show();
                               return false;
@@ -1888,7 +1888,7 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
                 `}"
               >
                 <input
@@ -2109,7 +2109,7 @@ export default async (app: Courselore): Promise<void> => {
                             }),
                           },
                         ];
-                        this.addEventListener("beforeunload", () => { for (const { dropdownMenu } of dropdownMenus) dropdownMenu.destroy(); }, { once: true });
+                        this.addEventListener("beforeunload", () => { for (const { dropdownMenu } of dropdownMenus) { leafac.dispatchBeforeunload(dropdownMenu.props.content); dropdownMenu.destroy(); } }, { once: true });
                         let anchorIndex = null;
 
                         const handleInput = (() => {
