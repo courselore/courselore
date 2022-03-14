@@ -2,7 +2,6 @@
 
 ### Performance
 
-- At the end, there should be no stray `html-for-javascript`.
 - Look into Firefox not dispatching events on disabled elements.
 
 ---
