@@ -5,6 +5,17 @@
 
 - Almost finished live navigation, which speeds things up and makes some pagination details more straightforward to implement.
 
+---
+
+- ETags don’t seem to be enough: A deployment to try.courselore.org was serving stale assets.
+- Our goal is to get new features while we have active users, to have them test things. Goals for the next two months:
+  - Finish performance & pagination work.
+  - Redesign sidebar, chat messages, and things like announcements vs notes-that-generate-notifications.
+  - Notification digests.
+  - 1-on-1 conversations.
+- Tip sheet on how to get notifications
+- After the fall semester, spread the word.
+
 </details>
 
 <details>

@@ -84,7 +84,24 @@ this.addEventListener("beforeunload", () => {
 
 - Selective fetching: the server doesn’t need to send the whole page all the time. It can send only what changed.
 
+---
+
+- ETags don’t seem to be enough: A deployment to try.courselore.org was serving stale assets.
+
+---
+
+- Moving forward:
+  - Redesign sidebar, chat messages, and things like announcements vs notes-that-generate-notifications.
+  - Notification digests.
+  - 1-on-1 conversations.
+
 ### User Interface Improvements
+
+- Tip sheet on how to get notifications
+- Upload roster and show differences.
+- When editing, and trying to send empty message, propose to delete (like Discord does).
+
+---
 
 - SVG when resized (avatar or thumbnail) change extension into PNG, but we’re producing the wrong filename.
 
@@ -260,6 +277,7 @@ this.addEventListener("beforeunload", () => {
 
 ### Notifications
 
+- Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
 - Notifications for the same conversation should be “reply” to email on same thread.
 - Email notification subjects could include the fact that you were mentioned, to make it easier to set up filters.
 - Change the page title when there are new messages on that conversation, to make it stand out on the browser tabs.
@@ -277,7 +295,6 @@ this.addEventListener("beforeunload", () => {
   - Course-level configuration.
   - Subscribe/unsubscribe to particular conversations of interest/disinterest.
   - Receive notifications from conversations you’ve participated in.
-- Digests that accumulate notifications over a period.
 - Other channels: Use the browser Notifications API & Push API; Desktop & phone applications.
 - Snooze.
 - Don’t require user to be logged in to unsubscribe from notifications?
