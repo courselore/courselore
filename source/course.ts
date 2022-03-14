@@ -1679,10 +1679,11 @@ export default (app: Courselore): void => {
                                     />
                                     <span
                                       onloadpartial="${javascript`
-                                        tippy(this, {
+                                        const tooltip = tippy(this, {
                                           touch: false,
                                           content: "Set as Visible by Staff Only",
                                         });
+                                        this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                       `}"
                                     >
                                       <i class="bi bi-eye"></i>
@@ -1691,10 +1692,11 @@ export default (app: Courselore): void => {
                                     <span
                                       class="text--sky"
                                       onloadpartial="${javascript`
-                                        tippy(this, {
+                                        const tooltip = tippy(this, {
                                           touch: false,
                                           content: "Set as Visible by Everyone",
                                         });
+                                        this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                       `}"
                                     >
                                       <i class="bi bi-mortarboard-fill"></i>
@@ -1706,16 +1708,20 @@ export default (app: Courselore): void => {
                                   type="button"
                                   class="button button--tight button--tight--inline button--transparent"
                                   onloadpartial="${javascript`
-                                    tippy(this, {
+                                    const tooltip = tippy(this, {
                                       theme: "rose",
                                       touch: false,
                                       content: "Remove Tag",
                                     });
-                                    this.addEventListener("click", () => {
+                                    this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+
+                                    const handleClick = () => {
                                       const tag = this.closest(".tag");
                                       tag.replaceChildren();
                                       tag.hidden = true;
-                                    });
+                                    };
+                                    this.addEventListener("click", handleClick);
+                                    this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                                   `}"
                                 >
                                   <i class="bi bi-trash"></i>
