@@ -4,30 +4,10 @@
 
 - Review `onload`.
   - `source/conversation.ts`
+  - `addEventListener`
+  - `<element>.destroy()` should be equal to `<element>.addEventListener("beforeunload", ___)`
 - At the end, there should be no stray `html-for-javascript`.
 - Look into Firefox not dispatching events on disabled elements.
-
-```
-const tooltip = 
-this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
-
-const tooltip = 
-this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
-
-const handleClick = ;
-this.addEventListener("click", handleClick);
-this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
-
-const handleChange = ;
-this.addEventListener("change", handleChange);
-this.addEventListener("beforeunload", () => { this.removeEventListener("change", handleChange); }, { once: true });
-
-this.addEventListener("beforeunload", () => {  }, { once: true });
-
-this.addEventListener("beforeunload", () => {
-
-}, { once: true });
-```
 
 ---
 
