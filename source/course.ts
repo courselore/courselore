@@ -1645,7 +1645,7 @@ export default (app: Courselore): void => {
                                 autocomplete="off"
                                 disabled
                                 class="input--text"
-                                onmount="${javascript`
+                                onloadpartial="${javascript`
                                   this.isModified = true;
                                   this.disabled = false;
                                   this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][name]";
@@ -1671,14 +1671,14 @@ export default (app: Courselore): void => {
                                       type="checkbox"
                                       disabled
                                       class="visually-hidden input--radio-or-checkbox--multilabel"
-                                      onmount="${javascript`
+                                      onloadpartial="${javascript`
                                         this.isModified = true;
                                         this.disabled = false;
                                         this.name = "tags[" + this.closest(".tag").parentElement.children.length + "][isStaffOnly]";
                                       `}"
                                     />
                                     <span
-                                      onmount="${javascript`
+                                      onloadpartial="${javascript`
                                         tippy(this, {
                                           touch: false,
                                           content: "Set as Visible by Staff Only",
@@ -1690,7 +1690,7 @@ export default (app: Courselore): void => {
                                     </span>
                                     <span
                                       class="text--sky"
-                                      onmount="${javascript`
+                                      onloadpartial="${javascript`
                                         tippy(this, {
                                           touch: false,
                                           content: "Set as Visible by Everyone",
@@ -1705,7 +1705,7 @@ export default (app: Courselore): void => {
                                 <button
                                   type="button"
                                   class="button button--tight button--tight--inline button--transparent"
-                                  onmount="${javascript`
+                                  onloadpartial="${javascript`
                                     tippy(this, {
                                       theme: "rose",
                                       touch: false,
@@ -1729,11 +1729,8 @@ export default (app: Courselore): void => {
                       const handleClick = () => {
                         const newTag = newTagPartial.firstElementChild.cloneNode(true);
                         this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
-                        for (const element of leafac.descendants(newTag)) {
-                          const onmount = element.getAttribute("onmount");
-                          if (onmount === null) continue;
-                          new Function(onmount).call(element);
-                        }
+                        for (const element of newTag.querySelectorAll("[onloadpartial]"))
+                          new Function(element.getAttribute("onloadpartial")).call(element);
                       };
                       this.addEventListener("click", handleClick);
                       this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
