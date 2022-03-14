@@ -412,6 +412,14 @@ const leafac = {
     const tooltip = tippy(element, {
       touch: false,
     });
+    element.addEventListener(
+      "beforeunload",
+      () => {
+        tooltip.destroy();
+      },
+      { once: true }
+    );
+
     let timeoutID;
     (function update() {
       const dateTime = element.getAttribute("datetime");
@@ -422,7 +430,6 @@ const leafac = {
     element.addEventListener(
       "beforeunload",
       () => {
-        tooltip.destroy();
         window.clearTimeout(timeoutID);
       },
       { once: true }

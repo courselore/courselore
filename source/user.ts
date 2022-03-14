@@ -299,7 +299,7 @@ export default (app: Courselore): void => {
                   touch: false,
                   content: "Online",
                 });
-                this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                element.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
                 let updateTimeoutID;
                 (function update() {
@@ -824,13 +824,13 @@ export default (app: Courselore): void => {
                           `
                         )},
                       });
-                      this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(uploadingIndicator.props.content); uploadingIndicator.destroy(); }, { once: true });
+                      avatarChooser.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(uploadingIndicator.props.content); uploadingIndicator.destroy(); }, { once: true });
 
                       const uploadingError = tippy(avatarChooser, {
                         theme: "validation--error",
                         trigger: "manual",
                       });
-                      this.addEventListener("beforeunload", () => { uploadingError.destroy(); }, { once: true });
+                      avatarChooser.addEventListener("beforeunload", () => { uploadingError.destroy(); }, { once: true });
 
                       this.upload = async (fileList) => {
                         const body = new FormData();

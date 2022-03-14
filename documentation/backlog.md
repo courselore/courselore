@@ -4,8 +4,6 @@
 
 - Review `onload`.
   - `source/conversation.ts`
-  - `addEventListener`
-  - `<element>.destroy()` should be equal to `<element>.addEventListener("beforeunload", ___)`
 - At the end, there should be no stray `html-for-javascript`.
 - Look into Firefox not dispatching events on disabled elements.
 

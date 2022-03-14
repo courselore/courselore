@@ -5452,7 +5452,7 @@ export default (app: Courselore): void => {
                                                     `
                                                   )},
                                                 });
-                                                this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(dropdownMenu.props.content); dropdownMenu.destroy(); }, { once: true });
+                                                dropdownMenuTarget.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(dropdownMenu.props.content); dropdownMenu.destroy(); }, { once: true });
                                                 
                                                 const handleMouseup = (event) => {
                                                   window.setTimeout(() => {

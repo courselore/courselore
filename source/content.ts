@@ -1801,7 +1801,7 @@ export default async (app: Courselore): Promise<void> => {
                         `
                       )},
                     });
-                    this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(uploadingIndicator.props.content); uploadingIndicator.destroy(); }, { once: true });
+                    textarea.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(uploadingIndicator.props.content); uploadingIndicator.destroy(); }, { once: true });
 
                     return async (fileList) => {
                       if (!checkIsSignedIn()) return;
@@ -1834,7 +1834,7 @@ export default async (app: Courselore): Promise<void> => {
                               theme: "rose",
                               content: "You must sign in to upload files.",
                             });
-                            this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
+                            textarea.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                             return () => {
                               tooltip.show();
                               return false;
@@ -2108,7 +2108,7 @@ export default async (app: Courselore): Promise<void> => {
                             }),
                           },
                         ];
-                        this.addEventListener("beforeunload", () => { for (const { dropdownMenu } of dropdownMenus) { leafac.dispatchBeforeunload(dropdownMenu.props.content); dropdownMenu.destroy(); } }, { once: true });
+                        dropdownMenuTarget.addEventListener("beforeunload", () => { for (const { dropdownMenu } of dropdownMenus) { leafac.dispatchBeforeunload(dropdownMenu.props.content); dropdownMenu.destroy(); } }, { once: true });
                         let anchorIndex = null;
 
                         const handleInput = (() => {
