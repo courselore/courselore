@@ -1612,7 +1612,7 @@ export default (app: Courselore): void => {
                     type="button"
                     class="button button--transparent button--full-width-on-small-screen"
                     onload="${javascript`
-                      const newTagTemplate = ${res.locals.HTMLForJavaScript(
+                      const newTagPartial = ${res.locals.HTMLForJavaScript(
                         html`
                           <div
                             class="tag ${res.locals.localCSS(css`
@@ -1725,9 +1725,9 @@ export default (app: Courselore): void => {
                           </div>
                         `
                       )};
-                      newTagTemplate.remove();
+                      newTagPartial.remove();
                       const handleClick = () => {
-                        const newTag = newTagTemplate.firstElementChild.cloneNode(true);
+                        const newTag = newTagPartial.firstElementChild.cloneNode(true);
                         this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
                         for (const element of leafac.descendants(newTag)) {
                           const onmount = element.getAttribute("onmount");
