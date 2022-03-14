@@ -2,8 +2,6 @@
 
 ### Performance
 
-- Review `onload`.
-  - `source/conversation.ts`
 - At the end, there should be no stray `html-for-javascript`.
 - Look into Firefox not dispatching events on disabled elements.
 
@@ -17,6 +15,11 @@
   - `onbeforenodediscarded`
   - `onbeforeelupdated`
   - `onbeforeelchildrenupdated`
+
+---
+
+- Shouldn’t scroll on “like”, editing message, and so forth.
+- When sending message, shouldn’t reset “anonymity.”
 
 ---
 

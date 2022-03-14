@@ -577,7 +577,7 @@ const leafac = {
   },
 
   saveFormInputValue(element, identifier) {
-    element.defaultValue =
+    element.value = element.defaultValue =
       getLocalStorageItem()?.[window.location.pathname]?.[identifier] ?? "";
     element.isModified = false;
 

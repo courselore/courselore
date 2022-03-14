@@ -1356,6 +1356,7 @@ export default (app: Courselore): void => {
                                                        
                                                 const handleClick = async (event) => {
                                                   event.preventDefault();
+                                                  event.stopImmediatePropagation();
                                                   await fetch(this.closest("a").getAttribute("href"));
                                                   this.remove();
                                                 };
