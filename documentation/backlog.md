@@ -2,10 +2,6 @@
 
 ### Performance
 
-- Look into Firefox not dispatching events on disabled elements.
-
----
-
 - Review leafac--javascript.
   - `onmount`
   - `onelupdated`
