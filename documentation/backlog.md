@@ -3,7 +3,6 @@
 ### Performance
 
 - Review leafac--javascript.
-  - `onmount`
   - `onelupdated`
   - `onrefresh`
   - `onnodeadded`
