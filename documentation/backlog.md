@@ -13,7 +13,7 @@
 ---
 
 - Shouldn’t scroll on “like”, editing message, and so forth.
-- When sending message, shouldn’t reset “anonymity.”-
+- When sending message, shouldn’t reset “anonymity.”
 - Main conversation pane should scroll up.
 - Should scroll sidebar when going from “No conversation selected.” to a conversation.
 - Command+shift+P is shortcut for preview, but it’s also for firefox private tab.
