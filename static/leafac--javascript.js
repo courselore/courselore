@@ -140,7 +140,6 @@ const eventSourceRefresh = async (response) => {
 
 */
 
-
 const leafac = {
   liveNavigation(baseURL) {
     window.addEventListener("DOMContentLoaded", () => {
