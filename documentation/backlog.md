@@ -2,35 +2,45 @@
 
 ### Performance
 
-- Review leafac--javascript.
-  - `onelupdated`
-  - `onrefresh`
-  - `onnodeadded`
-  - `onbeforenodediscarded`
-  - `onbeforeelupdated`
-  - `onbeforeelchildrenupdated`
+- Command+shift+P is shortcut for preview, but it’s also for Firefox private tab.
 
 ---
 
-- Shouldn’t scroll on “like”, editing message, and so forth.
-- When sending message, shouldn’t reset “anonymity.”
-- Main conversation pane should scroll up.
-- Should scroll sidebar when going from “No conversation selected.” to a conversation.
-- Command+shift+P is shortcut for preview, but it’s also for firefox private tab.
+- Live updates fixes:
+  - Ignore navigation (link clicks & form submissions) when there’s an undergoing request.
+  - Form submissions: Confirm that `onsubmit` handlers are being called appropriately.
+  - `leafac.warnAboutLosingInputs()` doesn’t work.
+  - `autofocus`.
+  - Cache?
+    - Scroll should be cached as well
+    - Advantages:
+      - It’ll potentially be a bit faster.
+    - Disadvantages:
+      - It complicates the implementation.
+      - It uses more memory on the client side.
 
 ---
 
-- Ignore link clicks & form submissions when there’s an undergoing request.
-- Form submissions: Confirm that `onsubmit` handlers are being called appropriately.
-- Make sure that eventSources for live-updates are disconnected from the previous page and reconnected to the new page when navigating.
-- Cache
-  - Scroll
-- Progress bar
-- `leafac.warnAboutLosingInputs()` doesn’t work.
-- `autofocus`.
-- Reenable live updates
-  - Prevent live updates to originating browser tab: `"?eventSourceReference=" + eventSource.reference`
-- `saveFormInputValue()` is misbehaving.
+- State management glitches:
+  - When “like”ing, editing message, changing settings, and so forth, shouldn’t scroll main pane.
+  - When sending message, shouldn’t reset “anonymity.”
+  - When navigating between conversations main conversation pane should scroll up.
+  - When going from “No conversation selected.” to a conversation shouldn’t scroll sidebar.
+
+---
+
+- Restore live-updates:
+  - Enable them again.
+  - Make sure that `eventSources` for live-updates are disconnected from the previous page and reconnected to the new page when navigating.
+  - Pass the `eventSource` identifier right on first server-side render, without requiring a server-sent event message?
+  - Prevent live update to browser tab that originated the update: `"?eventSourceReference=" + eventSource.reference`
+  - Double-check event handlers:
+    - `onelupdated`
+    - `onrefresh`
+    - `onnodeadded`
+    - `onbeforenodediscarded`
+    - `onbeforeelupdated`
+    - `onbeforeelchildrenupdated`
 
 ---
 
