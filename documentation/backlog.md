@@ -7,6 +7,7 @@
   - Form submissions: Confirm that `onsubmit` handlers are being called appropriately.
   - `leafac.warnAboutLosingInputs()` doesn’t work.
   - `autofocus`.
+  - `TODO`
   - Cache?
     - Scroll should be cached as well
     - Advantages:
@@ -47,7 +48,6 @@
   - Filters.
 - Remove special cases
   - Look for `onsubmit`.
-- `TODO`
 - Good to have: Don’t scroll back to top on some kinds of updates, like invitation role.
 
 ---

@@ -142,6 +142,8 @@ const eventSourceRefresh = async (response) => {
 
 const leafac = {
   liveNavigation(baseURL) {
+    let isNavigating = false;
+
     window.addEventListener("DOMContentLoaded", () => {
       for (const element of document.querySelectorAll("[onload]"))
         new Function(element.getAttribute("onload")).call(element);
@@ -165,11 +167,14 @@ const leafac = {
       )
         return;
       event.preventDefault();
+      if (isNavigating) return;
+      isNavigating = true;
       window.dispatchEvent(new Event("beforelivenavigationfetch"));
       const response = await fetch(link.href);
       if (!response.ok) throw new Error("TODO");
       window.history.pushState(undefined, "", response.url);
       load(await response.text());
+      isNavigating = false;
     });
 
     document.addEventListener("submit", async (event) => {
@@ -186,6 +191,8 @@ const leafac = {
           : new URLSearchParams(new FormData(event.target));
       if (!action.startsWith(baseURL)) return;
       event.preventDefault();
+      if (isNavigating) return;
+      isNavigating = true;
       window.dispatchEvent(new Event("beforelivenavigationfetch"));
       const response = ["GET", "HEAD"].includes(method)
         ? await fetch(new URL(`?${body}`, action), { method })
@@ -193,6 +200,7 @@ const leafac = {
       if (!response.ok) throw new Error("TODO");
       window.history.pushState(undefined, "", response.url);
       load(await response.text());
+      isNavigating = false;
     });
 
     window.addEventListener("popstate", async () => {
