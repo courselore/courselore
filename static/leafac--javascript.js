@@ -142,8 +142,6 @@ const eventSourceRefresh = async (response) => {
 
 const leafac = {
   liveNavigation(baseURL) {
-    let isNavigating = false;
-
     window.addEventListener("DOMContentLoaded", () => {
       for (const element of document.querySelectorAll("[onload]"))
         new Function(element.getAttribute("onload")).call(element);
@@ -166,15 +164,7 @@ const leafac = {
         !link.href.startsWith(baseURL)
       )
         return;
-      event.preventDefault();
-      if (isNavigating) return;
-      isNavigating = true;
-      window.dispatchEvent(new Event("beforelivenavigationfetch"));
-      const response = await fetch(link.href);
-      if (!response.ok) throw new Error("TODO");
-      window.history.pushState(undefined, "", response.url);
-      load(await response.text());
-      isNavigating = false;
+      await navigate({ request: new Request(link.href), event });
     });
 
     document.addEventListener("submit", async (event) => {
@@ -190,41 +180,73 @@ const leafac = {
           ? new FormData(event.target)
           : new URLSearchParams(new FormData(event.target));
       if (!action.startsWith(baseURL)) return;
-      event.preventDefault();
-      if (isNavigating) return;
-      isNavigating = true;
-      window.dispatchEvent(new Event("beforelivenavigationfetch"));
-      const response = ["GET", "HEAD"].includes(method)
-        ? await fetch(new URL(`?${body}`, action), { method })
-        : await fetch(action, { method, body });
-      if (!response.ok) throw new Error("TODO");
-      window.history.pushState(undefined, "", response.url);
-      load(await response.text());
-      isNavigating = false;
+      await navigate({
+        request: ["GET", "HEAD"].includes(method)
+          ? new Request(new URL(`?${body}`, action), { method })
+          : new Request(action, { method, body }),
+        event,
+      });
     });
 
     window.addEventListener("popstate", async () => {
-      window.dispatchEvent(new Event("beforelivenavigationfetch"));
-      load(await (await fetch(document.location)).text());
+      await navigate({
+        request: new Request(document.location),
+        abortOthers: true,
+      });
     });
 
-    function load(newDocumentHTML) {
-      const newDocument = new DOMParser().parseFromString(
-        newDocumentHTML,
-        "text/html"
-      );
-      const previousLocalCSS = document.querySelectorAll(".local-css");
-      for (const element of newDocument.querySelectorAll(".local-css"))
-        document
-          .querySelector("head")
-          .insertAdjacentElement("beforeend", element);
-      const documentBody = document.querySelector("body");
-      leafac.dispatchBeforeunload(documentBody);
-      morphdom(documentBody, newDocument.querySelector("body"), {
-        childrenOnly: true,
+    let networkErrorMessage;
+    let isNavigating = false;
+    let abortController;
+    async function navigate({
+      request,
+      event = undefined,
+      abortOthers = false,
+    }) {
+      networkErrorMessage ??= tippy(document.querySelector("body"), {
+        theme: "error",
+        trigger: "manual",
+        arrow: false,
+        content:
+          "You appear to be offline. Please check your internet connection and try reloading the page.",
       });
-      for (const element of previousLocalCSS) element.remove();
-      window.dispatchEvent(new Event("DOMContentLoaded"));
+      event?.preventDefault();
+      if (abortOthers) abortController?.abort();
+      else if (isNavigating) return;
+      isNavigating = true;
+      window.dispatchEvent(new Event("beforenavigate"));
+      try {
+        abortController = new AbortController();
+        const response = await fetch(request, {
+          signal: abortController.signal,
+        });
+        const responseText = await response.text();
+        window.history.pushState(undefined, "", response.url);
+        const newDocument = new DOMParser().parseFromString(
+          responseText,
+          "text/html"
+        );
+        const previousLocalCSS = document.querySelectorAll(".local-css");
+        for (const element of newDocument.querySelectorAll(".local-css"))
+          document
+            .querySelector("head")
+            .insertAdjacentElement("beforeend", element);
+        const documentBody = document.querySelector("body");
+        leafac.dispatchBeforeunload(documentBody);
+        morphdom(documentBody, newDocument.querySelector("body"), {
+          childrenOnly: true,
+        });
+        for (const element of previousLocalCSS) element.remove();
+        window.dispatchEvent(new Event("DOMContentLoaded"));
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          console.error(error);
+          if (["GET", "HEAD"].includes(request.method.toUpperCase()))
+            window.history.pushState(undefined, "", request.url);
+          networkErrorMessage.show();
+        }
+      }
+      isNavigating = false;
     }
   },
 
@@ -294,7 +316,7 @@ const leafac = {
           "[hidden], .visually-hidden, .visually-hidden--interactive:not(:focus):not(:focus-within):not(:active)"
         )?.parentElement ?? element;
       const tooltip = tippy(target, {
-        theme: "validation--error",
+        theme: "error",
         trigger: "manual",
         showOnCreate: true,
         onHidden: () => {
@@ -404,15 +426,6 @@ const leafac = {
         if (element.value !== element.defaultValue) return true;
     }
     return false;
-  },
-
-  disableButtonsOnSubmit() {
-    document.addEventListener("submit", (event) => {
-      for (const button of event.target.querySelectorAll(
-        `button:not([type="button"])`
-      ))
-        button.disabled = true;
-    });
   },
 
   tippySetDefaultProps(extraProps = {}) {

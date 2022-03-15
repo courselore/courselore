@@ -1151,7 +1151,7 @@
               }
                 }
 
-        .tippy-box[data-theme~="validation--error"] {
+        .tippy-box[data-theme~="error"] {
             color: var(--color--rose--700);
             --background-color: var(--color--rose--100);
             --border-color: var(--color--rose--200);
@@ -1159,7 +1159,7 @@
 
         @media (prefers-color-scheme: dark) {
 
-        .tippy-box[data-theme~="validation--error"] {
+        .tippy-box[data-theme~="error"] {
               color: var(--color--rose--200);
               --background-color: var(--color--rose--900);
               --border-color: var(--color--rose--800)

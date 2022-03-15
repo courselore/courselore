@@ -827,7 +827,7 @@ export default (app: Courselore): void => {
                       avatarChooser.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(uploadingIndicator.props.content); uploadingIndicator.destroy(); }, { once: true });
 
                       const uploadingError = tippy(avatarChooser, {
-                        theme: "validation--error",
+                        theme: "error",
                         trigger: "manual",
                       });
                       avatarChooser.addEventListener("beforeunload", () => { uploadingError.destroy(); }, { once: true });

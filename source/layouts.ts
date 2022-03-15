@@ -820,7 +820,7 @@ export default async (app: Courselore): Promise<void> => {
             this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
             let updateTimeoutID;
-            window.addEventListener("beforelivenavigationfetch", () => {
+            window.addEventListener("beforenavigate", () => {
               this.hidden = false;
               const element = this.querySelector("div");
               let width = 10;
@@ -1100,7 +1100,6 @@ export default async (app: Courselore): Promise<void> => {
           <script>
             leafac.customFormValidation();
             leafac.warnAboutLosingInputs();
-            leafac.disableButtonsOnSubmit();
             leafac.tippySetDefaultProps();
             leafac.liveNavigation(
               $${JSON.stringify(app.locals.options.baseURL)}
@@ -1746,7 +1745,7 @@ export default async (app: Courselore): Promise<void> => {
             `
           )}
 
-          &[data-theme~="validation--error"] {
+          &[data-theme~="error"] {
             color: var(--color--rose--700);
             --background-color: var(--color--rose--100);
             --border-color: var(--color--rose--200);
