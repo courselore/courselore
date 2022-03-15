@@ -164,7 +164,8 @@ const leafac = {
         !link.href.startsWith(baseURL)
       )
         return;
-      await navigate({ request: new Request(link.href), event });
+      event.preventDefault();
+      await navigate(new Request(link.href));
     });
 
     document.addEventListener("submit", async (event) => {
@@ -180,29 +181,24 @@ const leafac = {
           ? new FormData(event.target)
           : new URLSearchParams(new FormData(event.target));
       if (!action.startsWith(baseURL)) return;
-      await navigate({
-        request: ["GET", "HEAD"].includes(method)
+      event.preventDefault();
+      await navigate(
+        ["GET", "HEAD"].includes(method)
           ? new Request(new URL(`?${body}`, action), { method })
-          : new Request(action, { method, body }),
-        event,
-      });
+          : new Request(action, { method, body })
+      );
     });
 
     window.addEventListener("popstate", async () => {
-      await navigate({
-        request: new Request(document.location),
+      await navigate(new Request(document.location), {
         abortOthers: true,
       });
     });
 
     let networkErrorMessage;
-    let isNavigating = false;
     let abortController;
-    async function navigate({
-      request,
-      event = undefined,
-      abortOthers = false,
-    }) {
+    let isNavigating = false;
+    async function navigate(request, { abortOthers = false } = {}) {
       networkErrorMessage ??= tippy(document.querySelector("body"), {
         theme: "error",
         trigger: "manual",
@@ -210,7 +206,6 @@ const leafac = {
         content:
           "You appear to be offline. Please check your internet connection and try reloading the page.",
       });
-      event?.preventDefault();
       if (abortOthers) abortController?.abort();
       else if (isNavigating) return;
       isNavigating = true;
