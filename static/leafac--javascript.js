@@ -221,6 +221,8 @@ const leafac = {
           responseText,
           "text/html"
         );
+        document.querySelector("title").textContent =
+          newDocument.querySelector("title").textContent;
         const previousLocalCSS = document.querySelectorAll(".local-css");
         for (const element of newDocument.querySelectorAll(".local-css"))
           document
