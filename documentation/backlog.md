@@ -44,7 +44,6 @@
     - Conversations in sidebar.
     - Messages in conversation.
   - Filters.
-- Good to have: Don’t scroll back to top on some kinds of updates, like invitation role.
 
 ---
 
