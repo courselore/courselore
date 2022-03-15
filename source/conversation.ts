@@ -4424,14 +4424,6 @@ export default (app: Courselore): void => {
                                                                     .locals
                                                                     .conversation
                                                                     .reference}/messages/${message.reference}/likes"
-                                                                  onload="${javascript`
-                                                                    const handleSubmit = () => {
-                                                                      tippy.hideAll();
-                                                                      window.setTimeout(() => { this.remove(); }, 0);
-                                                                    };
-                                                                    this.addEventListener("submit", handleSubmit);
-                                                                    this.addEventListener("beforeunload", () => { this.removeEventListener("submit", handleSubmit); }, { once: true });
-                                                                  `}"
                                                                 >
                                                                   <input
                                                                     type="hidden"

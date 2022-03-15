@@ -3,7 +3,6 @@
 ### Performance
 
 - Live updates fixes:
-  - Form submissions: Confirm that `onsubmit` handlers are being called appropriately.
   - `leafac.warnAboutLosingInputs()` doesn’t work.
   - `autofocus`.
   - `TODO`
@@ -45,8 +44,6 @@
     - Conversations in sidebar.
     - Messages in conversation.
   - Filters.
-- Remove special cases
-  - Look for `onsubmit`.
 - Good to have: Don’t scroll back to top on some kinds of updates, like invitation role.
 
 ---
