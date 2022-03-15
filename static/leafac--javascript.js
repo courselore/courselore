@@ -40,8 +40,34 @@ onclick="${javascript`
                                     })();
 
 
-*/
 
+
+
+$${res?.locals.eventSource
+            ? html`
+                <script>
+                  // const eventSource = new ReconnectingEventSource(
+                  //   window.location.href
+                  // );
+                  // eventSource.addEventListener("reference", (event) => {
+                  //   eventSource.reference = event.data;
+                  // });
+                  // eventSource.addEventListener("refresh", async () => {
+                  //   await eventSourceRefresh(await fetch(window.location.href));
+                  // });
+                </script>
+              `
+            : html``}
+
+
+
+
+
+
+
+
+
+  
 const eventSourceRefresh = async (response) => {
   switch (response.status) {
     case 200:
@@ -109,6 +135,11 @@ const eventSourceRefresh = async (response) => {
       break;
   }
 };
+
+
+
+*/
+
 
 const leafac = {
   liveNavigation(baseURL) {
@@ -225,27 +256,6 @@ const leafac = {
     for (const element of parentElement.querySelectorAll("*"))
       element.dispatchEvent(new Event("beforeunload"));
   },
-
-  evaluateElementsAttribute: (() => {
-    const elementsAlreadyEvaluated = new Map();
-    return (parentElement, attribute = "onload", runMultipleTimes = false) => {
-      let elementsAlreadyEvaluatedAttribute =
-        elementsAlreadyEvaluated.get(attribute);
-      if (elementsAlreadyEvaluatedAttribute === undefined) {
-        elementsAlreadyEvaluatedAttribute = new Set();
-        elementsAlreadyEvaluated.set(
-          attribute,
-          elementsAlreadyEvaluatedAttribute
-        );
-      }
-      for (const element of parentElement.querySelectorAll(`[${attribute}]`)) {
-        if (!runMultipleTimes && elementsAlreadyEvaluatedAttribute.has(element))
-          continue;
-        elementsAlreadyEvaluatedAttribute.add(element);
-        new Function(element.getAttribute(attribute)).call(element);
-      }
-    };
-  })(),
 
   customFormValidation() {
     document.addEventListener(

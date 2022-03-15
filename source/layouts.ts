@@ -1106,21 +1106,6 @@ export default async (app: Courselore): Promise<void> => {
               $${JSON.stringify(app.locals.options.baseURL)}
             );
           </script>
-          $${res?.locals.eventSource
-            ? html`
-                <script>
-                  const eventSource = new ReconnectingEventSource(
-                    window.location.href
-                  );
-                  eventSource.addEventListener("reference", (event) => {
-                    eventSource.reference = event.data;
-                  });
-                  eventSource.addEventListener("refresh", async () => {
-                    await eventSourceRefresh(await fetch(window.location.href));
-                  });
-                </script>
-              `
-            : html``}
           $${app.locals.options.liveReload
             ? html`
                 <script>
