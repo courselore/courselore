@@ -694,6 +694,7 @@ export default async (app: Courselore): Promise<void> => {
                         event.preventDefault();
                         return;
                       }
+                      tippy.hideAll();
                       write.hidden = true;
                       loading.hidden = false;
                       preview.hidden = true;
@@ -735,13 +736,13 @@ export default async (app: Courselore): Promise<void> => {
                               onload="${javascript`
                                 this.hidden = leafac.isAppleDevice;
                               `}"
-                              >Ctrl+Shift+P</span
+                              >Ctrl+Alt+P</span
                             ><span
                               class="keyboard-shortcut--cluster"
                               onload="${javascript`
                                 this.hidden = !leafac.isAppleDevice;
                               `}"
-                              ><i class="bi bi-shift"></i
+                              ><i class="bi bi-alt"></i
                               ><i class="bi bi-command"></i>P</span
                             >
                           </span>
@@ -751,7 +752,7 @@ export default async (app: Courselore): Promise<void> => {
                     this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                     const mousetrap = new Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea"));
-                    const keys = "mod+shift+p";
+                    const keys = "mod+alt+p";
                     mousetrap.bind(keys, () => { this.click(); return false; });
                     this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
                   `}"

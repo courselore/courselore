@@ -2,10 +2,6 @@
 
 ### Performance
 
-- Command+shift+P is shortcut for preview, but it’s also for Firefox private tab.
-
----
-
 - Live updates fixes:
   - Ignore navigation (link clicks & form submissions) when there’s an undergoing request.
   - Form submissions: Confirm that `onsubmit` handlers are being called appropriately.
