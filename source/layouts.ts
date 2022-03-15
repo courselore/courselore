@@ -827,6 +827,7 @@ export default async (app: Courselore): Promise<void> => {
               (function update() {
                 element.style.width = width.toString() + "%";
                 width += (90 - width) / (5 + Math.random() * 15);
+                window.clearTimeout(updateTimeoutID);
                 updateTimeoutID = window.setTimeout(update, 100 + Math.random() * 100);
               })();
             }, { once: true });
