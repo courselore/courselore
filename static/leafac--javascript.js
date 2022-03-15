@@ -242,6 +242,7 @@ const leafac = {
           )
             window.history.pushState(undefined, "", request.url);
           networkErrorMessage.show();
+          window.dispatchEvent(new Event("navigateerror"));
         }
       }
       isNavigating = false;

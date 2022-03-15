@@ -831,6 +831,9 @@ export default async (app: Courselore): Promise<void> => {
                 updateTimeoutID = window.setTimeout(update, 100 + Math.random() * 100);
               })();
             }, { once: true });
+            window.addEventListener("navigateerror", () => {
+              this.hidden = true;
+            });
             this.addEventListener("beforeunload", () => { window.clearTimeout(updateTimeoutID); }, { once: true });
           `}"
         >

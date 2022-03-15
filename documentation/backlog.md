@@ -3,7 +3,6 @@
 ### Performance
 
 - Live updates fixes:
-  - Progress bar should go away on error.
   - `<title>` should update.
   - Ignore navigation (link clicks & form submissions) when there’s an undergoing request.
   - Form submissions: Confirm that `onsubmit` handlers are being called appropriately.
