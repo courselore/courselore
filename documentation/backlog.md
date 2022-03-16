@@ -3,13 +3,14 @@
 ### Performance
 
 - Live updates fixes:
+  - Scroll to `#anchored` element.
   - Cache?
-    - Scroll should be cached as well
     - Advantages:
       - It’ll potentially be a bit faster.
     - Disadvantages:
       - It complicates the implementation.
       - It uses more memory on the client side.
+    - Make sure to clear cache on sign-out or the back button will reveal private information.
 
 ---
 

@@ -415,7 +415,7 @@ const leafac = {
         isSubmittingForm ||
         !leafac.isModified(document.querySelector("body")) ||
         confirm(
-          "Are you sure you want to leave this page? Changes you made may not be saved."
+          "Your changes will be lost if you leave this page. Do you wish to continue?"
         )
       )
         return;
