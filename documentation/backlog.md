@@ -3,8 +3,6 @@
 ### Performance
 
 - Live updates fixes:
-  - `autofocus`.
-  - `TODO`
   - Cache?
     - Scroll should be cached as well
     - Advantages:

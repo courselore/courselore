@@ -237,6 +237,7 @@ const leafac = {
           });
           for (const element of previousLocalCSS) element.remove();
           window.dispatchEvent(new Event("DOMContentLoaded"));
+          document.querySelector("[autofocus]")?.focus();
         } catch (error) {
           if (error.name !== "AbortError") {
             console.error(error);
