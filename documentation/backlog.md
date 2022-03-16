@@ -6,6 +6,7 @@
   - `leafac.warnAboutLosingInputs()` doesn’t work.
     - Form submissions.
     - History navigation.
+  - Check that `beforenavigate` events aren’t bound multiple times (because they’re bound `onload`).
   - `autofocus`.
   - `TODO`
   - Cache?
