@@ -3,7 +3,6 @@
 ### Performance
 
 - Live updates fixes:
-  - Check that `beforenavigate` events aren’t bound multiple times (because they’re bound `onload`).
   - `autofocus`.
   - `TODO`
   - Cache?
