@@ -297,7 +297,7 @@ const leafac = {
         event.preventDefault();
         event.stopImmediatePropagation();
       },
-      true
+      { capture: true }
     );
   },
 
