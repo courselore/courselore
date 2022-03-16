@@ -393,18 +393,25 @@ const leafac = {
   },
 
   warnAboutLosingInputs() {
-    const warner = (event) => {
-      if (!leafac.isModified(document.querySelector("body"))) return;
+    let isSubmittingForm = false;
+    window.addEventListener("DOMContentLoaded", () => {
+      isSubmittingForm = false;
+    });
+    document.addEventListener("submit", () => {
+      isSubmittingForm = true;
+    });
+    window.addEventListener("beforeunload", (event) => {
+      if (
+        isSubmittingForm ||
+        !leafac.isModified(document.querySelector("body"))
+      )
+        return;
       event.preventDefault();
       event.returnValue = "";
-    };
-    window.addEventListener("beforeunload", warner);
-    document.addEventListener("submit", () => {
-      window.removeEventListener("beforeunload", warner);
     });
-
     window.addEventListener("beforenavigate", (event) => {
       if (
+        isSubmittingForm ||
         !leafac.isModified(document.querySelector("body")) ||
         confirm(
           "Are you sure you want to leave this page? Changes you made may not be saved."
