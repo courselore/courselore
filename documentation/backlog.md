@@ -2,18 +2,6 @@
 
 ### Performance
 
-- Live updates fixes:
-  - Scroll to `#anchored` element.
-  - Cache?
-    - Advantages:
-      - It’ll potentially be a bit faster.
-    - Disadvantages:
-      - It complicates the implementation.
-      - It uses more memory on the client side.
-    - Make sure to clear cache on sign-out or the back button will reveal private information.
-
----
-
 - State management glitches:
   - When “like”ing, editing message, changing settings, and so forth, shouldn’t scroll main pane.
   - When sending message, shouldn’t reset “anonymity.”
@@ -411,6 +399,17 @@
 - Checkboxes that don’t have a visual indication may be confusing.
 - Right click menus on stuff.
 - Places where we show `administratorEmail` to report bugs could be forms instead.
+
+### Live Updates Improvements
+
+- Scroll to `#anchored` element.
+- Cache?
+  - Advantages:
+    - It’ll potentially be a bit faster.
+  - Disadvantages:
+    - It complicates the implementation.
+    - It uses more memory on the client side.
+  - Make sure to clear cache on sign-out or the back button will reveal private information.
 
 ### Infrastructure
 
