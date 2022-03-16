@@ -209,44 +209,47 @@ const leafac = {
       if (restoration) abortController?.abort();
       else if (isNavigating) return;
       isNavigating = true;
-      window.dispatchEvent(new Event("beforenavigate"));
-      try {
-        abortController = new AbortController();
-        const response = await fetch(request, {
-          signal: abortController.signal,
-        });
-        const responseText = await response.text();
-        if (!restoration) window.history.pushState(undefined, "", response.url);
-        const newDocument = new DOMParser().parseFromString(
-          responseText,
-          "text/html"
-        );
-        document.querySelector("title").textContent =
-          newDocument.querySelector("title").textContent;
-        const previousLocalCSS = document.querySelectorAll(".local-css");
-        for (const element of newDocument.querySelectorAll(".local-css"))
-          document
-            .querySelector("head")
-            .insertAdjacentElement("beforeend", element);
-        const documentBody = document.querySelector("body");
-        leafac.dispatchBeforeunload(documentBody);
-        morphdom(documentBody, newDocument.querySelector("body"), {
-          childrenOnly: true,
-        });
-        for (const element of previousLocalCSS) element.remove();
-        window.dispatchEvent(new Event("DOMContentLoaded"));
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          console.error(error);
-          if (
-            ["GET", "HEAD"].includes(request.method.toUpperCase()) &&
-            !restoration
-          )
-            window.history.pushState(undefined, "", request.url);
-          networkErrorMessage.show();
-          window.dispatchEvent(new Event("navigateerror"));
+      if (
+        window.dispatchEvent(new Event("beforenavigate", { cancelable: true }))
+      )
+        try {
+          abortController = new AbortController();
+          const response = await fetch(request, {
+            signal: abortController.signal,
+          });
+          const responseText = await response.text();
+          if (!restoration)
+            window.history.pushState(undefined, "", response.url);
+          const newDocument = new DOMParser().parseFromString(
+            responseText,
+            "text/html"
+          );
+          document.querySelector("title").textContent =
+            newDocument.querySelector("title").textContent;
+          const previousLocalCSS = document.querySelectorAll(".local-css");
+          for (const element of newDocument.querySelectorAll(".local-css"))
+            document
+              .querySelector("head")
+              .insertAdjacentElement("beforeend", element);
+          const documentBody = document.querySelector("body");
+          leafac.dispatchBeforeunload(documentBody);
+          morphdom(documentBody, newDocument.querySelector("body"), {
+            childrenOnly: true,
+          });
+          for (const element of previousLocalCSS) element.remove();
+          window.dispatchEvent(new Event("DOMContentLoaded"));
+        } catch (error) {
+          if (error.name !== "AbortError") {
+            console.error(error);
+            if (
+              ["GET", "HEAD"].includes(request.method.toUpperCase()) &&
+              !restoration
+            )
+              window.history.pushState(undefined, "", request.url);
+            networkErrorMessage.show();
+            window.dispatchEvent(new Event("navigateerror"));
+          }
         }
-      }
       isNavigating = false;
     }
   },
@@ -399,6 +402,18 @@ const leafac = {
     window.addEventListener("beforeunload", warner);
     document.addEventListener("submit", () => {
       window.removeEventListener("beforeunload", warner);
+    });
+
+    window.addEventListener("beforenavigate", (event) => {
+      if (
+        !leafac.isModified(document.querySelector("body")) ||
+        confirm(
+          "Are you sure you want to leave this page? Changes you made may not be saved."
+        )
+      )
+        return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
     });
   },
 

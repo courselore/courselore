@@ -4,6 +4,8 @@
 
 - Live updates fixes:
   - `leafac.warnAboutLosingInputs()` doesn’t work.
+    - Form submissions.
+    - History navigation.
   - `autofocus`.
   - `TODO`
   - Cache?
