@@ -2413,6 +2413,7 @@ export default (app: Courselore): void => {
                                   <button
                                     class="button button--tight button--tight--inline button--transparent ${res
                                       .locals.localCSS(css`
+                                      text-align: left;
                                       display: flex;
                                       flex-direction: column;
                                       align-items: flex-start;
