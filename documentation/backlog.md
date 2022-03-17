@@ -9,6 +9,9 @@
   - When going from “No conversation selected.” to a conversation shouldn’t scroll sidebar.
     - `alreadyScrolledToConversation` is a bad idea. Instead, use the notion of the previous page.
 - When liking, endorsing, and so forth, you lose your search and filters.
+- Message highlight animation:
+  - Shouldn’t occur on “like”ing and that sort of thing.
+  - Currently timed based on a fixed 0.5s delay. It should be after scroll.
 
 ```
 onload="${javascript`

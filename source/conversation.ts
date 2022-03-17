@@ -4138,7 +4138,7 @@ export default (app: Courselore): void => {
                                           (shouldScrollToFirstUnreadMessage &&
                                             message === firstUnreadMessage)
                                             ? javascript`
-                                                if (event?.detail?.event?.target?.preventConversationScroll !== true)
+                                                if (event?.detail?.previousLocation?.pathname !== location.pathname)
                                                   window.setTimeout(() => { this.scrollIntoView({ block: "center" }); }, 0);
                                               `
                                             : javascript``
@@ -4318,7 +4318,8 @@ export default (app: Courselore): void => {
                                                   2s
                                                   var(
                                                     --transition-timing-function--in-out
-                                                  );
+                                                  )
+                                                  0.5s;
                                               `
                                             : css``}
                                          
