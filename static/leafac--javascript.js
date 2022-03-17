@@ -165,7 +165,7 @@ const leafac = {
       )
         return;
       event.preventDefault();
-      await navigate(new Request(link.href));
+      await navigate({ request: new Request(link.href) });
     });
 
     document.addEventListener("submit", async (event) => {
@@ -182,15 +182,16 @@ const leafac = {
           : new URLSearchParams(new FormData(event.target));
       if (!action.startsWith(baseURL)) return;
       event.preventDefault();
-      await navigate(
-        ["GET", "HEAD"].includes(method)
+      await navigate({
+        request: ["GET", "HEAD"].includes(method)
           ? new Request(new URL(`?${body}`, action), { method })
-          : new Request(action, { method, body })
-      );
+          : new Request(action, { method, body }),
+      });
     });
 
     window.addEventListener("popstate", async () => {
-      await navigate(new Request(document.location), {
+      await navigate({
+        request: new Request(document.location),
         popstate: true,
       });
     });
@@ -198,7 +199,7 @@ const leafac = {
     let networkErrorMessage;
     let abortController;
     let isNavigating = false;
-    async function navigate(request, { popstate = false } = {}) {
+    async function navigate({ request, popstate = false } = {}) {
       networkErrorMessage ??= tippy(document.querySelector("body"), {
         theme: "error",
         trigger: "manual",
