@@ -10,6 +10,12 @@
     - `alreadyScrolledToConversation` is a bad idea. Instead, use the notion of the previous page.
 - When liking, endorsing, and so forth, you lose your search and filters.
 
+```
+onload="${javascript`
+  this.preventConversationScroll = true;
+`}"
+```
+
 ---
 
 - Restore live-updates:

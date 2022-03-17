@@ -4138,7 +4138,8 @@ export default (app: Courselore): void => {
                                           (shouldScrollToFirstUnreadMessage &&
                                             message === firstUnreadMessage)
                                             ? javascript`
-                                                window.setTimeout(() => { this.scrollIntoView({ block: "center" }); }, 0);
+                                                if (event?.detail?.event?.target?.preventConversationScroll !== true)
+                                                  window.setTimeout(() => { this.scrollIntoView({ block: "center" }); }, 0);
                                               `
                                             : javascript``
                                         }
@@ -5509,6 +5510,9 @@ export default (app: Courselore): void => {
                                                       .reference}/messages/${message.reference}/likes${isLiked
                                                       ? "?_method=DELETE"
                                                       : ""}"
+                                                    onload="${javascript`
+                                                      this.preventConversationScroll = true;
+                                                    `}"
                                                   >
                                                     <input
                                                       type="hidden"
