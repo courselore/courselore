@@ -214,9 +214,10 @@ const leafac = {
       if (popstate) abortController?.abort();
       else if (isNavigating) return;
       isNavigating = true;
+      const detail = { event };
       if (
         window.dispatchEvent(
-          new CustomEvent("beforenavigate", { cancelable: true, detail: event })
+          new CustomEvent("beforenavigate", { cancelable: true, detail })
         )
       )
         try {
@@ -243,9 +244,7 @@ const leafac = {
             childrenOnly: true,
           });
           for (const element of previousLocalCSS) element.remove();
-          window.dispatchEvent(
-            new CustomEvent("DOMContentLoaded", { detail: event })
-          );
+          window.dispatchEvent(new CustomEvent("DOMContentLoaded", { detail }));
           document.querySelector("[autofocus]")?.focus();
         } catch (error) {
           if (error.name !== "AbortError") {
@@ -256,9 +255,7 @@ const leafac = {
             )
               window.history.pushState(undefined, "", request.url);
             networkErrorMessage.show();
-            window.dispatchEvent(
-              new CustomEvent("navigateerror", { detail: event })
-            );
+            window.dispatchEvent(new CustomEvent("navigateerror", { detail }));
           }
         }
       isNavigating = false;
