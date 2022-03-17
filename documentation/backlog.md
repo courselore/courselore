@@ -12,6 +12,7 @@
 - Message highlight animation:
   - Shouldn’t occur on “like”ing and that sort of thing.
   - Currently timed based on a fixed 0.5s delay. It should be after scroll.
+  - “Like”ing and that sort of thing shouldn’t add `?messageReference=2` to the URL on live-navigation.
 
 ```
 onload="${javascript`
