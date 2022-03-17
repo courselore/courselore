@@ -142,9 +142,12 @@ const eventSourceRefresh = async (response) => {
 
 const leafac = {
   liveNavigation(baseURL) {
-    window.addEventListener("DOMContentLoaded", () => {
+    window.addEventListener("DOMContentLoaded", (event) => {
       for (const element of document.querySelectorAll("[onload]"))
-        new Function(element.getAttribute("onload")).call(element);
+        new Function("event", element.getAttribute("onload")).call(
+          element,
+          event
+        );
     });
     if (document.readyState !== "loading")
       window.dispatchEvent(new Event("DOMContentLoaded"));
@@ -165,7 +168,7 @@ const leafac = {
       )
         return;
       event.preventDefault();
-      await navigate({ request: new Request(link.href) });
+      await navigate({ request: new Request(link.href), event });
     });
 
     document.addEventListener("submit", async (event) => {
@@ -186,6 +189,7 @@ const leafac = {
         request: ["GET", "HEAD"].includes(method)
           ? new Request(new URL(`?${body}`, action), { method })
           : new Request(action, { method, body }),
+        event,
       });
     });
 
@@ -199,7 +203,7 @@ const leafac = {
     let networkErrorMessage;
     let abortController;
     let isNavigating = false;
-    async function navigate({ request, popstate = false } = {}) {
+    async function navigate({ request, event = undefined, popstate = false }) {
       networkErrorMessage ??= tippy(document.querySelector("body"), {
         theme: "error",
         trigger: "manual",
@@ -211,7 +215,9 @@ const leafac = {
       else if (isNavigating) return;
       isNavigating = true;
       if (
-        window.dispatchEvent(new Event("beforenavigate", { cancelable: true }))
+        window.dispatchEvent(
+          new CustomEvent("beforenavigate", { cancelable: true, detail: event })
+        )
       )
         try {
           abortController = new AbortController();
@@ -237,7 +243,9 @@ const leafac = {
             childrenOnly: true,
           });
           for (const element of previousLocalCSS) element.remove();
-          window.dispatchEvent(new Event("DOMContentLoaded"));
+          window.dispatchEvent(
+            new CustomEvent("DOMContentLoaded", { detail: event })
+          );
           document.querySelector("[autofocus]")?.focus();
         } catch (error) {
           if (error.name !== "AbortError") {
@@ -248,7 +256,9 @@ const leafac = {
             )
               window.history.pushState(undefined, "", request.url);
             networkErrorMessage.show();
-            window.dispatchEvent(new Event("navigateerror"));
+            window.dispatchEvent(
+              new CustomEvent("navigateerror", { detail: event })
+            );
           }
         }
       isNavigating = false;
