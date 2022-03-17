@@ -4138,7 +4138,7 @@ export default (app: Courselore): void => {
                                           (shouldScrollToFirstUnreadMessage &&
                                             message === firstUnreadMessage)
                                             ? javascript`
-                                                window.setTimeout(() => { this.scrollIntoView(); }, 0);
+                                                window.setTimeout(() => { this.scrollIntoView({ block: "center" }); }, 0);
                                               `
                                             : javascript``
                                         }

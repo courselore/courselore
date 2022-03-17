@@ -7,6 +7,7 @@
   - When sending message, shouldn’t reset “anonymity.”
   - When navigating between conversations main conversation pane should scroll up.
   - When going from “No conversation selected.” to a conversation shouldn’t scroll sidebar.
+    - `alreadyScrolledToConversation` is a bad idea. Instead, use the notion of the previous page.
 - When liking, endorsing, and so forth, you lose your search and filters.
 
 ---
