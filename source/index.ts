@@ -240,22 +240,20 @@ export interface Options {
 
 export default async (options: Options): Promise<Courselore> => {
   const app = express() as Courselore;
-  app.locals.options = Object.assign<any, any>(
-    {
-      version: JSON.parse(
-        await fs.readFile(
-          url.fileURLToPath(new URL("../package.json", import.meta.url)),
-          "utf8"
-        )
-      ).version,
-      canonicalBaseURL: "https://courselore.org",
-      metaCourseloreInvitation:
-        "https://courselore.org/courses/8537410611/invitations/3667859788",
-      demonstration: process.env.NODE_ENV !== "production",
-      liveReload: false,
-    },
-    options
-  );
+  app.locals.options = {
+    version: JSON.parse(
+      await fs.readFile(
+        url.fileURLToPath(new URL("../package.json", import.meta.url)),
+        "utf8"
+      )
+    ).version,
+    canonicalBaseURL: "https://courselore.org",
+    metaCourseloreInvitation:
+      "https://courselore.org/courses/8537410611/invitations/3667859788",
+    demonstration: process.env.NODE_ENV !== "production",
+    liveReload: false,
+    ...options,
+  } as any;
   app.locals.handlers = {} as any;
   app.locals.middlewares = {} as any;
   app.locals.layouts = {} as any;
