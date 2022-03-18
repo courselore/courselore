@@ -2,12 +2,6 @@
 
 ### Performance
 
-- When liking, endorsing, and so forth, you lose your search and filters.
-- “Like”ing and that sort of thing shouldn’t add `?messageReference=2` to the URL on live-navigation.
-  - Use `Live-Navigation` header.
-
----
-
 - Restore live-updates:
   - Enable them again.
   - Make sure that `eventSources` for live-updates are disconnected from the previous page and reconnected to the new page when navigating.
