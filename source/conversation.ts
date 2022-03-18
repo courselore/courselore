@@ -4025,10 +4025,10 @@ export default (app: Courselore): void => {
                                 afterMessage === undefined
                               ? javascript`
                                   this.scrollTop = this.scrollHeight;
-                                  this.shouldScrollToBottomOnRefresh = true;
+                                  this.shouldScrollToBottom = true;
 
                                   const handleScroll = () => {
-                                    this.shouldScrollToBottomOnRefresh = this.scrollTop === this.scrollHeight - this.offsetHeight;
+                                    this.shouldScrollToBottom = this.scrollTop === this.scrollHeight - this.offsetHeight;
                                   };
                                   this.addEventListener("scroll", handleScroll);
                                   this.addEventListener("beforeunload", () => { this.removeEventListener("scroll", handleScroll); }, { once: true });
@@ -4045,7 +4045,7 @@ export default (app: Courselore): void => {
                         }, 0);
                     `}"
                     onrefresh="${javascript`
-                      if (this.shouldScrollToBottomOnRefresh) this.scrollTop = this.scrollHeight;
+                      if (this.shouldScrollToBottom) this.scrollTop = this.scrollHeight;
                     `}"
                   >
                     <div
