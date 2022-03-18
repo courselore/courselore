@@ -78,6 +78,10 @@ onload="${javascript`
 
 ### User Interface Improvements
 
+- Add the notion of follow-up question, so that questions aren’t marked as “unresolved” as soon as a student sends a message. It makes sense for when the student just says “thanks.”
+
+---
+
 - Tip sheet on how to get notifications
 - Upload roster and show differences.
 - When editing, and trying to send empty message, propose to delete (like Discord does).
