@@ -2,12 +2,6 @@
 
 ### Performance
 
-- Invert `setTimeout`.
-
----
-
-- State management glitches:
-  - When sending message on chat, it isn’t scrolling to the bottom.
 - When liking, endorsing, and so forth, you lose your search and filters.
 - Message highlight animation:
   - Shouldn’t occur on “like”ing and that sort of thing.
