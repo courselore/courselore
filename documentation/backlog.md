@@ -2,8 +2,6 @@
 
 ### Performance
 
-- `conversation:4142`: Scroll conversation to a particular message.
-- `conversation:4022`: Scroll chats to bottom.
 - `conversation:1253`: Scroll sidebar.
 
 ---
