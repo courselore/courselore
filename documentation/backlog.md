@@ -2,10 +2,12 @@
 
 ### Performance
 
-- `layouts:639`
-- `conversation:4142`
-- `conversation:1253`
-- `conversation:4022`
+- `layouts:639`: Scroll main view in things like settings pages.
+- `conversation:1253`: Scroll sidebar.
+- `conversation:4022`: Scroll chats to bottom.
+- `conversation:4142`: Scroll conversation to a particular message.
+
+---
 
 - State management glitches:
   - When “like”ing, editing message, changing settings, and so forth, shouldn’t scroll main pane.
