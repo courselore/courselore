@@ -5933,7 +5933,6 @@ export default (app: Courselore): void => {
                     `)}"
                     onload="${javascript`
                       leafac.saveFormInputValue(this.querySelector(".content-editor--write--textarea"), "new-message");
-                      this.isModified = false;
                     `}"
                   >
                     $${app.locals.partials.contentEditor({
