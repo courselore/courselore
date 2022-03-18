@@ -193,9 +193,10 @@ const leafac = {
       });
     });
 
-    window.addEventListener("popstate", async () => {
+    window.addEventListener("popstate", async (event) => {
       await navigate({
         request: new Request(window.location),
+        event,
         popstate: true,
       });
     });
@@ -203,7 +204,7 @@ const leafac = {
     let networkErrorMessage;
     let abortController;
     let isNavigating = false;
-    async function navigate({ request, event = undefined, popstate = false }) {
+    async function navigate({ request, event, popstate = false }) {
       networkErrorMessage ??= tippy(document.querySelector("body"), {
         theme: "error",
         trigger: "manual",
