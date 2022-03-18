@@ -4000,6 +4000,7 @@ export default (app: Courselore): void => {
                                 `
                               : javascript`
                                   this.scroll(0, 0);
+                                  this.closest(".conversation--layout--main").scroll(0, 0);
                                 `
                           }
                         }, 0);
