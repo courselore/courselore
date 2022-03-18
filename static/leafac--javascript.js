@@ -641,9 +641,10 @@ const leafac = {
   },
 
   saveFormInputValue(element, identifier) {
+    element.isModified = false;
+
     element.value = element.defaultValue =
       getLocalStorageItem()?.[window.location.pathname]?.[identifier] ?? "";
-    element.isModified = false;
 
     const handleInput = () => {
       const localStorageItem = getLocalStorageItem();
