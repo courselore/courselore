@@ -12,7 +12,6 @@
 ---
 
 - State management glitches:
-  - When “like”ing, editing message, and so forth, shouldn’t scroll main pane.
   - When sending message, shouldn’t reset “anonymity.”
   - When navigating between conversations main conversation pane should scroll up.
   - When going from “No conversation selected.” to a conversation shouldn’t scroll sidebar.
