@@ -2,15 +2,14 @@
 
 ### Performance
 
-- `layouts:639`: Scroll main view in things like settings pages.
-- `conversation:1253`: Scroll sidebar.
-- `conversation:4022`: Scroll chats to bottom.
 - `conversation:4142`: Scroll conversation to a particular message.
+- `conversation:4022`: Scroll chats to bottom.
+- `conversation:1253`: Scroll sidebar.
 
 ---
 
 - State management glitches:
-  - When “like”ing, editing message, changing settings, and so forth, shouldn’t scroll main pane.
+  - When “like”ing, editing message, and so forth, shouldn’t scroll main pane.
   - When sending message, shouldn’t reset “anonymity.”
   - When navigating between conversations main conversation pane should scroll up.
   - When going from “No conversation selected.” to a conversation shouldn’t scroll sidebar.
