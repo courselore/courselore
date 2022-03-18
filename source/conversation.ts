@@ -3999,48 +3999,58 @@ export default (app: Courselore): void => {
                         if (event?.detail?.previousLocation?.pathname?.slice(${
                           new URL(app.locals.options.baseURL).pathname.length -
                           1
-                        }) === ${JSON.stringify(
+                        }) !== ${JSON.stringify(
                       `/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
-                    )}) return;
+                    )}) {
+                          ${
+                            typeof req.query.messageReference === "string"
+                              ? javascript`
+                                  const element = this.querySelector("#message--${req.query.messageReference}");
+                                  if (element === null) return;
+                                  element.scrollIntoView({ block: "center" });
+                                  element.querySelector(".message--highlight").style.animation = "message--highlight 2s var(--transition-timing-function--in-out)";
+                                `
+                              : firstUnreadMessage !== undefined &&
+                                firstUnreadMessage !== messages[0]
+                              ? javascript`
+                                  this.querySelector("#message--${firstUnreadMessage.reference}")?.scrollIntoView({ block: "center" });
+                                `
+                              : res.locals.conversation.type === "chat" &&
+                                messages.length > 0 &&
+                                afterMessage === undefined
+                              ? javascript`
+                                  this.scrollTop = this.scrollHeight;
+                                `
+                              : javascript`
+                                  const element = ${
+                                    res.locals.conversation.type === "chat"
+                                      ? javascript`this`
+                                      : javascript`this.closest(".conversation--layout--main")`
+                                  };
+                                  element.scroll(0, 0);
+                                `
+                          }
+                        }
                         ${
-                          typeof req.query.messageReference === "string"
+                          res.locals.conversation.type === "chat"
                             ? javascript`
-                                const element = this.querySelector("#message--${req.query.messageReference}");
-                                if (element === null) return;
-                                element.scrollIntoView({ block: "center" });
-                                element.querySelector(".message--highlight").style.animation = "message--highlight 2s var(--transition-timing-function--in-out)";
-                              `
-                            : firstUnreadMessage !== undefined &&
-                              firstUnreadMessage !== messages[0]
-                            ? javascript`
-                                this.querySelector("#message--${firstUnreadMessage.reference}")?.scrollIntoView({ block: "center" });
-                              `
-                            : res.locals.conversation.type === "chat" &&
-                              messages.length > 0 &&
-                              afterMessage === undefined
-                            ? javascript`
-                                this.scrollTop = this.scrollHeight;
-                                this.shouldScrollToBottom = true;
-
+                                else if (window.shouldScrollConversationToBottom) {
+                                  this.scrollTop = this.scrollHeight;
+                                }
+                                
                                 const handleScroll = () => {
-                                  this.shouldScrollToBottom = this.scrollTop === this.scrollHeight - this.offsetHeight;
+                                  window.shouldScrollConversationToBottom = this.scrollTop === this.scrollHeight - this.offsetHeight;
                                 };
+                                handleScroll();
                                 this.addEventListener("scroll", handleScroll);
                                 this.addEventListener("beforeunload", () => { this.removeEventListener("scroll", handleScroll); }, { once: true });
                               `
-                            : javascript`
-                                const element = ${
-                                  res.locals.conversation.type === "chat"
-                                    ? javascript`this`
-                                    : javascript`this.closest(".conversation--layout--main")`
-                                };
-                                element.scroll(0, 0);
-                              `
+                            : javascript``
                         }
                       }, 0);
                     `}"
                     onrefresh="${javascript`
-                      if (this.shouldScrollToBottom) this.scrollTop = this.scrollHeight;
+                      if (window.shouldScrollConversationToBottom) this.scrollTop = this.scrollHeight;
                     `}"
                   >
                     <div
