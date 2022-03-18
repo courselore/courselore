@@ -197,14 +197,13 @@ const leafac = {
       await navigate({
         request: new Request(window.location),
         event,
-        popstate: true,
       });
     });
 
     let networkErrorMessage;
     let abortController;
     let isNavigating = false;
-    async function navigate({ request, event, popstate = false }) {
+    async function navigate({ request, event }) {
       networkErrorMessage ??= tippy(document.querySelector("body"), {
         theme: "error",
         trigger: "manual",
@@ -212,7 +211,7 @@ const leafac = {
         content:
           "You appear to be offline. Please check your internet connection and try reloading the page.",
       });
-      if (popstate) abortController?.abort();
+      if (event instanceof PopStateEvent) abortController?.abort();
       else if (isNavigating) return;
       isNavigating = true;
       const detail = {
@@ -230,7 +229,8 @@ const leafac = {
             signal: abortController.signal,
           });
           const responseText = await response.text();
-          if (!popstate) window.history.pushState(undefined, "", response.url);
+          if (!(event instanceof PopStateEvent))
+            window.history.pushState(undefined, "", response.url);
           const newDocument = new DOMParser().parseFromString(
             responseText,
             "text/html"
@@ -255,7 +255,7 @@ const leafac = {
             console.error(error);
             if (
               ["GET", "HEAD"].includes(request.method.toUpperCase()) &&
-              !popstate
+              !(event instanceof PopStateEvent)
             )
               window.history.pushState(undefined, "", request.url);
             networkErrorMessage.show();
