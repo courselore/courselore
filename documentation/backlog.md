@@ -2,11 +2,6 @@
 
 ### Performance
 
-- Make `previousLocation` available even on `PopStateEvent`.
-  - Remove `instanceof` checks from `conversation.ts`.
-
----
-
 - State management glitches:
   - When sending message, shouldn’t reset “anonymity.”
   - When navigating between conversations main conversation pane should scroll up.

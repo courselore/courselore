@@ -1249,7 +1249,6 @@ export default (app: Courselore): void => {
                           req.query.scrollToConversation !== "false"
                             ? javascript`
                                 if (
-                                  event?.detail?.originalEvent instanceof PopStateEvent ||
                                   !event?.detail?.previousLocation?.pathname?.slice(${
                                     new URL(app.locals.options.baseURL).pathname
                                       .length - 1
@@ -4000,7 +3999,6 @@ export default (app: Courselore): void => {
                     `)}"
                     onload="${javascript`
                       if (
-                        event?.detail?.originalEvent instanceof PopStateEvent ||
                         event?.detail?.previousLocation?.pathname?.slice(${
                           new URL(app.locals.options.baseURL).pathname.length -
                           1

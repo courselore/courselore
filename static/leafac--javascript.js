@@ -203,6 +203,7 @@ const leafac = {
     let networkErrorMessage;
     let abortController;
     let isNavigating = false;
+    let previousLocation = { ...window.location };
     async function navigate({ request, event }) {
       networkErrorMessage ??= tippy(document.querySelector("body"), {
         theme: "error",
@@ -214,11 +215,14 @@ const leafac = {
       if (event instanceof PopStateEvent) abortController?.abort();
       else if (isNavigating) return;
       isNavigating = true;
+      if (!(event instanceof PopStateEvent))
+        previousLocation = { ...window.location };
       const detail = {
         originalEvent: event,
-        previousLocation:
-          event instanceof PopStateEvent ? undefined : { ...window.location },
+        previousLocation,
       };
+      if (event instanceof PopStateEvent)
+        previousLocation = { ...window.location };
       if (
         window.dispatchEvent(
           new CustomEvent("beforenavigate", { cancelable: true, detail })
