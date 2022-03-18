@@ -6,7 +6,13 @@
 
   - Include query parameters:
 
-    - `redirect`
+    - `redirect` in `message.ts`
+
+      ```
+      ${qs.stringify(req.query, {
+        addQueryPrefix: true,
+      })}
+      ```
 
       ```
       ${qs.stringify(lodash.omit(req.query, ["messageReference"]), {

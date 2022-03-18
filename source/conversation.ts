@@ -6397,7 +6397,14 @@ export default (app: Courselore): void => {
           );
 
       res.redirect(
-        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
+        `${app.locals.options.baseURL}/courses/${
+          res.locals.course.reference
+        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          req.query,
+          {
+            addQueryPrefix: true,
+          }
+        )}`
       );
 
       app.locals.liveUpdaters.course(res.locals.course.id);
@@ -6426,7 +6433,11 @@ export default (app: Courselore): void => {
         `,
       });
       res.redirect(
-        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}`
+        `${app.locals.options.baseURL}/courses/${
+          res.locals.course.reference
+        }${qs.stringify(lodash.omit(req.query, ["messageReference"]), {
+          addQueryPrefix: true,
+        })}`
       );
       app.locals.liveUpdaters.course(res.locals.course.id);
     }
@@ -6470,7 +6481,14 @@ export default (app: Courselore): void => {
       );
 
       res.redirect(
-        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
+        `${app.locals.options.baseURL}/courses/${
+          res.locals.course.reference
+        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          req.query,
+          {
+            addQueryPrefix: true,
+          }
+        )}`
       );
     }
   );
@@ -6510,7 +6528,14 @@ export default (app: Courselore): void => {
       );
 
       res.redirect(
-        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
+        `${app.locals.options.baseURL}/courses/${
+          res.locals.course.reference
+        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          req.query,
+          {
+            addQueryPrefix: true,
+          }
+        )}`
       );
     }
   );

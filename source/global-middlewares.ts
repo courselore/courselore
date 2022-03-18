@@ -64,7 +64,14 @@ export default (app: Courselore): void => {
     })
   );
 
-  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(methodOverride("_method"));
+  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(methodOverride("_method"), ((
+    req,
+    res,
+    next
+  ) => {
+    delete req.query._method;
+    next();
+  }) as express.RequestHandler<{}, any, {}, { _method?: "string" }, BaseMiddlewareLocals>);
 
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>(cookieParser());
 
