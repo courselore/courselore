@@ -2,7 +2,6 @@
 
 ### Performance
 
-- Highlight selected message (`TODO`).
 - Do something to prevent flash of unstyled content on scrolling.
 - `conversation:1253`: Scroll sidebar.
 
