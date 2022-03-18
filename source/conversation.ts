@@ -1190,7 +1190,12 @@ export default (app: Courselore): void => {
                               method="POST"
                               action="${app.locals.options
                                 .baseURL}/courses/${res.locals.course
-                                .reference}/conversations/mark-all-conversations-as-read"
+                                .reference}/conversations/mark-all-conversations-as-read${qs.stringify(
+                                req.query,
+                                {
+                                  addQueryPrefix: true,
+                                }
+                              )}"
                               class="${res.locals.localCSS(css`
                                 display: flex;
                                 justify-content: flex-end;
@@ -3076,7 +3081,15 @@ export default (app: Courselore): void => {
                                                     .locals.course
                                                     .reference}/conversations/${res
                                                     .locals.conversation
-                                                    .reference}?_method=PATCH"
+                                                    .reference}${qs.stringify(
+                                                    {
+                                                      ...req.query,
+                                                      _method: "PATCH",
+                                                    },
+                                                    {
+                                                      addQueryPrefix: true,
+                                                    }
+                                                  )}"
                                                 >
                                                   <input
                                                     type="hidden"
@@ -3153,7 +3166,15 @@ export default (app: Courselore): void => {
                                       action="${app.locals.options
                                         .baseURL}/courses/${res.locals.course
                                         .reference}/conversations/${res.locals
-                                        .conversation.reference}?_method=PATCH"
+                                        .conversation.reference}${qs.stringify(
+                                        {
+                                          ...req.query,
+                                          _method: "PATCH",
+                                        },
+                                        {
+                                          addQueryPrefix: true,
+                                        }
+                                      )}"
                                     >
                                       <input
                                         type="hidden"
@@ -3244,7 +3265,15 @@ export default (app: Courselore): void => {
                                 action="${app.locals.options
                                   .baseURL}/courses/${res.locals.course
                                   .reference}/conversations/${res.locals
-                                  .conversation.reference}?_method=PATCH"
+                                  .conversation.reference}${qs.stringify(
+                                  {
+                                    ...req.query,
+                                    _method: "PATCH",
+                                  },
+                                  {
+                                    addQueryPrefix: true,
+                                  }
+                                )}"
                               >
                                 <input
                                   type="hidden"
@@ -3334,7 +3363,15 @@ export default (app: Courselore): void => {
                                             .course
                                             .reference}/conversations/${res
                                             .locals.conversation
-                                            .reference}?_method=PATCH"
+                                            .reference}${qs.stringify(
+                                            {
+                                              ...req.query,
+                                              _method: "PATCH",
+                                            },
+                                            {
+                                              addQueryPrefix: true,
+                                            }
+                                          )}"
                                           class="${res.locals.localCSS(css`
                                             padding: var(--space--2);
                                             display: flex;
@@ -3536,7 +3573,16 @@ export default (app: Courselore): void => {
                                                           .locals.course
                                                           .reference}/conversations/${res
                                                           .locals.conversation
-                                                          .reference}?_method=DELETE"
+                                                          .reference}${qs.stringify(
+                                                          {
+                                                            ...req.query,
+                                                            _method: "DELETE",
+                                                          },
+                                                          {
+                                                            addQueryPrefix:
+                                                              true,
+                                                          }
+                                                        )}"
                                                         class="${res.locals
                                                           .localCSS(css`
                                                           padding: var(
@@ -3627,7 +3673,15 @@ export default (app: Courselore): void => {
                             method="POST"
                             action="${app.locals.options.baseURL}/courses/${res
                               .locals.course.reference}/conversations/${res
-                              .locals.conversation.reference}?_method=PATCH"
+                              .locals.conversation.reference}${qs.stringify(
+                              {
+                                ...req.query,
+                                _method: "PATCH",
+                              },
+                              {
+                                addQueryPrefix: true,
+                              }
+                            )}"
                             novalidate
                             hidden
                             class="title--edit ${res.locals.localCSS(css`
@@ -3770,7 +3824,15 @@ export default (app: Courselore): void => {
                                                 .course
                                                 .reference}/conversations/${res
                                                 .locals.conversation
-                                                .reference}/taggings?_method=DELETE"
+                                                .reference}/taggings${qs.stringify(
+                                                {
+                                                  ...req.query,
+                                                  _method: "DELETE",
+                                                },
+                                                {
+                                                  addQueryPrefix: true,
+                                                }
+                                              )}"
                                               class="${res.locals.localCSS(css`
                                                 display: flex;
                                                 gap: var(--space--2);
@@ -3872,7 +3934,13 @@ export default (app: Courselore): void => {
                                                                 .reference}/conversations/${res
                                                                 .locals
                                                                 .conversation
-                                                                .reference}/taggings"
+                                                                .reference}/taggings${qs.stringify(
+                                                                req.query,
+                                                                {
+                                                                  addQueryPrefix:
+                                                                    true,
+                                                                }
+                                                              )}"
                                                             >
                                                               <input
                                                                 type="hidden"
@@ -4437,7 +4505,13 @@ export default (app: Courselore): void => {
                                                                     .reference}/conversations/${res
                                                                     .locals
                                                                     .conversation
-                                                                    .reference}/messages/${message.reference}/likes"
+                                                                    .reference}/messages/${message.reference}/likes${qs.stringify(
+                                                                    req.query,
+                                                                    {
+                                                                      addQueryPrefix:
+                                                                        true,
+                                                                    }
+                                                                  )}"
                                                                 >
                                                                   <input
                                                                     type="hidden"
@@ -4646,7 +4720,17 @@ export default (app: Courselore): void => {
                                                                     .reference}/conversations/${res
                                                                     .locals
                                                                     .conversation
-                                                                    .reference}/messages/${message.reference}?_method=PATCH"
+                                                                    .reference}/messages/${message.reference}${qs.stringify(
+                                                                    {
+                                                                      ...req.query,
+                                                                      _method:
+                                                                        "PATCH",
+                                                                    },
+                                                                    {
+                                                                      addQueryPrefix:
+                                                                        true,
+                                                                    }
+                                                                  )}"
                                                                   class="dropdown--menu"
                                                                 >
                                                                   <input
@@ -4783,7 +4867,17 @@ export default (app: Courselore): void => {
                                                                                 .reference}/conversations/${res
                                                                                 .locals
                                                                                 .conversation
-                                                                                .reference}/messages/${message.reference}?_method=DELETE"
+                                                                                .reference}/messages/${message.reference}${qs.stringify(
+                                                                                {
+                                                                                  ...req.query,
+                                                                                  _method:
+                                                                                    "DELETE",
+                                                                                },
+                                                                                {
+                                                                                  addQueryPrefix:
+                                                                                    true,
+                                                                                }
+                                                                              )}"
                                                                               class="${res
                                                                                 .locals
                                                                                 .localCSS(css`
@@ -4890,7 +4984,15 @@ export default (app: Courselore): void => {
                                                   .course
                                                   .reference}/conversations/${res
                                                   .locals.conversation
-                                                  .reference}/messages/${message.reference}?_method=PATCH"
+                                                  .reference}/messages/${message.reference}${qs.stringify(
+                                                  {
+                                                    ...req.query,
+                                                    _method: "PATCH",
+                                                  },
+                                                  {
+                                                    addQueryPrefix: true,
+                                                  }
+                                                )}"
                                               >
                                                 <input
                                                   type="hidden"
@@ -4985,9 +5087,17 @@ export default (app: Courselore): void => {
                                                   .course
                                                   .reference}/conversations/${res
                                                   .locals.conversation
-                                                  .reference}/messages/${message.reference}/endorsements${isEndorsed
-                                                  ? "?_method=DELETE"
-                                                  : ""}"
+                                                  .reference}/messages/${message.reference}/endorsements${qs.stringify(
+                                                  {
+                                                    ...req.query,
+                                                    ...(isEndorsed
+                                                      ? { _method: "DELETE" }
+                                                      : {}),
+                                                  },
+                                                  {
+                                                    addQueryPrefix: true,
+                                                  }
+                                                )}"
                                               >
                                                 <input
                                                   type="hidden"
@@ -5520,9 +5630,19 @@ export default (app: Courselore): void => {
                                                       .locals.course
                                                       .reference}/conversations/${res
                                                       .locals.conversation
-                                                      .reference}/messages/${message.reference}/likes${isLiked
-                                                      ? "?_method=DELETE"
-                                                      : ""}"
+                                                      .reference}/messages/${message.reference}/likes${qs.stringify(
+                                                      {
+                                                        ...req.query,
+                                                        ...(isLiked
+                                                          ? {
+                                                              _method: "DELETE",
+                                                            }
+                                                          : {}),
+                                                      },
+                                                      {
+                                                        addQueryPrefix: true,
+                                                      }
+                                                    )}"
                                                   >
                                                     <input
                                                       type="hidden"
@@ -5689,7 +5809,15 @@ export default (app: Courselore): void => {
                                                   .course
                                                   .reference}/conversations/${res
                                                   .locals.conversation
-                                                  .reference}/messages/${message.reference}?_method=PATCH"
+                                                  .reference}/messages/${message.reference}${qs.stringify(
+                                                  {
+                                                    ...req.query,
+                                                    _method: "PATCH",
+                                                  },
+                                                  {
+                                                    addQueryPrefix: true,
+                                                  }
+                                                )}"
                                                 novalidate
                                                 hidden
                                                 class="message--edit ${res
@@ -5847,7 +5975,9 @@ export default (app: Courselore): void => {
                 method="POST"
                 action="${app.locals.options.baseURL}/courses/${res.locals
                   .course.reference}/conversations/${res.locals.conversation
-                  .reference}/messages"
+                  .reference}/messages${qs.stringify(req.query, {
+                  addQueryPrefix: true,
+                })}"
                 novalidate
                 class="${res.locals.localCSS(css`
                   ${res.locals.conversation.type === "chat"

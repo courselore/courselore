@@ -6,15 +6,6 @@
 
   - Include query parameters:
 
-    - `<form>`
-    - `action`
-
-      ```
-      ${qs.stringify(req.query, {
-        addQueryPrefix: true,
-      })}
-      ```
-
     - `redirect`
 
       ```
