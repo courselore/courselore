@@ -216,7 +216,8 @@ const leafac = {
       isNavigating = true;
       const detail = {
         originalEvent: event,
-        previousLocation: { ...window.location },
+        previousLocation:
+          event instanceof PopStateEvent ? undefined : { ...window.location },
       };
       if (
         window.dispatchEvent(
