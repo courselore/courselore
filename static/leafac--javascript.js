@@ -214,7 +214,10 @@ const leafac = {
       if (popstate) abortController?.abort();
       else if (isNavigating) return;
       isNavigating = true;
-      const detail = { event, previousLocation: { ...location } };
+      const detail = {
+        originalEvent: event,
+        previousLocation: { ...location },
+      };
       if (
         window.dispatchEvent(
           new CustomEvent("beforenavigate", { cancelable: true, detail })

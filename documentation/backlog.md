@@ -2,10 +2,6 @@
 
 ### Performance
 
-- `conversation:1253`: Scroll sidebar.
-
----
-
 - State management glitches:
   - When sending message, shouldn’t reset “anonymity.”
   - When navigating between conversations main conversation pane should scroll up.

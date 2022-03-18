@@ -1249,11 +1249,17 @@ export default (app: Courselore): void => {
                           req.query.scrollToConversation !== "false" &&
                           res.locals.conversation !== undefined
                             ? javascript`
-                                window.setTimeout(() => {
-                                  if (this.alreadyScrolledToConversation) return;
-                                  this.alreadyScrolledToConversation = true;
-                                  this.querySelector("#conversation--${res.locals.conversation.reference}")?.scrollIntoView({ block: "center" });
-                                }, 0);
+                                if (!event?.detail?.previousLocation?.pathname?.slice(${
+                                  new URL(app.locals.options.baseURL).pathname
+                                    .length - 1
+                                })?.startsWith(${JSON.stringify(
+                                `/courses/${res.locals.course.reference}/conversations/`
+                              )}))
+                                  window.setTimeout(() => {
+                                    this.querySelector("#conversation--${
+                                      res.locals.conversation.reference
+                                    }")?.scrollIntoView({ block: "center" });
+                                  }, 0);
                               `
                             : javascript``
                         }
