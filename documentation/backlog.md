@@ -2,7 +2,6 @@
 
 ### Performance
 
-- Do something to prevent flash of unstyled content on scrolling.
 - `conversation:1253`: Scroll sidebar.
 
 ---
@@ -383,6 +382,7 @@
 
 ### Interface Details
 
+- Do something to prevent flash of unstyled content on scrolling.
 - Prevent the flash of unformatted datetime on fields using `localizeDateTimeInput()`.
 - Redesign the presentation of submenus, for example, “Conversations”, on mobile. Try a hamburger menu.
 - Artificial progress bar on hijacked navigation, similar to Turbo Drive.
