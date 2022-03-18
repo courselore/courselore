@@ -12,6 +12,7 @@
   - When navigating between conversations main conversation pane should scroll up.
   - When going from “No conversation selected.” to a conversation shouldn’t scroll sidebar.
     - `alreadyScrolledToConversation` is a bad idea. Instead, use the notion of the previous page.
+  - When sending message on chat, it isn’t scrolling to the bottom.
 - When liking, endorsing, and so forth, you lose your search and filters.
 - Message highlight animation:
   - Shouldn’t occur on “like”ing and that sort of thing.
