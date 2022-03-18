@@ -195,7 +195,7 @@ const leafac = {
 
     window.addEventListener("popstate", async () => {
       await navigate({
-        request: new Request(document.location),
+        request: new Request(window.location),
         popstate: true,
       });
     });
@@ -216,7 +216,7 @@ const leafac = {
       isNavigating = true;
       const detail = {
         originalEvent: event,
-        previousLocation: { ...location },
+        previousLocation: { ...window.location },
       };
       if (
         window.dispatchEvent(
@@ -721,7 +721,7 @@ const leafac = {
     await new Promise((resolve) => {
       eventSource.addEventListener("open", resolve, { once: true });
     });
-    location.reload();
+    window.location.reload();
   },
 
   regExps: {
