@@ -2076,7 +2076,9 @@ export default (app: Courselore): void => {
             <form
               method="POST"
               action="${app.locals.options.baseURL}/courses/${res.locals.course
-                .reference}/conversations"
+                .reference}/conversations${qs.stringify(req.query, {
+                addQueryPrefix: true,
+              })}"
               novalidate
               class="${res.locals.localCSS(css`
                 display: flex;
@@ -2712,7 +2714,13 @@ export default (app: Courselore): void => {
       }
 
       res.redirect(
-        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.course.nextConversationReference}`
+        `${app.locals.options.baseURL}/courses/${
+          res.locals.course.reference
+        }/conversations/${
+          res.locals.course.nextConversationReference
+        }${qs.stringify(lodash.omit(req.query, ["messageReference"]), {
+          addQueryPrefix: true,
+        })}`
       );
 
       app.locals.liveUpdaters.course(res.locals.course.id);
