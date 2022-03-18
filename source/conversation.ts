@@ -5511,9 +5511,6 @@ export default (app: Courselore): void => {
                                                       .reference}/messages/${message.reference}/likes${isLiked
                                                       ? "?_method=DELETE"
                                                       : ""}"
-                                                    onload="${javascript`
-                                                      this.preventConversationScroll = true;
-                                                    `}"
                                                   >
                                                     <input
                                                       type="hidden"

@@ -2,6 +2,11 @@
 
 ### Performance
 
+- `layouts:639`
+- `conversation:4142`
+- `conversation:1253`
+- `conversation:4022`
+
 - State management glitches:
   - When “like”ing, editing message, changing settings, and so forth, shouldn’t scroll main pane.
   - When sending message, shouldn’t reset “anonymity.”
@@ -13,12 +18,6 @@
   - Shouldn’t occur on “like”ing and that sort of thing.
   - Currently timed based on a fixed 0.5s delay. It should be after scroll.
   - “Like”ing and that sort of thing shouldn’t add `?messageReference=2` to the URL on live-navigation.
-
-```
-onload="${javascript`
-  this.preventConversationScroll = true;
-`}"
-```
 
 ---
 
