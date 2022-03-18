@@ -215,19 +215,15 @@ const leafac = {
       if (event instanceof PopStateEvent) abortController?.abort();
       else if (isNavigating) return;
       isNavigating = true;
-      if (!(event instanceof PopStateEvent))
-        previousLocation = { ...window.location };
       const detail = {
         originalEvent: event,
         previousLocation,
       };
-      if (event instanceof PopStateEvent)
-        previousLocation = { ...window.location };
       if (
         window.dispatchEvent(
           new CustomEvent("beforenavigate", { cancelable: true, detail })
         )
-      )
+      ) {
         try {
           abortController = new AbortController();
           const response = await fetch(request, {
@@ -267,6 +263,8 @@ const leafac = {
             window.dispatchEvent(new CustomEvent("navigateerror", { detail }));
           }
         }
+        previousLocation = { ...window.location };
+      }
       isNavigating = false;
     }
   },
