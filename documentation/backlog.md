@@ -365,6 +365,7 @@
 
 ### Interface Details
 
+- Scroll to the bottom when sending chat message?
 - Do something to prevent flash of unstyled content on scrolling.
 - Prevent the flash of unformatted datetime on fields using `localizeDateTimeInput()`.
 - Redesign the presentation of submenus, for example, “Conversations”, on mobile. Try a hamburger menu.
