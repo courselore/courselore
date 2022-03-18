@@ -1246,19 +1246,28 @@ export default (app: Courselore): void => {
                       <div
                         onload="${javascript`
                         ${
-                          req.query.scrollToConversation !== "false" &&
-                          res.locals.conversation !== undefined
+                          req.query.scrollToConversation !== "false"
                             ? javascript`
-                                if (!event?.detail?.previousLocation?.pathname?.slice(${
-                                  new URL(app.locals.options.baseURL).pathname
-                                    .length - 1
-                                })?.startsWith(${JSON.stringify(
-                                `/courses/${res.locals.course.reference}/conversations/`
-                              )}))
+                                if (
+                                  event?.detail?.originalEvent instanceof PopStateEvent ||
+                                  !event?.detail?.previousLocation?.pathname?.slice(${
+                                    new URL(app.locals.options.baseURL).pathname
+                                      .length - 1
+                                  })?.match(/^\\/courses\\/${
+                                res.locals.course.reference
+                              }(?:$|\\/conversations\\/)/)
+                                )
                                   window.setTimeout(() => {
-                                    this.querySelector("#conversation--${
-                                      res.locals.conversation.reference
-                                    }")?.scrollIntoView({ block: "center" });
+                                    ${
+                                      res.locals.conversation === undefined
+                                        ? javascript`
+                                            this.closest(".conversation--layout--sidebar").scroll(0, 0);
+                                          `
+                                        : javascript`
+                                            this.querySelector("#conversation--${res.locals.conversation.reference}")?.scrollIntoView({ block: "center" });
+                                          `
+                                    }
+                                    
                                   }, 0);
                               `
                             : javascript``
@@ -3990,11 +3999,15 @@ export default (app: Courselore): void => {
                         : css``}
                     `)}"
                     onload="${javascript`
-                      if (event?.detail?.previousLocation?.pathname?.slice(${
-                        new URL(app.locals.options.baseURL).pathname.length - 1
-                      }) !== ${JSON.stringify(
+                      if (
+                        event?.detail?.originalEvent instanceof PopStateEvent ||
+                        event?.detail?.previousLocation?.pathname?.slice(${
+                          new URL(app.locals.options.baseURL).pathname.length -
+                          1
+                        }) !== ${JSON.stringify(
                       `/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
-                    )})
+                    )}
+                      )
                         window.setTimeout(() => {
                           ${
                             typeof req.query.messageReference === "string"
