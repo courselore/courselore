@@ -2,6 +2,8 @@
 
 ### Performance
 
+- `TODO`
+
 - State management glitches:
   - When sending message, shouldn’t reset “anonymity.”
   - When navigating between conversations main conversation pane should scroll up.

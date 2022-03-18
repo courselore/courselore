@@ -2416,6 +2416,17 @@ export default (app: Courselore): void => {
                             type="checkbox"
                             name="isAnonymous"
                             class="visually-hidden input--radio-or-checkbox--multilabel"
+                            onload="${javascript`
+                              this.isModified = false;
+
+                              const handleChange = () => {
+                                localStorage.setItem("anonymity", JSON.stringify(this.checked));  
+                              };
+                              this.addEventListener("change", handleChange);
+                              this.addEventListener("beforeunload", () => { this.removeEventListener("change", handleChange); }, { once: true });
+                              
+                              if (JSON.parse(localStorage.getItem("anonymity") ?? "false")) this.click();
+                            `}"
                           />
                           <span
                             onload="${javascript`
@@ -5870,6 +5881,9 @@ export default (app: Courselore): void => {
                                   ? `checked`
                                   : ``}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
+                                onload="${javascript`
+                                  // TODO: this.isModified = false;
+                                `}"
                               />
                               <span
                                 onload="${javascript`
@@ -6000,6 +6014,17 @@ export default (app: Courselore): void => {
                                 type="checkbox"
                                 name="isAnonymous"
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
+                                onload="${javascript`
+                                  this.isModified = false;
+
+                                  const handleChange = () => {
+                                    localStorage.setItem("anonymity", JSON.stringify(this.checked));  
+                                  };
+                                  this.addEventListener("change", handleChange);
+                                  this.addEventListener("beforeunload", () => { this.removeEventListener("change", handleChange); }, { once: true });
+                                  
+                                  if (JSON.parse(localStorage.getItem("anonymity") ?? "false")) this.click();
+                                `}"
                               />
                               <span
                                 onload="${javascript`
