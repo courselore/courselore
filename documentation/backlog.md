@@ -3,25 +3,28 @@
 ### Performance
 
 - When liking, endorsing, and so forth, you lose your search and filters.
+
+  - Include query parameters:
+
+    - `<form>`
+    - `action`
+
+      ```
+      ${qs.stringify(req.query, {
+        addQueryPrefix: true,
+      })}
+      ```
+
+    - `redirect`
+
+      ```
+      ${qs.stringify(lodash.omit(req.query, ["messageReference"]), {
+        addQueryPrefix: true,
+      })}
+      ```
+
 - “Like”ing and that sort of thing shouldn’t add `?messageReference=2` to the URL on live-navigation.
   - Use `Live-Navigation` header.
-- Include query parameters:
-  - `<form>`
-  - `action`
-
-```
-${qs.stringify(req.query, {
-  addQueryPrefix: true,
-})}
-```
-
-- `redirect`
-
-```
-${qs.stringify(lodash.omit(req.query, ["messageReference"]), {
-  addQueryPrefix: true,
-})}
-```
 
 ---
 
