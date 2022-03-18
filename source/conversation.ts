@@ -3990,7 +3990,11 @@ export default (app: Courselore): void => {
                         : css``}
                     `)}"
                     onload="${javascript`
-                      if (event?.detail?.previousLocation?.pathname !== location.pathname)
+                      if (event?.detail?.previousLocation?.pathname?.slice(${
+                        new URL(app.locals.options.baseURL).pathname.length - 1
+                      }) !== ${JSON.stringify(
+                      `/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
+                    )})
                         window.setTimeout(() => {
                           ${
                             typeof req.query.messageReference === "string"
