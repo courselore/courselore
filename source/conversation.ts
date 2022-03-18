@@ -3976,8 +3976,7 @@ export default (app: Courselore): void => {
                       if (event?.detail?.previousLocation?.pathname !== location.pathname)
                         window.setTimeout(() => {
                           ${
-                            typeof req.query.messageReference === "string" &&
-                            req.query.messageReference.match(/^\d+$/)
+                            typeof req.query.messageReference === "string"
                               ? javascript`
                                   this.querySelector("#message--${req.query.messageReference}")?.scrollIntoView({ block: "center" });
                                 `
@@ -3992,16 +3991,18 @@ export default (app: Courselore): void => {
                               ? javascript`
                                   this.scrollTop = this.scrollHeight;
                                   this.shouldScrollToBottomOnRefresh = true;
+
+                                  const handleScroll = () => {
+                                    this.shouldScrollToBottomOnRefresh = this.scrollTop === this.scrollHeight - this.offsetHeight;
+                                  };
+                                  this.addEventListener("scroll", handleScroll);
+                                  this.addEventListener("beforeunload", () => { this.removeEventListener("scroll", handleScroll); }, { once: true });
                                 `
-                              : javascript``
+                              : javascript`
+                                  this.scroll(0, 0);
+                                `
                           }
                         }, 0);
-
-                      const handleScroll = () => {
-                        this.shouldScrollToBottomOnRefresh = this.scrollTop === this.scrollHeight - this.offsetHeight;
-                      };
-                      this.addEventListener("scroll", handleScroll);
-                      this.addEventListener("beforeunload", () => { this.removeEventListener("scroll", handleScroll); }, { once: true });
                     `}"
                     onrefresh="${javascript`
                       if (this.shouldScrollToBottomOnRefresh) this.scrollTop = this.scrollHeight;
