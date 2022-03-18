@@ -643,23 +643,48 @@ const leafac = {
   saveFormInputValue(element, identifier) {
     element.isModified = false;
 
-    element.value = element.defaultValue =
-      getLocalStorageItem()?.[window.location.pathname]?.[identifier] ?? "";
+    if (element.type === "checkbox") {
+      element.checked = element.defaultChecked =
+        getLocalStorageItem()?.[window.location.pathname]?.[identifier] ??
+        element.defaultChecked;
 
-    const handleInput = () => {
-      const localStorageItem = getLocalStorageItem();
-      localStorageItem[window.location.pathname] ??= {};
-      localStorageItem[window.location.pathname][identifier] = element.value;
-      setLocalStorageItem(localStorageItem);
-    };
-    element.addEventListener("input", handleInput);
-    element.addEventListener(
-      "beforeunload",
-      () => {
-        element.removeEventListener("input", handleInput);
-      },
-      { once: true }
-    );
+      const handleChange = () => {
+        const localStorageItem = getLocalStorageItem();
+        localStorageItem[window.location.pathname] ??= {};
+        localStorageItem[window.location.pathname][identifier] =
+          element.checked;
+        setLocalStorageItem(localStorageItem);
+      };
+      element.addEventListener("change", handleChange);
+      element.addEventListener(
+        "beforeunload",
+        () => {
+          element.removeEventListener("change", handleChange);
+        },
+        { once: true }
+      );
+    } else if (
+      typeof element.value === "string" &&
+      typeof element.defaultValue === "string"
+    ) {
+      element.value = element.defaultValue =
+        getLocalStorageItem()?.[window.location.pathname]?.[identifier] ?? "";
+
+      const handleInput = () => {
+        const localStorageItem = getLocalStorageItem();
+        localStorageItem[window.location.pathname] ??= {};
+        localStorageItem[window.location.pathname][identifier] = element.value;
+        setLocalStorageItem(localStorageItem);
+      };
+      element.addEventListener("input", handleInput);
+      element.addEventListener(
+        "beforeunload",
+        () => {
+          element.removeEventListener("input", handleInput);
+        },
+        { once: true }
+      );
+    }
 
     const form = element.closest("form");
     const handleSubmit = () => {

@@ -2,10 +2,6 @@
 
 ### Performance
 
-- `saveFormInputValue` for “Answer”
-
----
-
 - State management glitches:
   - When `popstate`, should scroll to `?messageReference`.
   - When sending message, shouldn’t reset “anonymity.”
