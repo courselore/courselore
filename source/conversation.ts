@@ -3999,8 +3999,12 @@ export default (app: Courselore): void => {
                                   this.addEventListener("beforeunload", () => { this.removeEventListener("scroll", handleScroll); }, { once: true });
                                 `
                               : javascript`
-                                  this.scroll(0, 0);
-                                  this.closest(".conversation--layout--main").scroll(0, 0);
+                                  const element = ${
+                                    res.locals.conversation.type === "chat"
+                                      ? javascript`this`
+                                      : javascript`this.closest(".conversation--layout--main")`
+                                  };
+                                  element.scroll(0, 0);
                                 `
                           }
                         }, 0);
