@@ -5882,7 +5882,7 @@ export default (app: Courselore): void => {
                                   : ``}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 onload="${javascript`
-                                  // TODO: this.isModified = false;
+                                  leafac.saveFormInputValue(this, "answer");
                                 `}"
                               />
                               <span

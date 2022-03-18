@@ -2,7 +2,10 @@
 
 ### Performance
 
-- `TODO`
+- `saveFormInputValue` for “Answer”
+- `location` should have `window`.
+
+---
 
 - State management glitches:
   - When sending message, shouldn’t reset “anonymity.”
