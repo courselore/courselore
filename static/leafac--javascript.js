@@ -226,6 +226,7 @@ const leafac = {
       ) {
         try {
           abortController = new AbortController();
+          request.headers.set("Live-Navigation", "true");
           const response = await fetch(request, {
             signal: abortController.signal,
           });
