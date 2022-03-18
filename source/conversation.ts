@@ -1248,27 +1248,24 @@ export default (app: Courselore): void => {
                         ${
                           req.query.scrollToConversation !== "false"
                             ? javascript`
-                                if (
-                                  !event?.detail?.previousLocation?.pathname?.slice(${
-                                    new URL(app.locals.options.baseURL).pathname
-                                      .length - 1
-                                  })?.match(/^\\/courses\\/${
+                              window.setTimeout(() => {
+                                if (event?.detail?.previousLocation?.pathname?.slice(${
+                                  new URL(app.locals.options.baseURL).pathname
+                                    .length - 1
+                                })?.match(/^\\/courses\\/${
                                 res.locals.course.reference
-                              }(?:$|\\/conversations\\/)/)
-                                )
-                                  window.setTimeout(() => {
-                                    ${
-                                      res.locals.conversation === undefined
-                                        ? javascript`
-                                            this.closest(".conversation--layout--sidebar").scroll(0, 0);
-                                          `
-                                        : javascript`
-                                            this.querySelector("#conversation--${res.locals.conversation.reference}")?.scrollIntoView({ block: "center" });
-                                          `
-                                    }
-                                    
-                                  }, 0);
-                              `
+                              }(?:$|\\/conversations\\/)/)) return;
+                                ${
+                                  res.locals.conversation === undefined
+                                    ? javascript`
+                                        this.closest(".conversation--layout--sidebar").scroll(0, 0);
+                                      `
+                                    : javascript`
+                                        this.querySelector("#conversation--${res.locals.conversation.reference}")?.scrollIntoView({ block: "center" });
+                                      `
+                                }
+                              }, 0);
+                            `
                             : javascript``
                         }
                       `}"
