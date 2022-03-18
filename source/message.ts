@@ -1,4 +1,5 @@
 import express from "express";
+import qs from "qs";
 import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
 import { css } from "@leafac/css";
@@ -728,7 +729,19 @@ export default (app: Courselore): void => {
       });
 
       res.redirect(
-        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${messageReference}`
+        `${app.locals.options.baseURL}/courses/${
+          res.locals.course.reference
+        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          {
+            ...req.query,
+            ...(req.header("Live-Navigation") === "true"
+              ? {}
+              : { messageReference }),
+          },
+          {
+            addQueryPrefix: true,
+          }
+        )}`
       );
 
       app.locals.liveUpdaters.course(
@@ -852,7 +865,19 @@ export default (app: Courselore): void => {
       }
 
       res.redirect(
-        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
+        `${app.locals.options.baseURL}/courses/${
+          res.locals.course.reference
+        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          {
+            ...req.query,
+            ...(req.header("Live-Navigation") === "true"
+              ? {}
+              : { messageReference: res.locals.message.reference }),
+          },
+          {
+            addQueryPrefix: true,
+          }
+        )}`
       );
 
       app.locals.liveUpdaters.course(res.locals.course.id);
@@ -885,7 +910,14 @@ export default (app: Courselore): void => {
         `,
       });
       res.redirect(
-        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
+        `${app.locals.options.baseURL}/courses/${
+          res.locals.course.reference
+        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          req.query,
+          {
+            addQueryPrefix: true,
+          }
+        )}`
       );
       app.locals.liveUpdaters.course(res.locals.course.id);
     }
@@ -926,7 +958,19 @@ export default (app: Courselore): void => {
       );
 
       res.redirect(
-        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
+        `${app.locals.options.baseURL}/courses/${
+          res.locals.course.reference
+        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          {
+            ...req.query,
+            ...(req.header("Live-Navigation") === "true"
+              ? {}
+              : { messageReference: res.locals.message.reference }),
+          },
+          {
+            addQueryPrefix: true,
+          }
+        )}`
       );
 
       app.locals.liveUpdaters.course(
@@ -964,7 +1008,19 @@ export default (app: Courselore): void => {
       );
 
       res.redirect(
-        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
+        `${app.locals.options.baseURL}/courses/${
+          res.locals.course.reference
+        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          {
+            ...req.query,
+            ...(req.header("Live-Navigation") === "true"
+              ? {}
+              : { messageReference: res.locals.message.reference }),
+          },
+          {
+            addQueryPrefix: true,
+          }
+        )}`
       );
 
       app.locals.liveUpdaters.course(
@@ -1040,7 +1096,19 @@ export default (app: Courselore): void => {
         );
 
       res.redirect(
-        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
+        `${app.locals.options.baseURL}/courses/${
+          res.locals.course.reference
+        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          {
+            ...req.query,
+            ...(req.header("Live-Navigation") === "true"
+              ? {}
+              : { messageReference: res.locals.message.reference }),
+          },
+          {
+            addQueryPrefix: true,
+          }
+        )}`
       );
 
       app.locals.liveUpdaters.course(res.locals.course.id);
@@ -1073,7 +1141,19 @@ export default (app: Courselore): void => {
       );
 
       res.redirect(
-        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${res.locals.message.reference}`
+        `${app.locals.options.baseURL}/courses/${
+          res.locals.course.reference
+        }/conversations/${res.locals.conversation.reference}${qs.stringify(
+          {
+            ...req.query,
+            ...(req.header("Live-Navigation") === "true"
+              ? {}
+              : { messageReference: res.locals.message.reference }),
+          },
+          {
+            addQueryPrefix: true,
+          }
+        )}`
       );
 
       app.locals.liveUpdaters.course(res.locals.course.id);
