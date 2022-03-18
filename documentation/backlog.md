@@ -3,7 +3,6 @@
 ### Performance
 
 - `saveFormInputValue` for “Answer”
-- `location` should have `window`.
 
 ---
 
