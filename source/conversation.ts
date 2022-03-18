@@ -3978,7 +3978,10 @@ export default (app: Courselore): void => {
                           ${
                             typeof req.query.messageReference === "string"
                               ? javascript`
-                                  this.querySelector("#message--${req.query.messageReference}")?.scrollIntoView({ block: "center" });
+                                  const element = this.querySelector("#message--${req.query.messageReference}");
+                                  if (element === null) return;
+                                  element.scrollIntoView({ block: "center" });
+                                  element.querySelector(".message--highlight").style.animation = "message--highlight 2s var(--transition-timing-function--in-out)";
                                 `
                               : firstUnreadMessage !== undefined &&
                                 firstUnreadMessage !== messages[0]
@@ -4247,7 +4250,8 @@ export default (app: Courselore): void => {
                                         : html``}
 
                                       <div
-                                        class="${res.locals.localCSS(css`
+                                        class="message--highlight ${res.locals
+                                          .localCSS(css`
                                           padding: var(--space--2);
                                           ${res.locals.conversation.type ===
                                           "chat"
@@ -4268,40 +4272,24 @@ export default (app: Courselore): void => {
                                             : css`
                                                 gap: var(--space--2);
                                               `}
-
-                                          ${
-                                            /* TODO: shouldScrollToMessage */ false &&
-                                            req.query.messageReference ===
-                                              message.reference
-                                              ? css`
-                                                  --color--message--highlight-background-on-target: var(
-                                                    --color--amber--200
-                                                  );
-                                                  @media (prefers-color-scheme: dark) {
-                                                    --color--message--highlight-background-on-target: var(
-                                                      --color--amber--900
-                                                    );
-                                                  }
-                                                  @keyframes message--highlight-background-on-target {
-                                                    from {
-                                                      background-color: var(
-                                                        --color--message--highlight-background-on-target
-                                                      );
-                                                    }
-                                                    to {
-                                                      background-color: transparent;
-                                                    }
-                                                  }
-                                                  animation: message--highlight-background-on-target
-                                                    2s
-                                                    var(
-                                                      --transition-timing-function--in-out
-                                                    )
-                                                    0.5s;
-                                                `
-                                              : css``
+                                          --message--highlight--background-color: var(
+                                                --color--amber--200
+                                              );
+                                          @media (prefers-color-scheme: dark) {
+                                            --message--highlight--background-color: var(
+                                              --color--amber--900
+                                            );
                                           }
-                                         
+                                          @keyframes message--highlight {
+                                            from {
+                                              background-color: var(
+                                                --message--highlight--background-color
+                                              );
+                                            }
+                                            to {
+                                              background-color: transparent;
+                                            }
+                                          }
 
                                           ${res.locals.conversation.type ===
                                           "chat"
