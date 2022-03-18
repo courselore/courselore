@@ -3952,31 +3952,10 @@ export default (app: Courselore): void => {
                 const firstUnreadMessage = messages.find(
                   (message) => message.reading === null
                 );
-                const shouldScrollToMessage =
-                  typeof req.query.messageReference === "string";
-                const shouldScrollToFirstUnreadMessage =
-                  !shouldScrollToMessage &&
-                  firstUnreadMessage !== undefined &&
-                  firstUnreadMessage !== messages[0];
-                const shouldScrollToBottom =
-                  !shouldScrollToMessage &&
-                  !shouldScrollToFirstUnreadMessage &&
-                  res.locals.conversation.type === "chat" &&
-                  messages.length > 0 &&
-                  afterMessage === undefined;
-                const shouldScroll =
-                  shouldScrollToMessage ||
-                  shouldScrollToFirstUnreadMessage ||
-                  shouldScrollToBottom;
 
                 return html`
                   <div
                     class="${res.locals.localCSS(css`
-                      ${shouldScroll
-                        ? css`
-                            /* TODO: Do something to prevent flash of unstyled content. visibility: hidden; */
-                          `
-                        : css``}
                       ${res.locals.conversation.type === "chat"
                         ? css`
                             flex: 1;
@@ -3994,23 +3973,29 @@ export default (app: Courselore): void => {
                         : css``}
                     `)}"
                     onload="${javascript`
-                      ${
-                        shouldScroll
-                          ? javascript`
-                              this.style.visibility = "visible";
-                              ${
-                                shouldScrollToBottom
-                                  ? javascript`
-                                      window.setTimeout(() => {
-                                        this.scrollTop = this.scrollHeight;
-                                        this.shouldScrollToBottomOnRefresh = true;
-                                      }, 0);
-                                    `
-                                  : javascript``
-                              }
-                            `
-                          : javascript``
-                      }
+                      if (event?.detail?.previousLocation?.pathname !== location.pathname)
+                        window.setTimeout(() => {
+                          ${
+                            typeof req.query.messageReference === "string" &&
+                            req.query.messageReference.match(/^\d+$/)
+                              ? javascript`
+                                  this.querySelector("#message--${req.query.messageReference}")?.scrollIntoView({ block: "center" });
+                                `
+                              : firstUnreadMessage !== undefined &&
+                                firstUnreadMessage !== messages[0]
+                              ? javascript`
+                                  this.querySelector("#message--${firstUnreadMessage.reference}")?.scrollIntoView({ block: "center" });
+                                `
+                              : res.locals.conversation.type === "chat" &&
+                                messages.length > 0 &&
+                                afterMessage === undefined
+                              ? javascript`
+                                  this.scrollTop = this.scrollHeight;
+                                  this.shouldScrollToBottomOnRefresh = true;
+                                `
+                              : javascript``
+                          }
+                        }, 0);
 
                       const handleScroll = () => {
                         this.shouldScrollToBottomOnRefresh = this.scrollTop === this.scrollHeight - this.offsetHeight;
@@ -4130,20 +4115,6 @@ export default (app: Courselore): void => {
                                               }
                                             `}
                                       `)}"
-                                      onload="${javascript`
-                                        ${
-                                          (shouldScrollToMessage &&
-                                            req.query.messageReference ===
-                                              message.reference) ||
-                                          (shouldScrollToFirstUnreadMessage &&
-                                            message === firstUnreadMessage)
-                                            ? javascript`
-                                                if (event?.detail?.previousLocation?.pathname !== location.pathname)
-                                                  window.setTimeout(() => { this.scrollIntoView({ block: "center" }); }, 0);
-                                              `
-                                            : javascript``
-                                        }
-                                      `}"
                                     >
                                       $${message === firstUnreadMessage &&
                                       message !== messages[0]
@@ -4292,36 +4263,38 @@ export default (app: Courselore): void => {
                                                 gap: var(--space--2);
                                               `}
 
-                                          ${shouldScrollToMessage &&
-                                          req.query.messageReference ===
-                                            message.reference
-                                            ? css`
-                                                --color--message--highlight-background-on-target: var(
-                                                  --color--amber--200
-                                                );
-                                                @media (prefers-color-scheme: dark) {
+                                          ${
+                                            /* TODO: shouldScrollToMessage */ false &&
+                                            req.query.messageReference ===
+                                              message.reference
+                                              ? css`
                                                   --color--message--highlight-background-on-target: var(
-                                                    --color--amber--900
+                                                    --color--amber--200
                                                   );
-                                                }
-                                                @keyframes message--highlight-background-on-target {
-                                                  from {
-                                                    background-color: var(
-                                                      --color--message--highlight-background-on-target
+                                                  @media (prefers-color-scheme: dark) {
+                                                    --color--message--highlight-background-on-target: var(
+                                                      --color--amber--900
                                                     );
                                                   }
-                                                  to {
-                                                    background-color: transparent;
+                                                  @keyframes message--highlight-background-on-target {
+                                                    from {
+                                                      background-color: var(
+                                                        --color--message--highlight-background-on-target
+                                                      );
+                                                    }
+                                                    to {
+                                                      background-color: transparent;
+                                                    }
                                                   }
-                                                }
-                                                animation: message--highlight-background-on-target
-                                                  2s
-                                                  var(
-                                                    --transition-timing-function--in-out
-                                                  )
-                                                  0.5s;
-                                              `
-                                            : css``}
+                                                  animation: message--highlight-background-on-target
+                                                    2s
+                                                    var(
+                                                      --transition-timing-function--in-out
+                                                    )
+                                                    0.5s;
+                                                `
+                                              : css``
+                                          }
                                          
 
                                           ${res.locals.conversation.type ===

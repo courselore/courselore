@@ -8,6 +8,11 @@
 
 ---
 
+- Highlight selected message (`TODO`).
+- Do something to prevent flash of unstyled content on scrolling.
+
+---
+
 - State management glitches:
   - When “like”ing, editing message, and so forth, shouldn’t scroll main pane.
   - When sending message, shouldn’t reset “anonymity.”
