@@ -3,8 +3,13 @@
 ### Performance
 
 - `handle`
+  - On `leafac--javascript` itself.
 - `beforeunload`
-- `validate`
+- Progress bar
+  - `handleBeforenavigate`
+  - `handleNavigateerror`
+- Validation
+  - `validate`
 - `onclick`
 - `onvalidate`
 - `onchange`
