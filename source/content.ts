@@ -1824,7 +1824,6 @@ export default async (app: Courselore): Promise<void> => {
               `)}"
               onload="${javascript`
                 autosize(this);
-                this.addEventListener("beforeunload", () => { autosize.destroy(this); }, { once: true });
 
                 this.ondragenter = () => {
                   this.classList.add("drag");
@@ -1992,10 +1991,7 @@ export default async (app: Courselore): Promise<void> => {
                               const content = dropdownMenu.props.content;
                               const searchResults = content.querySelector(".search-results");
                               const search = value.slice(anchorIndex, selectionMax).trim();
-                              if (search === "") {
-                                leafac.dispatchBeforeunload(searchResults);
-                                searchResults.innerHTML = "";
-                              }
+                              if (search === "") searchResults.innerHTML = "";
                               else
                                 leafac.loadPartial(
                                   searchResults,
