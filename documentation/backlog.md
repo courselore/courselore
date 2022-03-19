@@ -4,6 +4,7 @@
 
 - Validation
   - `validate`
+  - `stopImmediatePropagation`
 - `handle`
   - On `leafac--javascript` itself.
 - `beforeunload`
@@ -397,7 +398,7 @@
 
 - Scroll to the bottom when sending chat message?
 - Do something to prevent flash of unstyled content on scrolling.
-- Prevent the flash of unformatted datetime on fields using `localizeDateTimeInput()`.
+- Prevent the flash of unformatted datetime on fields using `validateLocalizedDateTime()`.
 - Redesign the presentation of submenus, for example, “Conversations”, on mobile. Try a hamburger menu.
 - Artificial progress bar on hijacked navigation, similar to Turbo Drive.
 - Live-updates:

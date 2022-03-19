@@ -2161,12 +2161,12 @@ export default (app: Courselore): void => {
                   disabled
                   class="input--text"
                   onload="${javascript`
-                    leafac.localizeDateTimeInput(this);
+                    this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
 
                     this.onvalidate = (event) => {
-                      if (Date.now() < new Date(this.value).getTime()) return;
-                      event.stopImmediatePropagation();
-                      event.detail.error = "Must be in the future.";
+                      const error = leafac.validateLocalizedDateTime(this);
+                      if (typeof error === "string") return error;
+                      if (new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
                     };
                   `}"
                 />
@@ -2612,12 +2612,12 @@ export default (app: Courselore): void => {
                                         autocomplete="off"
                                         class="input--text"
                                         onload="${javascript`
-                                          leafac.localizeDateTimeInput(this);
+                                          this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
 
                                           this.onvalidate = (event) => {
-                                            if (Date.now() < new Date(this.value).getTime()) return;
-                                            event.stopImmediatePropagation();
-                                            event.detail.error = "Must be in the future.";
+                                            const error = leafac.validateLocalizedDateTime(this);
+                                            if (typeof error === "string") return error;
+                                            if (new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
                                           };
                                         `}"
                                       />

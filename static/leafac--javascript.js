@@ -400,12 +400,8 @@ const leafac = {
       )
         return "Please enter an email address.";
 
-      const validateEvent = new CustomEvent("validate", {
-        detail: { error: undefined },
-      });
-      element.dispatchEvent(validateEvent);
-      if (typeof validateEvent.detail.error === "string")
-        return validateEvent.detail.error;
+      const error = element.onvalidate?.();
+      if (typeof error === "string") return error;
     }
   },
 
@@ -522,28 +518,11 @@ const leafac = {
     );
   },
 
-  localizeDateTimeInput(element) {
-    element.value = element.defaultValue = leafac.localizeDateTime(
-      element.defaultValue
-    );
-    const handleValidate = (event) => {
-      const date = leafac.UTCizeDateTime(element.value);
-      if (date === undefined) {
-        event.stopImmediatePropagation();
-        event.detail.error =
-          "Invalid date & time. Match the pattern YYYY-MM-DD HH:MM.";
-        return;
-      }
-      element.value = date.toISOString();
-    };
-    element.addEventListener("validate", handleValidate);
-    element.addEventListener(
-      "beforeunload",
-      () => {
-        element.removeEventListener("validate", handleValidate);
-      },
-      { once: true }
-    );
+  validateLocalizedDateTime(element) {
+    const date = leafac.UTCizeDateTime(element.value);
+    if (date === undefined)
+      return "Invalid date & time. Match the pattern YYYY-MM-DD HH:MM.";
+    element.value = date.toISOString();
   },
 
   relativizeDateTime: (() => {
