@@ -1663,7 +1663,7 @@ export default async (app: Courselore): Promise<void> => {
                     for (const file of fileList) body.append("attachments", file);
                     this.value = "";
                     tippy.hideAll();
-                    this.uploadingIndicator.show();
+                    textarea.uploadingIndicator.show();
                     textarea.disabled = true;
                     const response = await (await fetch(${JSON.stringify(
                       `${app.locals.options.baseURL}/content-editor/attachments`
@@ -1672,7 +1672,7 @@ export default async (app: Courselore): Promise<void> => {
                       body,
                     })).text();
                     textarea.disabled = false;
-                    this.uploadingIndicator.hide();
+                    textarea.uploadingIndicator.hide();
                     textFieldEdit.wrapSelection(textarea, response, "");
                     textarea.focus();
                   };
@@ -1697,7 +1697,7 @@ export default async (app: Courselore): Promise<void> => {
                         `
                   }
 
-                  (this.uploadingIndicator ??= tippy(textarea)).setProps({
+                  (textarea.uploadingIndicator ??= tippy(textarea)).setProps({
                     trigger: "manual",
                     hideOnClick: false,
                     content: ${res.locals.HTMLForJavaScript(
