@@ -28,6 +28,7 @@
 - `onnavigateerror`
 - Tippy
 - `dispatchBeforeunload`
+- `onload`
 
 ---
 
