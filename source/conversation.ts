@@ -5392,7 +5392,7 @@ export default (app: Courselore): void => {
                                               class="message--show--content-area--content"
                                               onload="${javascript`
                                                 const dropdownMenuTarget = this.closest(".message--show--content-area").querySelector(".message--show--content-area--dropdown-menu-target");
-                                                const dropdownMenu = tippy(dropdownMenuTarget, {
+                                                (dropdownMenuTarget.dropdownMenu ??= tippy(dropdownMenuTarget)).setProps({
                                                   trigger: "manual",
                                                   interactive: true,
                                                   content: ${res.locals.HTMLForJavaScript(
@@ -5469,7 +5469,6 @@ export default (app: Courselore): void => {
                                                     `
                                                   )},
                                                 });
-                                                dropdownMenuTarget.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(dropdownMenu.props.content); dropdownMenu.destroy(); }, { once: true });
                                                 
                                                 this.onmouseup = (event) => {
                                                   window.setTimeout(() => {
@@ -5485,7 +5484,7 @@ export default (app: Courselore): void => {
                                                     ) return;
                                                     dropdownMenuTarget.style.top = String(event.layerY) + "px";
                                                     dropdownMenuTarget.style.left = String(event.layerX) + "px";
-                                                    dropdownMenu.show();
+                                                    dropdownMenuTarget.dropdownMenu.show();
                                                   }, 0);
                                                 };
                                               `}"
