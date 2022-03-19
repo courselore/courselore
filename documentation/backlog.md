@@ -2,8 +2,9 @@
 
 ### Performance
 
-- `handle`
-  - On `leafac--javascript` itself.
+- `leafac--javascript.js`
+  - `handle`
+  - `tippy`
 - `beforeunload`
 - Progress bar
   - `handleBeforenavigate`
