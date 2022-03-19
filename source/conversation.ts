@@ -2497,10 +2497,9 @@ export default (app: Courselore): void => {
                     });
                     this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
-                    const mousetrap = new Mousetrap(this.closest("form").querySelector(".content-editor--write--textarea"));
-                    const keys = "mod+enter";
-                    mousetrap.bind(keys, () => { this.click(); return false; });
-                    this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                    const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
+
+                    (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });
                   `}"
                 >
                   <i class="bi bi-chat-left-text"></i>
@@ -5843,10 +5842,9 @@ export default (app: Courselore): void => {
                                                       });
                                                       this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
-                                                      const mousetrap = new Mousetrap(this.closest("form").querySelector(".content-editor--write--textarea"));
-                                                      const keys = "mod+enter";
-                                                      mousetrap.bind(keys, () => { this.click(); return false; });
-                                                      this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });                                  
+                                                      const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
+
+                                                      (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });                                  
                                                     `}"
                                                   >
                                                     <i class="bi bi-pencil"></i>
@@ -6215,11 +6213,10 @@ export default (app: Courselore): void => {
                           )},
                         });
                         this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
-                                            
-                        const mousetrap = new Mousetrap(this.closest("form").querySelector(".content-editor--write--textarea"));
-                        const keys = "mod+enter";
-                        mousetrap.bind(keys, () => { this.click(); return false; });
-                        this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });                                  
+
+                        const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
+
+                        (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });    
                       `}"
                     >
                       <i class="bi bi-send"></i>
