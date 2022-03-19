@@ -295,11 +295,10 @@ export default (app: Courselore): void => {
               onload="${javascript`
                 const element = this;
 
-                const tooltip = tippy(element, {
+                (element.tooltip ??= tippy(element)).setProps({
                   touch: false,
                   content: "Online",
                 });
-                element.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
                 let updateTimeoutID;
                 (function update() {
