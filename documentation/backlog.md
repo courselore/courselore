@@ -2,9 +2,6 @@
 
 ### Performance
 
-- Validation
-  - `validate`
-  - `stopImmediatePropagation`
 - `handle`
   - On `leafac--javascript` itself.
 - `beforeunload`
