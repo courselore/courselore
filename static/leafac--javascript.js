@@ -2,72 +2,26 @@
 
 /*
 await eventSourceRefresh(await fetch(this.action + "?eventSourceReference=" + eventSource.reference, {
-                                                                        method: this.method,
-                                                                        body: new URLSearchParams(new FormData(this)),
-                                                                      }));
-
-
-
-
-onclick="${javascript`
-                                    (async () => {
-                                      if (event.which > 1 || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
-                                      event.preventDefault();
-                                      window.history.pushState(undefined, "", this.getAttribute("href"));
-                                      await eventSourceRefresh(await fetch(${JSON.stringify(
-                                        `${app.locals.options.baseURL}/courses/${
-                                          res.locals.course.reference
-                                        }/conversations/${
-                                          conversation.reference
-                                        }${qs.stringify(
-                                          lodash.omit(
-                                            {
-                                              ...req.query,
-                                              scrollToConversation: false,
-                                              messageReference:
-                                                searchResult?.message
-                                                  ?.reference,
-                                            },
-                                            [
-                                              "conversationLayoutSidebarOpenOnSmallScreen",
-                                              "beforeMessageReference",
-                                              "afterMessageReference",
-                                            ]
-                                          ),
-                                          { addQueryPrefix: true }
-                                        )}`
-                                      )}));
-                                    })();
-
-
-
-
+  method: this.method,
+  body: new URLSearchParams(new FormData(this)),
+}));
 
 $${res?.locals.eventSource
-            ? html`
-                <script>
-                  // const eventSource = new ReconnectingEventSource(
-                  //   window.location.href
-                  // );
-                  // eventSource.addEventListener("reference", (event) => {
-                  //   eventSource.reference = event.data;
-                  // });
-                  // eventSource.addEventListener("refresh", async () => {
-                  //   await eventSourceRefresh(await fetch(window.location.href));
-                  // });
-                </script>
-              `
-            : html``}
+  ? html`
+      <script>
+        // const eventSource = new ReconnectingEventSource(
+        //   window.location.href
+        // );
+        // eventSource.addEventListener("reference", (event) => {
+        //   eventSource.reference = event.data;
+        // });
+        // eventSource.addEventListener("refresh", async () => {
+        //   await eventSourceRefresh(await fetch(window.location.href));
+        // });
+      </script>
+    `
+  : html``}
 
-
-
-
-
-
-
-
-
-  
 const eventSourceRefresh = async (response) => {
   switch (response.status) {
     case 200:
@@ -135,9 +89,6 @@ const eventSourceRefresh = async (response) => {
       break;
   }
 };
-
-
-
 */
 
 const leafac = {
