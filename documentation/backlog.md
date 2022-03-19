@@ -26,7 +26,6 @@
 - `onsubmit`
 - `onbeforenavigate`
 - `onnavigateerror`
-- Mousetrap
 - Tippy
 - `dispatchBeforeunload`
 
