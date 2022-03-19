@@ -1656,60 +1656,38 @@ export default async (app: Courselore): Promise<void> => {
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                  this.upload = (() => {
-                    const uploadingIndicator = tippy(textarea, {
-                      trigger: "manual",
-                      hideOnClick: false,
-                      content: ${res.locals.HTMLForJavaScript(
-                        html`
-                          <div
-                            class="${res.locals.localCSS(css`
-                              display: flex;
-                              gap: var(--space--2);
-                            `)}"
-                          >
-                            $${app.locals.partials.spinner({ req, res })}
-                            Uploading…
-                          </div>
-                        `
-                      )},
-                    });
-                    textarea.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(uploadingIndicator.props.content); uploadingIndicator.destroy(); }, { once: true });
-
-                    return async (fileList) => {
-                      if (!checkIsSignedIn()) return;
-                      const body = new FormData();
-                      body.append("_csrf", ${JSON.stringify(req.csrfToken())});
-                      for (const file of fileList) body.append("attachments", file);
-                      this.value = "";
-                      tippy.hideAll();
-                      uploadingIndicator.show();
-                      textarea.disabled = true;
-                      const response = await (await fetch(${JSON.stringify(
-                        `${app.locals.options.baseURL}/content-editor/attachments`
-                      )}, {
-                        method: "POST",
-                        body,
-                      })).text();
-                      textarea.disabled = false;
-                      uploadingIndicator.hide();
-                      textFieldEdit.wrapSelection(textarea, response, "");
-                      textarea.focus();
-                    };
-                  })();
+                  this.upload = async (fileList) => {
+                    if (!checkIsSignedIn()) return;
+                    const body = new FormData();
+                    body.append("_csrf", ${JSON.stringify(req.csrfToken())});
+                    for (const file of fileList) body.append("attachments", file);
+                    this.value = "";
+                    tippy.hideAll();
+                    this.uploadingIndicator.show();
+                    textarea.disabled = true;
+                    const response = await (await fetch(${JSON.stringify(
+                      `${app.locals.options.baseURL}/content-editor/attachments`
+                    )}, {
+                      method: "POST",
+                      body,
+                    })).text();
+                    textarea.disabled = false;
+                    this.uploadingIndicator.hide();
+                    textFieldEdit.wrapSelection(textarea, response, "");
+                    textarea.focus();
+                  };
 
                   const checkIsSignedIn = ${
                     res.locals.user === undefined
                       ? javascript`
                           (() => {
-                            const tooltip = tippy(textarea, {
+                            (textarea.tooltip ??= tippy(textarea)).setProps({
                               trigger: "manual",
                               theme: "rose",
                               content: "You must sign in to upload files.",
                             });
-                            textarea.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                             return () => {
-                              tooltip.show();
+                              textarea.tooltip.show();
                               return false;
                             };
                           })();
@@ -1718,6 +1696,24 @@ export default async (app: Courselore): Promise<void> => {
                           () => true;
                         `
                   }
+
+                  (this.uploadingIndicator ??= tippy(textarea)).setProps({
+                    trigger: "manual",
+                    hideOnClick: false,
+                    content: ${res.locals.HTMLForJavaScript(
+                      html`
+                        <div
+                          class="${res.locals.localCSS(css`
+                            display: flex;
+                            gap: var(--space--2);
+                          `)}"
+                        >
+                          $${app.locals.partials.spinner({ req, res })}
+                          Uploading…
+                        </div>
+                      `
+                    )},
+                  });
 
                   this.onclick = (event) => {
                     if (!checkIsSignedIn()) event.preventDefault();
