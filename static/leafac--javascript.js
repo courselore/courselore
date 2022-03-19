@@ -103,7 +103,7 @@ const leafac = {
     if (document.readyState !== "loading")
       window.dispatchEvent(new Event("DOMContentLoaded"));
 
-    document.addEventListener("click", async (event) => {
+    document.onclick = async (event) => {
       const link = event.target.closest(
         `a[href]:not([target^="_"]):not([download])`
       );
@@ -120,9 +120,9 @@ const leafac = {
         return;
       event.preventDefault();
       await navigate({ request: new Request(link.href), event });
-    });
+    };
 
-    document.addEventListener("submit", async (event) => {
+    document.onsubmit = async (event) => {
       const method = (
         event.submitter?.getAttribute("formmethod") ?? event.target.method
       ).toUpperCase();
@@ -142,14 +142,14 @@ const leafac = {
           : new Request(action, { method, body }),
         event,
       });
-    });
+    };
 
-    window.addEventListener("popstate", async (event) => {
+    window.onpopstate = async (event) => {
       await navigate({
         request: new Request(window.location),
         event,
       });
-    });
+    };
 
     let abortController;
     let isNavigating = false;
