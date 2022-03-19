@@ -241,14 +241,13 @@ export default async (app: Courselore): Promise<void> => {
                 href.startsWith(`${app.locals.options.baseURL}/files/`)
                   ? javascript``
                   : javascript`
-                      const tooltip = tippy(this, {
+                      (this.tooltip ??= tippy(this)).setProps({
                         touch: false,
                         content: ${res.locals.HTMLForJavaScript(
                           html`External link to
                             <code class="code">${href}</code>`
                         )},
                       });
-                      this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
                     `
               }
             `
@@ -334,11 +333,10 @@ export default async (app: Courselore): Promise<void> => {
                           mentions!.add(mention);
                           mentionHTML = html`<span
                             onload="${javascript`
-                              const tooltip = tippy(this, {
+                              (this.tooltip ??= tippy(this)).setProps({
                                 touch: false,
                                 content: "Mention ${mention} in the conversation",
                               });
-                              this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                             `}"
                             >@${lodash.capitalize(mention)}</span
                           >`;
@@ -504,7 +502,7 @@ export default async (app: Courselore): Promise<void> => {
               element.setAttribute(
                 "onload",
                 javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
                       html`
@@ -522,7 +520,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
                 `
               );
               continue;
@@ -537,7 +534,7 @@ export default async (app: Courselore): Promise<void> => {
             element.setAttribute(
               "onload",
               javascript`
-                const tooltip = tippy(this, {
+                (this.tooltip ??= tippy(this)).setProps({
                   touch: false,
                   content: ${res.locals.HTMLForJavaScript(
                     html`
@@ -559,7 +556,6 @@ export default async (app: Courselore): Promise<void> => {
                     `
                   )},
                 });
-                this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
               `
             );
           }
@@ -723,7 +719,7 @@ export default async (app: Courselore): Promise<void> => {
                 <span
                   class="button button--transparent"
                   onload="${javascript`
-                    const tooltip = tippy(this, {
+                    (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
                       content: ${res.locals.HTMLForJavaScript(
                         html`
@@ -745,7 +741,6 @@ export default async (app: Courselore): Promise<void> => {
                         `
                       )},
                     });
-                    this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                     const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -794,13 +789,12 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: "Help",
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
-                  const dropdown = tippy(this, {
+                  (this.dropdown ??= tippy(this)).setProps({
                     trigger: "click",
                     interactive: true,
                     content: ${res.locals.HTMLForJavaScript(
@@ -824,7 +818,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(dropdown.props.content); dropdown.destroy(); }, { once: true });
                 `}"
               >
                 <i class="bi bi-info-circle"></i>
@@ -835,7 +828,7 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
                       html`
@@ -858,7 +851,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -876,7 +868,7 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
                       html`
@@ -899,7 +891,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -917,7 +908,7 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
                       html`
@@ -940,7 +931,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -960,7 +950,7 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
                       html`
@@ -982,7 +972,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1000,7 +989,7 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
                       html`
@@ -1022,7 +1011,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1040,7 +1028,7 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
                       html`
@@ -1062,7 +1050,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1082,7 +1069,7 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
                       html`
@@ -1105,7 +1092,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1123,7 +1109,7 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
                       html`
@@ -1146,7 +1132,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1164,7 +1149,7 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
                       html`
@@ -1187,7 +1172,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1207,7 +1191,7 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
                       html`
@@ -1229,7 +1213,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1247,7 +1230,7 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
                       html`
@@ -1270,7 +1253,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1289,7 +1271,7 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
                       html`
@@ -1312,7 +1294,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1330,7 +1311,7 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
                       html`
@@ -1353,7 +1334,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1373,7 +1353,7 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
                       html`
@@ -1395,7 +1375,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1413,7 +1392,7 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
                       html`
@@ -1436,7 +1415,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1456,7 +1434,7 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
                       html`
@@ -1479,7 +1457,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
                   
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1497,7 +1474,7 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
                       html`
@@ -1520,7 +1497,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1542,7 +1518,7 @@ export default async (app: Courselore): Promise<void> => {
                       type="button"
                       class="button button--tight button--transparent"
                       onload="${javascript`
-                        const tooltip = tippy(this, {
+                        (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
                           content: ${res.locals.HTMLForJavaScript(
                             html`
@@ -1551,7 +1527,6 @@ export default async (app: Courselore): Promise<void> => {
                             `
                           )},
                         });
-                        this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                         const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1567,7 +1542,7 @@ export default async (app: Courselore): Promise<void> => {
                       type="button"
                       class="button button--tight button--transparent"
                       onload="${javascript`
-                        const tooltip = tippy(this, {
+                        (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
                           content: ${res.locals.HTMLForJavaScript(
                             html`
@@ -1576,7 +1551,6 @@ export default async (app: Courselore): Promise<void> => {
                             `
                           )},
                         });
-                        this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                         const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
@@ -1596,7 +1570,7 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
                       html`
@@ -1620,7 +1594,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   this.onclick = () => {
                     this.closest(".content-editor").querySelector(".content-editor--write--attachments").click();
@@ -1637,7 +1610,7 @@ export default async (app: Courselore): Promise<void> => {
                 type="button"
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
                       html`
@@ -1661,7 +1634,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                   this.onclick = () => {
                     this.closest(".content-editor").querySelector(".content-editor--write--attachments").click();
@@ -1761,7 +1733,7 @@ export default async (app: Courselore): Promise<void> => {
               <label
                 class="button button--tight button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: ${res.locals.HTMLForJavaScript(
                       html`
@@ -1785,7 +1757,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
                 `}"
               >
                 <input

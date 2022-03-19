@@ -252,13 +252,12 @@ export default async (app: Courselore): Promise<void> => {
                       flex: 1;
                     `)}"
                     onload="${javascript`
-                      const tooltip = tippy(this, {
+                      (this.tooltip ??= tippy(this)).setProps({
                         touch: false,
                         content: "What’s This?",
                       });
-                      this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
-                      const dropdown = tippy(this, {
+                      (this.dropdown ??= tippy(this)).setProps({
                         trigger: "click",
                         interactive: true,
                         content: ${res.locals.HTMLForJavaScript(
@@ -292,7 +291,6 @@ export default async (app: Courselore): Promise<void> => {
                           `
                         )},
                       });
-                      this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(dropdown.props.content); dropdown.destroy(); }, { once: true });
                     `}"
                   ></button>
                 </div>
@@ -330,7 +328,7 @@ export default async (app: Courselore): Promise<void> => {
                       <button
                         class="button button--transparent"
                         onload="${javascript`
-                          const tooltip = tippy(this, {
+                          (this.tooltip ??= tippy(this)).setProps({
                             trigger: "click",
                             interactive: true,
                             content: ${res.locals.HTMLForJavaScript(
@@ -377,7 +375,6 @@ export default async (app: Courselore): Promise<void> => {
                               `
                             )},
                           });
-                          this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
                         `}"
                       >
                         <i class="bi bi-easel"></i>
@@ -663,7 +660,7 @@ export default async (app: Courselore): Promise<void> => {
                   align-items: center;
                 `)}"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     trigger: "click",
                     interactive: true,
                     content: ${res.locals.HTMLForJavaScript(
@@ -706,7 +703,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
                 `}"
               >
                 $${app.locals.partials.logo({ size: 16 /* var(--space--4) */ })}
@@ -717,7 +713,7 @@ export default async (app: Courselore): Promise<void> => {
               <button
                 class="button button--transparent"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     trigger: "click",
                     interactive: true,
                     content: ${res.locals.HTMLForJavaScript(
@@ -789,7 +785,6 @@ export default async (app: Courselore): Promise<void> => {
                       `
                     )},
                   });
-                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
                 `}"
               >
                 <i class="bi bi-bug"></i>
@@ -809,11 +804,10 @@ export default async (app: Courselore): Promise<void> => {
             cursor: wait;
           `)}"
           onload="${javascript`
-            const tooltip = tippy(this, {
+            (this.tooltip ??= tippy(this)).setProps({
               touch: false,
               content: "Loading…",
             });
-            this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
             let updateTimeoutID;
             this.addEventListener("beforeunload", () => { window.clearTimeout(updateTimeoutID); }, { once: true });
@@ -2348,11 +2342,10 @@ export default async (app: Courselore): Promise<void> => {
             href="${app.locals.options.baseURL}/"
             class="button button--tight button--tight--inline button--transparent"
             onload="${javascript`
-              const tooltip = tippy(this, {
+              (this.tooltip ??= tippy(this)).setProps({
                 touch: false,
                 content: "Courselore",
               });
-              this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
             `}"
           >
             $${app.locals.partials.logo()}
@@ -2400,7 +2393,7 @@ export default async (app: Courselore): Promise<void> => {
                         max-width: 100%;
                       `)}"
                       onload="${javascript`
-                        const tooltip = tippy(this, {
+                        (this.tooltip ??= tippy(this)).setProps({
                           trigger: "click",
                           interactive: true,
                           content: ${res.locals.HTMLForJavaScript(
@@ -2461,7 +2454,6 @@ export default async (app: Courselore): Promise<void> => {
                             `
                           )},
                         });
-                        this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
                       `}"
                     >
                       <i class="bi bi-journal-text"></i>
@@ -2485,14 +2477,13 @@ export default async (app: Courselore): Promise<void> => {
                         max-width: 100%;
                       `)}"
                       onload="${javascript`
-                        const tooltip = tippy(this, {
+                        (this.tooltip ??= tippy(this)).setProps({
                           trigger: "click",
                           interactive: true,
                           content: ${res.locals.HTMLForJavaScript(
                             html`$${courseSwitcher}`
                           )},
                         });
-                        this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
                       `}"
                     >
                       Go to Your Courses
@@ -2507,7 +2498,7 @@ export default async (app: Courselore): Promise<void> => {
             <button
               class="button button--tight button--tight--inline button--transparent"
               onload="${javascript`
-                const tooltip = tippy(this, {
+                (this.tooltip ??= tippy(this)).setProps({
                   touch: false,
                   content: ${JSON.stringify(
                     res.locals.invitations!.length === 0
@@ -2517,9 +2508,8 @@ export default async (app: Courselore): Promise<void> => {
                         }`
                   )},
                 });
-                this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
-                const dropdown = tippy(this, {
+                (this.dropdown ??= tippy(this)).setProps({
                   trigger: "click",
                   interactive: true,
                   content: ${res.locals.HTMLForJavaScript(
@@ -2565,11 +2555,10 @@ export default async (app: Courselore): Promise<void> => {
                           <button
                             class="dropdown--menu--item button button--transparent"
                             onload="${javascript`
-                              const tooltip = tippy(this, {
+                              (this.tooltip ??= tippy(this)).setProps({
                                 trigger: "click",
                                 content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
                               });
-                              this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                             `}"
                           >
                             <i class="bi bi-journal-arrow-down"></i>
@@ -2587,7 +2576,6 @@ export default async (app: Courselore): Promise<void> => {
                     `
                   )},
                 });
-                this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(dropdown.props.content); dropdown.destroy(); }, { once: true });
               `}"
             >
               <div
@@ -2640,13 +2628,12 @@ export default async (app: Courselore): Promise<void> => {
                 border-radius: var(--border-radius--circle);
               `)}"
               onload="${javascript`
-                const tooltip = tippy(this, {
+                (this.tooltip ??= tippy(this)).setProps({
                   touch: false,
                   content: ${JSON.stringify(res.locals.user.name)},
                 });
-                this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
-                const dropdown = tippy(this, {
+                (this.dropdown ??= tippy(this)).setProps({
                   trigger: "click",
                   interactive: true,
                   content: ${res.locals.HTMLForJavaScript(
@@ -2699,7 +2686,6 @@ export default async (app: Courselore): Promise<void> => {
                     `
                   )},
                 });
-                this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(dropdown.props.content); dropdown.destroy(); }, { once: true });
               `}"
             >
               $${app.locals.partials.user({
@@ -2774,14 +2760,13 @@ export default async (app: Courselore): Promise<void> => {
                 <button
                   class="button button--transparent"
                   onload="${javascript`
-                    const tooltip = tippy(this, {
+                    (this.tooltip ??= tippy(this)).setProps({
                       trigger: "click",
                       interactive: true,
                       content: ${res.locals.HTMLForJavaScript(
                         html`<div class="dropdown--menu">$${menu}</div>`
                       )},
                     });
-                    this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
                   `}"
                 >
                   $${menuButton}

@@ -332,11 +332,10 @@ export default (app: Courselore): void => {
             ? html`<span
                 class="text--sky"
                 onload="${javascript`
-                    const tooltip = tippy(this, {
+                    (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
                       content: "Staff",
                     });
-                    this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                   `}"
                 >  <i class="bi bi-mortarboard-fill"></i
               ></span>`
@@ -356,7 +355,7 @@ export default (app: Courselore): void => {
     if (tooltip && userHTML !== undefined)
       userHTML = html`<span
         onload="${javascript`
-          const tooltip = tippy(this, {
+          (this.tooltip ??= tippy(this)).setProps({
             interactive: true,
             appendTo: document.body,
             delay: [1000, null],
@@ -468,7 +467,6 @@ export default (app: Courselore): void => {
               `
             )},
           });
-          this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
         `}"
         >$${userHTML}</span
       >`;
@@ -539,11 +537,10 @@ export default (app: Courselore): void => {
     if (tooltip && anonymousHTML !== undefined)
       anonymousHTML = html`<span
         onload="${javascript`
-          const tooltip = tippy(this, {
+          (this.tooltip ??= tippy(this)).setProps({
             touch: false,
             content: "Anonymous to Other Students",
           });
-          this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
         `}"
         >$${anonymousHTML}</span
       >`;
@@ -691,11 +688,10 @@ export default (app: Courselore): void => {
                         border-radius: var(--border-radius--circle);
                       `)}"
                       onload="${javascript`
-                        const tooltip = tippy(this, {
+                        (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
                           content: "Add Avatar",
                         });
-                        this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                         
                         this.onclick = () => {
                           this.closest("form").querySelector(".avatar-chooser--upload").click();
@@ -731,11 +727,10 @@ export default (app: Courselore): void => {
                         border-radius: var(--border-radius--circle);
                       `)}"
                       onload="${javascript`
-                        const tooltip = tippy(this, {
+                        (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
                           content: "Update Avatar",
                         });
-                        this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                         
                         this.onclick = () => {
                           this.closest("form").querySelector(".avatar-chooser--upload").click();
@@ -765,12 +760,11 @@ export default (app: Courselore): void => {
                         align-items: center;
                       `)}"
                       onload="${javascript`
-                        const tooltip = tippy(this, {
+                        (this.tooltip ??= tippy(this)).setProps({
                           theme: "rose",
                           touch: false,
                           content: "Remove Avatar",
                         });
-                        this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                         
                         this.onclick = () => {
                           const form = this.closest("form");

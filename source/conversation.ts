@@ -660,11 +660,10 @@ export default (app: Courselore): void => {
                     <button
                       class="button button--tight button--tight--inline button--transparent"
                       onload="${javascript`
-                        const tooltip = tippy(this, {
+                        (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
                           content: "Search",
                         });
-                        this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                       `}"
                     >
                       <i class="bi bi-search"></i>
@@ -683,11 +682,10 @@ export default (app: Courselore): void => {
                             )}"
                             class="button button--tight button--tight--inline button--transparent"
                             onload="${javascript`
-                              const tooltip = tippy(this, {
+                              (this.tooltip ??= tippy(this)).setProps({
                                 touch: false,
                                 content: "Clear Search & Filters",
                               });
-                              this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                             `}"
                           >
                             <i class="bi bi-x-lg"></i>
@@ -880,11 +878,10 @@ export default (app: Courselore): void => {
                           type="button"
                           class="button button--tight button--tight--inline button--transparent"
                           onload="${javascript`
-                            const tooltip = tippy(this, {
+                            (this.tooltip ??= tippy(this)).setProps({
                               trigger: "click",
                               content: "Pinned conversations are listed first.",
                             });
-                            this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                           `}"
                         >
                           <i class="bi bi-info-circle"></i>
@@ -1028,11 +1025,10 @@ export default (app: Courselore): void => {
                                 type="button"
                                 class="button button--tight button--tight--inline button--transparent"
                                 onload="${javascript`
-                                  const tooltip = tippy(this, {
+                                  (this.tooltip ??= tippy(this)).setProps({
                                     trigger: "click",
                                     content: "Tags help to organize conversations.",
                                   });
-                                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                 `}"
                               >
                                 <i class="bi bi-info-circle"></i>
@@ -1082,11 +1078,10 @@ export default (app: Courselore): void => {
                                           <span
                                             class="text--sky"
                                             onload="${javascript`
-                                              const tooltip = tippy(this, {
+                                              (this.tooltip ??= tippy(this)).setProps({
                                                 touch: false,
                                                 content: "This tag is visible by staff only.",
                                               });
-                                              this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                             `}"
                                           >
                                             <i
@@ -1346,11 +1341,10 @@ export default (app: Courselore): void => {
                                                 );
                                               `)}"
                                               onload="${javascript`
-                                                const tooltip = tippy(this, {
+                                                (this.tooltip ??= tippy(this)).setProps({
                                                   touch: false,
                                                   content: "Mark as Read",
                                                 });
-                                                this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                                        
                                                 this.onclick = async (event) => {
                                                   event.preventDefault();
@@ -1518,11 +1512,10 @@ export default (app: Courselore): void => {
               <div
                 class="text--amber"
                 onload="${javascript`
-                  const tooltip = tippy(this, {
+                  (this.tooltip ??= tippy(this)).setProps({
                     touch: false,
                     content: "Pinned conversations are listed first.",
                   });
-                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                 `}"
               >
                 <i class="bi bi-pin-fill"></i>
@@ -1580,11 +1573,10 @@ export default (app: Courselore): void => {
       >
         <div
           onload="${javascript`
-          const tooltip = tippy(this, {
+          (this.tooltip ??= tippy(this)).setProps({
             touch: false,
             content: "Conversation Reference",
           });
-          this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
         `}"
         >
           #${conversation.reference}
@@ -1646,11 +1638,10 @@ export default (app: Courselore): void => {
                           <span
                             class="text--sky"
                             onload="${javascript`
-                              const tooltip = tippy(this, {
+                              (this.tooltip ??= tippy(this)).setProps({
                                 touch: false,
                                 content: "This tag is visible by staff only.",
                               });
-                              this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                             `}"
                           >
                             <i class="bi bi-mortarboard-fill"></i>
@@ -2147,11 +2138,10 @@ export default (app: Courselore): void => {
                             type="button"
                             class="button button--tight button--tight--inline button--transparent"
                             onload="${javascript`
-                              const tooltip = tippy(this, {
+                              (this.tooltip ??= tippy(this)).setProps({
                                 trigger: "click",
                                 content: "Pinned conversations are listed first.",
                               });
-                              this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                             `}"
                           >
                             <i class="bi bi-info-circle"></i>
@@ -2172,11 +2162,10 @@ export default (app: Courselore): void => {
                             />
                             <span
                               onload="${javascript`
-                                const tooltip = tippy(this, {
+                                (this.tooltip ??= tippy(this)).setProps({
                                   touch: false,
                                   content: "Pin",
                                 });
-                                this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                               `}"
                             >
                               <i class="bi bi-pin-angle"></i>
@@ -2185,11 +2174,10 @@ export default (app: Courselore): void => {
                             <span
                               class="text--amber"
                               onload="${javascript`
-                                const tooltip = tippy(this, {
+                                (this.tooltip ??= tippy(this)).setProps({
                                   touch: false,
                                   content: "Unpin",
                                 });
-                                this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                               `}"
                             >
                               <i class="bi bi-pin-fill"></i>
@@ -2231,11 +2219,10 @@ export default (app: Courselore): void => {
                       />
                       <span
                         onload="${javascript`
-                          const tooltip = tippy(this, {
+                          (this.tooltip ??= tippy(this)).setProps({
                             touch: false,
                             content: "Set as Visible by Staff Only",
                           });
-                          this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                         `}"
                       >
                         <i class="bi bi-eye"></i>
@@ -2244,11 +2231,10 @@ export default (app: Courselore): void => {
                       <span
                         class="text--sky"
                         onload="${javascript`
-                          const tooltip = tippy(this, {
+                          (this.tooltip ??= tippy(this)).setProps({
                             touch: false,
                             content: "Set as Visible by Everyone",
                           });
-                          this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                         `}"
                       >
                         <i class="bi bi-mortarboard-fill"></i>
@@ -2283,11 +2269,10 @@ export default (app: Courselore): void => {
                           type="button"
                           class="button button--tight button--tight--inline button--transparent"
                           onload="${javascript`
-                            const tooltip = tippy(this, {
+                            (this.tooltip ??= tippy(this)).setProps({
                               trigger: "click",
                               content: "Tags help to organize conversations.",
                             });
-                            this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                           `}"
                         >
                           <i class="bi bi-info-circle"></i>
@@ -2370,11 +2355,10 @@ export default (app: Courselore): void => {
                                         <span
                                           class="text--sky"
                                           onload="${javascript`
-                                            const tooltip = tippy(this, {
+                                            (this.tooltip ??= tippy(this)).setProps({
                                               touch: false,
                                               content: "This tag is visible by staff only.",
                                             });
-                                            this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                           `}"
                                         >
                                           <i class="bi bi-mortarboard-fill"></i>
@@ -2416,11 +2400,10 @@ export default (app: Courselore): void => {
                           />
                           <span
                             onload="${javascript`
-                              const tooltip = tippy(this, {
+                              (this.tooltip ??= tippy(this)).setProps({
                                 touch: false,
                                 content: "Set as Anonymous to Other Students",
                               });
-                              this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                             `}"
                           >
                             <span>
@@ -2442,11 +2425,10 @@ export default (app: Courselore): void => {
                           </span>
                           <span
                             onload="${javascript`
-                              const tooltip = tippy(this, {
+                              (this.tooltip ??= tippy(this)).setProps({
                                 touch: false,
                                 content: "Set as Signed by You",
                               });
-                              this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                             `}"
                           >
                             <span>
@@ -2473,7 +2455,7 @@ export default (app: Courselore): void => {
                 <button
                   class="button button--full-width-on-small-screen button--blue"
                   onload="${javascript`
-                    const tooltip = tippy(this, {
+                    (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
                       content: ${res.locals.HTMLForJavaScript(
                         html`
@@ -2495,7 +2477,6 @@ export default (app: Courselore): void => {
                         `
                       )},
                     });
-                    this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                     const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
 
@@ -3031,13 +3012,12 @@ export default (app: Courselore): void => {
                                         res.locals.conversation.type
                                       ].display}"
                                   onload="${javascript`
-                                    const tooltip = tippy(this, {
+                                    (this.tooltip ??= tippy(this)).setProps({
                                       touch: false,
                                       content: "Update Conversation Type",
                                     });
-                                    this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                     
-                                    const dropdown = tippy(this, {
+                                    (this.dropdown ??= tippy(this)).setProps({
                                       trigger: "click",
                                       interactive: true,
                                       content: ${res.locals.HTMLForJavaScript(
@@ -3097,7 +3077,6 @@ export default (app: Courselore): void => {
                                         `
                                       )},
                                     });
-                                    this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(dropdown.props.content); dropdown.destroy(); }, { once: true });
                                   `}"
                                 >
                                   $${app.locals.partials.conversationTypeIcon[
@@ -3163,11 +3142,10 @@ export default (app: Courselore): void => {
                                             <button
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--rose"
                                               onload="${javascript`
-                                                const tooltip = tippy(this, {
+                                                (this.tooltip ??= tippy(this)).setProps({
                                                   touch: false,
                                                   content: "Set as Resolved",
                                                 });
-                                                this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                               `}"
                                             >
                                               <i
@@ -3185,11 +3163,10 @@ export default (app: Courselore): void => {
                                             <button
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
                                               onload="${javascript`
-                                                const tooltip = tippy(this, {
+                                                (this.tooltip ??= tippy(this)).setProps({
                                                   touch: false,
                                                   content: "Set as Unresolved",
                                                 });
-                                                this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                               `}"
                                             >
                                               <i
@@ -3261,11 +3238,10 @@ export default (app: Courselore): void => {
                                       <button
                                         class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                         onload="${javascript`
-                                          const tooltip = tippy(this, {
+                                          (this.tooltip ??= tippy(this)).setProps({
                                             touch: false,
                                             content: "Pin",
                                           });
-                                          this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                         `}"
                                       >
                                         <i class="bi bi-pin-angle"></i>
@@ -3281,11 +3257,10 @@ export default (app: Courselore): void => {
                                       <button
                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--amber"
                                         onload="${javascript`
-                                          const tooltip = tippy(this, {
+                                          (this.tooltip ??= tippy(this)).setProps({
                                             touch: false,
                                             content: "Unpin",
                                           });
-                                          this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                         `}"
                                       >
                                         <i class="bi bi-pin-fill"></i>
@@ -3310,7 +3285,7 @@ export default (app: Courselore): void => {
                                   ? ""
                                   : "text--sky"}"
                                 onload="${javascript`
-                                  const tooltip = tippy(this, {
+                                  (this.tooltip ??= tippy(this)).setProps({
                                     touch: false,
                                     content: "Set as ${
                                       res.locals.conversation.staffOnlyAt ===
@@ -3319,9 +3294,8 @@ export default (app: Courselore): void => {
                                         : "Visible by Everyone"
                                     }",
                                   });
-                                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                   
-                                  const dropdown = tippy(this, {
+                                  (this.dropdown ??= tippy(this)).setProps({
                                     theme: "rose",
                                     trigger: "click",
                                     interactive: true,
@@ -3429,7 +3403,6 @@ export default (app: Courselore): void => {
                                       `
                                     )},
                                   });
-                                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(dropdown.props.content); dropdown.destroy(); }, { once: true });
                                 `}"
                               >
                                 $${res.locals.conversation.staffOnlyAt === null
@@ -3462,13 +3435,12 @@ export default (app: Courselore): void => {
                         <button
                           class="button button--tight button--tight--inline button--transparent secondary"
                           onload="${javascript`
-                            const tooltip = tippy(this, {
+                            (this.tooltip ??= tippy(this)).setProps({
                               touch: false,
                               content: "Actions",
                             });
-                            this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                             
-                            const dropdown = tippy(this, {
+                            (this.dropdown ??= tippy(this)).setProps({
                               trigger: "click",
                               interactive: true,
                               content: ${res.locals.HTMLForJavaScript(
@@ -3526,7 +3498,7 @@ export default (app: Courselore): void => {
                                             <button
                                               class="dropdown--menu--item button button--transparent"
                                               onload="${javascript`
-                                                const dropdown = tippy(this, {
+                                                (this.dropdown ??= tippy(this)).setProps({
                                                   theme: "rose",
                                                   trigger: "click",
                                                   interactive: true,
@@ -3595,7 +3567,6 @@ export default (app: Courselore): void => {
                                                     `
                                                   )},
                                                 });
-                                                this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(dropdown.props.content); dropdown.destroy(); }, { once: true });
                                               `}"
                                             >
                                               <i class="bi bi-trash"></i>
@@ -3608,7 +3579,6 @@ export default (app: Courselore): void => {
                                 `
                               )},
                             });
-                            this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(dropdown.props.content); dropdown.destroy(); }, { once: true });
                           `}"
                         >
                           <i class="bi bi-three-dots-vertical"></i>
@@ -3682,12 +3652,11 @@ export default (app: Courselore): void => {
                                 flex: 1;
                               `)}"
                               onload="${javascript`
-                                const tooltip = tippy(this, {
+                                (this.tooltip ??= tippy(this)).setProps({
                                   theme: "green",
                                   touch: false,
                                   content: "Update Title",
                                 });
-                                this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                               `}"
                             >
                               <i class="bi bi-check-lg"></i>
@@ -3696,12 +3665,11 @@ export default (app: Courselore): void => {
                               type="reset"
                               class="button button--tight button--tight--inline button--transparent text--rose"
                               onload="${javascript`
-                                const tooltip = tippy(this, {
+                                (this.tooltip ??= tippy(this)).setProps({
                                   theme: "rose",
                                   touch: false,
                                   content: "Cancel",
                                 });
-                                this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                       
                                 this.onclick = () => {
                                   this.closest(".conversation--header--full").querySelector(".title--show").hidden = false;
@@ -3747,12 +3715,11 @@ export default (app: Courselore): void => {
                                               text-align: left;
                                             `)}"
                                             onload="${javascript`
-                                              const tooltip = tippy(this, {
+                                              (this.tooltip ??= tippy(this)).setProps({
                                                 theme: "rose",
                                                 touch: false,
                                                 content: "You may not remove this tag because a conversation must have at least one tag.",
                                               });
-                                              this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                             `}"
                                           >
                                             <i class="bi bi-tag-fill"></i>
@@ -3765,10 +3732,9 @@ export default (app: Courselore): void => {
                                                 <span
                                                   class="text--sky"
                                                   onload="${javascript`
-                                                    const tooltip = tippy(this, {
+                                                    (this.tooltip ??= tippy(this)).setProps({
                                                       content: "This tag is visible by staff only.",
                                                     });
-                                                    this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                                   `}"
                                                 >
                                                   <i
@@ -3819,12 +3785,11 @@ export default (app: Courselore): void => {
                                                   text-align: left;
                                                 `)}"
                                                 onload="${javascript`
-                                                  const tooltip = tippy(this, {
+                                                  (this.tooltip ??= tippy(this)).setProps({
                                                     theme: "rose",
                                                     touch: false,
                                                     content: "Remove Tag",
                                                   });
-                                                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                                 `}"
                                               >
                                                 <i class="bi bi-tag-fill"></i>
@@ -3836,10 +3801,9 @@ export default (app: Courselore): void => {
                                                     <span
                                                       class="text--sky"
                                                       onload="${javascript`
-                                                        const tooltip = tippy(this, {
+                                                        (this.tooltip ??= tippy(this)).setProps({
                                                           content: "This tag is visible by staff only.",
                                                         });
-                                                        this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                                       `}"
                                                     >
                                                       <i
@@ -3859,13 +3823,12 @@ export default (app: Courselore): void => {
                                           <button
                                             class="button button--tight button--tight--inline button--transparent text--teal"
                                             onload="${javascript`
-                                              const tooltip = tippy(this, {
+                                              (this.tooltip ??= tippy(this)).setProps({
                                                 touch: false,
                                                 content: "Add Tag",
                                               });
-                                              this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                               
-                                              const dropdown = tippy(this, {
+                                              (this.dropdown ??= tippy(this)).setProps({
                                                 trigger: "click",
                                                 interactive: true,
                                                 content: ${res.locals.HTMLForJavaScript(
@@ -3930,11 +3893,10 @@ export default (app: Courselore): void => {
                                                                       <span
                                                                         class="text--sky"
                                                                         onload="${javascript`
-                                                                          const tooltip = tippy(this, {
+                                                                          (this.tooltip ??= tippy(this)).setProps({
                                                                             touch: false,
                                                                             content: "This tag is visible by staff only.",
                                                                           });
-                                                                          this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                                                         `}"
                                                                       >
                                                                         <i
@@ -3970,7 +3932,6 @@ export default (app: Courselore): void => {
                                                   `
                                                 )},
                                               });
-                                              this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(dropdown.props.content); dropdown.destroy(); }, { once: true });
                                             `}"
                                           >
                                             <i class="bi bi-tags-fill"></i>
@@ -4218,11 +4179,10 @@ export default (app: Courselore): void => {
                                                 align-items: center;
                                               `)}"
                                               onload="${javascript`
-                                                const tooltip = tippy(this, {
+                                                (this.tooltip ??= tippy(this)).setProps({
                                                   touch: false,
                                                   content: "Close",
                                                 });
-                                                this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                                            
                                                 this.onclick = () => {
                                                   this.remove();
@@ -4424,13 +4384,12 @@ export default (app: Courselore): void => {
                                                     : css``}
                                                 `)}"
                                                 onload="${javascript`
-                                                  const tooltip = tippy(this, {
+                                                  (this.tooltip ??= tippy(this)).setProps({
                                                     touch: false,
                                                     content: "Actions",
                                                   });
-                                                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                                 
-                                                  const dropdown = tippy(this, {
+                                                  (this.dropdown ??= tippy(this)).setProps({
                                                     trigger: "click",
                                                     interactive: true,
                                                     content: ${res.locals.HTMLForJavaScript(
@@ -4528,12 +4487,11 @@ export default (app: Courselore): void => {
                                                                     const loading = tooltipContent.querySelector(".loading");
                                                                     const content = tooltipContent.querySelector(".content");
 
-                                                                    const tooltip = tippy(this, {
+                                                                    (this.tooltip ??= tippy(this)).setProps({
                                                                       trigger: "click",
                                                                       interactive: true,
                                                                       content: tooltipContent,
                                                                     });
-                                                                    this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                                                                     const load = async () => {
                                                                       if (!content.hidden) return;
@@ -4803,7 +4761,7 @@ export default (app: Courselore): void => {
                                                                   <button
                                                                     class="dropdown--menu--item button button--transparent"
                                                                     onload="${javascript`
-                                                                      const dropdown = tippy(this, {
+                                                                      (this.dropdown ??= tippy(this)).setProps({
                                                                         theme: "rose",
                                                                         trigger: "click",
                                                                         interactive: true,
@@ -4891,7 +4849,6 @@ export default (app: Courselore): void => {
                                                                           `
                                                                         )},
                                                                       });
-                                                                      this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(dropdown.props.content); dropdown.destroy(); }, { once: true });
                                                                     `}"
                                                                   >
                                                                     <i
@@ -4907,7 +4864,6 @@ export default (app: Courselore): void => {
                                                       `
                                                     )},
                                                   });
-                                                  this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(dropdown.props.content); dropdown.destroy(); }, { once: true });
                                                 `}"
                                               >
                                                 <i
@@ -4962,11 +4918,10 @@ export default (app: Courselore): void => {
                                                       <button
                                                         class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                                         onload="${javascript`
-                                                          const tooltip = tippy(this, {
+                                                          (this.tooltip ??= tippy(this)).setProps({
                                                             touch: false,
                                                             content: "Set as Answer",
                                                           });
-                                                          this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                                         `}"
                                                       >
                                                         <i
@@ -4984,11 +4939,10 @@ export default (app: Courselore): void => {
                                                       <button
                                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
                                                         onload="${javascript`
-                                                          const tooltip = tippy(this, {
+                                                          (this.tooltip ??= tippy(this)).setProps({
                                                             touch: false,
                                                             content: "Set as Not an Answer",
                                                           });
-                                                          this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                                         `}"
                                                       >
                                                         <i
@@ -5067,7 +5021,7 @@ export default (app: Courselore): void => {
                                                       <button
                                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--blue"
                                                         onload="${javascript`
-                                                          const tooltip = tippy(this, {
+                                                          (this.tooltip ??= tippy(this)).setProps({
                                                             touch: false,
                                                             content: ${JSON.stringify(
                                                               `Remove Endorsement${
@@ -5117,7 +5071,6 @@ export default (app: Courselore): void => {
                                                               }`
                                                             )},
                                                           });
-                                                          this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                                         `}"
                                                       >
                                                         <i
@@ -5148,7 +5101,7 @@ export default (app: Courselore): void => {
                                                           ? html``
                                                           : html`
                                                               onload="${javascript`
-                                                                const tooltip = tippy(this, {
+                                                                (this.tooltip ??= tippy(this)).setProps({
                                                                   touch: false,
                                                                   content: ${JSON.stringify(
                                                                     `Endorse (Already endorsed by ${
@@ -5175,7 +5128,6 @@ export default (app: Courselore): void => {
                                                                     })`
                                                                   )},
                                                                 });
-                                                                this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                                               `}"
                                                             `}
                                                       >
@@ -5221,7 +5173,7 @@ export default (app: Courselore): void => {
                                                         "no-longer-enrolled"
                                                     ).length > 0
                                                       ? javascript`
-                                                          const tooltip = tippy(this, {
+                                                          (this.tooltip ??= tippy(this)).setProps({
                                                             content: ${JSON.stringify(
                                                               `Endorsed by ${
                                                                 /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
@@ -5247,7 +5199,6 @@ export default (app: Courselore): void => {
                                                               }`
                                                             )},
                                                           });
-                                                          this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                                         `
                                                       : javascript``
                                                   }
@@ -5606,7 +5557,7 @@ export default (app: Courselore): void => {
                                                         ? html``
                                                         : html`
                                                             onload="${javascript`
-                                                              const tooltip = tippy(this, {
+                                                              (this.tooltip ??= tippy(this)).setProps({
                                                                 touch: false,
                                                                 content: ${JSON.stringify(
                                                                   isLiked
@@ -5614,7 +5565,6 @@ export default (app: Courselore): void => {
                                                                     : "Like"
                                                                 )},
                                                               });
-                                                              this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                                             `}"
                                                           `}
                                                     >
@@ -5681,12 +5631,11 @@ export default (app: Courselore): void => {
                                                     const loading = tooltipContent.querySelector(".loading");
                                                     const content = tooltipContent.querySelector(".content");
 
-                                                    const tooltip = tippy(this, {
+                                                    (this.tooltip ??= tippy(this)).setProps({
                                                       trigger: "click",
                                                       interactive: true,
                                                       content: tooltipContent,
                                                     });
-                                                    this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                                                     const load = async () => {
                                                       if (!content.hidden) return;
@@ -5812,7 +5761,7 @@ export default (app: Courselore): void => {
                                                   <button
                                                     class="button button--blue"
                                                     onload="${javascript`
-                                                      const tooltip = tippy(this, {
+                                                      (this.tooltip ??= tippy(this)).setProps({
                                                         touch: false,
                                                         content: ${res.locals.HTMLForJavaScript(
                                                           html`
@@ -5840,7 +5789,6 @@ export default (app: Courselore): void => {
                                                           `
                                                         )},
                                                       });
-                                                      this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                                                       const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
 
@@ -5991,11 +5939,10 @@ export default (app: Courselore): void => {
                               />
                               <span
                                 onload="${javascript`
-                                  const tooltip = tippy(this, {
+                                  (this.tooltip ??= tippy(this)).setProps({
                                     touch: false,
                                     content: "Set as Answer",
                                   });
-                                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                 `}"
                               >
                                 <i class="bi bi-patch-check"></i>
@@ -6004,11 +5951,10 @@ export default (app: Courselore): void => {
                               <span
                                 class="text--emerald"
                                 onload="${javascript`
-                                  const tooltip = tippy(this, {
+                                  (this.tooltip ??= tippy(this)).setProps({
                                     touch: false,
                                     content: "Set as Not an Answer",
                                   });
-                                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                 `}"
                               >
                                 <i class="bi bi-patch-check-fill"></i>
@@ -6059,7 +6005,7 @@ export default (app: Courselore): void => {
                               align-items: center;
                             `)}"
                             onload="${javascript`
-                              const tooltip = tippy(this, {
+                              (this.tooltip ??= tippy(this)).setProps({
                                 touch: false,
                                 content: ${res.locals.HTMLForJavaScript(
                                   html`
@@ -6082,7 +6028,6 @@ export default (app: Courselore): void => {
                                   `
                                 )},
                               });
-                              this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
                             `}"
                           >
                             <i
@@ -6129,11 +6074,10 @@ export default (app: Courselore): void => {
                               />
                               <span
                                 onload="${javascript`
-                                  const tooltip = tippy(this, {
+                                  (this.tooltip ??= tippy(this)).setProps({
                                     touch: false,
                                     content: "Set as Anonymous to Other Students",
                                   });
-                                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                 `}"
                               >
                                 <span>
@@ -6155,11 +6099,10 @@ export default (app: Courselore): void => {
                               </span>
                               <span
                                 onload="${javascript`
-                                  const tooltip = tippy(this, {
+                                  (this.tooltip ??= tippy(this)).setProps({
                                     touch: false,
                                     content: "Set as Signed by You",
                                   });
-                                  this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                 `}"
                               >
                                 <span>
@@ -6190,7 +6133,7 @@ export default (app: Courselore): void => {
                     <button
                       class="button button--full-width-on-small-screen button--blue"
                       onload="${javascript`
-                        const tooltip = tippy(this, {
+                        (this.tooltip ??= tippy(this)).setProps({
                           touch: false,
                           content: ${res.locals.HTMLForJavaScript(
                             html`
@@ -6212,7 +6155,6 @@ export default (app: Courselore): void => {
                             `
                           )},
                         });
-                        this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
                         const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
 
