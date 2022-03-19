@@ -8,6 +8,7 @@
 - Progress bar
   - `handleBeforenavigate`
   - `handleNavigateerror`
+- `dispatchEvent`
 - `newTagPartial`
 - `timeout`
 - `onclick`
