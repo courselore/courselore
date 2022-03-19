@@ -3454,18 +3454,17 @@ export default (app: Courselore): void => {
                                     <button
                                       class="dropdown--menu--item button button--transparent"
                                       onload="${javascript`
-                                        const copied = tippy(this, {
+                                        (this.copied ??= tippy(this)).setProps({
                                           theme: "green",
                                           trigger: "manual",
                                           content: "Copied",
                                         });
-                                        this.addEventListener("beforeunload", () => { copied.destroy(); }, { once: true });
 
                                         this.onclick = async () => {
                                           await navigator.clipboard.writeText("${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
-                                          copied.show();
+                                          this.copied.show();
                                           await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                                          copied.hide();
+                                          this.copied.hide();
                                         };
                                       `}"
                                     >
@@ -4585,18 +4584,17 @@ export default (app: Courselore): void => {
                                                           <button
                                                             class="dropdown--menu--item button button--transparent"
                                                             onload="${javascript`
-                                                              const copied = tippy(this, {
+                                                              (this.copied ??= tippy(this)).setProps({
                                                                 theme: "green",
                                                                 trigger: "manual",
                                                                 content: "Copied",
                                                               });
-                                                              this.addEventListener("beforeunload", () => { copied.destroy(); }, { once: true });
 
                                                               this.onclick = async () => {
                                                                 await navigator.clipboard.writeText("${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${message.reference}");
-                                                                copied.show();
+                                                                this.copied.show();
                                                                 await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                                                                copied.hide();
+                                                                this.copied.hide();
                                                               };
                                                             `}"
                                                           >
