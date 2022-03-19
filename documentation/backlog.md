@@ -27,7 +27,6 @@
 - `onsubmit`
 - `onbeforenavigate`
 - `onnavigateerror`
-- Tippy
 - `dispatchBeforeunload`
 - `onload`
 
