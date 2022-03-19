@@ -523,7 +523,9 @@ const leafac = {
   },
 
   localizeDateTimeInput(element) {
-    element.defaultValue = leafac.localizeDateTime(element.defaultValue);
+    element.value = element.defaultValue = leafac.localizeDateTime(
+      element.defaultValue
+    );
     const handleValidate = (event) => {
       const date = leafac.UTCizeDateTime(element.value);
       if (date === undefined) {
