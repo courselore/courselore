@@ -1850,6 +1850,90 @@ export default async (app: Courselore): Promise<void> => {
                   res.locals.course !== undefined
                     ? javascript`
                         const dropdownMenuTarget = this.closest(".content-editor").querySelector(".content-editor--write--textarea--dropdown-menu-target");
+
+                        (dropdownMenuTarget.dropdownMenuMention ??= tippy(dropdownMenuTarget)).setProps({
+                          placement: "bottom-start",
+                          trigger: "manual",
+                          interactive: true,
+                          content: ${res.locals.HTMLForJavaScript(
+                            html`
+                              <div
+                                class="${res.locals.localCSS(css`
+                                  width: var(--space--56);
+                                  max-height: var(--space--44);
+                                  overflow: auto;
+                                `)}"
+                              >
+                                <p class="heading">
+                                  <i class="bi bi-at"></i>
+                                  Mention User
+                                </p>
+                                <div class="dropdown--menu">
+                                  <div class="search-results"></div>
+                                  <button
+                                    type="button"
+                                    class="dropdown--menu--item button button--transparent"
+                                    onload="${javascript`
+                                      this.onclick = () => {
+                                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("everyone");
+                                      };
+                                    `}"
+                                  >
+                                    Everyone in the Conversation
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="dropdown--menu--item button button--transparent"
+                                    onload="${javascript`
+                                      this.onclick = () => {
+                                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("staff");
+                                      };
+                                    `}"
+                                  >
+                                    Staff in the Conversation
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="dropdown--menu--item button button--transparent"
+                                    onload="${javascript`
+                                      this.onclick = () => {
+                                        this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("students");
+                                      };
+                                    `}"
+                                  >
+                                    Students in the Conversation
+                                  </button>
+                                </div>
+                              </div>
+                            `
+                          )},
+                        });
+
+                        (dropdownMenuTarget.dropdownMenuReference ??= tippy(dropdownMenuTarget)).setProps({
+                          placement: "bottom-start",
+                          trigger: "manual",
+                          interactive: true,
+                          content: ${res.locals.HTMLForJavaScript(
+                            html`
+                              <div
+                                class="${res.locals.localCSS(css`
+                                  width: var(--space--72);
+                                  max-height: var(--space--44);
+                                  overflow: auto;
+                                `)}"
+                              >
+                                <p class="heading">
+                                  <i class="bi bi-hash"></i>
+                                  Refer to Conversation or Message
+                                </p>
+                                <div class="dropdown--menu">
+                                  <div class="search-results"></div>
+                                </div>
+                              </div>
+                            `
+                          )},
+                        });
+
                         const dropdownMenus = [
                           {
                             trigger: "@",
@@ -1862,96 +1946,17 @@ export default async (app: Courselore): Promise<void> => {
                                   : ``
                               }content-editor/mention-user-search`
                             )},
-                            dropdownMenu: tippy(dropdownMenuTarget, {
-                              placement: "bottom-start",
-                              trigger: "manual",
-                              interactive: true,
-                              content: ${res.locals.HTMLForJavaScript(
-                                html`
-                                  <div
-                                    class="${res.locals.localCSS(css`
-                                      width: var(--space--56);
-                                      max-height: var(--space--44);
-                                      overflow: auto;
-                                    `)}"
-                                  >
-                                    <p class="heading">
-                                      <i class="bi bi-at"></i>
-                                      Mention User
-                                    </p>
-                                    <div class="dropdown--menu">
-                                      <div class="search-results"></div>
-                                      <button
-                                        type="button"
-                                        class="dropdown--menu--item button button--transparent"
-                                        onload="${javascript`
-                                          this.onclick = () => {
-                                            this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("everyone");
-                                          };
-                                        `}"
-                                      >
-                                        Everyone in the Conversation
-                                      </button>
-                                      <button
-                                        type="button"
-                                        class="dropdown--menu--item button button--transparent"
-                                        onload="${javascript`
-                                          this.onclick = () => {
-                                            this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("staff");
-                                          };
-                                        `}"
-                                      >
-                                        Staff in the Conversation
-                                      </button>
-                                      <button
-                                        type="button"
-                                        class="dropdown--menu--item button button--transparent"
-                                        onload="${javascript`
-                                          this.onclick = () => {
-                                            this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("students");
-                                          };
-                                        `}"
-                                      >
-                                        Students in the Conversation
-                                      </button>
-                                    </div>
-                                  </div>
-                                `
-                              )},
-                            }),
+                            dropdownMenu: dropdownMenuTarget.dropdownMenuMention,
                           },
                           {
                             trigger: "#",
                             route: ${JSON.stringify(
                               `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/content-editor/refer-to-conversation-or-message-search`
                             )},
-                            dropdownMenu: tippy(dropdownMenuTarget, {
-                              placement: "bottom-start",
-                              trigger: "manual",
-                              interactive: true,
-                              content: ${res.locals.HTMLForJavaScript(
-                                html`
-                                  <div
-                                    class="${res.locals.localCSS(css`
-                                      width: var(--space--72);
-                                      max-height: var(--space--44);
-                                      overflow: auto;
-                                    `)}"
-                                  >
-                                    <p class="heading">
-                                      <i class="bi bi-hash"></i>
-                                      Refer to Conversation or Message
-                                    </p>
-                                    <div class="dropdown--menu">
-                                      <div class="search-results"></div>
-                                    </div>
-                                  </div>
-                                `
-                              )},
-                            }),
+                            dropdownMenu: dropdownMenuTarget.dropdownMenuReference,
                           },
                         ];
-                        dropdownMenuTarget.addEventListener("beforeunload", () => { for (const { dropdownMenu } of dropdownMenus) { leafac.dispatchBeforeunload(dropdownMenu.props.content); dropdownMenu.destroy(); } }, { once: true });
+
                         let anchorIndex = null;
 
                         this.oninput = (() => {
@@ -2000,7 +2005,7 @@ export default async (app: Courselore): Promise<void> => {
                               for (const button of buttons) button.classList.remove("hover");
                               if (buttons.length > 0) buttons[0].classList.add("hover");
                               isUpdating = false;
-                              if (shouldUpdateAgain) handleInput();
+                              if (shouldUpdateAgain) this.oninput();
                             }
                           }
                         })();
