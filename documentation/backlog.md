@@ -11,6 +11,7 @@
 - Progress bar
   - `handleBeforenavigate`
   - `handleNavigateerror`
+- `newTagPartial`
 - `timeout`
 - `onclick`
 - `onvalidate`

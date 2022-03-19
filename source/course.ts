@@ -1735,9 +1735,8 @@ export default (app: Courselore): void => {
                       };
 
                       this.onvalidate = (event) => {
-                        if ([...this.closest("form").querySelector(".tags").children].filter((tag) => !tag.hidden).length > 0) return;
-                        event.stopImmediatePropagation();
-                        event.detail.error = "Please add at least one tag.";
+                        if ([...this.closest("form").querySelector(".tags").children].filter((tag) => !tag.hidden).length === 0)
+                          return "Please add at least one tag.";
                       };
                     `}"
                   >
@@ -2034,14 +2033,12 @@ export default (app: Courselore): void => {
                         emails.push({ email, name });
                       }
                       if (
-                        emails.length > 0 &&
-                        emails.every(
-                          ({ email }) => email.match(leafac.regExps.email) !== null
+                        emails.length === 0 ||
+                        emails.some(
+                          ({ email }) => email.match(leafac.regExps.email) === null
                         )
                       )
-                        return;
-                      event.stopImmediatePropagation();
-                      event.detail.error = "Match the requested format.";
+                        return "Match the requested format.";
                     };
                   `}"
                 ></textarea>

@@ -1122,9 +1122,8 @@ export default (app: Courselore): void => {
                   class="input--text"
                   onload="${javascript`
                     this.onvalidate = (event) => {
-                      if (this.value === this.closest("form").querySelector('[name="newPassword"]').value) return;
-                      event.stopImmediatePropagation();
-                      event.detail.error = "New Password & New Password Confirmation don’t match.";
+                      if (this.value !== this.closest("form").querySelector('[name="newPassword"]').value)
+                        return "New Password & New Password Confirmation don’t match.";
                     };
                   `}"
                 />
