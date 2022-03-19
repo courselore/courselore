@@ -6,6 +6,7 @@
   - `handle`
   - `tippy`
   - `beforeunload`
+- `addEventListener`
 - `beforeunload`
 - Progress bar
   - `handleBeforenavigate`
