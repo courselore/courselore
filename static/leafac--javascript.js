@@ -151,18 +151,10 @@ const leafac = {
       });
     });
 
-    let networkErrorMessage;
     let abortController;
     let isNavigating = false;
     let previousLocation = { ...window.location };
     async function navigate({ request, event }) {
-      networkErrorMessage ??= tippy(document.querySelector("body"), {
-        theme: "error",
-        trigger: "manual",
-        arrow: false,
-        content:
-          "You appear to be offline. Please check your internet connection and try reloading the page.",
-      });
       if (event instanceof PopStateEvent) abortController?.abort();
       else if (isNavigating) return;
       isNavigating = true;
@@ -211,7 +203,15 @@ const leafac = {
               !(event instanceof PopStateEvent)
             )
               window.history.pushState(undefined, "", request.url);
-            networkErrorMessage.show();
+            const body = document.querySelector("body");
+            (body.networkError ??= tippy(body)).setProps({
+              theme: "error",
+              trigger: "manual",
+              arrow: false,
+              content:
+                "You appear to be offline. Please check your internet connection and try reloading the page.",
+            });
+            body.networkError.show();
             window.dispatchEvent(new CustomEvent("navigateerror", { detail }));
           }
         }
