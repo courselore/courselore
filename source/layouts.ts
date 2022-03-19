@@ -224,11 +224,9 @@ export default async (app: Courselore): Promise<void> => {
             overflow: hidden;
           `)}"
           onload="${javascript`
-            const handleScroll = () => {
+            this.onscroll = () => {
               this.scroll(0, 0);
             };
-            this.addEventListener("scroll", handleScroll);
-            this.addEventListener("beforeunload", () => { this.removeEventListener("scroll", handleScroll); }, { once: true });
           `}"
         >
           $${res.locals.enrollment === undefined
@@ -617,11 +615,9 @@ export default async (app: Courselore): Promise<void> => {
                         margin-right: var(--space--3);
                       `)}"
                       onload="${javascript`
-                        const handleClick = () => {
+                        this.onclick = () => {
                           this.closest(".flash").remove();
                         };
-                        this.addEventListener("click", handleClick);
-                        this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                       `}"
                     >
                       <i class="bi bi-x-circle"></i>

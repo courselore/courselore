@@ -663,18 +663,14 @@ export default (app: Courselore): void => {
                     }
                   `)}"
                   onload="${javascript`
-                    const handleDragover = (event) => {
+                    this.ondragover = (event) => {
                       event.preventDefault();
                     };
-                    this.addEventListener("dragover", handleDragover);
-                    this.addEventListener("beforeunload", () => { this.removeEventListener("dragover", handleDragover); }, { once: true });
 
-                    const handleDrop = (event) => {
+                    this.ondrop = (event) => {
                       event.preventDefault();
                       this.querySelector(".avatar-chooser--upload").upload(event.dataTransfer.files);
                     };
-                    this.addEventListener("drop", handleDrop);
-                    this.addEventListener("beforeunload", () => { this.removeEventListener("drop", handleDrop); }, { once: true });
                   `}"
                 >
                   <div
@@ -701,11 +697,9 @@ export default (app: Courselore): void => {
                         });
                         this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                         
-                        const handleClick = () => {
+                        this.onclick = () => {
                           this.closest("form").querySelector(".avatar-chooser--upload").click();
                         };
-                        this.addEventListener("click", handleClick);
-                        this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                       `}"
                     >
                       $${app.locals.partials.user({
@@ -743,11 +737,9 @@ export default (app: Courselore): void => {
                         });
                         this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                         
-                        const handleClick = () => {
+                        this.onclick = () => {
                           this.closest("form").querySelector(".avatar-chooser--upload").click();
                         };
-                        this.addEventListener("click", handleClick);
-                        this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                       `}"
                     >
                       <img
@@ -780,15 +772,13 @@ export default (app: Courselore): void => {
                         });
                         this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                         
-                        const handleClick = () => {
+                        this.onclick = () => {
                           const form = this.closest("form");
                           const avatar = form.querySelector('[name="avatar"]')
                           avatar.value = "";
                           form.querySelector(".avatar-chooser--empty").hidden = false;
                           form.querySelector(".avatar-chooser--filled").hidden = true;
                         };
-                        this.addEventListener("click", handleClick);
-                        this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                       `}"
                     >
                       <i class="bi bi-trash"></i>
@@ -860,11 +850,9 @@ export default (app: Courselore): void => {
                         avatarFilled.querySelector("img").setAttribute("src", avatarURL);
                       };
 
-                      const handleChange = () => {
+                      this.onchange = () => {
                         this.upload(this.files);
                       };
-                      this.addEventListener("change", handleChange);
-                      this.addEventListener("beforeunload", () => { this.removeEventListener("change", handleChange); }, { once: true });
                     `}"
                   />
                   <input
@@ -1133,13 +1121,11 @@ export default (app: Courselore): void => {
                   required
                   class="input--text"
                   onload="${javascript`
-                    const handleValidate = (event) => {
+                    this.onvalidate = (event) => {
                       if (this.value === this.closest("form").querySelector('[name="newPassword"]').value) return;
                       event.stopImmediatePropagation();
                       event.detail.error = "New Password & New Password Confirmation don’t match.";
                     };
-                    this.addEventListener("validate", handleValidate);
-                    this.addEventListener("beforeunload", () => { this.removeEventListener("validate", handleValidate); }, { once: true });
                   `}"
                 />
               </label>

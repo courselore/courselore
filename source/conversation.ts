@@ -522,14 +522,12 @@ export default (app: Courselore): void => {
                 <button
                   class="button button--transparent"
                   onload="${javascript`
-                    const handleClick = () => {
+                    this.onclick = () => {
                       document.querySelector(".conversation--layout--sidebar").classList.toggle("hidden-on-small-screen");
                       document.querySelector(".conversation--layout--main").classList.toggle("hidden-on-small-screen");
                       this.lastElementChild.classList.toggle("bi-chevron-bar-expand");
                       this.lastElementChild.classList.toggle("bi-chevron-bar-contract");
                     };
-                    this.addEventListener("click", handleClick);
-                    this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                   `}"
                 >
                   <i class="bi bi-chat-left-text"></i>
@@ -713,14 +711,12 @@ export default (app: Courselore): void => {
                           ? html``
                           : html`checked`}
                         onload="${javascript`
-                          const handleChange = () => {
+                          this.onchange = () => {
                             const filters = this.closest("form").querySelector(".filters");
                             filters.hidden = !this.checked;
                             for (const element of filters.querySelectorAll("*"))
                               if (element.disabled !== null) element.disabled = !this.checked;
                           };
-                          this.addEventListener("change", handleChange);
-                          this.addEventListener("beforeunload", () => { this.removeEventListener("change", handleChange); }, { once: true });
                         `}"
                       />
                       <span>
@@ -771,11 +767,9 @@ export default (app: Courselore): void => {
                                   ${
                                     conversationType === "question"
                                       ? javascript`
-                                          const handleChange = () => {
+                                          this.onchange = () => {
                                             this.closest(".filters").querySelector(".filters--resolved").hidden = !this.checked;
                                           };
-                                          this.addEventListener("change", handleChange);
-                                          this.addEventListener("beforeunload", () => { this.removeEventListener("change", handleChange); }, { once: true });
                                         `
                                       : javascript``
                                   }
@@ -830,14 +824,12 @@ export default (app: Courselore): void => {
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onload="${javascript`
-                              const handleChange = () => {
+                              this.onchange = () => {
                                 if (this.checked)
                                   for (const element of this.closest(".filters--resolved").querySelectorAll("input"))
                                     if (element !== this)
                                       element.checked = false;
                               };
-                              this.addEventListener("change", handleChange);
-                              this.addEventListener("beforeunload", () => { this.removeEventListener("change", handleChange); }, { once: true });
                             `}"
                           />
                           <span>
@@ -861,14 +853,12 @@ export default (app: Courselore): void => {
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onload="${javascript`
-                              const handleChange = () => {
+                              this.onchange = () => {
                                 if (this.checked)
                                   for (const element of this.closest(".filters--resolved").querySelectorAll("input"))
                                     if (element !== this)
                                       element.checked = false;
                               };
-                              this.addEventListener("change", handleChange);
-                              this.addEventListener("beforeunload", () => { this.removeEventListener("change", handleChange); }, { once: true });
                             `}"
                           />
                           <span>
@@ -920,11 +910,9 @@ export default (app: Courselore): void => {
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onload="${javascript`
-                              const handleChange = () => {
+                              this.onchange = () => {
                                 if (this.checked) this.closest("form").querySelector('[name="filters[isPinned]"][value="false"]').checked = false;
                               };
-                              this.addEventListener("change", handleChange);
-                              this.addEventListener("beforeunload", () => { this.removeEventListener("change", handleChange); }, { once: true });
                             `}"
                           />
                           <span>
@@ -948,11 +936,9 @@ export default (app: Courselore): void => {
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onload="${javascript`
-                              const handleChange = () => {
+                              this.onchange = () => {
                                 if (this.checked) this.closest("form").querySelector('[name="filters[isPinned]"][value="true"]').checked = false;
                               };
-                              this.addEventListener("change", handleChange);
-                              this.addEventListener("beforeunload", () => { this.removeEventListener("change", handleChange); }, { once: true });
                             `}"
                           />
                           <span>
@@ -989,11 +975,9 @@ export default (app: Courselore): void => {
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onload="${javascript`
-                              const handleChange = () => {
+                              this.onchange = () => {
                                 if (this.checked) this.closest("form").querySelector('[name="filters[isStaffOnly]"][value="true"]').checked = false;
                               };
-                              this.addEventListener("change", handleChange);
-                              this.addEventListener("beforeunload", () => { this.removeEventListener("change", handleChange); }, { once: true });
                             `}"
                           />
                           <span>
@@ -1017,11 +1001,9 @@ export default (app: Courselore): void => {
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onload="${javascript`
-                              const handleChange = () => {
+                              this.onchange = () => {
                                 if (this.checked) this.closest("form").querySelector('[name="filters[isStaffOnly]"][value="false"]').checked = false;
                               };
-                              this.addEventListener("change", handleChange);
-                              this.addEventListener("beforeunload", () => { this.removeEventListener("change", handleChange); }, { once: true });
                             `}"
                           />
                           <span>
@@ -1370,14 +1352,12 @@ export default (app: Courselore): void => {
                                                 });
                                                 this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                                        
-                                                const handleClick = async (event) => {
+                                                this.onclick = async (event) => {
                                                   event.preventDefault();
                                                   event.stopImmediatePropagation();
                                                   await fetch(this.closest("a").getAttribute("href"));
                                                   this.remove();
                                                 };
-                                                this.addEventListener("click", handleClick);
-                                                this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                                               `}"
                                             >
                                               ${unreadCount.toString()}
@@ -2115,15 +2095,13 @@ export default (app: Courselore): void => {
                           required
                           class="visually-hidden input--radio-or-checkbox--multilabel"
                           onload="${javascript`
-                            const handleChange = () => {
+                            this.onchange = () => {
                               const form = this.closest("form");
                               for (const element of [...form.querySelectorAll('[name="tagsReferences[]"]'), form.querySelector('[name="content"]')])
                                 element.required = ${JSON.stringify(
                                   conversationType !== "chat"
                                 )};
                             };
-                            this.addEventListener("change", handleChange);
-                            this.addEventListener("beforeunload", () => { this.removeEventListener("change", handleChange); }, { once: true });
                           `}"
                         />
                         <span>
@@ -2242,15 +2220,13 @@ export default (app: Courselore): void => {
                         name="isStaffOnly"
                         class="visually-hidden input--radio-or-checkbox--multilabel"
                         onload="${javascript`
-                          const handleChange = () => {
+                          this.onchange = () => {
                             const anonymity = this.closest("form").querySelector(".anonymity");
                             if (anonymity === null) return;
                             anonymity.hidden = this.checked;
                             for (const element of anonymity.querySelectorAll("*"))
                               if (element.disabled !== null) element.disabled = this.checked;
                           };
-                          this.addEventListener("change", handleChange);
-                          this.addEventListener("beforeunload", () => { this.removeEventListener("change", handleChange); }, { once: true });
                         `}"
                       />
                       <span
@@ -2431,11 +2407,9 @@ export default (app: Courselore): void => {
                             onload="${javascript`
                               this.isModified = false;
 
-                              const handleChange = () => {
+                              this.onchange = () => {
                                 localStorage.setItem("anonymity", JSON.stringify(this.checked));  
                               };
-                              this.addEventListener("change", handleChange);
-                              this.addEventListener("beforeunload", () => { this.removeEventListener("change", handleChange); }, { once: true });
                               
                               if (JSON.parse(localStorage.getItem("anonymity") ?? "false")) this.click();
                             `}"
@@ -2976,12 +2950,10 @@ export default (app: Courselore): void => {
                             margin-top: var(--space---2);
                           `)}"
                           onload="${javascript`
-                            const handleClick = () => {
+                            this.onclick = () => {
                               this.closest(".conversation--header").querySelector(".conversation--header--compact").hidden = true;
                               this.closest(".conversation--header").querySelector(".conversation--header--full").hidden = false;
                             };
-                            this.addEventListener("click", handleClick);
-                            this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                           `}"
                           onbeforeelupdated="${javascript`
                             this.wasHidden = this.hidden;
@@ -3518,14 +3490,12 @@ export default (app: Courselore): void => {
                                         });
                                         this.addEventListener("beforeunload", () => { copied.destroy(); }, { once: true });
 
-                                        const handleClick = async () => {
+                                        this.onclick = async () => {
                                           await navigator.clipboard.writeText("${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}");
                                           copied.show();
                                           await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                                           copied.hide();
                                         };
-                                        this.addEventListener("click", handleClick);
-                                        this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                                       `}"
                                     >
                                       <i class="bi bi-link"></i>
@@ -3539,13 +3509,11 @@ export default (app: Courselore): void => {
                                           <button
                                             class="dropdown--menu--item button button--transparent"
                                             onload="${javascript`
-                                              const handleClick = () => {
+                                              this.onclick = () => {
                                                 this.closest(".conversation--header--full").querySelector(".title--show").hidden = true;
                                                 this.closest(".conversation--header--full").querySelector(".title--edit").hidden = false;
                                                 tippy.hideAll();
                                               };
-                                              this.addEventListener("click", handleClick);
-                                              this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                                             `}"
                                           >
                                             <i class="bi bi-pencil"></i>
@@ -3736,12 +3704,10 @@ export default (app: Courselore): void => {
                                 });
                                 this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                       
-                                const handleClick = () => {
+                                this.onclick = () => {
                                   this.closest(".conversation--header--full").querySelector(".title--show").hidden = false;
                                   this.closest(".conversation--header--full").querySelector(".title--edit").hidden = true;
                                 };
-                                this.addEventListener("click", handleClick);
-                                this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                               `}"
                             >
                               <i class="bi bi-x-lg"></i>
@@ -4030,12 +3996,10 @@ export default (app: Courselore): void => {
                           <button
                             class="button button--tight button--tight--inline button--transparent"
                             onload="${javascript`
-                              const handleClick = () => {
+                              this.onclick = () => {
                                 this.closest(".conversation--header").querySelector(".conversation--header--full").hidden = true;
                                 this.closest(".conversation--header").querySelector(".conversation--header--compact").hidden = false;
                               };
-                              this.addEventListener("click", handleClick);
-                              this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                             `}"
                           >
                             <i class="bi bi-chevron-bar-contract"></i>
@@ -4114,12 +4078,10 @@ export default (app: Courselore): void => {
                                   this.scrollTop = this.scrollHeight;
                                 }
                                 
-                                const handleScroll = () => {
+                                this.onscroll = () => {
                                   window.shouldScrollConversationToBottom = this.scrollTop === this.scrollHeight - this.offsetHeight;
                                 };
-                                handleScroll();
-                                this.addEventListener("scroll", handleScroll);
-                                this.addEventListener("beforeunload", () => { this.removeEventListener("scroll", handleScroll); }, { once: true });
+                                this.onscroll();
                               `
                             : javascript``
                         }
@@ -4263,11 +4225,9 @@ export default (app: Courselore): void => {
                                                 });
                                                 this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                                            
-                                                const handleClick = () => {
+                                                this.onclick = () => {
                                                   this.remove();
                                                 };
-                                                this.addEventListener("click", handleClick);
-                                                this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                                               `}"
                                               onnodeadded="${javascript`
                                                 if (document.querySelectorAll(".message--new-separator").length > 1) this.remove();
@@ -4617,7 +4577,7 @@ export default (app: Courselore): void => {
                                                           <button
                                                             class="dropdown--menu--item button button--transparent"
                                                             onload="${javascript`
-                                                              const handleClick = () => {
+                                                              this.onclick = () => {
                                                                 const content = JSON.parse(this.closest("[data-content-source]").dataset.contentSource);
                                                                 const newMessage = document.querySelector(".new-message");
                                                                 newMessage.querySelector(".content-editor--button--write").click();
@@ -4657,8 +4617,6 @@ export default (app: Courselore): void => {
                                                                 element.focus();
                                                                 tippy.hideAll();
                                                               };
-                                                              this.addEventListener("click", handleClick);
-                                                              this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                                                             `}"
                                                           >
                                                             <i
@@ -4677,14 +4635,12 @@ export default (app: Courselore): void => {
                                                               });
                                                               this.addEventListener("beforeunload", () => { copied.destroy(); }, { once: true });
 
-                                                              const handleClick = async () => {
+                                                              this.onclick = async () => {
                                                                 await navigator.clipboard.writeText("${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${message.reference}");
                                                                 copied.show();
                                                                 await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                                                                 copied.hide();
                                                               };
-                                                              this.addEventListener("click", handleClick);
-                                                              this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                                                             `}"
                                                           >
                                                             <i
@@ -4825,14 +4781,12 @@ export default (app: Courselore): void => {
                                                                 <button
                                                                   class="dropdown--menu--item button button--transparent"
                                                                   onload="${javascript`
-                                                                    const handleClick = () => {
+                                                                    this.onclick = () => {
                                                                       this.closest(".message").querySelector(".message--show").hidden = true;
                                                                       this.closest(".message").querySelector(".message--edit").hidden = false;
                                                                       autosize.update(this.closest(".message").querySelector(".message--edit .content-editor--write--textarea"));
                                                                       tippy.hideAll();
                                                                     };
-                                                                    this.addEventListener("click", handleClick);
-                                                                    this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                                                                   `}"
                                                                 >
                                                                   <i
@@ -5501,7 +5455,7 @@ export default (app: Courselore): void => {
                                                         <button
                                                           class="dropdown--menu--item button button--transparent"
                                                           onload="${javascript`
-                                                            const handleClick = () => {
+                                                            this.onclick = () => {
                                                               tippy.hideAll();
                                                               const selection = window.getSelection();
                                                               const anchorElement = leafac.ancestors(selection.anchorNode).findLast(element => element?.dataset?.position !== undefined);
@@ -5556,8 +5510,6 @@ export default (app: Courselore): void => {
                                                               );
                                                               element.focus();
                                                             };
-                                                            this.addEventListener("click", handleClick);
-                                                            this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                                                           `}"
                                                         >
                                                           <i
@@ -5571,7 +5523,7 @@ export default (app: Courselore): void => {
                                                 });
                                                 dropdownMenuTarget.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(dropdownMenu.props.content); dropdownMenu.destroy(); }, { once: true });
                                                 
-                                                const handleMouseup = (event) => {
+                                                this.onmouseup = (event) => {
                                                   window.setTimeout(() => {
                                                     const selection = window.getSelection();
                                                     const anchorElement = leafac.ancestors(selection.anchorNode).findLast(element => element?.dataset?.position !== undefined);
@@ -5588,8 +5540,6 @@ export default (app: Courselore): void => {
                                                     dropdownMenu.show();
                                                   }, 0);
                                                 };
-                                                this.addEventListener("mouseup", handleMouseup);
-                                                this.addEventListener("beforeunload", () => { this.removeEventListener("mouseup", handleMouseup); }, { once: true });
                                               `}"
                                             >
                                               $${app.locals.partials.content({
@@ -5906,12 +5856,10 @@ export default (app: Courselore): void => {
                                                     type="reset"
                                                     class="button button--transparent"
                                                     onload="${javascript`
-                                                      const handleClick = () => {
+                                                      this.onclick = () => {
                                                         this.closest(".message").querySelector(".message--show").hidden = false;
                                                         this.closest(".message").querySelector(".message--edit").hidden = true;
                                                       };
-                                                      this.addEventListener("click", handleClick);
-                                                      this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                                                     `}"
                                                   >
                                                     <i class="bi bi-x-lg"></i>
@@ -6174,11 +6122,9 @@ export default (app: Courselore): void => {
                                 onload="${javascript`
                                   this.isModified = false;
 
-                                  const handleChange = () => {
+                                  this.onchange = () => {
                                     localStorage.setItem("anonymity", JSON.stringify(this.checked));  
                                   };
-                                  this.addEventListener("change", handleChange);
-                                  this.addEventListener("beforeunload", () => { this.removeEventListener("change", handleChange); }, { once: true });
                                   
                                   if (JSON.parse(localStorage.getItem("anonymity") ?? "false")) this.click();
                                 `}"

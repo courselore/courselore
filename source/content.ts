@@ -659,13 +659,11 @@ export default async (app: Courselore): Promise<void> => {
                   onload="${javascript`
                     this.isModified = false;
 
-                    const handleClick = () => {
+                    this.onclick = () => {
                       this.closest(".content-editor").querySelector(".content-editor--write").hidden = false;
                       this.closest(".content-editor").querySelector(".content-editor--loading").hidden = true;
                       this.closest(".content-editor").querySelector(".content-editor--preview").hidden = true;  
                     };
-                    this.addEventListener("click", handleClick);
-                    this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                   `}"
                 />
                 <span class="button button--transparent">
@@ -681,7 +679,7 @@ export default async (app: Courselore): Promise<void> => {
                   onload="${javascript`
                     this.isModified = false;
 
-                    const handleClick = async (event) => {
+                    this.onclick = async (event) => {
                       const write = this.closest(".content-editor").querySelector(".content-editor--write");
                       const loading = this.closest(".content-editor").querySelector(".content-editor--loading");
                       const preview = this.closest(".content-editor").querySelector(".content-editor--preview");
@@ -720,8 +718,6 @@ export default async (app: Courselore): Promise<void> => {
                       loading.hidden = true;
                       preview.hidden = false;
                     };
-                    this.addEventListener("click", handleClick);
-                    this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                   `}"
                 />
                 <span
@@ -867,12 +863,10 @@ export default async (app: Courselore): Promise<void> => {
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                  const handleClick = () => {
+                  this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
                     textarea.focus();  
                   };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+alt+1";
@@ -913,12 +907,10 @@ export default async (app: Courselore): Promise<void> => {
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                  const handleClick = () => {
+                  this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
                     textarea.focus();
                   };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+alt+2";
@@ -959,12 +951,10 @@ export default async (app: Courselore): Promise<void> => {
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                  const handleClick = () => {
+                  this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
                     textarea.focus();
                   };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+alt+3";
@@ -1006,12 +996,10 @@ export default async (app: Courselore): Promise<void> => {
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                  const handleClick = () => {
+                  this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, "**");
                     textarea.focus();
                   };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+b";
@@ -1051,12 +1039,10 @@ export default async (app: Courselore): Promise<void> => {
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                  const handleClick = () => {
+                  this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, "_");
                     textarea.focus();
                   };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });                  
 
                   const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+i";
@@ -1096,12 +1082,10 @@ export default async (app: Courselore): Promise<void> => {
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                  const handleClick = () => {
+                  this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, "[", "](https://example.com)");
                     textarea.focus();
                   };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+k";
@@ -1144,12 +1128,10 @@ export default async (app: Courselore): Promise<void> => {
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                  const handleClick = () => {
+                  this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "- ", "\\n\\n");
                     textarea.focus();
                   };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+shift+8";
@@ -1190,12 +1172,10 @@ export default async (app: Courselore): Promise<void> => {
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                  const handleClick = () => {
+                  this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "1. ", "\\n\\n");
                     textarea.focus();
                   };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+shift+7";
@@ -1236,12 +1216,10 @@ export default async (app: Courselore): Promise<void> => {
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                  const handleClick = () => {
+                  this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ", "\\n\\n");
                     textarea.focus();
                   };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+shift+9";
@@ -1283,12 +1261,10 @@ export default async (app: Courselore): Promise<void> => {
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                  const handleClick = () => {
+                  this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "> ", "\\n\\n");
                     textarea.focus();
                   };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+'";
@@ -1329,13 +1305,11 @@ export default async (app: Courselore): Promise<void> => {
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                  const handleClick = () => {
+                  this.onclick = () => {
                     const gapLength = textarea.selectionEnd - textarea.selectionStart + 2;
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "| ", " |  |\\n|" + "-".repeat(gapLength) + "|--|\\n|" + " ".repeat(gapLength) + "|  |\\n\\n");
                     textarea.focus();
                   };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+alt+t";
@@ -1376,12 +1350,10 @@ export default async (app: Courselore): Promise<void> => {
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                  const handleClick = () => {
+                  this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>", "</summary>\\n\\nContent\\n\\n</details>\\n\\n");
                     textarea.focus();
                   };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                   
                   const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+shift+d";
@@ -1422,12 +1394,10 @@ export default async (app: Courselore): Promise<void> => {
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                  const handleClick = () => {
+                  this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, "[^", "<identifier>]\\n\\n[^<identifier>]: <footnote>");
                     textarea.focus();
                   };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+shift+f";
@@ -1469,12 +1439,10 @@ export default async (app: Courselore): Promise<void> => {
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                  const handleClick = () => {
+                  this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, "\`");
                     textarea.focus();
                   };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+e";
@@ -1515,12 +1483,10 @@ export default async (app: Courselore): Promise<void> => {
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                  const handleClick = () => {
+                  this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`language\\n", "\\n\`\`\`\\n\\n");
                     textarea.focus();
                   };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+shift+e";
@@ -1563,12 +1529,10 @@ export default async (app: Courselore): Promise<void> => {
                   
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                  const handleClick = () => {
+                  this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, "$");
                     textarea.focus();
                   };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                 
                   const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+alt+e";
@@ -1609,12 +1573,10 @@ export default async (app: Courselore): Promise<void> => {
 
                   const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                  const handleClick = () => {
+                  this.onclick = () => {
                     textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
                     textarea.focus();
                   };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const mousetrap = new Mousetrap(textarea);
                   const keys = "mod+alt+shift+e";
@@ -1645,12 +1607,10 @@ export default async (app: Courselore): Promise<void> => {
 
                         const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                        const handleClick = () => {
+                        this.onclick = () => {
                           textFieldEdit.wrapSelection(textarea, " @", "");
                           textarea.focus();
                         };
-                        this.addEventListener("click", handleClick);
-                        this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                       `}"
                     >
                       <i class="bi bi-at"></i>
@@ -1672,12 +1632,10 @@ export default async (app: Courselore): Promise<void> => {
 
                         const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                        const handleClick = () => {
+                        this.onclick = () => {
                           textFieldEdit.wrapSelection(textarea, " #", "");
                           textarea.focus();
                         };
-                        this.addEventListener("click", handleClick);
-                        this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                       `}"
                     >
                       <i class="bi bi-hash"></i>
@@ -1716,11 +1674,9 @@ export default async (app: Courselore): Promise<void> => {
                   });
                   this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
-                  const handleClick = () => {
+                  this.onclick = () => {
                     this.closest(".content-editor").querySelector(".content-editor--write--attachments").click();
                   };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const mousetrap = new Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea"));
                   const keys = "mod+shift+i";
@@ -1760,11 +1716,9 @@ export default async (app: Courselore): Promise<void> => {
                   });
                   this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
-                  const handleClick = () => {
+                  this.onclick = () => {
                     this.closest(".content-editor").querySelector(".content-editor--write--attachments").click();
                   };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
                   const mousetrap = new Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea"));
                   const keys = "mod+shift+k";
@@ -1847,17 +1801,13 @@ export default async (app: Courselore): Promise<void> => {
                         `
                   }
 
-                  const handleClick = (event) => {
+                  this.onclick = (event) => {
                     if (!checkIsSignedIn()) event.preventDefault();
                   };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
-                  const handleChange = () => {
+                  this.onchange = () => {
                     this.upload(this.files);
                   };
-                  this.addEventListener("change", handleChange);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("change", handleChange);  }, { once: true });
                 `}"
               />
             </div>
@@ -1900,13 +1850,11 @@ export default async (app: Courselore): Promise<void> => {
 
                     const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
 
-                    const handleClick = () => {
+                    this.onclick = () => {
                       if (this.checked) textarea.classList.add("content-editor--write--textarea--programmer-mode");
                       else textarea.classList.remove("content-editor--write--textarea--programmer-mode");
                       localStorage.setItem("content-editor--write--textarea--programmer-mode", JSON.stringify(this.checked));  
                     };
-                    this.addEventListener("click", handleClick);
-                    this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                     
                     const mousetrap = new Mousetrap(textarea);
                     const keys = "mod+alt+0";
@@ -1968,35 +1916,25 @@ export default async (app: Courselore): Promise<void> => {
                 autosize(this);
                 this.addEventListener("beforeunload", () => { autosize.destroy(this); }, { once: true });
 
-                const handleDragenter = () => {
+                this.ondragenter = () => {
                   this.classList.add("drag");
                 };
-                this.addEventListener("dragenter", handleDragenter);
-                this.addEventListener("beforeunload", () => { this.removeEventListener("dragenter", handleDragenter);  }, { once: true });
-                const handleDragover = (event) => {
+                this.ondragover = (event) => {
                   event.preventDefault();
                 };
-                this.addEventListener("dragover", handleDragover);
-                this.addEventListener("beforeunload", () => { this.removeEventListener("dragover", handleDragover);  }, { once: true });
-                const handleDrop = (event) => {
+                this.ondrop = (event) => {
                   event.preventDefault();
                   this.classList.remove("drag");
                   this.closest(".content-editor").querySelector(".content-editor--write--attachments").upload(event.dataTransfer.files);
                 };
-                this.addEventListener("drop", handleDrop);
-                this.addEventListener("beforeunload", () => { this.removeEventListener("drop", handleDrop);  }, { once: true });
-                const handleDragleave = () => {
+                this.ondragleave = () => {
                   this.classList.remove("drag");
                 };
-                this.addEventListener("dragleave", handleDragleave);
-                this.addEventListener("beforeunload", () => { this.removeEventListener("dragleave", handleDragleave);  }, { once: true });
-                const handlePaste = (event) => {
+                this.onpaste = (event) => {
                   if (event.clipboardData.files.length === 0) return;
                   event.preventDefault();
                   this.closest(".content-editor").querySelector(".content-editor--write--attachments").upload(event.clipboardData.files);
                 };
-                this.addEventListener("paste", handlePaste);
-                this.addEventListener("beforeunload", () => { this.removeEventListener("paste", handlePaste);  }, { once: true });
 
                 ${
                   res.locals.course !== undefined
@@ -2037,11 +1975,9 @@ export default async (app: Courselore): Promise<void> => {
                                         type="button"
                                         class="dropdown--menu--item button button--transparent"
                                         onload="${javascript`
-                                          const handleClick = () => {
+                                          this.onclick = () => {
                                             this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("everyone");
                                           };
-                                          this.addEventListener("click", handleClick);
-                                          this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                                         `}"
                                       >
                                         Everyone in the Conversation
@@ -2050,11 +1986,9 @@ export default async (app: Courselore): Promise<void> => {
                                         type="button"
                                         class="dropdown--menu--item button button--transparent"
                                         onload="${javascript`
-                                          const handleClick = () => {
+                                          this.onclick = () => {
                                             this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("staff");
                                           };
-                                          this.addEventListener("click", handleClick);
-                                          this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                                         `}"
                                       >
                                         Staff in the Conversation
@@ -2063,11 +1997,9 @@ export default async (app: Courselore): Promise<void> => {
                                         type="button"
                                         class="dropdown--menu--item button button--transparent"
                                         onload="${javascript`
-                                          const handleClick = () => {
+                                          this.onclick = () => {
                                             this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete("students");
                                           };
-                                          this.addEventListener("click", handleClick);
-                                          this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                                         `}"
                                       >
                                         Students in the Conversation
@@ -2112,7 +2044,7 @@ export default async (app: Courselore): Promise<void> => {
                         dropdownMenuTarget.addEventListener("beforeunload", () => { for (const { dropdownMenu } of dropdownMenus) { leafac.dispatchBeforeunload(dropdownMenu.props.content); dropdownMenu.destroy(); } }, { once: true });
                         let anchorIndex = null;
 
-                        const handleInput = (() => {
+                        this.oninput = (() => {
                           let isUpdating = false;
                           let shouldUpdateAgain = false;
                           return async () => {
@@ -2162,10 +2094,8 @@ export default async (app: Courselore): Promise<void> => {
                             }
                           }
                         })();
-                        this.addEventListener("input", handleInput);
-                        this.addEventListener("beforeunload", () => { this.removeEventListener("input", handleInput); }, { once: true });
 
-                        const handleKeydown = (event) => {
+                        this.onkeydown = (event) => {
                           for (const { dropdownMenu } of dropdownMenus) {
                             if (!dropdownMenu.state.isShown) continue;
                             const content = dropdownMenu.props.content;
@@ -2205,8 +2135,6 @@ export default async (app: Courselore): Promise<void> => {
                             }
                           }
                         };
-                        this.addEventListener("keydown", handleKeydown);
-                        this.addEventListener("beforeunload", () => { this.removeEventListener("keydown", handleKeydown); }, { once: true });
 
                         this.dropdownMenuComplete = (text) => {
                           this.setSelectionRange(anchorIndex, Math.max(this.selectionStart, this.selectionEnd));
@@ -2346,15 +2274,13 @@ ${contentSource}</textarea
                     type="button"
                     class="dropdown--menu--item button button--transparent"
                     onload="${javascript`
-                      const handleClick = () => {
+                      this.onclick = () => {
                         this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
                           `${enrollment.reference}--${slugify(
                             enrollment.user.name
                           )}`
                         )});  
                       };
-                      this.addEventListener("click", handleClick);
-                      this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                   `}"
                   >
                     $${app.locals.partials.user({
@@ -2446,13 +2372,11 @@ ${contentSource}</textarea
                         type="button"
                         class="dropdown--menu--item button button--transparent"
                         onload="${javascript`
-                          const handleClick = () => {
+                          this.onclick = () => {
                             this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
                               conversation.reference
                             )});
                           };
-                          this.addEventListener("click", handleClick);
-                          this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                         `}"
                       >
                         <span>
@@ -2519,13 +2443,11 @@ ${contentSource}</textarea
                           type="button"
                           class="dropdown--menu--item button button--transparent"
                           onload="${javascript`
-                            const handleClick = () => {
+                            this.onclick = () => {
                               this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
                                 `${conversation.reference}/${message.reference}`
                               )});
                             };
-                            this.addEventListener("click", handleClick);
-                            this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                           `}"
                         >
                           <div>
@@ -2559,13 +2481,11 @@ ${contentSource}</textarea
                 type="button"
                 class="dropdown--menu--item button button--transparent"
                 onload="${javascript`
-                  const handleClick = () => {
+                  this.onclick = () => {
                     this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
                       conversation.reference
                     )});
                   };
-                  this.addEventListener("click", handleClick);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                 `}"
               >
                 <span>
@@ -2618,13 +2538,11 @@ ${contentSource}</textarea
                       type="button"
                       class="dropdown--menu--item button button--transparent"
                       onload="${javascript`
-                        const handleClick = () => {
+                        this.onclick = () => {
                           this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
                             conversation.reference
                           )});
                         };
-                        this.addEventListener("click", handleClick);   
-                        this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                       `}"
                     >
                       <span>
@@ -2699,13 +2617,11 @@ ${contentSource}</textarea
                       type="button"
                       class="dropdown--menu--item button button--transparent"
                       onload="${javascript`
-                        const handleClick = () => {
+                        this.onclick = () => {
                           this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
                             `${conversation.reference}/${message.reference}`
                           )});
                         };
-                        this.addEventListener("click", handleClick);
-                        this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                       `}"
                     >
                       <div>
@@ -2786,13 +2702,11 @@ ${contentSource}</textarea
                       type="button"
                       class="dropdown--menu--item button button--transparent"
                       onload="${javascript`
-                        const handleClick = () => {
+                        this.onclick = () => {
                           this.closest(".content-editor").querySelector(".content-editor--write--textarea").dropdownMenuComplete(${JSON.stringify(
                             `${conversation.reference}/${message.reference}`
                           )});
                         };
-                        this.addEventListener("click", handleClick);
-                        this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                       `}"
                     >
                       <div>

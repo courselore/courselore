@@ -1495,7 +1495,7 @@ export default (app: Courselore): void => {
                                             type="button"
                                             class="button button--rose"
                                             onload="${javascript`
-                                              const handleClick = () => {
+                                              this.onclick = () => {
                                                 const tag = this.closest(".tag");
                                                 tag.classList.add("deleted");
                                                 const tagIconClassList = tag.querySelector(".tag--icon").classList;
@@ -1511,8 +1511,6 @@ export default (app: Courselore): void => {
                                                     if (element.tooltip !== undefined) element.tooltip.disable();
                                                 }
                                               };
-                                              this.addEventListener("click", handleClick);
-                                              this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                                             `}"
                                           >
                                             <i class="bi bi-trash"></i>
@@ -1545,7 +1543,7 @@ export default (app: Courselore): void => {
                                   });
                                   this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                                       
-                                  const handleClick = () => {
+                                  this.onclick = () => {
                                     const tag = this.closest(".tag");
                                     tag.classList.remove("deleted");
                                     const tagIconClassList = tag.querySelector(".tag--icon").classList;
@@ -1561,8 +1559,6 @@ export default (app: Courselore): void => {
                                         if (element.tooltip !== undefined) element.tooltip.enable();
                                     }
                                   };
-                                  this.addEventListener("click", handleClick);
-                                  this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                                 `}"
                               >
                                 <i class="bi bi-recycle"></i>
@@ -1715,14 +1711,12 @@ export default (app: Courselore): void => {
                                     });
                                     this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
-                                    const handleClick = () => {
+                                    this.onclick = () => {
                                       const tag = this.closest(".tag");
                                       leafac.dispatchBeforeunload(tag);
                                       tag.replaceChildren();
                                       tag.hidden = true;
                                     };
-                                    this.addEventListener("click", handleClick);
-                                    this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                                   `}"
                                 >
                                   <i class="bi bi-trash"></i>
@@ -1733,22 +1727,18 @@ export default (app: Courselore): void => {
                         `
                       )};
                       newTagPartial.remove();
-                      const handleClick = () => {
+                      this.onclick = () => {
                         const newTag = newTagPartial.firstElementChild.cloneNode(true);
                         this.closest("form").querySelector(".tags").insertAdjacentElement("beforeend", newTag);
                         for (const element of newTag.querySelectorAll("[onloadpartial]"))
                           new Function(element.getAttribute("onloadpartial")).call(element);
                       };
-                      this.addEventListener("click", handleClick);
-                      this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
 
-                      const handleValidate = (event) => {
+                      this.onvalidate = (event) => {
                         if ([...this.closest("form").querySelector(".tags").children].filter((tag) => !tag.hidden).length > 0) return;
                         event.stopImmediatePropagation();
                         event.detail.error = "Please add at least one tag.";
                       };
-                      this.addEventListener("validate", handleValidate);
-                      this.addEventListener("beforeunload", () => { this.removeEventListener("validate", handleValidate); }, { once: true });
                     `}"
                   >
                     <i class="bi bi-plus-circle"></i>
@@ -1926,7 +1916,7 @@ export default (app: Courselore): void => {
                       required
                       class="visually-hidden input--radio-or-checkbox--multilabel"
                       onload="${javascript`
-                        const handleChange = () => {
+                        this.onchange = () => {
                           const form = this.closest("form");
                           const emails = form.querySelector(".emails");
                           emails.hidden = true;
@@ -1935,8 +1925,6 @@ export default (app: Courselore): void => {
                           form.querySelector(".button--create-invitation").hidden = false;
                           form.querySelector(".button--send-invitation-emails").hidden = true;
                         };
-                        this.addEventListener("change", handleChange);
-                        this.addEventListener("beforeunload", () => { this.removeEventListener("change", handleChange); }, { once: true });
                       `}"
                     />
                     <span>
@@ -1958,7 +1946,7 @@ export default (app: Courselore): void => {
                       required
                       class="visually-hidden input--radio-or-checkbox--multilabel"
                       onload="${javascript`
-                        const handleChange = () => {
+                        this.onchange = () => {
                           const form = this.closest("form");
                           const emails = form.querySelector(".emails");
                           emails.hidden = false;
@@ -1967,8 +1955,6 @@ export default (app: Courselore): void => {
                           form.querySelector(".button--create-invitation").hidden = true;
                           form.querySelector(".button--send-invitation-emails").hidden = false;
                         };
-                        this.addEventListener("change", handleChange);
-                        this.addEventListener("beforeunload", () => { this.removeEventListener("change", handleChange); }, { once: true });
                       `}"
                     />
                     <span>
@@ -2031,7 +2017,7 @@ export default (app: Courselore): void => {
                     height: var(--space--32);
                   `)}"
                   onload="${javascript`
-                    const handleValidate = (event) => {
+                    this.onvalidate = (event) => {
                       const emails = [];
                       for (let email of this.value.split(${/[,\n]/})) {
                         email = email.trim();
@@ -2057,8 +2043,6 @@ export default (app: Courselore): void => {
                       event.stopImmediatePropagation();
                       event.detail.error = "Match the requested format.";
                     };
-                    this.addEventListener("validate", handleValidate);
-                    this.addEventListener("beforeunload", () => { this.removeEventListener("validate", handleValidate); }, { once: true });
                   `}"
                 ></textarea>
               </div>
@@ -2114,14 +2098,12 @@ export default (app: Courselore): void => {
                       type="checkbox"
                       class="visually-hidden input--radio-or-checkbox--multilabel"
                       onload="${javascript`
-                        const handleChange = () => {
+                        this.onchange = () => {
                           const expiresAt = this.closest("form").querySelector(".expires-at");
                           expiresAt.hidden = !this.checked;
                           for (const element of expiresAt.querySelectorAll("*"))
                             if (element.disabled !== undefined) element.disabled = !this.checked;
                         };
-                        this.addEventListener("change", handleChange);
-                        this.addEventListener("beforeunload", () => { this.removeEventListener("change", handleChange); }, { once: true });
                       `}"
                     />
                     <span
@@ -2181,13 +2163,11 @@ export default (app: Courselore): void => {
                   onload="${javascript`
                     leafac.localizeDateTimeInput(this);
 
-                    const handleValidate = (event) => {
+                    this.onvalidate = (event) => {
                       if (Date.now() < new Date(this.value).getTime()) return;
                       event.stopImmediatePropagation();
                       event.detail.error = "Must be in the future.";
                     };
-                    this.addEventListener("validate", handleValidate);
-                    this.addEventListener("beforeunload", () => { this.removeEventListener("validate", handleValidate); }, { once: true });
                   `}"
                 />
               </div>
@@ -2332,11 +2312,9 @@ export default (app: Courselore): void => {
                                                       flex: 1;
                                                     `)}"
                                                     onload="${javascript`
-                                                      const handleFocus = () => {
+                                                      this.onfocus = () => {
                                                         this.select();
                                                       };
-                                                      this.addEventListener("focus", handleFocus);
-                                                      this.addEventListener("beforeunload", () => { this.removeEventListener("focus", handleFocus); }, { once: true });
                                                     `}"
                                                   />
                                                   <button
@@ -2348,7 +2326,7 @@ export default (app: Courselore): void => {
                                                       });
                                                       this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
 
-                                                      const handleClick = async () => {
+                                                      this.onclick = async () => {
                                                         await navigator.clipboard.writeText(${JSON.stringify(
                                                           link
                                                         )});
@@ -2360,8 +2338,6 @@ export default (app: Courselore): void => {
                                                         stickies.hidden = false;
                                                         check.hidden = true;
                                                       };
-                                                      this.addEventListener("click", handleClick);
-                                                      this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                                                     `}"
                                                   >
                                                     <span class="stickies">
@@ -2638,13 +2614,11 @@ export default (app: Courselore): void => {
                                         onload="${javascript`
                                           leafac.localizeDateTimeInput(this);
 
-                                          const handleValidate = (event) => {
+                                          this.onvalidate = (event) => {
                                             if (Date.now() < new Date(this.value).getTime()) return;
                                             event.stopImmediatePropagation();
                                             event.detail.error = "Must be in the future.";
                                           };
-                                          this.addEventListener("validate", handleValidate);
-                                          this.addEventListener("beforeunload", () => { this.removeEventListener("validate", handleValidate); }, { once: true });
                                         `}"
                                       />
                                     </div>
@@ -2985,14 +2959,12 @@ export default (app: Courselore): void => {
                   <button
                     class="link"
                     onload="${javascript`
-                      const handleClick = () => {
+                      this.onclick = () => {
                         const button = document.querySelector("#invitation--${invitation.reference}");
                         button.click();
                         button.tooltip.hide();
                         this.closest(".flash").remove();
                       };
-                      this.addEventListener("click", handleClick);
-                      this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                     `}"
                   >
                     See invitation link</button
@@ -3340,7 +3312,7 @@ export default (app: Courselore): void => {
                 onload="${javascript`
                   this.isModified = false;
 
-                  const handleInput = () => {
+                  this.oninput = () => {
                     const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
                     for (const enrollment of document.querySelectorAll(".enrollment")) {
                       let enrollmentHidden = filterPhrases.length > 0;
@@ -3363,8 +3335,6 @@ export default (app: Courselore): void => {
                       enrollment.hidden = enrollmentHidden;
                     }
                   };
-                  this.addEventListener("input", handleInput);
-                  this.addEventListener("beforeunload", () => { this.removeEventListener("input", handleInput); }, { once: true });
                 `}"
               />
             </label>
@@ -3998,11 +3968,9 @@ export default (app: Courselore): void => {
                     flex: 1;
                   `)}"
                   onload="${javascript`
-                    const handleFocus = () => {
+                    this.onfocus = () => {
                       this.select();
                     };
-                    this.addEventListener("focus", handleFocus);
-                    this.addEventListener("beforeunload", () => { this.removeEventListener("focus", handleFocus); }, { once: true });
                   `}"
                 />
                 <div>
@@ -4015,7 +3983,7 @@ export default (app: Courselore): void => {
                       });
                       this.addEventListener("beforeunload", () => { tooltip.destroy(); }, { once: true });
                             
-                      const handleClick = async () => {
+                      this.onclick = async () => {
                         await navigator.clipboard.writeText(${JSON.stringify(
                           link
                         )});
@@ -4027,8 +3995,6 @@ export default (app: Courselore): void => {
                         stickies.hidden = false;
                         check.hidden = true;
                       };
-                      this.addEventListener("click", handleClick);
-                      this.addEventListener("beforeunload", () => { this.removeEventListener("click", handleClick); }, { once: true });
                     `}"
                   >
                     <span class="stickies">
