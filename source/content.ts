@@ -747,10 +747,9 @@ export default async (app: Courselore): Promise<void> => {
                     });
                     this.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(tooltip.props.content); tooltip.destroy(); }, { once: true });
 
-                    const mousetrap = new Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea"));
-                    const keys = "mod+alt+p";
-                    mousetrap.bind(keys, () => { this.click(); return false; });
-                    this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                    const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
+                    (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+p", () => { this.click(); return false; });
                   `}"
                 >
                   <i class="bi bi-eyeglasses"></i>
@@ -868,10 +867,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.focus();  
                   };
 
-                  const mousetrap = new Mousetrap(textarea);
-                  const keys = "mod+alt+1";
-                  mousetrap.bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+1", () => { this.click(); return false; });
                 `}"
               >
                 <i class="bi bi-type-h1"></i>
@@ -912,10 +908,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.focus();
                   };
 
-                  const mousetrap = new Mousetrap(textarea);
-                  const keys = "mod+alt+2";
-                  mousetrap.bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+2", () => { this.click(); return false; });
                 `}"
               >
                 <i class="bi bi-type-h2"></i>
@@ -956,10 +949,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.focus();
                   };
 
-                  const mousetrap = new Mousetrap(textarea);
-                  const keys = "mod+alt+3";
-                  mousetrap.bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+3", () => { this.click(); return false; });
                 `}"
               >
                 <i class="bi bi-type-h3"></i>
@@ -1001,10 +991,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.focus();
                   };
 
-                  const mousetrap = new Mousetrap(textarea);
-                  const keys = "mod+b";
-                  mousetrap.bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+b", () => { this.click(); return false; });
                 `}"
               >
                 <i class="bi bi-type-bold"></i>
@@ -1044,10 +1031,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.focus();
                   };
 
-                  const mousetrap = new Mousetrap(textarea);
-                  const keys = "mod+i";
-                  mousetrap.bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+i", () => { this.click(); return false; });
                 `}"
               >
                 <i class="bi bi-type-italic"></i>
@@ -1087,10 +1071,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.focus();
                   };
 
-                  const mousetrap = new Mousetrap(textarea);
-                  const keys = "mod+k";
-                  mousetrap.bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+k", () => { this.click(); return false; });
                 `}"
               >
                 <i class="bi bi-link"></i>
@@ -1133,10 +1114,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.focus();
                   };
 
-                  const mousetrap = new Mousetrap(textarea);
-                  const keys = "mod+shift+8";
-                  mousetrap.bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+8", () => { this.click(); return false; });
                 `}"
               >
                 <i class="bi bi-list-ul"></i>
@@ -1177,10 +1155,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.focus();
                   };
 
-                  const mousetrap = new Mousetrap(textarea);
-                  const keys = "mod+shift+7";
-                  mousetrap.bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+7", () => { this.click(); return false; });
                 `}"
               >
                 <i class="bi bi-list-ol"></i>
@@ -1221,10 +1196,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.focus();
                   };
 
-                  const mousetrap = new Mousetrap(textarea);
-                  const keys = "mod+shift+9";
-                  mousetrap.bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+9", () => { this.click(); return false; });
                 `}"
               >
                 <i class="bi bi-ui-checks"></i>
@@ -1266,10 +1238,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.focus();
                   };
 
-                  const mousetrap = new Mousetrap(textarea);
-                  const keys = "mod+'";
-                  mousetrap.bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+'", () => { this.click(); return false; });
                 `}"
               >
                 <i class="bi bi-chat-left-quote"></i>
@@ -1311,10 +1280,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.focus();
                   };
 
-                  const mousetrap = new Mousetrap(textarea);
-                  const keys = "mod+alt+t";
-                  mousetrap.bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+t", () => { this.click(); return false; });
                 `}"
               >
                 <i class="bi bi-table"></i>
@@ -1355,10 +1321,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.focus();
                   };
                   
-                  const mousetrap = new Mousetrap(textarea);
-                  const keys = "mod+shift+d";
-                  mousetrap.bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+d", () => { this.click(); return false; });
                 `}"
               >
                 <i class="bi bi-chevron-bar-expand"></i>
@@ -1399,10 +1362,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.focus();
                   };
 
-                  const mousetrap = new Mousetrap(textarea);
-                  const keys = "mod+shift+f";
-                  mousetrap.bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+f", () => { this.click(); return false; });
                 `}"
               >
                 <i class="bi bi-card-text"></i>
@@ -1444,10 +1404,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.focus();
                   };
 
-                  const mousetrap = new Mousetrap(textarea);
-                  const keys = "mod+e";
-                  mousetrap.bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+e", () => { this.click(); return false; });
                 `}"
               >
                 <i class="bi bi-code"></i>
@@ -1488,10 +1445,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.focus();
                   };
 
-                  const mousetrap = new Mousetrap(textarea);
-                  const keys = "mod+shift+e";
-                  mousetrap.bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+e", () => { this.click(); return false; });
                 `}"
               >
                 <i class="bi bi-code-square"></i>
@@ -1534,10 +1488,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.focus();
                   };
                 
-                  const mousetrap = new Mousetrap(textarea);
-                  const keys = "mod+alt+e";
-                  mousetrap.bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+e", () => { this.click(); return false; });
                 `}"
               >
                 <i class="bi bi-calculator"></i>
@@ -1578,10 +1529,7 @@ export default async (app: Courselore): Promise<void> => {
                     textarea.focus();
                   };
 
-                  const mousetrap = new Mousetrap(textarea);
-                  const keys = "mod+alt+shift+e";
-                  mousetrap.bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+shift+e", () => { this.click(); return false; });
                 `}"
               >
                 <i class="bi bi-calculator-fill"></i>
@@ -1678,10 +1626,9 @@ export default async (app: Courselore): Promise<void> => {
                     this.closest(".content-editor").querySelector(".content-editor--write--attachments").click();
                   };
 
-                  const mousetrap = new Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea"));
-                  const keys = "mod+shift+i";
-                  mousetrap.bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+i", () => { this.click(); return false; });
                 `}"
               >
                 <i class="bi bi-image"></i>
@@ -1720,10 +1667,9 @@ export default async (app: Courselore): Promise<void> => {
                     this.closest(".content-editor").querySelector(".content-editor--write--attachments").click();
                   };
 
-                  const mousetrap = new Mousetrap(this.closest(".content-editor").querySelector(".content-editor--write--textarea"));
-                  const keys = "mod+shift+k";
-                  mousetrap.bind(keys, () => { this.click(); return false; });
-                  this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                  const textarea = this.closest(".content-editor").querySelector(".content-editor--write--textarea");
+
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+k", () => { this.click(); return false; });
                 `}"
               >
                 <i class="bi bi-paperclip"></i>
@@ -1856,10 +1802,7 @@ export default async (app: Courselore): Promise<void> => {
                       localStorage.setItem("content-editor--write--textarea--programmer-mode", JSON.stringify(this.checked));  
                     };
                     
-                    const mousetrap = new Mousetrap(textarea);
-                    const keys = "mod+alt+0";
-                    mousetrap.bind(keys, () => { this.click(); return false; });
-                    this.addEventListener("beforeunload", () => { mousetrap.unbind(keys) }, { once: true });
+                    (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+0", () => { this.click(); return false; });
 
                     if (JSON.parse(localStorage.getItem("content-editor--write--textarea--programmer-mode") ?? "false")) this.click();
                   `}"
