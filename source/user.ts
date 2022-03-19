@@ -791,7 +791,7 @@ export default (app: Courselore): void => {
                       const avatarEmpty = avatarChooser.querySelector(".avatar-chooser--empty");
                       const avatarFilled = avatarChooser.querySelector(".avatar-chooser--filled");
 
-                      const uploadingIndicator = tippy(avatarChooser, {
+                      (avatarChooser.uploadingIndicator ??= tippy(avatarChooser)).setProps({
                         trigger: "manual",
                         hideOnClick: false,
                         content: ${res.locals.HTMLForJavaScript(
@@ -808,13 +808,11 @@ export default (app: Courselore): void => {
                           `
                         )},
                       });
-                      avatarChooser.addEventListener("beforeunload", () => { leafac.dispatchBeforeunload(uploadingIndicator.props.content); uploadingIndicator.destroy(); }, { once: true });
 
-                      const uploadingError = tippy(avatarChooser, {
+                      (avatarChooser.uploadingError ??= tippy(avatarChooser)).setProps({
                         theme: "error",
                         trigger: "manual",
                       });
-                      avatarChooser.addEventListener("beforeunload", () => { uploadingError.destroy(); }, { once: true });
 
                       this.upload = async (fileList) => {
                         const body = new FormData();
@@ -824,17 +822,17 @@ export default (app: Courselore): void => {
                         body.append("avatar", fileList[0]);
                         this.value = "";
                         tippy.hideAll();
-                        uploadingIndicator.show();
+                        avatarChooser.uploadingIndicator.show();
                         const response = await fetch("${
                           app.locals.options.baseURL
                         }/settings/profile/avatar", {
                           method: "POST",
                           body,
                         });
-                        uploadingIndicator.hide();
+                        avatarChooser.uploadingIndicator.hide();
                         if (!response.ok) {
-                          uploadingError.setContent(await response.text());
-                          uploadingError.show();
+                          avatarChooser.uploadingError.setContent(await response.text());
+                          avatarChooser.uploadingError.show();
                           return;
                         }
                         const avatarURL = await response.text();

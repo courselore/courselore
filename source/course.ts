@@ -2237,11 +2237,10 @@ export default (app: Courselore): void => {
                                     id="invitation--${invitation.reference}"
                                     class="button button--tight button--tight--inline button--transparent strong"
                                     onload="${javascript`
-                                      this.tooltip = tippy(this, {
+                                      (this.tooltip ??= tippy(this)).setProps({
                                         touch: false,
                                         content: "See Invitation Link",
                                       });
-                                      this.addEventListener("beforeunload", () => { this.tooltip.destroy(); }, { once: true });
 
                                       (this.dropdown ??= tippy(this)).setProps({
                                         trigger: "click",
