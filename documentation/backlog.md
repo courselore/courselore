@@ -10,6 +10,7 @@
   - `handleNavigateerror`
 - Validation
   - `validate`
+- `timeout`
 - `onclick`
 - `onvalidate`
 - `onchange`
@@ -27,6 +28,7 @@
 - `onnavigateerror`
 - Mousetrap
 - Tippy
+- `dispatchBeforeunload`
 
 ---
 
