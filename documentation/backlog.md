@@ -5,6 +5,7 @@
 - `leafac--javascript.js`
   - `handle`
   - `tippy`
+  - `beforeunload`
 - `beforeunload`
 - Progress bar
   - `handleBeforenavigate`
