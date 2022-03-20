@@ -408,7 +408,7 @@ const leafac = {
 
   relativizeDateTimeElement(element, options = {}) {
     (function update() {
-      if (leafac.isLiveElement(element)) return;
+      if (!leafac.isLiveElement(element)) return;
       const dateTime = element.getAttribute("datetime");
       (element.relativizeDateTimeElementTooltip ??= tippy(element)).setProps({
         touch: false,
