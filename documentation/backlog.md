@@ -379,7 +379,7 @@
     - Another consequence of not sending refresh events on every GET is that the number of unread messages on the sidebar becomes inconsistent when you have multiple tabs open and you read messages on one of them (the rest still show the unread indicator).
   - It should live-update. (Or the cached content of the tooltip should be expired somehow.)
 - `updatedAt` relative times aren’t updating as they should, because they don’t look at `datetime` again (effectively, `datetime` is cached).
-- On chats (which need to scroll to the bottom), do something to prevent flash of unstyled content. (I commented out the previous hack, look for `TODO`.)
+- On chats (which need to scroll to the bottom), do something to prevent flash of unstyled content.
 - Potential issue: when we deploy a new version, Morphdom doesn’t update the global CSS & JavaScript. Solution: force a reload.
 - Right now we’re using a Turbo Drive approach. Upgrade to a Turbo Streams approach for critical flows. (In other words, don’t redirect as response to `POST`, but send the data right away.)
 - Do the morphdom on the server?
