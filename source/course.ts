@@ -1703,7 +1703,6 @@ export default (app: Courselore): void => {
 
                                     this.onclick = () => {
                                       const tag = this.closest(".tag");
-                                      leafac.dispatchBeforeunload(tag);
                                       tag.replaceChildren();
                                       tag.hidden = true;
                                     };
