@@ -6,7 +6,6 @@
   - Don’t live update form inputs.
   - Review previous code.
   - Hide tippy on navigation.
-  - A live update shouldn’t show the progress bar.
 
 ---
 

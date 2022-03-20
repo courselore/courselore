@@ -556,6 +556,7 @@ export default (app: Courselore): void => {
               leafac.liveNavigate({
                 request: new Request(window.location.href),
                 event,
+                background: true,
               });
             });
           `}"
