@@ -5,7 +5,8 @@
 - Restore live-updates:
   - Enable them again.
   - Pass the `eventSource` identifier right on first server-side render, without requiring a server-sent event message?
-  - Prevent live update to browser tab that originated the update: `"?eventSourceReference=" + eventSource.reference`
+  - Prevent live update to browser tab that originated the update
+    - `eventSourceReference`
   - Double-check event handlers:
     - `onelupdated`
     - `onrefresh`
