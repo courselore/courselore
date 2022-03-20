@@ -4,7 +4,6 @@
 
 - Restore live-updates:
   - Double-check event handlers:
-    - `onbeforenodediscarded`
     - `onbeforeelupdated`
   - Hide tippy on navigation.
   - A live update shouldn’t prevent navigation. Instead, it should abort current request, just like popstate.
