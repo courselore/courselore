@@ -4179,6 +4179,11 @@ export default (app: Courselore): void => {
                                                 align-items: center;
                                               `)}"
                                               onload="${javascript`
+                                                if (this !== document.querySelector(".message--new-separator")) {
+                                                  this.remove();
+                                                  return;
+                                                }
+                                                
                                                 (this.tooltip ??= tippy(this)).setProps({
                                                   touch: false,
                                                   content: "Close",
@@ -4189,9 +4194,6 @@ export default (app: Courselore): void => {
                                                 };
 
                                                 this.onbeforeremove = () => false;
-                                              `}"
-                                              onnodeadded="${javascript`
-                                                if (document.querySelectorAll(".message--new-separator").length > 1) this.remove();
                                               `}"
                                             >
                                               <hr

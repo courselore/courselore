@@ -197,7 +197,8 @@ const leafac = {
               return node;
             },
             onNodeAdded(node) {
-              node.onadd?.();
+              if (node.nodeType !== node.ELEMENT_NODE) return;
+              for (const element of leafac.descendants(node)) element.onadd?.();
             },
             onBeforeElUpdated(from, to) {
               return to.onbeforeupdate?.(from) === false ? false : true;
