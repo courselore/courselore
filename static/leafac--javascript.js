@@ -635,7 +635,8 @@ const leafac = {
     const root = ancestors[ancestors.length - 1];
     return (
       root.matches("html") ||
-      (root._tippy !== undefined && leafac.isLiveElement(root._tippy.reference))
+      (root.matches("[data-tippy-root]") &&
+        leafac.isLiveElement(root._tippy.reference))
     );
   },
 
