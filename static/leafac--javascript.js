@@ -112,23 +112,28 @@ const leafac = {
               for (const element of leafac.descendants(node)) element.onadd?.();
             },
             onBeforeElUpdated(from, to) {
-              return from.onbeforeupdate?.(to) === false
-                ? false
+              const onbeforeupdate = from.onbeforeupdate?.(to);
+              return typeof onbeforeupdate === "boolean"
+                ? onbeforeupdate
                 : !from.matches("input, textarea, select");
             },
             onElUpdated(element) {
               element.onupdate?.();
             },
             onBeforeNodeDiscarded(node) {
-              return node.onbeforeremove?.() === false
-                ? false
+              const onbeforeremove = node.onbeforeremove?.();
+              return typeof onbeforeremove === "boolean"
+                ? onbeforeremove
                 : !node.matches?.("[data-tippy-root]");
             },
             onNodeDiscarded(node) {
               node.onremove?.();
             },
             onBeforeElChildrenUpdated(from, to) {
-              return from.onbeforechildrenupdate?.(to) === false ? false : true;
+              const onbeforechildrenupdate = from.onbeforechildrenupdate?.(to);
+              return typeof onbeforechildrenupdate === "boolean"
+                ? onbeforechildrenupdate
+                : true;
             },
           });
           for (const element of previousLocalCSS) element.remove();
