@@ -2,9 +2,6 @@
 
 ### Performance
 
-- `leafac--javascript.js`
-  - `handle`
-  - `beforeunload`
 - `addEventListener`
 - `beforeunload`
 - Progress bar
