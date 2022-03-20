@@ -2,23 +2,6 @@
 
 ### Performance
 
-- `newTagPartial`
-- `timeout`
-- `onclick`
-- `onvalidate`
-- `onchange`
-- `ondragenter`
-- `ondragover`
-- `ondrop`
-- `ondragleave`
-- `onpaste`
-- `oninput`
-- `onkeydown`
-- `onscroll`
-- `onmouseup`
-- `onsubmit`
-- `onbeforenavigate`
-- `onnavigateerror`
 - `onload`
 
 ---
