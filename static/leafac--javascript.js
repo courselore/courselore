@@ -247,10 +247,6 @@ const leafac = {
       new Function(element.getAttribute("onload")).call(element);
   },
 
-  async liveUpdate() {
-
-  },
-
   customFormValidation() {
     document.addEventListener(
       "submit",
