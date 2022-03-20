@@ -4,7 +4,6 @@
 
 - `leafac--javascript.js`
   - `handle`
-  - `tippy`
   - `beforeunload`
 - `addEventListener`
 - `beforeunload`
