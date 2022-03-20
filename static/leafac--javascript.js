@@ -92,7 +92,9 @@ const leafac = {
           );
           document.querySelector("title").textContent =
             newDocument.querySelector("title").textContent;
-          const previousLocalCSS = document.querySelectorAll(".local-css");
+          const localCSSToRemove = background
+            ? []
+            : document.querySelectorAll(".local-css");
           for (const element of newDocument.querySelectorAll(".local-css"))
             document
               .querySelector("head")
@@ -136,7 +138,7 @@ const leafac = {
                 : true;
             },
           });
-          for (const element of previousLocalCSS) element.remove();
+          for (const element of localCSSToRemove) element.remove();
           window.dispatchEvent(new CustomEvent("DOMContentLoaded", { detail }));
           document.querySelector("[autofocus]")?.focus();
         } catch (error) {
