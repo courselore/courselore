@@ -2,8 +2,6 @@
 
 ### Performance
 
-- `addEventListener`
-- `dispatchEvent`
 - `newTagPartial`
 - `timeout`
 - `onclick`
