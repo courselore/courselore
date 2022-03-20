@@ -16,6 +16,7 @@
     - Pass the `eventSource` identifier right on first server-side render, without requiring a server-sent event message.
   - `TODO`
   - Do something special on live updates & 404 (for example, when the conversation has been removed).
+  - Don’t show progress bar for things like “Like”?
 
 ---
 
