@@ -407,31 +407,16 @@ const leafac = {
   },
 
   relativizeDateTimeElement(element, options = {}) {
-    const tooltip = tippy(element, {
-      touch: false,
-    });
-    element.addEventListener(
-      "beforeunload",
-      () => {
-        tooltip.destroy();
-      },
-      { once: true }
-    );
-
     let timeoutID;
     (function update() {
       const dateTime = element.getAttribute("datetime");
-      tooltip.setContent(leafac.formatUTCDateTime(dateTime));
+      (element.relativizeDateTimeElementTooltip ??= tippy(element)).setProps({
+        touch: false,
+        content: leafac.formatUTCDateTime(dateTime),
+      });
       element.textContent = leafac.relativizeDateTime(dateTime, options);
       timeoutID = window.setTimeout(update, 10 * 1000);
     })();
-    element.addEventListener(
-      "beforeunload",
-      () => {
-        window.clearTimeout(timeoutID);
-      },
-      { once: true }
-    );
   },
 
   relativizeDateElement(element) {
