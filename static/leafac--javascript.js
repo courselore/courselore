@@ -190,6 +190,9 @@ const leafac = {
           const documentBody = document.querySelector("body");
           morphdom(documentBody, newDocument.querySelector("body"), {
             childrenOnly: true,
+            onBeforeNodeDiscarded(node) {
+              return !node.matches?.("[data-tippy-root]");
+            },
           });
           for (const element of previousLocalCSS) element.remove();
           window.dispatchEvent(new CustomEvent("DOMContentLoaded", { detail }));
