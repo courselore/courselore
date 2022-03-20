@@ -2,10 +2,6 @@
 
 ### Performance
 
-- `onload`
-
----
-
 - Restore live-updates:
   - Enable them again.
   - Make sure that `eventSources` for live-updates are disconnected from the previous page and reconnected to the new page when navigating.
