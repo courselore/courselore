@@ -545,20 +545,20 @@ const leafac = {
         getLocalStorageItem()?.[window.location.pathname]?.[identifier] ??
         element.defaultChecked;
 
-      const handleChange = () => {
+      element.removeEventListener(
+        "change",
+        element.saveFormInputValueHandleChange
+      );
+      element.saveFormInputValueHandleChange = () => {
         const localStorageItem = getLocalStorageItem();
         localStorageItem[window.location.pathname] ??= {};
         localStorageItem[window.location.pathname][identifier] =
           element.checked;
         setLocalStorageItem(localStorageItem);
       };
-      element.addEventListener("change", handleChange);
       element.addEventListener(
-        "beforeunload",
-        () => {
-          element.removeEventListener("change", handleChange);
-        },
-        { once: true }
+        "change",
+        element.saveFormInputValueHandleChange
       );
     } else if (
       typeof element.value === "string" &&
@@ -567,24 +567,22 @@ const leafac = {
       element.value = element.defaultValue =
         getLocalStorageItem()?.[window.location.pathname]?.[identifier] ?? "";
 
-      const handleInput = () => {
+      element.removeEventListener(
+        "input",
+        element.saveFormInputValueHandleInput
+      );
+      element.saveFormInputValueHandleInput = () => {
         const localStorageItem = getLocalStorageItem();
         localStorageItem[window.location.pathname] ??= {};
         localStorageItem[window.location.pathname][identifier] = element.value;
         setLocalStorageItem(localStorageItem);
       };
-      element.addEventListener("input", handleInput);
-      element.addEventListener(
-        "beforeunload",
-        () => {
-          element.removeEventListener("input", handleInput);
-        },
-        { once: true }
-      );
+      element.addEventListener("input", element.saveFormInputValueHandleInput);
     }
 
     const form = element.closest("form");
-    const handleSubmit = () => {
+    form.removeEventListener("submit", form.saveFormInputValueHandleSubmit);
+    form.saveFormInputValueHandleSubmit = () => {
       const localStorageItem = getLocalStorageItem();
       delete localStorageItem?.[window.location.pathname]?.[identifier];
       if (
@@ -594,14 +592,7 @@ const leafac = {
         delete localStorageItem?.[window.location.pathname];
       setLocalStorageItem(localStorageItem);
     };
-    form.addEventListener("submit", handleSubmit);
-    form.addEventListener(
-      "beforeunload",
-      () => {
-        form.removeEventListener("submit", handleSubmit);
-      },
-      { once: true }
-    );
+    form.addEventListener("submit", form.saveFormInputValueHandleSubmit);
 
     function getLocalStorageItem() {
       return JSON.parse(
