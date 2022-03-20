@@ -4258,16 +4258,15 @@ export default (app: Courselore): void => {
                                                 onload="${javascript`
                                                   const element = this;
                                                   leafac.relativizeDateElement(element);
-                                                  let updateTimeoutID;
                                                   (function update() {
+                                                    if (!leafac.isLiveElement(element)) return;
                                                     const dateSeparators = [...document.querySelectorAll(".message--date-separator")];
                                                     const thisDateSeparator = element.closest(".message--date-separator");
                                                     const thisDateSeparatorIndex = dateSeparators.indexOf(thisDateSeparator);
                                                     const previousDateSeparator = thisDateSeparatorIndex <= 0 ? undefined : dateSeparators[thisDateSeparatorIndex - 1];
                                                     thisDateSeparator.hidden = previousDateSeparator !== undefined && previousDateSeparator.textContent === thisDateSeparator.textContent;
-                                                    updateTimeoutID = window.setTimeout(update, 60 * 1000);
+                                                    window.setTimeout(update, 60 * 1000);
                                                   })();
-                                                  this.addEventListener("beforeunload", () => { window.clearTimeout(updateTimeoutID); }, { once: true });
                                                 `}"
                                               ></time>
                                               <hr
