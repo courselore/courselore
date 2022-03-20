@@ -3569,7 +3569,6 @@ export default (app: Courselore): void => {
                                       trigger: "click",
                                       content: "You may not remove yourself from the course because you’re the only staff member.",
                                     });
-                                    this.addEventListener("beforeunload", () => { dropdown.destroy(); }, { once: true });
                                   `
                                 : javascript`
                                     (this.dropdown ??= tippy(this)).setProps({
