@@ -188,7 +188,6 @@ const leafac = {
               .querySelector("head")
               .insertAdjacentElement("beforeend", element);
           const documentBody = document.querySelector("body");
-          leafac.dispatchBeforeunload(documentBody);
           morphdom(documentBody, newDocument.querySelector("body"), {
             childrenOnly: true,
           });
