@@ -51,6 +51,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
               }
               reverse_proxy 127.0.0.1:4001
             }
+            header Cache-Control no-cache
             encode zstd gzip
           }
         `,
