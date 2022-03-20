@@ -5,7 +5,6 @@
 - Restore live-updates:
   - Double-check event handlers:
     - `onelupdated`
-    - `onnodeadded`
     - `onbeforenodediscarded`
     - `onbeforeelupdated`
   - Pass the `eventSource` identifier right on first server-side render, without requiring a server-sent event message?
