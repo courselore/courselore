@@ -1573,6 +1573,7 @@ export default (app: Courselore): void => {
                                       },
                                       { addQueryPrefix: true }
                                     )}"
+                                    target="_blank"
                                     class="button button--tight button--tight--inline button--transparent"
                                     onload="${javascript`
                                       (this.tooltip ??= tippy(this)).setProps({
