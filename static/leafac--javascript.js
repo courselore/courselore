@@ -162,7 +162,8 @@ const leafac = {
       if (
         window.dispatchEvent(
           new CustomEvent("beforenavigate", { cancelable: true, detail })
-        )
+        ) &&
+        window.onbeforenavigate?.() !== false
       ) {
         try {
           abortController = new AbortController();
@@ -208,7 +209,7 @@ const leafac = {
                 "You appear to be offline. Please check your internet connection and try reloading the page.",
             });
             body.networkError.show();
-            window.dispatchEvent(new CustomEvent("navigateerror", { detail }));
+            window.onnavigateerror?.();
           }
         }
         previousLocation = { ...window.location };

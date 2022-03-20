@@ -3,9 +3,6 @@
 ### Performance
 
 - `addEventListener`
-- Progress bar
-  - `handleBeforenavigate`
-  - `handleNavigateerror`
 - `dispatchEvent`
 - `newTagPartial`
 - `timeout`

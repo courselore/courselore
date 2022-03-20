@@ -809,7 +809,7 @@ export default async (app: Courselore): Promise<void> => {
               content: "Loading…",
             });
 
-            window.addEventListener("beforenavigate", () => {
+            window.onbeforenavigate = () => {
               this.hidden = false;
               const element = this.querySelector("div");
               let width = 10;
@@ -820,11 +820,11 @@ export default async (app: Courselore): Promise<void> => {
                 window.clearTimeout(element.updateTimeoutID);
                 element.updateTimeoutID = window.setTimeout(update, 100 + Math.random() * 100);
               })();
-            });
+            };
 
-            window.addEventListener("navigateerror", () => {
+            window.onnavigateerror = () => {
               this.hidden = true;
-            });
+            };
           `}"
         >
           <div
