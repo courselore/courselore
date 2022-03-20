@@ -3,6 +3,8 @@
 ### Performance
 
 - Restore live-updates:
+  - `NEW` separator is glitching.
+  - Header is glitching on navigation.
   - Hide tippy on navigation.
 
 ---
