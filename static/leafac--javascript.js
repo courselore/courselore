@@ -236,8 +236,6 @@ const leafac = {
       ".html-for-javascript"
     );
     partialHTMLForJavaScript.remove();
-    leafac.dispatchBeforeunload(parentElement);
-    leafac.dispatchBeforeunload(HTMLForJavaScript);
     morphdom(parentElement, partialDocument.querySelector("body"), {
       childrenOnly: true,
     });
@@ -249,11 +247,6 @@ const leafac = {
       ...HTMLForJavaScript.querySelectorAll("[onload]"),
     ])
       new Function(element.getAttribute("onload")).call(element);
-  },
-
-  dispatchBeforeunload(parentElement) {
-    for (const element of parentElement.querySelectorAll("*"))
-      element.dispatchEvent(new Event("beforeunload"));
   },
 
   customFormValidation() {
