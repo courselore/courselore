@@ -4187,12 +4187,11 @@ export default (app: Courselore): void => {
                                                 this.onclick = () => {
                                                   this.remove();
                                                 };
+
+                                                this.onbeforeremove = () => false;
                                               `}"
                                               onnodeadded="${javascript`
                                                 if (document.querySelectorAll(".message--new-separator").length > 1) this.remove();
-                                              `}"
-                                              onbeforenodediscarded="${javascript`
-                                                return false;
                                               `}"
                                             >
                                               <hr

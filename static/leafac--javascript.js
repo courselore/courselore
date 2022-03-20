@@ -193,28 +193,28 @@ const leafac = {
           morphdom(documentBody, newDocument.querySelector("body"), {
             childrenOnly: true,
             onBeforeNodeAdded(node) {
-              node?.onbeforeadd();
+              node.onbeforeadd?.();
               return node;
             },
             onNodeAdded(node) {
-              node?.onadd();
+              node.onadd?.();
             },
             onBeforeElUpdated(from, to) {
-              return to?.beforeupdate(from) === false ? false : true;
+              return to.beforeupdate?.(from) === false ? false : true;
             },
             onElUpdated(element) {
-              element?.onupdate();
+              element.onupdate?.();
             },
             onBeforeNodeDiscarded(node) {
-              return node?.beforeremove() === false
+              return node.beforeremove?.() === false
                 ? false
                 : !node.matches?.("[data-tippy-root]");
             },
             onNodeDiscarded(node) {
-              node?.onremove();
+              node.onremove?.();
             },
             onBeforeElChildrenUpdated(from, to) {
-              return to?.beforechildrenupdate(from) === false ? false : true;
+              return to.beforechildrenupdate?.(from) === false ? false : true;
             },
           });
           for (const element of previousLocalCSS) element.remove();
