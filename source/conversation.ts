@@ -4534,7 +4534,7 @@ export default (app: Courselore): void => {
                                                               this.onclick = () => {
                                                                 const content = JSON.parse(this.closest("[data-content-source]").dataset.contentSource);
                                                                 const newMessage = document.querySelector(".new-message");
-                                                                newMessage.querySelector(".content-editor--button--write").click();
+                                                                newMessage.querySelector(".content-editor--button--write")?.click();
                                                                 const element = newMessage.querySelector(".content-editor--write--textarea");
                                                                 textFieldEdit.wrapSelection(
                                                                   element,
@@ -5420,7 +5420,7 @@ export default (app: Courselore): void => {
                                                               const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
                                                               const content = JSON.parse(anchorElement.closest("[data-content-source]").dataset.contentSource);
                                                               const newMessage = document.querySelector(".new-message");
-                                                              newMessage.querySelector(".content-editor--button--write").click();
+                                                              newMessage.querySelector(".content-editor--button--write")?.click();
                                                               const element = newMessage.querySelector(".content-editor--write--textarea");
                                                               textFieldEdit.wrapSelection(
                                                                 element,
