@@ -1,35 +1,8 @@
 // This file is here for now as it’s still under development. It should be moved to https://github.com/leafac/javascript/
 
-/*
-await eventSourceRefresh(await fetch(this.action + "?eventSourceReference=" + eventSource.reference, {
-  method: this.method,
-  body: new URLSearchParams(new FormData(this)),
-}));
-
-$${res?.locals.eventSource
-  ? html`
-      <script>
-        // const eventSource = new ReconnectingEventSource(
-        //   window.location.href
-        // );
-        // eventSource.addEventListener("reference", (event) => {
-        //   eventSource.reference = event.data;
-        // });
-        // eventSource.addEventListener("refresh", async () => {
-        //   await eventSourceRefresh(await fetch(window.location.href));
-        // });
-      </script>
-    `
-  : html``}
-
 const eventSourceRefresh = async (response) => {
   switch (response.status) {
     case 200:
-      const refreshedDocument = new DOMParser().parseFromString(
-        await response.text(),
-        "text/html"
-      );
-      document.head.append(...refreshedDocument.head.querySelectorAll("style"));
       morphdom(document.body, refreshedDocument.body, {
         onBeforeNodeAdded(node) {
           const onBeforeNodeAdded = node.getAttribute?.("onbeforenodeadded");
@@ -89,7 +62,6 @@ const eventSourceRefresh = async (response) => {
       break;
   }
 };
-*/
 
 const leafac = {
   liveNavigation(baseURL) {
