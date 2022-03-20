@@ -810,11 +810,12 @@ export default async (app: Courselore): Promise<void> => {
             });
 
             window.onbeforenavigate = () => {
-              this.hidden = false;
-              const element = this.querySelector("div");
+              const parentElement = this;
+              parentElement.hidden = false;
+              const element = parentElement.querySelector("div");
               let width = 10;
               (function update() {
-                if (!leafac.isLiveElement(element)) return;
+                if (parentElement.hidden || !leafac.isLiveElement(element)) return;
                 element.style.width = width.toString() + "%";
                 width += (90 - width) / (5 + Math.random() * 15);
                 window.clearTimeout(element.updateTimeoutID);
