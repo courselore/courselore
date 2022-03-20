@@ -119,7 +119,7 @@ const leafac = {
       )
         return;
       event.preventDefault();
-      await navigate({ request: new Request(link.href), event });
+      await leafac.liveNavigate({ request: new Request(link.href), event });
     };
 
     document.onsubmit = async (event) => {
@@ -136,7 +136,7 @@ const leafac = {
           : new URLSearchParams(new FormData(event.target));
       if (!action.startsWith(baseURL)) return;
       event.preventDefault();
-      await navigate({
+      await leafac.liveNavigate({
         request: ["GET", "HEAD"].includes(method)
           ? new Request(new URL(`?${body}`, action), { method })
           : new Request(action, { method, body }),
@@ -145,16 +145,18 @@ const leafac = {
     };
 
     window.onpopstate = async (event) => {
-      await navigate({
+      await leafac.liveNavigate({
         request: new Request(window.location),
         event,
       });
     };
+  },
 
+  liveNavigate: (() => {
     let abortController;
     let isNavigating = false;
     let previousLocation = { ...window.location };
-    async function navigate({ request, event }) {
+    return async ({ request, event }) => {
       if (event instanceof PopStateEvent) abortController?.abort();
       else if (isNavigating) return;
       isNavigating = true;
@@ -215,8 +217,8 @@ const leafac = {
         previousLocation = { ...window.location };
       }
       isNavigating = false;
-    }
-  },
+    };
+  })(),
 
   loadPartial(parentElement, partialString) {
     const partialDocument = new DOMParser().parseFromString(
