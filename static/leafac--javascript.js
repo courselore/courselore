@@ -420,20 +420,13 @@ const leafac = {
   },
 
   relativizeDateElement(element) {
-    let timeoutID;
     (function update() {
+      if (!leafac.isLiveElement(element)) return;
       element.textContent = leafac.relativizeDate(
         element.getAttribute("datetime")
       );
-      timeoutID = window.setTimeout(update, 60 * 1000);
+      window.setTimeout(update, 60 * 1000);
     })();
-    element.addEventListener(
-      "beforeunload",
-      () => {
-        window.clearTimeout(timeoutID);
-      },
-      { once: true }
-    );
   },
 
   validateLocalizedDateTime(element) {
