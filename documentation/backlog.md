@@ -4,7 +4,6 @@
 
 - Restore live-updates:
   - Double-check event handlers:
-    - `onelupdated`
     - `onbeforenodediscarded`
     - `onbeforeelupdated`
   - Hide tippy on navigation.
