@@ -427,9 +427,6 @@ export default (app: Courselore): void => {
                                   onload="${javascript`
                                     leafac.relativizeDateTimeElement(this, { preposition: "on" });
                                   `}"
-                                  onbeforeelchildrenupdated="${javascript`
-                                    return false;
-                                  `}"
                                 ></time>
                               </div>
                             `}

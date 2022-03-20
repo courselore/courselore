@@ -2670,9 +2670,6 @@ export default (app: Courselore): void => {
                                                     onload="${javascript`
                                                       leafac.relativizeDateTimeElement(this, { preposition: "on" });
                                                     `}"
-                                                    onbeforeelchildrenupdated="${javascript`
-                                                      return false;
-                                                    `}"
                                                   ></time>
                                                 `
                                               )},
@@ -2720,9 +2717,6 @@ export default (app: Courselore): void => {
                                                           ).toISOString()}"
                                                           onload="${javascript`
                                                             leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                                                          `}"
-                                                          onbeforeelchildrenupdated="${javascript`
-                                                            return false;
                                                           `}"
                                                         ></time>
                                                       </span>
@@ -2825,9 +2819,6 @@ export default (app: Courselore): void => {
                                                           ).toISOString()}"
                                                           onload="${javascript`
                                                             leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                                                          `}"
-                                                          onbeforeelchildrenupdated="${javascript`
-                                                            return false;
                                                           `}"
                                                         ></time>
                                                       </span>
@@ -3375,9 +3366,6 @@ export default (app: Courselore): void => {
                           ).toISOString()}"
                           onload="${javascript`
                             leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                          `}"
-                          onbeforeelchildrenupdated="${javascript`
-                            return false;
                           `}"
                         ></time>
                       </div>

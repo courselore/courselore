@@ -1597,9 +1597,6 @@ export default (app: Courselore): void => {
           onload="${javascript`
             leafac.relativizeDateTimeElement(this, { capitalize: true });
           `}"
-          onbeforeelchildrenupdated="${javascript`
-            return false;
-          `}"
         ></time>
 
         $${conversation.updatedAt !== null
@@ -1610,9 +1607,6 @@ export default (app: Courselore): void => {
                   datetime="${new Date(conversation.updatedAt).toISOString()}"
                   onload="${javascript`
                     leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                  `}"
-                  onbeforeelchildrenupdated="${javascript`
-                    return false;
                   `}"
                 ></time>
               </div>
@@ -5336,9 +5330,6 @@ export default (app: Courselore): void => {
                                                   onload="${javascript`
                                                     leafac.relativizeDateTimeElement(this, { capitalize: true });
                                                   `}"
-                                                  onbeforeelchildrenupdated="${javascript`
-                                                    return false;
-                                                  `}"
                                                 ></time>
 
                                                 $${message.updatedAt !== null
@@ -5351,9 +5342,6 @@ export default (app: Courselore): void => {
                                                           ).toISOString()}"
                                                           onload="${javascript`
                                                             leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                                                          `}"
-                                                          onbeforeelchildrenupdated="${javascript`
-                                                            return false;
                                                           `}"
                                                         ></time>
                                                       </div>

@@ -552,9 +552,6 @@ export default (app: Courselore): void => {
                         onload="${javascript`
                           leafac.relativizeDateTimeElement(this, { capitalize: true });
                         `}"
-                        onbeforeelchildrenupdated="${javascript`
-                          return false;
-                        `}"
                       ></time>
                     </span>
                   </button>
