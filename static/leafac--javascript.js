@@ -200,13 +200,13 @@ const leafac = {
               node.onadd?.();
             },
             onBeforeElUpdated(from, to) {
-              return to.beforeupdate?.(from) === false ? false : true;
+              return to.onbeforeupdate?.(from) === false ? false : true;
             },
             onElUpdated(element) {
               element.onupdate?.();
             },
             onBeforeNodeDiscarded(node) {
-              return node.beforeremove?.() === false
+              return node.onbeforeremove?.() === false
                 ? false
                 : !node.matches?.("[data-tippy-root]");
             },
@@ -214,7 +214,7 @@ const leafac = {
               node.onremove?.();
             },
             onBeforeElChildrenUpdated(from, to) {
-              return to.beforechildrenupdate?.(from) === false ? false : true;
+              return to.onbeforechildrenupdate?.(from) === false ? false : true;
             },
           });
           for (const element of previousLocalCSS) element.remove();
