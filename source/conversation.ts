@@ -549,6 +549,10 @@ export default (app: Courselore): void => {
               }
             }
           `)}"
+          onload="${javascript`
+            const eventSource = new ReconnectingEventSource(window.location.href);
+            window.addEventListener("DOMContentLoaded", () => { eventSource.close(); }, { once: true });
+          `}"
         >
           <div
             class="conversation--layout--sidebar ${onlyConversationLayoutSidebarOnSmallScreen ||
