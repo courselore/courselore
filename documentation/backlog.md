@@ -6,8 +6,7 @@
   - Pass the `eventSource` identifier right on first server-side render, without requiring a server-sent event message?
   - A live update shouldn’t prevent navigation. Instead, it should abort current request, just like popstate.
   - Check course id and only send notifications to relevant connections.
-  - Prevent live update to browser tab that originated the update
-    - `eventSourceReference`
+  - Prevent live update to browser tab that originated the update: `eventSourceReference`
   - Double-check event handlers:
     - `onelupdated`
     - `onrefresh`
