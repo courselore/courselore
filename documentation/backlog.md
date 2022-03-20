@@ -2,10 +2,15 @@
 
 ### Performance
 
+- A live update shouldn’t prevent navigation. Instead, it should abort current request, just like popstate.
+- ETags are not enough. Use fingerprinting.
+- `tippy.hideAll()` on navigation.
+
+---
+
 - Live update improvements.
   - Should all `hidden` be carried through?
     - What about `value`?
-  - A live update shouldn’t prevent navigation. Instead, it should abort current request, just like popstate.
   - Check course id and only send notifications to relevant connections.
   - Prevent live update to browser tab that originated the update: `eventSourceReference`
     - Pass the `eventSource` identifier right on first server-side render, without requiring a server-sent event message.
