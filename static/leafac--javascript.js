@@ -278,22 +278,12 @@ const leafac = {
         element.closest(
           "[hidden], .visually-hidden, .visually-hidden--interactive:not(:focus):not(:focus-within):not(:active)"
         )?.parentElement ?? element;
-      const tooltip = tippy(target, {
+      (target.validationErrorTooltip ??= tippy(target)).setProps({
         theme: "error",
         trigger: "manual",
-        showOnCreate: true,
-        onHidden: () => {
-          tooltip.destroy();
-        },
         content: error,
       });
-      target.addEventListener(
-        "beforeunload",
-        () => {
-          tooltip.destroy();
-        },
-        { once: true }
-      );
+      target.validationErrorTooltip.show();
       target.focus();
       return false;
     }
@@ -356,7 +346,7 @@ const leafac = {
     document.addEventListener("submit", () => {
       isSubmittingForm = true;
     });
-    window.addEventListener("beforeunload", (event) => {
+    window.onbeforeunload = (event) => {
       if (
         isSubmittingForm ||
         !leafac.isModified(document.querySelector("body"))
@@ -364,7 +354,7 @@ const leafac = {
         return;
       event.preventDefault();
       event.returnValue = "";
-    });
+    };
     window.addEventListener("beforenavigate", (event) => {
       if (
         isSubmittingForm ||
