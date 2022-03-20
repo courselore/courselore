@@ -2,7 +2,6 @@
 
 ### Performance
 
-- `beforeunload`
 - `addEventListener`
 - Progress bar
   - `handleBeforenavigate`
@@ -25,7 +24,6 @@
 - `onsubmit`
 - `onbeforenavigate`
 - `onnavigateerror`
-- `dispatchBeforeunload`
 - `onload`
 
 ---

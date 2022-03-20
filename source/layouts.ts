@@ -810,9 +810,8 @@ export default async (app: Courselore): Promise<void> => {
             });
 
             let updateTimeoutID;
-            this.addEventListener("beforeunload", () => { window.clearTimeout(updateTimeoutID); }, { once: true });
             
-            const handleBeforenavigate = () => {
+            window.addEventListener("beforenavigate", () => {
               this.hidden = false;
               const element = this.querySelector("div");
               let width = 10;
@@ -822,15 +821,11 @@ export default async (app: Courselore): Promise<void> => {
                 window.clearTimeout(updateTimeoutID);
                 updateTimeoutID = window.setTimeout(update, 100 + Math.random() * 100);
               })();
-            };
-            window.addEventListener("beforenavigate", handleBeforenavigate);
-            this.addEventListener("beforeunload", () => { window.removeEventListener("beforenavigate", handleBeforenavigate); }, { once: true });
+            });
 
-            const handleNavigateerror = () => {
+            window.addEventListener("navigateerror", () => {
               this.hidden = true;
-            };
-            window.addEventListener("navigateerror", handleNavigateerror);
-            this.addEventListener("beforeunload", () => { window.removeEventListener("navigateerror", handleNavigateerror); }, { once: true });
+            });
           `}"
         >
           <div
