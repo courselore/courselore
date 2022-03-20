@@ -188,10 +188,33 @@ const leafac = {
               .querySelector("head")
               .insertAdjacentElement("beforeend", element);
           const documentBody = document.querySelector("body");
+          for (const element of newDocument.querySelectorAll("[onbeforeload]"))
+            new Function(element.getAttribute("onbeforeload")).call(element);
           morphdom(documentBody, newDocument.querySelector("body"), {
             childrenOnly: true,
+            onBeforeNodeAdded(node) {
+              node?.onbeforeadd();
+              return node;
+            },
+            onNodeAdded(node) {
+              node?.onadd();
+            },
+            onBeforeElUpdated(from, to) {
+              return to?.beforeupdate(from) === false ? false : true;
+            },
+            onElUpdated(element) {
+              element?.onupdate();
+            },
             onBeforeNodeDiscarded(node) {
-              return !node.matches?.("[data-tippy-root]");
+              return node?.beforeremove() === false
+                ? false
+                : !node.matches?.("[data-tippy-root]");
+            },
+            onNodeDiscarded(node) {
+              node?.onremove();
+            },
+            onBeforeElChildrenUpdated(from, to) {
+              return to?.beforechildrenupdate(from) === false ? false : true;
             },
           });
           for (const element of previousLocalCSS) element.remove();
