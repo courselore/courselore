@@ -10,6 +10,8 @@
 ---
 
 - Live update improvements.
+  - Should all `hidden` be carried through?
+    - What about `value`?
   - A live update shouldn’t prevent navigation. Instead, it should abort current request, just like popstate.
   - Check course id and only send notifications to relevant connections.
   - Prevent live update to browser tab that originated the update: `eventSourceReference`
