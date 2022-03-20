@@ -3,8 +3,8 @@
 ### Performance
 
 - Restore live-updates:
-  - Enable them again.
   - Pass the `eventSource` identifier right on first server-side render, without requiring a server-sent event message?
+  - A live update shouldn’t prevent navigation. Instead, it should abort current request, just like popstate.
   - Prevent live update to browser tab that originated the update
     - `eventSourceReference`
   - Double-check event handlers:
