@@ -3,9 +3,14 @@
 ### Performance
 
 - Restore live-updates:
-  - Double-check event handlers:
-    - `onbeforeelupdated`
+  - Don’t live update form inputs.
+  - Review previous code.
   - Hide tippy on navigation.
+  - A live update shouldn’t show the progress bar.
+
+---
+
+- Live update improvements.
   - A live update shouldn’t prevent navigation. Instead, it should abort current request, just like popstate.
   - Check course id and only send notifications to relevant connections.
   - Prevent live update to browser tab that originated the update: `eventSourceReference`

@@ -4237,9 +4237,6 @@ export default (app: Courselore): void => {
                                                 gap: var(--space--4);
                                                 align-items: center;
                                               `)}"
-                                              onbeforeelupdated="${javascript`
-                                                return false;
-                                              `}"
                                             >
                                               <hr
                                                 class="separator ${res.locals

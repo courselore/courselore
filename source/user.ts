@@ -309,9 +309,6 @@ export default (app: Courselore): void => {
                   element.updateTimeoutID = window.setTimeout(update, 60 * 1000);
                 })();
               `}"
-              onbeforeelupdated="${javascript`
-                return false;
-              `}"
             ></span>
           </span>`;
       }
