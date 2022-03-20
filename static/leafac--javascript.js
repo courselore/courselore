@@ -408,7 +408,7 @@ const leafac = {
 
   relativizeDateTimeElement(element, options = {}) {
     (function update() {
-      if (element.closest("body") === null) return;
+      if (leafac.isLiveElement(element)) return;
       const dateTime = element.getAttribute("datetime");
       (element.relativizeDateTimeElementTooltip ??= tippy(element)).setProps({
         touch: false,
@@ -635,6 +635,15 @@ const leafac = {
 
   descendants(element) {
     return element === null ? [] : [element, ...element.querySelectorAll("*")];
+  },
+
+  isLiveElement(element) {
+    const ancestors = leafac.ancestors(element);
+    const root = ancestors[ancestors.length - 1];
+    return (
+      root.matches("html") ||
+      (root._tippy !== undefined && leafac.isLiveElement(root._tippy.reference))
+    );
   },
 
   // https://github.com/ccampbell/mousetrap/blob/2f9a476ba6158ba69763e4fcf914966cc72ef433/mousetrap.js#L135
