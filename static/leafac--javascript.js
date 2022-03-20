@@ -407,15 +407,15 @@ const leafac = {
   },
 
   relativizeDateTimeElement(element, options = {}) {
-    let timeoutID;
     (function update() {
+      if (element.closest("body") === null) return;
       const dateTime = element.getAttribute("datetime");
       (element.relativizeDateTimeElementTooltip ??= tippy(element)).setProps({
         touch: false,
         content: leafac.formatUTCDateTime(dateTime),
       });
       element.textContent = leafac.relativizeDateTime(dateTime, options);
-      timeoutID = window.setTimeout(update, 10 * 1000);
+      window.setTimeout(update, 10 * 1000);
     })();
   },
 
