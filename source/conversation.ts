@@ -4050,9 +4050,6 @@ export default (app: Courselore): void => {
                         }
                       }, 0);
                     `}"
-                    onrefresh="${javascript`
-                      if (window.shouldScrollConversationToBottom) this.scrollTop = this.scrollHeight;
-                    `}"
                   >
                     <div
                       class="${res.locals.localCSS(css`

@@ -10,7 +10,6 @@
   - Prevent live update to browser tab that originated the update: `eventSourceReference`
   - Double-check event handlers:
     - `onelupdated`
-    - `onrefresh`
     - `onnodeadded`
     - `onbeforenodediscarded`
     - `onbeforeelupdated`
