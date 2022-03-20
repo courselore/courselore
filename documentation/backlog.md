@@ -3,8 +3,6 @@
 ### Performance
 
 - Restore live-updates:
-  - Don’t live update form inputs.
-  - Review previous code.
   - Hide tippy on navigation.
 
 ---
