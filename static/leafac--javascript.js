@@ -104,39 +104,45 @@ const leafac = {
             new Function(element.getAttribute("onbeforeload")).call(element);
           morphdom(documentBody, newDocument.querySelector("body"), {
             childrenOnly: true,
-            onBeforeNodeAdded(node) {
-              node.onbeforeadd?.();
-              return node;
-            },
-            onNodeAdded(node) {
-              // TODO: Test that this is being called.
-              if (node.nodeType !== node.ELEMENT_NODE) return;
-              for (const element of leafac.descendants(node)) element.onadd?.();
-            },
-            onBeforeElUpdated(from, to) {
-              const onbeforeupdate = from.onbeforeupdate?.(to);
-              return typeof onbeforeupdate === "boolean"
-                ? onbeforeupdate
-                : !from.matches("input, textarea, select");
-            },
-            onElUpdated(element) {
-              element.onupdate?.();
-            },
-            onBeforeNodeDiscarded(node) {
-              const onbeforeremove = node.onbeforeremove?.();
-              return typeof onbeforeremove === "boolean"
-                ? onbeforeremove
-                : !node.matches?.("[data-tippy-root]");
-            },
-            onNodeDiscarded(node) {
-              node.onremove?.();
-            },
-            onBeforeElChildrenUpdated(from, to) {
-              const onbeforechildrenupdate = from.onbeforechildrenupdate?.(to);
-              return typeof onbeforechildrenupdate === "boolean"
-                ? onbeforechildrenupdate
-                : true;
-            },
+            ...(background
+              ? {
+                  onBeforeNodeAdded(node) {
+                    node.onbeforeadd?.();
+                    return node;
+                  },
+                  onNodeAdded(node) {
+                    // TODO: Test that this is being called.
+                    if (node.nodeType !== node.ELEMENT_NODE) return;
+                    for (const element of leafac.descendants(node))
+                      element.onadd?.();
+                  },
+                  onBeforeElUpdated(from, to) {
+                    const onbeforeupdate = from.onbeforeupdate?.(to);
+                    return typeof onbeforeupdate === "boolean"
+                      ? onbeforeupdate
+                      : !from.matches("input, textarea, select");
+                  },
+                  onElUpdated(element) {
+                    element.onupdate?.();
+                  },
+                  onBeforeNodeDiscarded(node) {
+                    const onbeforeremove = node.onbeforeremove?.();
+                    return typeof onbeforeremove === "boolean"
+                      ? onbeforeremove
+                      : !node.matches?.("[data-tippy-root]");
+                  },
+                  onNodeDiscarded(node) {
+                    node.onremove?.();
+                  },
+                  onBeforeElChildrenUpdated(from, to) {
+                    const onbeforechildrenupdate =
+                      from.onbeforechildrenupdate?.(to);
+                    return typeof onbeforechildrenupdate === "boolean"
+                      ? onbeforechildrenupdate
+                      : true;
+                  },
+                }
+              : {}),
           });
           for (const element of localCSSToRemove) element.remove();
           window.dispatchEvent(new CustomEvent("DOMContentLoaded", { detail }));
