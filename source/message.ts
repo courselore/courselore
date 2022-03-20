@@ -1153,19 +1153,20 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.locals.liveUpdaters.course = (courseId, eventDestinationReference) => {
-    return; // TODO
-    setTimeout(() => {
-      for (const { reference, req, res } of app.locals.eventDestinations) {
-        if (reference === eventDestinationReference) continue;
-        res.write(`event: refresh\ndata:\n\n`);
-        console.log(
-          `${new Date().toISOString()}\tSSE\trefresh\t${
-            req.ip
-          }\t${reference}\t\t\t${req.originalUrl}`
-        );
-      }
-    }, 200);
+  app.locals.liveUpdaters.course = async (
+    courseId,
+    eventDestinationReference
+  ) => {
+    for (const { reference, req, res } of app.locals.eventDestinations) {
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      if (reference === eventDestinationReference) continue;
+      res.write(`event: refresh\ndata:\n\n`);
+      console.log(
+        `${new Date().toISOString()}\tSSE\trefresh\t${
+          req.ip
+        }\t${reference}\t\t\t${req.originalUrl}`
+      );
+    }
   };
 
   app.locals.mailers.notifications = ({
