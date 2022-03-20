@@ -4491,7 +4491,7 @@ export default (app: Courselore): void => {
                                                                       content: tooltipContent,
                                                                     });
 
-                                                                    const load = async () => {
+                                                                    this.onmouseover = this.onfocus = async () => {
                                                                       if (!content.hidden) return;
                                                                       leafac.loadPartial(
                                                                         content,
@@ -4515,9 +4515,6 @@ export default (app: Courselore): void => {
                                                                       loading.hidden = true;
                                                                       content.hidden = false;
                                                                     };
-                                                                    this.addEventListener("mouseover", load);
-                                                                    this.addEventListener("focus", load);
-                                                                    this.addEventListener("beforeunload", () => { this.removeEventListener("mouseover", load); this.removeEventListener("focus", load); }, { once: true });
                                                                   `}"
                                                                 >
                                                                   <i
@@ -5633,7 +5630,7 @@ export default (app: Courselore): void => {
                                                       content: tooltipContent,
                                                     });
 
-                                                    const load = async () => {
+                                                    this.onmouseover = this.onfocus = async () => {
                                                       if (!content.hidden) return;
                                                       leafac.loadPartial(
                                                         content,
@@ -5652,10 +5649,6 @@ export default (app: Courselore): void => {
                                                       loading.hidden = true;
                                                       content.hidden = false;
                                                     };
-
-                                                    this.addEventListener("mouseover", load);
-                                                    this.addEventListener("focus", load);
-                                                    this.addEventListener("beforeunload", () => { this.removeEventListener("mouseover", load); this.removeEventListener("focus", load); }, { once: true });
                                                   `}"
                                                 >
                                                   <i class="bi bi-eye"></i>
