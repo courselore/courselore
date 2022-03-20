@@ -2,8 +2,8 @@
 
 ### Performance
 
-- `addEventListener`
 - `beforeunload`
+- `addEventListener`
 - Progress bar
   - `handleBeforenavigate`
   - `handleNavigateerror`
