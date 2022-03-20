@@ -2938,12 +2938,10 @@ export default (app: Courselore): void => {
                               this.closest(".conversation--header").querySelector(".conversation--header--compact").hidden = true;
                               this.closest(".conversation--header").querySelector(".conversation--header--full").hidden = false;
                             };
-                          `}"
-                          onbeforeelupdated="${javascript`
-                            this.wasHidden = this.hidden;
-                          `}"
-                          onelupdated="${javascript`
-                            this.hidden = this.wasHidden;
+
+                            this.onbeforeupdate = (to) => {
+                              to.hidden = this.hidden;
+                            };
                           `}"
                         >
                           <span
@@ -2974,11 +2972,10 @@ export default (app: Courselore): void => {
                       flex-direction: column;
                       gap: var(--space--1);
                     `)}"
-                    onbeforeelupdated="${javascript`
-                      this.wasHidden = this.hidden;
-                    `}"
-                    onelupdated="${javascript`
-                      this.hidden = this.wasHidden;
+                    onload="${javascript`
+                      this.onbeforeupdate = (to) => {
+                        to.hidden = this.hidden;
+                      };
                     `}"
                   >
                     <div
@@ -3594,11 +3591,10 @@ export default (app: Courselore): void => {
                         font-size: var(--font-size--lg);
                         line-height: var(--line-height--lg);
                       `)}"
-                      onbeforeelupdated="${javascript`
-                        this.wasHidden = this.hidden;
-                      `}"
-                      onelupdated="${javascript`
-                        this.hidden = this.wasHidden;
+                      onload="${javascript`
+                        this.onbeforeupdate = (to) => {
+                          to.hidden = this.hidden;
+                        };
                       `}"
                     >
                       $${app.locals.helpers.highlightSearchResult(
@@ -3629,11 +3625,10 @@ export default (app: Courselore): void => {
                               gap: var(--space--2);
                               align-items: center;
                             `)}"
-                            onbeforeelupdated="${javascript`
-                              this.wasHidden = this.hidden;
-                            `}"
-                            onelupdated="${javascript`
-                              this.hidden = this.wasHidden;
+                            onload="${javascript`
+                              this.onbeforeupdate = (to) => {
+                                to.hidden = this.hidden;
+                              };
                             `}"
                           >
                             <input
@@ -4183,7 +4178,7 @@ export default (app: Courselore): void => {
                                                   this.remove();
                                                   return;
                                                 }
-                                                
+
                                                 (this.tooltip ??= tippy(this)).setProps({
                                                   touch: false,
                                                   content: "Close",
@@ -5361,11 +5356,10 @@ export default (app: Courselore): void => {
                                             flex-direction: column;
                                             gap: var(--space--2);
                                           `)}"
-                                          onbeforeelupdated="${javascript`
-                                            this.wasHidden = this.hidden;
-                                          `}"
-                                          onelupdated="${javascript`
-                                            this.hidden = this.wasHidden;
+                                          onload="${javascript`
+                                            this.onbeforeupdate = (to) => {
+                                              to.hidden = this.hidden;
+                                            };
                                           `}"
                                         >
                                           <div
@@ -5711,11 +5705,10 @@ export default (app: Courselore): void => {
                                                   flex-direction: column;
                                                   gap: var(--space--2);
                                                 `)}"
-                                                onbeforeelupdated="${javascript`
-                                                  this.wasHidden = this.hidden;
-                                                `}"
-                                                onelupdated="${javascript`
-                                                  this.hidden = this.wasHidden;
+                                                onload="${javascript`
+                                                  this.onbeforeupdate = (to) => {
+                                                    to.hidden = this.hidden;
+                                                  };
                                                 `}"
                                               >
                                                 <input

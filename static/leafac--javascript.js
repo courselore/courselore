@@ -197,11 +197,12 @@ const leafac = {
               return node;
             },
             onNodeAdded(node) {
+              // TODO: Test that this is being called.
               if (node.nodeType !== node.ELEMENT_NODE) return;
               for (const element of leafac.descendants(node)) element.onadd?.();
             },
             onBeforeElUpdated(from, to) {
-              return to.onbeforeupdate?.(from) === false ? false : true;
+              return from.onbeforeupdate?.(to) === false ? false : true;
             },
             onElUpdated(element) {
               element.onupdate?.();
@@ -215,7 +216,7 @@ const leafac = {
               node.onremove?.();
             },
             onBeforeElChildrenUpdated(from, to) {
-              return to.onbeforechildrenupdate?.(from) === false ? false : true;
+              return from.onbeforechildrenupdate?.(to) === false ? false : true;
             },
           });
           for (const element of previousLocalCSS) element.remove();

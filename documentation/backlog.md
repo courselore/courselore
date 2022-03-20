@@ -12,6 +12,7 @@
   - Check course id and only send notifications to relevant connections.
   - Prevent live update to browser tab that originated the update: `eventSourceReference`
     - Pass the `eventSource` identifier right on first server-side render, without requiring a server-sent event message.
+  - `TODO`
 
 ---
 
