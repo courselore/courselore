@@ -902,13 +902,6 @@ export default (app: Courselore): void => {
       app.locals.database.run(
         sql`DELETE FROM "messages" WHERE "id" = ${res.locals.message.id}`
       );
-      app.locals.helpers.Flash.set({
-        req,
-        res,
-        content: html`
-          <div class="flash--green">Message removed successfully.</div>
-        `,
-      });
       res.redirect(
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
