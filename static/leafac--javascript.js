@@ -158,10 +158,7 @@ const leafac = {
       if (event instanceof PopStateEvent) abortController?.abort();
       else if (isNavigating) return;
       isNavigating = true;
-      const detail = {
-        originalEvent: event,
-        previousLocation,
-      };
+      const detail = { originalEvent: event, previousLocation };
       if (
         window.dispatchEvent(
           new CustomEvent("beforenavigate", { cancelable: true, detail })
@@ -581,8 +578,8 @@ const leafac = {
     }
 
     const form = element.closest("form");
-    form.removeEventListener("submit", form.saveFormInputValueHandleSubmit);
-    form.saveFormInputValueHandleSubmit = () => {
+    form.removeEventListener("submit", form[`saveFormInputValueHandleSubmit--${identifier}`]);
+    form[`saveFormInputValueHandleSubmit--${identifier}`] = () => {
       const localStorageItem = getLocalStorageItem();
       delete localStorageItem?.[window.location.pathname]?.[identifier];
       if (
@@ -592,7 +589,7 @@ const leafac = {
         delete localStorageItem?.[window.location.pathname];
       setLocalStorageItem(localStorageItem);
     };
-    form.addEventListener("submit", form.saveFormInputValueHandleSubmit);
+    form.addEventListener("submit", form[`saveFormInputValueHandleSubmit--${identifier}`]);
 
     function getLocalStorageItem() {
       return JSON.parse(
