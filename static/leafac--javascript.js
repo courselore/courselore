@@ -404,6 +404,7 @@ const leafac = {
   },
 
   relativizeDateTimeElement(element, options = {}) {
+    window.clearTimeout(element.relativizeDateTimeElementTimeoutID);
     (function update() {
       if (!leafac.isLiveElement(element)) return;
       const dateTime = element.getAttribute("datetime");
@@ -412,17 +413,24 @@ const leafac = {
         content: leafac.formatUTCDateTime(dateTime),
       });
       element.textContent = leafac.relativizeDateTime(dateTime, options);
-      window.setTimeout(update, 10 * 1000);
+      element.relativizeDateTimeElementTimeoutID = window.setTimeout(
+        update,
+        10 * 1000
+      );
     })();
   },
 
   relativizeDateElement(element) {
+    window.clearTimeout(element.relativizeDateElementTimeoutID);
     (function update() {
       if (!leafac.isLiveElement(element)) return;
       element.textContent = leafac.relativizeDate(
         element.getAttribute("datetime")
       );
-      window.setTimeout(update, 60 * 1000);
+      element.relativizeDateElementTimeoutID = window.setTimeout(
+        update,
+        60 * 1000
+      );
     })();
   },
 
@@ -578,7 +586,10 @@ const leafac = {
     }
 
     const form = element.closest("form");
-    form.removeEventListener("submit", form[`saveFormInputValueHandleSubmit--${identifier}`]);
+    form.removeEventListener(
+      "submit",
+      form[`saveFormInputValueHandleSubmit--${identifier}`]
+    );
     form[`saveFormInputValueHandleSubmit--${identifier}`] = () => {
       const localStorageItem = getLocalStorageItem();
       delete localStorageItem?.[window.location.pathname]?.[identifier];
@@ -589,7 +600,10 @@ const leafac = {
         delete localStorageItem?.[window.location.pathname];
       setLocalStorageItem(localStorageItem);
     };
-    form.addEventListener("submit", form[`saveFormInputValueHandleSubmit--${identifier}`]);
+    form.addEventListener(
+      "submit",
+      form[`saveFormInputValueHandleSubmit--${identifier}`]
+    );
 
     function getLocalStorageItem() {
       return JSON.parse(

@@ -4258,6 +4258,8 @@ export default (app: Courselore): void => {
                                                 onload="${javascript`
                                                   const element = this;
                                                   leafac.relativizeDateElement(element);
+
+                                                  window.clearTimeout(element.updateTimeoutID);
                                                   (function update() {
                                                     if (!leafac.isLiveElement(element)) return;
                                                     const dateSeparators = [...document.querySelectorAll(".message--date-separator")];
@@ -4265,7 +4267,7 @@ export default (app: Courselore): void => {
                                                     const thisDateSeparatorIndex = dateSeparators.indexOf(thisDateSeparator);
                                                     const previousDateSeparator = thisDateSeparatorIndex <= 0 ? undefined : dateSeparators[thisDateSeparatorIndex - 1];
                                                     thisDateSeparator.hidden = previousDateSeparator !== undefined && previousDateSeparator.textContent === thisDateSeparator.textContent;
-                                                    window.setTimeout(update, 60 * 1000);
+                                                    element.updateTimeoutID = window.setTimeout(update, 60 * 1000);
                                                   })();
                                                 `}"
                                               ></time>

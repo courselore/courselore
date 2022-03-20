@@ -2,7 +2,6 @@
 
 ### Performance
 
-- `isLiveElement`
 - `beforeunload`
 - `addEventListener`
 - Progress bar
