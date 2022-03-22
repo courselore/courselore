@@ -3,7 +3,6 @@
 ### Performance
 
 - Review `leafac--javascript`.
-  - A live update doesn’t prevent navigation.
   - A live update doesn’t add an entry to the history. Not even when there’s a network error.
   - Styles don’t glitch during live-navigation.
   - The `previousLocation` treatment for live-updates works well with `DOMContentLoaded` and doesn’t cause scrolling issues.
