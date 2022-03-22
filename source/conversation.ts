@@ -3999,7 +3999,7 @@ export default (app: Courselore): void => {
                                 messages.length > 0 &&
                                 afterMessage === undefined
                               ? javascript`
-                                  this.scrollTop = this.scrollHeight;
+                                  this.scroll(0, this.scrollHeight);
                                 `
                               : javascript`
                                   const element = ${
@@ -4015,7 +4015,7 @@ export default (app: Courselore): void => {
                           res.locals.conversation.type === "chat"
                             ? javascript`
                                 else if (window.shouldScrollConversationToBottom) {
-                                  this.scrollTop = this.scrollHeight;
+                                  this.scroll(0, this.scrollHeight);
                                 }
                                 
                                 this.onscroll = () => {
