@@ -2,6 +2,13 @@
 
 ### Performance
 
+- Review `leafac--javascript`.
+  - A live update doesn’t prevent navigation.
+  - A live update doesn’t add an entry to the history. Not even when there’s a network error.
+  - Styles don’t glitch during live-navigation.
+  - The `previousLocation` treatment for live-updates works well with `DOMContentLoaded` and doesn’t cause scrolling issues.
+  - Doesn’t try to autofocus on live-update.
+  - `TODO`
 - Don’t `pushState` when live-updating, to avoid messing with the history.
 - Update tooltip content with morphdom, to avoid scrolling.
 - Give dropdown with course switcher a maximum height.
@@ -374,7 +381,7 @@
 ### Interface Details
 
 - Scroll to the bottom when sending chat message?
-- Do something to prevent flash of unstyled content on scrolling.
+- Do something to prevent flash of unstyled content on scrolling. It’s mostly an issue when loading a deeply-linked conversation directly, because otherwise live-navigation takes care of the issue.
 - Prevent the flash of unformatted datetime on fields using `validateLocalizedDateTime()`.
 - Redesign the presentation of submenus, for example, “Conversations”, on mobile. Try a hamburger menu.
 - Artificial progress bar on hijacked navigation, similar to Turbo Drive.

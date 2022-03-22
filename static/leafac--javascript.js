@@ -63,13 +63,19 @@ const leafac = {
 
   liveNavigate: (() => {
     let abortController;
-    let isNavigating = false;
+    let state = "available";
     let previousLocation = { ...window.location };
     return async ({ request, event, liveUpdate = false }) => {
-      if (event instanceof PopStateEvent) abortController?.abort();
-      else if (isNavigating) return;
-      isNavigating = true;
-      const detail = { originalEvent: event, previousLocation };
+      if (event instanceof PopStateEvent || state === "live-updating")
+        abortController?.abort();
+      else if (state === "live-navigating") return;
+      state = liveUpdate ? "live-updating" : "live-navigating";
+      const detail = {
+        originalEvent: event,
+        previousLocation: liveUpdate
+          ? { ...window.location }
+          : previousLocation,
+      };
       if (
         liveUpdate ||
         (window.dispatchEvent(
@@ -84,7 +90,7 @@ const leafac = {
             signal: abortController.signal,
           });
           const responseText = await response.text();
-          if (!(event instanceof PopStateEvent))
+          if (!(event instanceof PopStateEvent) && !liveUpdate)
             window.history.pushState(undefined, "", response.url);
           const newDocument = new DOMParser().parseFromString(
             responseText,
@@ -92,67 +98,74 @@ const leafac = {
           );
           document.querySelector("title").textContent =
             newDocument.querySelector("title").textContent;
-          const localCSSToRemove = liveUpdate
+          for (const element of liveUpdate
             ? []
-            : document.querySelectorAll(".local-css");
+            : document.querySelectorAll(".local-css"))
+            element.remove();
           for (const element of newDocument.querySelectorAll(".local-css"))
             document
               .querySelector("head")
               .insertAdjacentElement("beforeend", element);
-          const documentBody = document.querySelector("body");
-          for (const element of newDocument.querySelectorAll("[onbeforeload]"))
-            new Function(element.getAttribute("onbeforeload")).call(element);
-          morphdom(documentBody, newDocument.querySelector("body"), {
-            childrenOnly: true,
-            ...(liveUpdate
-              ? {
-                  onBeforeNodeAdded(node) {
-                    node.onbeforeadd?.();
-                    return node;
-                  },
-                  onNodeAdded(node) {
-                    // TODO: Test that this is being called.
-                    if (node.nodeType !== node.ELEMENT_NODE) return;
-                    for (const element of leafac.descendants(node))
-                      element.onadd?.();
-                  },
-                  onBeforeElUpdated(from, to) {
-                    const onbeforeupdate = from.onbeforeupdate?.(to);
-                    return typeof onbeforeupdate === "boolean"
-                      ? onbeforeupdate
-                      : !from.matches("input, textarea, select");
-                  },
-                  onElUpdated(element) {
-                    element.onupdate?.();
-                  },
-                  onBeforeNodeDiscarded(node) {
-                    const onbeforeremove = node.onbeforeremove?.();
-                    return typeof onbeforeremove === "boolean"
-                      ? onbeforeremove
-                      : !node.matches?.("[data-tippy-root]");
-                  },
-                  onNodeDiscarded(node) {
-                    node.onremove?.();
-                  },
-                  onBeforeElChildrenUpdated(from, to) {
-                    const onbeforechildrenupdate =
-                      from.onbeforechildrenupdate?.(to);
-                    return typeof onbeforechildrenupdate === "boolean"
-                      ? onbeforechildrenupdate
-                      : true;
-                  },
-                }
-              : {}),
-          });
-          for (const element of localCSSToRemove) element.remove();
+          if (liveUpdate)
+            for (const element of newDocument.querySelectorAll(
+              "[onbeforeload]"
+            ))
+              new Function(element.getAttribute("onbeforeload")).call(element);
+          morphdom(
+            document.querySelector("body"),
+            newDocument.querySelector("body"),
+            {
+              childrenOnly: true,
+              ...(liveUpdate
+                ? {
+                    onBeforeNodeAdded(node) {
+                      node.onbeforeadd?.();
+                      return node;
+                    },
+                    onNodeAdded(node) {
+                      // TODO: Test that this is being called.
+                      if (node.nodeType !== node.ELEMENT_NODE) return;
+                      for (const element of leafac.descendants(node))
+                        element.onadd?.();
+                    },
+                    onBeforeElUpdated(from, to) {
+                      const onbeforeupdate = from.onbeforeupdate?.(to);
+                      return typeof onbeforeupdate === "boolean"
+                        ? onbeforeupdate
+                        : !from.matches("input, textarea, select");
+                    },
+                    onElUpdated(element) {
+                      element.onupdate?.();
+                    },
+                    onBeforeNodeDiscarded(node) {
+                      const onbeforeremove = node.onbeforeremove?.();
+                      return typeof onbeforeremove === "boolean"
+                        ? onbeforeremove
+                        : !node.matches?.("[data-tippy-root]");
+                    },
+                    onNodeDiscarded(node) {
+                      node.onremove?.();
+                    },
+                    onBeforeElChildrenUpdated(from, to) {
+                      const onbeforechildrenupdate =
+                        from.onbeforechildrenupdate?.(to);
+                      return typeof onbeforechildrenupdate === "boolean"
+                        ? onbeforechildrenupdate
+                        : true;
+                    },
+                  }
+                : {}),
+            }
+          );
           window.dispatchEvent(new CustomEvent("DOMContentLoaded", { detail }));
-          document.querySelector("[autofocus]")?.focus();
+          if (!liveUpdate) document.querySelector("[autofocus]")?.focus();
         } catch (error) {
           if (error.name !== "AbortError") {
             console.error(error);
             if (
               ["GET", "HEAD"].includes(request.method.toUpperCase()) &&
-              !(event instanceof PopStateEvent)
+              !(event instanceof PopStateEvent) &&
+              !liveUpdate
             )
               window.history.pushState(undefined, "", request.url);
             const body = document.querySelector("body");
@@ -167,9 +180,9 @@ const leafac = {
             window.onnavigateerror?.();
           }
         }
-        previousLocation = { ...window.location };
+        if (!liveUpdate) previousLocation = { ...window.location };
       }
-      isNavigating = false;
+      state = "available";
     };
   })(),
 
