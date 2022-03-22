@@ -2,7 +2,6 @@
 
 ### Performance
 
-- `tippy.hideAll()` on navigation, otherwise sometimes you have to click twice on dropdown menus.
 - Scroll to bottom on new messages isn’t working in Firefox.
 - Update tooltip content with morphdom, to avoid scrolling.
 - Give dropdown with course switcher a maximum height.

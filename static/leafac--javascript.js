@@ -111,6 +111,7 @@ const leafac = {
               "[onbeforeload]"
             ))
               new Function(element.getAttribute("onbeforeload")).call(element);
+          if (!liveUpdate) tippy.hideAll();
           morphdom(
             document.querySelector("body"),
             newDocument.querySelector("body"),
