@@ -2,8 +2,6 @@
 
 ### Performance
 
-- Instead of preventing updates on `inputs`, carry their value through (just like what we’re doing with `hidden`).
-  - `@mentions` widget is breaking after live update, because `onload` on the textarea isn’t changing.
 - `tippy.hideAll()` on navigation, otherwise sometimes you have to click twice on dropdown menus.
 - Scroll to bottom on new messages isn’t working in Firefox.
 - Update tooltip content with morphdom, to avoid scrolling.

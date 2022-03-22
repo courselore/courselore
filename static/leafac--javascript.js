@@ -129,11 +129,14 @@ const leafac = {
                     },
                     onBeforeElUpdated(from, to) {
                       to.hidden = from.hidden;
+                      to.defaultValue = from.defaultValue;
+                      to.value = from.value;
+                      to.defaultChecked = from.defaultChecked;
+                      to.checked = from.checked;
                       const onbeforeupdate = from.onbeforeupdate?.(to);
                       return typeof onbeforeupdate === "boolean"
                         ? onbeforeupdate
-                        : !from.matches("input, textarea, select") &&
-                            from.partialParentElement !== true;
+                        : from.partialParentElement !== true;
                     },
                     onElUpdated(element) {
                       element.onupdate?.();
