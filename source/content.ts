@@ -608,9 +608,6 @@ export default async (app: Courselore): Promise<void> => {
       class="content-editor ${res.locals.localCSS(css`
         min-width: var(--space--0);
       `)}"
-      onload="${javascript`
-        this.onbeforeupdate = () => false;
-      `}"
     >
       $${compact
         ? html``
