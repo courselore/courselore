@@ -119,14 +119,13 @@ const leafac = {
               ...(liveUpdate
                 ? {
                     onBeforeNodeAdded(node) {
-                      node.onbeforeadd?.();
+                      if (node.nodeType === node.ELEMENT_NODE)
+                        for (const element of leafac.descendants(node))
+                          element.onbeforeadd?.();
                       return node;
                     },
                     onNodeAdded(node) {
-                      // TODO: Test that this is being called.
-                      if (node.nodeType !== node.ELEMENT_NODE) return;
-                      for (const element of leafac.descendants(node))
-                        element.onadd?.();
+                      node.onadd?.();
                     },
                     onBeforeElUpdated(from, to) {
                       const onbeforeupdate = from.onbeforeupdate?.(to);
