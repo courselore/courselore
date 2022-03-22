@@ -2,16 +2,17 @@
 
 ### Performance
 
+- Give dropdown with course switcher a maximum height.
 - “Views” are being reset on a live update.
   - Possible solutions:
     - Keep the old content.
     - Refetch on the background.
 - Re-fetch partials in the background after live updates? They may have gotten stale, for example, the “Views” component, if it’s open right as a live update is happening.
 - Update tooltip content with morphdom, to avoid scrolling?
-- Give dropdown with course switcher a maximum height.
-- Check course id and only send notifications to relevant connections.
-- Prevent live update to browser tab that originated the update: `eventSourceReference`
-  - Pass the `eventSource` identifier right on first server-side render, without requiring a server-sent event message.
+- Live updates destinations:
+  - Check course id and only send notifications to relevant connections.
+  - Prevent live update to browser tab that originated the update: `eventSourceReference`
+    - Pass the `eventSource` identifier right on first server-side render, without requiring a server-sent event message.
 - Do something special on live updates & 404 (for example, when the conversation has been removed).
 
 ---
