@@ -4,7 +4,7 @@
 
 - Review `leafac--javascript`.
   - Check that every lifecycle callback is actually called (`TODO`)
-  - Live updates are corrupting tooltips, because `onload` runs again.
+  - Live updates are corrupting tooltips, because `onload` runs again. Only run `onload` on items that were added? But then what about stray HTMLForJavaScript?
 - Don’t `pushState` when live-updating, to avoid messing with the history.
 - Update tooltip content with morphdom, to avoid scrolling.
 - Give dropdown with course switcher a maximum height.
