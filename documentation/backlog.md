@@ -3,8 +3,6 @@
 ### Performance
 
 - Review `leafac--javascript`.
-  - The `previousLocation` treatment for live-updates works well with `DOMContentLoaded` and doesn’t cause scrolling issues.
-  - Doesn’t try to autofocus on live-update.
   - `TODO`
 - Don’t `pushState` when live-updating, to avoid messing with the history.
 - Update tooltip content with morphdom, to avoid scrolling.
