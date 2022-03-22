@@ -3975,6 +3975,8 @@ export default (app: Courselore): void => {
                         : css``}
                     `)}"
                     onload="${javascript`
+                      const shouldScrollConversationToBottom = window.shouldScrollConversationToBottom;
+                      
                       window.setTimeout(() => {
                         if (event?.detail?.previousLocation?.pathname?.slice(${
                           new URL(app.locals.options.baseURL).pathname.length -
@@ -4014,7 +4016,7 @@ export default (app: Courselore): void => {
                         ${
                           res.locals.conversation.type === "chat"
                             ? javascript`
-                                else if (window.shouldScrollConversationToBottom) {
+                                else if (shouldScrollConversationToBottom) {
                                   this.scroll(0, this.scrollHeight);
                                 }
                                 
