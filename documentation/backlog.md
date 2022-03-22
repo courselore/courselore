@@ -7,9 +7,7 @@
   - Currently, there are two cases using partials to think about:
     - Views on messages
     - Preview on content editor
-- Don’t update the content of lazily loaded tooltips (for example, the views count).
-  - Maybe in general don’t update the results of `loadPartial`.
-  - Or even re-fetch them in the background.
+  - Re-fetch partials in the background?
 - `tippy.hideAll()` on navigation, otherwise sometimes you have to click twice on dropdown menus.
 - Scroll to bottom on new messages isn’t working in Firefox.
 - Update tooltip content with morphdom, to avoid scrolling.
