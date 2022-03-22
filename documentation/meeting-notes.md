@@ -1,6 +1,13 @@
 # Meeting Notes
 
 <details>
+<summary>2021-03-20</summary>
+
+- We finished and deployed many performance improvements, including live navigation and live updates powered by live navigation.
+
+</details>
+
+<details>
 <summary>2021-03-12</summary>
 
 - Almost finished live navigation, which speeds things up and makes some pagination details more straightforward to implement.

@@ -2,9 +2,15 @@
 
 ### Performance
 
+- Document `header Cache-Control no-cache` for self-hosters.
+- Don’t `pushState` when live-updating, to avoid messing with the history.
+- Update tooltip content with morphdom, to avoid scrolling.
+- Give dropdown with course switcher a maximum height.
+- Don’t update the content of lazily loaded tooltips (for example, the views count).
+  - Maybe in general don’t update the results of `loadPartial`.
+  - Or even re-fetch them in the background.
 - A live update shouldn’t prevent navigation. Instead, it should abort current request, just like popstate.
-- ETags are not enough. Use fingerprinting.
-- `tippy.hideAll()` on navigation.
+- `tippy.hideAll()` on navigation, otherwise sometimes you have to click twice on dropdown menus.
 
 ---
 
