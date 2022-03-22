@@ -2939,10 +2939,6 @@ export default (app: Courselore): void => {
                               this.closest(".conversation--header").querySelector(".conversation--header--compact").hidden = true;
                               this.closest(".conversation--header").querySelector(".conversation--header--full").hidden = false;
                             };
-
-                            this.onbeforeupdate = (to) => {
-                              to.hidden = this.hidden;
-                            };
                           `}"
                         >
                           <span
@@ -2973,11 +2969,6 @@ export default (app: Courselore): void => {
                       flex-direction: column;
                       gap: var(--space--1);
                     `)}"
-                    onload="${javascript`
-                      this.onbeforeupdate = (to) => {
-                        to.hidden = this.hidden;
-                      };
-                    `}"
                   >
                     <div
                       class="${res.locals.localCSS(css`
@@ -3592,11 +3583,6 @@ export default (app: Courselore): void => {
                         font-size: var(--font-size--lg);
                         line-height: var(--line-height--lg);
                       `)}"
-                      onload="${javascript`
-                        this.onbeforeupdate = (to) => {
-                          to.hidden = this.hidden;
-                        };
-                      `}"
                     >
                       $${app.locals.helpers.highlightSearchResult(
                         html`${res.locals.conversation.title}`,
@@ -3626,11 +3612,6 @@ export default (app: Courselore): void => {
                               gap: var(--space--2);
                               align-items: center;
                             `)}"
-                            onload="${javascript`
-                              this.onbeforeupdate = (to) => {
-                                to.hidden = this.hidden;
-                              };
-                            `}"
                           >
                             <input
                               type="hidden"
@@ -5354,11 +5335,6 @@ export default (app: Courselore): void => {
                                             flex-direction: column;
                                             gap: var(--space--2);
                                           `)}"
-                                          onload="${javascript`
-                                            this.onbeforeupdate = (to) => {
-                                              to.hidden = this.hidden;
-                                            };
-                                          `}"
                                         >
                                           <div
                                             class="message--show--content-area ${res
@@ -5703,11 +5679,6 @@ export default (app: Courselore): void => {
                                                   flex-direction: column;
                                                   gap: var(--space--2);
                                                 `)}"
-                                                onload="${javascript`
-                                                  this.onbeforeupdate = (to) => {
-                                                    to.hidden = this.hidden;
-                                                  };
-                                                `}"
                                               >
                                                 <input
                                                   type="hidden"

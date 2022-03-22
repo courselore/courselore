@@ -128,6 +128,7 @@ const leafac = {
                       node.onadd?.();
                     },
                     onBeforeElUpdated(from, to) {
+                      to.hidden = from.hidden;
                       const onbeforeupdate = from.onbeforeupdate?.(to);
                       return typeof onbeforeupdate === "boolean"
                         ? onbeforeupdate

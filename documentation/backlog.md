@@ -3,7 +3,8 @@
 ### Performance
 
 - Review `leafac--javascript`.
-  - `TODO`
+  - Check that every lifecycle callback is actually called (`TODO`)
+  - Live updates are corrupting tooltips, because `onload` runs again.
 - Don’t `pushState` when live-updating, to avoid messing with the history.
 - Update tooltip content with morphdom, to avoid scrolling.
 - Give dropdown with course switcher a maximum height.
