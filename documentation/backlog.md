@@ -3,7 +3,6 @@
 ### Performance
 
 - Review `leafac--javascript`.
-  - Check that every lifecycle callback is actually called (`TODO`)
   - “Preview” is being cleaned up, because it’s a partial.
 - Don’t `pushState` when live-updating, to avoid messing with the history.
 - Update tooltip content with morphdom, to avoid scrolling.
