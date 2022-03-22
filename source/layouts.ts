@@ -2395,6 +2395,8 @@ export default async (app: Courselore): Promise<void> => {
                             html`
                               <div
                                 class="${res.locals.localCSS(css`
+                                  max-height: var(--space--80);
+                                  overflow: auto;
                                   display: flex;
                                   flex-direction: column;
                                   gap: var(--space--2);
@@ -2476,7 +2478,16 @@ export default async (app: Courselore): Promise<void> => {
                           trigger: "click",
                           interactive: true,
                           content: ${res.locals.HTMLForJavaScript(
-                            html`$${courseSwitcher}`
+                            html`
+                              <div
+                                class="${res.locals.localCSS(css`
+                                  max-height: var(--space--80);
+                                  overflow: auto;
+                                `)}"
+                              >
+                                $${courseSwitcher}
+                              </div>
+                            `
                           )},
                         });
                       `}"

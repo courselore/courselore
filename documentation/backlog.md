@@ -2,7 +2,6 @@
 
 ### Performance
 
-- Give dropdown with course switcher a maximum height.
 - “Views” are being reset on a live update.
   - Possible solutions:
     - Keep the old content.
