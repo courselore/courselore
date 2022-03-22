@@ -4,27 +4,19 @@
 
 - Review `leafac--javascript`.
   - “Preview” is being cleaned up, because it’s a partial.
-- Don’t `pushState` when live-updating, to avoid messing with the history.
-- Update tooltip content with morphdom, to avoid scrolling.
-- Give dropdown with course switcher a maximum height.
 - Don’t update the content of lazily loaded tooltips (for example, the views count).
   - Maybe in general don’t update the results of `loadPartial`.
   - Or even re-fetch them in the background.
-- A live update shouldn’t prevent navigation. Instead, it should abort current request, just like popstate.
 - `tippy.hideAll()` on navigation, otherwise sometimes you have to click twice on dropdown menus.
 - Scroll to bottom on new messages isn’t working in Firefox.
-
----
-
-- Live update improvements.
-  - Should all `hidden` be carried through?
-    - What about `value`?
-  - Check course id and only send notifications to relevant connections.
-  - Prevent live update to browser tab that originated the update: `eventSourceReference`
-    - Pass the `eventSource` identifier right on first server-side render, without requiring a server-sent event message.
-  - `TODO`
-  - Do something special on live updates & 404 (for example, when the conversation has been removed).
-  - Don’t show progress bar for things like “Like”?
+- Update tooltip content with morphdom, to avoid scrolling.
+- Give dropdown with course switcher a maximum height.
+- Instead of preventing updates on `inputs`, carry their value through (just like what we’re doing with `hidden`).
+- Check course id and only send notifications to relevant connections.
+- Prevent live update to browser tab that originated the update: `eventSourceReference`
+  - Pass the `eventSource` identifier right on first server-side render, without requiring a server-sent event message.
+- Do something special on live updates & 404 (for example, when the conversation has been removed).
+- Don’t show progress bar for things like “Like”?
 
 ---
 
