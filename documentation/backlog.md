@@ -2,12 +2,12 @@
 
 ### Performance
 
-- `@mentions` widget is breaking after live update.
+- Instead of preventing updates on `inputs`, carry their value through (just like what we’re doing with `hidden`).
+  - `@mentions` widget is breaking after live update, because `onload` on the textarea isn’t changing.
 - `tippy.hideAll()` on navigation, otherwise sometimes you have to click twice on dropdown menus.
 - Scroll to bottom on new messages isn’t working in Firefox.
 - Update tooltip content with morphdom, to avoid scrolling.
 - Give dropdown with course switcher a maximum height.
-- Instead of preventing updates on `inputs`, carry their value through (just like what we’re doing with `hidden`).
 - Check course id and only send notifications to relevant connections.
 - Prevent live update to browser tab that originated the update: `eventSourceReference`
   - Pass the `eventSource` identifier right on first server-side render, without requiring a server-sent event message.
