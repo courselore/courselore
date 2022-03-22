@@ -2,6 +2,7 @@
 
 ### Performance
 
+- “Views” are being reset on a live update.
 - Update tooltip content with morphdom, to avoid scrolling.
 - Give dropdown with course switcher a maximum height.
 - Check course id and only send notifications to relevant connections.

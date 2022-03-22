@@ -262,7 +262,7 @@ const leafac = {
     return true;
 
     function validateElement(element) {
-      if (element.matches("[required]"))
+      if (element.closest("[required]"))
         switch (element.type) {
           case "radio":
             if (
