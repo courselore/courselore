@@ -4,6 +4,9 @@
 
 - Review `leafac--javascript`.
   - “Preview” is being cleaned up, because it’s a partial.
+  - Currently, there are two cases using partials to think about:
+    - Views on messages
+    - Preview on content editor
 - Don’t update the content of lazily loaded tooltips (for example, the views count).
   - Maybe in general don’t update the results of `loadPartial`.
   - Or even re-fetch them in the background.
