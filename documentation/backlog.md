@@ -2,7 +2,6 @@
 
 ### Performance
 
-- Document `header Cache-Control no-cache` for self-hosters.
 - Don’t `pushState` when live-updating, to avoid messing with the history.
 - Update tooltip content with morphdom, to avoid scrolling.
 - Give dropdown with course switcher a maximum height.
@@ -56,7 +55,7 @@
 
 ---
 
-- ETags don’t seem to be enough: A deployment to try.courselore.org was serving stale assets.
+- Document `header Cache-Control no-cache` for self-hosters.
 
 ---
 
