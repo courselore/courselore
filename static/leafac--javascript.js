@@ -132,7 +132,8 @@ const leafac = {
                       const onbeforeupdate = from.onbeforeupdate?.(to);
                       return typeof onbeforeupdate === "boolean"
                         ? onbeforeupdate
-                        : !from.matches("input, textarea, select");
+                        : !from.matches("input, textarea, select") &&
+                            from.partialParentElement !== true;
                     },
                     onElUpdated(element) {
                       element.onupdate?.();
@@ -208,6 +209,7 @@ const leafac = {
     morphdom(HTMLForJavaScript, partialHTMLForJavaScript, {
       childrenOnly: true,
     });
+    parentElement.partialParentElement = true;
     for (const element of [
       ...parentElement.querySelectorAll("[onload]"),
       ...HTMLForJavaScript.querySelectorAll("[onload]"),

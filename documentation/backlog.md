@@ -2,12 +2,7 @@
 
 ### Performance
 
-- Review `leafac--javascript`.
-  - “Preview” is being cleaned up, because it’s a partial.
-  - Currently, there are two cases using partials to think about:
-    - Views on messages
-    - Preview on content editor
-  - Re-fetch partials in the background?
+- `@mentions` widget is breaking after live update.
 - `tippy.hideAll()` on navigation, otherwise sometimes you have to click twice on dropdown menus.
 - Scroll to bottom on new messages isn’t working in Firefox.
 - Update tooltip content with morphdom, to avoid scrolling.
@@ -18,6 +13,7 @@
   - Pass the `eventSource` identifier right on first server-side render, without requiring a server-sent event message.
 - Do something special on live updates & 404 (for example, when the conversation has been removed).
 - Don’t show progress bar for things like “Like”?
+- Re-fetch partials in the background after live updates? They may have gotten stale, for example, the “Views” component, if it’s open right as a live update is happening.
 
 ---
 
