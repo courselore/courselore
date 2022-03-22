@@ -65,13 +65,13 @@ const leafac = {
     let abortController;
     let isNavigating = false;
     let previousLocation = { ...window.location };
-    return async ({ request, event, background = false }) => {
+    return async ({ request, event, liveUpdate = false }) => {
       if (event instanceof PopStateEvent) abortController?.abort();
       else if (isNavigating) return;
       isNavigating = true;
       const detail = { originalEvent: event, previousLocation };
       if (
-        background ||
+        liveUpdate ||
         (window.dispatchEvent(
           new CustomEvent("beforenavigate", { cancelable: true, detail })
         ) &&
@@ -92,7 +92,7 @@ const leafac = {
           );
           document.querySelector("title").textContent =
             newDocument.querySelector("title").textContent;
-          const localCSSToRemove = background
+          const localCSSToRemove = liveUpdate
             ? []
             : document.querySelectorAll(".local-css");
           for (const element of newDocument.querySelectorAll(".local-css"))
@@ -104,7 +104,7 @@ const leafac = {
             new Function(element.getAttribute("onbeforeload")).call(element);
           morphdom(documentBody, newDocument.querySelector("body"), {
             childrenOnly: true,
-            ...(background
+            ...(liveUpdate
               ? {
                   onBeforeNodeAdded(node) {
                     node.onbeforeadd?.();
