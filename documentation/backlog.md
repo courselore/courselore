@@ -2,7 +2,6 @@
 
 ### Performance
 
-- Scroll to bottom on new messages isn’t working in Firefox.
 - Update tooltip content with morphdom, to avoid scrolling.
 - Give dropdown with course switcher a maximum height.
 - Check course id and only send notifications to relevant connections.
