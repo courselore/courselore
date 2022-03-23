@@ -3,7 +3,9 @@
 const leafac = {
   liveNavigation(baseURL) {
     window.addEventListener("DOMContentLoaded", (event) => {
-      for (const element of document.querySelectorAll("[onload]"))
+      for (const element of [...document.querySelectorAll("[onload]")].filter(
+        (element) => element.closest("[data-tippy-root]") === null
+      ))
         new Function("event", element.getAttribute("onload")).call(
           element,
           event
