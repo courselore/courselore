@@ -636,7 +636,7 @@ export default async (app: Courselore): Promise<void> => {
               overflow: auto;
             `)}"
             onload="${javascript`
-              this.scroll(0, 0);
+              if (event?.detail?.previousLocation?.pathname !== window.location.pathname) this.scroll(0, 0);
             `}"
           >
             $${body}
