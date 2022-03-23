@@ -5607,7 +5607,7 @@ export default (app: Courselore): void => {
                                                     if (this.tooltip?.state?.isShown) this.tooltip.setProps({ onHidden: setProps });
                                                     else setProps();
 
-                                                    this.onclick = this.onmouseover = this.onfocus = async () => {
+                                                    this.onclick = async () => {
                                                       if (!content.hidden) return;
                                                       leafac.loadPartial(
                                                         content,
