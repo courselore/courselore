@@ -2172,7 +2172,14 @@ export default (app: Courselore): void => {
               </div>
             </form>
 
-            <div id="invitations">
+            <div
+              id="invitations"
+              class="${res.locals.localCSS(css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `)}"
+            >
               $${invitations.length === 0
                 ? html``
                 : html`
