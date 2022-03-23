@@ -2,6 +2,9 @@
 
 ### Performance
 
+- Chat:
+  - When actions are open and a live update comes in, the scrolling glitches.
+  - When you have “Views” open and a live update comes in, the tooltip closes.
 - Re-fetch partials in the background after live updates? They may have gotten stale, for example, the “Views” component, if it’s open right as a live update is happening.
 - Update tooltip content with morphdom, to avoid scrolling?
 - Live updates destinations:
