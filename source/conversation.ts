@@ -3989,13 +3989,13 @@ export default (app: Courselore): void => {
                               ? javascript`
                                   const element = this.querySelector("#message--${req.query.messageReference}");
                                   if (element === null) return;
-                                  element.scrollIntoView({ block: "center" });
+                                  element.scrollIntoView();
                                   element.querySelector(".message--highlight").style.animation = "message--highlight 2s var(--transition-timing-function--in-out)";
                                 `
                               : firstUnreadMessage !== undefined &&
                                 firstUnreadMessage !== messages[0]
                               ? javascript`
-                                  this.querySelector("#message--${firstUnreadMessage.reference}")?.scrollIntoView({ block: "center" });
+                                  this.querySelector("#message--${firstUnreadMessage.reference}")?.scrollIntoView();
                                 `
                               : res.locals.conversation.type === "chat" &&
                                 messages.length > 0 &&
