@@ -2243,8 +2243,7 @@ export default (app: Courselore): void => {
                               ? html`
                                   <div>
                                     <button
-                                      id="invitation--${invitation.reference}"
-                                      class="button button--tight button--tight--inline button--transparent strong"
+                                      class="button--see-invitation-link button button--tight button--tight--inline button--transparent strong"
                                       onload="${javascript`
                                         (this.tooltip ??= tippy(this)).setProps({
                                           touch: false,
@@ -2933,7 +2932,7 @@ export default (app: Courselore): void => {
                     class="link"
                     onload="${javascript`
                       this.onclick = () => {
-                        const button = document.querySelector("#invitation--${invitation.reference}");
+                        const button = document.querySelector("#invitation--${invitation.reference} .button--see-invitation-link");
                         button.click();
                         button.tooltip.hide();
                         this.closest(".flash").remove();
