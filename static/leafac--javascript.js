@@ -204,9 +204,9 @@ const leafac = {
         "beforeend",
         partialDocument.querySelector("head").innerHTML
       );
-    const HTMLForJavaScript = document.querySelector(".html-for-javascript");
+    const HTMLForJavaScript = document.querySelector("#html-for-javascript");
     const partialHTMLForJavaScript = partialDocument.querySelector(
-      ".html-for-javascript"
+      "#html-for-javascript"
     );
     partialHTMLForJavaScript.remove();
     morphdom(parentElement, partialDocument.querySelector("body"), {

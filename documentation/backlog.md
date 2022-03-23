@@ -2,6 +2,9 @@
 
 ### Performance
 
+- Add ids to things to prevent morphdom from working too hard.
+  - `.flatMap`
+  - `.map`
 - Chat:
   - When actions are open and a live update comes in, the scrolling glitches.
   - When you have “Views” open and a live update comes in, the tooltip closes.
