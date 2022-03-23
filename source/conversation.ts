@@ -4462,16 +4462,25 @@ export default (app: Courselore): void => {
                                                                         hidden
                                                                       ></div>
                                                                     `)};
+                                                                    tooltipContent.remove();
                                                                     const loading = tooltipContent.querySelector(".loading");
                                                                     const content = tooltipContent.querySelector(".content");
 
-                                                                    (this.tooltip ??= tippy(this)).setProps({
-                                                                      trigger: "click",
-                                                                      interactive: true,
-                                                                      content: tooltipContent,
-                                                                    });
+                                                                    const setProps = () => {
+                                                                      (this.tooltip ??= tippy(this)).setProps({
+                                                                        trigger: "click",
+                                                                        interactive: true,
+                                                                        onHidden: () => {
+                                                                          loading.hidden = false;
+                                                                          content.hidden = true;
+                                                                        },
+                                                                        content: tooltipContent,
+                                                                      });
+                                                                    };
+                                                                    if (this.tooltip?.state?.isShown) this.tooltip.setProps({ onHidden: setProps });
+                                                                    else setProps();
 
-                                                                    this.onmouseover = this.onfocus = async () => {
+                                                                    this.onclick = async () => {
                                                                       if (!content.hidden) return;
                                                                       leafac.loadPartial(
                                                                         content,
