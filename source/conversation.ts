@@ -1237,6 +1237,7 @@ export default (app: Courselore): void => {
                         : html``}
 
                       <div
+                        id="conversations"
                         onload="${javascript`
                         ${
                           req.query.scrollToConversation !== "false"
@@ -4067,6 +4068,7 @@ export default (app: Courselore): void => {
                           `
                         : html`
                             <div
+                              id="messages"
                               class="${res.locals.localCSS(css`
                                 ${res.locals.conversation.type === "chat"
                                   ? css`

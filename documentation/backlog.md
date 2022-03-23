@@ -4,7 +4,6 @@
 
 - Don’t scroll on form submission to the same `previousLocation`.
 - Add ids to things to prevent morphdom from working too hard.
-  - `id=`
   - `.flatMap`
   - `.map`
 - Chat:
