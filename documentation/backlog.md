@@ -2,10 +2,6 @@
 
 ### Performance
 
-- “Views” are being reset on a live update.
-  - Possible solutions:
-    - Keep the old content.
-    - Refetch on the background.
 - Re-fetch partials in the background after live updates? They may have gotten stale, for example, the “Views” component, if it’s open right as a live update is happening.
 - Update tooltip content with morphdom, to avoid scrolling?
 - Live updates destinations:
