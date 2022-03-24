@@ -3,7 +3,7 @@
 ### Performance
 
 - “Views” component is broken on non-chat conversations.
-- Don’t scroll on form submission to the same `previousLocation`.
+- Don’t scroll on form submission when the `previousLocation` is the same as the current `window.location`.
   - Turn `flash` into tooltip, because it’s breaking scrolling.
 - Add ids to things to prevent morphdom from working too hard.
   - `.flatMap`
