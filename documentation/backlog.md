@@ -2,6 +2,10 @@
 
 ### Performance
 
+- Use <template> tags?
+  - For HTMLForJavaScript, which makes sense for templates that will be `.clone(true)`’d, but requires more manual work for tooltips.
+  - For new tag under `/settings/tags`, because it prevents the onload from being targeted by `.querySelector()`.
+- Use `data-` prefix on nonstandard attributes (look for `querySelector`).
 - “Views” component is broken on non-chat conversations.
 - Don’t scroll on form submission when the `previousLocation` is the same as the current `window.location`.
   - Turn `flash` into tooltip, because it’s breaking scrolling.
