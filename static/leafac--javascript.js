@@ -11,8 +11,6 @@ const leafac = {
           event
         );
     });
-    if (document.readyState !== "loading")
-      window.dispatchEvent(new Event("DOMContentLoaded"));
 
     document.onclick = async (event) => {
       const link = event.target.closest(
