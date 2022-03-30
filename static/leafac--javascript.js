@@ -258,12 +258,26 @@ const leafac = {
       }
     for (let index = 0; index < from.childNodes.length; index++) {
       if (indicesOfNodesThatDontNeedRecursiveMorphing.has(index)) continue;
-      switch (from.childNodes[index].nodeType) {
-        case document.ELEMENT_NODE:
-          leafac.morph(from.childNodes[index], to.childNodes[index]);
+      const fromChildNode = from.childNodes[index];
+      const toChildNode = to.childNodes[index];
+      switch (fromChildNode.nodeType) {
+        case fromChildNode.ELEMENT_NODE:
+          for (const attribute of fromChildNode.getAttributeNames()) {
+            const toAttribute = toChildNode.getAttribute(attribute);
+            if (toAttribute === null) fromChildNode.removeAttribute(attribute);
+            else if (toAttribute !== fromChildNode.getAttribute(attribute))
+              fromChildNode.setAttribute(attribute, toAttribute);
+          }
+          for (const attribute of toChildNode.getAttributeNames())
+            if (fromChildNode.getAttribute(attribute) === null)
+              fromChildNode.setAttribute(
+                attribute,
+                toChildNode.getAttribute(attribute)
+              );
+          leafac.morph(fromChildNode, toChildNode);
           break;
         default:
-          from.childNodes[index].nodeValue = to.childNodes[index].nodeValue;
+          fromChildNode.nodeValue = toChildNode.nodeValue;
           break;
       }
     }
