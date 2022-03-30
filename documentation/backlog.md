@@ -95,6 +95,7 @@
 - Redesign filters to bring out the “resolved/unresolved” filters.
 - Introduce the notion of “Quick Filters” for different conversation types.
 - Group conversations by date & pinned (similar to Piazza & Campuswire).
+- Include a “set as answer and endorse” button.
 
 ---
 
