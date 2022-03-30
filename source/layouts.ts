@@ -213,7 +213,7 @@ export default async (app: Courselore): Promise<void> => {
         `)}"
       >
         <div
-          id="viewport"
+          data-key="viewport"
           class="${res.locals.localCSS(css`
             position: absolute;
             top: 0;
@@ -234,7 +234,7 @@ export default async (app: Courselore): Promise<void> => {
             ? html``
             : html`
                 <div
-                  id="header--accent-color"
+                  data-key="header--accent-color"
                   class="${res.locals.localCSS(css`
                     height: var(--border-width--8);
                     display: flex;
@@ -298,7 +298,7 @@ export default async (app: Courselore): Promise<void> => {
                 </div>
               `}
           <div
-            id="header"
+            data-key="header"
             class="${res.locals.localCSS(css`
               font-size: var(--font-size--xs);
               line-height: var(--line-height--xs);
@@ -322,7 +322,7 @@ export default async (app: Courselore): Promise<void> => {
             $${app.locals.options.demonstration
               ? html`
                   <div
-                    id="header--demonstration"
+                    data-key="header--demonstration"
                     class="${res.locals.localCSS(css`
                       justify-content: center;
                       flex-wrap: wrap;
@@ -414,7 +414,7 @@ export default async (app: Courselore): Promise<void> => {
           res.locals.user.emailConfirmedAt === null
             ? html`
                 <div
-                  id="header--email-confirmation"
+                  data-key="header--email-confirmation"
                   class="${res.locals.localCSS(css`
                     color: var(--color--amber--700);
                     background-color: var(--color--amber--100);
@@ -536,7 +536,7 @@ export default async (app: Courselore): Promise<void> => {
               ? html``
               : html`
                   <div
-                    id="flash"
+                    data-key="flash"
                     class="flash ${res.locals.localCSS(css`
                       display: grid;
                       & > * {
@@ -630,7 +630,7 @@ export default async (app: Courselore): Promise<void> => {
           })()}
 
           <div
-            id="main"
+            data-key="main"
             class="${res.locals.localCSS(css`
               flex: 1;
               overflow: auto;
@@ -643,7 +643,7 @@ export default async (app: Courselore): Promise<void> => {
           </div>
 
           <div
-            id="footer"
+            data-key="footer"
             class="${res.locals.localCSS(css`
               font-size: var(--font-size--xs);
               line-height: var(--line-height--xs);
@@ -803,7 +803,7 @@ export default async (app: Courselore): Promise<void> => {
         </div>
 
         <div
-          id="progress-bar"
+          data-key="progress-bar"
           hidden
           class="${res.locals.localCSS(css`
             position: fixed;
@@ -2335,7 +2335,7 @@ export default async (app: Courselore): Promise<void> => {
       head,
       extraHeaders: html`
         <div
-          id="header--menu--primary"
+          data-key="header--menu--primary"
           class="${res.locals.localCSS(css`
             padding-top: var(--space--1);
             padding-bottom: var(--space--1);
@@ -2766,7 +2766,7 @@ export default async (app: Courselore): Promise<void> => {
           ? html``
           : html`
               <div
-                id="header--menu--secondary"
+                data-key="header--menu--secondary"
                 class="${res.locals.localCSS(css`
                   justify-content: center;
                   @media (min-width: 700px) {
