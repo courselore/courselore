@@ -236,6 +236,7 @@ const leafac = {
         return fromNode.tagName === toNode.tagName;
       }
     );
+    const indicesOfNodesThatDontNeedRecursiveMorphing = new Set();
     for (const { type, newPos, items } of patch)
       switch (type) {
         case "add":
@@ -248,11 +249,24 @@ const leafac = {
           else
             for (const item of items)
               from.appendChild(document.importNode(item));
+          for (let index = newPos; index < newPos + items.length; index++)
+            indicesOfNodesThatDontNeedRecursiveMorphing.add(index);
           break;
         case "remove":
           for (const item of items) item.remove();
           break;
       }
+    for (let index = 0; index < from.childNodes.length; index++) {
+      if (indicesOfNodesThatDontNeedRecursiveMorphing.has(index)) continue;
+      switch (from.childNodes[index].nodeType) {
+        case document.ELEMENT_NODE:
+          leafac.morph(from.childNodes[index], to.childNodes[index]);
+          break;
+        default:
+          from.childNodes[index].nodeValue = to.childNodes[index].nodeValue;
+          break;
+      }
+    }
   },
 
   customFormValidation() {
