@@ -253,7 +253,7 @@ const leafac = {
     for (const { items, newPos } of patch.filter(
       ({ type }) => type === "add"
     )) {
-      const nodeAfter = from.items[newPos];
+      const nodeAfter = from.childNodes[newPos];
       for (const node of items) {
         let nodeToInsert = removedNodes.get(keys.get(node))?.shift();
         if (nodeToInsert === undefined) {
