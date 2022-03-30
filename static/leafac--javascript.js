@@ -221,6 +221,40 @@ const leafac = {
       new Function(element.getAttribute("onload")).call(element);
   },
 
+  morph(from, to) {
+    const patch = fastArrayDiff.getPatch(
+      [...from.childNodes],
+      [...to.childNodes],
+      (fromNode, toNode) => {
+        if (fromNode.nodeType !== toNode.nodeType) return false;
+        if (fromNode.nodeType !== fromNode.ELEMENT_NODE) return true;
+        if (
+          fromNode.dataset.key !== undefined ||
+          toNode.dataset.key !== undefined
+        )
+          return fromNode.dataset.key === toNode.dataset.key;
+        return fromNode.tagName === toNode.tagName;
+      }
+    );
+    for (const { type, newPos, items } of patch)
+      switch (type) {
+        case "add":
+          if (newPos < from.childNodes.length)
+            for (const item of items.reverse())
+              from.insertBefore(
+                document.importNode(item),
+                from.childNodes[newPos]
+              );
+          else
+            for (const item of items)
+              from.appendChild(document.importNode(item));
+          break;
+        case "remove":
+          for (const item of items) item.remove();
+          break;
+      }
+  },
+
   customFormValidation() {
     document.addEventListener(
       "submit",
