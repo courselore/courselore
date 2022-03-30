@@ -243,12 +243,12 @@ const leafac = {
           if (newPos < from.childNodes.length)
             for (const item of items.reverse())
               from.insertBefore(
-                document.importNode(item),
+                document.importNode(item, true),
                 from.childNodes[newPos]
               );
           else
             for (const item of items)
-              from.appendChild(document.importNode(item));
+              from.appendChild(document.importNode(item, true));
           for (let index = newPos; index < newPos + items.length; index++)
             indicesOfNodesThatDontNeedRecursiveMorphing.add(index);
           break;
