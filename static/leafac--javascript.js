@@ -222,42 +222,53 @@ const leafac = {
   },
 
   morph(from, to) {
-    const getKey = (node) =>
-      `${node.nodeType}--${
-        node.nodeType === node.ELEMENT_NODE
-          ? `${node.tagName}--${node.dataset.key}`
-          : node.nodeValue
-      }`;
+    const keys = new Map(
+      [...from.childNodes, ...to.childNodes].map((node) => [
+        node,
+        `${node.nodeType}--${
+          node.nodeType === node.ELEMENT_NODE
+            ? `${node.tagName}--${node.dataset.key}`
+            : node.nodeValue
+        }`,
+      ])
+    );
     const patch = fastArrayDiff.getPatch(
       [...from.childNodes],
       [...to.childNodes],
-      (fromNode, toNode) => getKey(fromNode) === getKey(toNode)
+      (from, to) => keys.get(from) === keys.get(to)
     );
-    const indicesOfNodesThatDontNeedRecursiveMorphing = new Set();
-    for (const { type, newPos, items } of patch)
-      switch (type) {
-        case "add":
-          if (newPos < from.childNodes.length)
-            for (const item of items.reverse())
-              from.insertBefore(
-                document.importNode(item, true),
-                from.childNodes[newPos]
-              );
-          else
-            for (const item of items)
-              from.appendChild(document.importNode(item, true));
-          for (let index = newPos; index < newPos + items.length; index++)
-            indicesOfNodesThatDontNeedRecursiveMorphing.add(index);
-          break;
-        case "remove":
-          for (const item of items) item.remove();
-          break;
+    const removedNodes = new Map();
+    for (const { items } of patch.filter(({ type }) => type === "remove"))
+      for (const node of items) {
+        from.removeChild(node);
+        const key = keys.get(node);
+        let moveCandidateNodesQueue = removedNodes.get(key);
+        if (moveCandidateNodesQueue === undefined) {
+          moveCandidateNodesQueue = [];
+          removedNodes.set(key, moveCandidateNodesQueue);
+        }
+        moveCandidateNodesQueue.push(node);
       }
+    const importedNodes = new Set();
+    for (const { items, newPos } of patch.filter(
+      ({ type }) => type === "add"
+    )) {
+      const nodeAfter = from.items[newPos];
+      for (const node of items) {
+        let nodeToInsert = removedNodes.get(keys.get(node))?.shift();
+        if (nodeToInsert === undefined) {
+          nodeToInsert = document.importNode(node, true);
+          importedNodes.add(nodeToInsert);
+        }
+        if (nodeAfter !== undefined) from.insertBefore(nodeToInsert, nodeAfter);
+        else from.appendChild(nodeToInsert);
+      }
+    }
     for (let index = 0; index < from.childNodes.length; index++) {
       const fromChildNode = from.childNodes[index];
       const toChildNode = to.childNodes[index];
       if (
-        indicesOfNodesThatDontNeedRecursiveMorphing.has(index) ||
+        importedNodes.has(fromChildNode) ||
         fromChildNode.nodeType !== fromChildNode.ELEMENT_NODE
       )
         continue;
