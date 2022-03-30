@@ -2,6 +2,7 @@
 
 ### Performance
 
+- “Views” tooltip may misalign because it starts with “loading” and then we change the content without calling `.setContent()`.
 - Review uses of `leafac.morph`, because they’re still passing `morphdom` arguments.
 - Convert `id`s into `key`s.
   - `#`.
