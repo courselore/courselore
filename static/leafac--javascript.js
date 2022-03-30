@@ -222,21 +222,16 @@ const leafac = {
   },
 
   morph(from, to) {
+    const getKey = (node) =>
+      `${node.nodeType}--${
+        node.nodeType === node.ELEMENT_NODE
+          ? `${node.tagName}--${node.dataset.key}`
+          : node.nodeValue
+      }`;
     const patch = fastArrayDiff.getPatch(
       [...from.childNodes],
       [...to.childNodes],
-      (fromNode, toNode) => {
-        if (fromNode.nodeType !== toNode.nodeType) return false;
-        if (fromNode.nodeType !== fromNode.ELEMENT_NODE)
-          return fromNode.nodeValue === toNode.nodeValue;
-        if (fromNode.tagName !== toNode.tagName) return false;
-        if (
-          fromNode.dataset.key !== undefined ||
-          toNode.dataset.key !== undefined
-        )
-          return fromNode.dataset.key === toNode.dataset.key;
-        return true;
-      }
+      (fromNode, toNode) => getKey(fromNode) === getKey(toNode)
     );
     const indicesOfNodesThatDontNeedRecursiveMorphing = new Set();
     for (const { type, newPos, items } of patch)
