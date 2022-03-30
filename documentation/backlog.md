@@ -2,6 +2,7 @@
 
 ### Performance
 
+- Review uses of `leafac.morph`, because they’re still passing `morphdom` arguments.
 - `isLive` → `isConnected` (after DOM `Node` API).
 - Use <template> tags?
   - For HTMLForJavaScript, which makes sense for templates that will be `.clone(true)`’d, but requires more manual work for tooltips.

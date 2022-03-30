@@ -112,7 +112,7 @@ const leafac = {
             ))
               new Function(element.getAttribute("onbeforeload")).call(element);
           if (!liveUpdate) tippy.hideAll();
-          morphdom(
+          leafac.morph(
             document.querySelector("body"),
             newDocument.querySelector("body"),
             {
@@ -207,10 +207,10 @@ const leafac = {
       "#html-for-javascript"
     );
     partialHTMLForJavaScript.remove();
-    morphdom(parentElement, partialDocument.querySelector("body"), {
+    leafac.morph(parentElement, partialDocument.querySelector("body"), {
       childrenOnly: true,
     });
-    morphdom(HTMLForJavaScript, partialHTMLForJavaScript, {
+    leafac.morph(HTMLForJavaScript, partialHTMLForJavaScript, {
       childrenOnly: true,
     });
     parentElement.partialParentElement = true;
