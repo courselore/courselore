@@ -227,13 +227,15 @@ const leafac = {
       [...to.childNodes],
       (fromNode, toNode) => {
         if (fromNode.nodeType !== toNode.nodeType) return false;
-        if (fromNode.nodeType !== fromNode.ELEMENT_NODE) return true;
+        if (fromNode.nodeType !== fromNode.ELEMENT_NODE)
+          return fromNode.nodeValue === toNode.nodeValue;
+        if (fromNode.tagName !== toNode.tagName) return false;
         if (
           fromNode.dataset.key !== undefined ||
           toNode.dataset.key !== undefined
         )
           return fromNode.dataset.key === toNode.dataset.key;
-        return fromNode.tagName === toNode.tagName;
+        return true;
       }
     );
     const indicesOfNodesThatDontNeedRecursiveMorphing = new Set();
@@ -257,29 +259,26 @@ const leafac = {
           break;
       }
     for (let index = 0; index < from.childNodes.length; index++) {
-      if (indicesOfNodesThatDontNeedRecursiveMorphing.has(index)) continue;
       const fromChildNode = from.childNodes[index];
       const toChildNode = to.childNodes[index];
-      switch (fromChildNode.nodeType) {
-        case fromChildNode.ELEMENT_NODE:
-          for (const attribute of fromChildNode.getAttributeNames()) {
-            const toAttribute = toChildNode.getAttribute(attribute);
-            if (toAttribute === null) fromChildNode.removeAttribute(attribute);
-            else if (toAttribute !== fromChildNode.getAttribute(attribute))
-              fromChildNode.setAttribute(attribute, toAttribute);
-          }
-          for (const attribute of toChildNode.getAttributeNames())
-            if (fromChildNode.getAttribute(attribute) === null)
-              fromChildNode.setAttribute(
-                attribute,
-                toChildNode.getAttribute(attribute)
-              );
-          leafac.morph(fromChildNode, toChildNode);
-          break;
-        default:
-          fromChildNode.nodeValue = toChildNode.nodeValue;
-          break;
+      if (
+        indicesOfNodesThatDontNeedRecursiveMorphing.has(index) ||
+        fromChildNode.nodeType !== fromChildNode.ELEMENT_NODE
+      )
+        continue;
+      for (const attribute of fromChildNode.getAttributeNames()) {
+        const toAttribute = toChildNode.getAttribute(attribute);
+        if (toAttribute === null) fromChildNode.removeAttribute(attribute);
+        else if (toAttribute !== fromChildNode.getAttribute(attribute))
+          fromChildNode.setAttribute(attribute, toAttribute);
       }
+      for (const attribute of toChildNode.getAttributeNames())
+        if (fromChildNode.getAttribute(attribute) === null)
+          fromChildNode.setAttribute(
+            attribute,
+            toChildNode.getAttribute(attribute)
+          );
+      leafac.morph(fromChildNode, toChildNode);
     }
   },
 
