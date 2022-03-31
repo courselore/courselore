@@ -1257,11 +1257,8 @@ export default (app: Courselore): void => {
       app.locals.helpers.Flash.set({
         req,
         res,
-        content: html`
-          <div class="flash--green">
-            Course information updated successfully.
-          </div>
-        `,
+        theme: "green",
+        content: html`Course information updated successfully.`,
       });
 
       res.redirect(
@@ -1819,9 +1816,8 @@ export default (app: Courselore): void => {
       app.locals.helpers.Flash.set({
         req,
         res,
-        content: html`
-          <div class="flash--green">Tags updated successfully.</div>
-        `,
+        theme: "green",
+        content: html`Tags updated successfully.`,
       });
 
       res.redirect(
@@ -2906,25 +2902,22 @@ export default (app: Courselore): void => {
           app.locals.helpers.Flash.set({
             req,
             res,
+            theme: "green",
             content: html`
-              <div class="flash--green">
-                <div>
-                  Invitation link created successfully.
-                  <button
-                    class="link"
-                    onload="${javascript`
-                      this.onclick = () => {
-                        const button = document.querySelector('[key="invitation--${invitation.reference}"] .button--see-invitation-link');
-                        button.click();
-                        button.tooltip.hide();
-                        this.closest(".flash").remove();
-                      };
-                    `}"
-                  >
-                    See invitation link</button
-                  >.
-                </div>
-              </div>
+              Invitation link created successfully.
+              <button
+                class="link"
+                onload="${javascript`
+                  this.onclick = () => {
+                    tippy.hideAll();
+                    const button = document.querySelector('[key="invitation--${invitation.reference}"] .button--see-invitation-link');
+                    button.click();
+                    button.tooltip.hide();
+                  };
+                `}"
+              >
+                See invitation link</button
+              >.
             `,
           });
           break;
@@ -3031,11 +3024,8 @@ export default (app: Courselore): void => {
           app.locals.helpers.Flash.set({
             req,
             res,
-            content: html`
-              <div class="flash--green">
-                Invitation emails sent successfully.
-              </div>
-            `,
+            theme: "green",
+            content: html`Invitation emails sent successfully.`,
           });
           break;
       }
@@ -3078,11 +3068,8 @@ export default (app: Courselore): void => {
         app.locals.helpers.Flash.set({
           req,
           res,
-          content: html`
-            <div class="flash--green">
-              Invitation email resent successfully.
-            </div>
-          `,
+          theme: "green",
+          content: html`Invitation email resent successfully.`,
         });
       }
 
@@ -3100,11 +3087,8 @@ export default (app: Courselore): void => {
         app.locals.helpers.Flash.set({
           req,
           res,
-          content: html`
-            <div class="flash--green">
-              Invitation role updated successfully.
-            </div>
-          `,
+          theme: "green",
+          content: html`Invitation role updated successfully.`,
         });
       }
 
@@ -3123,11 +3107,8 @@ export default (app: Courselore): void => {
         app.locals.helpers.Flash.set({
           req,
           res,
-          content: html`
-            <div class="flash--green">
-              Invitation expiration updated successfully.
-            </div>
-          `,
+          theme: "green",
+          content: html`Invitation expiration updated successfully.`,
         });
       }
 
@@ -3143,11 +3124,8 @@ export default (app: Courselore): void => {
         app.locals.helpers.Flash.set({
           req,
           res,
-          content: html`
-            <div class="flash--green">
-              Invitation expiration removed successfully.
-            </div>
-          `,
+          theme: "green",
+          content: html`Invitation expiration removed successfully.`,
         });
       }
 
@@ -3163,9 +3141,8 @@ export default (app: Courselore): void => {
         app.locals.helpers.Flash.set({
           req,
           res,
-          content: html`
-            <div class="flash--green">Invitation expired successfully.</div>
-          `,
+          theme: "green",
+          content: html`Invitation expired successfully.`,
         });
       }
 
@@ -3659,9 +3636,8 @@ export default (app: Courselore): void => {
         app.locals.helpers.Flash.set({
           req,
           res,
-          content: html`
-            <div class="flash--green">Enrollment updated successfully.</div>
-          `,
+          theme: "green",
+          content: html`Enrollment updated successfully.`,
         });
       }
 
@@ -3690,13 +3666,12 @@ export default (app: Courselore): void => {
       app.locals.helpers.Flash.set({
         req,
         res,
+        theme: "green",
         content: html`
-          <div class="flash--green">
-            $${res.locals.managedEnrollment.isSelf
-              ? html`You removed yourself`
-              : html`Person removed`}
-            from the course successfully.
-          </div>
+          $${res.locals.managedEnrollment.isSelf
+            ? html`You removed yourself`
+            : html`Person removed`}
+          from the course successfully.
         `,
       });
 
@@ -3848,9 +3823,8 @@ export default (app: Courselore): void => {
       app.locals.helpers.Flash.set({
         req,
         res,
-        content: html`
-          <div class="flash--green">Enrollment updated successfully.</div>
-        `,
+        theme: "green",
+        content: html`Enrollment updated successfully.`,
       });
 
       res.redirect(

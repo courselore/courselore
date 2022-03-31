@@ -615,16 +615,13 @@ export default (app: Courselore): void => {
         app.locals.helpers.Flash.set({
           req,
           res,
+          theme: "green",
           content: html`
-            <div class="flash--green">
-              <p>
-                Demonstration data including users, courses, conversations, and
-                so forth, have been created and you’ve been signed in as a
-                demonstration user to give you a better idea of what Courselore
-                looks like in use. If you wish to sign in as another one of the
-                demonstration users, their password is “courselore”.
-              </p>
-            </div>
+            Demonstration data including users, courses, conversations, and so
+            forth, have been created and you’ve been signed in as a
+            demonstration user to give you a better idea of what Courselore
+            looks like in use. If you wish to sign in as another one of the
+            demonstration users, their password is “courselore”.
           `,
         });
         res.redirect(app.locals.options.baseURL);

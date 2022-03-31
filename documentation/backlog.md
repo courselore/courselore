@@ -4,6 +4,7 @@
 
 - Flash:
   - Theme.
+  - Test “See invitation link”.
 
 ```
             ${["green", "rose"].map(

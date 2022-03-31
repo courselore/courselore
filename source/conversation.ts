@@ -6284,9 +6284,8 @@ export default (app: Courselore): void => {
       app.locals.helpers.Flash.set({
         req,
         res,
-        content: html`
-          <div class="flash--green">Conversation removed successfully.</div>
-        `,
+        theme: "green",
+        content: html`Conversation removed successfully.`,
       });
       res.redirect(
         `${app.locals.options.baseURL}/courses/${

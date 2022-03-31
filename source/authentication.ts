@@ -527,9 +527,8 @@ export default (app: Courselore): void => {
         app.locals.helpers.Flash.set({
           req,
           res,
-          content: html`
-            <div class="flash--rose">Incorrect email & password.</div>
-          `,
+          theme: "rose",
+          content: html`Incorrect email & password.`,
         });
         return res.redirect(
           `${app.locals.options.baseURL}/sign-in${qs.stringify(req.query, {
@@ -702,7 +701,8 @@ export default (app: Courselore): void => {
       app.locals.helpers.Flash.set({
         req,
         res,
-        content: html`<div class="flash--rose">Email not found.</div>`,
+        theme: "rose",
+        content: html`Email not found.`,
       });
       return res.redirect(
         `${app.locals.options.baseURL}/reset-password${qs.stringify(req.query, {
@@ -752,7 +752,8 @@ export default (app: Courselore): void => {
       app.locals.helpers.Flash.set({
         req,
         res,
-        content: html`<div class="flash--green">Email resent.</div>`,
+        theme: "green",
+        content: html`Email resent.`,
       });
     res.send(
       app.locals.layouts.box({
@@ -801,11 +802,8 @@ export default (app: Courselore): void => {
         app.locals.helpers.Flash.set({
           req,
           res,
-          content: html`
-            <div class="flash--rose">
-              This password reset link is invalid or expired.
-            </div>
-          `,
+          theme: "rose",
+          content: html`This password reset link is invalid or expired.`,
         });
         return res.redirect(
           `${app.locals.options.baseURL}/reset-password${qs.stringify(
@@ -898,11 +896,9 @@ export default (app: Courselore): void => {
         app.locals.helpers.Flash.set({
           req,
           res,
-          content: html`
-            <div class="flash--rose">
-              Something went wrong in your password reset. Please start over.
-            </div>
-          `,
+          theme: "rose",
+          content: html`Something went wrong in your password reset. Please
+          start over.`,
         });
         return res.redirect(
           `${app.locals.options.baseURL}/reset-password${qs.stringify(
@@ -928,9 +924,8 @@ export default (app: Courselore): void => {
       app.locals.helpers.Flash.set({
         req,
         res,
-        content: html`
-          <div class="flash--green">Password reset successfully.</div>
-        `,
+        theme: "green",
+        content: html`Password reset successfully.`,
       });
       res.redirect(`${app.locals.options.baseURL}${req.query.redirect ?? "/"}`);
     })
@@ -1166,7 +1161,8 @@ export default (app: Courselore): void => {
         app.locals.helpers.Flash.set({
           req,
           res,
-          content: html`<div class="flash--rose">Email already taken.</div>`,
+          theme: "rose",
+          content: html`Email already taken.`,
         });
         return res.redirect(
           `${app.locals.options.baseURL}/sign-in${qs.stringify(req.query, {
@@ -1222,9 +1218,8 @@ export default (app: Courselore): void => {
         app.locals.helpers.Flash.set({
           req,
           res,
-          content: html`
-            <div class="flash--rose">Email already confirmed.</div>
-          `,
+          theme: "rose",
+          content: html`Email already confirmed.`,
         });
         return res.redirect("back");
       }
@@ -1237,9 +1232,8 @@ export default (app: Courselore): void => {
       app.locals.helpers.Flash.set({
         req,
         res,
-        content: html`
-          <div class="flash--green">Confirmation email resent.</div>
-        `,
+        theme: "green",
+        content: html`Confirmation email resent.`,
       });
       res.redirect("back");
     }
@@ -1272,11 +1266,10 @@ export default (app: Courselore): void => {
         app.locals.helpers.Flash.set({
           req,
           res,
+          theme: "rose",
           content: html`
-            <div class="flash--rose">
-              This email confirmation link is invalid or belongs to a different
-              account.
-            </div>
+            This email confirmation link is invalid or belongs to a different
+            account.
           `,
         });
         return res.redirect(
@@ -1293,9 +1286,8 @@ export default (app: Courselore): void => {
       app.locals.helpers.Flash.set({
         req,
         res,
-        content: html`
-          <div class="flash--green">Email confirmed successfully.</div>
-        `,
+        theme: "green",
+        content: html`Email confirmed successfully.`,
       });
       res.redirect(`${app.locals.options.baseURL}${req.query.redirect ?? "/"}`);
     }

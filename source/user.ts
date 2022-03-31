@@ -939,9 +939,8 @@ export default (app: Courselore): void => {
       app.locals.helpers.Flash.set({
         req,
         res,
-        content: html`
-          <div class="flash--green">Profile updated successfully.</div>
-        `,
+        theme: "green",
+        content: html`Profile updated successfully.`,
       });
       res.redirect(`${app.locals.options.baseURL}/settings/profile`);
     }
@@ -1154,7 +1153,8 @@ export default (app: Courselore): void => {
         app.locals.helpers.Flash.set({
           req,
           res,
-          content: html`<div class="flash--rose">Incorrect password.</div>`,
+          theme: "rose",
+          content: html`Incorrect password.`,
         });
         return res.redirect(
           `${app.locals.options.baseURL}/settings/update-email-and-password`
@@ -1174,7 +1174,8 @@ export default (app: Courselore): void => {
           app.locals.helpers.Flash.set({
             req,
             res,
-            content: html`<div class="flash--rose">Email already taken.</div>`,
+            theme: "rose",
+            content: html`Email already taken.`,
           });
           return res.redirect(
             `${app.locals.options.baseURL}/settings/update-email-and-password`
@@ -1198,9 +1199,8 @@ export default (app: Courselore): void => {
         app.locals.helpers.Flash.set({
           req,
           res,
-          content: html`
-            <div class="flash--green">Email updated successfully.</div>
-          `,
+          theme: "green",
+          content: html`Email updated successfully.`,
         });
       }
 
@@ -1229,9 +1229,8 @@ export default (app: Courselore): void => {
         app.locals.helpers.Flash.set({
           req,
           res,
-          content: html`
-            <div class="flash--green">Password updated successfully.</div>
-          `,
+          theme: "green",
+          content: html`Password updated successfully.`,
         });
       }
 
@@ -1376,11 +1375,8 @@ export default (app: Courselore): void => {
       app.locals.helpers.Flash.set({
         req,
         res,
-        content: html`
-          <div class="flash--green">
-            Notifications preferences updated successfully.
-          </div>
-        `,
+        theme: "green",
+        content: html`Notifications preferences updated successfully.`,
       });
 
       res.redirect(
