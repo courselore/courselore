@@ -2,11 +2,65 @@
 
 ### Performance
 
+```
+implement special cases for textarea, input, and select (refer to morphdom and nanomorph)
+
+
+
+{
+              childrenOnly: true,
+              ...(liveUpdate
+                ? {
+                    onBeforeNodeAdded(node) {
+                      if (node.nodeType === node.ELEMENT_NODE)
+                        for (const element of leafac.descendants(node))
+                          element.onbeforeadd?.();
+                      return node;
+                    },
+                    onNodeAdded(node) {
+                      node.onadd?.();
+                    },
+                    onBeforeElUpdated(from, to) {
+                      to.hidden = from.hidden;
+                      to.defaultValue = from.defaultValue;
+                      to.value = from.value;
+                      to.defaultChecked = from.defaultChecked;
+                      to.checked = from.checked;
+                      const onbeforeupdate = from.onbeforeupdate?.(to);
+                      return typeof onbeforeupdate === "boolean"
+                        ? onbeforeupdate
+                        : from.partialParentElement !== true;
+                    },
+                    onElUpdated(element) {
+                      element.onupdate?.();
+                    },
+                    onBeforeNodeDiscarded(node) {
+                      const onbeforeremove = node.onbeforeremove?.();
+                      return typeof onbeforeremove === "boolean"
+                        ? onbeforeremove
+                        : !node.matches?.("[data-tippy-root]");
+                    },
+                    onNodeDiscarded(node) {
+                      node.onremove?.();
+                    },
+                    onBeforeElChildrenUpdated(from, to) {
+                      const onbeforechildrenupdate =
+                        from.onbeforechildrenupdate?.(to);
+                      return typeof onbeforechildrenupdate === "boolean"
+                        ? onbeforechildrenupdate
+                        : true;
+                    },
+                  }
+                : {}),
+            }
+```
+
+
 - “Views” tooltip may misalign because it starts with “loading” and then we change the content without calling `.setContent()`.
-- Review uses of `leafac.morph`, because they’re still passing `morphdom` arguments.
 - Convert `id`s into `key`s.
   - `#`.
   - `html-for-javascript`.
+  - `local-css`.
   - Review situations in which we’re using classes as `key`s.
 - `isLive` → `isConnected` (after DOM `Node` API).
 - Use <template> tags?

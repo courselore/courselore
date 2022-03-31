@@ -161,12 +161,8 @@ const leafac = {
       "#html-for-javascript"
     );
     partialHTMLForJavaScript.remove();
-    leafac.morph(parentElement, partialDocument.querySelector("body"), {
-      childrenOnly: true,
-    });
-    leafac.morph(HTMLForJavaScript, partialHTMLForJavaScript, {
-      childrenOnly: true,
-    });
+    leafac.morph(parentElement, partialDocument.querySelector("body"));
+    leafac.morph(HTMLForJavaScript, partialHTMLForJavaScript);
     parentElement.partialParentElement = true;
     for (const element of [
       ...parentElement.querySelectorAll("[onload]"),
