@@ -3,7 +3,6 @@
 ### Performance
 
 - Flash:
-  - Test “See invitation link”.
 
 ```
             ${["green", "rose"].map(
