@@ -2184,7 +2184,7 @@ export default (app: Courselore): void => {
 
                     return html`
                       <div
-                        data-key="invitation--${invitation.reference}"
+                        key="invitation--${invitation.reference}"
                         class="${res.locals.localCSS(css`
                           padding-top: var(--space--4);
                           border-top: var(--border-width--1) solid
@@ -2914,7 +2914,7 @@ export default (app: Courselore): void => {
                     class="link"
                     onload="${javascript`
                       this.onclick = () => {
-                        const button = document.querySelector('[data-key="invitation--${invitation.reference}"] .button--see-invitation-link');
+                        const button = document.querySelector('[key="invitation--${invitation.reference}"] .button--see-invitation-link');
                         button.click();
                         button.tooltip.hide();
                         this.closest(".flash").remove();

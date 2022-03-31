@@ -177,7 +177,7 @@ const leafac = {
         node,
         `${node.nodeType}--${
           node.nodeType === node.ELEMENT_NODE
-            ? `${node.tagName}--${node.dataset.key}`
+            ? `${node.tagName}--${node.getAttribute("key")}`
             : node.nodeValue
         }`,
       ])

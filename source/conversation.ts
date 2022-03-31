@@ -1237,7 +1237,7 @@ export default (app: Courselore): void => {
                         : html``}
 
                       <div
-                        data-key="conversations"
+                        key="conversations"
                         onload="${javascript`
                         ${
                           req.query.scrollToConversation !== "false"
@@ -1255,7 +1255,7 @@ export default (app: Courselore): void => {
                                           this.closest(".conversation--layout--sidebar").scroll(0, 0);
                                         `
                                       : javascript`
-                                          this.querySelector('[data-key="conversation--${res.locals.conversation.reference}"]')?.scrollIntoView({ block: "center" });
+                                          this.querySelector('[key="conversation--${res.locals.conversation.reference}"]')?.scrollIntoView({ block: "center" });
                                         `
                                   }
                                 }, 0);
@@ -1269,7 +1269,7 @@ export default (app: Courselore): void => {
                             const isSelected =
                               conversation.id === res.locals.conversation?.id;
                             return html`
-                              <div data-key="conversation--${conversation.reference}">
+                              <div key="conversation--${conversation.reference}">
                                 <hr
                                   class="separator ${res.locals.localCSS(css`
                                     margin: var(--space---px) var(--space--0);
@@ -3988,7 +3988,7 @@ export default (app: Courselore): void => {
                           ${
                             typeof req.query.messageReference === "string"
                               ? javascript`
-                                  const element = this.querySelector('[data-key="message--${req.query.messageReference}"]');
+                                  const element = this.querySelector('[key="message--${req.query.messageReference}"]');
                                   if (element === null) return;
                                   element.scrollIntoView();
                                   element.querySelector(".message--highlight").style.animation = "message--highlight 2s var(--transition-timing-function--in-out)";
@@ -4068,7 +4068,7 @@ export default (app: Courselore): void => {
                           `
                         : html`
                             <div
-                              data-key="messages"
+                              key="messages"
                               class="${res.locals.localCSS(css`
                                 ${res.locals.conversation.type === "chat"
                                   ? css`
@@ -4119,7 +4119,7 @@ export default (app: Courselore): void => {
                                 (message) =>
                                   html`
                                     <div
-                                      data-key="message--${message.reference}"
+                                      key="message--${message.reference}"
                                       data-content-source="${JSON.stringify(
                                         message.contentSource
                                       )}"
