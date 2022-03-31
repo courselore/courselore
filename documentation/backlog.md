@@ -2,6 +2,73 @@
 
 ### Performance
 
+- Flash:
+  - Theme.
+
+```
+            ${["green", "rose"].map(
+              (color) => css`
+                .flash--${color} {
+                  &,
+                  & + .button--transparent {
+                    color: var(--color--${color}--700);
+                  }
+                  background-color: var(--color--${color}--100);
+                  & + .button--transparent {
+                    &:hover,
+                    &:focus-within {
+                      background-color: var(--color--${color}--200);
+                    }
+                    &:active {
+                      background-color: var(--color--${color}--300);
+                    }
+                  }
+                  @media (prefers-color-scheme: dark) {
+                    &,
+                    & + .button--transparent {
+                      color: var(--color--${color}--200);
+                    }
+                    background-color: var(--color--${color}--900);
+                    & + .button--transparent {
+                      &:hover,
+                      &:focus-within {
+                        background-color: var(--color--${color}--800);
+                      }
+                      &:active {
+                        background-color: var(--color--${color}--700);
+                      }
+                    }
+                  }
+                  padding: var(--space--1) var(--space--10);
+                  display: flex;
+                  justify-content: center;
+                  text-align: center;
+                  & > * {
+                    flex: 1;
+                    max-width: var(--width--prose);
+                  }
+                  .link {
+                    color: var(--color--${color}--600);
+                    &:hover,
+                    &:focus-within {
+                      color: var(--color--${color}--500);
+                    }
+                    &:active {
+                      color: var(--color--${color}--700);
+                    }
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--${color}--100);
+                      &:hover,
+                      &:focus-within {
+                        color: var(--color--${color}--50);
+                      }
+                      &:active {
+                        color: var(--color--${color}--200);
+                      }
+                    }
+                  }}
+```
+
 ```
 implement special cases for textarea, input, and select (refer to morphdom and nanomorph)
 
