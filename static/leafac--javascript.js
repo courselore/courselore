@@ -129,9 +129,12 @@ const leafac = {
               window.history.pushState(undefined, "", request.url);
             const body = document.querySelector("body");
             (body.networkError ??= tippy(body)).setProps({
-              theme: "error",
+              appendTo: body,
               trigger: "manual",
+              hideOnClick: false,
+              theme: "error",
               arrow: false,
+              interactive: true,
               content:
                 "You appear to be offline. Please check your internet connection and try reloading the page.",
             });

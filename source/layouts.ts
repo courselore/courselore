@@ -228,6 +228,48 @@ export default async (app: Courselore): Promise<void> => {
             this.onscroll = () => {
               this.scroll(0, 0);
             };
+
+            ${(() => {
+              const flash = app.locals.helpers.Flash.get({ req, res });
+              return flash === undefined
+                ? javascript``
+                : javascript`
+                    const body = document.querySelector("body");
+                    (body.flash ??= tippy(body)).setProps({
+                      appendTo: body,
+                      trigger: "manual",
+                      hideOnClick: false,
+                      theme: "error",
+                      arrow: false,
+                      interactive: true,
+                      content: ${res.locals.HTMLForJavaScript(
+                        html`
+                          <div
+                            class="${res.locals.localCSS(css`
+                              padding: var(--space--1) var(--space--2);
+                              display: flex;
+                              gap: var(--space--2);
+                              align-items: flex-start;
+                            `)}"
+                          >
+                            <div>$${flash}</div>
+                            <button
+                              class="button button--tight button--tight--inline button--transparent"
+                              onload="${javascript`
+                                this.onclick = () => {
+                                  tippy.hideAll();
+                                };
+                              `}"
+                            >
+                              <i class="bi bi-x-circle"></i>
+                            </button>
+                          </div>
+                        `
+                      )},
+                    });
+                    body.flash.show();
+                  `;
+            })()}
           `}"
         >
           $${res.locals.enrollment === undefined
@@ -530,104 +572,6 @@ export default async (app: Courselore): Promise<void> => {
                 </div>
               `
             : html``}
-          $${(() => {
-            const flash = app.locals.helpers.Flash.get({ req, res });
-            return flash === undefined
-              ? html``
-              : html`
-                  <div
-                    key="flash"
-                    class="flash ${res.locals.localCSS(css`
-                      display: grid;
-                      & > * {
-                        grid-area: 1 / 1;
-                      }
-                      ${["green", "rose"].map(
-                        (color) => css`
-                          .flash--${color} {
-                            &,
-                            & + .button--transparent {
-                              color: var(--color--${color}--700);
-                            }
-                            background-color: var(--color--${color}--100);
-                            & + .button--transparent {
-                              &:hover,
-                              &:focus-within {
-                                background-color: var(--color--${color}--200);
-                              }
-                              &:active {
-                                background-color: var(--color--${color}--300);
-                              }
-                            }
-                            @media (prefers-color-scheme: dark) {
-                              &,
-                              & + .button--transparent {
-                                color: var(--color--${color}--200);
-                              }
-                              background-color: var(--color--${color}--900);
-                              & + .button--transparent {
-                                &:hover,
-                                &:focus-within {
-                                  background-color: var(--color--${color}--800);
-                                }
-                                &:active {
-                                  background-color: var(--color--${color}--700);
-                                }
-                              }
-                            }
-                            padding: var(--space--1) var(--space--10);
-                            display: flex;
-                            justify-content: center;
-                            text-align: center;
-                            & > * {
-                              flex: 1;
-                              max-width: var(--width--prose);
-                            }
-                            .link {
-                              color: var(--color--${color}--600);
-                              &:hover,
-                              &:focus-within {
-                                color: var(--color--${color}--500);
-                              }
-                              &:active {
-                                color: var(--color--${color}--700);
-                              }
-                              @media (prefers-color-scheme: dark) {
-                                color: var(--color--${color}--100);
-                                &:hover,
-                                &:focus-within {
-                                  color: var(--color--${color}--50);
-                                }
-                                &:active {
-                                  color: var(--color--${color}--200);
-                                }
-                              }
-                            }
-                          }
-                        `
-                      )}
-                    `)}"
-                  >
-                    $${flash}
-                    <button
-                      class="button button--tight button--tight--inline button--transparent ${res
-                        .locals.localCSS(css`
-                        justify-self: end;
-                        align-self: start;
-                        margin-top: var(--space--0-5);
-                        margin-right: var(--space--3);
-                      `)}"
-                      onload="${javascript`
-                        this.onclick = () => {
-                          this.closest(".flash").remove();
-                        };
-                      `}"
-                    >
-                      <i class="bi bi-x-circle"></i>
-                    </button>
-                  </div>
-                `;
-          })()}
 
           <div
             key="main"
