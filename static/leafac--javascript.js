@@ -114,53 +114,7 @@ const leafac = {
           if (!liveUpdate) tippy.hideAll();
           leafac.morph(
             document.querySelector("body"),
-            newDocument.querySelector("body"),
-            {
-              childrenOnly: true,
-              ...(liveUpdate
-                ? {
-                    onBeforeNodeAdded(node) {
-                      if (node.nodeType === node.ELEMENT_NODE)
-                        for (const element of leafac.descendants(node))
-                          element.onbeforeadd?.();
-                      return node;
-                    },
-                    onNodeAdded(node) {
-                      node.onadd?.();
-                    },
-                    onBeforeElUpdated(from, to) {
-                      to.hidden = from.hidden;
-                      to.defaultValue = from.defaultValue;
-                      to.value = from.value;
-                      to.defaultChecked = from.defaultChecked;
-                      to.checked = from.checked;
-                      const onbeforeupdate = from.onbeforeupdate?.(to);
-                      return typeof onbeforeupdate === "boolean"
-                        ? onbeforeupdate
-                        : from.partialParentElement !== true;
-                    },
-                    onElUpdated(element) {
-                      element.onupdate?.();
-                    },
-                    onBeforeNodeDiscarded(node) {
-                      const onbeforeremove = node.onbeforeremove?.();
-                      return typeof onbeforeremove === "boolean"
-                        ? onbeforeremove
-                        : !node.matches?.("[data-tippy-root]");
-                    },
-                    onNodeDiscarded(node) {
-                      node.onremove?.();
-                    },
-                    onBeforeElChildrenUpdated(from, to) {
-                      const onbeforechildrenupdate =
-                        from.onbeforechildrenupdate?.(to);
-                      return typeof onbeforechildrenupdate === "boolean"
-                        ? onbeforechildrenupdate
-                        : true;
-                    },
-                  }
-                : {}),
-            }
+            newDocument.querySelector("body")
           );
           window.dispatchEvent(new CustomEvent("DOMContentLoaded", { detail }));
           if (!liveUpdate) document.querySelector("[autofocus]")?.focus();
