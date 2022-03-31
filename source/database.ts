@@ -393,7 +393,18 @@ export default async (app: Courselore): Promise<void> => {
             WHERE "id" = ${message.id}
           `
         );
-    }
+    },
+    sql`
+      DROP TABLE "flashes";
+      CREATE TABLE "flashes" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL,
+        "nonce" TEXT NOT NULL UNIQUE,
+        "theme" TEXT NOT NULL,
+        "content" TEXT NOT NULL
+      );
+      CREATE INDEX "flashesCreatedAtIndex" ON "flashes" (datetime("createdAt"));
+    `
   );
   app.once("close", () => {
     app.locals.database.close();
