@@ -175,10 +175,12 @@ export interface FlashHelper {
   set({
     req,
     res,
+    theme,
     content,
   }: {
     req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
     res: express.Response<any, BaseMiddlewareLocals>;
+    theme: string;
     content: HTML;
   }): void;
   get({
@@ -187,7 +189,7 @@ export interface FlashHelper {
   }: {
     req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
     res: express.Response<any, BaseMiddlewareLocals>;
-  }): HTML | undefined;
+  }): { theme: string; content: HTML } | undefined;
 }
 
 export default async (app: Courselore): Promise<void> => {
@@ -239,7 +241,7 @@ export default async (app: Courselore): Promise<void> => {
                       appendTo: body,
                       trigger: "manual",
                       hideOnClick: false,
-                      theme: "error",
+                      theme: ${JSON.stringify(flash.theme)},
                       arrow: false,
                       interactive: true,
                       content: ${res.locals.HTMLForJavaScript(
@@ -252,7 +254,7 @@ export default async (app: Courselore): Promise<void> => {
                               align-items: flex-start;
                             `)}"
                           >
-                            <div>$${flash}</div>
+                            <div>$${flash.content}</div>
                             <button
                               class="button button--tight button--tight--inline button--transparent"
                               onload="${javascript`
@@ -2896,13 +2898,14 @@ export default async (app: Courselore): Promise<void> => {
   app.locals.helpers.Flash = {
     maxAge: 5 * 60 * 1000,
 
-    set({ req, res, content }) {
+    set({ req, res, theme, content }) {
       const flash = app.locals.database.get<{ nonce: string }>(
         sql`
-          INSERT INTO "flashes" ("createdAt", "nonce", "content")
+          INSERT INTO "flashes" ("createdAt", "nonce", "theme", "content")
           VALUES (
             ${new Date().toISOString()},
             ${cryptoRandomString({ length: 10, type: "alphanumeric" })},
+            ${theme},
             ${content}
           )
           RETURNING *
@@ -2919,9 +2922,10 @@ export default async (app: Courselore): Promise<void> => {
       if (req.cookies.flash === undefined) return undefined;
       const flash = app.locals.database.get<{
         id: number;
+        theme: string;
         content: HTML;
       }>(
-        sql`SELECT "id", "content" FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
+        sql`SELECT "id", "theme", "content" FROM "flashes" WHERE "nonce" = ${req.cookies.flash}`
       );
       delete req.cookies.flash;
       res.clearCookie("flash", app.locals.options.cookies);
@@ -2931,7 +2935,7 @@ export default async (app: Courselore): Promise<void> => {
           DELETE FROM "flashes" WHERE "id" = ${flash.id}
         `
       );
-      return flash.content;
+      return flash;
     },
   };
   setTimeout(function worker() {
