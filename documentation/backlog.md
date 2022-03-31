@@ -3,7 +3,6 @@
 ### Performance
 
 - Flash:
-  - Theme.
   - Test “See invitation link”.
 
 ```
