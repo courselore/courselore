@@ -264,26 +264,28 @@ const leafac = {
         else from.appendChild(nodeToInsert);
       }
     }
-    for (let index = 0; index < from.childNodes.length; index++) {
-      const fromChildNode = from.childNodes[index];
-      const toChildNode = to.childNodes[index];
+    for (
+      let childNodeIndex = 0;
+      childNodeIndex < from.childNodes.length;
+      childNodeIndex++
+    ) {
+      const fromChildNode = from.childNodes[childNodeIndex];
+      const toChildNode = to.childNodes[childNodeIndex];
       if (
         importedNodes.has(fromChildNode) ||
         fromChildNode.nodeType !== fromChildNode.ELEMENT_NODE
       )
         continue;
-      for (const attribute of fromChildNode.getAttributeNames()) {
+      for (const attribute of new Set([
+        ...fromChildNode.getAttributeNames(),
+        ...toChildNode.getAttributeNames(),
+      ])) {
+        const fromAttribute = fromChildNode.getAttribute(attribute);
         const toAttribute = toChildNode.getAttribute(attribute);
         if (toAttribute === null) fromChildNode.removeAttribute(attribute);
-        else if (toAttribute !== fromChildNode.getAttribute(attribute))
+        else if (fromAttribute !== toAttribute)
           fromChildNode.setAttribute(attribute, toAttribute);
       }
-      for (const attribute of toChildNode.getAttributeNames())
-        if (fromChildNode.getAttribute(attribute) === null)
-          fromChildNode.setAttribute(
-            attribute,
-            toChildNode.getAttribute(attribute)
-          );
       leafac.morph(fromChildNode, toChildNode);
     }
   },
