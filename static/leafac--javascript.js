@@ -379,7 +379,7 @@ const leafac = {
         return true;
       if (["radio", "checkbox"].includes(element.type)) {
         if (element.checked !== element.defaultChecked) return true;
-      } else if (element.tagName.toLowerCase() === "option") {
+      } else if (element.matches("option")) {
         if (element.selected !== element.defaultSelected) return true;
       } else if (
         typeof element.value === "string" &&

@@ -193,7 +193,7 @@ export default async (app: Courselore): Promise<void> => {
         const rest: Node[] = [];
         for (const child of element.childNodes)
           (child.nodeType === child.ELEMENT_NODE &&
-          (child as Element).tagName.toLowerCase() === "summary"
+          (child as Element).matches("summary")
             ? summaries
             : rest
           ).push(child);
