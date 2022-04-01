@@ -54,8 +54,6 @@
 - “Views” tooltip may misalign because it starts with “loading” and then we change the content without calling `.setContent()`.
 - Convert `id`s into `key`s.
   - `#`.
-  - `html-for-javascript`.
-  - `local-css`.
   - Review situations in which we’re using classes as `key`s.
 - `isLive` → `isConnected` (after DOM `Node` API).
 - Use <template> tags?
