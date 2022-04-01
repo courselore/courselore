@@ -2,10 +2,17 @@
 
 ### Performance
 
-- Flash:
+- Implement special cases for textarea, input, and select (refer to morphdom and nanomorph)
+- `<input>`
+  - `.value`
+  - `.checked`
+  - `.disabled`
+  - `.indeterminate`
+- `<textarea>`
+- `<select>`
+  - `<option>`
 
 ```
-implement special cases for textarea, input, and select (refer to morphdom and nanomorph)
 
 
 
