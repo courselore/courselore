@@ -159,9 +159,11 @@ const leafac = {
         "beforeend",
         partialDocument.querySelector("head").innerHTML
       );
-    const HTMLForJavaScript = document.querySelector("#html-for-javascript");
+    const HTMLForJavaScript = document.querySelector(
+      `[key="html-for-javascript"]`
+    );
     const partialHTMLForJavaScript = partialDocument.querySelector(
-      "#html-for-javascript"
+      `[key="html-for-javascript"]`
     );
     partialHTMLForJavaScript.remove();
     leafac.morph(parentElement, partialDocument.querySelector("body"));
