@@ -2,7 +2,6 @@
 
 ### Performance
 
-- On content editor `<textarea>` add some sort of `onbeforeload` that will copy the height of the `to` element, to avoid scroll on pages like `/settings/profile`.
 - Make live updates work with new morphing mechanism:
 
 ```
