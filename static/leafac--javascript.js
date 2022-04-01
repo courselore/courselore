@@ -239,6 +239,14 @@ const leafac = {
         else if (fromAttribute !== toAttribute)
           fromChildNode.setAttribute(attribute, toAttribute);
       }
+      switch (fromChildNode.tagName.toLowerCase()) {
+        case "input":
+          fromChildNode.value = toChildNode.value;
+          fromChildNode.checked = toChildNode.checked;
+          fromChildNode.disabled = toChildNode.disabled;
+          fromChildNode.indeterminate = toChildNode.indeterminate;
+          break;
+      }
       leafac.morph(fromChildNode, toChildNode);
     }
   },
