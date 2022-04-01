@@ -3,10 +3,10 @@
     "postinstall": "rollup node_modules/text-field-edit/index.js --file node_modules/text-field-edit/index.umd.js --format umd --name textFieldEdit && npx rollup node_modules/fast-array-diff/esm/index.js --file node_modules/fast-array-diff/index.umd.js --format umd --name fastArrayDiff"
   },
   "dependencies": {
-    "@fontsource/jetbrains-mono": "^4.5.3",
-    "@fontsource/public-sans": "^4.5.3",
-    "@leafac/css": "^0.3.11",
-    "@leafac/javascript": "^0.2.7",
+    "@fontsource/jetbrains-mono": "^4.5.5",
+    "@fontsource/public-sans": "^4.5.5",
+    "@leafac/css": "^0.3.12",
+    "@leafac/javascript": "^0.2.9",
     "autosize": "^5.0.1",
     "bootstrap-icons": "^1.8.1",
     "fake-avatars": "^1.0.0",
