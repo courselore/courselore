@@ -2,7 +2,6 @@
 
 ### Performance
 
-- `local-css`
 - “You appear to be offline” didn’t work in Safari.
 
 ```
