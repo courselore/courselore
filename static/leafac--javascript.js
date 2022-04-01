@@ -241,10 +241,14 @@ const leafac = {
       }
       switch (fromChildNode.tagName.toLowerCase()) {
         case "input":
-          fromChildNode.value = toChildNode.value;
-          fromChildNode.checked = toChildNode.checked;
-          fromChildNode.disabled = toChildNode.disabled;
-          fromChildNode.indeterminate = toChildNode.indeterminate;
+          for (const property of [
+            "value",
+            "checked",
+            "disabled",
+            "indeterminate",
+          ])
+            if (fromChildNode[property] !== toChildNode[property])
+              fromChildNode[property] = toChildNode[property];
           break;
       }
       leafac.morph(fromChildNode, toChildNode);
