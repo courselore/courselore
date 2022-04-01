@@ -2,11 +2,6 @@
 
 ### Performance
 
-- Implement special cases for textarea, input, and select (refer to morphdom and nanomorph)
-  - Special cases come after morphing attributes
-  - `<select>`
-    - `<option>`
-
 - On content editor `<textarea>` add some sort of `onbeforeload` that will copy the height of the `to` element, to avoid scroll on pages like `/settings/profile`.
 
 ```
@@ -60,7 +55,6 @@
                 : {}),
             }
 ```
-
 
 - “Views” tooltip may misalign because it starts with “loading” and then we change the content without calling `.setContent()`.
 - Convert `id`s into `key`s.
