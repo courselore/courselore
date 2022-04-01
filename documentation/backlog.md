@@ -117,6 +117,7 @@
 ### User Interface Improvements
 
 - Add the notion of follow-up question, so that questions aren’t marked as “unresolved” as soon as a student sends a message. It makes sense for when the student just says “thanks.”
+- Autosize makes some screens scroll on form submission, for example, `/settings/profile`.
 
 ---
 
