@@ -803,7 +803,7 @@ export default (app: Courselore): void => {
                       });
 
                       (avatarChooser.uploadingError ??= tippy(avatarChooser)).setProps({
-                        theme: "error",
+                        theme: "rose",
                         trigger: "manual",
                       });
 

@@ -1680,9 +1680,9 @@ export default async (app: Courselore): Promise<void> => {
             margin: var(--space--0) var(--space--2);
           }
 
-          ${["green", "rose"].map(
-            (color) => css`
-              &[data-theme~="${color}"] {
+          ${Object.entries({ green: "green", rose: "rose", error: "rose" }).map(
+            ([theme, color]) => css`
+              &[data-theme~="${theme}"] {
                 color: var(--color--${color}--700);
                 --background-color: var(--color--${color}--100);
                 --border-color: var(--color--${color}--200);
@@ -1694,17 +1694,6 @@ export default async (app: Courselore): Promise<void> => {
               }
             `
           )}
-
-          &[data-theme~="error"] {
-            color: var(--color--rose--700);
-            --background-color: var(--color--rose--100);
-            --border-color: var(--color--rose--200);
-            @media (prefers-color-scheme: dark) {
-              color: var(--color--rose--200);
-              --background-color: var(--color--rose--900);
-              --border-color: var(--color--rose--800);
-            }
-          }
         }
 
         .dark {

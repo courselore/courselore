@@ -1042,6 +1042,7 @@
           line-height: var(--line-height--sm);
           --background-color: var(--color--gray--medium--100);
           --border-color: var(--color--gray--medium--400);
+            
         }
 
         @media (prefers-color-scheme: dark) {
@@ -1049,6 +1050,7 @@
         .tippy-box {
             --background-color: var(--color--gray--medium--800);
             --border-color: var(--color--gray--medium--400)
+            
         }
           }
 
@@ -1152,19 +1154,19 @@
                 }
 
         .tippy-box[data-theme~="error"] {
-            color: var(--color--rose--700);
-            --background-color: var(--color--rose--100);
-            --border-color: var(--color--rose--200);
-          }
+                color: var(--color--rose--700);
+                --background-color: var(--color--rose--100);
+                --border-color: var(--color--rose--200);
+              }
 
         @media (prefers-color-scheme: dark) {
 
         .tippy-box[data-theme~="error"] {
-              color: var(--color--rose--200);
-              --background-color: var(--color--rose--900);
-              --border-color: var(--color--rose--800)
-          }
-            }
+                  color: var(--color--rose--200);
+                  --background-color: var(--color--rose--900);
+                  --border-color: var(--color--rose--800)
+              }
+                }
 
         .dark {
           display: none !important;
