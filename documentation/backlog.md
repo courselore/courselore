@@ -4,11 +4,6 @@
 
 - Implement special cases for textarea, input, and select (refer to morphdom and nanomorph)
   - Special cases come after morphing attributes
-  - `<input>`
-    - `.value`
-    - `.checked`
-    - `.disabled`
-    - `.indeterminate`
   - `<textarea>`
   - `<select>`
     - `<option>`
