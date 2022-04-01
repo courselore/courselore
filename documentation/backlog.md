@@ -53,7 +53,6 @@
 - On content editor `<textarea>` add some sort of `onbeforeload` that will copy the height of the `to` element, to avoid scroll on pages like `/settings/profile`.
 - “Views” tooltip may misalign because it starts with “loading” and then we change the content without calling `.setContent()`.
 - Convert `id`s into `key`s.
-  - `#`.
   - Review situations in which we’re using classes as `key`s.
 - Use <template> tags?
   - For HTMLForJavaScript, which makes sense for templates that will be `.clone(true)`’d, but requires more manual work for tooltips.
