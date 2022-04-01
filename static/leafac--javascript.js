@@ -100,9 +100,11 @@ const leafac = {
             newDocument.querySelector("title").textContent;
           for (const element of liveUpdate
             ? []
-            : document.querySelectorAll(".local-css"))
+            : document.querySelectorAll(`[key="local-css"]`))
             element.remove();
-          for (const element of newDocument.querySelectorAll(".local-css"))
+          for (const element of newDocument.querySelectorAll(
+            `[key="local-css"]`
+          ))
             document
               .querySelector("head")
               .insertAdjacentElement("beforeend", element);
