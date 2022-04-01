@@ -3,14 +3,17 @@
 ### Performance
 
 - Implement special cases for textarea, input, and select (refer to morphdom and nanomorph)
-- `<input>`
-  - `.value`
-  - `.checked`
-  - `.disabled`
-  - `.indeterminate`
-- `<textarea>`
-- `<select>`
-  - `<option>`
+  - Special cases come after morphing attributes
+  - `<input>`
+    - `.value`
+    - `.checked`
+    - `.disabled`
+    - `.indeterminate`
+  - `<textarea>`
+  - `<select>`
+    - `<option>`
+
+- On content editor `<textarea>` add some sort of `onbeforeload` that will copy the height of the `to` element, to avoid scroll on pages like `/settings/profile`.
 
 ```
 
