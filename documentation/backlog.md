@@ -2,14 +2,8 @@
 
 ### Performance
 
-- On content editor `<textarea>` add some sort of `onbeforeload` that will copy the height of the `to` element, to avoid scroll on pages like `/settings/profile`.
-
 ```
-
-
-
 {
-              childrenOnly: true,
               ...(liveUpdate
                 ? {
                     onBeforeNodeAdded(node) {
@@ -56,6 +50,7 @@
             }
 ```
 
+- On content editor `<textarea>` add some sort of `onbeforeload` that will copy the height of the `to` element, to avoid scroll on pages like `/settings/profile`.
 - “Views” tooltip may misalign because it starts with “loading” and then we change the content without calling `.setContent()`.
 - Convert `id`s into `key`s.
   - `#`.
