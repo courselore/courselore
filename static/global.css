@@ -1129,6 +1129,28 @@
                 --border-color: var(--color--green--200);
               }
 
+        .tippy-box[data-theme~="green"] .button.button--transparent:hover,
+                  .tippy-box[data-theme~="green"] .button.button--transparent:focus-within {
+                    background-color: var(--color--green--200);
+                  }
+
+        .tippy-box[data-theme~="green"] .button.button--transparent:active {
+                    background-color: var(--color--green--300);
+                  }
+
+        .tippy-box[data-theme~="green"] .link {
+                  color: var(--color--green--600);
+                }
+
+        .tippy-box[data-theme~="green"] .link:hover,
+                  .tippy-box[data-theme~="green"] .link:focus-within {
+                    color: var(--color--green--500);
+                  }
+
+        .tippy-box[data-theme~="green"] .link:active {
+                    color: var(--color--green--700);
+                  }
+
         @media (prefers-color-scheme: dark) {
 
         .tippy-box[data-theme~="green"] {
@@ -1136,6 +1158,23 @@
                   --background-color: var(--color--green--900);
                   --border-color: var(--color--green--800)
               }
+                    .tippy-box[data-theme~="green"] .button.button--transparent:hover,
+                    .tippy-box[data-theme~="green"] .button.button--transparent:focus-within {
+                      background-color: var(--color--green--800);
+                    }
+                    .tippy-box[data-theme~="green"] .button.button--transparent:active {
+                      background-color: var(--color--green--700);
+                    }
+                  .tippy-box[data-theme~="green"] .link {
+                    color: var(--color--green--100);
+                  }
+                    .tippy-box[data-theme~="green"] .link:hover,
+                    .tippy-box[data-theme~="green"] .link:focus-within {
+                      color: var(--color--green--50);
+                    }
+                    .tippy-box[data-theme~="green"] .link:active {
+                      color: var(--color--green--200);
+                    }
                 }
 
         .tippy-box[data-theme~="rose"] {
@@ -1144,6 +1183,28 @@
                 --border-color: var(--color--rose--200);
               }
 
+        .tippy-box[data-theme~="rose"] .button.button--transparent:hover,
+                  .tippy-box[data-theme~="rose"] .button.button--transparent:focus-within {
+                    background-color: var(--color--rose--200);
+                  }
+
+        .tippy-box[data-theme~="rose"] .button.button--transparent:active {
+                    background-color: var(--color--rose--300);
+                  }
+
+        .tippy-box[data-theme~="rose"] .link {
+                  color: var(--color--rose--600);
+                }
+
+        .tippy-box[data-theme~="rose"] .link:hover,
+                  .tippy-box[data-theme~="rose"] .link:focus-within {
+                    color: var(--color--rose--500);
+                  }
+
+        .tippy-box[data-theme~="rose"] .link:active {
+                    color: var(--color--rose--700);
+                  }
+
         @media (prefers-color-scheme: dark) {
 
         .tippy-box[data-theme~="rose"] {
@@ -1151,6 +1212,23 @@
                   --background-color: var(--color--rose--900);
                   --border-color: var(--color--rose--800)
               }
+                    .tippy-box[data-theme~="rose"] .button.button--transparent:hover,
+                    .tippy-box[data-theme~="rose"] .button.button--transparent:focus-within {
+                      background-color: var(--color--rose--800);
+                    }
+                    .tippy-box[data-theme~="rose"] .button.button--transparent:active {
+                      background-color: var(--color--rose--700);
+                    }
+                  .tippy-box[data-theme~="rose"] .link {
+                    color: var(--color--rose--100);
+                  }
+                    .tippy-box[data-theme~="rose"] .link:hover,
+                    .tippy-box[data-theme~="rose"] .link:focus-within {
+                      color: var(--color--rose--50);
+                    }
+                    .tippy-box[data-theme~="rose"] .link:active {
+                      color: var(--color--rose--200);
+                    }
                 }
 
         .tippy-box[data-theme~="error"] {
@@ -1159,6 +1237,28 @@
                 --border-color: var(--color--rose--200);
               }
 
+        .tippy-box[data-theme~="error"] .button.button--transparent:hover,
+                  .tippy-box[data-theme~="error"] .button.button--transparent:focus-within {
+                    background-color: var(--color--rose--200);
+                  }
+
+        .tippy-box[data-theme~="error"] .button.button--transparent:active {
+                    background-color: var(--color--rose--300);
+                  }
+
+        .tippy-box[data-theme~="error"] .link {
+                  color: var(--color--rose--600);
+                }
+
+        .tippy-box[data-theme~="error"] .link:hover,
+                  .tippy-box[data-theme~="error"] .link:focus-within {
+                    color: var(--color--rose--500);
+                  }
+
+        .tippy-box[data-theme~="error"] .link:active {
+                    color: var(--color--rose--700);
+                  }
+
         @media (prefers-color-scheme: dark) {
 
         .tippy-box[data-theme~="error"] {
@@ -1166,6 +1266,23 @@
                   --background-color: var(--color--rose--900);
                   --border-color: var(--color--rose--800)
               }
+                    .tippy-box[data-theme~="error"] .button.button--transparent:hover,
+                    .tippy-box[data-theme~="error"] .button.button--transparent:focus-within {
+                      background-color: var(--color--rose--800);
+                    }
+                    .tippy-box[data-theme~="error"] .button.button--transparent:active {
+                      background-color: var(--color--rose--700);
+                    }
+                  .tippy-box[data-theme~="error"] .link {
+                    color: var(--color--rose--100);
+                  }
+                    .tippy-box[data-theme~="error"] .link:hover,
+                    .tippy-box[data-theme~="error"] .link:focus-within {
+                      color: var(--color--rose--50);
+                    }
+                    .tippy-box[data-theme~="error"] .link:active {
+                      color: var(--color--rose--200);
+                    }
                 }
 
         .dark {

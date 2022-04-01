@@ -1686,10 +1686,48 @@ export default async (app: Courselore): Promise<void> => {
                 color: var(--color--${color}--700);
                 --background-color: var(--color--${color}--100);
                 --border-color: var(--color--${color}--200);
+                .button.button--transparent {
+                  &:hover,
+                  &:focus-within {
+                    background-color: var(--color--${color}--200);
+                  }
+                  &:active {
+                    background-color: var(--color--${color}--300);
+                  }
+                }
+                .link {
+                  color: var(--color--${color}--600);
+                  &:hover,
+                  &:focus-within {
+                    color: var(--color--${color}--500);
+                  }
+                  &:active {
+                    color: var(--color--${color}--700);
+                  }
+                }
                 @media (prefers-color-scheme: dark) {
                   color: var(--color--${color}--200);
                   --background-color: var(--color--${color}--900);
                   --border-color: var(--color--${color}--800);
+                  .button.button--transparent {
+                    &:hover,
+                    &:focus-within {
+                      background-color: var(--color--${color}--800);
+                    }
+                    &:active {
+                      background-color: var(--color--${color}--700);
+                    }
+                  }
+                  .link {
+                    color: var(--color--${color}--100);
+                    &:hover,
+                    &:focus-within {
+                      color: var(--color--${color}--50);
+                    }
+                    &:active {
+                      color: var(--color--${color}--200);
+                    }
+                  }
                 }
               }
             `
