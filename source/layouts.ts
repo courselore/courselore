@@ -259,7 +259,7 @@ export default async (app: Courselore): Promise<void> => {
                               class="button button--tight button--tight--inline button--transparent"
                               onload="${javascript`
                                 this.onclick = () => {
-                                  tippy.hideAll();
+                                  this.closest("[data-tippy-root]")._tippy.hide();
                                 };
                               `}"
                             >
