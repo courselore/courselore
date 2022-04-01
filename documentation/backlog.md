@@ -2,6 +2,9 @@
 
 ### Performance
 
+- On content editor `<textarea>` add some sort of `onbeforeload` that will copy the height of the `to` element, to avoid scroll on pages like `/settings/profile`.
+- Make live updates work with new morphing mechanism:
+
 ```
 {
               ...(liveUpdate
@@ -50,20 +53,16 @@
             }
 ```
 
-- On content editor `<textarea>` add some sort of `onbeforeload` that will copy the height of the `to` element, to avoid scroll on pages like `/settings/profile`.
-- “Views” tooltip may misalign because it starts with “loading” and then we change the content without calling `.setContent()`.
-- Convert `id`s into `key`s.
-  - Review situations in which we’re using classes as `key`s.
+- “Views” component is broken on non-chat conversations.
+  - “Views” tooltip may misalign because it starts with “loading” and then we change the content without calling `.setContent()`.
 - Use <template> tags?
   - For HTMLForJavaScript, which makes sense for templates that will be `.clone(true)`’d, but requires more manual work for tooltips.
   - For new tag under `/settings/tags`, because it prevents the onload from being targeted by `.querySelector()`.
-- Use `data-` prefix on nonstandard attributes (look for `querySelector`).
-- “Views” component is broken on non-chat conversations.
 - Don’t scroll on form submission when the `previousLocation` is the same as the current `window.location`.
-  - Turn `flash` into tooltip, because it’s breaking scrolling.
-- Add ids to things to prevent morphdom from working too hard.
+- Add keys to things:
   - `.flatMap`
   - `.map`
+  - `class=`
 - Chat:
   - When actions are open and a live update comes in, the scrolling glitches.
   - When you have “Views” open and a live update comes in, the tooltip closes.
