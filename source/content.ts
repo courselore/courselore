@@ -1821,6 +1821,7 @@ export default async (app: Courselore): Promise<void> => {
               `)}"
               onload="${javascript`
                 autosize(this);
+                autosize.update(this);
 
                 this.ondragenter = () => {
                   this.classList.add("drag");
