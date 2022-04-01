@@ -4240,7 +4240,7 @@ export default (app: Courselore): void => {
                                                   leafac.relativizeDateElement(element);
 
                                                   (function update() {
-                                                    if (!leafac.isLiveElement(element)) return;
+                                                    if (!leafac.isConnected(element)) return;
                                                     const dateSeparators = [...document.querySelectorAll(".message--date-separator")];
                                                     const thisDateSeparator = element.closest(".message--date-separator");
                                                     const thisDateSeparatorIndex = dateSeparators.indexOf(thisDateSeparator);

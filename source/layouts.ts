@@ -770,7 +770,7 @@ export default async (app: Courselore): Promise<void> => {
               const element = parentElement.querySelector("div");
               let width = 10;
               (function update() {
-                if (parentElement.hidden || !leafac.isLiveElement(element)) return;
+                if (parentElement.hidden || !leafac.isConnected(element)) return;
                 element.style.width = width.toString() + "%";
                 width += (90 - width) / (5 + Math.random() * 15);
                 window.clearTimeout(element.updateTimeoutID);

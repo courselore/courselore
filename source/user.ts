@@ -301,7 +301,7 @@ export default (app: Courselore): void => {
                 });
 
                 (function update() {
-                  if (!leafac.isLiveElement(element)) return;
+                  if (!leafac.isConnected(element)) return;
                   element.hidden = Date.now() - ${new Date(
                     user.lastSeenOnlineAt
                   ).getTime()} > 5 * 60 * 1000;

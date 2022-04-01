@@ -55,7 +55,6 @@
 - Convert `id`s into `key`s.
   - `#`.
   - Review situations in which we’re using classes as `key`s.
-- `isLive` → `isConnected` (after DOM `Node` API).
 - Use <template> tags?
   - For HTMLForJavaScript, which makes sense for templates that will be `.clone(true)`’d, but requires more manual work for tooltips.
   - For new tag under `/settings/tags`, because it prevents the onload from being targeted by `.querySelector()`.

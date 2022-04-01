@@ -422,7 +422,7 @@ const leafac = {
 
   relativizeDateTimeElement(element, options = {}) {
     (function update() {
-      if (!leafac.isLiveElement(element)) return;
+      if (!leafac.isConnected(element)) return;
       const dateTime = element.getAttribute("datetime");
       (element.relativizeDateTimeElementTooltip ??= tippy(element)).setProps({
         touch: false,
@@ -439,7 +439,7 @@ const leafac = {
 
   relativizeDateElement(element) {
     (function update() {
-      if (!leafac.isLiveElement(element)) return;
+      if (!leafac.isConnected(element)) return;
       element.textContent = leafac.relativizeDate(
         element.getAttribute("datetime")
       );
@@ -649,13 +649,13 @@ const leafac = {
     return element === null ? [] : [element, ...element.querySelectorAll("*")];
   },
 
-  isLiveElement(element) {
+  isConnected(element) {
     const ancestors = leafac.ancestors(element);
     const root = ancestors[ancestors.length - 1];
     return (
       root.matches("html") ||
       (root.matches("[data-tippy-root]") &&
-        leafac.isLiveElement(root._tippy.reference))
+        leafac.isConnected(root._tippy.reference))
     );
   },
 
