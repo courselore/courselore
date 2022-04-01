@@ -2,8 +2,6 @@
 
 ### Performance
 
-- “You appear to be offline” didn’t work in Safari.
-
 ```
 {
               ...(liveUpdate
