@@ -250,6 +250,10 @@ const leafac = {
             if (fromChildNode[property] !== toChildNode[property])
               fromChildNode[property] = toChildNode[property];
           break;
+        case "textarea":
+          if (fromChildNode.value !== toChildNode.value)
+            fromChildNode.value = toChildNode.value;
+          break;
       }
       leafac.morph(fromChildNode, toChildNode);
     }

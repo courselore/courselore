@@ -4,7 +4,6 @@
 
 - Implement special cases for textarea, input, and select (refer to morphdom and nanomorph)
   - Special cases come after morphing attributes
-  - `<textarea>`
   - `<select>`
     - `<option>`
 
