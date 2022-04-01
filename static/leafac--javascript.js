@@ -108,11 +108,6 @@ const leafac = {
             document
               .querySelector("head")
               .insertAdjacentElement("beforeend", element);
-          if (liveUpdate)
-            for (const element of newDocument.querySelectorAll(
-              "[onbeforeload]"
-            ))
-              new Function(element.getAttribute("onbeforeload")).call(element);
           if (!liveUpdate) tippy.hideAll();
           leafac.morph(
             document.querySelector("body"),
