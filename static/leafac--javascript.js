@@ -111,7 +111,8 @@ const leafac = {
           if (!liveUpdate) tippy.hideAll();
           leafac.morph(
             document.querySelector("body"),
-            newDocument.querySelector("body")
+            newDocument.querySelector("body"),
+            { liveUpdate }
           );
           window.dispatchEvent(new CustomEvent("DOMContentLoaded", { detail }));
           if (!liveUpdate) document.querySelector("[autofocus]")?.focus();
@@ -175,7 +176,7 @@ const leafac = {
     parentElement.forceIsConnected = false;
   },
 
-  morph(from, to) {
+  morph(from, to, { liveUpdate = false } = {}) {
     const keys = new Map(
       [...from.childNodes, ...to.childNodes].map((node) => [
         node,
@@ -230,6 +231,16 @@ const leafac = {
         fromChildNode.nodeType !== fromChildNode.ELEMENT_NODE
       )
         continue;
+      if (liveUpdate)
+        for (const property of [
+          "hidden",
+          "defaultValue",
+          "value",
+          "defaultChecked",
+          "checked",
+        ])
+          if (toChildNode[property] !== fromChildNode[property])
+            toChildNode[property] = fromChildNode[property];
       for (const attribute of new Set([
         ...fromChildNode.getAttributeNames(),
         ...toChildNode.getAttributeNames(),

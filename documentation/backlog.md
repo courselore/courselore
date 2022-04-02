@@ -13,15 +13,7 @@ parentElement.partialParentElement = true;
               ...(liveUpdate
                 ? {
                     onBeforeElUpdated(from, to) {
-                      to.hidden = from.hidden;
-                      to.defaultValue = from.defaultValue;
-                      to.value = from.value;
-                      to.defaultChecked = from.defaultChecked;
-                      to.checked = from.checked;
-                      const onbeforeupdate = from.onbeforeupdate?.(to);
-                      return typeof onbeforeupdate === "boolean"
-                        ? onbeforeupdate
-                        : from.partialParentElement !== true;
+                      return from.partialParentElement !== true;
                     },
                     onBeforeNodeDiscarded(node) {
                       const onbeforeremove = node.onbeforeremove?.();
