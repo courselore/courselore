@@ -5607,7 +5607,7 @@ export default (app: Courselore): void => {
                                                       trigger: "click",
                                                       interactive: true,
                                                       onShow: async () => {
-                                                        const partial = await (await fetch("${
+                                                        leafac.loadPartial(content, await (await fetch("${
                                                           app.locals.options
                                                             .baseURL
                                                         }/courses/${
@@ -5617,9 +5617,8 @@ export default (app: Courselore): void => {
                                                       .reference
                                                   }/messages/${
                                                     message.reference
-                                                  }/views")).text();
+                                                  }/views")).text());
                                                         this.tooltip.setContent(content);
-                                                        leafac.loadPartial(content, partial);
                                                       },
                                                       onHidden: () => {
                                                         this.tooltip.setContent(loading);
