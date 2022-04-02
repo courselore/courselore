@@ -237,13 +237,9 @@ const leafac = {
       ])) {
         if (
           liveUpdate &&
-          [
-            "hidden",
-            "defaultValue",
-            "value",
-            "defaultChecked",
-            "checked",
-          ].includes(attribute)
+          ["hidden", "value", "checked", "disabled", "indeterminate"].includes(
+            attribute
+          )
         )
           continue;
         const fromAttribute = fromChildNode.getAttribute(attribute);
