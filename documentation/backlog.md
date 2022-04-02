@@ -2,8 +2,6 @@
 
 ### Performance
 
-- “Views” component is broken on non-chat conversations.
-  - “Views” tooltip may misalign because it starts with “loading” and then we change the content without calling `.setContent()`.
 - Make live updates work with new morphing mechanism:
 
 ```
