@@ -12,15 +12,6 @@ parentElement.partialParentElement = true;
 {
               ...(liveUpdate
                 ? {
-                    onBeforeNodeAdded(node) {
-                      if (node.nodeType === node.ELEMENT_NODE)
-                        for (const element of leafac.descendants(node))
-                          element.onbeforeadd?.();
-                      return node;
-                    },
-                    onNodeAdded(node) {
-                      node.onadd?.();
-                    },
                     onBeforeElUpdated(from, to) {
                       to.hidden = from.hidden;
                       to.defaultValue = from.defaultValue;
@@ -32,24 +23,11 @@ parentElement.partialParentElement = true;
                         ? onbeforeupdate
                         : from.partialParentElement !== true;
                     },
-                    onElUpdated(element) {
-                      element.onupdate?.();
-                    },
                     onBeforeNodeDiscarded(node) {
                       const onbeforeremove = node.onbeforeremove?.();
                       return typeof onbeforeremove === "boolean"
                         ? onbeforeremove
                         : !node.matches?.("[data-tippy-root]");
-                    },
-                    onNodeDiscarded(node) {
-                      node.onremove?.();
-                    },
-                    onBeforeElChildrenUpdated(from, to) {
-                      const onbeforechildrenupdate =
-                        from.onbeforechildrenupdate?.(to);
-                      return typeof onbeforechildrenupdate === "boolean"
-                        ? onbeforechildrenupdate
-                        : true;
                     },
                   }
                 : {}),
