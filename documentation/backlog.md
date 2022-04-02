@@ -31,8 +31,8 @@
 ---
 
 - Use <template> tags?
-  - For HTMLForJavaScript, which makes sense for templates that will be `.clone(true)`’d, but requires more manual work for tooltips.
   - For new tag under `/settings/tags`, because it prevents the onload from being targeted by `.querySelector()`.
+  - For HTMLForJavaScript, which makes sense for templates that will be `.clone(true)`’d, but requires more manual work for tooltips.
 - Add keys to things:
   - `.flatMap`
   - `.map`
