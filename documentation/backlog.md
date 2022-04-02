@@ -5,10 +5,6 @@
 - Make live updates work with new morphing mechanism:
 
 ```
-parentElement.partialParentElement = true;
-
-
-
 {
               ...(liveUpdate
                 ? {
