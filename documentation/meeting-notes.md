@@ -1,6 +1,13 @@
 # Meeting Notes
 
 <details>
+<summary>2021-04-02</summary>
+
+- Converted from morphdom into own implementation, which minimizes changes to the DOM, fixing glitches with tooltips, scrolling, and so forth.
+
+</details>
+
+<details>
 <summary>2021-03-20</summary>
 
 - We finished and deployed many performance improvements, including live navigation and live updates powered by live navigation.
