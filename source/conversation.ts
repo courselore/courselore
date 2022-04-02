@@ -5575,8 +5575,6 @@ export default (app: Courselore): void => {
                                                 <button
                                                   class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                                   onload="${javascript`
-                                                    let isFetching = false;
-
                                                     const loading = ${res.locals
                                                       .HTMLForJavaScript(html`
                                                       <div
@@ -5609,24 +5607,20 @@ export default (app: Courselore): void => {
                                                       trigger: "click",
                                                       interactive: true,
                                                       onShow: async () => {
-                                                        if (isFetching) return;
-                                                        isFetching = true;
-                                                        leafac.loadPartial(
-                                                          content,
-                                                          await (await fetch("${
-                                                            app.locals.options
-                                                              .baseURL
-                                                          }/courses/${
-                                                    res.locals.course.reference
-                                                  }/conversations/${
-                                                    res.locals.conversation
-                                                      .reference
-                                                  }/messages/${
-                                                    message.reference
-                                                  }/views")).text()
-                                                        );
-                                                        this.tooltip.setContent(content);
-                                                        isFetching = false;
+                                                        const partial = await (await fetch("${
+                                                          app.locals.options
+                                                            .baseURL
+                                                        }/courses/${
+                                                  res.locals.course.reference
+                                                }/conversations/${
+                                                  res.locals.conversation
+                                                    .reference
+                                                }/messages/${
+                                                  message.reference
+                                                }/views")).text();
+                                                        // this.tooltip.setContent(content);
+                                                        // leafac.loadPartial(content, partial);
+                                                        // this.tooltip.setContent(content);
                                                       },
                                                       onHidden: () => {
                                                         this.tooltip.setContent(loading);
