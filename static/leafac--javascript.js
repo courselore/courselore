@@ -269,7 +269,7 @@ const leafac = {
               fromChildNode.value = toChildNode.value;
             break;
         }
-      leafac.morph(fromChildNode, toChildNode);
+      leafac.morph(fromChildNode, toChildNode, { liveUpdate });
     }
   },
 
