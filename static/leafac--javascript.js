@@ -265,7 +265,8 @@ const leafac = {
               fromChildNode.value = toChildNode.value;
             break;
         }
-      leafac.morph(fromChildNode, toChildNode, { liveUpdate });
+      if (fromChildNode.partialParentElement !== true)
+        leafac.morph(fromChildNode, toChildNode, { liveUpdate });
     }
   },
 
