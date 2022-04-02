@@ -1258,7 +1258,7 @@ export default (app: Courselore): void => {
                                           this.querySelector('[key="conversation--${res.locals.conversation.reference}"]')?.scrollIntoView({ block: "center" });
                                         `
                                   }
-                                }, 0);
+                                });
                               `
                             : javascript``
                         }
@@ -4030,7 +4030,7 @@ export default (app: Courselore): void => {
                               `
                             : javascript``
                         }
-                      }, 0);
+                      });
                     `}"
                   >
                     <div
@@ -5462,7 +5462,7 @@ export default (app: Courselore): void => {
                                                     dropdownMenuTarget.style.top = String(event.layerY) + "px";
                                                     dropdownMenuTarget.style.left = String(event.layerX) + "px";
                                                     dropdownMenuTarget.dropdownMenu.show();
-                                                  }, 0);
+                                                  });
                                                 };
                                               `}"
                                             >
