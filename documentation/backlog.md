@@ -12,9 +12,6 @@ parentElement.partialParentElement = true;
 {
               ...(liveUpdate
                 ? {
-                    onBeforeElUpdated(from, to) {
-                      return from.partialParentElement !== true;
-                    },
                     onBeforeNodeDiscarded(node) {
                       const onbeforeremove = node.onbeforeremove?.();
                       return typeof onbeforeremove === "boolean"
