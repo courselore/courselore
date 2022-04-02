@@ -58,9 +58,9 @@ parentElement.partialParentElement = true;
             }
 ```
 
-- Chat:
-  - When actions are open and a live update comes in, the scrolling glitches.
-  - When you have “Views” open and a live update comes in, the tooltip closes.
+- Live updates and:
+  - “Views”
+  - “Actions”
 - Live updates destinations:
   - Check course id and only send notifications to relevant connections.
   - Prevent live update to browser tab that originated the update: `eventSourceReference`
