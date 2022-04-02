@@ -4439,11 +4439,11 @@ export default (app: Courselore): void => {
                                                                 <button
                                                                   class="dropdown--menu--item button button--transparent"
                                                                   onload="${javascript`
-                                                                    const tooltipContent = ${res
+                                                                    const loading = ${res
                                                                       .locals
                                                                       .HTMLForJavaScript(html`
                                                                       <div
-                                                                        class="loading ${res.locals.localCSS(
+                                                                        class="${res.locals.localCSS(
                                                                           css`
                                                                             display: flex;
                                                                             gap: var(
@@ -4461,34 +4461,20 @@ export default (app: Courselore): void => {
                                                                         )}
                                                                         Loading…
                                                                       </div>
-                                                                      <div
-                                                                        class="content"
-                                                                        hidden
-                                                                      ></div>
                                                                     `)};
-                                                                    tooltipContent.remove();
-                                                                    const loading = tooltipContent.querySelector(".loading");
-                                                                    const content = tooltipContent.querySelector(".content");
-
-                                                                    const setProps = () => {
-                                                                      (this.tooltip ??= tippy(this)).setProps({
-                                                                        trigger: "click",
-                                                                        interactive: true,
-                                                                        onHidden: () => {
-                                                                          loading.hidden = false;
-                                                                          content.hidden = true;
-                                                                        },
-                                                                        content: tooltipContent,
-                                                                      });
-                                                                    };
-                                                                    if (this.tooltip?.state?.isShown) this.tooltip.setProps({ onHidden: setProps });
-                                                                    else setProps();
-
-                                                                    this.onclick = async () => {
-                                                                      if (!content.hidden) return;
-                                                                      leafac.loadPartial(
-                                                                        content,
-                                                                        await (await fetch("${
+                                                                    loading.remove();
+                
+                                                                    const content = ${res.locals.HTMLForJavaScript(
+                                                                      html``
+                                                                    )};
+                                                                    content.remove();
+                
+                                                                    (this.tooltip ??= tippy(this)).setProps({
+                                                                      trigger: "click",
+                                                                      interactive: true,
+                                                                      onShow: async () => {
+                                                                        this.tooltip.setContent(loading);
+                                                                        leafac.loadPartial(content, await (await fetch("${
                                                                           app
                                                                             .locals
                                                                             .options
@@ -4503,11 +4489,10 @@ export default (app: Courselore): void => {
                                                                       .reference
                                                                   }/messages/${
                                                                     message.reference
-                                                                  }/views")).text()
-                                                                      );
-                                                                      loading.hidden = true;
-                                                                      content.hidden = false;
-                                                                    };
+                                                                  }/views")).text());
+                                                                        this.tooltip.setContent(content);
+                                                                      },
+                                                                    });
                                                                   `}"
                                                                 >
                                                                   <i
