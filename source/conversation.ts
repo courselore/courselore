@@ -5597,6 +5597,7 @@ export default (app: Courselore): void => {
                                                         Loading…
                                                       </div>
                                                     `)};
+                                                    loading.remove();
 
                                                     const content = ${res.locals.HTMLForJavaScript(
                                                       html``
@@ -5607,6 +5608,7 @@ export default (app: Courselore): void => {
                                                       trigger: "click",
                                                       interactive: true,
                                                       onShow: async () => {
+                                                        this.tooltip.setContent(loading);
                                                         leafac.loadPartial(content, await (await fetch("${
                                                           app.locals.options
                                                             .baseURL
@@ -5620,10 +5622,6 @@ export default (app: Courselore): void => {
                                                   }/views")).text());
                                                         this.tooltip.setContent(content);
                                                       },
-                                                      onHidden: () => {
-                                                        this.tooltip.setContent(loading);
-                                                      },
-                                                      content: loading,
                                                     });
                                                   `}"
                                                 >
