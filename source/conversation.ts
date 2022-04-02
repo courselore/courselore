@@ -5620,7 +5620,6 @@ export default (app: Courselore): void => {
                                                   }/views")).text();
                                                         this.tooltip.setContent(content);
                                                         leafac.loadPartial(content, partial);
-                                                        this.tooltip.setContent(content);
                                                       },
                                                       onHidden: () => {
                                                         this.tooltip.setContent(loading);
