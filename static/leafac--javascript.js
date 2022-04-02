@@ -166,11 +166,13 @@ const leafac = {
     leafac.morph(parentElement, partialDocument.querySelector("body"));
     leafac.morph(HTMLForJavaScript, partialHTMLForJavaScript);
     parentElement.partialParentElement = true;
+    parentElement.forceIsConnected = true;
     for (const element of [
       ...parentElement.querySelectorAll("[onload]"),
       ...HTMLForJavaScript.querySelectorAll("[onload]"),
     ])
       new Function(element.getAttribute("onload")).call(element);
+    parentElement.forceIsConnected = false;
   },
 
   morph(from, to) {
@@ -645,9 +647,13 @@ const leafac = {
   },
 
   isConnected(element) {
-    if (element.closest("html") !== null) return true;
-    const tippyRoot = element.closest("[data-tippy-root]");
-    return tippyRoot !== null && leafac.isConnected(tippyRoot._tippy.reference);
+    for (const ancestor of leafac.ancestors(element)) {
+      if (ancestor.forceIsConnected === true || ancestor.matches("html"))
+        return true;
+      if (ancestor.matches("[data-tippy-root]"))
+        return leafac.isConnected(ancestor._tippy.reference);
+    }
+    return false;
   },
 
   // https://github.com/ccampbell/mousetrap/blob/2f9a476ba6158ba69763e4fcf914966cc72ef433/mousetrap.js#L135
