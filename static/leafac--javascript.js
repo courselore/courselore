@@ -231,20 +231,21 @@ const leafac = {
         fromChildNode.nodeType !== fromChildNode.ELEMENT_NODE
       )
         continue;
-      if (liveUpdate)
-        for (const property of [
-          "hidden",
-          "defaultValue",
-          "value",
-          "defaultChecked",
-          "checked",
-        ])
-          if (toChildNode[property] !== fromChildNode[property])
-            toChildNode[property] = fromChildNode[property];
       for (const attribute of new Set([
         ...fromChildNode.getAttributeNames(),
         ...toChildNode.getAttributeNames(),
       ])) {
+        if (
+          liveUpdate &&
+          [
+            "hidden",
+            "defaultValue",
+            "value",
+            "defaultChecked",
+            "checked",
+          ].includes(attribute)
+        )
+          continue;
         const fromAttribute = fromChildNode.getAttribute(attribute);
         const toAttribute = toChildNode.getAttribute(attribute);
         if (toAttribute === null) fromChildNode.removeAttribute(attribute);
