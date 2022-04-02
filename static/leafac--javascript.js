@@ -645,13 +645,9 @@ const leafac = {
   },
 
   isConnected(element) {
-    const ancestors = leafac.ancestors(element);
-    const root = ancestors[ancestors.length - 1];
-    return (
-      root.matches("html") ||
-      (root.matches("[data-tippy-root]") &&
-        leafac.isConnected(root._tippy.reference))
-    );
+    if (element.closest("html") !== null) return true;
+    const tippyRoot = element.closest("[data-tippy-root]");
+    return tippyRoot !== null && leafac.isConnected(tippyRoot._tippy.reference);
   },
 
   // https://github.com/ccampbell/mousetrap/blob/2f9a476ba6158ba69763e4fcf914966cc72ef433/mousetrap.js#L135

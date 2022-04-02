@@ -5611,16 +5611,16 @@ export default (app: Courselore): void => {
                                                           app.locals.options
                                                             .baseURL
                                                         }/courses/${
-                                                  res.locals.course.reference
-                                                }/conversations/${
-                                                  res.locals.conversation
-                                                    .reference
-                                                }/messages/${
-                                                  message.reference
-                                                }/views")).text();
-                                                        // this.tooltip.setContent(content);
-                                                        // leafac.loadPartial(content, partial);
-                                                        // this.tooltip.setContent(content);
+                                                    res.locals.course.reference
+                                                  }/conversations/${
+                                                    res.locals.conversation
+                                                      .reference
+                                                  }/messages/${
+                                                    message.reference
+                                                  }/views")).text();
+                                                        this.tooltip.setContent(content);
+                                                        leafac.loadPartial(content, partial);
+                                                        this.tooltip.setContent(content);
                                                       },
                                                       onHidden: () => {
                                                         this.tooltip.setContent(loading);
