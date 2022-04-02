@@ -1269,7 +1269,9 @@ export default (app: Courselore): void => {
                             const isSelected =
                               conversation.id === res.locals.conversation?.id;
                             return html`
-                              <div key="conversation--${conversation.reference}">
+                              <div
+                                key="conversation--${conversation.reference}"
+                              >
                                 <hr
                                   class="separator ${res.locals.localCSS(css`
                                     margin: var(--space---px) var(--space--0);
@@ -5573,11 +5575,12 @@ export default (app: Courselore): void => {
                                                 <button
                                                   class="button button--tight button--tight--inline button--tight-gap button--transparent"
                                                   onload="${javascript`
-                                                    const tooltipContent = ${res
-                                                      .locals
+                                                    let isFetching = false;
+
+                                                    const loading = ${res.locals
                                                       .HTMLForJavaScript(html`
                                                       <div
-                                                        class="loading ${res.locals.localCSS(
+                                                        class="${res.locals.localCSS(
                                                           css`
                                                             display: flex;
                                                             gap: var(
@@ -5595,37 +5598,25 @@ export default (app: Courselore): void => {
                                                         )}
                                                         Loading…
                                                       </div>
-                                                      <div
-                                                        class="content"
-                                                        hidden
-                                                      ></div>
                                                     `)};
-                                                    tooltipContent.remove();
-                                                    const loading = tooltipContent.querySelector(".loading");
-                                                    const content = tooltipContent.querySelector(".content");
 
-                                                    const setProps = () => {
-                                                      (this.tooltip ??= tippy(this)).setProps({
-                                                        trigger: "click",
-                                                        interactive: true,
-                                                        onHidden: () => {
-                                                          loading.hidden = false;
-                                                          content.hidden = true;
-                                                        },
-                                                        content: tooltipContent,
-                                                      });
-                                                    };
-                                                    if (this.tooltip?.state?.isShown) this.tooltip.setProps({ onHidden: setProps });
-                                                    else setProps();
+                                                    const content = ${res.locals.HTMLForJavaScript(
+                                                      html``
+                                                    )};
+                                                    content.remove();
 
-                                                    this.onclick = async () => {
-                                                      if (!content.hidden) return;
-                                                      leafac.loadPartial(
-                                                        content,
-                                                        await (await fetch("${
-                                                          app.locals.options
-                                                            .baseURL
-                                                        }/courses/${
+                                                    (this.tooltip ??= tippy(this)).setProps({
+                                                      trigger: "click",
+                                                      interactive: true,
+                                                      onShow: async () => {
+                                                        if (isFetching) return;
+                                                        isFetching = true;
+                                                        leafac.loadPartial(
+                                                          content,
+                                                          await (await fetch("${
+                                                            app.locals.options
+                                                              .baseURL
+                                                          }/courses/${
                                                     res.locals.course.reference
                                                   }/conversations/${
                                                     res.locals.conversation
@@ -5633,10 +5624,15 @@ export default (app: Courselore): void => {
                                                   }/messages/${
                                                     message.reference
                                                   }/views")).text()
-                                                      );
-                                                      loading.hidden = true;
-                                                      content.hidden = false;
-                                                    };
+                                                        );
+                                                        this.tooltip.setContent(content);
+                                                        isFetching = false;
+                                                      },
+                                                      onHidden: () => {
+                                                        this.tooltip.setContent(loading);
+                                                      },
+                                                      content: loading,
+                                                    });
                                                   `}"
                                                 >
                                                   <i class="bi bi-eye"></i>
