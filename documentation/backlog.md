@@ -2,6 +2,8 @@
 
 ### Performance
 
+- “Views” component is broken on non-chat conversations.
+  - “Views” tooltip may misalign because it starts with “loading” and then we change the content without calling `.setContent()`.
 - Make live updates work with new morphing mechanism:
 
 ```
@@ -52,8 +54,17 @@
             }
 ```
 
-- “Views” component is broken on non-chat conversations.
-  - “Views” tooltip may misalign because it starts with “loading” and then we change the content without calling `.setContent()`.
+- Chat:
+  - When actions are open and a live update comes in, the scrolling glitches.
+  - When you have “Views” open and a live update comes in, the tooltip closes.
+- Live updates destinations:
+  - Check course id and only send notifications to relevant connections.
+  - Prevent live update to browser tab that originated the update: `eventSourceReference`
+    - Pass the `eventSource` identifier right on first server-side render, without requiring a server-sent event message.
+- Do something special on live updates & 404 (for example, when the conversation has been removed).
+
+---
+
 - Use <template> tags?
   - For HTMLForJavaScript, which makes sense for templates that will be `.clone(true)`’d, but requires more manual work for tooltips.
   - For new tag under `/settings/tags`, because it prevents the onload from being targeted by `.querySelector()`.
@@ -61,16 +72,8 @@
   - `.flatMap`
   - `.map`
   - `class=`
-- Chat:
-  - When actions are open and a live update comes in, the scrolling glitches.
-  - When you have “Views” open and a live update comes in, the tooltip closes.
 - Re-fetch partials in the background after live updates? They may have gotten stale, for example, the “Views” component, if it’s open right as a live update is happening.
 - Update tooltip content with morphdom, to avoid scrolling?
-- Live updates destinations:
-  - Check course id and only send notifications to relevant connections.
-  - Prevent live update to browser tab that originated the update: `eventSourceReference`
-    - Pass the `eventSource` identifier right on first server-side render, without requiring a server-sent event message.
-- Do something special on live updates & 404 (for example, when the conversation has been removed).
 
 ---
 
