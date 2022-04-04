@@ -69,6 +69,7 @@
   },
   "caddy": "2.4.6",
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^21.0.3",
     "@types/cookie-parser": "^1.4.2",
     "@types/csurf": "^1.11.2",
     "@types/dedent": "^0.7.0",
