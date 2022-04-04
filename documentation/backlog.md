@@ -5,18 +5,10 @@
 - Make live updates work with new morphing mechanism:
 
 ```
-{
-              ...(liveUpdate
-                ? {
-                    onBeforeNodeDiscarded(node) {
-                      const onbeforeremove = node.onbeforeremove?.();
-                      return typeof onbeforeremove === "boolean"
-                        ? onbeforeremove
-                        : !node.matches?.("[data-tippy-root]");
-                    },
-                  }
-                : {}),
-            }
+const onbeforeremove = node.onbeforeremove?.();
+return typeof onbeforeremove === "boolean"
+  ? onbeforeremove
+  : !node.matches?.("[data-tippy-root]");
 ```
 
 - Live updates and:
