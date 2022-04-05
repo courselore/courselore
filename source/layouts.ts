@@ -1028,7 +1028,7 @@ export default async (app: Courselore): Promise<void> => {
           <script src="${app.locals.options
               .baseURL}/node_modules/autosize/dist/autosize.min.js"></script>
           <script src="${app.locals.options
-              .baseURL}/node_modules/fast-array-diff/index.umd.js"></script>
+              .baseURL}/node_modules/fast-myers-diff/index.umd.js"></script>
           <script src="${app.locals.options
               .baseURL}/node_modules/mousetrap/mousetrap.min.js"></script>
           <script src="${app.locals.options

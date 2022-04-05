@@ -177,97 +177,102 @@ const leafac = {
   },
 
   morph(from, to, { liveUpdate = false } = {}) {
-    const keys = new Map(
-      [...from.childNodes, ...to.childNodes].map((node) => [
-        node,
-        `${node.nodeType}--${
-          node.nodeType === node.ELEMENT_NODE
-            ? `${node.tagName}--${node.getAttribute("key")}`
-            : node.nodeValue
-        }`,
-      ])
-    );
-    const patch = fastArrayDiff.getPatch(
-      [...from.childNodes],
-      [...to.childNodes],
-      (from, to) => keys.get(from) === keys.get(to)
-    );
-    const removedNodes = new Map();
-    for (const { items } of patch.filter(({ type }) => type === "remove"))
-      for (const node of items) {
-        from.removeChild(node);
-        const key = keys.get(node);
-        let moveCandidateNodesQueue = removedNodes.get(key);
-        if (moveCandidateNodesQueue === undefined) {
-          moveCandidateNodesQueue = [];
-          removedNodes.set(key, moveCandidateNodesQueue);
-        }
-        moveCandidateNodesQueue.push(node);
-      }
-    const importedNodes = new Set();
-    for (const { items, newPos } of patch.filter(
-      ({ type }) => type === "add"
-    )) {
-      const nodeAfter = from.childNodes[newPos];
-      for (const node of items) {
-        let nodeToInsert = removedNodes.get(keys.get(node))?.shift();
-        if (nodeToInsert === undefined) {
-          nodeToInsert = document.importNode(node, true);
-          importedNodes.add(nodeToInsert);
-        }
-        if (nodeAfter !== undefined) from.insertBefore(nodeToInsert, nodeAfter);
-        else from.appendChild(nodeToInsert);
-      }
+    const fromChildNodes = from.childNodes;
+    const toChildNodes = to.childNodes;
+    const getKey = (node) =>
+      `${node.nodeType}--${
+        node.nodeType === node.ELEMENT_NODE
+          ? `${node.tagName}--${node.getAttribute("key")}`
+          : node.nodeValue
+      }`;
+    const fromKeys = [...fromChildNodes].map(getKey);
+    const toKeys = [...toChildNodes].map(getKey);
+    const diff = [[0, 0, 0, 0], ...fastMyersDiff.diff(fromKeys, toKeys)];
+    const toRemove = new Set();
+    for (let diffIndex = 1; diffIndex < diff.length; diffIndex++) {
+      const [
+        previousFromStart,
+        previousFromEnd,
+        previousToStart,
+        previousToEnd,
+      ] = diff[diffIndex - 1];
+      const [fromStart, fromEnd, toStart, toEnd] = diff[diffIndex];
+      for (const nodeIndex = fromStart; nodeIndex < fromEnd; nodeIndex++)
+        toRemove.add({
+          key: fromKeys[nodeIndex],
+          node: fromChildNodes[nodeIndex],
+        });
     }
-    for (
-      let childNodeIndex = 0;
-      childNodeIndex < from.childNodes.length;
-      childNodeIndex++
-    ) {
-      const fromChildNode = from.childNodes[childNodeIndex];
-      const toChildNode = to.childNodes[childNodeIndex];
-      if (
-        importedNodes.has(fromChildNode) ||
-        fromChildNode.nodeType !== fromChildNode.ELEMENT_NODE
-      )
-        continue;
-      for (const attribute of new Set([
-        ...fromChildNode.getAttributeNames(),
-        ...toChildNode.getAttributeNames(),
-      ])) {
-        if (
-          liveUpdate &&
-          ["hidden", "value", "checked", "disabled", "indeterminate"].includes(
-            attribute
-          )
-        )
-          continue;
-        const fromAttribute = fromChildNode.getAttribute(attribute);
-        const toAttribute = toChildNode.getAttribute(attribute);
-        if (toAttribute === null) fromChildNode.removeAttribute(attribute);
-        else if (fromAttribute !== toAttribute)
-          fromChildNode.setAttribute(attribute, toAttribute);
-      }
-      if (!liveUpdate)
-        switch (fromChildNode.tagName.toLowerCase()) {
-          case "input":
-            for (const property of [
-              "value",
-              "checked",
-              "disabled",
-              "indeterminate",
-            ])
-              if (fromChildNode[property] !== toChildNode[property])
-                fromChildNode[property] = toChildNode[property];
-            break;
-          case "textarea":
-            if (fromChildNode.value !== toChildNode.value)
-              fromChildNode.value = toChildNode.value;
-            break;
-        }
-      if (fromChildNode.partialParentElement !== true)
-        leafac.morph(fromChildNode, toChildNode, { liveUpdate });
+    const moveCandidates = new Map();
+    for (const { key, node } of toRemove) {
+      from.removeChild(node);
+      if (moveCandidates.get(key)?.push(node) === undefined)
+        moveCandidates.set(key, [node]);
     }
+    // const importedNodes = new Set();
+    // for (const { items, newPos } of patch.filter(
+    //   ({ type }) => type === "add"
+    // )) {
+    //   const nodeAfter = fromChildNodes[newPos];
+    //   for (const node of items) {
+    //     let nodeToInsert = moveCandidates.get(keys.get(node))?.shift();
+    //     if (nodeToInsert === undefined) {
+    //       nodeToInsert = document.importNode(node, true);
+    //       importedNodes.add(nodeToInsert);
+    //     }
+    //     if (nodeAfter !== undefined) from.insertBefore(nodeToInsert, nodeAfter);
+    //     else from.appendChild(nodeToInsert);
+    //   }
+    // }
+    // for (
+    //   let childNodeIndex = 0;
+    //   childNodeIndex < fromChildNodes.length;
+    //   childNodeIndex++
+    // ) {
+    //   const fromChildNode = fromChildNodes[childNodeIndex];
+    //   const toChildNode = toChildNodes[childNodeIndex];
+    //   if (
+    //     importedNodes.has(fromChildNode) ||
+    //     fromChildNode.nodeType !== fromChildNode.ELEMENT_NODE
+    //   )
+    //     continue;
+    //   for (const attribute of new Set([
+    //     ...fromChildNode.getAttributeNames(),
+    //     ...toChildNode.getAttributeNames(),
+    //   ])) {
+    //     if (
+    //       liveUpdate &&
+    //       ["hidden", "value", "checked", "disabled", "indeterminate"].includes(
+    //         attribute
+    //       )
+    //     )
+    //       continue;
+    //     const fromAttribute = fromChildNode.getAttribute(attribute);
+    //     const toAttribute = toChildNode.getAttribute(attribute);
+    //     if (toAttribute === null) fromChildNode.removeAttribute(attribute);
+    //     else if (fromAttribute !== toAttribute)
+    //       fromChildNode.setAttribute(attribute, toAttribute);
+    //   }
+    //   if (!liveUpdate)
+    //     switch (fromChildNode.tagName.toLowerCase()) {
+    //       case "input":
+    //         for (const property of [
+    //           "value",
+    //           "checked",
+    //           "disabled",
+    //           "indeterminate",
+    //         ])
+    //           if (fromChildNode[property] !== toChildNode[property])
+    //             fromChildNode[property] = toChildNode[property];
+    //         break;
+    //       case "textarea":
+    //         if (fromChildNode.value !== toChildNode.value)
+    //           fromChildNode.value = toChildNode.value;
+    //         break;
+    //     }
+    //   if (fromChildNode.partialParentElement !== true)
+    //     leafac.morph(fromChildNode, toChildNode, { liveUpdate });
+    // }
   },
 
   customFormValidation() {
