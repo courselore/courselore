@@ -201,7 +201,7 @@ const leafac = {
       }
     }
     const toAdd = [];
-    const toMatch = [];
+    const toMorph = [];
     for (let diffIndex = 1; diffIndex < diff.length; diffIndex++) {
       const [
         previousFromStart,
@@ -215,7 +215,7 @@ const leafac = {
         nodeIndexOffset < fromStart - previousFromEnd;
         nodeIndexOffset++
       )
-        toMatch.push({
+        toMorph.push({
           from: fromChildNodes[previousFromEnd + nodeIndexOffset],
           to: toChildNodes[previousToEnd + nodeIndexOffset],
         });
@@ -226,67 +226,54 @@ const leafac = {
         let fromChildNode = moveCandidates.get(toKeys[nodeIndex])?.shift();
         if (fromChildNode === undefined)
           fromChildNode = document.importNode(toChildNode, true);
-        else toMatch.push({ from: fromChildNode, to: toChildNode });
+        else toMorph.push({ from: fromChildNode, to: toChildNode });
         nodes.push(fromChildNode);
       }
-      toAdd.push({ index: fromStart, nodes });
+      toAdd.push({ nodes, nodeAfter: fromChildNodes[fromEnd] });
     }
     for (const node of toRemove) from.removeChild(node);
-    for (const { index, nodes } of toAdd) {
-      const nodeAfter = fromChildNodes[index];
+    for (const { nodeAfter, nodes } of toAdd)
       if (nodeAfter !== undefined)
         for (const node of nodes) from.insertBefore(node, nodeAfter);
       else for (const node of nodes) from.appendChild(node);
+    for (const { from, to } of toMorph) {
+      if (from.nodeType !== from.ELEMENT_NODE) continue;
+      for (const attribute of new Set([
+        ...from.getAttributeNames(),
+        ...to.getAttributeNames(),
+      ])) {
+        if (
+          liveUpdate &&
+          ["hidden", "value", "checked", "disabled", "indeterminate"].includes(
+            attribute
+          )
+        )
+          continue;
+        const fromAttribute = from.getAttribute(attribute);
+        const toAttribute = to.getAttribute(attribute);
+        if (toAttribute === null) from.removeAttribute(attribute);
+        else if (fromAttribute !== toAttribute)
+          from.setAttribute(attribute, toAttribute);
+      }
+      if (!liveUpdate)
+        switch (from.tagName.toLowerCase()) {
+          case "input":
+            for (const property of [
+              "value",
+              "checked",
+              "disabled",
+              "indeterminate",
+            ])
+              if (from[property] !== to[property])
+                from[property] = to[property];
+            break;
+          case "textarea":
+            if (from.value !== to.value) from.value = to.value;
+            break;
+        }
+      if (from.partialParentElement !== true)
+        leafac.morph(from, to, { liveUpdate });
     }
-    // for (
-    //   let childNodeIndex = 0;
-    //   childNodeIndex < fromChildNodes.length;
-    //   childNodeIndex++
-    // ) {
-    //   const fromChildNode = fromChildNodes[childNodeIndex];
-    //   const toChildNode = toChildNodes[childNodeIndex];
-    //   if (
-    //     importedNodes.has(fromChildNode) ||
-    //     fromChildNode.nodeType !== fromChildNode.ELEMENT_NODE
-    //   )
-    //     continue;
-    //   for (const attribute of new Set([
-    //     ...fromChildNode.getAttributeNames(),
-    //     ...toChildNode.getAttributeNames(),
-    //   ])) {
-    //     if (
-    //       liveUpdate &&
-    //       ["hidden", "value", "checked", "disabled", "indeterminate"].includes(
-    //         attribute
-    //       )
-    //     )
-    //       continue;
-    //     const fromAttribute = fromChildNode.getAttribute(attribute);
-    //     const toAttribute = toChildNode.getAttribute(attribute);
-    //     if (toAttribute === null) fromChildNode.removeAttribute(attribute);
-    //     else if (fromAttribute !== toAttribute)
-    //       fromChildNode.setAttribute(attribute, toAttribute);
-    //   }
-    //   if (!liveUpdate)
-    //     switch (fromChildNode.tagName.toLowerCase()) {
-    //       case "input":
-    //         for (const property of [
-    //           "value",
-    //           "checked",
-    //           "disabled",
-    //           "indeterminate",
-    //         ])
-    //           if (fromChildNode[property] !== toChildNode[property])
-    //             fromChildNode[property] = toChildNode[property];
-    //         break;
-    //       case "textarea":
-    //         if (fromChildNode.value !== toChildNode.value)
-    //           fromChildNode.value = toChildNode.value;
-    //         break;
-    //     }
-    //   if (fromChildNode.partialParentElement !== true)
-    //     leafac.morph(fromChildNode, toChildNode, { liveUpdate });
-    // }
   },
 
   customFormValidation() {
