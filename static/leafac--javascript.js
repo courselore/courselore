@@ -192,7 +192,7 @@ const leafac = {
     const moveCandidates = new Map();
     for (let diffIndex = 1; diffIndex < diff.length; diffIndex++) {
       const [fromStart, fromEnd, toStart, toEnd] = diff[diffIndex];
-      for (const nodeIndex = fromStart; nodeIndex < fromEnd; nodeIndex++) {
+      for (let nodeIndex = fromStart; nodeIndex < fromEnd; nodeIndex++) {
         const node = fromChildNodes[nodeIndex];
         const key = fromKeys[nodeIndex];
         toRemove.push(node);
@@ -221,7 +221,7 @@ const leafac = {
         });
       if (toStart === toEnd) continue;
       const nodes = [];
-      for (const nodeIndex = toStart; nodeIndex < toEnd; nodeIndex++) {
+      for (let nodeIndex = toStart; nodeIndex < toEnd; nodeIndex++) {
         const toChildNode = toChildNodes[nodeIndex];
         let fromChildNode = moveCandidates.get(toKeys[nodeIndex])?.shift();
         if (fromChildNode === undefined)
