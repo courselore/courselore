@@ -187,7 +187,16 @@ const leafac = {
       }`;
     const fromKeys = [...fromChildNodes].map(getKey);
     const toKeys = [...toChildNodes].map(getKey);
-    const diff = [[0, 0, 0, 0], ...fastMyersDiff.diff(fromKeys, toKeys)];
+    const diff = [
+      [0, 0, 0, 0],
+      ...fastMyersDiff.diff(fromKeys, toKeys),
+      [
+        fromChildNodes.length,
+        fromChildNodes.length,
+        toChildNodes.length,
+        toChildNodes.length,
+      ],
+    ];
     const toRemove = [];
     const moveCandidates = new Map();
     for (let diffIndex = 1; diffIndex < diff.length; diffIndex++) {
