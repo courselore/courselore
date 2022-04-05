@@ -203,11 +203,6 @@ const leafac = {
       const [fromStart, fromEnd, toStart, toEnd] = diff[diffIndex];
       for (let nodeIndex = fromStart; nodeIndex < fromEnd; nodeIndex++) {
         const node = fromChildNodes[nodeIndex];
-//         const onbeforeremove = node.onbeforeremove?.();
-// return typeof onbeforeremove === "boolean"
-//   ? onbeforeremove
-//   : !node.matches?.("[data-tippy-root]");
-
         const key = fromKeys[nodeIndex];
         toRemove.push(node);
         if (moveCandidates.get(key)?.push(node) === undefined)
@@ -245,7 +240,14 @@ const leafac = {
       }
       toAdd.push({ nodes, nodeAfter: fromChildNodes[fromEnd] });
     }
-    for (const node of toRemove) from.removeChild(node);
+    for (const node of toRemove) {
+      if (
+        node.onbeforeremove?.() === false ||
+        node.matches?.("[data-tippy-root]")
+      )
+        continue;
+      from.removeChild(node);
+    }
     for (const { nodeAfter, nodes } of toAdd)
       if (nodeAfter !== undefined)
         for (const node of nodes) from.insertBefore(node, nodeAfter);
