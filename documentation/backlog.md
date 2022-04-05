@@ -3,14 +3,8 @@
 ### Performance
 
 - Highlight changes in yellow (the same yellow as used for targeted messages with permanent links), for example, when you create an invitation.
-- Make live updates work with new morphing mechanism:
 
-```
-const onbeforeremove = node.onbeforeremove?.();
-return typeof onbeforeremove === "boolean"
-  ? onbeforeremove
-  : !node.matches?.("[data-tippy-root]");
-```
+---
 
 - Live updates and:
   - “Views”

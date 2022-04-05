@@ -203,6 +203,11 @@ const leafac = {
       const [fromStart, fromEnd, toStart, toEnd] = diff[diffIndex];
       for (let nodeIndex = fromStart; nodeIndex < fromEnd; nodeIndex++) {
         const node = fromChildNodes[nodeIndex];
+//         const onbeforeremove = node.onbeforeremove?.();
+// return typeof onbeforeremove === "boolean"
+//   ? onbeforeremove
+//   : !node.matches?.("[data-tippy-root]");
+
         const key = fromKeys[nodeIndex];
         toRemove.push(node);
         if (moveCandidates.get(key)?.push(node) === undefined)
