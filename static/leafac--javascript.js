@@ -188,7 +188,16 @@ const leafac = {
     const fromKeys = [...fromChildNodes].map(getKey);
     const toKeys = [...toChildNodes].map(getKey);
     const diff = [[0, 0, 0, 0], ...fastMyersDiff.diff(fromKeys, toKeys)];
-    const toRemove = new Set();
+    const toRemove = [];
+    const moveCandidates = new Map();
+    for (let diffIndex = 1; diffIndex < diff.length; diffIndex++) {
+      const [fromStart, fromEnd, toStart, toEnd] = diff[diffIndex];
+      for (const nodeIndex = fromStart; nodeIndex < fromEnd; nodeIndex++)
+        toRemove.push(fromChildNodes[nodeIndex]);
+      // if (moveCandidates.get(key)?.push(node) === undefined)
+      // moveCandidates.set(key, [node]);
+    }
+    const toAdd = [];
     for (let diffIndex = 1; diffIndex < diff.length; diffIndex++) {
       const [
         previousFromStart,
@@ -197,31 +206,30 @@ const leafac = {
         previousToEnd,
       ] = diff[diffIndex - 1];
       const [fromStart, fromEnd, toStart, toEnd] = diff[diffIndex];
-      for (const nodeIndex = fromStart; nodeIndex < fromEnd; nodeIndex++)
-        toRemove.add({
-          key: fromKeys[nodeIndex],
-          node: fromChildNodes[nodeIndex],
+      for (const nodeIndex = toStart; nodeIndex < toEnd; nodeIndex++)
+        toAdd.push({
+          key: toKeys[nodeIndex],
+          node: toChildNodes[nodeIndex],
+          index: fromStart,
         });
     }
-    const moveCandidates = new Map();
-    for (const { key, node } of toRemove) {
-      from.removeChild(node);
-      if (moveCandidates.get(key)?.push(node) === undefined)
-        moveCandidates.set(key, [node]);
+    for (const node of toRemove) from.removeChild(node);
+    for (const { index, nodes } of toAdd) {
+      const nodeAfter = fromChildNodes[index];
+      if (nodeAfter !== undefined)
+        for (const node of nodes) from.insertBefore(node, nodeAfter);
+      else for (const node of nodes) from.appendChild(node);
     }
     // const importedNodes = new Set();
     // for (const { items, newPos } of patch.filter(
     //   ({ type }) => type === "add"
     // )) {
-    //   const nodeAfter = fromChildNodes[newPos];
     //   for (const node of items) {
     //     let nodeToInsert = moveCandidates.get(keys.get(node))?.shift();
     //     if (nodeToInsert === undefined) {
     //       nodeToInsert = document.importNode(node, true);
     //       importedNodes.add(nodeToInsert);
     //     }
-    //     if (nodeAfter !== undefined) from.insertBefore(nodeToInsert, nodeAfter);
-    //     else from.appendChild(nodeToInsert);
     //   }
     // }
     // for (
