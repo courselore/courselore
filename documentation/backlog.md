@@ -3,6 +3,7 @@
 ### Performance
 
 - Highlight changes in yellow (the same yellow as used for targeted messages with permanent links), for example, when you create an invitation.
+- Investigate why “New” isn’t showing up on live navigation.
 
 ---
 
