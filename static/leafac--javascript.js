@@ -240,14 +240,12 @@ const leafac = {
       }
       toAdd.push({ nodes, nodeAfter: fromChildNodes[fromEnd] });
     }
-    for (const node of toRemove) {
+    for (const node of toRemove)
       if (
-        node.onbeforeremove?.() === false ||
-        node.matches?.("[data-tippy-root]")
+        node.onbeforeremove?.() !== false &&
+        !node.matches?.("[data-tippy-root]")
       )
-        continue;
-      from.removeChild(node);
-    }
+        from.removeChild(node);
     for (const { nodeAfter, nodes } of toAdd)
       if (nodeAfter !== undefined)
         for (const node of nodes) from.insertBefore(node, nodeAfter);
