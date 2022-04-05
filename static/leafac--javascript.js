@@ -192,10 +192,13 @@ const leafac = {
     const moveCandidates = new Map();
     for (let diffIndex = 1; diffIndex < diff.length; diffIndex++) {
       const [fromStart, fromEnd, toStart, toEnd] = diff[diffIndex];
-      for (const nodeIndex = fromStart; nodeIndex < fromEnd; nodeIndex++)
-        toRemove.push(fromChildNodes[nodeIndex]);
-      // if (moveCandidates.get(key)?.push(node) === undefined)
-      // moveCandidates.set(key, [node]);
+      for (const nodeIndex = fromStart; nodeIndex < fromEnd; nodeIndex++) {
+        const node = fromChildNodes[nodeIndex];
+        const key = fromKeys[nodeIndex];
+        toRemove.push(node);
+        if (moveCandidates.get(key)?.push(node) === undefined)
+          moveCandidates.set(key, [node]);
+      }
     }
     const toAdd = [];
     for (let diffIndex = 1; diffIndex < diff.length; diffIndex++) {
@@ -206,12 +209,15 @@ const leafac = {
         previousToEnd,
       ] = diff[diffIndex - 1];
       const [fromStart, fromEnd, toStart, toEnd] = diff[diffIndex];
-      for (const nodeIndex = toStart; nodeIndex < toEnd; nodeIndex++)
-        toAdd.push({
-          key: toKeys[nodeIndex],
-          node: toChildNodes[nodeIndex],
-          index: fromStart,
-        });
+      if (toStart === toEnd) continue;
+      const nodes = [];
+      for (const nodeIndex = toStart; nodeIndex < toEnd; nodeIndex++) {
+        let node = moveCandidates.get(toKeys[nodeIndex])?.shift();
+        if (node === undefined)
+          node = document.importNode(toChildNodes[nodeIndex], true);
+        nodes.push(node);
+      }
+      toAdd.push({ index: fromStart, nodes });
     }
     for (const node of toRemove) from.removeChild(node);
     for (const { index, nodes } of toAdd) {
@@ -220,18 +226,6 @@ const leafac = {
         for (const node of nodes) from.insertBefore(node, nodeAfter);
       else for (const node of nodes) from.appendChild(node);
     }
-    // const importedNodes = new Set();
-    // for (const { items, newPos } of patch.filter(
-    //   ({ type }) => type === "add"
-    // )) {
-    //   for (const node of items) {
-    //     let nodeToInsert = moveCandidates.get(keys.get(node))?.shift();
-    //     if (nodeToInsert === undefined) {
-    //       nodeToInsert = document.importNode(node, true);
-    //       importedNodes.add(nodeToInsert);
-    //     }
-    //   }
-    // }
     // for (
     //   let childNodeIndex = 0;
     //   childNodeIndex < fromChildNodes.length;
