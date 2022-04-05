@@ -201,6 +201,7 @@ const leafac = {
       }
     }
     const toAdd = [];
+    const toMatch = [];
     for (let diffIndex = 1; diffIndex < diff.length; diffIndex++) {
       const [
         previousFromStart,
@@ -209,13 +210,24 @@ const leafac = {
         previousToEnd,
       ] = diff[diffIndex - 1];
       const [fromStart, fromEnd, toStart, toEnd] = diff[diffIndex];
+      for (
+        let nodeIndexOffset = 0;
+        nodeIndexOffset < fromStart - previousFromEnd;
+        nodeIndexOffset++
+      )
+        toMatch.push({
+          from: fromChildNodes[previousFromEnd + nodeIndexOffset],
+          to: toChildNodes[previousToEnd + nodeIndexOffset],
+        });
       if (toStart === toEnd) continue;
       const nodes = [];
       for (const nodeIndex = toStart; nodeIndex < toEnd; nodeIndex++) {
-        let node = moveCandidates.get(toKeys[nodeIndex])?.shift();
-        if (node === undefined)
-          node = document.importNode(toChildNodes[nodeIndex], true);
-        nodes.push(node);
+        const toChildNode = toChildNodes[nodeIndex];
+        let fromChildNode = moveCandidates.get(toKeys[nodeIndex])?.shift();
+        if (fromChildNode === undefined)
+          fromChildNode = document.importNode(toChildNode, true);
+        else toMatch.push({ from: fromChildNode, to: toChildNode });
+        nodes.push(fromChildNode);
       }
       toAdd.push({ index: fromStart, nodes });
     }
