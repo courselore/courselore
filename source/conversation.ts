@@ -3651,13 +3651,24 @@ export default (app: Courselore): void => {
                                 (this.tooltip ??= tippy(this)).setProps({
                                   theme: "rose",
                                   touch: false,
-                                  content: "Cancel",
+                                  content: ${res.locals.HTMLForJavaScript(
+                                    html`
+                                      Cancel
+                                      <span class="keyboard-shortcut">
+                                        (Escape)
+                                      </span>
+                                    `
+                                  )},
                                 });
                                       
                                 this.onclick = () => {
                                   this.closest(".conversation--header--full").querySelector(".title--show").hidden = false;
                                   this.closest(".conversation--header--full").querySelector(".title--edit").hidden = true;
                                 };
+
+                                const input = this.closest(".title--edit").querySelector('[name="title"]');
+
+                                (input.mousetrap ??= new Mousetrap(input)).bind("escape", () => { this.click(); return false; });
                               `}"
                             >
                               <i class="bi bi-x-lg"></i>
@@ -5748,6 +5759,10 @@ export default (app: Courselore): void => {
                                                         this.closest(".message").querySelector(".message--show").hidden = false;
                                                         this.closest(".message").querySelector(".message--edit").hidden = true;
                                                       };
+
+                                                      const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
+
+                                                      (textarea.mousetrap ??= new Mousetrap(textarea)).bind("escape", () => { this.click(); return false; });                                  
                                                     `}"
                                                   >
                                                     <i class="bi bi-x-lg"></i>
