@@ -1413,6 +1413,10 @@ export default (app: Courselore): void => {
           </div>
 
           <div
+            key="conversation--layout--main${res.locals.conversation ===
+            undefined
+              ? ``
+              : `--${res.locals.conversation.reference}`}"
             class="conversation--layout--main ${onlyConversationLayoutSidebarOnSmallScreen ||
             req.query.conversationLayoutSidebarOpenOnSmallScreen === "true"
               ? "hidden-on-small-screen"

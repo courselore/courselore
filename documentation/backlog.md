@@ -8,6 +8,7 @@
   - `.map`
   - `class=`
   - `querySelector`
+  - Partials
 
 ---
 
