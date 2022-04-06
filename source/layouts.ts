@@ -263,7 +263,7 @@ export default async (app: Courselore): Promise<void> => {
                                 };
 
                                 const keys = "escape";
-                                (this.mousetrap ??= new Mousetrap()).bind(keys, () => { console.log("CLOSING FLASH"); this.click(); this.mousetrap.unbind(keys); return false; });
+                                (this.mousetrap ??= new Mousetrap()).bind(keys, () => { this.click(); this.mousetrap.unbind(keys); return false; });
                               `}"
                             >
                               <i class="bi bi-x-circle"></i>
