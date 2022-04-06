@@ -2,8 +2,7 @@
 
 ### Performance
 
-- Highlight changes in yellow (the same yellow as used for targeted messages with permanent links), for example, when you create an invitation.
-- Investigate why “New” isn’t showing up on live navigation.
+- “New” isn’t scrolling to message.
 
 ---
 
@@ -68,6 +67,10 @@
   - 1-on-1 conversations.
 
 ### User Interface Improvements
+
+- Highlight changes in yellow (the same yellow as used for targeted messages with permanent links), for example, when you create an invitation.
+
+---
 
 - Add the notion of follow-up question, so that questions aren’t marked as “unresolved” as soon as a student sends a message. It makes sense for when the student just says “thanks.”
 - Autosize makes some screens scroll on form submission, for example, `/settings/profile`.
