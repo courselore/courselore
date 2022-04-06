@@ -4,6 +4,7 @@
 
 - Add keys to things:
   - `key` don’t have to try and be unique globally
+  - Major pages, so that tooltips and other things don’t carry over
   - `.flatMap`
   - `.map`
   - `class=`

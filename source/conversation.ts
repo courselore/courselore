@@ -1255,7 +1255,7 @@ export default (app: Courselore): void => {
                                           this.closest(".conversation--layout--sidebar").scroll(0, 0);
                                         `
                                       : javascript`
-                                          this.querySelector('[key="conversation--${res.locals.conversation.reference}"]')?.scrollIntoView({ block: "center" });
+                                          this.querySelector('[key="${res.locals.conversation.reference}"]')?.scrollIntoView({ block: "center" });
                                         `
                                   }
                                 });
@@ -1269,9 +1269,7 @@ export default (app: Courselore): void => {
                             const isSelected =
                               conversation.id === res.locals.conversation?.id;
                             return html`
-                              <div
-                                key="conversation--${conversation.reference}"
-                              >
+                              <div key="${conversation.reference}">
                                 <hr
                                   class="separator ${res.locals.localCSS(css`
                                     margin: var(--space---px) var(--space--0);
