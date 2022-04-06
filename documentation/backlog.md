@@ -19,6 +19,7 @@
 ---
 
 - Add keys to things:
+  - Major pages, such as different conversation, to avoid tooltips and the like from carrying over…
   - `.flatMap`
   - `.map`
   - `class=`
