@@ -204,6 +204,11 @@ const leafac = {
       for (let nodeIndex = fromStart; nodeIndex < fromEnd; nodeIndex++) {
         const node = fromChildNodes[nodeIndex];
         const key = fromKeys[nodeIndex];
+        if (
+          node.onbeforeremove?.() === false ||
+          node.matches?.("[data-tippy-root]")
+        )
+          continue;
         toRemove.push(node);
         if (moveCandidates.get(key)?.push(node) === undefined)
           moveCandidates.set(key, [node]);
@@ -232,20 +237,14 @@ const leafac = {
       const nodes = [];
       for (let nodeIndex = toStart; nodeIndex < toEnd; nodeIndex++) {
         const toChildNode = toChildNodes[nodeIndex];
-        let fromChildNode = moveCandidates.get(toKeys[nodeIndex])?.shift();
-        if (fromChildNode === undefined)
-          fromChildNode = document.importNode(toChildNode, true);
-        else toMorph.push({ from: fromChildNode, to: toChildNode });
-        nodes.push(fromChildNode);
+        let node = moveCandidates.get(toKeys[nodeIndex])?.shift();
+        if (node === undefined) node = document.importNode(toChildNode, true);
+        else toMorph.push({ from: node, to: toChildNode });
+        nodes.push(node);
       }
       toAdd.push({ nodes, nodeAfter: fromChildNodes[fromEnd] });
     }
-    for (const node of toRemove)
-      if (
-        node.onbeforeremove?.() !== false &&
-        !node.matches?.("[data-tippy-root]")
-      )
-        from.removeChild(node);
+    for (const node of toRemove) from.removeChild(node);
     for (const { nodeAfter, nodes } of toAdd)
       if (nodeAfter !== undefined)
         for (const node of nodes) from.insertBefore(node, nodeAfter);
