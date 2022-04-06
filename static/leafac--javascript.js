@@ -205,8 +205,9 @@ const leafac = {
         const node = fromChildNodes[nodeIndex];
         const key = fromKeys[nodeIndex];
         if (
-          node.onbeforeremove?.() === false ||
-          node.matches?.("[data-tippy-root]")
+          liveUpdate &&
+          (node.onbeforeremove?.() === false ||
+            node.matches?.("[data-tippy-root]"))
         )
           continue;
         toRemove.push(node);
@@ -284,7 +285,7 @@ const leafac = {
             if (from.value !== to.value) from.value = to.value;
             break;
         }
-      if (from.partialParentElement !== true)
+      if (!liveUpdate || from.partialParentElement !== true)
         leafac.morph(from, to, { liveUpdate });
     }
   },
