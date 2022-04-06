@@ -2278,6 +2278,7 @@ ${contentSource}</textarea
                 : [
                     html`
                       <button
+                        key="refer-to-conversation-or-message-search--${conversation.reference}"
                         type="button"
                         class="dropdown--menu--item button button--transparent"
                         onload="${javascript`
@@ -2349,6 +2350,7 @@ ${contentSource}</textarea
                   : [
                       html`
                         <button
+                          key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
                           type="button"
                           class="dropdown--menu--item button button--transparent"
                           onload="${javascript`
@@ -2444,6 +2446,7 @@ ${contentSource}</textarea
               : [
                   html`
                     <button
+                      key="refer-to-conversation-or-message-search--${conversation.reference}"
                       type="button"
                       class="dropdown--menu--item button button--transparent"
                       onload="${javascript`
@@ -2523,6 +2526,7 @@ ${contentSource}</textarea
               : [
                   html`
                     <button
+                      key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
                       type="button"
                       class="dropdown--menu--item button button--transparent"
                       onload="${javascript`
@@ -2608,6 +2612,7 @@ ${contentSource}</textarea
               : [
                   html`
                     <button
+                      key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
                       type="button"
                       class="dropdown--menu--item button button--transparent"
                       onload="${javascript`
