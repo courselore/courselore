@@ -3,6 +3,7 @@
 ### Performance
 
 - Add keys to things:
+  - `key` don’t have to try and be unique globally
   - `.flatMap`
   - `.map`
   - `class=`
