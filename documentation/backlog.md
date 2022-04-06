@@ -7,6 +7,7 @@
   - `.flatMap`
   - `.map`
   - `class=`
+  - `querySelector`
 
 ---
 
