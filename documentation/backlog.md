@@ -2,10 +2,6 @@
 
 ### Performance
 
-- “New” isn’t scrolling to message.
-
----
-
 - Live updates and:
   - “Views”
   - “Actions”

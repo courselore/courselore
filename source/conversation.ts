@@ -4009,7 +4009,7 @@ export default (app: Courselore): void => {
                               : firstUnreadMessage !== undefined &&
                                 firstUnreadMessage !== messages[0]
                               ? javascript`
-                                  this.querySelector("#message--${firstUnreadMessage.reference}")?.scrollIntoView();
+                                  this.querySelector('[key="message--${firstUnreadMessage.reference}"]')?.scrollIntoView();
                                 `
                               : res.locals.conversation.type === "chat" &&
                                 messages.length > 0 &&
