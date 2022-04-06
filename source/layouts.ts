@@ -261,6 +261,9 @@ export default async (app: Courselore): Promise<void> => {
                                 this.onclick = () => {
                                   this.closest("[data-tippy-root]")._tippy.hide();
                                 };
+
+                                const keys = "escape";
+                                (this.mousetrap ??= new Mousetrap()).bind(keys, () => { console.log("CLOSING FLASH"); this.click(); this.mousetrap.unbind(keys); return false; });
                               `}"
                             >
                               <i class="bi bi-x-circle"></i>
