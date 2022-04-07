@@ -2750,7 +2750,7 @@ export default async (app: Courselore): Promise<void> => {
           ? html``
           : html`
               <div
-                key="header--menu--secondary"
+                key="header--menu--secondary--${req.path}"
                 class="${res.locals.localCSS(css`
                   justify-content: center;
                   @media (min-width: 700px) {
@@ -2789,7 +2789,7 @@ export default async (app: Courselore): Promise<void> => {
             ? html``
             : html`
                 <div
-                  key="layout--settings--menu"
+                  key="layout--settings--menu--${req.path}"
                   class="${res.locals.localCSS(css`
                     @media (max-width: 699px) {
                       display: none;
@@ -2800,7 +2800,7 @@ export default async (app: Courselore): Promise<void> => {
                 </div>
               `}
           <div
-            key="layout--settings--main"
+            key="layout--settings--main--${req.path}"
             class="${res.locals.localCSS(css`
               flex: 1;
               min-width: var(--width--0);
