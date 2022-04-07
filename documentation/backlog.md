@@ -12,14 +12,6 @@
 
 ---
 
-- Framing.
-  - Pagination links.
-    - Conversations in sidebar.
-    - Messages in conversation.
-  - Filters.
-
----
-
 - Pagination.
   - `TODO`
   - Smarter default page for when the page isn’t specified explicitly:
@@ -38,7 +30,11 @@
 
 ---
 
-- Selective fetching: the server doesn’t need to send the whole page all the time. It can send only what changed.
+- Framing?
+  - Pagination links.
+    - Conversations in sidebar.
+    - Messages in conversation.
+  - Filters.
 
 ---
 
@@ -366,6 +362,7 @@
 
 ### Interface Details
 
+- Selective fetching: the server doesn’t need to send the whole page all the time. It can send only what changed.
 - Update tooltip content by morphing, instead of simply replacing, to preserve state (particularly on live updates):
   - Scrolling
   - In chats, the “Views” component in the “Actions” menu closes on live update.
