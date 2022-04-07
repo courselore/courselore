@@ -275,6 +275,22 @@ export default async (app: Courselore): Promise<void> => {
                     body.flash.show();
                   `;
             })()}
+
+            ${
+              res.locals.eventSource
+                ? javascript`
+                    const eventSource = new ReconnectingEventSource(window.location.href);
+                    window.addEventListener("DOMContentLoaded", () => { eventSource.close(); }, { once: true });
+                    eventSource.addEventListener("refresh", (event) => {
+                      leafac.liveNavigate({
+                        request: new Request(window.location.href),
+                        event,
+                        liveUpdate: true,
+                      });
+                    });
+                  `
+                : javascript``
+            }
           `}"
         >
           $${res.locals.enrollment === undefined

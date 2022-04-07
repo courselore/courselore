@@ -551,17 +551,6 @@ export default (app: Courselore): void => {
               }
             }
           `)}"
-          onload="${javascript`
-            const eventSource = new ReconnectingEventSource(window.location.href);
-            window.addEventListener("DOMContentLoaded", () => { eventSource.close(); }, { once: true });
-            eventSource.addEventListener("refresh", (event) => {
-              leafac.liveNavigate({
-                request: new Request(window.location.href),
-                event,
-                liveUpdate: true,
-              });
-            });
-          `}"
         >
           <div
             key="layout--conversation--sidebar--/${res.locals.course.reference}"

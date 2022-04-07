@@ -7,8 +7,6 @@
   - Prevent live update to browser tab that originated the update: `eventSourceReference`
     - Pass the `eventSource` identifier right on first server-side render, without requiring a server-sent event message.
 - Do something special on live updates & 404 (for example, when the conversation has been removed).
-- `/conversations/new` when it’s the first conversation should connect to receive live updates, because of tags.
-  - Close issue related to tags not updating on that page.
 
 ---
 
@@ -38,7 +36,9 @@
 
 ---
 
-- Document `header Cache-Control no-cache` for self-hosters.
+- On release:
+  - Document `header Cache-Control no-cache` for self-hosters.
+  - Close issue related to tags not updating on `/conversations/new`.
 
 ---
 
