@@ -8,6 +8,7 @@
   - Partials
   - `class=`
   - `querySelector`
+  - `{body}`
 
 ---
 
