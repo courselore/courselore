@@ -524,8 +524,8 @@ export default (app: Courselore): void => {
                   class="button button--transparent"
                   onload="${javascript`
                     this.onclick = () => {
-                      document.querySelector(".layout--conversation--sidebar").classList.toggle("hidden-on-small-screen");
-                      document.querySelector(".layout--conversation--main").classList.toggle("hidden-on-small-screen");
+                      document.querySelector('[key^="layout--conversation--sidebar--/"]').classList.toggle("hidden-on-small-screen");
+                      document.querySelector('[key^="layout--conversation--main--/"]').classList.toggle("hidden-on-small-screen");
                       this.lastElementChild.classList.toggle("bi-chevron-bar-expand");
                       this.lastElementChild.classList.toggle("bi-chevron-bar-contract");
                     };
@@ -564,7 +564,8 @@ export default (app: Courselore): void => {
           `}"
         >
           <div
-            class="layout--conversation--sidebar ${onlyConversationLayoutSidebarOnSmallScreen ||
+            key="layout--conversation--sidebar--/${res.locals.course.reference}"
+            class="${onlyConversationLayoutSidebarOnSmallScreen ||
             req.query.conversationLayoutSidebarOpenOnSmallScreen === "true"
               ? ""
               : "hidden-on-small-screen"} ${res.locals.localCSS(css`
@@ -1255,7 +1256,7 @@ export default (app: Courselore): void => {
                                   ${
                                     res.locals.conversation === undefined
                                       ? javascript`
-                                          this.closest(".layout--conversation--sidebar").scroll(0, 0);
+                                          this.closest('[key^="layout--conversation--sidebar--/"]').scroll(0, 0);
                                         `
                                       : javascript`
                                           this.querySelector('[key="conversation--${res.locals.conversation.reference}"]')?.scrollIntoView({ block: "center" });
@@ -1416,11 +1417,8 @@ export default (app: Courselore): void => {
           </div>
 
           <div
-            key="layout--conversation--main${res.locals.conversation ===
-            undefined
-              ? ``
-              : `--${res.locals.conversation.reference}`}"
-            class="layout--conversation--main ${onlyConversationLayoutSidebarOnSmallScreen ||
+            key="layout--conversation--main--${req.path}"
+            class="${onlyConversationLayoutSidebarOnSmallScreen ||
             req.query.conversationLayoutSidebarOpenOnSmallScreen === "true"
               ? "hidden-on-small-screen"
               : ""} ${res.locals.localCSS(css`
@@ -4030,7 +4028,7 @@ export default (app: Courselore): void => {
                                   const element = ${
                                     res.locals.conversation.type === "chat"
                                       ? javascript`this`
-                                      : javascript`this.closest(".layout--conversation--main")`
+                                      : javascript`this.closest('[key^="layout--conversation--main--/"]')`
                                   };
                                   element.scroll(0, 0);
                                 `
