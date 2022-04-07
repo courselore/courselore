@@ -1157,9 +1157,9 @@ export default (app: Courselore): void => {
     for (const { reference, req, res } of app.locals.eventDestinations) {
       await new Promise((resolve) => setTimeout(resolve, 20));
       if (reference === eventDestinationReference) continue;
-      res.write(`event: refresh\ndata:\n\n`);
+      res.write(`event: liveupdate\ndata:\n\n`);
       console.log(
-        `${new Date().toISOString()}\tSSE\trefresh\t${
+        `${new Date().toISOString()}\tSSE\tliveupdate\t${
           req.ip
         }\t${reference}\t\t\t${req.originalUrl}`
       );

@@ -281,7 +281,7 @@ export default async (app: Courselore): Promise<void> => {
                 ? javascript`
                     const eventSource = new ReconnectingEventSource(window.location.href);
                     window.addEventListener("DOMContentLoaded", () => { eventSource.close(); }, { once: true });
-                    eventSource.addEventListener("refresh", (event) => {
+                    eventSource.addEventListener("liveupdate", (event) => {
                       leafac.liveNavigate({
                         request: new Request(window.location.href),
                         event,
