@@ -2138,6 +2138,7 @@ export default async (app: Courselore): Promise<void> => {
             `)}"
           >
             <div
+              key="main--logo"
               class="${res.locals.localCSS(css`
                 display: flex;
                 justify-content: center;
@@ -2154,6 +2155,7 @@ export default async (app: Courselore): Promise<void> => {
               </a>
             </div>
             <div
+              key="main--${req.path}"
               class="${res.locals.localCSS(css`
                 background-color: var(--color--gray--medium--100);
                 @media (prefers-color-scheme: dark) {
@@ -2172,6 +2174,7 @@ export default async (app: Courselore): Promise<void> => {
             $${app.locals.options.baseURL === "https://try.courselore.org"
               ? html`
                   <div
+                    key="main--try"
                     class="${res.locals.localCSS(css`
                       color: var(--color--amber--700);
                       background-color: var(--color--amber--100);
@@ -2233,6 +2236,7 @@ export default async (app: Courselore): Promise<void> => {
               : app.locals.options.demonstration
               ? html`
                   <div
+                    key="main--demonstration"
                     class="${res.locals.localCSS(css`
                       color: var(--color--amber--700);
                       background-color: var(--color--amber--100);
