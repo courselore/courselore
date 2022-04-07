@@ -362,6 +362,11 @@
 
 ### Interface Details
 
+- On local CSS, use a non-standard attribute instead of classes?
+  - Pros:
+    - It’s a cleaner solution, given that we’re sort of abusing classes.
+  - Cons:
+    - It’s less usual.
 - Selective fetching: the server doesn’t need to send the whole page all the time. It can send only what changed.
 - Update tooltip content by morphing, instead of simply replacing, to preserve state (particularly on live updates):
   - Scrolling
