@@ -2717,7 +2717,7 @@ export default async (app: Courselore): Promise<void> => {
       showCourseSwitcher,
       body: html`
         <div
-          key="layout--application--${req.path}"
+          key="layout--main--${req.path}"
           class="${res.locals.localCSS(css`
             display: flex;
             justify-content: center;
@@ -2777,7 +2777,7 @@ export default async (app: Courselore): Promise<void> => {
             `,
       body: html`
         <div
-          key="layout--settings"
+          key="layout--settings--${req.path}"
           class="${res.locals.localCSS(css`
             padding: var(--space--4);
             display: flex;
@@ -2789,7 +2789,7 @@ export default async (app: Courselore): Promise<void> => {
             ? html``
             : html`
                 <div
-                  key="layout--settings--menu--${req.path}"
+                  key="layout--settings--menu"
                   class="${res.locals.localCSS(css`
                     @media (max-width: 699px) {
                       display: none;
@@ -2800,7 +2800,7 @@ export default async (app: Courselore): Promise<void> => {
                 </div>
               `}
           <div
-            key="layout--settings--main--${req.path}"
+            key="layout--settings--main"
             class="${res.locals.localCSS(css`
               flex: 1;
               min-width: var(--width--0);
