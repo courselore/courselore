@@ -12,10 +12,6 @@
 
 ---
 
-- Re-fetch partials in the background after live updates? They may have gotten stale, for example, the “Views” component, if it’s open right as a live update is happening.
-
----
-
 - Framing.
   - Pagination links.
     - Conversations in sidebar.
@@ -373,6 +369,7 @@
 - Update tooltip content by morphing, instead of simply replacing, to preserve state (particularly on live updates):
   - Scrolling
   - In chats, the “Views” component in the “Actions” menu closes on live update.
+- Re-fetch partials in the background after live updates? They may have gotten stale, for example, the “Views” component, if it’s open right as a live update is happening.
 - Scroll to the bottom when sending chat message?
 - Do something to prevent flash of unstyled content on scrolling. It’s mostly an issue when loading a deeply-linked conversation directly, because otherwise live-navigation takes care of the issue.
 - Prevent the flash of unformatted datetime on fields using `validateLocalizedDateTime()`.
