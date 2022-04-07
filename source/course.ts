@@ -201,6 +201,7 @@ export default (app: Courselore): void => {
     tight = false,
   }) => html`
     <div
+      key="partial--course--${course.reference}"
       class="${res.locals.localCSS(css`
         display: flex;
         gap: var(--space--2);

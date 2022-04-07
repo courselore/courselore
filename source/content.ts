@@ -161,7 +161,7 @@ export default async (app: Courselore): Promise<void> => {
       search = undefined,
     }) => {
       const contentElement = JSDOM.fragment(html`
-        <div class="content">
+        <div key="content" class="content">
           $${type === "source"
             ? unifiedProcessor.processSync(content).toString()
             : type === "preprocessed"
@@ -605,6 +605,7 @@ export default async (app: Courselore): Promise<void> => {
     compact = false,
   }) => html`
     <div
+      key="content-editor"
       class="content-editor ${res.locals.localCSS(css`
         min-width: var(--space--0);
       `)}"

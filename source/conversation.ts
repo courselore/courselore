@@ -1478,6 +1478,7 @@ export default (app: Courselore): void => {
     message = undefined,
   }) => html`
     <div
+      key="partial--conversation--${conversation.reference}"
       class="${res.locals.localCSS(css`
         display: flex;
         flex-direction: column;
