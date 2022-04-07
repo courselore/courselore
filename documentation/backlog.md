@@ -2,7 +2,6 @@
 
 ### Performance
 
-- `{body}`
 - Add missing `key`s:
   - `partials.user()` (this is trickier than it may seem, because it actually requires creating `reference`s for users).
   - `class=`
