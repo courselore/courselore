@@ -376,6 +376,7 @@ export default (app: Courselore): void => {
                       (enrollment) =>
                         html`
                           <a
+                            key="enrollment--${enrollment.reference}"
                             href="${app.locals.options
                               .baseURL}/courses/${enrollment.course.reference}"
                             class="menu-box--item button button--tight button--transparent"
@@ -1341,6 +1342,7 @@ export default (app: Courselore): void => {
                   $${res.locals.tags.map(
                     (tag, index) => html`
                       <div
+                        key="tag--${tag.reference}"
                         class="tag ${res.locals.localCSS(css`
                           padding-bottom: var(--space--4);
                           border-bottom: var(--border-width--1) solid
@@ -3280,6 +3282,7 @@ export default (app: Courselore): void => {
 
               return html`
                 <div
+                  key="enrollment--${enrollment.reference}"
                   class="enrollment ${res.locals.localCSS(css`
                     padding-top: var(--space--2);
                     border-top: var(--border-width--1) solid

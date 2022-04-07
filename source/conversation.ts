@@ -1056,6 +1056,7 @@ export default (app: Courselore): void => {
                               $${res.locals.tags.map(
                                 (tag) => html`
                                   <div
+                                    key="tag--${tag.reference}"
                                     class="${res.locals.localCSS(css`
                                       display: flex;
                                       gap: var(--space--2);
@@ -2338,6 +2339,7 @@ export default (app: Courselore): void => {
                           : res.locals.tags.map(
                               (tag) => html`
                                 <div
+                                  key="tag--${tag.reference}"
                                   class="${res.locals.localCSS(css`
                                     display: flex;
                                     gap: var(--space--2);
@@ -3852,6 +3854,7 @@ export default (app: Courselore): void => {
                                                         .map(
                                                           (tag) => html`
                                                             <form
+                                                              key="tag--${tag.reference}"
                                                               method="POST"
                                                               action="${app
                                                                 .locals.options

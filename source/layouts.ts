@@ -2346,6 +2346,7 @@ export default async (app: Courselore): Promise<void> => {
                   $${res.locals.enrollments.map(
                     (enrollment) => html`
                       <a
+                        key="enrollment--${enrollment.reference}"
                         href="${app.locals.options.baseURL}/courses/${enrollment
                           .course.reference}"
                         class="dropdown--menu--item button ${enrollment.id ===
@@ -2525,6 +2526,7 @@ export default async (app: Courselore): Promise<void> => {
                                   $${res.locals.invitations!.map(
                                     (invitation) => html`
                                       <a
+                                        key="invitation--${invitation.reference}"
                                         href="${app.locals.options
                                           .baseURL}/courses/${invitation.course
                                           .reference}/invitations/${invitation.reference}"

@@ -2180,6 +2180,7 @@ ${contentSource}</textarea
             : enrollments.map(
                 (enrollment) => html`
                   <button
+                    key="mention-user-search--${enrollment.reference}"
                     type="button"
                     class="dropdown--menu--item button button--transparent"
                     onload="${javascript`
