@@ -512,6 +512,7 @@ export default (app: Courselore): void => {
           ? html``
           : html`
               <div
+                key="header--menu--secondary"
                 class="${res.locals.localCSS(css`
                   justify-content: center;
                   @media (min-width: 900px) {
@@ -539,6 +540,7 @@ export default (app: Courselore): void => {
       `,
       body: html`
         <div
+          key="layout--conversation"
           class="${res.locals.localCSS(css`
             width: 100%;
             height: 100%;
