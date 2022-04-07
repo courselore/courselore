@@ -4,6 +4,7 @@
 
 - Add keys to things:
   - Major pages, so that tooltips and other things don’t carry over
+  - Templates
   - Partials
   - `class=`
   - `querySelector`
