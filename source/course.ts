@@ -1825,6 +1825,8 @@ export default (app: Courselore): void => {
       res.redirect(
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/tags`
       );
+
+      app.locals.liveUpdaters.course(res.locals.course.id);
     }
   );
 
