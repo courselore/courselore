@@ -2,8 +2,6 @@
 
 ### Performance
 
----
-
 - Live updates and:
   - “Views”
   - “Actions”
