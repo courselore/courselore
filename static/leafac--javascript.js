@@ -290,6 +290,26 @@ const leafac = {
     }
   },
 
+  liveUpdates(token) {
+    leafac.liveUpdatesEventSource?.close();
+    delete leafac.liveUpdatesToken;
+    delete leafac.liveUpdatesEventSource;
+    if (token === undefined) return;
+    leafac.liveUpdatesToken = token;
+    leafac.liveUpdatesEventSource = new ReconnectingEventSource(
+      window.location.href
+    );
+    leafac.liveUpdatesEventSource.addEventListener("liveupdate", (event) => {
+      leafac.liveNavigate({
+        request: new Request(window.location.href),
+        event,
+        liveUpdate: true,
+      });
+    });
+  },
+  liveUpdatesToken: undefined,
+  liveUpdatesEventSource: undefined,
+
   customFormValidation() {
     document.addEventListener(
       "submit",
