@@ -2686,7 +2686,7 @@ export default (app: Courselore): void => {
         })}`
       );
 
-      app.locals.liveUpdaters.course(res.locals.course.id);
+      app.locals.liveUpdaters.course({ req, res });
     }
   );
 
@@ -6246,7 +6246,7 @@ export default (app: Courselore): void => {
         )}`
       );
 
-      app.locals.liveUpdaters.course(res.locals.course.id);
+      app.locals.liveUpdaters.course({ req, res });
     }
   );
 
@@ -6277,7 +6277,7 @@ export default (app: Courselore): void => {
           addQueryPrefix: true,
         })}`
       );
-      app.locals.liveUpdaters.course(res.locals.course.id);
+      app.locals.liveUpdaters.course({ req, res });
     }
   );
 

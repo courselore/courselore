@@ -137,10 +137,13 @@ export type MayEndorseMessageMiddleware = express.RequestHandler<
 export interface MayEndorseMessageMiddlewareLocals
   extends MessageExistsMiddlewareLocals {}
 
-export type CourseLiveUpdater = (
-  courseId: number,
-  eventDestinationReference?: string | undefined
-) => void;
+export type CourseLiveUpdater = ({
+  req,
+  res,
+}: {
+  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
+  res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+}) => Promise<void>;
 
 export type NotificationsMailer = ({
   req,
@@ -741,10 +744,7 @@ export default (app: Courselore): void => {
         )}`
       );
 
-      app.locals.liveUpdaters.course(
-        res.locals.course.id,
-        req.query.eventSourceReference
-      );
+      app.locals.liveUpdaters.course({ req, res });
     }
   );
 
@@ -877,7 +877,7 @@ export default (app: Courselore): void => {
         )}`
       );
 
-      app.locals.liveUpdaters.course(res.locals.course.id);
+      app.locals.liveUpdaters.course({ req, res });
     }
   );
 
@@ -909,7 +909,7 @@ export default (app: Courselore): void => {
           }
         )}`
       );
-      app.locals.liveUpdaters.course(res.locals.course.id);
+      app.locals.liveUpdaters.course({ req, res });
     }
   );
 
@@ -963,10 +963,7 @@ export default (app: Courselore): void => {
         )}`
       );
 
-      app.locals.liveUpdaters.course(
-        res.locals.course.id,
-        req.query.eventSourceReference
-      );
+      app.locals.liveUpdaters.course({ req, res });
     }
   );
 
@@ -1013,10 +1010,7 @@ export default (app: Courselore): void => {
         )}`
       );
 
-      app.locals.liveUpdaters.course(
-        res.locals.course.id,
-        req.query.eventSourceReference
-      );
+      app.locals.liveUpdaters.course({ req, res });
     }
   );
 
@@ -1101,7 +1095,7 @@ export default (app: Courselore): void => {
         )}`
       );
 
-      app.locals.liveUpdaters.course(res.locals.course.id);
+      app.locals.liveUpdaters.course({ req, res });
     }
   );
 
@@ -1146,19 +1140,23 @@ export default (app: Courselore): void => {
         )}`
       );
 
-      app.locals.liveUpdaters.course(res.locals.course.id);
+      app.locals.liveUpdaters.course({ req, res });
     }
   );
 
-  app.locals.liveUpdaters.course = async (courseId, liveUpdateToken) => {
-    for (const { token, req, res } of app.locals.liveUpdatesEventDestinations) {
+  app.locals.liveUpdaters.course = async ({ req, res }) => {
+    for (const liveUpdatesEventDestination of app.locals
+      .liveUpdatesEventDestinations) {
       await new Promise((resolve) => setTimeout(resolve, 20));
-      if (token === liveUpdateToken) continue;
-      res.write(`event: liveupdate\ndata:\n\n`);
+      if (liveUpdatesEventDestination.token === req.header("Live-Update"))
+        continue;
+      liveUpdatesEventDestination.res.write(`event: liveupdate\ndata:\n\n`);
       console.log(
         `${new Date().toISOString()}\tSSE\tliveupdate\t${
-          req.ip
-        }\t${token}\t\t\t${req.originalUrl}`
+          liveUpdatesEventDestination.req.ip
+        }\t${liveUpdatesEventDestination.token}\t\t\t${
+          liveUpdatesEventDestination.req.originalUrl
+        }`
       );
     }
   };
