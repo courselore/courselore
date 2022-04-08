@@ -3,7 +3,7 @@ import { Courselore, BaseMiddlewareLocals } from "./index.js";
 
 export interface LiveUpdatesLocals {
   liveUpdatesEventDestinations: Set<{
-    reference: string;
+    token: string;
     req: express.Request;
     res: express.Response;
   }>;
@@ -29,7 +29,7 @@ export default (app: Courselore): void => {
         return next();
       }
       const liveUpdatesEventDestination = {
-        reference: "TODO",
+        token: "TODO",
         req,
         res,
       };
@@ -42,7 +42,7 @@ export default (app: Courselore): void => {
       app.locals.liveUpdatesEventDestinations.add(liveUpdatesEventDestination);
       console.log(
         `${new Date().toISOString()}\tSSE\topen\t${req.ip}\t${
-          liveUpdatesEventDestination.reference
+          liveUpdatesEventDestination.token
         }\t\t\t${req.originalUrl}`
       );
     },

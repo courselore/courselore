@@ -1150,19 +1150,15 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.locals.liveUpdaters.course = async (
-    courseId,
-    eventDestinationReference
-  ) => {
-    for (const { reference, req, res } of app.locals
-      .liveUpdatesEventDestinations) {
+  app.locals.liveUpdaters.course = async (courseId, liveUpdateToken) => {
+    for (const { token, req, res } of app.locals.liveUpdatesEventDestinations) {
       await new Promise((resolve) => setTimeout(resolve, 20));
-      if (reference === eventDestinationReference) continue;
+      if (token === liveUpdateToken) continue;
       res.write(`event: liveupdate\ndata:\n\n`);
       console.log(
         `${new Date().toISOString()}\tSSE\tliveupdate\t${
           req.ip
-        }\t${reference}\t\t\t${req.originalUrl}`
+        }\t${token}\t\t\t${req.originalUrl}`
       );
     }
   };
