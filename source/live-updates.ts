@@ -13,7 +13,7 @@ export type LiveUpdatesMiddleware = express.RequestHandler<
   {},
   any,
   {},
-  { liveUpdatesToken?: string },
+  { liveUpdatesToken?: string; [key: string]: any },
   LiveUpdatesMiddlewareLocals
 >[];
 export interface LiveUpdatesMiddlewareLocals extends BaseMiddlewareLocals {
