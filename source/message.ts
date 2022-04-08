@@ -571,7 +571,7 @@ export default (app: Courselore): void => {
     { courseReference: string; conversationReference: string },
     HTML,
     { isAnswer?: boolean; content?: string; isAnonymous?: boolean },
-    { eventSourceReference?: string },
+    {},
     IsConversationAccessibleMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages",
@@ -921,7 +921,7 @@ export default (app: Courselore): void => {
     },
     any,
     {},
-    { eventSourceReference?: string },
+    {},
     MessageExistsMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
@@ -975,7 +975,7 @@ export default (app: Courselore): void => {
     },
     any,
     {},
-    { eventSourceReference?: string },
+    {},
     MessageExistsMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference/messages/:messageReference/likes",
