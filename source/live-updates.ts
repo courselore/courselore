@@ -13,7 +13,7 @@ export type LiveUpdatesMiddleware = express.RequestHandler<
   {},
   any,
   {},
-  {},
+  { liveUpdatesToken?: string },
   LiveUpdatesMiddlewareLocals
 >[];
 export interface LiveUpdatesMiddlewareLocals extends BaseMiddlewareLocals {
@@ -28,8 +28,13 @@ export default (app: Courselore): void => {
         res.locals.liveUpdatesToken = Math.random().toString(36).slice(2);
         return next();
       }
+      if (
+        typeof req.query.liveUpdatesToken !== "string" ||
+        req.query.liveUpdatesToken.trim() === ""
+      )
+        return next("validation");
       const liveUpdatesEventDestination = {
-        token: "TODO",
+        token: req.query.liveUpdatesToken,
         req,
         res,
       };
