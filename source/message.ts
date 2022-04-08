@@ -1154,7 +1154,8 @@ export default (app: Courselore): void => {
     courseId,
     eventDestinationReference
   ) => {
-    for (const { reference, req, res } of app.locals.eventDestinations) {
+    for (const { reference, req, res } of app.locals
+      .liveUpdatesEventDestinations) {
       await new Promise((resolve) => setTimeout(resolve, 20));
       if (reference === eventDestinationReference) continue;
       res.write(`event: liveupdate\ndata:\n\n`);

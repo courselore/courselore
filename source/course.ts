@@ -12,7 +12,7 @@ import QRCode from "qrcode";
 import {
   Courselore,
   BaseMiddlewareLocals,
-  EventSourceMiddlewareLocals,
+  LiveUpdatesMiddlewareLocals,
   IsSignedOutMiddlewareLocals,
   IsSignedInMiddlewareLocals,
   UserAvatarlessBackgroundColor,
@@ -182,11 +182,11 @@ export type CourseSettingsLayout = ({
     any,
     {},
     {},
-    IsEnrolledInCourseMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+    IsEnrolledInCourseMiddlewareLocals & Partial<LiveUpdatesMiddlewareLocals>
   >;
   res: express.Response<
     any,
-    IsEnrolledInCourseMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+    IsEnrolledInCourseMiddlewareLocals & Partial<LiveUpdatesMiddlewareLocals>
   >;
   head: HTML;
   body: HTML;
@@ -752,11 +752,11 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {},
-    IsEnrolledInCourseMiddlewareLocals & EventSourceMiddlewareLocals
+    IsEnrolledInCourseMiddlewareLocals & LiveUpdatesMiddlewareLocals
   >(
     "/courses/:courseReference",
     ...app.locals.middlewares.isEnrolledInCourse,
-    ...app.locals.middlewares.eventSource,
+    ...app.locals.middlewares.liveUpdates,
     (req, res) => {
       if (res.locals.conversationsCount === 0)
         return res.send(

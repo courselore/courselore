@@ -14,11 +14,11 @@ export {
   userFileExtensionsWhichMayBeShownInBrowser,
 } from "./global-middlewares.js";
 
-import eventSource, {
-  EventSourceLocals,
-  EventSourceMiddleware,
-} from "./live-update.js";
-export { EventSourceMiddlewareLocals } from "./live-update.js";
+import liveUpdates, {
+  LiveUpdatesLocals,
+  LiveUpdatesMiddleware,
+} from "./live-updates.js";
+export { LiveUpdatesMiddlewareLocals } from "./live-updates.js";
 
 import layouts, {
   BaseLayout,
@@ -155,7 +155,7 @@ export interface Courselore extends express.Express {
       contentPreview: ContentPreviewHandler;
     };
     middlewares: {
-      eventSource: EventSourceMiddleware;
+      liveUpdates: LiveUpdatesMiddleware;
       isSignedOut: IsSignedOutMiddleware;
       isSignedIn: IsSignedInMiddleware;
       isEnrolledInCourse: IsEnrolledInCourseMiddleware;
@@ -224,7 +224,7 @@ export interface Courselore extends express.Express {
       course: CourseLiveUpdater;
     };
   } & DatabaseLocals &
-    EventSourceLocals;
+    LiveUpdatesLocals;
 }
 
 export interface Options {
@@ -265,7 +265,7 @@ export default async (options: Options): Promise<Courselore> => {
   await database(app);
   logging(app);
   globalMiddlewares(app);
-  eventSource(app);
+  liveUpdates(app);
   await layouts(app);
   authentication(app);
   about(app);

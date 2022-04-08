@@ -9,7 +9,7 @@ import lodash from "lodash";
 import slugify from "@sindresorhus/slugify";
 import {
   Courselore,
-  EventSourceMiddlewareLocals,
+  LiveUpdatesMiddlewareLocals,
   UserAvatarlessBackgroundColor,
   EnrollmentRole,
   IsEnrolledInCourseMiddlewareLocals,
@@ -70,13 +70,13 @@ export type ConversationLayout = ({
     },
     IsEnrolledInCourseMiddlewareLocals &
       Partial<IsConversationAccessibleMiddlewareLocals> &
-      Partial<EventSourceMiddlewareLocals>
+      Partial<LiveUpdatesMiddlewareLocals>
   >;
   res: express.Response<
     HTML,
     IsEnrolledInCourseMiddlewareLocals &
       Partial<IsConversationAccessibleMiddlewareLocals> &
-      Partial<EventSourceMiddlewareLocals>
+      Partial<LiveUpdatesMiddlewareLocals>
   >;
   head: HTML;
   onlyConversationLayoutSidebarOnSmallScreen?: boolean;
@@ -2025,11 +2025,11 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {},
-    IsEnrolledInCourseMiddlewareLocals & EventSourceMiddlewareLocals
+    IsEnrolledInCourseMiddlewareLocals & LiveUpdatesMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/new",
     ...app.locals.middlewares.isEnrolledInCourse,
-    ...app.locals.middlewares.eventSource,
+    ...app.locals.middlewares.liveUpdates,
     (req, res) => {
       res.send(
         (res.locals.conversationsCount === 0
@@ -2781,11 +2781,11 @@ export default (app: Courselore): void => {
       beforeMessageReference?: string;
       afterMessageReference?: string;
     },
-    IsConversationAccessibleMiddlewareLocals & EventSourceMiddlewareLocals
+    IsConversationAccessibleMiddlewareLocals & LiveUpdatesMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     ...app.locals.middlewares.isConversationAccessible,
-    ...app.locals.middlewares.eventSource,
+    ...app.locals.middlewares.liveUpdates,
     (req, res) => {
       const beforeMessage =
         typeof req.query.beforeMessageReference === "string"

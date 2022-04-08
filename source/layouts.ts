@@ -10,7 +10,7 @@ import cryptoRandomString from "crypto-random-string";
 import {
   Courselore,
   BaseMiddlewareLocals,
-  EventSourceMiddlewareLocals,
+  LiveUpdatesMiddlewareLocals,
   IsSignedInMiddlewareLocals,
   IsEnrolledInCourseMiddlewareLocals,
 } from "./index.js";
@@ -29,13 +29,13 @@ export type BaseLayout = ({
     {},
     BaseMiddlewareLocals &
       Partial<IsEnrolledInCourseMiddlewareLocals> &
-      Partial<EventSourceMiddlewareLocals>
+      Partial<LiveUpdatesMiddlewareLocals>
   >;
   res: express.Response<
     any,
     BaseMiddlewareLocals &
       Partial<IsEnrolledInCourseMiddlewareLocals> &
-      Partial<EventSourceMiddlewareLocals>
+      Partial<LiveUpdatesMiddlewareLocals>
   >;
   head: HTML;
   extraHeaders?: HTML;
@@ -55,13 +55,13 @@ export type BoxLayout = ({
     {},
     BaseMiddlewareLocals &
       Partial<IsEnrolledInCourseMiddlewareLocals> &
-      Partial<EventSourceMiddlewareLocals>
+      Partial<LiveUpdatesMiddlewareLocals>
   >;
   res: express.Response<
     any,
     BaseMiddlewareLocals &
       Partial<IsEnrolledInCourseMiddlewareLocals> &
-      Partial<EventSourceMiddlewareLocals>
+      Partial<LiveUpdatesMiddlewareLocals>
   >;
   head: HTML;
   body: HTML;
@@ -82,13 +82,13 @@ export type ApplicationLayout = ({
     {},
     IsSignedInMiddlewareLocals &
       Partial<IsEnrolledInCourseMiddlewareLocals> &
-      Partial<EventSourceMiddlewareLocals>
+      Partial<LiveUpdatesMiddlewareLocals>
   >;
   res: express.Response<
     any,
     IsSignedInMiddlewareLocals &
       Partial<IsEnrolledInCourseMiddlewareLocals> &
-      Partial<EventSourceMiddlewareLocals>
+      Partial<LiveUpdatesMiddlewareLocals>
   >;
   head: HTML;
   showCourseSwitcher?: boolean;
@@ -110,13 +110,13 @@ export type MainLayout = ({
     {},
     IsSignedInMiddlewareLocals &
       Partial<IsEnrolledInCourseMiddlewareLocals> &
-      Partial<EventSourceMiddlewareLocals>
+      Partial<LiveUpdatesMiddlewareLocals>
   >;
   res: express.Response<
     any,
     IsSignedInMiddlewareLocals &
       Partial<IsEnrolledInCourseMiddlewareLocals> &
-      Partial<EventSourceMiddlewareLocals>
+      Partial<LiveUpdatesMiddlewareLocals>
   >;
   head: HTML;
   showCourseSwitcher?: boolean;
@@ -136,11 +136,11 @@ export type SettingsLayout = ({
     any,
     {},
     {},
-    IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+    IsSignedInMiddlewareLocals & Partial<LiveUpdatesMiddlewareLocals>
   >;
   res: express.Response<
     any,
-    IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+    IsSignedInMiddlewareLocals & Partial<LiveUpdatesMiddlewareLocals>
   >;
   head: HTML;
   menuButton: HTML;
@@ -277,7 +277,7 @@ export default async (app: Courselore): Promise<void> => {
             })()}
 
             ${
-              res.locals.eventSource
+              typeof res.locals.liveUpdatesToken === "string"
                 ? javascript`
                     const eventSource = new ReconnectingEventSource(window.location.href);
                     window.addEventListener("DOMContentLoaded", () => { eventSource.close(); }, { once: true });

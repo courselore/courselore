@@ -13,7 +13,7 @@ import {
   Courselore,
   BaseMiddlewareLocals,
   IsSignedInMiddlewareLocals,
-  EventSourceMiddlewareLocals,
+  LiveUpdatesMiddlewareLocals,
   IsEnrolledInCourseMiddlewareLocals,
   AuthorEnrollment,
   AuthorEnrollmentUser,
@@ -92,11 +92,11 @@ export type UserSettingsLayout = ({
     any,
     {},
     {},
-    IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+    IsSignedInMiddlewareLocals & Partial<LiveUpdatesMiddlewareLocals>
   >;
   res: express.Response<
     any,
-    IsSignedInMiddlewareLocals & Partial<EventSourceMiddlewareLocals>
+    IsSignedInMiddlewareLocals & Partial<LiveUpdatesMiddlewareLocals>
   >;
   head: HTML;
   body: HTML;
