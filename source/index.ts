@@ -17,8 +17,8 @@ export {
 import eventSource, {
   EventSourceLocals,
   EventSourceMiddleware,
-} from "./event-source.js";
-export { EventSourceMiddlewareLocals } from "./event-source.js";
+} from "./live-update.js";
+export { EventSourceMiddlewareLocals } from "./live-update.js";
 
 import layouts, {
   BaseLayout,
