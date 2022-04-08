@@ -276,21 +276,7 @@ export default async (app: Courselore): Promise<void> => {
                   `;
             })()}
 
-            ${
-              typeof res.locals.liveUpdatesToken === "string"
-                ? javascript`
-                    const eventSource = new ReconnectingEventSource(window.location.href);
-                    window.addEventListener("DOMContentLoaded", () => { eventSource.close(); }, { once: true });
-                    eventSource.addEventListener("liveupdate", (event) => {
-                      leafac.liveNavigate({
-                        request: new Request(window.location.href),
-                        event,
-                        liveUpdate: true,
-                      });
-                    });
-                  `
-                : javascript``
-            }
+            leafac.liveUpdates(${JSON.stringify(res.locals.liveUpdatesToken)});
           `}"
         >
           $${res.locals.enrollment === undefined
