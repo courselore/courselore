@@ -1148,7 +1148,7 @@ export default (app: Courselore): void => {
     for (const liveUpdatesEventDestination of app.locals
       .liveUpdatesEventDestinations) {
       await new Promise((resolve) => setTimeout(resolve, 20));
-      if (liveUpdatesEventDestination.token === req.header("Live-Update"))
+      if (liveUpdatesEventDestination.token === req.header("Live-Updates"))
         continue;
       liveUpdatesEventDestination.res.write(`event: liveupdate\ndata:\n\n`);
       console.log(
