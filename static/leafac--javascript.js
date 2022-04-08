@@ -296,9 +296,9 @@ const leafac = {
     delete leafac.liveUpdatesEventSource;
     if (token === undefined) return;
     leafac.liveUpdatesToken = token;
-    leafac.liveUpdatesEventSource = new ReconnectingEventSource(
-      window.location.href
-    );
+    const url = new URL(window.location.href);
+    url.searchParams.set("liveUpdateToken", token);
+    leafac.liveUpdatesEventSource = new ReconnectingEventSource(url.toString());
     leafac.liveUpdatesEventSource.addEventListener("liveupdate", (event) => {
       leafac.liveNavigate({
         request: new Request(window.location.href),
