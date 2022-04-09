@@ -767,8 +767,6 @@ export default async (app: Courselore): Promise<void> => {
             cursor: wait;
           `)}"
           onload="${javascript`
-            this.hidden = true;
-
             (this.tooltip ??= tippy(this)).setProps({
               touch: false,
               content: "Loading…",
