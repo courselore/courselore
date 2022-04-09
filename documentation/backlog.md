@@ -2,11 +2,6 @@
 
 ### Performance
 
-- Overwriting all form fields on live-navigation may be too heavy-handed—it may be better to overwrite only the form which originated the live-navigation (the form submission).
-  - For example: Open the “Edit Conversation Title” and then click on “Pin”. It’ll erase the “Edit Conversation Title” input.
-
----
-
 - Live updates destinations:
   - Check course id and only send notifications to relevant connections.
 - Do something special on live updates & 404 (for example, when the conversation has been removed).
@@ -364,6 +359,10 @@
 
 ### Interface Details
 
+- The submission of a form resets the state of the rest of the page.
+  - For example, start editing the title of a conversation, then click on “Pin”. The editing form will go away.
+  - The first step would be keep the `hidden` state on form submission, but then other things break, for example, if you’re actually submitting a conversation title update, then the form should be hidden. As far as I can tell, there’s no way to detect what should be hidden and what should be shown automatically: We’d have to write special cases. For example, on the `onsubmit` of the conversation title update, we could add actions to reset the hidden state of the involved components.
+  - Then, on `morph()`, we must look at the `originalEvent` and avoid updating form fields that aren’t the submitted form. This part is actually relatively straightforward: `detail.originalEvent instanceof SubmitEvent && detail.originalEvent.target.contains(from)`
 - On local CSS, use a non-standard attribute instead of classes?
   - Pros:
     - It’s a cleaner solution, given that we’re sort of abusing classes.
