@@ -1151,6 +1151,10 @@
                     color: var(--color--green--700);
                   }
 
+        .tippy-box[data-theme~="green"] .keyboard-shortcut {
+                  color: var(--color--green--500);
+                }
+
         @media (prefers-color-scheme: dark) {
 
         .tippy-box[data-theme~="green"] {
@@ -1175,6 +1179,9 @@
                     .tippy-box[data-theme~="green"] .link:active {
                       color: var(--color--green--200);
                     }
+                  .tippy-box[data-theme~="green"] .keyboard-shortcut {
+                    color: var(--color--green--400);
+                  }
                 }
 
         .tippy-box[data-theme~="rose"] {
@@ -1205,6 +1212,10 @@
                     color: var(--color--rose--700);
                   }
 
+        .tippy-box[data-theme~="rose"] .keyboard-shortcut {
+                  color: var(--color--rose--500);
+                }
+
         @media (prefers-color-scheme: dark) {
 
         .tippy-box[data-theme~="rose"] {
@@ -1229,6 +1240,9 @@
                     .tippy-box[data-theme~="rose"] .link:active {
                       color: var(--color--rose--200);
                     }
+                  .tippy-box[data-theme~="rose"] .keyboard-shortcut {
+                    color: var(--color--rose--400);
+                  }
                 }
 
         .tippy-box[data-theme~="error"] {
@@ -1259,6 +1273,10 @@
                     color: var(--color--rose--700);
                   }
 
+        .tippy-box[data-theme~="error"] .keyboard-shortcut {
+                  color: var(--color--rose--500);
+                }
+
         @media (prefers-color-scheme: dark) {
 
         .tippy-box[data-theme~="error"] {
@@ -1283,6 +1301,9 @@
                     .tippy-box[data-theme~="error"] .link:active {
                       color: var(--color--rose--200);
                     }
+                  .tippy-box[data-theme~="error"] .keyboard-shortcut {
+                    color: var(--color--rose--400);
+                  }
                 }
 
         .dark {

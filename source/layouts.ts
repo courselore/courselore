@@ -1715,6 +1715,9 @@ export default async (app: Courselore): Promise<void> => {
                     color: var(--color--${color}--700);
                   }
                 }
+                .keyboard-shortcut {
+                  color: var(--color--${color}--500);
+                }
                 @media (prefers-color-scheme: dark) {
                   color: var(--color--${color}--200);
                   --background-color: var(--color--${color}--900);
@@ -1737,6 +1740,9 @@ export default async (app: Courselore): Promise<void> => {
                     &:active {
                       color: var(--color--${color}--200);
                     }
+                  }
+                  .keyboard-shortcut {
+                    color: var(--color--${color}--400);
                   }
                 }
               }
