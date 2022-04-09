@@ -1233,24 +1233,16 @@ export default (app: Courselore): void => {
                         key="conversations"
                         onload="${javascript`
                         ${
-                          req.query.scrollToConversation !== "false"
+                          req.query.scrollToConversation !== "false" &&
+                          res.locals.conversation !== undefined
                             ? javascript`
                                 window.setTimeout(() => {
-                                  if (event?.detail?.previousLocation?.pathname?.slice(${
-                                    new URL(app.locals.options.baseURL).pathname
-                                      .length - 1
-                                  })?.match(/^\\/courses\\/${
-                                res.locals.course.reference
-                              }(?:$|\\/conversations\\/)/)) return;
-                                  ${
-                                    res.locals.conversation === undefined
-                                      ? javascript`
-                                          this.closest('[key^="layout--conversation--sidebar--/"]').scroll(0, 0);
-                                        `
-                                      : javascript`
-                                          this.querySelector('[key="conversation--${res.locals.conversation.reference}"]')?.scrollIntoView({ block: "center" });
-                                        `
-                                  }
+                                  if (event?.detail?.previousLocation?.href?.startsWith(${JSON.stringify(
+                                    `${app.locals.options.baseURL}/courses/${res.locals.course.reference}`
+                                  )})) return;
+                                  this.querySelector('[key="conversation--${
+                                    res.locals.conversation.reference
+                                  }"]')?.scrollIntoView({ block: "center" });
                                 });
                               `
                             : javascript``
