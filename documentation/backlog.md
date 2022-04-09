@@ -2,6 +2,11 @@
 
 ### Performance
 
+- Overwriting all form fields on live-navigation may be too heavy-handed—it may be better to overwrite only the form which originated the live-navigation (the form submission).
+  - For example: Open the “Edit Conversation Title” and then click on “Pin”. It’ll erase the “Edit Conversation Title” input.
+
+---
+
 - Live updates destinations:
   - Check course id and only send notifications to relevant connections.
 - Do something special on live updates & 404 (for example, when the conversation has been removed).
