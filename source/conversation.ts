@@ -3986,15 +3986,8 @@ export default (app: Courselore): void => {
                         : css``}
                     `)}"
                     onload="${javascript`
-                      const shouldScrollConversationToBottom = window.shouldScrollConversationToBottom;
-                      
                       window.setTimeout(() => {
-                        if (event?.detail?.previousLocation?.pathname?.slice(${
-                          new URL(app.locals.options.baseURL).pathname.length -
-                          1
-                        }) !== ${JSON.stringify(
-                      `/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}`
-                    )}) {
+                        if (event?.detail?.previousLocation?.pathname !== window.location.pathname) {
                           ${
                             typeof req.query.messageReference === "string"
                               ? javascript`
@@ -4014,25 +4007,18 @@ export default (app: Courselore): void => {
                               ? javascript`
                                   this.scroll(0, this.scrollHeight);
                                 `
-                              : javascript`
-                                  const element = ${
-                                    res.locals.conversation.type === "chat"
-                                      ? javascript`this`
-                                      : javascript`this.closest('[key^="layout--conversation--main--/"]')`
-                                  };
-                                  element.scroll(0, 0);
-                                `
+                              : javascript``
                           }
                         }
                         ${
                           res.locals.conversation.type === "chat"
                             ? javascript`
-                                else if (shouldScrollConversationToBottom) {
+                                else if (this.shouldScrollConversationToBottom) {
                                   this.scroll(0, this.scrollHeight);
                                 }
                                 
                                 this.onscroll = () => {
-                                  window.shouldScrollConversationToBottom = this.scrollTop === this.scrollHeight - this.offsetHeight;
+                                  this.shouldScrollConversationToBottom = this.scrollTop === this.scrollHeight - this.offsetHeight;
                                 };
                                 this.onscroll();
                               `
