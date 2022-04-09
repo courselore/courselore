@@ -76,6 +76,7 @@ const leafac = {
           ? { ...window.location }
           : previousLocation,
       };
+      const isGet = ["GET", "HEAD"].includes(request.method.toUpperCase());
       if (
         liveUpdate ||
         (window.dispatchEvent(
@@ -92,7 +93,11 @@ const leafac = {
             signal: abortController.signal,
           });
           const responseText = await response.text();
-          if (!(event instanceof PopStateEvent) && !liveUpdate)
+          if (
+            !(event instanceof PopStateEvent) &&
+            !liveUpdate &&
+            !(!isGet && window.location.href === response.url)
+          )
             window.history.pushState(undefined, "", response.url);
           const newDocument = new DOMParser().parseFromString(
             responseText,
@@ -121,11 +126,7 @@ const leafac = {
         } catch (error) {
           if (error.name !== "AbortError") {
             console.error(error);
-            if (
-              ["GET", "HEAD"].includes(request.method.toUpperCase()) &&
-              !(event instanceof PopStateEvent) &&
-              !liveUpdate
-            )
+            if (isGet && !(event instanceof PopStateEvent) && !liveUpdate)
               window.history.pushState(undefined, "", request.url);
             const body = document.querySelector("body");
             (body.networkError ??= tippy(body)).setProps({
