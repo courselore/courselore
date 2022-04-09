@@ -255,10 +255,11 @@ const leafac = {
         ...to.getAttributeNames(),
       ])) {
         if (
-          liveUpdate &&
-          ["hidden", "value", "checked", "disabled", "indeterminate"].includes(
-            attribute
-          )
+          ["style", "hidden"].includes(attribute) ||
+          (liveUpdate &&
+            ["value", "checked", "disabled", "indeterminate"].includes(
+              attribute
+            ))
         )
           continue;
         const fromAttribute = from.getAttribute(attribute);

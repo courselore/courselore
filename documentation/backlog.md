@@ -2,12 +2,6 @@
 
 ### Performance
 
-- Autosize causes scroll glitches:
-  - Form submission on `/settings/profile`.
-  - Live updates on conversations.
-
----
-
 - Live updates destinations:
   - Check course id and only send notifications to relevant connections.
 - Do something special on live updates & 404 (for example, when the conversation has been removed).
