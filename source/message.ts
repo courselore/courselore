@@ -1147,9 +1147,13 @@ export default (app: Courselore): void => {
   app.locals.liveUpdaters.course = async ({ req, res }) => {
     for (const liveUpdatesEventDestination of app.locals
       .liveUpdatesEventDestinations) {
-      await new Promise((resolve) => setTimeout(resolve, 20));
-      if (liveUpdatesEventDestination.token === req.header("Live-Updates"))
+      if (
+        liveUpdatesEventDestination.token === req.header("Live-Updates") ||
+        res.locals.course.reference !==
+          liveUpdatesEventDestination.res.locals.course?.reference
+      )
         continue;
+      await new Promise((resolve) => setTimeout(resolve, 20));
       liveUpdatesEventDestination.res.write(`event: liveupdate\ndata:\n\n`);
       console.log(
         `${new Date().toISOString()}\tSSE\tliveupdate\t${
