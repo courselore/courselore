@@ -114,7 +114,7 @@ const leafac = {
           leafac.morph(
             document.querySelector("body"),
             newDocument.querySelector("body"),
-            { liveUpdate }
+            detail
           );
           window.dispatchEvent(new CustomEvent("DOMContentLoaded", { detail }));
           if (!liveUpdate) document.querySelector("[autofocus]")?.focus();
@@ -174,7 +174,7 @@ const leafac = {
     parentElement.forceIsConnected = false;
   },
 
-  morph(from, to, { liveUpdate = false } = {}) {
+  morph(from, to, detail = {}) {
     const fromChildNodes = from.childNodes;
     const toChildNodes = to.childNodes;
     const getKey = (node) =>
@@ -203,7 +203,7 @@ const leafac = {
         const node = fromChildNodes[nodeIndex];
         const key = fromKeys[nodeIndex];
         if (
-          liveUpdate &&
+          detail.liveUpdate &&
           (node.onbeforeremove?.() === false ||
             node.matches?.("[data-tippy-root]"))
         )
@@ -256,7 +256,7 @@ const leafac = {
       ])) {
         if (
           ["style", "hidden"].includes(attribute) ||
-          (liveUpdate &&
+          (detail.liveUpdate &&
             ["value", "checked", "disabled", "indeterminate"].includes(
               attribute
             ))
@@ -268,7 +268,7 @@ const leafac = {
         else if (fromAttribute !== toAttribute)
           from.setAttribute(attribute, toAttribute);
       }
-      if (!liveUpdate)
+      if (!detail.liveUpdate)
         switch (from.tagName.toLowerCase()) {
           case "input":
             for (const property of [
@@ -284,8 +284,8 @@ const leafac = {
             if (from.value !== to.value) from.value = to.value;
             break;
         }
-      if (!liveUpdate || from.partialParentElement !== true)
-        leafac.morph(from, to, { liveUpdate });
+      if (!detail.liveUpdate || from.partialParentElement !== true)
+        leafac.morph(from, to, detail);
     }
   },
 
