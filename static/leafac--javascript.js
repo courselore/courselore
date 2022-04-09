@@ -284,7 +284,7 @@ const leafac = {
             if (from.value !== to.value) from.value = to.value;
             break;
         }
-      if (!detail.liveUpdate || from.partialParentElement !== true)
+      if (!(detail.liveUpdate && from.partialParentElement === true))
         leafac.morph(from, to, detail);
     }
   },
