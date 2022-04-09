@@ -75,6 +75,7 @@ const leafac = {
         previousLocation: liveUpdate
           ? { ...window.location }
           : previousLocation,
+        liveUpdate,
       };
       const isGet = ["GET", "HEAD"].includes(request.method.toUpperCase());
       if (
@@ -97,8 +98,10 @@ const leafac = {
             !(event instanceof PopStateEvent) &&
             !liveUpdate &&
             !(!isGet && window.location.href === response.url)
-          )
+          ) {
             window.history.pushState(undefined, "", response.url);
+            previousLocation = { ...window.location };
+          }
           const newDocument = new DOMParser().parseFromString(
             responseText,
             "text/html"
@@ -126,8 +129,10 @@ const leafac = {
         } catch (error) {
           if (error.name !== "AbortError") {
             console.error(error);
-            if (isGet && !(event instanceof PopStateEvent) && !liveUpdate)
+            if (isGet && !(event instanceof PopStateEvent) && !liveUpdate) {
               window.history.pushState(undefined, "", request.url);
+              previousLocation = { ...window.location };
+            }
             const body = document.querySelector("body");
             (body.networkError ??= tippy(body)).setProps({
               appendTo: body,
@@ -143,7 +148,6 @@ const leafac = {
             window.onnavigateerror?.();
           }
         }
-        if (!liveUpdate) previousLocation = { ...window.location };
       }
       state = "available";
     };
