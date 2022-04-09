@@ -2,12 +2,6 @@
 
 ### Performance
 
-- Live updates destinations:
-  - Check course id and only send notifications to relevant connections.
-- Do something special on live updates & 404 (for example, when the conversation has been removed).
-
----
-
 - Pagination.
   - `TODO`
   - Smarter default page for when the page isn’t specified explicitly:
@@ -104,6 +98,10 @@
 
 ### More Performance
 
+- Live updates destinations:
+  - Check conversation id and only send notifications to relevant connections.
+    - It gets a bit tricky, because some conversation modifications affect the sidebar, which should be updated for every tab with the course open.
+  - When we have pagination, take it a step further and only live update tabs with the affected message open.
 - Lazy loading & DRYing to reduce HTML payload
   - `userPartial` tooltip
   - `conversationPartial` tooltip on decorated content
@@ -359,6 +357,10 @@
 
 ### Interface Details
 
+- Do something special on live updates & 404.
+  - For example, when we have a tab open with a conversation and someone else deletes it.
+  - Right now we just show the 404 to the person, without much context, which can be confusing.
+  - One possible solution is to look at the `Live-Updates` header on the `GET` and set a flash.
 - The submission of a form resets the state of the rest of the page.
   - For example, start editing the title of a conversation, then click on “Pin”. The editing form will go away.
   - The first step would be keep the `hidden` state on form submission, but then other things break, for example, if you’re actually submitting a conversation title update, then the form should be hidden. As far as I can tell, there’s no way to detect what should be hidden and what should be shown automatically: We’d have to write special cases. For example, on the `onsubmit` of the conversation title update, we could add actions to reset the hidden state of the involved components.
