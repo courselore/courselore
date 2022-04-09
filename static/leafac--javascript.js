@@ -94,14 +94,14 @@ const leafac = {
             signal: abortController.signal,
           });
           const responseText = await response.text();
-          if (
+          const shouldPushState =
             !(event instanceof PopStateEvent) &&
             !liveUpdate &&
-            !(!isGet && window.location.href === response.url)
-          ) {
+            !(!isGet && window.location.href === response.url);
+          if (shouldPushState)
             window.history.pushState(undefined, "", response.url);
+          if (shouldPushState || event instanceof PopStateEvent)
             previousLocation = { ...window.location };
-          }
           const newDocument = new DOMParser().parseFromString(
             responseText,
             "text/html"
@@ -129,10 +129,12 @@ const leafac = {
         } catch (error) {
           if (error.name !== "AbortError") {
             console.error(error);
-            if (isGet && !(event instanceof PopStateEvent) && !liveUpdate) {
+            const shouldPushState =
+              isGet && !(event instanceof PopStateEvent) && !liveUpdate;
+            if (shouldPushState)
               window.history.pushState(undefined, "", request.url);
+            if (shouldPushState || event instanceof PopStateEvent)
               previousLocation = { ...window.location };
-            }
             const body = document.querySelector("body");
             (body.networkError ??= tippy(body)).setProps({
               appendTo: body,
