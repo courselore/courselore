@@ -3,6 +3,13 @@
 <details>
 <summary>2021-04-02</summary>
 
+- Finished and deployed details on morphing, live navigation, and live updates. This should address several glitches in the application, and give it a more app-like feel.
+
+</details>
+
+<details>
+<summary>2021-04-02</summary>
+
 - Converted from morphdom into own implementation, which minimizes changes to the DOM, fixing glitches with tooltips, scrolling, and so forth.
 
 </details>
