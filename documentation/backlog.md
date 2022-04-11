@@ -33,12 +33,6 @@
 
 ---
 
-- On release:
-  - Document `header Cache-Control no-cache` for self-hosters.
-  - Close issue related to tags not updating on `/conversations/new`.
-
----
-
 - Moving forward:
   - Redesign sidebar, chat messages, and things like announcements vs notes-that-generate-notifications.
   - Notification digests.
