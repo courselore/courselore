@@ -82,8 +82,11 @@ const leafac = {
         try {
           abortController = new AbortController();
           request.headers.set("Live-Navigation", "true");
-          if (leafac.liveUpdatesToken !== undefined)
-            request.headers.set("Live-Updates", leafac.liveUpdatesToken);
+          if (leafac.liveUpdatesEventSource?.token !== undefined)
+            request.headers.set(
+              "Live-Updates",
+              leafac.liveUpdatesEventSource?.token
+            );
           const response = await fetch(request, {
             signal: abortController.signal,
           });
@@ -295,13 +298,12 @@ const leafac = {
 
   liveUpdates(token) {
     leafac.liveUpdatesEventSource?.close();
-    delete leafac.liveUpdatesToken;
     delete leafac.liveUpdatesEventSource;
     if (token === undefined) return;
-    leafac.liveUpdatesToken = token;
     const url = new URL(window.location.href);
     url.searchParams.set("liveUpdatesToken", token);
     leafac.liveUpdatesEventSource = new ReconnectingEventSource(url.toString());
+    leafac.liveUpdatesEventSource.token = token;
     leafac.liveUpdatesEventSource.addEventListener("liveupdate", (event) => {
       leafac.liveNavigate({
         request: new Request(window.location.href),
@@ -310,7 +312,6 @@ const leafac = {
       });
     });
   },
-  liveUpdatesToken: undefined,
   liveUpdatesEventSource: undefined,
 
   customFormValidation() {
