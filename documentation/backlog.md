@@ -2,10 +2,6 @@
 
 ### Performance
 
-- What about removing enrollment? Maybe the person who’s been removed has a page open, and we’d like to kick them out…
-
----
-
 - On live-update, send HTML directly.
 
 ---

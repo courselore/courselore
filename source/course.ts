@@ -3654,6 +3654,8 @@ export default (app: Courselore): void => {
           ? `${app.locals.options.baseURL}/courses/${res.locals.course.reference}`
           : `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/enrollments`
       );
+
+      app.locals.liveUpdaters.course({ req, res });
     }
   );
 
@@ -3688,6 +3690,8 @@ export default (app: Courselore): void => {
           ? `${app.locals.options.baseURL}/`
           : `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/enrollments`
       );
+
+      app.locals.liveUpdaters.course({ req, res });
     }
   );
 
