@@ -4,6 +4,8 @@
 <summary>2021-04-02</summary>
 
 - Finished and deployed details on morphing, live navigation, and live updates. This should address several glitches in the application, and give it a more app-like feel.
+- We’ll do videos for educators and students with a brief sales pitch, and a tutorial.
+- The new contributor who’ll be joining us for the summer may be working on the administrative panel.
 
 </details>
 
