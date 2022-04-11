@@ -2,6 +2,10 @@
 
 ### Performance
 
+- Demonstration data creation doesn’t work on Edge.
+
+---
+
 - Updating course information should send updates (just like updating tags does).
   - What about removing enrollment? Maybe the person who’s been removed has a page open, and we’d like to kick them out…
 
