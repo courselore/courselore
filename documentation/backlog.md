@@ -419,6 +419,17 @@
     - It uses more memory on the client side.
   - Make sure to clear cache on sign-out or the back button will reveal private information.
 
+### Videos
+
+- Educators:
+  - Short “sales pitch”
+  - Tutorial
+- Students:
+  - Tutorial
+- System administrators
+  - How to deploy, backup, and update
+  - Lower priority: We’ll do this in the future and rely solely on the text-based instructions for now.
+
 ### Infrastructure
 
 - Add missing `key`s:
