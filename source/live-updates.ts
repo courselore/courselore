@@ -10,9 +10,9 @@ export interface LiveUpdatesLocals {
     createdAt: Date;
     token: string;
     courseId: number;
-    pending?: boolean;
-    req?: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
-    res?: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+    shouldUpdate?: boolean;
+    req?: express.Request<{}, any, {}, {}, LiveUpdatesMiddlewareLocals>;
+    res?: express.Response<any, LiveUpdatesMiddlewareLocals>;
   }>;
 }
 
@@ -77,13 +77,50 @@ export default (app: Courselore): void => {
         app.locals.liveUpdatesEventDestinations.delete(
           liveUpdatesEventDestination
         );
+        console.log(
+          `${new Date().toISOString()}\tLIVE-UPDATES\tCLOSED\t${req.ip}\t${
+            res.locals.liveUpdatesToken
+          }\t\t\t${req.originalUrl}`
+        );
       });
       res.type("text/event-stream").write(":\n\n");
       console.log(
-        `${new Date().toISOString()}\tSSE\topen\t${req.ip}\t${
+        `${new Date().toISOString()}\tLIVE-UPDATES\tOPENED\t${req.ip}\t${
           res.locals.liveUpdatesToken
         }\t\t\t${req.originalUrl}`
       );
     },
   ];
+
+  async function backgroundJob() {
+    for (const liveUpdatesEventDestination of app.locals
+      .liveUpdatesEventDestinations) {
+      if (
+        liveUpdatesEventDestination.req === undefined ||
+        liveUpdatesEventDestination.res === undefined
+      ) {
+        if (
+          liveUpdatesEventDestination.createdAt.getTime() <
+          Date.now() - 60 * 1000
+        ) {
+          app.locals.liveUpdatesEventDestinations.delete(
+            liveUpdatesEventDestination
+          );
+          console.log(
+            `${new Date().toISOString()}\tLIVE-UPDATES\tDISCARDED\t${
+              liveUpdatesEventDestination.token
+            }`
+          );
+        }
+        continue;
+      }
+      if (liveUpdatesEventDestination.shouldUpdate !== true) continue;
+      liveUpdatesEventDestination.res.locals = {
+        liveUpdatesToken:
+          liveUpdatesEventDestination.res.locals.liveUpdatesToken,
+      } as LiveUpdatesMiddlewareLocals;
+      app(liveUpdatesEventDestination.req, liveUpdatesEventDestination.res);
+      liveUpdatesEventDestination.shouldUpdate = false;
+    }
+  }
 };
