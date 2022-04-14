@@ -65,19 +65,17 @@ const leafac = {
     let abortController;
     let state = "available";
     let previousLocation = { ...window.location };
-    return async ({ request, event, liveUpdate = false }) => {
-      if (event instanceof PopStateEvent || state === "live-updating")
-        abortController?.abort();
-      else if (state === "live-navigating") return;
-      state = liveUpdate ? "live-updating" : "live-navigating";
-      const detail = { originalEvent: event, previousLocation, liveUpdate };
+    return async ({ request, event }) => {
+      if (event instanceof PopStateEvent) abortController?.abort();
+      else if (state !== "available") return;
+      state = "busy";
+      const detail = { originalEvent: event, previousLocation };
       const isGet = ["GET", "HEAD"].includes(request.method.toUpperCase());
       if (
-        liveUpdate ||
-        (window.dispatchEvent(
+        window.dispatchEvent(
           new CustomEvent("beforenavigate", { cancelable: true, detail })
         ) &&
-          window.onbeforenavigate?.() !== false)
+        window.onbeforenavigate?.() !== false
       ) {
         try {
           abortController = new AbortController();
@@ -93,38 +91,14 @@ const leafac = {
           const responseText = await response.text();
           if (
             !(event instanceof PopStateEvent) &&
-            !liveUpdate &&
             !(!isGet && window.location.href === response.url)
           )
             window.history.pushState(undefined, "", response.url);
-          const newDocument = new DOMParser().parseFromString(
-            responseText,
-            "text/html"
-          );
-          document.querySelector("title").textContent =
-            newDocument.querySelector("title").textContent;
-          for (const element of liveUpdate
-            ? []
-            : document.querySelectorAll(`[key="local-css"]`))
-            element.remove();
-          for (const element of newDocument.querySelectorAll(
-            `[key="local-css"]`
-          ))
-            document
-              .querySelector("head")
-              .insertAdjacentElement("beforeend", element);
-          if (!liveUpdate) tippy.hideAll();
-          leafac.morph(
-            document.querySelector("body"),
-            newDocument.querySelector("body"),
-            detail
-          );
-          window.dispatchEvent(new CustomEvent("DOMContentLoaded", { detail }));
-          if (!liveUpdate) document.querySelector("[autofocus]")?.focus();
+          leafac.loadDocument(responseText, detail);
         } catch (error) {
           if (error.name !== "AbortError") {
             console.error(error);
-            if (isGet && !(event instanceof PopStateEvent) && !liveUpdate)
+            if (isGet && !(event instanceof PopStateEvent))
               window.history.pushState(undefined, "", request.url);
             const body = document.querySelector("body");
             (body.networkError ??= tippy(body)).setProps({
@@ -146,6 +120,31 @@ const leafac = {
       state = "available";
     };
   })(),
+
+  loadDocument(documentString, detail) {
+    const newDocument = new DOMParser().parseFromString(
+      documentString,
+      "text/html"
+    );
+    document.querySelector("title").textContent =
+      newDocument.querySelector("title").textContent;
+    for (const element of detail.liveUpdate
+      ? []
+      : document.querySelectorAll(`[key="local-css"]`))
+      element.remove();
+    for (const element of newDocument.querySelectorAll(`[key="local-css"]`))
+      document
+        .querySelector("head")
+        .insertAdjacentElement("beforeend", element);
+    if (!detail.liveUpdate) tippy.hideAll();
+    leafac.morph(
+      document.querySelector("body"),
+      newDocument.querySelector("body"),
+      detail
+    );
+    window.dispatchEvent(new CustomEvent("DOMContentLoaded", { detail }));
+    if (!detail.liveUpdate) document.querySelector("[autofocus]")?.focus();
+  },
 
   loadPartial(parentElement, partialString) {
     const partialDocument = new DOMParser().parseFromString(
@@ -305,9 +304,9 @@ const leafac = {
     leafac.liveUpdatesEventSource = new ReconnectingEventSource(url.toString());
     leafac.liveUpdatesEventSource.token = token;
     leafac.liveUpdatesEventSource.addEventListener("liveupdate", (event) => {
-      leafac.liveNavigate({
-        request: new Request(window.location.href),
-        event,
+      leafac.loadDocument(event.data, {
+        originalEvent: event,
+        previousLocation: { ...window.location },
         liveUpdate: true,
       });
     });

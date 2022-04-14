@@ -3,7 +3,6 @@ import { Courselore, BaseMiddlewareLocals } from "./index.js";
 
 export interface LiveUpdatesLocals {
   liveUpdatesEventDestinations: Set<{
-    token: string;
     req: express.Request;
     res: express.Response;
   }>;
@@ -24,6 +23,7 @@ export default (app: Courselore): void => {
   app.locals.liveUpdatesEventDestinations = new Set();
   app.locals.middlewares.liveUpdates = [
     (req, res, next) => {
+      if (typeof res.locals.liveUpdatesToken === "string") return next();
       if (!req.header("accept")?.includes("text/event-stream")) {
         res.locals.liveUpdatesToken = Math.random().toString(36).slice(2);
         return next();
@@ -33,8 +33,8 @@ export default (app: Courselore): void => {
         req.query.liveUpdatesToken.trim() === ""
       )
         return next("validation");
+      res.locals.liveUpdatesToken = req.query.liveUpdatesToken;
       const liveUpdatesEventDestination = {
-        token: req.query.liveUpdatesToken,
         req,
         res,
       };
@@ -44,10 +44,17 @@ export default (app: Courselore): void => {
         );
       });
       res.type("text/event-stream").write(":\n\n");
+      res.setHeader = (name, value) => res;
+      res.send = (body) => {
+        res.write(
+          `event: liveupdate\ndata:${body.replaceAll("\n", "\ndata:")}\n\n`
+        );
+        return res;
+      };
       app.locals.liveUpdatesEventDestinations.add(liveUpdatesEventDestination);
       console.log(
         `${new Date().toISOString()}\tSSE\topen\t${req.ip}\t${
-          liveUpdatesEventDestination.token
+          res.locals.liveUpdatesToken
         }\t\t\t${req.originalUrl}`
       );
     },
