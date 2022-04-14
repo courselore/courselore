@@ -10,6 +10,7 @@ export interface LiveUpdatesLocals {
     createdAt: Date;
     token: string;
     courseId: number;
+    pending?: boolean;
     req?: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
     res?: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
   }>;
