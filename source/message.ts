@@ -1144,32 +1144,6 @@ export default (app: Courselore): void => {
     }
   );
 
-  app.locals.liveUpdaters.course = async ({ req, res }) => {
-    for (const liveUpdatesEventDestination of app.locals
-      .liveUpdatesEventDestinations) {
-      if (
-        liveUpdatesEventDestination.res.locals.liveUpdatesToken ===
-          req.header("Live-Updates") ||
-        res.locals.course.reference !==
-          liveUpdatesEventDestination.res.locals.course?.reference
-      )
-        continue;
-      await new Promise((resolve) => setTimeout(resolve, 20));
-      liveUpdatesEventDestination.res.locals = {
-        liveUpdatesToken:
-          liveUpdatesEventDestination.res.locals.liveUpdatesToken,
-      };
-      app(liveUpdatesEventDestination.req, liveUpdatesEventDestination.res);
-      console.log(
-        `${new Date().toISOString()}\tSSE\tliveupdate\t${
-          liveUpdatesEventDestination.req.ip
-        }\t${liveUpdatesEventDestination.res.locals.liveUpdatesToken}\t\t\t${
-          liveUpdatesEventDestination.req.originalUrl
-        }`
-      );
-    }
-  };
-
   app.locals.mailers.notifications = ({
     req,
     res,

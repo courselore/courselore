@@ -92,6 +92,19 @@ export default (app: Courselore): void => {
     },
   ];
 
+  async function enqueue({ req, res }: { req: any; res: any }) {
+    for (const liveUpdatesEventDestination of app.locals
+      .liveUpdatesEventDestinations) {
+      if (
+        liveUpdatesEventDestination.token === req.header("Live-Updates") ||
+        res.locals.course.id !== liveUpdatesEventDestination.courseId
+      )
+        continue;
+      liveUpdatesEventDestination.shouldUpdate = true;
+    }
+    backgroundJob();
+  }
+
   async function backgroundJob() {
     for (const liveUpdatesEventDestination of app.locals
       .liveUpdatesEventDestinations) {
@@ -122,5 +135,6 @@ export default (app: Courselore): void => {
       app(liveUpdatesEventDestination.req, liveUpdatesEventDestination.res);
       liveUpdatesEventDestination.shouldUpdate = false;
     }
+    await new Promise((resolve) => setTimeout(resolve, 20));
   }
 };
