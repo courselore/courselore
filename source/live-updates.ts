@@ -54,11 +54,6 @@ export default (app: Courselore): void => {
         }
         return next();
       }
-      if (
-        typeof req.query.liveUpdatesToken !== "string" ||
-        req.query.liveUpdatesToken.trim() === ""
-      )
-        return next("validation");
       const liveUpdatesEventDestination = [
         ...app.locals.liveUpdatesEventDestinations,
       ].find(
@@ -70,11 +65,20 @@ export default (app: Courselore): void => {
         liveUpdatesEventDestination.courseId !== res.locals.course.id ||
         liveUpdatesEventDestination.req !== undefined ||
         liveUpdatesEventDestination.res !== undefined
-      )
-        return next("validation");
+      ) {
+        res
+          .type("text/event-stream")
+          .write(`event: validationerror\ndata:\n\n`);
+        console.log(
+          `${new Date().toISOString()}\tLIVE-UPDATES\tEVENT-STREAM\tFAILED\t${
+            req.ip
+          }\t${req.query.liveUpdatesToken}\t\t\t${req.originalUrl}`
+        );
+        return;
+      }
       liveUpdatesEventDestination.req = req;
       liveUpdatesEventDestination.res = res;
-      res.locals.liveUpdatesToken = req.query.liveUpdatesToken;
+      res.locals.liveUpdatesToken = liveUpdatesEventDestination.token;
       res.setHeader = (name, value) => res;
       res.send = (body) => {
         res.write(
@@ -87,16 +91,16 @@ export default (app: Courselore): void => {
           liveUpdatesEventDestination
         );
         console.log(
-          `${new Date().toISOString()}\tLIVE-UPDATES\tCLOSED\t${req.ip}\t${
-            res.locals.liveUpdatesToken
-          }\t\t\t${req.originalUrl}`
+          `${new Date().toISOString()}\tLIVE-UPDATES\tEVENT-STREAM\tCLOSED\t${
+            req.ip
+          }\t${res.locals.liveUpdatesToken}\t\t\t${req.originalUrl}`
         );
       });
       res.type("text/event-stream").write(":\n\n");
       console.log(
-        `${new Date().toISOString()}\tLIVE-UPDATES\tOPENED\t${req.ip}\t${
-          res.locals.liveUpdatesToken
-        }\t\t\t${req.originalUrl}`
+        `${new Date().toISOString()}\tLIVE-UPDATES\tEVENT-STREAM\tOPENED\t${
+          req.ip
+        }\t${res.locals.liveUpdatesToken}\t\t\t${req.originalUrl}`
       );
     },
   ];
