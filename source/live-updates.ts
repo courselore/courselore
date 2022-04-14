@@ -29,6 +29,14 @@ export interface LiveUpdatesMiddlewareLocals
   liveUpdatesToken: string;
 }
 
+export type LiveUpdatesDispatchHelper = ({
+  req,
+  res,
+}: {
+  req: express.Request<{}, any, {}, {}, LiveUpdatesMiddlewareLocals>;
+  res: express.Response<any, LiveUpdatesMiddlewareLocals>;
+}) => void;
+
 export default (app: Courselore): void => {
   app.locals.liveUpdatesEventDestinations = new Set();
 

@@ -17,6 +17,7 @@ export {
 import liveUpdates, {
   LiveUpdatesLocals,
   LiveUpdatesMiddleware,
+  LiveUpdatesDispatchHelper,
 } from "./live-updates.js";
 export { LiveUpdatesMiddlewareLocals } from "./live-updates.js";
 
@@ -195,6 +196,7 @@ export interface Courselore extends express.Express {
       contentEditor: ContentEditorPartial;
     };
     helpers: {
+      liveUpdatesDispatch: LiveUpdatesDispatchHelper;
       Flash: FlashHelper;
       Session: SessionHelper;
       PasswordReset: PasswordResetHelper;
