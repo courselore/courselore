@@ -3,7 +3,6 @@
 ### Performance
 
 - On live-update, send HTML directly.
-  - Double-check for the existence of newlines on live updates payload.
   - Future:
     - Use smarter data structures for `liveUpdatesEventDestinations` so that we don’t have to traverse the whole set so often.
     - Make the channels more granular so that they have to update every connection for the course.

@@ -31,6 +31,7 @@ export interface LiveUpdatesMiddlewareLocals
 
 export default (app: Courselore): void => {
   app.locals.liveUpdatesEventDestinations = new Set();
+
   app.locals.middlewares.liveUpdates = [
     (req, res, next) => {
       if (!req.header("accept")?.includes("text/event-stream")) {
