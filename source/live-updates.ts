@@ -33,8 +33,8 @@ export type LiveUpdatesDispatchHelper = ({
   req,
   res,
 }: {
-  req: express.Request<{}, any, {}, {}, LiveUpdatesMiddlewareLocals>;
-  res: express.Response<any, LiveUpdatesMiddlewareLocals>;
+  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
+  res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
 }) => void;
 
 export default (app: Courselore): void => {
