@@ -101,49 +101,51 @@ export default (app: Courselore): void => {
     },
   ];
 
-  async function enqueue({ req, res }: { req: any; res: any }) {
-    for (const liveUpdatesEventDestination of app.locals
-      .liveUpdatesEventDestinations) {
-      if (
-        liveUpdatesEventDestination.token === req.header("Live-Updates") ||
-        res.locals.course.id !== liveUpdatesEventDestination.courseId
-      )
-        continue;
-      liveUpdatesEventDestination.shouldUpdate = true;
-    }
-    backgroundJob();
-  }
-
-  async function backgroundJob() {
-    for (const liveUpdatesEventDestination of app.locals
-      .liveUpdatesEventDestinations) {
-      if (
-        liveUpdatesEventDestination.req === undefined ||
-        liveUpdatesEventDestination.res === undefined
-      ) {
+  app.locals.helpers.liveUpdatesDispatch = (() => {
+    let timeoutId: NodeJS.Timeout;
+    return ({ req, res }: { req: any; res: any }) => {
+      for (const liveUpdatesEventDestination of app.locals
+        .liveUpdatesEventDestinations)
         if (
-          liveUpdatesEventDestination.createdAt.getTime() <
-          Date.now() - 60 * 1000
+          liveUpdatesEventDestination.token !== req.header("Live-Updates") &&
+          res.locals.course.id === liveUpdatesEventDestination.courseId
+        )
+          liveUpdatesEventDestination.shouldUpdate = true;
+      clearTimeout(timeoutId);
+      worker();
+    };
+    async function worker() {
+      for (const liveUpdatesEventDestination of app.locals
+        .liveUpdatesEventDestinations) {
+        if (
+          liveUpdatesEventDestination.req === undefined ||
+          liveUpdatesEventDestination.res === undefined
         ) {
-          app.locals.liveUpdatesEventDestinations.delete(
-            liveUpdatesEventDestination
-          );
-          console.log(
-            `${new Date().toISOString()}\tLIVE-UPDATES\tDISCARDED\t${
-              liveUpdatesEventDestination.token
-            }`
-          );
+          if (
+            liveUpdatesEventDestination.createdAt.getTime() <
+            Date.now() - 60 * 1000
+          ) {
+            app.locals.liveUpdatesEventDestinations.delete(
+              liveUpdatesEventDestination
+            );
+            console.log(
+              `${new Date().toISOString()}\tLIVE-UPDATES\tDISCARDED\t${
+                liveUpdatesEventDestination.token
+              }`
+            );
+          }
+          continue;
         }
-        continue;
+        if (liveUpdatesEventDestination.shouldUpdate !== true) continue;
+        liveUpdatesEventDestination.res.locals = {
+          liveUpdatesToken:
+            liveUpdatesEventDestination.res.locals.liveUpdatesToken,
+        } as LiveUpdatesMiddlewareLocals;
+        app(liveUpdatesEventDestination.req, liveUpdatesEventDestination.res);
+        liveUpdatesEventDestination.shouldUpdate = false;
+        await new Promise((resolve) => setTimeout(resolve, 20));
       }
-      if (liveUpdatesEventDestination.shouldUpdate !== true) continue;
-      liveUpdatesEventDestination.res.locals = {
-        liveUpdatesToken:
-          liveUpdatesEventDestination.res.locals.liveUpdatesToken,
-      } as LiveUpdatesMiddlewareLocals;
-      app(liveUpdatesEventDestination.req, liveUpdatesEventDestination.res);
-      liveUpdatesEventDestination.shouldUpdate = false;
+      timeoutId = setTimeout(worker, 60 * 1000);
     }
-    await new Promise((resolve) => setTimeout(resolve, 20));
-  }
+  })();
 };
