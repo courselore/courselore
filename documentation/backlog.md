@@ -10,6 +10,7 @@
   - Introduce the notion of a live-updates events queue.
     - This fixes a race condition when you get a page, an update happens, and only then you’re able to establish the live-updates connection.
   - Introduce the notion of channels (for example, a course is a channel), so that we don’t have to traverse the whole set of live update destinations looking for the relevant ones.
+  - Future: Make the channels more granular so that they have to update every connection for the course.
 
 ---
 
