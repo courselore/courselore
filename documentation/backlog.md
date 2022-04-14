@@ -3,7 +3,6 @@
 ### Performance
 
 - On live-update, send HTML directly.
-  - Don’t refresh session on live updates, because cookies will be ignored.
   - Double-check for the existence of newlines on live updates payload.
   - Future:
     - Use smarter data structures for `liveUpdatesEventDestinations` so that we don’t have to traverse the whole set so often.

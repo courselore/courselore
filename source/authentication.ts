@@ -11,6 +11,7 @@ import lodash from "lodash";
 import {
   Courselore,
   BaseMiddlewareLocals,
+  LiveUpdatesMiddlewareLocals,
   UserAvatarlessBackgroundColor,
   userAvatarlessBackgroundColors,
   UserEmailNotifications,
@@ -33,8 +34,17 @@ export interface SessionHelper {
     req,
     res,
   }: {
-    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
-    res: express.Response<any, BaseMiddlewareLocals>;
+    req: express.Request<
+      {},
+      any,
+      {},
+      {},
+      BaseMiddlewareLocals & Partial<LiveUpdatesMiddlewareLocals>
+    >;
+    res: express.Response<
+      any,
+      BaseMiddlewareLocals & Partial<LiveUpdatesMiddlewareLocals>
+    >;
   }): number | undefined;
   close({
     req,
@@ -188,8 +198,9 @@ export default (app: Courselore): void => {
         app.locals.helpers.Session.close({ req, res });
         return undefined;
       } else if (
+        res.locals.liveUpdatesToken === undefined &&
         new Date(session.createdAt).getTime() <
-        Date.now() - app.locals.helpers.Session.maxAge / 2
+          Date.now() - app.locals.helpers.Session.maxAge / 2
       ) {
         app.locals.helpers.Session.close({ req, res });
         app.locals.helpers.Session.open({ req, res, userId: session.user });
