@@ -7,7 +7,9 @@
   - Move the logic of resetting `res.locals` and whatnot to `live-updates.ts`.
   - Don’t refresh session on live updates, because cookies will be ignored.
   - Double-check for the existence of newlines on live updates payload.
-  - Introduce the notion of a live-updates queue.
+  - Introduce the notion of a live-updates events queue.
+    - This fixes a race condition when you get a page, an update happens, and only then you’re able to establish the live-updates connection.
+  - Introduce the notion of channels (for example, a course is a channel), so that we don’t have to traverse the whole set of live update destinations looking for the relevant ones.
 
 ---
 
