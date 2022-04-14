@@ -744,7 +744,7 @@ export default (app: Courselore): void => {
         )}`
       );
 
-      app.locals.liveUpdaters.course({ req, res });
+      app.locals.helpers.liveUpdatesDispatch({ req, res });
     }
   );
 
@@ -877,7 +877,7 @@ export default (app: Courselore): void => {
         )}`
       );
 
-      app.locals.liveUpdaters.course({ req, res });
+      app.locals.helpers.liveUpdatesDispatch({ req, res });
     }
   );
 
@@ -909,7 +909,7 @@ export default (app: Courselore): void => {
           }
         )}`
       );
-      app.locals.liveUpdaters.course({ req, res });
+      app.locals.helpers.liveUpdatesDispatch({ req, res });
     }
   );
 
@@ -963,7 +963,7 @@ export default (app: Courselore): void => {
         )}`
       );
 
-      app.locals.liveUpdaters.course({ req, res });
+      app.locals.helpers.liveUpdatesDispatch({ req, res });
     }
   );
 
@@ -1010,7 +1010,7 @@ export default (app: Courselore): void => {
         )}`
       );
 
-      app.locals.liveUpdaters.course({ req, res });
+      app.locals.helpers.liveUpdatesDispatch({ req, res });
     }
   );
 
@@ -1095,7 +1095,7 @@ export default (app: Courselore): void => {
         )}`
       );
 
-      app.locals.liveUpdaters.course({ req, res });
+      app.locals.helpers.liveUpdatesDispatch({ req, res });
     }
   );
 
@@ -1140,7 +1140,7 @@ export default (app: Courselore): void => {
         )}`
       );
 
-      app.locals.liveUpdaters.course({ req, res });
+      app.locals.helpers.liveUpdatesDispatch({ req, res });
     }
   );
 

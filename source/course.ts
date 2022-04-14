@@ -1267,7 +1267,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/course-information`
       );
 
-      app.locals.liveUpdaters.course({ req, res });
+      app.locals.helpers.liveUpdatesDispatch({ req, res });
     }
   );
 
@@ -1829,7 +1829,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/tags`
       );
 
-      app.locals.liveUpdaters.course({ req, res });
+      app.locals.helpers.liveUpdatesDispatch({ req, res });
     }
   );
 
@@ -3655,7 +3655,7 @@ export default (app: Courselore): void => {
           : `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/enrollments`
       );
 
-      app.locals.liveUpdaters.course({ req, res });
+      app.locals.helpers.liveUpdatesDispatch({ req, res });
     }
   );
 
@@ -3691,7 +3691,7 @@ export default (app: Courselore): void => {
           : `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/enrollments`
       );
 
-      app.locals.liveUpdaters.course({ req, res });
+      app.locals.helpers.liveUpdatesDispatch({ req, res });
     }
   );
 
