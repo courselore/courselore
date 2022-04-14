@@ -9,6 +9,7 @@ export interface LiveUpdatesLocals {
   liveUpdatesEventDestinations: Set<{
     createdAt: Date;
     token: string;
+    courseId: number;
     req?: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
     res?: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
   }>;
@@ -38,6 +39,7 @@ export default (app: Courselore): void => {
           app.locals.liveUpdatesEventDestinations.add({
             createdAt: new Date(),
             token,
+            courseId: res.locals.course.id,
           });
         }
         return next();
@@ -53,7 +55,13 @@ export default (app: Courselore): void => {
         (liveUpdatesEventDestination) =>
           liveUpdatesEventDestination.token === req.query.liveUpdatesToken
       );
-      if (liveUpdatesEventDestination === undefined) return next("validation");
+      if (
+        liveUpdatesEventDestination === undefined ||
+        liveUpdatesEventDestination.courseId !== res.locals.course.id ||
+        liveUpdatesEventDestination.req !== undefined ||
+        liveUpdatesEventDestination.res !== undefined
+      )
+        return next("validation");
       liveUpdatesEventDestination.req = req;
       liveUpdatesEventDestination.res = res;
       res.locals.liveUpdatesToken = req.query.liveUpdatesToken;
