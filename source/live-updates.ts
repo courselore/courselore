@@ -112,9 +112,9 @@ export default (app: Courselore): void => {
         )
           liveUpdatesEventDestination.shouldUpdate = true;
       clearTimeout(timeoutId);
-      worker();
+      work();
     };
-    async function worker() {
+    async function work() {
       for (const liveUpdatesEventDestination of app.locals
         .liveUpdatesEventDestinations) {
         if (
@@ -145,7 +145,7 @@ export default (app: Courselore): void => {
         liveUpdatesEventDestination.shouldUpdate = false;
         await new Promise((resolve) => setTimeout(resolve, 20));
       }
-      timeoutId = setTimeout(worker, 60 * 1000);
+      timeoutId = setTimeout(work, 60 * 1000);
     }
   })();
 };
