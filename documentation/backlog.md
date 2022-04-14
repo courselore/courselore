@@ -2,13 +2,6 @@
 
 ### Performance
 
-- On live-update, send HTML directly.
-  - Future:
-    - Use smarter data structures for `liveUpdatesEventDestinations` so that we don’t have to traverse the whole set so often.
-    - Make the channels more granular so that they have to update every connection for the course.
-
----
-
 - Check if textarea freezes when live-update is being processed.
 
 ---
@@ -439,6 +432,9 @@
 
 ### Infrastructure
 
+- Live-updates:
+  - Use smarter data structures for `liveUpdatesEventDestinations` so that we don’t have to traverse the whole set so often.
+  - Make the channels more granular so that they have to update every connection for the course.
 - Add missing `key`s:
   - `partials.user()` (this is trickier than it may seem, because it actually requires creating `reference`s for users).
   - `class=`
