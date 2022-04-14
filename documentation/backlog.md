@@ -3,6 +3,15 @@
 ### Performance
 
 - On live-update, send HTML directly.
+  - Add types to `LiveUpdatesLocals`
+  - Move the logic of resetting `res.locals` and whatnot to `live-updates.ts`.
+  - Don’t refresh session on live updates, because cookies will be ignored.
+  - Double-check for the existence of newlines on live updates payload.
+  - Introduce the notion of a live-updates queue.
+
+---
+
+- Check if textarea freezes when live-update is being processed.
 
 ---
 
@@ -232,6 +241,7 @@
 
 ### Notifications
 
+- Decorate the content sent on notifications, to avoid showing things like `@john-doe--201231`.
 - Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
 - Notifications for the same conversation should be “reply” to email on same thread.
 - Email notification subjects could include the fact that you were mentioned, to make it easier to set up filters.
