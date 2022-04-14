@@ -1,11 +1,26 @@
 import express from "express";
-import { Courselore, BaseMiddlewareLocals } from "./index.js";
+import {
+  Courselore,
+  BaseMiddlewareLocals,
+  IsEnrolledInCourseMiddlewareLocals,
+} from "./index.js";
 
 export interface LiveUpdatesLocals {
-  liveUpdatesEventDestinations: Set<{
-    req: express.Request;
-    res: express.Response;
-  }>;
+  liveUpdatesEventDestinations: Map<
+    number,
+    Set<{
+      createdAt: Date;
+      token: string;
+      req?: express.Request<
+        {},
+        any,
+        {},
+        {},
+        IsEnrolledInCourseMiddlewareLocals
+      >;
+      res?: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+    }>
+  >;
 }
 
 export type LiveUpdatesMiddleware = express.RequestHandler<
@@ -15,17 +30,31 @@ export type LiveUpdatesMiddleware = express.RequestHandler<
   { liveUpdatesToken?: string; [key: string]: any },
   LiveUpdatesMiddlewareLocals
 >[];
-export interface LiveUpdatesMiddlewareLocals extends BaseMiddlewareLocals {
+export interface LiveUpdatesMiddlewareLocals
+  extends BaseMiddlewareLocals,
+    IsEnrolledInCourseMiddlewareLocals {
   liveUpdatesToken: string;
 }
 
 export default (app: Courselore): void => {
-  app.locals.liveUpdatesEventDestinations = new Set();
+  app.locals.liveUpdatesEventDestinations = new Map();
   app.locals.middlewares.liveUpdates = [
     (req, res, next) => {
-      if (typeof res.locals.liveUpdatesToken === "string") return next();
       if (!req.header("accept")?.includes("text/event-stream")) {
-        res.locals.liveUpdatesToken = Math.random().toString(36).slice(2);
+        if (res.locals.liveUpdatesToken === undefined) {
+          const token = Math.random().toString(36).slice(2);
+          const eventDestination = { createdAt: new Date(), token };
+          res.locals.liveUpdatesToken = token;
+          if (
+            app.locals.liveUpdatesEventDestinations
+              .get(res.locals.course.id)
+              ?.add(eventDestination) === undefined
+          )
+            app.locals.liveUpdatesEventDestinations.set(
+              res.locals.course.id,
+              new Set([eventDestination])
+            );
+        }
         return next();
       }
       if (
