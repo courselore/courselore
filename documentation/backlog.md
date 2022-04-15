@@ -2,6 +2,17 @@
 
 ### Performance
 
+- https://www.google.com/search?q=eventsource+headers&oq=event&aqs=chrome.0.69i59j69i57j35i39j0i512l2j69i60l3.1255j0j7&sourceid=chrome&ie=UTF-8
+- Consider using https://github.com/Azure/fetch-event-source instead of reconnecting-eventsource, and `fetch()` streams instead of EventSource.
+  - Benefit: Pass headers such as live-update token (which we’re currently passing in the URL)
+  - `rollup node_modules/@microsoft/fetch-event-source/lib/esm/index.js --file node_modules/@microsoft/fetch-event-source/index.umd.js --format umd --name FetchEventSource`
+  - Also consider:
+    - https://github.com/EventSource/eventsource
+    - https://github.com/Yaffle/EventSource
+    - https://github.com/mpetazzoni/sse.js
+
+---
+
 - Check if textarea freezes when live-update is being processed.
 
 ---
@@ -435,8 +446,6 @@
 - Live-updates:
   - Use smarter data structures for `liveUpdatesEventDestinations` so that we don’t have to traverse the whole set so often.
   - Make the channels more granular so that they have to update every connection for the course.
-  - Consider using https://github.com/Azure/fetch-event-source instead of reconnecting-eventsource, and `fetch()` streams instead of EventSource.
-    - Benefit: Pass headers such as live-update token (which we’re currently passing in the URL)
 - Add missing `key`s:
   - `partials.user()` (this is trickier than it may seem, because it actually requires creating `reference`s for users).
   - `class=`
