@@ -111,7 +111,13 @@ export default (app: Courselore): void => {
 
   app.locals.helpers.liveUpdatesDispatch = (() => {
     let timeoutId: NodeJS.Timeout;
-    return ({ req, res }: { req: any; res: any }) => {
+    return ({
+      req,
+      res,
+    }: {
+      req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
+      res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+    }) => {
       for (const liveUpdatesEventDestination of app.locals
         .liveUpdatesEventDestinations)
         if (
