@@ -43,22 +43,21 @@ export default (app: Courselore): void => {
   app.locals.middlewares.liveUpdates = [
     (req, res, next) => {
       if (!req.header("accept")?.includes("text/event-stream")) {
-        if (res.locals.liveUpdatesToken === undefined) {
-          const token = Math.random().toString(36).slice(2);
-          res.locals.liveUpdatesToken = token;
-          app.locals.liveUpdatesEventDestinations.add({
-            createdAt: new Date(),
-            token,
-            courseId: res.locals.course.id,
-          });
-          console.log(
-            `${new Date().toISOString()}\tLIVE-UPDATES\t${token}\tEVENT-STREAM\tCREATED\t${
-              req.ip
-            }\t\t\t${req.originalUrl}`
-          );
-        }
+        const token = Math.random().toString(36).slice(2);
+        res.locals.liveUpdatesToken = token;
+        app.locals.liveUpdatesEventDestinations.add({
+          createdAt: new Date(),
+          token,
+          courseId: res.locals.course.id,
+        });
+        console.log(
+          `${new Date().toISOString()}\tLIVE-UPDATES\t${token}\tEVENT-STREAM\tCREATED\t${
+            req.ip
+          }\t\t\t${req.originalUrl}`
+        );
         return next();
       }
+      if (res.locals.liveUpdatesToken !== undefined) return next();
       const liveUpdatesEventDestination = [
         ...app.locals.liveUpdatesEventDestinations,
       ].find(
