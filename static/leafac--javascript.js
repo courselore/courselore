@@ -62,8 +62,8 @@ const leafac = {
   },
 
   liveNavigate: (() => {
-    let abortController;
     let state = "available";
+    let abortController;
     let previousLocation = { ...window.location };
     return async ({ request, event }) => {
       if (event instanceof PopStateEvent) abortController?.abort();
@@ -303,24 +303,20 @@ const leafac = {
     url.searchParams.set("liveUpdatesToken", token);
     leafac.liveUpdatesEventSource = new ReconnectingEventSource(url.toString());
     leafac.liveUpdatesEventSource.token = token;
-    leafac.liveUpdatesEventSource.addEventListener(
-      "validationerror",
-      (event) => {
-        leafac.liveUpdatesEventSource.close();
-        const body = document.querySelector("body");
-        (body.liveUpdatesValidationError ??= tippy(body)).setProps({
-          appendTo: body,
-          trigger: "manual",
-          hideOnClick: false,
-          theme: "error",
-          arrow: false,
-          interactive: true,
-          content:
-            "Failed to connect to server, please try reloading the page.",
-        });
-        body.liveUpdatesValidationError.show();
-      }
-    );
+    leafac.liveUpdatesEventSource.addEventListener("validationerror", () => {
+      leafac.liveUpdatesEventSource.close();
+      const body = document.querySelector("body");
+      (body.liveUpdatesValidationError ??= tippy(body)).setProps({
+        appendTo: body,
+        trigger: "manual",
+        hideOnClick: false,
+        theme: "error",
+        arrow: false,
+        interactive: true,
+        content: "Failed to connect to server. Please try reloading the page.",
+      });
+      body.liveUpdatesValidationError.show();
+    });
     leafac.liveUpdatesEventSource.addEventListener("liveupdate", (event) => {
       leafac.loadDocument(event.data, {
         originalEvent: event,
