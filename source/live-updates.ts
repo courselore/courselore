@@ -51,6 +51,11 @@ export default (app: Courselore): void => {
             token,
             courseId: res.locals.course.id,
           });
+          console.log(
+            `${new Date().toISOString()}\tLIVE-UPDATES\t${token}\tEVENT-STREAM\tCREATED\t${
+              req.ip
+            }\t\t\t${req.originalUrl}`
+          );
         }
         return next();
       }
@@ -70,9 +75,9 @@ export default (app: Courselore): void => {
           .type("text/event-stream")
           .write(`event: validationerror\ndata:\n\n`);
         console.log(
-          `${new Date().toISOString()}\tLIVE-UPDATES\tEVENT-STREAM\tFAILED\t${
-            req.ip
-          }\t${req.query.liveUpdatesToken}\t\t\t${req.originalUrl}`
+          `${new Date().toISOString()}\tLIVE-UPDATES\t${
+            req.query.liveUpdatesToken
+          }\tEVENT-STREAM\tFAILED\t${req.ip}\t\t\t${req.originalUrl}`
         );
         return;
       }
@@ -91,16 +96,16 @@ export default (app: Courselore): void => {
           liveUpdatesEventDestination
         );
         console.log(
-          `${new Date().toISOString()}\tLIVE-UPDATES\tEVENT-STREAM\tCLOSED\t${
-            req.ip
-          }\t${res.locals.liveUpdatesToken}\t\t\t${req.originalUrl}`
+          `${new Date().toISOString()}\tLIVE-UPDATES\t${
+            res.locals.liveUpdatesToken
+          }\tEVENT-STREAM\tCLOSED\t${req.ip}\t\t\t${req.originalUrl}`
         );
       });
       res.type("text/event-stream").write(":\n\n");
       console.log(
-        `${new Date().toISOString()}\tLIVE-UPDATES\tEVENT-STREAM\tOPENED\t${
-          req.ip
-        }\t${res.locals.liveUpdatesToken}\t\t\t${req.originalUrl}`
+        `${new Date().toISOString()}\tLIVE-UPDATES\t${
+          res.locals.liveUpdatesToken
+        }\tEVENT-STREAM\tOPENED\t${req.ip}\t\t\t${req.originalUrl}`
       );
     },
   ];
@@ -133,9 +138,9 @@ export default (app: Courselore): void => {
               liveUpdatesEventDestination
             );
             console.log(
-              `${new Date().toISOString()}\tLIVE-UPDATES\tDISCARDED\t${
+              `${new Date().toISOString()}\tLIVE-UPDATES\t${
                 liveUpdatesEventDestination.token
-              }`
+              }\tEVENT-STREAM\tEXPIRED`
             );
           }
           continue;

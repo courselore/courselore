@@ -19,7 +19,9 @@ export default (app: Courselore): void => {
     res.once("close", () => {
       console.log(
         `${new Date().toISOString()}\t${
-          res.locals.liveUpdatesToken !== undefined ? "LIVE-UPDATES\t" : ""
+          res.locals.liveUpdatesToken !== undefined
+            ? `LIVE-UPDATES\t${res.locals.liveUpdatesToken}\t`
+            : ``
         }${req.method}\t${res.statusCode}\t${req.ip}\t${
           Number((process.hrtime.bigint() - start) / 1000n) / 1000
         }ms\t\t${res.getHeader("content-length") ?? "0"}B\t\t${
