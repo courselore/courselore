@@ -729,6 +729,7 @@ export default (app: Courselore): void => {
       });
 
       res.redirect(
+        303,
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
@@ -862,6 +863,7 @@ export default (app: Courselore): void => {
       }
 
       res.redirect(
+        303,
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
@@ -900,6 +902,7 @@ export default (app: Courselore): void => {
         sql`DELETE FROM "messages" WHERE "id" = ${res.locals.message.id}`
       );
       res.redirect(
+        303,
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
@@ -948,6 +951,7 @@ export default (app: Courselore): void => {
       );
 
       res.redirect(
+        303,
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
@@ -995,6 +999,7 @@ export default (app: Courselore): void => {
       );
 
       res.redirect(
+        303,
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
@@ -1080,6 +1085,7 @@ export default (app: Courselore): void => {
         );
 
       res.redirect(
+        303,
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
@@ -1125,6 +1131,7 @@ export default (app: Courselore): void => {
       );
 
       res.redirect(
+        303,
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(

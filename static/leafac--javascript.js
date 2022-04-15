@@ -33,7 +33,8 @@ const leafac = {
 
     document.onsubmit = async (event) => {
       const method = (
-        event.submitter?.getAttribute("formmethod") ?? event.target.method
+        event.submitter?.getAttribute("formmethod") ??
+        event.target.getAttribute("method")
       ).toUpperCase();
       const action =
         event.submitter?.getAttribute("formaction") ?? event.target.action;
@@ -296,6 +297,7 @@ const leafac = {
   },
 
   liveUpdates(token) {
+    return "TODO";
     leafac.liveUpdatesEventSource?.close();
     delete leafac.liveUpdatesEventSource;
     if (token === undefined) return;

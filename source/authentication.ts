@@ -497,7 +497,10 @@ export default (app: Courselore): void => {
     "/sign-in",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
-      res.redirect(`${app.locals.options.baseURL}${req.query.redirect ?? "/"}`);
+      res.redirect(
+        303,
+        `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
+      );
     }
   );
 
@@ -532,13 +535,17 @@ export default (app: Courselore): void => {
           content: html`Incorrect email & password.`,
         });
         return res.redirect(
+          303,
           `${app.locals.options.baseURL}/sign-in${qs.stringify(req.query, {
             addQueryPrefix: true,
           })}`
         );
       }
       app.locals.helpers.Session.open({ req, res, userId: user.id });
-      res.redirect(`${app.locals.options.baseURL}${req.query.redirect ?? "/"}`);
+      res.redirect(
+        303,
+        `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
+      );
     })
   );
 
@@ -706,6 +713,7 @@ export default (app: Courselore): void => {
         content: html`Email not found.`,
       });
       return res.redirect(
+        303,
         `${app.locals.options.baseURL}/reset-password${qs.stringify(req.query, {
           addQueryPrefix: true,
         })}`
@@ -807,6 +815,7 @@ export default (app: Courselore): void => {
           content: html`This password reset link is invalid or expired.`,
         });
         return res.redirect(
+          303,
           `${app.locals.options.baseURL}/reset-password${qs.stringify(
             req.query,
             {
@@ -902,6 +911,7 @@ export default (app: Courselore): void => {
           start over.`,
         });
         return res.redirect(
+          303,
           `${app.locals.options.baseURL}/reset-password${qs.stringify(
             req.query,
             {
@@ -928,7 +938,10 @@ export default (app: Courselore): void => {
         theme: "green",
         content: html`Password reset successfully.`,
       });
-      res.redirect(`${app.locals.options.baseURL}${req.query.redirect ?? "/"}`);
+      res.redirect(
+        303,
+        `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
+      );
     })
   );
 
@@ -1056,7 +1069,10 @@ export default (app: Courselore): void => {
     "/sign-up",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
-      res.redirect(`${app.locals.options.baseURL}${req.query.redirect ?? "/"}`);
+      res.redirect(
+        303,
+        `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
+      );
     }
   );
 
@@ -1166,6 +1182,7 @@ export default (app: Courselore): void => {
           content: html`Email already taken.`,
         });
         return res.redirect(
+          303,
           `${app.locals.options.baseURL}/sign-in${qs.stringify(req.query, {
             addQueryPrefix: true,
           })}`
@@ -1207,7 +1224,10 @@ export default (app: Courselore): void => {
         userEmail: user.email,
       });
       app.locals.helpers.Session.open({ req, res, userId: user.id });
-      res.redirect(`${app.locals.options.baseURL}${req.query.redirect ?? "/"}`);
+      res.redirect(
+        303,
+        `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
+      );
     })
   );
 
@@ -1222,7 +1242,7 @@ export default (app: Courselore): void => {
           theme: "rose",
           content: html`Email already confirmed.`,
         });
-        return res.redirect("back");
+        return res.redirect(303, "back");
       }
       app.locals.mailers.emailConfirmation({
         req,
@@ -1236,7 +1256,7 @@ export default (app: Courselore): void => {
         theme: "green",
         content: html`Confirmation email resent.`,
       });
-      res.redirect("back");
+      res.redirect(303, "back");
     }
   );
 
@@ -1274,6 +1294,7 @@ export default (app: Courselore): void => {
           `,
         });
         return res.redirect(
+          303,
           `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
         );
       }
@@ -1290,7 +1311,10 @@ export default (app: Courselore): void => {
         theme: "green",
         content: html`Email confirmed successfully.`,
       });
-      res.redirect(`${app.locals.options.baseURL}${req.query.redirect ?? "/"}`);
+      res.redirect(
+        303,
+        `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
+      );
     }
   );
 
@@ -1299,7 +1323,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       app.locals.helpers.Session.close({ req, res });
-      res.redirect(`${app.locals.options.baseURL}/`);
+      res.redirect(303, `${app.locals.options.baseURL}/`);
     }
   );
 };

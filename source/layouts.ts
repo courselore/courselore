@@ -440,9 +440,8 @@ export default async (app: Courselore): Promise<void> => {
                     $${process.env.NODE_ENV !== "production"
                       ? html`
                           <form
-                            method="POST"
-                            action="${app.locals.options
-                              .baseURL}/turn-off?_method=DELETE"
+                            method="DELETE"
+                            action="${app.locals.options.baseURL}/turn-off"
                           >
                             <input
                               type="hidden"
@@ -2671,9 +2670,8 @@ export default async (app: Courselore): Promise<void> => {
                             User Settings
                           </a>
                           <form
-                            method="POST"
-                            action="${app.locals.options
-                              .baseURL}/sign-out?_method=DELETE"
+                            method="DELETE"
+                            action="${app.locals.options.baseURL}/sign-out"
                           >
                             <input
                               type="hidden"

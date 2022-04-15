@@ -600,7 +600,7 @@ export default (app: Courselore): void => {
     "/settings",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
-      res.redirect(`${app.locals.options.baseURL}/settings/profile`);
+      res.redirect(303, `${app.locals.options.baseURL}/settings/profile`);
     }
   );
 
@@ -622,9 +622,8 @@ export default (app: Courselore): void => {
             </h2>
 
             <form
-              method="POST"
-              action="${app.locals.options
-                .baseURL}/settings/profile?_method=PATCH"
+              method="PATCH"
+              action="${app.locals.options.baseURL}/settings/profile"
               novalidate
               class="${res.locals.localCSS(css`
                 display: flex;
@@ -942,7 +941,7 @@ export default (app: Courselore): void => {
         theme: "green",
         content: html`Profile updated successfully.`,
       });
-      res.redirect(`${app.locals.options.baseURL}/settings/profile`);
+      res.redirect(303, `${app.locals.options.baseURL}/settings/profile`);
     }
   );
 
@@ -1023,9 +1022,9 @@ export default (app: Courselore): void => {
             </h2>
 
             <form
-              method="POST"
+              method="PATCH"
               action="${app.locals.options
-                .baseURL}/settings/update-email-and-password?_method=PATCH"
+                .baseURL}/settings/update-email-and-password"
               novalidate
               class="${res.locals.localCSS(css`
                 display: flex;
@@ -1068,9 +1067,9 @@ export default (app: Courselore): void => {
             <hr class="separator" />
 
             <form
-              method="POST"
+              method="PATCH"
               action="${app.locals.options
-                .baseURL}/settings/update-email-and-password?_method=PATCH"
+                .baseURL}/settings/update-email-and-password"
               novalidate
               class="${res.locals.localCSS(css`
                 display: flex;
@@ -1157,6 +1156,7 @@ export default (app: Courselore): void => {
           content: html`Incorrect password.`,
         });
         return res.redirect(
+          303,
           `${app.locals.options.baseURL}/settings/update-email-and-password`
         );
       }
@@ -1178,6 +1178,7 @@ export default (app: Courselore): void => {
             content: html`Email already taken.`,
           });
           return res.redirect(
+            303,
             `${app.locals.options.baseURL}/settings/update-email-and-password`
           );
         }
@@ -1235,6 +1236,7 @@ export default (app: Courselore): void => {
       }
 
       res.redirect(
+        303,
         `${app.locals.options.baseURL}/settings/update-email-and-password`
       );
     })
@@ -1260,9 +1262,9 @@ export default (app: Courselore): void => {
             </h2>
 
             <form
-              method="POST"
+              method="PATCH"
               action="${app.locals.options
-                .baseURL}/settings/notifications-preferences?_method=PATCH"
+                .baseURL}/settings/notifications-preferences"
               novalidate
               class="${res.locals.localCSS(css`
                 display: flex;
@@ -1380,6 +1382,7 @@ export default (app: Courselore): void => {
       });
 
       res.redirect(
+        303,
         `${app.locals.options.baseURL}/settings/notifications-preferences`
       );
     }

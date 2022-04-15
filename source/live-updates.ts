@@ -24,7 +24,7 @@ export type LiveUpdatesMiddleware = express.RequestHandler<
   {},
   any,
   {},
-  { liveUpdatesToken?: string },
+  { liveUpdatesToken?: string; [key: string]: unknown /* TODO */ },
   LiveUpdatesMiddlewareLocals
 >[];
 export interface LiveUpdatesMiddlewareLocals

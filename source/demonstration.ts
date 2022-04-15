@@ -624,7 +624,7 @@ export default (app: Courselore): void => {
             demonstration users, their password is “courselore”.
           `,
         });
-        res.redirect(app.locals.options.baseURL);
+        res.redirect(303, app.locals.options.baseURL);
       })
     );
 

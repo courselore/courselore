@@ -2669,6 +2669,7 @@ export default (app: Courselore): void => {
       }
 
       res.redirect(
+        303,
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }/conversations/${
@@ -2732,7 +2733,7 @@ export default (app: Courselore): void => {
             )
           `
         );
-      res.redirect("back");
+      res.redirect(303, "back");
     }
   );
 
@@ -3010,17 +3011,14 @@ export default (app: Courselore): void => {
                                             $${res.locals.conversationTypes.map(
                                               (conversationType) => html`
                                                 <form
-                                                  method="POST"
+                                                  method="PATCH"
                                                   action="${app.locals.options
                                                     .baseURL}/courses/${res
                                                     .locals.course
                                                     .reference}/conversations/${res
                                                     .locals.conversation
                                                     .reference}${qs.stringify(
-                                                    {
-                                                      ...req.query,
-                                                      _method: "PATCH",
-                                                    },
+                                                    req.query,
                                                     {
                                                       addQueryPrefix: true,
                                                     }
@@ -3096,15 +3094,12 @@ export default (app: Courselore): void => {
                               $${res.locals.enrollment.role === "staff"
                                 ? html`
                                     <form
-                                      method="POST"
+                                      method="PATCH"
                                       action="${app.locals.options
                                         .baseURL}/courses/${res.locals.course
                                         .reference}/conversations/${res.locals
                                         .conversation.reference}${qs.stringify(
-                                        {
-                                          ...req.query,
-                                          _method: "PATCH",
-                                        },
+                                        req.query,
                                         {
                                           addQueryPrefix: true,
                                         }
@@ -3193,15 +3188,12 @@ export default (app: Courselore): void => {
                         $${res.locals.enrollment.role === "staff"
                           ? html`
                               <form
-                                method="POST"
+                                method="PATCH"
                                 action="${app.locals.options
                                   .baseURL}/courses/${res.locals.course
                                   .reference}/conversations/${res.locals
                                   .conversation.reference}${qs.stringify(
-                                  {
-                                    ...req.query,
-                                    _method: "PATCH",
-                                  },
+                                  req.query,
                                   {
                                     addQueryPrefix: true,
                                   }
@@ -3286,17 +3278,14 @@ export default (app: Courselore): void => {
                                     content: ${res.locals.HTMLForJavaScript(
                                       html`
                                         <form
-                                          method="POST"
+                                          method="PATCH"
                                           action="${app.locals.options
                                             .baseURL}/courses/${res.locals
                                             .course
                                             .reference}/conversations/${res
                                             .locals.conversation
                                             .reference}${qs.stringify(
-                                            {
-                                              ...req.query,
-                                              _method: "PATCH",
-                                            },
+                                            req.query,
                                             {
                                               addQueryPrefix: true,
                                             }
@@ -3488,7 +3477,7 @@ export default (app: Courselore): void => {
                                                   content: ${res.locals.HTMLForJavaScript(
                                                     html`
                                                       <form
-                                                        method="POST"
+                                                        method="DELETE"
                                                         action="${app.locals
                                                           .options
                                                           .baseURL}/courses/${res
@@ -3496,10 +3485,7 @@ export default (app: Courselore): void => {
                                                           .reference}/conversations/${res
                                                           .locals.conversation
                                                           .reference}${qs.stringify(
-                                                          {
-                                                            ...req.query,
-                                                            _method: "DELETE",
-                                                          },
+                                                          req.query,
                                                           {
                                                             addQueryPrefix:
                                                               true,
@@ -3584,14 +3570,11 @@ export default (app: Courselore): void => {
                     $${app.locals.helpers.mayEditConversation({ req, res })
                       ? html`
                           <form
-                            method="POST"
+                            method="PATCH"
                             action="${app.locals.options.baseURL}/courses/${res
                               .locals.course.reference}/conversations/${res
                               .locals.conversation.reference}${qs.stringify(
-                              {
-                                ...req.query,
-                                _method: "PATCH",
-                              },
+                              req.query,
                               {
                                 addQueryPrefix: true,
                               }
@@ -3731,17 +3714,14 @@ export default (app: Courselore): void => {
                                         $${res.locals.conversation.taggings.map(
                                           (tagging) => html`
                                             <form
-                                              method="POST"
+                                              method="DELETE"
                                               action="${app.locals.options
                                                 .baseURL}/courses/${res.locals
                                                 .course
                                                 .reference}/conversations/${res
                                                 .locals.conversation
                                                 .reference}/taggings${qs.stringify(
-                                                {
-                                                  ...req.query,
-                                                  _method: "DELETE",
-                                                },
+                                                req.query,
                                                 {
                                                   addQueryPrefix: true,
                                                 }
@@ -4581,7 +4561,7 @@ export default (app: Courselore): void => {
                                                             null
                                                             ? html`
                                                                 <form
-                                                                  method="POST"
+                                                                  method="PATCH"
                                                                   action="${app
                                                                     .locals
                                                                     .options
@@ -4592,11 +4572,7 @@ export default (app: Courselore): void => {
                                                                     .locals
                                                                     .conversation
                                                                     .reference}/messages/${message.reference}${qs.stringify(
-                                                                    {
-                                                                      ...req.query,
-                                                                      _method:
-                                                                        "PATCH",
-                                                                    },
+                                                                    req.query,
                                                                     {
                                                                       addQueryPrefix:
                                                                         true,
@@ -4726,7 +4702,7 @@ export default (app: Courselore): void => {
                                                                         content: ${res.locals.HTMLForJavaScript(
                                                                           html`
                                                                             <form
-                                                                              method="POST"
+                                                                              method="DELETE"
                                                                               action="${app
                                                                                 .locals
                                                                                 .options
@@ -4737,11 +4713,7 @@ export default (app: Courselore): void => {
                                                                                 .locals
                                                                                 .conversation
                                                                                 .reference}/messages/${message.reference}${qs.stringify(
-                                                                                {
-                                                                                  ...req.query,
-                                                                                  _method:
-                                                                                    "DELETE",
-                                                                                },
+                                                                                req.query,
                                                                                 {
                                                                                   addQueryPrefix:
                                                                                     true,
@@ -4845,17 +4817,14 @@ export default (app: Courselore): void => {
                                           )
                                             headers.push(html`
                                               <form
-                                                method="POST"
+                                                method="PATCH"
                                                 action="${app.locals.options
                                                   .baseURL}/courses/${res.locals
                                                   .course
                                                   .reference}/conversations/${res
                                                   .locals.conversation
                                                   .reference}/messages/${message.reference}${qs.stringify(
-                                                  {
-                                                    ...req.query,
-                                                    _method: "PATCH",
-                                                  },
+                                                  req.query,
                                                   {
                                                     addQueryPrefix: true,
                                                   }
@@ -4946,19 +4915,16 @@ export default (app: Courselore): void => {
 
                                             headers.push(html`
                                               <form
-                                                method="POST"
+                                                method="${isEndorsed
+                                                  ? "DELETE"
+                                                  : "POST"}"
                                                 action="${app.locals.options
                                                   .baseURL}/courses/${res.locals
                                                   .course
                                                   .reference}/conversations/${res
                                                   .locals.conversation
                                                   .reference}/messages/${message.reference}/endorsements${qs.stringify(
-                                                  {
-                                                    ...req.query,
-                                                    ...(isEndorsed
-                                                      ? { _method: "DELETE" }
-                                                      : {}),
-                                                  },
+                                                  req.query,
                                                   {
                                                     addQueryPrefix: true,
                                                   }
@@ -5469,21 +5435,16 @@ export default (app: Courselore): void => {
                                               content.push(
                                                 html`
                                                   <form
-                                                    method="POST"
+                                                    method="${isLiked
+                                                      ? "DELETE"
+                                                      : "POST"}"
                                                     action="${app.locals.options
                                                       .baseURL}/courses/${res
                                                       .locals.course
                                                       .reference}/conversations/${res
                                                       .locals.conversation
                                                       .reference}/messages/${message.reference}/likes${qs.stringify(
-                                                      {
-                                                        ...req.query,
-                                                        ...(isLiked
-                                                          ? {
-                                                              _method: "DELETE",
-                                                            }
-                                                          : {}),
-                                                      },
+                                                      req.query,
                                                       {
                                                         addQueryPrefix: true,
                                                       }
@@ -5635,17 +5596,14 @@ export default (app: Courselore): void => {
                                         })
                                           ? html`
                                               <form
-                                                method="POST"
+                                                method="PATCH"
                                                 action="${app.locals.options
                                                   .baseURL}/courses/${res.locals
                                                   .course
                                                   .reference}/conversations/${res
                                                   .locals.conversation
                                                   .reference}/messages/${message.reference}${qs.stringify(
-                                                  {
-                                                    ...req.query,
-                                                    _method: "PATCH",
-                                                  },
+                                                  req.query,
                                                   {
                                                     addQueryPrefix: true,
                                                   }
@@ -6214,6 +6172,7 @@ export default (app: Courselore): void => {
           );
 
       res.redirect(
+        303,
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
@@ -6249,6 +6208,7 @@ export default (app: Courselore): void => {
         content: html`Conversation removed successfully.`,
       });
       res.redirect(
+        303,
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }${qs.stringify(lodash.omit(req.query, ["messageReference"]), {
@@ -6297,6 +6257,7 @@ export default (app: Courselore): void => {
       );
 
       res.redirect(
+        303,
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
@@ -6344,6 +6305,7 @@ export default (app: Courselore): void => {
       );
 
       res.redirect(
+        303,
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(

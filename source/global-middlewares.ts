@@ -1,6 +1,5 @@
 import url from "node:url";
 import express from "express";
-import methodOverride from "method-override";
 import cookieParser from "cookie-parser";
 import expressFileUpload from "express-fileupload";
 import csurf from "csurf";
@@ -63,15 +62,6 @@ export default (app: Courselore): void => {
       },
     })
   );
-
-  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(methodOverride("_method"), ((
-    req,
-    res,
-    next
-  ) => {
-    delete req.query._method;
-    next();
-  }) as express.RequestHandler<{}, any, {}, { _method?: "string" }, BaseMiddlewareLocals>);
 
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>(cookieParser());
 

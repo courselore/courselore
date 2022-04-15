@@ -864,6 +864,6 @@ export default (app: Courselore): void => {
     );
   } else
     app.get<{}, HTML, {}, {}, BaseMiddlewareLocals>("/about", (req, res) => {
-      res.redirect(`${app.locals.options.canonicalBaseURL}/about`);
+      res.redirect(303, `${app.locals.options.canonicalBaseURL}/about`);
     });
 };

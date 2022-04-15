@@ -346,6 +346,7 @@ export default (app: Courselore): void => {
 
         case 1:
           res.redirect(
+            303,
             `${app.locals.options.baseURL}/courses/${res.locals.enrollments[0].course.reference}`
           );
           break;
@@ -657,7 +658,10 @@ export default (app: Courselore): void => {
         )
       `
     );
-    res.redirect(`${app.locals.options.baseURL}/courses/${course.reference}`);
+    res.redirect(
+      303,
+      `${app.locals.options.baseURL}/courses/${course.reference}`
+    );
   });
 
   app.locals.helpers.defaultAccentColor = ({
@@ -1073,6 +1077,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res) => {
       res.redirect(
+        303,
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }/settings/${
@@ -1112,9 +1117,9 @@ export default (app: Courselore): void => {
               Course Information
             </h2>
             <form
-              method="POST"
+              method="PATCH"
               action="${app.locals.options.baseURL}/courses/${res.locals.course
-                .reference}/settings/course-information?_method=PATCH"
+                .reference}/settings/course-information"
               novalidate
               class="${res.locals.localCSS(css`
                 display: flex;
@@ -1264,6 +1269,7 @@ export default (app: Courselore): void => {
       });
 
       res.redirect(
+        303,
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/course-information`
       );
 
@@ -1317,9 +1323,9 @@ export default (app: Courselore): void => {
               : html``}
 
             <form
-              method="POST"
+              method="PUT"
               action="${app.locals.options.baseURL}/courses/${res.locals.course
-                .reference}/settings/tags?_method=PUT"
+                .reference}/settings/tags"
               novalidate
               class="${res.locals.localCSS(css`
                 display: flex;
@@ -1826,6 +1832,7 @@ export default (app: Courselore): void => {
       });
 
       res.redirect(
+        303,
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/tags`
       );
 
@@ -2383,8 +2390,8 @@ export default (app: Courselore): void => {
                                           html`
                                             <div class="dropdown--menu">
                                               <form
-                                                method="POST"
-                                                action="${action}?_method=PATCH"
+                                                method="PATCH"
+                                                action="${action}"
                                               >
                                                 <input
                                                   type="hidden"
@@ -2489,8 +2496,8 @@ export default (app: Courselore): void => {
                                               ? html``
                                               : html`
                                                   <form
-                                                    method="POST"
-                                                    action="${action}?_method=PATCH"
+                                                    method="PATCH"
+                                                    action="${action}"
                                                   >
                                                     <input
                                                       type="hidden"
@@ -2561,8 +2568,8 @@ export default (app: Courselore): void => {
                               $${(() => {
                                 const updateExpirationForm = html`
                                   <form
-                                    method="POST"
-                                    action="${action}?_method=PATCH"
+                                    method="PATCH"
+                                    action="${action}"
                                     novalidate
                                     class="dropdown--menu ${res.locals
                                       .localCSS(css`
@@ -2605,8 +2612,8 @@ export default (app: Courselore): void => {
                                 `;
                                 const removeExpirationForm = html`
                                   <form
-                                    method="POST"
-                                    action="${action}?_method=PATCH"
+                                    method="PATCH"
+                                    action="${action}"
                                     class="dropdown--menu"
                                   >
                                     <input
@@ -2629,8 +2636,8 @@ export default (app: Courselore): void => {
                                 `;
                                 const expireForm = html`
                                   <form
-                                    method="POST"
-                                    action="${action}?_method=PATCH"
+                                    method="PATCH"
+                                    action="${action}"
                                     class="dropdown--menu"
                                   >
                                     <input
@@ -3038,6 +3045,7 @@ export default (app: Courselore): void => {
       }
 
       res.redirect(
+        303,
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/invitations`
       );
     }
@@ -3154,6 +3162,7 @@ export default (app: Courselore): void => {
       }
 
       res.redirect(
+        303,
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/invitations`
       );
     }
@@ -3392,8 +3401,8 @@ export default (app: Courselore): void => {
                                         ? html``
                                         : html`
                                             <form
-                                              method="POST"
-                                              action="${action}?_method=PATCH"
+                                              method="PATCH"
+                                              action="${action}"
                                             >
                                               <input
                                                 type="hidden"
@@ -3431,8 +3440,8 @@ export default (app: Courselore): void => {
                                                             content: ${res.locals.HTMLForJavaScript(
                                                               html`
                                                                 <form
-                                                                  method="POST"
-                                                                  action="${action}?_method=PATCH"
+                                                                  method="PATCH"
+                                                                  action="${action}"
                                                                   class="${res
                                                                     .locals
                                                                     .localCSS(css`
@@ -3552,8 +3561,8 @@ export default (app: Courselore): void => {
                                       content: ${res.locals.HTMLForJavaScript(
                                         html`
                                           <form
-                                            method="POST"
-                                            action="${action}?_method=DELETE"
+                                            method="DELETE"
+                                            action="${action}"
                                             class="${res.locals.localCSS(css`
                                               padding: var(--space--2);
                                               display: flex;
@@ -3650,6 +3659,7 @@ export default (app: Courselore): void => {
       }
 
       res.redirect(
+        303,
         res.locals.managedEnrollment.isSelf
           ? `${app.locals.options.baseURL}/courses/${res.locals.course.reference}`
           : `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/enrollments`
@@ -3686,6 +3696,7 @@ export default (app: Courselore): void => {
       });
 
       res.redirect(
+        303,
         res.locals.managedEnrollment.isSelf
           ? `${app.locals.options.baseURL}/`
           : `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/enrollments`
@@ -3724,9 +3735,9 @@ export default (app: Courselore): void => {
             </h2>
 
             <form
-              method="POST"
+              method="PATCH"
               action="${app.locals.options.baseURL}/courses/${res.locals.course
-                .reference}/settings/your-enrollment?_method=PATCH"
+                .reference}/settings/your-enrollment"
               novalidate
               class="${res.locals.localCSS(css`
                 display: flex;
@@ -3840,6 +3851,7 @@ export default (app: Courselore): void => {
       });
 
       res.redirect(
+        303,
         `${app.locals.options.baseURL}/courses/${res.locals.course.reference}/settings/your-enrollment`
       );
     }
@@ -4045,6 +4057,7 @@ export default (app: Courselore): void => {
         );
 
       res.redirect(
+        303,
         `${app.locals.options.baseURL}/courses/${res.locals.invitation.course.reference}`
       );
     }
