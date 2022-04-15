@@ -101,7 +101,7 @@ const leafac = {
             if (isGet && !(event instanceof PopStateEvent))
               window.history.pushState(undefined, "", request.url);
             const body = document.querySelector("body");
-            (body.networkError ??= tippy(body)).setProps({
+            (body.liveNavigateNetworkError ??= tippy(body)).setProps({
               appendTo: body,
               trigger: "manual",
               hideOnClick: false,
@@ -111,7 +111,7 @@ const leafac = {
               content:
                 "You appear to be offline. Please check your internet connection and try reloading the page.",
             });
-            body.networkError.show();
+            body.liveNavigateNetworkError.show();
             window.onnavigateerror?.();
           }
         }
@@ -303,6 +303,24 @@ const leafac = {
     url.searchParams.set("liveUpdatesToken", token);
     leafac.liveUpdatesEventSource = new ReconnectingEventSource(url.toString());
     leafac.liveUpdatesEventSource.token = token;
+    leafac.liveUpdatesEventSource.addEventListener(
+      "validationerror",
+      (event) => {
+        leafac.liveUpdatesEventSource.close();
+        const body = document.querySelector("body");
+        (body.liveUpdatesValidationError ??= tippy(body)).setProps({
+          appendTo: body,
+          trigger: "manual",
+          hideOnClick: false,
+          theme: "error",
+          arrow: false,
+          interactive: true,
+          content:
+            "Failed to connect to server, please try reloading the page.",
+        });
+        body.liveUpdatesValidationError.show();
+      }
+    );
     leafac.liveUpdatesEventSource.addEventListener("liveupdate", (event) => {
       leafac.loadDocument(event.data, {
         originalEvent: event,
