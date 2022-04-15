@@ -1062,18 +1062,14 @@ export default async (app: Courselore): Promise<void> => {
             leafac.liveNavigation(
               $${JSON.stringify(app.locals.options.baseURL)}
             );
+            $${app.locals.options.liveReload
+              ? javascript`
+                  leafac.liveReload(${JSON.stringify(
+                    `${app.locals.options.baseURL}/live-reload`
+                  )});
+                `
+              : javascript``};
           </script>
-          $${app.locals.options.liveReload
-            ? html`
-                <script>
-                  leafac.liveReload(
-                    $${JSON.stringify(
-                      `${app.locals.options.baseURL}/live-reload`
-                    )}
-                  );
-                </script>
-              `
-            : html``}
           $${head}
         </head>
         $${baseLayoutBody}
