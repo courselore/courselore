@@ -8,11 +8,15 @@ import {
 export interface LiveUpdatesLocals {
   liveUpdatesEventDestinations: Set<{
     createdAt: Date;
-    token: string;
-    courseId: number;
     shouldUpdate?: boolean;
-    req?: express.Request<{}, any, {}, {}, LiveUpdatesMiddlewareLocals>;
-    res?: express.Response<any, LiveUpdatesMiddlewareLocals>;
+    original: {
+      req: express.Request<{}, any, {}, {}, LiveUpdatesMiddlewareLocals>;
+      res: express.Response<any, LiveUpdatesMiddlewareLocals>;
+    };
+    eventStream?: {
+      req: express.Request<{}, any, {}, {}, LiveUpdatesMiddlewareLocals>;
+      res: express.Response<any, LiveUpdatesMiddlewareLocals>;
+    };
   }>;
 }
 
@@ -20,7 +24,7 @@ export type LiveUpdatesMiddleware = express.RequestHandler<
   {},
   any,
   {},
-  { liveUpdatesToken?: string; [key: string]: any },
+  { liveUpdatesToken?: string },
   LiveUpdatesMiddlewareLocals
 >[];
 export interface LiveUpdatesMiddlewareLocals
@@ -47,8 +51,7 @@ export default (app: Courselore): void => {
         res.locals.liveUpdatesToken = token;
         app.locals.liveUpdatesEventDestinations.add({
           createdAt: new Date(),
-          token,
-          courseId: res.locals.course.id,
+          original: { req, res },
         });
         console.log(
           `${new Date().toISOString()}\tLIVE-UPDATES\t${token}\tEVENT-STREAM\tCREATED\t${
@@ -62,13 +65,14 @@ export default (app: Courselore): void => {
         ...app.locals.liveUpdatesEventDestinations,
       ].find(
         (liveUpdatesEventDestination) =>
-          liveUpdatesEventDestination.token === req.query.liveUpdatesToken
+          liveUpdatesEventDestination.original.res.locals.liveUpdatesToken ===
+          req.query.liveUpdatesToken
       );
       if (
         liveUpdatesEventDestination === undefined ||
-        liveUpdatesEventDestination.courseId !== res.locals.course.id ||
-        liveUpdatesEventDestination.req !== undefined ||
-        liveUpdatesEventDestination.res !== undefined
+        liveUpdatesEventDestination.original.req.originalUrl !==
+          req.originalUrl ||
+        liveUpdatesEventDestination.eventStream !== undefined
       ) {
         res
           .type("text/event-stream")
@@ -80,9 +84,9 @@ export default (app: Courselore): void => {
         );
         return;
       }
-      liveUpdatesEventDestination.req = req;
-      liveUpdatesEventDestination.res = res;
-      res.locals.liveUpdatesToken = liveUpdatesEventDestination.token;
+      liveUpdatesEventDestination.eventStream = { req, res };
+      res.locals.liveUpdatesToken =
+        liveUpdatesEventDestination.original.res.locals.liveUpdatesToken;
       res.setHeader = (name, value) => res;
       res.send = (body) => {
         res.write(
@@ -121,8 +125,10 @@ export default (app: Courselore): void => {
       for (const liveUpdatesEventDestination of app.locals
         .liveUpdatesEventDestinations)
         if (
-          liveUpdatesEventDestination.token !== req.header("Live-Updates") &&
-          res.locals.course.id === liveUpdatesEventDestination.courseId
+          liveUpdatesEventDestination.original.res.locals.liveUpdatesToken !==
+            req.header("Live-Updates") &&
+          res.locals.course.id ===
+            liveUpdatesEventDestination.original.res.locals.course.id
         )
           liveUpdatesEventDestination.shouldUpdate = true;
       clearTimeout(timeoutId);
@@ -131,10 +137,7 @@ export default (app: Courselore): void => {
     async function work() {
       for (const liveUpdatesEventDestination of app.locals
         .liveUpdatesEventDestinations) {
-        if (
-          liveUpdatesEventDestination.req === undefined ||
-          liveUpdatesEventDestination.res === undefined
-        ) {
+        if (liveUpdatesEventDestination.eventStream === undefined) {
           if (
             liveUpdatesEventDestination.createdAt.getTime() <
             Date.now() - 60 * 1000
@@ -144,18 +147,23 @@ export default (app: Courselore): void => {
             );
             console.log(
               `${new Date().toISOString()}\tLIVE-UPDATES\t${
-                liveUpdatesEventDestination.token
-              }\tEVENT-STREAM\tEXPIRED`
+                liveUpdatesEventDestination.original.res.locals.liveUpdatesToken
+              }\tEVENT-STREAM\tEXPIRED\t${
+                liveUpdatesEventDestination.original.req.ip
+              }\t\t\t${liveUpdatesEventDestination.original.req.originalUrl}`
             );
           }
           continue;
         }
         if (liveUpdatesEventDestination.shouldUpdate !== true) continue;
-        liveUpdatesEventDestination.res.locals = {
+        liveUpdatesEventDestination.eventStream.res.locals = {
           liveUpdatesToken:
-            liveUpdatesEventDestination.res.locals.liveUpdatesToken,
+            liveUpdatesEventDestination.eventStream.res.locals.liveUpdatesToken,
         } as LiveUpdatesMiddlewareLocals;
-        app(liveUpdatesEventDestination.req, liveUpdatesEventDestination.res);
+        app(
+          liveUpdatesEventDestination.eventStream.req,
+          liveUpdatesEventDestination.eventStream.res
+        );
         liveUpdatesEventDestination.shouldUpdate = false;
         await new Promise((resolve) => setTimeout(resolve, 20));
       }

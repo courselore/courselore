@@ -435,6 +435,8 @@
 - Live-updates:
   - Use smarter data structures for `liveUpdatesEventDestinations` so that we don’t have to traverse the whole set so often.
   - Make the channels more granular so that they have to update every connection for the course.
+  - Consider using https://github.com/Azure/fetch-event-source instead of reconnecting-eventsource, and `fetch()` streams instead of EventSource.
+    - Benefit: Pass headers such as live-update token (which we’re currently passing in the URL)
 - Add missing `key`s:
   - `partials.user()` (this is trickier than it may seem, because it actually requires creating `reference`s for users).
   - `class=`
