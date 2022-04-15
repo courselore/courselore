@@ -11,7 +11,6 @@ import lodash from "lodash";
 import {
   Courselore,
   BaseMiddlewareLocals,
-  LiveUpdatesMiddlewareLocals,
   UserAvatarlessBackgroundColor,
   userAvatarlessBackgroundColors,
   UserEmailNotifications,
@@ -34,17 +33,8 @@ export interface SessionHelper {
     req,
     res,
   }: {
-    req: express.Request<
-      {},
-      any,
-      {},
-      {},
-      BaseMiddlewareLocals & Partial<LiveUpdatesMiddlewareLocals>
-    >;
-    res: express.Response<
-      any,
-      BaseMiddlewareLocals & Partial<LiveUpdatesMiddlewareLocals>
-    >;
+    req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
+    res: express.Response<any, BaseMiddlewareLocals>;
   }): number | undefined;
   close({
     req,
