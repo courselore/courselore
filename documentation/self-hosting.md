@@ -1,6 +1,6 @@
 # Self-Hosting
 
-You may use Courselore at [`courselore.org`](https://courselore.org), but you may prefer to run Courselore on your own servers for maximum privacy and control. Courselore is easy to self-host and is an excellent first project if you’re new to system administration.
+You may use Courselore at [`courselore.org`](https://courselore.org), but you may prefer to run Courselore on your own server for maximum privacy and control. Courselore is easy to self-host and is an excellent first project if you’re new to system administration.
 
 > **Note:** If you get stuck, please [open an issue](https://github.com/courselore/courselore/issues/new) including as much information as possible: What you tried, what you expected to happen, what really happened, what error messages you ran into, and so forth.
 
