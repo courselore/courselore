@@ -440,6 +440,9 @@
 
 ### Infrastructure
 
+- Check for timeouts and limits on keep-alive connections:
+  - Caddy
+  - Express
 - Live-updates:
   - Use smarter data structures for `liveUpdatesEventDestinations` so that we don’t have to traverse the whole set so often.
   - Make the channels more granular so that they have to update every connection for the course.
