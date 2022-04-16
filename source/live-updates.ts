@@ -46,7 +46,7 @@ export default (app: Courselore): void => {
 
   app.locals.middlewares.liveUpdates = [
     (req, res, next) => {
-      if (!req.header("accept")?.includes("text/event-stream")) {
+      if (req.header("accept") !== "text/event-stream") {
         const token = Math.random().toString(36).slice(2);
         res.locals.liveUpdatesToken = token;
         app.locals.liveUpdatesEventDestinations.add({

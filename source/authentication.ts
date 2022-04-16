@@ -188,7 +188,7 @@ export default (app: Courselore): void => {
         app.locals.helpers.Session.close({ req, res });
         return undefined;
       } else if (
-        !req.header("accept")?.includes("text/event-stream") &&
+        req.header("accept") !== "text/event-stream" &&
         new Date(session.createdAt).getTime() <
           Date.now() - app.locals.helpers.Session.maxAge / 2
       ) {

@@ -11,7 +11,7 @@ export default (app: Courselore): void => {
   app.enable("trust proxy");
   app.use<{}, any, {}, {}, LiveUpdatesMiddlewareLocals>((req, res, next) => {
     if (
-      req.header("accept")?.includes("text/event-stream") &&
+      req.header("accept") === "text/event-stream" &&
       res.locals.liveUpdatesToken === undefined
     )
       return next();
