@@ -487,6 +487,7 @@ const leafac = {
   },
 
   relativizeDateTimeElement(element, options = {}) {
+    window.clearTimeout(element.relativizeDateTimeElementTimeout);
     (function update() {
       if (!leafac.isConnected(element)) return;
       const dateTime = element.getAttribute("datetime");
@@ -495,8 +496,7 @@ const leafac = {
         content: leafac.formatUTCDateTime(dateTime),
       });
       element.textContent = leafac.relativizeDateTime(dateTime, options);
-      window.clearTimeout(element.relativizeDateTimeElementTimeoutID);
-      element.relativizeDateTimeElementTimeoutID = window.setTimeout(
+      element.relativizeDateTimeElementTimeout = window.setTimeout(
         update,
         10 * 1000
       );
@@ -504,13 +504,13 @@ const leafac = {
   },
 
   relativizeDateElement(element) {
+    window.clearTimeout(element.relativizeDateElementTimeout);
     (function update() {
       if (!leafac.isConnected(element)) return;
       element.textContent = leafac.relativizeDate(
         element.getAttribute("datetime")
       );
-      window.clearTimeout(element.relativizeDateElementTimeoutID);
-      element.relativizeDateElementTimeoutID = window.setTimeout(
+      element.relativizeDateElementTimeout = window.setTimeout(
         update,
         60 * 1000
       );

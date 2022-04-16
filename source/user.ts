@@ -300,13 +300,13 @@ export default (app: Courselore): void => {
                   content: "Online",
                 });
 
+                window.clearTimeout(element.updateTimeout);
                 (function update() {
                   if (!leafac.isConnected(element)) return;
                   element.hidden = Date.now() - ${new Date(
                     user.lastSeenOnlineAt
                   ).getTime()} > 5 * 60 * 1000;
-                  window.clearTimeout(element.updateTimeoutID);
-                  element.updateTimeoutID = window.setTimeout(update, 60 * 1000);
+                  element.updateTimeout = window.setTimeout(update, 60 * 1000);
                 })();
               `}"
             ></span>

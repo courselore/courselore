@@ -114,7 +114,7 @@ export default (app: Courselore): void => {
   ];
 
   app.locals.helpers.liveUpdatesDispatch = (() => {
-    let timeoutId: NodeJS.Timeout;
+    let timeout: NodeJS.Timeout;
     return ({
       req,
       res,
@@ -131,7 +131,7 @@ export default (app: Courselore): void => {
             liveUpdatesEventDestination.original.res.locals.course.id
         )
           liveUpdatesEventDestination.shouldUpdate = true;
-      clearTimeout(timeoutId);
+      clearTimeout(timeout);
       work();
     };
     async function work() {
@@ -160,14 +160,13 @@ export default (app: Courselore): void => {
           liveUpdatesToken:
             liveUpdatesEventDestination.eventStream.res.locals.liveUpdatesToken,
         } as LiveUpdatesMiddlewareLocals;
-        app(
+        await app(
           liveUpdatesEventDestination.eventStream.req,
           liveUpdatesEventDestination.eventStream.res
         );
         liveUpdatesEventDestination.shouldUpdate = false;
-        await new Promise((resolve) => setTimeout(resolve, 20));
       }
-      timeoutId = setTimeout(work, 60 * 1000);
+      timeout = setTimeout(work, 60 * 1000);
     }
   })();
 };

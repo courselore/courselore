@@ -5,7 +5,8 @@ export type SendEmailWorker = () => Promise<void>;
 
 export default (app: Courselore): void => {
   app.locals.workers.sendEmail = (() => {
-    let timeout = setTimeout(schedule, 2 * 60 * 1000);
+    let timeout: NodeJS.Timeout;
+    schedule();
     return schedule;
 
     async function schedule() {

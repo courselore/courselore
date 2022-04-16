@@ -776,12 +776,12 @@ export default async (app: Courselore): Promise<void> => {
               parentElement.hidden = false;
               const element = parentElement.querySelector("div");
               let width = 10;
+              window.clearTimeout(element.updateTimeout);
               (function update() {
                 if (parentElement.hidden || !leafac.isConnected(element)) return;
                 element.style.width = width.toString() + "%";
                 width += (90 - width) / (5 + Math.random() * 15);
-                window.clearTimeout(element.updateTimeoutID);
-                element.updateTimeoutID = window.setTimeout(update, 100 + Math.random() * 100);
+                element.updateTimeout = window.setTimeout(update, 100 + Math.random() * 100);
               })();
             };
 
@@ -2984,15 +2984,17 @@ export default async (app: Courselore): Promise<void> => {
       return flash;
     },
   };
-  setTimeout(function worker() {
-    app.locals.database.run(
-      sql`
-        DELETE FROM "flashes"
-        WHERE "createdAt" < ${new Date(
-          Date.now() - app.locals.helpers.Flash.maxAge
-        ).toISOString()}
-      `
-    );
-    setTimeout(worker, 24 * 60 * 60 * 1000);
-  }, 10 * 60 * 1000);
+  (async () => {
+    while (true) {
+      app.locals.database.run(
+        sql`
+          DELETE FROM "flashes"
+          WHERE "createdAt" < ${new Date(
+            Date.now() - app.locals.helpers.Flash.maxAge
+          ).toISOString()}
+        `
+      );
+      await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
+    }
+  })();
 };
