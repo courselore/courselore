@@ -2,11 +2,50 @@
 
 ### Performance
 
-- `rollup node_modules/@microsoft/fetch-event-source/lib/esm/index.js --file node_modules/@microsoft/fetch-event-source/index.umd.js --format umd --name FetchEventSource`
-- https://github.com/Azure/fetch-event-source
-- https://github.com/EventSource/eventsource
-- https://github.com/Yaffle/EventSource
-- https://github.com/mpetazzoni/sse.js
+- Server
+
+```javascript
+app.get("/ndjson", async (req, res) => {
+  res.flushHeaders();
+  while (true) {
+    res.write(JSON.stringify({ date: new Date().toISOString() }) + "\n");
+    await new Promise((resolve) => setInterval(resolve, 5000));
+  }
+});
+```
+
+- Client
+
+```javascript
+(async () => {
+  while (true) {
+    try {
+      const responseBodyReader = (await fetch("/ndjson")).body.getReader();
+      const textDecoder = new TextDecoder();
+      let buffer = "";
+      while (true) {
+        const chunk = (await responseBodyReader.read()).value;
+        if (chunk === undefined) break;
+        buffer += textDecoder.decode(chunk, { stream: true });
+        const bufferParts = buffer.split("\n");
+        buffer = bufferParts.pop();
+        for (const bufferPart of bufferParts) {
+          const bufferPartJSON = JSON.parse(bufferPart);
+          console.log(bufferPartJSON);
+        }
+      }
+    } catch {}
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+  }
+})();
+```
+
+- Other libraries
+  - `rollup node_modules/@microsoft/fetch-event-source/lib/esm/index.js --file node_modules/@microsoft/fetch-event-source/index.umd.js --format umd --name FetchEventSource`
+  - https://github.com/Azure/fetch-event-source
+  - https://github.com/EventSource/eventsource
+  - https://github.com/Yaffle/EventSource
+  - https://github.com/mpetazzoni/sse.js
 
 ---
 
