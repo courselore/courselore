@@ -729,17 +729,14 @@ const leafac = {
   isAppleDevice: /Mac|iPod|iPhone|iPad/.test(navigator.platform),
 
   async liveReload(url) {
-    const eventSource = new ReconnectingEventSource(url);
-    await new Promise((resolve) => {
-      eventSource.addEventListener("open", resolve, { once: true });
-    });
-    await new Promise((resolve) => {
-      eventSource.addEventListener("error", resolve, { once: true });
-    });
-    await new Promise((resolve) => {
-      eventSource.addEventListener("open", resolve, { once: true });
-    });
-    window.location.reload();
+    await (await fetch(url)).text();
+    while (true) {
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      try {
+        if ((await fetch(url)).status === 502) throw new Error();
+        window.location.reload();
+      } catch {}
+    }
   },
 
   regExps: {

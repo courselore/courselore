@@ -99,8 +99,7 @@ export default (app: Courselore): void => {
     app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
       "/live-reload",
       (req, res) => {
-        res.type("text/event-stream").write(":\n\n");
-        console.log(`${new Date().toISOString()}\tLIVE-RELOAD\t${req.ip}`);
+        res.write("LIVE-RELOAD");
       }
     );
 };
