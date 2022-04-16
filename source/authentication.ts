@@ -222,17 +222,20 @@ export default (app: Courselore): void => {
       app.locals.helpers.Session.open({ req, res, userId });
     },
   };
-  setTimeout(function worker() {
-    app.locals.database.run(
-      sql`
-        DELETE FROM "sessions"
-        WHERE "createdAt" < ${new Date(
-          Date.now() - app.locals.helpers.Session.maxAge
-        ).toISOString()}
-      `
-    );
-    setTimeout(worker, 24 * 60 * 60 * 1000);
-  }, 10 * 60 * 1000);
+  (async () => {
+    await new Promise((resolve) => setTimeout(resolve, 10 * 60 * 1000));
+    while (true) {
+      app.locals.database.run(
+        sql`
+          DELETE FROM "sessions"
+          WHERE "createdAt" < ${new Date(
+            Date.now() - app.locals.helpers.Session.maxAge
+          ).toISOString()}
+        `
+      );
+      await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
+    }
+  })();
 
   app.locals.middlewares.isSignedOut = [
     (req, res, next) => {
