@@ -223,7 +223,6 @@ export default (app: Courselore): void => {
     },
   };
   (async () => {
-    await new Promise((resolve) => setTimeout(resolve, 10 * 60 * 1000));
     while (true) {
       app.locals.database.run(
         sql`
@@ -593,17 +592,19 @@ export default (app: Courselore): void => {
         : passwordReset.user;
     },
   };
-  setTimeout(function worker() {
-    app.locals.database.run(
-      sql`
-        DELETE FROM "passwordResets"
-        WHERE "createdAt" < ${new Date(
-          Date.now() - app.locals.helpers.PasswordReset.maxAge
-        ).toISOString()}
-      `
-    );
-    setTimeout(worker, 24 * 60 * 60 * 1000);
-  }, 10 * 60 * 1000);
+  (async () => {
+    while (true) {
+      app.locals.database.run(
+        sql`
+          DELETE FROM "passwordResets"
+          WHERE "createdAt" < ${new Date(
+            Date.now() - app.locals.helpers.PasswordReset.maxAge
+          ).toISOString()}
+        `
+      );
+      await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
+    }
+  })();
 
   app.get<{}, HTML, {}, { email?: string }, BaseMiddlewareLocals>(
     "/reset-password",
@@ -1138,17 +1139,19 @@ export default (app: Courselore): void => {
     );
     app.locals.workers.sendEmail();
   };
-  setTimeout(function worker() {
-    app.locals.database.run(
-      sql`
-        DELETE FROM "emailConfirmations"
-        WHERE "createdAt" < ${new Date(
-          Date.now() - 24 * 60 * 60 * 1000
-        ).toISOString()}
-      `
-    );
-    setTimeout(worker, 24 * 60 * 60 * 1000);
-  }, 10 * 60 * 1000);
+  (async () => {
+    while (true) {
+      app.locals.database.run(
+        sql`
+          DELETE FROM "emailConfirmations"
+          WHERE "createdAt" < ${new Date(
+            Date.now() - 24 * 60 * 60 * 1000
+          ).toISOString()}
+        `
+      );
+      await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
+    }
+  })();
 
   app.post<
     {},
