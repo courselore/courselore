@@ -2,6 +2,13 @@
 
 ### Performance
 
+- Deal with reconnections
+
+  - Approaches:
+    - Force a live updates when token is unknown
+    - Introduce some global notion of timing, which we could use to determine whether a brand-new event-stream already needs a live-update
+  - Use the notion of `expiresAt`.
+
 - Server
 
 ```javascript
@@ -40,12 +47,54 @@ app.get("/ndjson", async (req, res) => {
 })();
 ```
 
+- Add support for visibility API & abort `fetch`
+
 - Other libraries
+
   - `rollup node_modules/@microsoft/fetch-event-source/lib/esm/index.js --file node_modules/@microsoft/fetch-event-source/index.umd.js --format umd --name FetchEventSource`
   - https://github.com/Azure/fetch-event-source
   - https://github.com/EventSource/eventsource
   - https://github.com/Yaffle/EventSource
   - https://github.com/mpetazzoni/sse.js
+
+- TODO
+
+- Review:
+
+  - `leafac--javascript.js`
+  - `live-updates.ts`
+  - `authentication.ts`
+  - `logging.ts`
+  - `layouts.ts` (Call to `liveUpdates()`)
+
+- Things to test:
+
+  - Sliding session
+    - Occurs on normal request
+    - Doesn’t occur on event-stream
+  - Flashes on live-updates
+  - Logs
+    - Live-updates GETs are flagged as such
+    - Event-streams
+      - Created
+        - Opened
+          - Closed
+        - Failed
+        - Expired
+  - Event-stream
+    - Disconnect & reconnect relatively quickly
+    - Disconnect & reconnect after a long time
+    - Update in between initial request and event-stream establishment
+
+- Document
+  - Reasons to prefer `fetch` over `EventSource`:
+    - Features such as headers.
+    - Implementors lost interest on `EventSource` (https://github.com/whatwg/html/issues/2177).
+    - Free to use a more sensible event-stream format, such as NDJSON
+  - Reasons to have one event-stream connection per route, and close and reopen as you navigate, as opposed to a single persistent event-stream connection:
+    - Session management would be awkward
+    - Extra work to not have event-stream open for routes that don’t support them (otherwise it increases the server load for no good reason) (but most of the time people are on routes that support live updates, so it’s no big deal).
+    - The live-updates middleware benefits from appearing after authentication and retrieval of things like course information. It’d be awkward to have it as a global middleware.
 
 ---
 
@@ -479,9 +528,13 @@ app.get("/ndjson", async (req, res) => {
 
 ### Infrastructure
 
-- Check for timeouts and limits on keep-alive connections:
-  - Caddy
-  - Express
+- Autosize is leaking resources because of the global `Map` of bound textareas. It should be using `WeakMap` instead.
+  - Look into using `fit-textarea@2.0.0` instead.
+- Event-streams (and keep-alive connections in general)
+  - Heartbeat every 15 seconds?
+  - Check for timeouts and limits:
+    - Caddy
+    - Express
 - Live-updates:
   - Use smarter data structures for `liveUpdatesEventDestinations` so that we don’t have to traverse the whole set so often.
   - Make the channels more granular so that they have to update every connection for the course.
