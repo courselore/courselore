@@ -733,7 +733,8 @@ const leafac = {
     while (true) {
       await new Promise((resolve) => setTimeout(resolve, 200));
       try {
-        if ((await fetch(url)).status === 502) throw new Error();
+        const response = await fetch(url);
+        if (response.status === 502) throw new Error();
         window.location.reload();
       } catch {}
     }
