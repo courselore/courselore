@@ -1049,8 +1049,6 @@ export default async (app: Courselore): Promise<void> => {
           <script src="${app.locals.options
               .baseURL}/node_modules/text-field-edit/index.umd.js"></script>
           <script src="${app.locals.options
-              .baseURL}/node_modules/reconnecting-eventsource/dist/ReconnectingEventSource.min.js"></script>
-          <script src="${app.locals.options
               .baseURL}/node_modules/@leafac/javascript/distribution/browser.js"></script>
           <script src="${app.locals.options
               .baseURL}/leafac--javascript.js"></script>

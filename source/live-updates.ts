@@ -1,4 +1,5 @@
 import express from "express";
+import { Database, sql } from "@leafac/sqlite";
 import {
   Courselore,
   BaseMiddlewareLocals,
@@ -42,6 +43,23 @@ export type LiveUpdatesDispatchHelper = ({
 }) => void;
 
 export default (app: Courselore): void => {
+  const REMOVE = new Database("");
+  REMOVE.migrate(
+    sql`
+      CREATE TABLE "liveUpdatesClients" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "expiresAt" TEXT NULL,
+        "token" TEXT NOT NULL UNIQUE,
+        "shouldUpdateAt" TEXT NULL,
+        "course" INTEGER NOT NULL
+      );
+      CREATE INDEX "liveUpdatesClientsExpiresAtIndex" ON "liveUpdatesClients" ("expiresAt");
+      CREATE INDEX "liveUpdatesClientsTokenIndex" ON "liveUpdatesClients" ("token");
+      CREATE INDEX "liveUpdatesClientsShouldUpdateAtIndex" ON "liveUpdatesClients" ("shouldUpdateAt");
+      CREATE INDEX "liveUpdatesClientsCourseIndex" ON "liveUpdatesClients" ("course");
+    `
+  );
+
   app.locals.liveUpdatesEventDestinations = new Set();
 
   app.locals.middlewares.liveUpdates = [
