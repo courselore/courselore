@@ -7,18 +7,16 @@ import {
 } from "./index.js";
 
 export interface LiveUpdatesLocals {
-  liveUpdatesEventDestinations: Set<{
-    createdAt: Date;
-    shouldUpdate?: boolean;
-    original: {
-      req: express.Request<{}, any, {}, {}, LiveUpdatesMiddlewareLocals>;
-      res: express.Response<any, LiveUpdatesMiddlewareLocals>;
-    };
-    eventStream?: {
-      req: express.Request<{}, any, {}, {}, LiveUpdatesMiddlewareLocals>;
-      res: express.Response<any, LiveUpdatesMiddlewareLocals>;
-    };
-  }>;
+  liveUpdates: {
+    database: Database;
+    clients: Map<
+      string,
+      {
+        req: express.Request<{}, any, {}, {}, LiveUpdatesMiddlewareLocals>;
+        res: express.Response<any, LiveUpdatesMiddlewareLocals>;
+      }
+    >;
+  };
 }
 
 export type LiveUpdatesMiddleware = express.RequestHandler<
@@ -43,40 +41,117 @@ export type LiveUpdatesDispatchHelper = ({
 }) => void;
 
 export default (app: Courselore): void => {
-  const REMOVE = new Database("");
-  REMOVE.migrate(
+  app.locals.liveUpdates = {
+    database: new Database(""),
+    clients: new Map(),
+  };
+  app.locals.liveUpdates.database.migrate(
     sql`
-      CREATE TABLE "liveUpdatesClients" (
+      CREATE TABLE "clients" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "expiresAt" TEXT NULL,
         "token" TEXT NOT NULL UNIQUE,
         "shouldUpdateAt" TEXT NULL,
+        "url" TEXT NOT NULL,
         "course" INTEGER NOT NULL
       );
-      CREATE INDEX "liveUpdatesClientsExpiresAtIndex" ON "liveUpdatesClients" ("expiresAt");
-      CREATE INDEX "liveUpdatesClientsTokenIndex" ON "liveUpdatesClients" ("token");
-      CREATE INDEX "liveUpdatesClientsShouldUpdateAtIndex" ON "liveUpdatesClients" ("shouldUpdateAt");
-      CREATE INDEX "liveUpdatesClientsCourseIndex" ON "liveUpdatesClients" ("course");
+      CREATE INDEX "clientsExpiresAtIndex" ON "clients" ("expiresAt");
+      CREATE INDEX "clientsTokenIndex" ON "clients" ("token");
+      CREATE INDEX "clientsShouldUpdateAtIndex" ON "clients" ("shouldUpdateAt");
+      CREATE INDEX "clientsCourseIndex" ON "clients" ("course");
     `
   );
 
-  app.locals.liveUpdatesEventDestinations = new Set();
-
   app.locals.middlewares.liveUpdates = [
     (req, res, next) => {
-      if (req.header("accept") !== "text/event-stream") {
-        const token = Math.random().toString(36).slice(2);
-        res.locals.liveUpdatesToken = token;
-        app.locals.liveUpdatesEventDestinations.add({
-          createdAt: new Date(),
-          original: { req, res },
-        });
+      if (req.header("Live-Updates") === undefined) {
+        res.locals.liveUpdatesToken = Math.random().toString(36).slice(2);
+        app.locals.liveUpdates.database.run(
+          sql`
+            INSERT INTO "clients" (
+              "expiresAt",
+              "token",
+              "url",
+              "course"
+            )
+            VALUES (
+              ${new Date(Date.now() + 60 * 1000).toISOString()},
+              ${res.locals.liveUpdatesToken},
+              ${req.originalUrl},
+              ${res.locals.course.id}
+            )
+          `
+        );
         console.log(
-          `${new Date().toISOString()}\tLIVE-UPDATES\t${token}\tEVENT-STREAM\tCREATED\t${
-            req.ip
-          }\t\t\t${req.originalUrl}`
+          `${new Date().toISOString()}\tLIVE-UPDATES\t${
+            res.locals.liveUpdatesToken
+          }\tCLIENT\tCREATED\t${req.ip}\t\t\t${req.originalUrl}`
         );
         return next();
+      }
+      if (res.locals.liveUpdatesToken === undefined) {
+        res.locals.liveUpdatesToken = req.header("Live-Updates")!;
+        res.setHeader = (name, value) => res;
+        res.send = (body) => {
+          res.write(JSON.stringify(body) + "\n");
+          return res;
+        };
+        let client = app.locals.liveUpdates.database.get<{
+          token: string;
+          url: string;
+        }>(
+          sql`
+            SELECT "token", "url" FROM "clients" WHERE "token" = ${res.locals.liveUpdatesToken}
+          `
+        );
+        if (client !== undefined && client.url !== req.originalUrl)
+          return res.status(422).end();
+        if (client === undefined) {
+          client = app.locals.liveUpdates.database.get<{
+            token: string;
+            url: string;
+          }>(
+            sql`
+              INSERT INTO "clients" (
+                "expiresAt",
+                "token",
+                "url",
+                "course"
+              )
+              VALUES (
+                ${new Date(Date.now() + 60 * 1000).toISOString()},
+                ${res.locals.liveUpdatesToken},
+                ${req.originalUrl},
+                ${res.locals.course.id}
+              )
+              RETURNING *
+            `
+          )!;
+          next();
+          console.log(
+            `${new Date().toISOString()}\tLIVE-UPDATES\t${
+              res.locals.liveUpdatesToken
+            }\tCLIENT\tCREATED\t${req.ip}\t\t\t${req.originalUrl}`
+          );
+        }
+        const connection = { req, res };
+        app.locals.liveUpdates.clients.set(
+          res.locals.liveUpdatesToken,
+          connection
+        );
+        res.once("close", () => {
+          app.locals.liveUpdates.database.run(
+            sql`
+              UPDATE "clients"
+              SET "expiresAt" = ${new Date(
+                Date.now() + 5 * 60 * 1000
+              ).toISOString()}
+              WHERE "token" = ${res.locals.liveUpdatesToken}
+            `
+          );
+          app.locals.liveUpdates.clients.delete(res.locals.liveUpdatesToken);
+        });
+        return;
       }
       if (res.locals.liveUpdatesToken !== undefined) return next();
       const liveUpdatesEventDestination = [

@@ -322,7 +322,7 @@ const leafac = {
           const bufferPart = bufferParts.pop();
           if (bufferPart === undefined) continue;
           const bufferPartJSON = JSON.parse(bufferPart);
-          leafac.loadDocument(bufferPartJSON.body, {
+          leafac.loadDocument(bufferPartJSON, {
             previousLocation: { ...window.location },
             liveUpdate: true,
           });
