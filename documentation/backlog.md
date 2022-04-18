@@ -21,16 +21,6 @@ app.get("/ndjson", async (req, res) => {
 });
 ```
 
-- Add support for visibility API & abort `fetch`
-
-- Other libraries
-
-  - `rollup node_modules/@microsoft/fetch-event-source/lib/esm/index.js --file node_modules/@microsoft/fetch-event-source/index.umd.js --format umd --name FetchEventSource`
-  - https://github.com/Azure/fetch-event-source
-  - https://github.com/EventSource/eventsource
-  - https://github.com/Yaffle/EventSource
-  - https://github.com/mpetazzoni/sse.js
-
 - TODO
 
 - Review:
