@@ -404,6 +404,10 @@ export default async (app: Courselore): Promise<void> => {
         "content" TEXT NOT NULL
       );
       CREATE INDEX "flashesCreatedAtIndex" ON "flashes" (datetime("createdAt"));
+    `,
+    sql`
+      DROP INDEX "flashesCreatedAtIndex";
+      CREATE INDEX "flashesCreatedAtIndex" ON "flashes" ("createdAt");
     `
   );
   app.once("close", () => {
