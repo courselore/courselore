@@ -21,32 +21,6 @@ app.get("/ndjson", async (req, res) => {
 });
 ```
 
-- Client
-
-```javascript
-(async () => {
-  while (true) {
-    try {
-      const responseBodyReader = (await fetch("/ndjson")).body.getReader();
-      const textDecoder = new TextDecoder();
-      let buffer = "";
-      while (true) {
-        const chunk = (await responseBodyReader.read()).value;
-        if (chunk === undefined) break;
-        buffer += textDecoder.decode(chunk, { stream: true });
-        const bufferParts = buffer.split("\n");
-        buffer = bufferParts.pop();
-        for (const bufferPart of bufferParts) {
-          const bufferPartJSON = JSON.parse(bufferPart);
-          console.log(bufferPartJSON);
-        }
-      }
-    } catch {}
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-  }
-})();
-```
-
 - Add support for visibility API & abort `fetch`
 
 - Other libraries

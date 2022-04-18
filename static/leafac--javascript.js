@@ -70,7 +70,7 @@ const leafac = {
       if (event instanceof PopStateEvent) abortController?.abort();
       else if (state !== "available") return;
       state = "busy";
-      const detail = { originalEvent: event, previousLocation };
+      const detail = { previousLocation };
       const isGet = ["GET", "HEAD"].includes(request.method.toUpperCase());
       if (
         window.dispatchEvent(
@@ -79,13 +79,10 @@ const leafac = {
         window.onbeforenavigate?.() !== false
       ) {
         try {
-          abortController = new AbortController();
           request.headers.set("Live-Navigation", "true");
-          if (leafac.liveUpdatesEventSource?.token !== undefined)
-            request.headers.set(
-              "Live-Updates",
-              leafac.liveUpdatesEventSource?.token
-            );
+          if (!isGet && leafac.liveUpdatesToken !== undefined)
+            request.headers.set("Live-Updates", leafac.liveUpdatesToken);
+          abortController = new AbortController();
           const response = await fetch(request, {
             signal: abortController.signal,
           });
@@ -296,38 +293,48 @@ const leafac = {
     }
   },
 
-  liveUpdates(token) {
-    return "TODO";
-    leafac.liveUpdatesEventSource?.close();
-    delete leafac.liveUpdatesEventSource;
-    if (token === undefined) return;
-    const url = new URL(window.location.href);
-    url.searchParams.set("liveUpdatesToken", token);
-    leafac.liveUpdatesEventSource = new ReconnectingEventSource(url.toString());
-    leafac.liveUpdatesEventSource.token = token;
-    leafac.liveUpdatesEventSource.addEventListener("validationerror", () => {
-      leafac.liveUpdatesEventSource.close();
-      const body = document.querySelector("body");
-      (body.liveUpdatesValidationError ??= tippy(body)).setProps({
-        appendTo: body,
-        trigger: "manual",
-        hideOnClick: false,
-        theme: "error",
-        arrow: false,
-        interactive: true,
-        content: "Failed to connect to server. Please try reloading the page.",
-      });
-      body.liveUpdatesValidationError.show();
-    });
-    leafac.liveUpdatesEventSource.addEventListener("liveupdate", (event) => {
-      leafac.loadDocument(event.data, {
-        originalEvent: event,
-        previousLocation: { ...window.location },
-        liveUpdate: true,
-      });
-    });
+  async liveUpdates(token) {
+    leafac.liveUpdatesToken = token;
+    while (true) {
+      try {
+        const abortController = new AbortController();
+        window.addEventListener(
+          "beforenavigate",
+          () => {
+            abortController.abort();
+          },
+          { once: true }
+        );
+        const responseBodyReader = (
+          await fetch(window.location.href, {
+            headers: { "Live-Updates": token },
+            signal: abortController.signal,
+          })
+        ).body.getReader();
+        const textDecoder = new TextDecoder();
+        let buffer = "";
+        while (true) {
+          const chunk = (await responseBodyReader.read()).value;
+          if (chunk === undefined) break;
+          buffer += textDecoder.decode(chunk, { stream: true });
+          const bufferParts = buffer.split("\n");
+          buffer = bufferParts.pop();
+          const bufferPart = bufferParts.pop();
+          if (bufferPart === undefined) continue;
+          const bufferPartJSON = JSON.parse(bufferPart);
+          leafac.loadDocument(bufferPartJSON.body, {
+            previousLocation: { ...window.location },
+            liveUpdate: true,
+          });
+        }
+      } catch (error) {
+        if (error.name === "AbortError") return;
+        throw error;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 5 * 1000));
+    }
   },
-  liveUpdatesEventSource: undefined,
+  liveUpdatesToken: undefined,
 
   customFormValidation() {
     document.addEventListener(
