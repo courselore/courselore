@@ -23,7 +23,7 @@ export type LiveUpdatesMiddleware = express.RequestHandler<
   {},
   any,
   {},
-  { liveUpdatesToken?: string; [key: string]: unknown /* TODO */ },
+  { liveUpdatesToken?: string; [key: string]: unknown },
   LiveUpdatesMiddlewareLocals
 >[];
 export interface LiveUpdatesMiddlewareLocals
@@ -151,14 +151,18 @@ export default (app: Courselore): void => {
           req,
           res,
         });
+        console.log(
+          `${new Date().toISOString()}\tLIVE-UPDATES\t${
+            res.locals.liveUpdatesToken
+          }\tCLIENT\tOPENED\t${req.ip}\t\t\t${req.originalUrl}`
+        );
         res.once("close", () => {
           app.locals.liveUpdates.database.run(
             sql`
               UPDATE "clients"
               SET "expiresAt" = ${new Date(
                 Date.now() + 5 * 60 * 1000
-              ).toISOString()},
-                  "shouldUpdateAt" = NULL
+              ).toISOString()}
               WHERE "token" = ${res.locals.liveUpdatesToken}
             `
           );
@@ -169,11 +173,6 @@ export default (app: Courselore): void => {
             }\tCLIENT\tCLOSED\t${req.ip}\t\t\t${req.originalUrl}`
           );
         });
-        console.log(
-          `${new Date().toISOString()}\tLIVE-UPDATES\t${
-            res.locals.liveUpdatesToken
-          }\tCLIENT\tOPENED\t${req.ip}\t\t\t${req.originalUrl}`
-        );
         return;
       }
       next();
@@ -201,12 +200,27 @@ export default (app: Courselore): void => {
       work();
     };
     async function work() {
-      app.locals.liveUpdates.database.run(
+      for (const client of app.locals.liveUpdates.database.all<{
+        token: string;
+      }>(
         sql`
-          DELETE FROM "clients"
+          SELECT "token"
+          FROM "clients"
           WHERE "expiresAt" < ${new Date().toISOString()}
         `
-      );
+      )) {
+        app.locals.liveUpdates.database.run(
+          sql`
+            DELETE FROM "clients"
+            WHERE "token" = ${client.token}
+          `
+        );
+        console.log(
+          `${new Date().toISOString()}\tLIVE-UPDATES\t${
+            client.token
+          }\tCLIENT\tEXPIRED`
+        );
+      }
       for (const client of app.locals.liveUpdates.database.all<{
         token: string;
       }>(
@@ -216,7 +230,8 @@ export default (app: Courselore): void => {
           WHERE "shouldUpdateAt" IS NOT NULL
         `
       )) {
-        const clientReqRes = app.locals.liveUpdates.clients.get(client.token)!;
+        const clientReqRes = app.locals.liveUpdates.clients.get(client.token);
+        if (clientReqRes === undefined) continue;
         clientReqRes.res.locals = {
           liveUpdatesToken: clientReqRes.res.locals.liveUpdatesToken,
         } as LiveUpdatesMiddlewareLocals;
