@@ -2,6 +2,17 @@
 
 ### Performance
 
+- Client:
+  - Treat the case of a live-update coming in the middle of a GET live-navigation.
+    - Abort the live-update connection before live navigation.
+    - Use the `beforenavigate` event.
+    - Then we don’t need to call `liveUpdates(undefined)` on `layouts.ts` to close a live-updates connection.
+  - Confirm that “will lose your changes” dialog happens before live-updates disconnection.
+  - Don’t disconnect/reconnect the live-updates event stream if you’ll be on the same page.
+  - Handle 422.
+
+- Add the number of unread messages to the `<title>`.
+
 - Deal with reconnections
 
   - Approaches:
@@ -20,6 +31,8 @@ app.get("/ndjson", async (req, res) => {
   }
 });
 ```
+
+  - Don’t even enqueue events for the token that originated a POST action. In other words, check early—don’t check for that condition before actually dispatching the event.
 
 - TODO
 
@@ -59,6 +72,9 @@ app.get("/ndjson", async (req, res) => {
     - Session management would be awkward
     - Extra work to not have event-stream open for routes that don’t support them (otherwise it increases the server load for no good reason) (but most of the time people are on routes that support live updates, so it’s no big deal).
     - The live-updates middleware benefits from appearing after authentication and retrieval of things like course information. It’d be awkward to have it as a global middleware.
+  - Reasons not to use the Visibility API:
+    - First, the obvious pro: We could disconnect the live-updates event-stream when the tab isn’t showing, reducing the load on the server.
+    - But we decided against it because we want to be able to have features such as changing a tab title to “2 unread messages,” even if the tab is on the background, and this requires the connection to the server to be kept alive.
 
 ---
 
