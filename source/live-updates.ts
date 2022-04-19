@@ -157,7 +157,8 @@ export default (app: Courselore): void => {
               UPDATE "clients"
               SET "expiresAt" = ${new Date(
                 Date.now() + 5 * 60 * 1000
-              ).toISOString()}
+              ).toISOString()},
+                  "shouldUpdateAt" = NULL
               WHERE "token" = ${res.locals.liveUpdatesToken}
             `
           );
@@ -188,49 +189,45 @@ export default (app: Courselore): void => {
       req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
       res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
     }) => {
-      for (const liveUpdatesEventDestination of app.locals
-        .liveUpdatesEventDestinations)
-        if (
-          liveUpdatesEventDestination.original.res.locals.liveUpdatesToken !==
-            req.header("Live-Updates") &&
-          res.locals.course.id ===
-            liveUpdatesEventDestination.original.res.locals.course.id
-        )
-          liveUpdatesEventDestination.shouldUpdate = true;
+      app.locals.liveUpdates.database.run(
+        sql`
+          UPDATE "clients"
+          SET "shouldUpdateAt" = ${new Date().toISOString()}
+          WHERE "course" = ${res.locals.course.id} AND
+                "token" != ${req.header("Live-Updates")}
+        `
+      );
       clearTimeout(timeout);
       work();
     };
     async function work() {
-      for (const liveUpdatesEventDestination of app.locals
-        .liveUpdatesEventDestinations) {
-        if (liveUpdatesEventDestination.eventStream === undefined) {
-          if (
-            liveUpdatesEventDestination.createdAt.getTime() <
-            Date.now() - 60 * 1000
-          ) {
-            app.locals.liveUpdatesEventDestinations.delete(
-              liveUpdatesEventDestination
-            );
-            console.log(
-              `${new Date().toISOString()}\tLIVE-UPDATES\t${
-                liveUpdatesEventDestination.original.res.locals.liveUpdatesToken
-              }\tCLIENT\tEXPIRED\t${
-                liveUpdatesEventDestination.original.req.ip
-              }\t\t\t${liveUpdatesEventDestination.original.req.originalUrl}`
-            );
-          }
-          continue;
-        }
-        if (liveUpdatesEventDestination.shouldUpdate !== true) continue;
-        liveUpdatesEventDestination.eventStream.res.locals = {
-          liveUpdatesToken:
-            liveUpdatesEventDestination.eventStream.res.locals.liveUpdatesToken,
+      app.locals.liveUpdates.database.run(
+        sql`
+          DELETE FROM "clients"
+          WHERE "expiresAt" < ${new Date().toISOString()}
+        `
+      );
+      for (const client of app.locals.liveUpdates.database.all<{
+        token: string;
+      }>(
+        sql`
+          SELECT "token"
+          FROM "courses"
+          WHERE "shouldUpdateAt" IS NOT NULL
+        `
+      )) {
+        const clientReqRes = app.locals.liveUpdates.clients.get(client.token)!;
+        clientReqRes.res.locals = {
+          liveUpdatesToken: clientReqRes.res.locals.liveUpdatesToken,
         } as LiveUpdatesMiddlewareLocals;
-        await app(
-          liveUpdatesEventDestination.eventStream.req,
-          liveUpdatesEventDestination.eventStream.res
+        await app(clientReqRes.req, clientReqRes.res);
+        app.locals.liveUpdates.database.run(
+          sql`
+            UPDATE "clients"
+            SET "shouldUpdateAt" = NULL
+            WHERE "token" = ${client.token}
+          `
         );
-        liveUpdatesEventDestination.shouldUpdate = false;
       }
       timeout = setTimeout(work, 60 * 1000);
     }
