@@ -91,35 +91,41 @@ export default (app: Courselore): void => {
       }
       if (res.locals.liveUpdatesToken === undefined) {
         res.locals.liveUpdatesToken = req.header("Live-Updates")!;
+        let client = app.locals.liveUpdates.database.get<{
+          url: string;
+        }>(
+          sql`
+            SELECT "url" FROM "clients" WHERE "token" = ${res.locals.liveUpdatesToken}
+          `
+        );
+        if (
+          (client !== undefined && client.url !== req.originalUrl) ||
+          app.locals.liveUpdates.clients.has(res.locals.liveUpdatesToken)
+        ) {
+          console.log(
+            `${new Date().toISOString()}\tLIVE-UPDATES\t${
+              req.query.liveUpdatesToken
+            }\tCLIENT\tFAILED\t${req.ip}\t\t\t${req.originalUrl}`
+          );
+          return res.status(422).end();
+        }
+        res.flushHeaders();
         res.setHeader = (name, value) => res;
         res.send = (body) => {
           res.write(JSON.stringify(body) + "\n");
           return res;
         };
-        let client = app.locals.liveUpdates.database.get<{
-          token: string;
-          url: string;
-        }>(
-          sql`
-            SELECT "token", "url" FROM "clients" WHERE "token" = ${res.locals.liveUpdatesToken}
-          `
-        );
-        if (client !== undefined && client.url !== req.originalUrl)
-          return res.status(422).end();
         if (client === undefined) {
           client = app.locals.liveUpdates.database.get<{
-            token: string;
             url: string;
           }>(
             sql`
               INSERT INTO "clients" (
-                "expiresAt",
                 "token",
                 "url",
                 "course"
               )
               VALUES (
-                ${new Date(Date.now() + 60 * 1000).toISOString()},
                 ${res.locals.liveUpdatesToken},
                 ${req.originalUrl},
                 ${res.locals.course.id}
@@ -127,18 +133,24 @@ export default (app: Courselore): void => {
               RETURNING *
             `
           )!;
-          next();
           console.log(
             `${new Date().toISOString()}\tLIVE-UPDATES\t${
               res.locals.liveUpdatesToken
-            }\tCLIENT\tCREATED\t${req.ip}\t\t\t${req.originalUrl}`
+            }\tCLIENT\tRECREATED\t${req.ip}\t\t\t${req.originalUrl}`
           );
+          next();
         }
-        const connection = { req, res };
-        app.locals.liveUpdates.clients.set(
-          res.locals.liveUpdatesToken,
-          connection
+        app.locals.liveUpdates.database.run(
+          sql`
+            UPDATE "clients"
+            SET "expiresAt" = NULL
+            WHERE "token" = ${res.locals.liveUpdatesToken}
+          `
         );
+        app.locals.liveUpdates.clients.set(res.locals.liveUpdatesToken, {
+          req,
+          res,
+        });
         res.once("close", () => {
           app.locals.liveUpdates.database.run(
             sql`
@@ -150,59 +162,20 @@ export default (app: Courselore): void => {
             `
           );
           app.locals.liveUpdates.clients.delete(res.locals.liveUpdatesToken);
+          console.log(
+            `${new Date().toISOString()}\tLIVE-UPDATES\t${
+              res.locals.liveUpdatesToken
+            }\tCLIENT\tCLOSED\t${req.ip}\t\t\t${req.originalUrl}`
+          );
         });
-        return;
-      }
-      if (res.locals.liveUpdatesToken !== undefined) return next();
-      const liveUpdatesEventDestination = [
-        ...app.locals.liveUpdatesEventDestinations,
-      ].find(
-        (liveUpdatesEventDestination) =>
-          liveUpdatesEventDestination.original.res.locals.liveUpdatesToken ===
-          req.query.liveUpdatesToken
-      );
-      if (
-        liveUpdatesEventDestination === undefined ||
-        liveUpdatesEventDestination.original.req.originalUrl !==
-          req.originalUrl ||
-        liveUpdatesEventDestination.eventStream !== undefined
-      ) {
-        res
-          .type("text/event-stream")
-          .write(`event: validationerror\ndata:\n\n`);
-        console.log(
-          `${new Date().toISOString()}\tLIVE-UPDATES\t${
-            req.query.liveUpdatesToken
-          }\tEVENT-STREAM\tFAILED\t${req.ip}\t\t\t${req.originalUrl}`
-        );
-        return;
-      }
-      liveUpdatesEventDestination.eventStream = { req, res };
-      res.locals.liveUpdatesToken =
-        liveUpdatesEventDestination.original.res.locals.liveUpdatesToken;
-      res.setHeader = (name, value) => res;
-      res.send = (body) => {
-        res.write(
-          `event: liveupdate\ndata:${body.replaceAll("\n", "\ndata:")}\n\n`
-        );
-        return res;
-      };
-      res.once("close", () => {
-        app.locals.liveUpdatesEventDestinations.delete(
-          liveUpdatesEventDestination
-        );
         console.log(
           `${new Date().toISOString()}\tLIVE-UPDATES\t${
             res.locals.liveUpdatesToken
-          }\tEVENT-STREAM\tCLOSED\t${req.ip}\t\t\t${req.originalUrl}`
+          }\tCLIENT\tOPENED\t${req.ip}\t\t\t${req.originalUrl}`
         );
-      });
-      res.type("text/event-stream").write(":\n\n");
-      console.log(
-        `${new Date().toISOString()}\tLIVE-UPDATES\t${
-          res.locals.liveUpdatesToken
-        }\tEVENT-STREAM\tOPENED\t${req.ip}\t\t\t${req.originalUrl}`
-      );
+        return;
+      }
+      next();
     },
   ];
 
@@ -241,7 +214,7 @@ export default (app: Courselore): void => {
             console.log(
               `${new Date().toISOString()}\tLIVE-UPDATES\t${
                 liveUpdatesEventDestination.original.res.locals.liveUpdatesToken
-              }\tEVENT-STREAM\tEXPIRED\t${
+              }\tCLIENT\tEXPIRED\t${
                 liveUpdatesEventDestination.original.req.ip
               }\t\t\t${liveUpdatesEventDestination.original.req.originalUrl}`
             );

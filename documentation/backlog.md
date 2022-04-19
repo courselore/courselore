@@ -3,6 +3,7 @@
 ### Performance
 
 - Client:
+
   - Treat the case of a live-update coming in the middle of a GET live-navigation.
     - Abort the live-update connection before live navigation.
     - Use the `beforenavigate` event.
@@ -21,16 +22,6 @@
   - Use the notion of `expiresAt`.
 
 - Server
-
-```javascript
-app.get("/ndjson", async (req, res) => {
-  res.flushHeaders();
-  while (true) {
-    res.write(JSON.stringify({ date: new Date().toISOString() }) + "\n");
-    await new Promise((resolve) => setInterval(resolve, 5000));
-  }
-});
-```
 
   - Don’t even enqueue events for the token that originated a POST action. In other words, check early—don’t check for that condition before actually dispatching the event.
 
