@@ -10,7 +10,6 @@ import cryptoRandomString from "crypto-random-string";
 import {
   Courselore,
   BaseMiddlewareLocals,
-  LiveUpdatesMiddlewareLocals,
   IsSignedInMiddlewareLocals,
   IsEnrolledInCourseMiddlewareLocals,
 } from "./index.js";
@@ -27,15 +26,11 @@ export type BaseLayout = ({
     any,
     {},
     {},
-    BaseMiddlewareLocals &
-      Partial<IsEnrolledInCourseMiddlewareLocals> &
-      Partial<LiveUpdatesMiddlewareLocals>
+    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
   >;
   res: express.Response<
     any,
-    BaseMiddlewareLocals &
-      Partial<IsEnrolledInCourseMiddlewareLocals> &
-      Partial<LiveUpdatesMiddlewareLocals>
+    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
   >;
   head: HTML;
   extraHeaders?: HTML;
@@ -53,15 +48,11 @@ export type BoxLayout = ({
     any,
     {},
     {},
-    BaseMiddlewareLocals &
-      Partial<IsEnrolledInCourseMiddlewareLocals> &
-      Partial<LiveUpdatesMiddlewareLocals>
+    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
   >;
   res: express.Response<
     any,
-    BaseMiddlewareLocals &
-      Partial<IsEnrolledInCourseMiddlewareLocals> &
-      Partial<LiveUpdatesMiddlewareLocals>
+    BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
   >;
   head: HTML;
   body: HTML;
@@ -80,15 +71,11 @@ export type ApplicationLayout = ({
     any,
     {},
     {},
-    IsSignedInMiddlewareLocals &
-      Partial<IsEnrolledInCourseMiddlewareLocals> &
-      Partial<LiveUpdatesMiddlewareLocals>
+    IsSignedInMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
   >;
   res: express.Response<
     any,
-    IsSignedInMiddlewareLocals &
-      Partial<IsEnrolledInCourseMiddlewareLocals> &
-      Partial<LiveUpdatesMiddlewareLocals>
+    IsSignedInMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
   >;
   head: HTML;
   showCourseSwitcher?: boolean;
@@ -108,15 +95,11 @@ export type MainLayout = ({
     any,
     {},
     {},
-    IsSignedInMiddlewareLocals &
-      Partial<IsEnrolledInCourseMiddlewareLocals> &
-      Partial<LiveUpdatesMiddlewareLocals>
+    IsSignedInMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
   >;
   res: express.Response<
     any,
-    IsSignedInMiddlewareLocals &
-      Partial<IsEnrolledInCourseMiddlewareLocals> &
-      Partial<LiveUpdatesMiddlewareLocals>
+    IsSignedInMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
   >;
   head: HTML;
   showCourseSwitcher?: boolean;
@@ -131,17 +114,8 @@ export type SettingsLayout = ({
   menu,
   body,
 }: {
-  req: express.Request<
-    {},
-    any,
-    {},
-    {},
-    IsSignedInMiddlewareLocals & Partial<LiveUpdatesMiddlewareLocals>
-  >;
-  res: express.Response<
-    any,
-    IsSignedInMiddlewareLocals & Partial<LiveUpdatesMiddlewareLocals>
-  >;
+  req: express.Request<{}, any, {}, {}, IsSignedInMiddlewareLocals>;
+  res: express.Response<any, IsSignedInMiddlewareLocals>;
   head: HTML;
   menuButton: HTML;
   menu: HTML;

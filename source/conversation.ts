@@ -69,14 +69,12 @@ export type ConversationLayout = ({
       conversationsPage?: string;
     },
     IsEnrolledInCourseMiddlewareLocals &
-      Partial<IsConversationAccessibleMiddlewareLocals> &
-      Partial<LiveUpdatesMiddlewareLocals>
+      Partial<IsConversationAccessibleMiddlewareLocals>
   >;
   res: express.Response<
     HTML,
     IsEnrolledInCourseMiddlewareLocals &
-      Partial<IsConversationAccessibleMiddlewareLocals> &
-      Partial<LiveUpdatesMiddlewareLocals>
+      Partial<IsConversationAccessibleMiddlewareLocals>
   >;
   head: HTML;
   onlyConversationLayoutSidebarOnSmallScreen?: boolean;

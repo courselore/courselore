@@ -39,7 +39,8 @@
 
   - Sliding session
     - Occurs on normal request
-    - Doesn’t occur on event-stream
+    - Occurs on request establishing event-stream
+    - Doesn’t occur on event-stream itself
   - Flashes on live-updates
   - Logs
     - Live-updates GETs are flagged as such
@@ -299,6 +300,7 @@
 
 ### Notifications
 
+- Make emails be replies, so that they’re grouped in conversations on email readers.
 - Decorate the content sent on notifications, to avoid showing things like `@john-doe--201231`.
 - Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
 - Notifications for the same conversation should be “reply” to email on same thread.

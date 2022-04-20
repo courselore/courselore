@@ -8,7 +8,6 @@ import {
 
 export interface LiveUpdatesLocals {
   liveUpdates: {
-    database: Database;
     clients: Map<
       string,
       {
@@ -16,6 +15,7 @@ export interface LiveUpdatesLocals {
         res: express.Response<any, LiveUpdatesMiddlewareLocals>;
       }
     >;
+    database: Database;
   };
 }
 
@@ -28,9 +28,7 @@ export type LiveUpdatesMiddleware = express.RequestHandler<
 >[];
 export interface LiveUpdatesMiddlewareLocals
   extends BaseMiddlewareLocals,
-    IsEnrolledInCourseMiddlewareLocals {
-  liveUpdatesToken: string;
-}
+    IsEnrolledInCourseMiddlewareLocals {}
 
 export type LiveUpdatesDispatchHelper = ({
   req,
@@ -42,8 +40,9 @@ export type LiveUpdatesDispatchHelper = ({
 
 export default (app: Courselore): void => {
   app.locals.liveUpdates = {
-    database: new Database(""),
     clients: new Map(),
+    // FIXME: Remove this `""` argument when @leafac/sqlite allows for no argument, by having fixed the types in @types/better-sqlite3.
+    database: new Database(""),
   };
   app.locals.liveUpdates.database.migrate(
     sql`
@@ -109,13 +108,47 @@ export default (app: Courselore): void => {
           );
           return res.status(422).end();
         }
+        app.locals.liveUpdates.clients.set(res.locals.liveUpdatesToken, {
+          req,
+          res,
+        });
         res.flushHeaders();
         res.setHeader = (name, value) => res;
         res.send = (body) => {
           res.write(JSON.stringify(body) + "\n");
           return res;
         };
-        if (client === undefined) {
+        res.once("close", () => {
+          app.locals.liveUpdates.clients.delete(res.locals.liveUpdatesToken!);
+          app.locals.liveUpdates.database.run(
+            sql`
+              UPDATE "clients"
+              SET "expiresAt" = ${new Date(
+                Date.now() + 5 * 60 * 1000
+              ).toISOString()}
+              WHERE "token" = ${res.locals.liveUpdatesToken}
+            `
+          );
+          console.log(
+            `${new Date().toISOString()}\tLIVE-UPDATES\t${
+              res.locals.liveUpdatesToken
+            }\tCLIENT\tCLOSED\t${req.ip}\t\t\t${req.originalUrl}`
+          );
+        });
+        if (client !== undefined) {
+          app.locals.liveUpdates.database.run(
+            sql`
+              UPDATE "clients"
+              SET "expiresAt" = NULL
+              WHERE "token" = ${res.locals.liveUpdatesToken}
+            `
+          );
+          console.log(
+            `${new Date().toISOString()}\tLIVE-UPDATES\t${
+              res.locals.liveUpdatesToken
+            }\tCLIENT\tOPENED\t${req.ip}\t\t\t${req.originalUrl}`
+          );
+        } else {
           client = app.locals.liveUpdates.database.get<{
             url: string;
           }>(
@@ -140,39 +173,6 @@ export default (app: Courselore): void => {
           );
           next();
         }
-        app.locals.liveUpdates.database.run(
-          sql`
-            UPDATE "clients"
-            SET "expiresAt" = NULL
-            WHERE "token" = ${res.locals.liveUpdatesToken}
-          `
-        );
-        app.locals.liveUpdates.clients.set(res.locals.liveUpdatesToken, {
-          req,
-          res,
-        });
-        console.log(
-          `${new Date().toISOString()}\tLIVE-UPDATES\t${
-            res.locals.liveUpdatesToken
-          }\tCLIENT\tOPENED\t${req.ip}\t\t\t${req.originalUrl}`
-        );
-        res.once("close", () => {
-          app.locals.liveUpdates.database.run(
-            sql`
-              UPDATE "clients"
-              SET "expiresAt" = ${new Date(
-                Date.now() + 5 * 60 * 1000
-              ).toISOString()}
-              WHERE "token" = ${res.locals.liveUpdatesToken}
-            `
-          );
-          app.locals.liveUpdates.clients.delete(res.locals.liveUpdatesToken);
-          console.log(
-            `${new Date().toISOString()}\tLIVE-UPDATES\t${
-              res.locals.liveUpdatesToken
-            }\tCLIENT\tCLOSED\t${req.ip}\t\t\t${req.originalUrl}`
-          );
-        });
         return;
       }
       next();

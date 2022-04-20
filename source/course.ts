@@ -177,17 +177,8 @@ export type CourseSettingsLayout = ({
   head,
   body,
 }: {
-  req: express.Request<
-    {},
-    any,
-    {},
-    {},
-    IsEnrolledInCourseMiddlewareLocals & Partial<LiveUpdatesMiddlewareLocals>
-  >;
-  res: express.Response<
-    any,
-    IsEnrolledInCourseMiddlewareLocals & Partial<LiveUpdatesMiddlewareLocals>
-  >;
+  req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
+  res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
   head: HTML;
   body: HTML;
 }) => HTML;
