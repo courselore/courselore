@@ -177,7 +177,8 @@ export default (app: Courselore): void => {
             }\tCLIENT\tRECREATED\t${req.ip}\t\t\t${req.originalUrl}`
           );
         }
-        if (client.shouldUpdateAt === null) return;
+        if (client.shouldUpdateAt === null || req.originalUrl !== client.url)
+          return;
       }
       next();
     },
