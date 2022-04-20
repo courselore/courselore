@@ -23,7 +23,7 @@ export type LiveUpdatesMiddleware = express.RequestHandler<
   {},
   any,
   {},
-  { liveUpdatesToken?: string; [key: string]: unknown },
+  {},
   LiveUpdatesMiddlewareLocals
 >[];
 export interface LiveUpdatesMiddlewareLocals
@@ -89,14 +89,29 @@ export default (app: Courselore): void => {
         );
         return next();
       }
-      if (
-        req.header("Live-Updates-Connection") === "true" &&
-        res.locals.liveUpdatesToken === undefined
-      ) {
+      if (res.locals.liveUpdatesToken === undefined) {
         res.locals.liveUpdatesToken = token;
-        app.locals.liveUpdates.clients
-          .get(res.locals.liveUpdatesToken)
-          ?.res.end();
+        const client = app.locals.liveUpdates.database.get<{
+          shouldUpdateAt: string | null;
+          url: string;
+        }>(
+          sql`
+            SELECT "shouldUpdateAt", "url"
+            FROM "clients"
+            WHERE "token" = ${res.locals.liveUpdatesToken}
+          `
+        );
+        if (
+          app.locals.liveUpdates.clients.has(res.locals.liveUpdatesToken) ||
+          (client !== undefined && req.originalUrl !== client.url)
+        ) {
+          console.log(
+            `${new Date().toISOString()}\tLIVE-UPDATES\t${
+              res.locals.liveUpdatesToken
+            }\tCLIENT\tFAILED\t${req.ip}\t\t\t${req.originalUrl}`
+          );
+          return res.status(422).end();
+        }
         app.locals.liveUpdates.clients.set(res.locals.liveUpdatesToken, {
           req,
           res,
@@ -124,24 +139,12 @@ export default (app: Courselore): void => {
             }\tCLIENT\tCLOSED\t${req.ip}\t\t\t${req.originalUrl}`
           );
         });
-        let client = app.locals.liveUpdates.database.get<{
-          shouldUpdateAt: string | null;
-          url: string;
-        }>(
-          sql`
-            SELECT "shouldUpdateAt", "url"
-            FROM "clients"
-            WHERE "token" = ${res.locals.liveUpdatesToken}
-          `
-        );
         if (client !== undefined) {
           app.locals.liveUpdates.database.run(
             sql`
               UPDATE "clients"
               SET "expiresAt" = NULL,
-                  "shouldUpdateAt" = NULL,
-                  "url" = ${req.originalUrl},
-                  "course" = ${res.locals.course.id}
+                  "shouldUpdateAt" = NULL
               WHERE "token" = ${res.locals.liveUpdatesToken}
             `
           );
@@ -151,34 +154,27 @@ export default (app: Courselore): void => {
             }\tCLIENT\tOPENED\t${req.ip}\t\t\t${req.originalUrl}`
           );
         } else {
-          client = {
-            ...app.locals.liveUpdates.database.get<{
-              url: string;
-            }>(
-              sql`
-                INSERT INTO "clients" (
-                  "token",
-                  "url",
-                  "course"
-                )
-                VALUES (
-                  ${res.locals.liveUpdatesToken},
-                  ${req.originalUrl},
-                  ${res.locals.course.id}
-                )
-                RETURNING *
-              `
-            )!,
-            shouldUpdateAt: new Date().toISOString(),
-          };
+          app.locals.liveUpdates.database.run(
+            sql`
+              INSERT INTO "clients" (
+                "token",
+                "url",
+                "course"
+              )
+              VALUES (
+                ${res.locals.liveUpdatesToken},
+                ${req.originalUrl},
+                ${res.locals.course.id}
+              )
+            `
+          );
           console.log(
             `${new Date().toISOString()}\tLIVE-UPDATES\t${
               res.locals.liveUpdatesToken
             }\tCLIENT\tRECREATED\t${req.ip}\t\t\t${req.originalUrl}`
           );
         }
-        if (client.shouldUpdateAt === null || req.originalUrl !== client.url)
-          return;
+        if (client?.shouldUpdateAt === null) return;
       }
       next();
     },
