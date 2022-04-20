@@ -193,8 +193,7 @@ export default (app: Courselore): void => {
         sql`
           UPDATE "clients"
           SET "shouldUpdateAt" = ${new Date().toISOString()}
-          WHERE "token" != ${req.header("Live-Updates")} AND
-                "course" = ${res.locals.course.id}
+          WHERE "course" = ${res.locals.course.id}
         `
       );
       clearTimeout(timeout);
