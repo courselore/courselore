@@ -80,8 +80,11 @@ const leafac = {
       ) {
         try {
           request.headers.set("Live-Navigation", "true");
-          if (!isGet && leafac.liveUpdatesToken !== undefined)
-            request.headers.set("Live-Updates", leafac.liveUpdatesToken);
+          if (leafac.liveUpdatesConnection !== undefined)
+            request.headers.set(
+              "Live-Updates",
+              leafac.liveUpdatesConnection.token
+            );
           abortController = new AbortController();
           const response = await fetch(request, {
             signal: abortController.signal,
@@ -296,25 +299,29 @@ const leafac = {
   liveUpdates: (() => {
     let abortController;
     return async (token) => {
-      if (leafac.liveUpdatesToken === token) return;
-      leafac.liveUpdatesToken = token;
+      const url = window.location.href;
+      if (
+        leafac.liveUpdatesConnection?.token === token &&
+        leafac.liveUpdatesConnection?.url === url
+      )
+        return;
       abortController?.abort();
-      if (leafac.liveUpdatesToken === undefined) return;
-      const request = new Request(window.location.href, {
-        headers: {
-          "Live-Updates": leafac.liveUpdatesToken,
-          "Live-Updates-Event-Stream": "true",
-        },
-      });
-      const detail = {
-        previousLocation: { ...window.location },
-        liveUpdate: true,
-      };
+      if (token === undefined) {
+        delete leafac.liveUpdatesConnection;
+        return;
+      }
+      leafac.liveUpdatesConnection = { token, url };
       while (true) {
         try {
           abortController = new AbortController();
           const responseBodyReader = (
-            await fetch(request, { signal: abortController.signal })
+            await fetch(url, {
+              headers: {
+                "Live-Updates": token,
+                "Live-Updates-Connection": "true",
+              },
+              signal: abortController.signal,
+            })
           ).body.getReader();
           const textDecoder = new TextDecoder();
           let buffer = "";
@@ -327,8 +334,11 @@ const leafac = {
             const bufferPart = bufferParts.pop();
             if (bufferPart === undefined) continue;
             const bufferPartJSON = JSON.parse(bufferPart);
-            if (window.location.href === request.url)
-              leafac.loadDocument(bufferPartJSON, detail);
+            // FIXME: Race condition in which the live-update came in, but we’re in the middle of live-navigation.
+            leafac.loadDocument(bufferPartJSON, {
+              previousLocation: { ...window.location },
+              liveUpdate: true,
+            });
           }
         } catch (error) {
           if (error.name === "AbortError") return;
@@ -338,7 +348,7 @@ const leafac = {
       }
     };
   })(),
-  liveUpdatesToken: undefined,
+  liveUpdatesConnection: undefined,
 
   customFormValidation() {
     document.addEventListener(
