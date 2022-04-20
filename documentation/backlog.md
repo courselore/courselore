@@ -51,9 +51,10 @@
         - Failed
         - Expired
   - Event-stream
-    - Disconnect & reconnect relatively quickly
-    - Disconnect & reconnect after a long time
-    - Update in between initial request and event-stream establishment
+    - Disconnect because server went down: should live-update as soon as connected
+    - Disconnect because client went offline & reconnect relatively quickly: should only live-update if something new came in
+    - Disconnect because client went offline & reconnect after a long time: should live-update regardless
+    - Update in between initial request and event-stream establishment: should live-update as soon as connected
   - `/messages/new`: Example of a route which has live-updates and has a form that will `POST` and redirect you to another URL.
 
 - Document
