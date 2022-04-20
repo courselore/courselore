@@ -2,6 +2,59 @@
 
 const leafac = {
   liveNavigation(baseURL) {
+    let state = "available";
+    let abortController;
+    let previousLocation = { ...window.location };
+
+    const navigate = async ({ request, event }) => {
+      if (event instanceof PopStateEvent) abortController?.abort();
+      else if (state !== "available") return;
+      state = "busy";
+      const detail = { previousLocation };
+      const isGet = ["GET", "HEAD"].includes(request.method);
+      if (
+        window.dispatchEvent(
+          new CustomEvent("beforenavigate", { cancelable: true, detail })
+        ) &&
+        window.onbeforenavigate?.() !== false
+      ) {
+        try {
+          abortController = new AbortController();
+          const response = await fetch(request, {
+            signal: abortController.signal,
+          });
+          const responseText = await response.text();
+          if (
+            !(event instanceof PopStateEvent) &&
+            !(!isGet && window.location.href === response.url)
+          )
+            window.history.pushState(undefined, "", response.url);
+          leafac.loadDocument(responseText, detail);
+        } catch (error) {
+          if (error.name !== "AbortError") {
+            console.error(error);
+            if (isGet && !(event instanceof PopStateEvent))
+              window.history.pushState(undefined, "", request.url);
+            const body = document.querySelector("body");
+            (body.liveNavigationErrorTooltip ??= tippy(body)).setProps({
+              appendTo: body,
+              trigger: "manual",
+              hideOnClick: false,
+              theme: "error",
+              arrow: false,
+              interactive: true,
+              content:
+                "You appear to be offline. Please check your internet connection and try reloading the page.",
+            });
+            body.liveNavigationError.show();
+            window.onnavigateerror?.();
+          }
+        }
+        previousLocation = { ...window.location };
+      }
+      state = "available";
+    };
+
     window.addEventListener("DOMContentLoaded", (event) => {
       for (const element of [...document.querySelectorAll("[onload]")].filter(
         (element) => element.closest("[data-tippy-root]") === null
@@ -28,7 +81,7 @@ const leafac = {
       )
         return;
       event.preventDefault();
-      await leafac.liveNavigate({ request: new Request(link.href), event });
+      await navigate({ request: new Request(link.href), event });
     };
 
     document.onsubmit = async (event) => {
@@ -46,7 +99,7 @@ const leafac = {
           : new URLSearchParams(new FormData(event.target));
       if (!action.startsWith(baseURL)) return;
       event.preventDefault();
-      await leafac.liveNavigate({
+      await navigate({
         request: ["GET", "HEAD"].includes(method)
           ? new Request(new URL(`?${body}`, action), { method })
           : new Request(action, { method, body }),
@@ -55,72 +108,12 @@ const leafac = {
     };
 
     window.onpopstate = async (event) => {
-      await leafac.liveNavigate({
+      await navigate({
         request: new Request(window.location),
         event,
       });
     };
   },
-
-  liveNavigate: (() => {
-    let state = "available";
-    let abortController;
-    let previousLocation = { ...window.location };
-    return async ({ request, event }) => {
-      if (event instanceof PopStateEvent) abortController?.abort();
-      else if (state !== "available") return;
-      state = "busy";
-      const detail = { previousLocation };
-      const isGet = ["GET", "HEAD"].includes(request.method.toUpperCase());
-      if (
-        window.dispatchEvent(
-          new CustomEvent("beforenavigate", { cancelable: true, detail })
-        ) &&
-        window.onbeforenavigate?.() !== false
-      ) {
-        try {
-          request.headers.set("Live-Navigation", "true");
-          if (leafac.liveUpdatesConnection !== undefined)
-            request.headers.set(
-              "Live-Updates",
-              leafac.liveUpdatesConnection.token
-            );
-          abortController = new AbortController();
-          const response = await fetch(request, {
-            signal: abortController.signal,
-          });
-          const responseText = await response.text();
-          if (
-            !(event instanceof PopStateEvent) &&
-            !(!isGet && window.location.href === response.url)
-          )
-            window.history.pushState(undefined, "", response.url);
-          leafac.loadDocument(responseText, detail);
-        } catch (error) {
-          if (error.name !== "AbortError") {
-            console.error(error);
-            if (isGet && !(event instanceof PopStateEvent))
-              window.history.pushState(undefined, "", request.url);
-            const body = document.querySelector("body");
-            (body.liveNavigateNetworkError ??= tippy(body)).setProps({
-              appendTo: body,
-              trigger: "manual",
-              hideOnClick: false,
-              theme: "error",
-              arrow: false,
-              interactive: true,
-              content:
-                "You appear to be offline. Please check your internet connection and try reloading the page.",
-            });
-            body.liveNavigateNetworkError.show();
-            window.onnavigateerror?.();
-          }
-        }
-        previousLocation = { ...window.location };
-      }
-      state = "available";
-    };
-  })(),
 
   loadDocument(documentString, detail) {
     const newDocument = new DOMParser().parseFromString(

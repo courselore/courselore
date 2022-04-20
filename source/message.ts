@@ -733,12 +733,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
-          {
-            ...req.query,
-            ...(req.header("Live-Navigation") === "true"
-              ? {}
-              : { messageReference }),
-          },
+          req.query,
           {
             addQueryPrefix: true,
           }
@@ -867,12 +862,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
-          {
-            ...req.query,
-            ...(req.header("Live-Navigation") === "true"
-              ? {}
-              : { messageReference: res.locals.message.reference }),
-          },
+          req.query,
           {
             addQueryPrefix: true,
           }
@@ -955,12 +945,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
-          {
-            ...req.query,
-            ...(req.header("Live-Navigation") === "true"
-              ? {}
-              : { messageReference: res.locals.message.reference }),
-          },
+          req.query,
           {
             addQueryPrefix: true,
           }
@@ -1003,12 +988,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
-          {
-            ...req.query,
-            ...(req.header("Live-Navigation") === "true"
-              ? {}
-              : { messageReference: res.locals.message.reference }),
-          },
+          req.query,
           {
             addQueryPrefix: true,
           }
@@ -1089,12 +1069,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
-          {
-            ...req.query,
-            ...(req.header("Live-Navigation") === "true"
-              ? {}
-              : { messageReference: res.locals.message.reference }),
-          },
+          req.query,
           {
             addQueryPrefix: true,
           }
@@ -1135,12 +1110,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
-          {
-            ...req.query,
-            ...(req.header("Live-Navigation") === "true"
-              ? {}
-              : { messageReference: res.locals.message.reference }),
-          },
+          req.query,
           {
             addQueryPrefix: true,
           }
