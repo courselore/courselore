@@ -300,9 +300,15 @@ const leafac = {
       leafac.liveUpdatesToken = token;
       if (leafac.liveUpdatesToken === undefined) return;
       const request = new Request(window.location.href, {
-        headers: { "Live-Updates": leafac.liveUpdatesToken },
+        headers: {
+          "Live-Updates": leafac.liveUpdatesToken,
+          "Live-Updates-Event-Stream": "true",
+        },
       });
-      const previousLocation = { ...window.location };
+      const detail = {
+        previousLocation: { ...window.location },
+        liveUpdate: true,
+      };
       while (true) {
         try {
           abortController = new AbortController();
@@ -321,10 +327,7 @@ const leafac = {
             if (bufferPart === undefined) continue;
             const bufferPartJSON = JSON.parse(bufferPart);
             if (window.location.href === request.url)
-              leafac.loadDocument(bufferPartJSON, {
-                previousLocation,
-                liveUpdate: true,
-              });
+              leafac.loadDocument(bufferPartJSON, detail);
           }
         } catch (error) {
           if (error.name === "AbortError") return;
