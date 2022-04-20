@@ -289,59 +289,47 @@ const leafac = {
     }
   },
 
-  liveUpdates: (() => {
-    let abortController;
-    return async (token) => {
-      const url = window.location.href;
-      if (
-        leafac.liveUpdatesConnection?.token === token &&
-        leafac.liveUpdatesConnection?.url === url
-      )
-        return;
-      abortController?.abort();
-      if (token === undefined) {
-        delete leafac.liveUpdatesConnection;
-        return;
-      }
-      leafac.liveUpdatesConnection = { token, url };
-      while (true) {
-        try {
-          abortController = new AbortController();
-          const responseBodyReader = (
-            await fetch(url, {
-              headers: {
-                "Live-Updates": token,
-                "Live-Updates-Connection": "true",
-              },
-              signal: abortController.signal,
-            })
-          ).body.getReader();
-          const textDecoder = new TextDecoder();
-          let buffer = "";
-          while (true) {
-            const chunk = (await responseBodyReader.read()).value;
-            if (chunk === undefined) break;
-            buffer += textDecoder.decode(chunk, { stream: true });
-            const bufferParts = buffer.split("\n");
-            buffer = bufferParts.pop();
-            const bufferPart = bufferParts.pop();
-            if (bufferPart === undefined) continue;
-            const bufferPartJSON = JSON.parse(bufferPart);
-            // FIXME: Race condition in which the live-update came in, but we’re in the middle of live-navigation.
-            leafac.loadDocument(bufferPartJSON, {
-              previousLocation: { ...window.location },
-              liveUpdate: true,
-            });
-          }
-        } catch (error) {
-          if (error.name === "AbortError") return;
-          throw error;
+  async liveUpdates(token) {
+    if (token === undefined) return;
+    while (true) {
+      try {
+        const abortController = new AbortController();
+        window.addEventListener(
+          "beforenavigate",
+          () => {
+            abortController.abort();
+          },
+          { once: true }
+        );
+        const responseBodyReader = (
+          await fetch(window.location.href, {
+            headers: { "Live-Updates": token },
+            signal: abortController.signal,
+          })
+        ).body.getReader();
+        const textDecoder = new TextDecoder();
+        let buffer = "";
+        while (true) {
+          const chunk = (await responseBodyReader.read()).value;
+          if (chunk === undefined) break;
+          buffer += textDecoder.decode(chunk, { stream: true });
+          const bufferParts = buffer.split("\n");
+          buffer = bufferParts.pop();
+          const bufferPart = bufferParts.pop();
+          if (bufferPart === undefined) continue;
+          const bufferPartJSON = JSON.parse(bufferPart);
+          leafac.loadDocument(bufferPartJSON, {
+            previousLocation: { ...window.location },
+            liveUpdate: true,
+          });
         }
-        await new Promise((resolve) => setTimeout(resolve, 5 * 1000));
+      } catch (error) {
+        if (error.name === "AbortError") return;
+        throw error;
       }
-    };
-  })(),
-  liveUpdatesConnection: undefined,
+      await new Promise((resolve) => setTimeout(resolve, 5 * 1000));
+    }
+  },
 
   customFormValidation() {
     document.addEventListener(
