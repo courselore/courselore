@@ -49,8 +49,8 @@ export default (app: Courselore): void => {
       CREATE TABLE "clients" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "expiresAt" TEXT NULL,
-        "token" TEXT NOT NULL UNIQUE,
         "shouldUpdateAt" TEXT NULL,
+        "token" TEXT NOT NULL UNIQUE,
         "url" TEXT NOT NULL,
         "course" INTEGER NOT NULL
       );
@@ -90,7 +90,7 @@ export default (app: Courselore): void => {
         return next();
       }
       if (
-        req.header("Live-Updates-Event-Stream") === "true" &&
+        req.header("Live-Updates-Connection") === "true" &&
         res.locals.liveUpdatesToken === undefined
       ) {
         res.locals.liveUpdatesToken = token;
@@ -197,8 +197,8 @@ export default (app: Courselore): void => {
         sql`
           UPDATE "clients"
           SET "shouldUpdateAt" = ${new Date().toISOString()}
-          WHERE "course" = ${res.locals.course.id} AND
-                "token" != ${req.header("Live-Updates")}
+          WHERE "token" != ${req.header("Live-Updates")} AND
+                "course" = ${res.locals.course.id}
         `
       );
       clearTimeout(timeout);
