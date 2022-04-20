@@ -63,7 +63,8 @@ export default (app: Courselore): void => {
 
   app.locals.middlewares.liveUpdates = [
     (req, res, next) => {
-      if (req.header("Live-Updates") === undefined) {
+      const token = req.header("Live-Updates");
+      if (token === undefined || token.trim() === "") {
         res.locals.liveUpdatesToken = Math.random().toString(36).slice(2);
         app.locals.liveUpdates.database.run(
           sql`
@@ -88,8 +89,11 @@ export default (app: Courselore): void => {
         );
         return next();
       }
-      if (res.locals.liveUpdatesToken === undefined) {
-        res.locals.liveUpdatesToken = req.header("Live-Updates")!;
+      if (
+        req.header("Live-Updates-Event-Stream") === "true" &&
+        res.locals.liveUpdatesToken === undefined
+      ) {
+        res.locals.liveUpdatesToken = token;
         let client = app.locals.liveUpdates.database.get<{
           url: string;
         }>(
