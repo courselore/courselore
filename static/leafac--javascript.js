@@ -290,7 +290,6 @@ const leafac = {
   },
 
   async liveUpdates(token) {
-    if (token === undefined) return;
     while (true) {
       try {
         const abortController = new AbortController();
