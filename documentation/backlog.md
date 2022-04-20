@@ -54,6 +54,7 @@
     - Disconnect & reconnect relatively quickly
     - Disconnect & reconnect after a long time
     - Update in between initial request and event-stream establishment
+  - `/messages/new`: Example of a route which has live-updates and has a form that will `POST` and redirect you to another URL.
 
 - Document
   - Reasons to prefer `fetch` over `EventSource`:
