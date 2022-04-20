@@ -140,7 +140,8 @@ export default (app: Courselore): void => {
               UPDATE "clients"
               SET "expiresAt" = NULL,
                   "shouldUpdateAt" = NULL,
-                  "url" = ${req.originalUrl}
+                  "url" = ${req.originalUrl},
+                  "course" = ${res.locals.course.id}
               WHERE "token" = ${res.locals.liveUpdatesToken}
             `
           );
