@@ -296,8 +296,9 @@ const leafac = {
   liveUpdates: (() => {
     let abortController;
     return async (token) => {
-      if (leafac.liveUpdatesToken !== token) abortController?.abort();
+      if (leafac.liveUpdatesToken === token) return;
       leafac.liveUpdatesToken = token;
+      abortController?.abort();
       if (leafac.liveUpdatesToken === undefined) return;
       const request = new Request(window.location.href, {
         headers: {
