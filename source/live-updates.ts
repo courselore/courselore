@@ -226,7 +226,7 @@ export default (app: Courselore): void => {
       }>(
         sql`
           SELECT "token"
-          FROM "courses"
+          FROM "clients"
           WHERE "shouldUpdateAt" IS NOT NULL
         `
       )) {
