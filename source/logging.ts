@@ -22,7 +22,9 @@ export default (app: Courselore): void => {
             res.locals.liveUpdatesToken !== undefined
               ? `LIVE-UPDATES\t${res.locals.liveUpdatesToken}\t`
               : ``
-          }${req.method}\t${res.statusCode}\t${req.ip}\t${
+          }${req.header("Live-Update") !== undefined ? "LIVE-UPDATE\t" : ""}${
+            req.method
+          }\t${res.statusCode}\t${req.ip}\t${
             (process.hrtime.bigint() - res.locals.loggingStartTime) / 1_000_000n
           }ms\t\t${res.getHeader("Content-Length") ?? "0"}B\t\t${
             req.originalUrl

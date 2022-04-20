@@ -188,7 +188,7 @@ export default (app: Courselore): void => {
         app.locals.helpers.Session.close({ req, res });
         return undefined;
       } else if (
-        res.locals.liveUpdatesToken !== undefined &&
+        req.header("Live-Updates") === undefined &&
         new Date(session.createdAt).getTime() <
           Date.now() - app.locals.helpers.Session.maxAge / 2
       ) {

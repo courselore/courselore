@@ -64,7 +64,7 @@ export default (app: Courselore): void => {
   app.locals.middlewares.liveUpdates = [
     (req, res, next) => {
       const token = req.header("Live-Updates");
-      if (token === undefined || token.trim() === "") {
+      if (token === undefined) {
         res.locals.liveUpdatesToken = Math.random().toString(36).slice(2);
         app.locals.liveUpdates.database.run(
           sql`
