@@ -23,8 +23,7 @@ export default (app: Courselore): void => {
               ? `LIVE-UPDATES\t${res.locals.liveUpdatesToken}\t`
               : ``
           }${req.method}\t${res.statusCode}\t${req.ip}\t${
-            Number((process.hrtime.bigint() - res.locals.loggingStartTime) / 1000n) /
-            1000
+            (process.hrtime.bigint() - res.locals.loggingStartTime) / 1_000_000n
           }ms\t\t${res.getHeader("Content-Length") ?? "0"}B\t\t${
             req.originalUrl
           }${

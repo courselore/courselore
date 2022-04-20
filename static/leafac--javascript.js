@@ -294,6 +294,7 @@ const leafac = {
   },
 
   async liveUpdates(token) {
+    return;
     leafac.liveUpdatesToken = token;
     while (true) {
       try {
