@@ -290,6 +290,7 @@ const leafac = {
   },
 
   async liveUpdates(token) {
+    const body = document.querySelector("body");
     while (true) {
       try {
         const abortController = new AbortController();
@@ -306,7 +307,6 @@ const leafac = {
         });
         if (!response.ok) {
           console.error(response);
-          const body = document.querySelector("body");
           (body.liveUpdatesValidationErrorTooltip ??= tippy(body)).setProps({
             appendTo: body,
             trigger: "manual",
@@ -341,7 +341,6 @@ const leafac = {
       } catch (error) {
         if (error.name === "AbortError") return;
         console.error(error);
-        const body = document.querySelector("body");
         (body.liveUpdatesNetworkErrorTooltip ??= tippy(body)).setProps({
           appendTo: body,
           trigger: "manual",
