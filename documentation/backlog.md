@@ -6,15 +6,6 @@
 
   - Handle 422.
 
-- Add the number of unread messages to the `<title>`.
-
-- Deal with reconnections
-
-  - Approaches:
-    - Force a live updates when token is unknown
-    - Introduce some global notion of timing, which we could use to determine whether a brand-new event-stream already needs a live-update
-  - Use the notion of `expiresAt`.
-
 - Server
 
   - Don’t even enqueue events for the token that originated a POST action. In other words, check early—don’t check for that condition before actually dispatching the event.
@@ -106,6 +97,10 @@
   - 1-on-1 conversations.
 
 ### User Interface Improvements
+
+- Add the number of unread messages to the `<title>`.
+
+---
 
 - Highlight changes in yellow (the same yellow as used for targeted messages with permanent links), for example, when you create an invitation.
 
@@ -457,6 +452,7 @@
     - It only saves the creation of connection information on the database on the server and the cost of establishing the connection.
     - A `POST` will already cause an update to the information on the page.
     - The implementation gets a bit awkward. The trick is to introduce the URL to the identity of the connection on top of the token which already identifies it. The token becomes the identity of the browser tab, and the URL becomes its state. If you put the two together, you can disconnect/reconnect only when necessary. But there are plenty of edge cases to deal with, for example, a live-update coming in right in the middle of a `POST` live-navigation.
+  - Currently, if a connection comes in with a token we don’t identify, we treat that as a browser tab that was offline for a while and just reconnected, which means it receives a live-update right away. This can be superfluous if no change actually took place. This may be a minor issue—or not an issue at all. And addressing it probably complicates the live-updates mechanisms quite a bit. But, in any case, one potential solution is, instead of keeping tokens on the server and scheduling events to them, keep a notion of when things were updated, this way upon reconnection the client can say when it was the last time it got a live-update, and the server can know if another live-update is necessary.
 - Tooltip showing the views for a message:
   - The counter is sometimes lagging behind the actual count, because we don’t send refresh events on every GET everyone ever does (’cause **that** would be silly 😛)
     - Another consequence of not sending refresh events on every GET is that the number of unread messages on the sidebar becomes inconsistent when you have multiple tabs open and you read messages on one of them (the rest still show the unread indicator).
