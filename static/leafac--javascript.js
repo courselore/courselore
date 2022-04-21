@@ -81,7 +81,7 @@ const leafac = {
       )
         return;
       event.preventDefault();
-      await navigate({ request: new Request(link.href), event });
+      navigate({ request: new Request(link.href), event });
     };
 
     document.onsubmit = async (event) => {
@@ -99,7 +99,7 @@ const leafac = {
           : new URLSearchParams(new FormData(event.target));
       if (!action.startsWith(baseURL)) return;
       event.preventDefault();
-      await navigate({
+      navigate({
         request: ["GET", "HEAD"].includes(method)
           ? new Request(new URL(`?${body}`, action), { method })
           : new Request(action, { method, body }),
@@ -108,7 +108,7 @@ const leafac = {
     };
 
     window.onpopstate = async (event) => {
-      await navigate({
+      navigate({
         request: new Request(window.location),
         event,
       });
