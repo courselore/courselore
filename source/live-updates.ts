@@ -249,9 +249,11 @@ export default (app: Courselore): void => {
             clientReqRes.res.locals.liveUpdatesToken
           }\t${clientReqRes.req.method}\t${clientReqRes.res.statusCode}\t${
             clientReqRes.req.ip
-          }\t${(process.hrtime.bigint() - startTime) / 1_000_000n}ms\t\t${
-            clientReqRes.res.getHeader("Content-Length") ?? "0"
-          }B\t\t${clientReqRes.req.originalUrl}`
+          }\t${
+            (process.hrtime.bigint() - startTime) / 1_000_000n
+          }ms\t\t${Math.floor(
+            Number(clientReqRes.res.getHeader("Content-Length") ?? "0") / 1000
+          )}kB\t\t${clientReqRes.req.originalUrl}`
         );
       }
       timeout = setTimeout(work, 60 * 1000);

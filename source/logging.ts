@@ -20,9 +20,11 @@ export default (app: Courselore): void => {
         console.log(
           `${new Date().toISOString()}\t${req.method}\t${res.statusCode}\t${
             req.ip
-          }\t${(process.hrtime.bigint() - startTime) / 1_000_000n}ms\t\t${
-            res.getHeader("Content-Length") ?? "0"
-          }B\t\t${req.originalUrl}${
+          }\t${
+            (process.hrtime.bigint() - startTime) / 1_000_000n
+          }ms\t\t${Math.floor(
+            Number(res.getHeader("Content-Length") ?? "0") / 1000
+          )}kB\t\t${req.originalUrl}${
             process.env.NODE_ENV !== "production" && req.method !== "GET"
               ? `\n${JSON.stringify(req.body, undefined, 2)}`
               : ``
