@@ -331,10 +331,8 @@ const leafac = {
           const bufferParts = buffer.split("\n");
           buffer = bufferParts.pop();
           const bufferPart = bufferParts
-            .flatMap((bufferPart) =>
-              bufferPart.trim() === "" ? [] : [bufferPart]
-            )
-            .pop();
+            .reverse()
+            .find((bufferPart) => bufferPart.trim() !== "");
           if (bufferPart === undefined) continue;
           const bufferPartJSON = JSON.parse(bufferPart);
           leafac.loadDocument(bufferPartJSON, {
