@@ -330,7 +330,11 @@ const leafac = {
           buffer += textDecoder.decode(chunk, { stream: true });
           const bufferParts = buffer.split("\n");
           buffer = bufferParts.pop();
-          const bufferPart = bufferParts.pop();
+          const bufferPart = bufferParts
+            .flatMap((bufferPart) =>
+              bufferPart.trim() === "" ? [] : [bufferPart]
+            )
+            .pop();
           if (bufferPart === undefined) continue;
           const bufferPartJSON = JSON.parse(bufferPart);
           leafac.loadDocument(bufferPartJSON, {

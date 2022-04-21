@@ -116,7 +116,7 @@ export default (app: Courselore): void => {
           req,
           res,
         });
-        res.flushHeaders();
+        res.write("\n");
         res.setHeader = (name, value) => res;
         res.send = (body) => {
           res.write(JSON.stringify(body) + "\n");

@@ -100,7 +100,7 @@ export default (app: Courselore): void => {
     app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
       "/live-reload",
       (req, res) => {
-        res.write("LIVE-RELOAD");
+        res.write("\n");
       }
     );
 };
