@@ -2,10 +2,6 @@
 
 ### Performance
 
-- Client:
-
-  - Handle 422.
-
 - Server
 
   - Double-check that the response to a `POST` goes out before we start processing live-updates
