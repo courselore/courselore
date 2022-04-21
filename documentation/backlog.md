@@ -4,12 +4,6 @@
 
 - Client:
 
-  - Treat the case of a live-update coming in the middle of a GET live-navigation.
-    - Abort the live-update connection before live navigation.
-    - Use the `beforenavigate` event.
-    - Then we don’t need to call `liveUpdates(undefined)` on `layouts.ts` to close a live-updates connection.
-  - Confirm that “will lose your changes” dialog happens before live-updates disconnection.
-  - Don’t disconnect/reconnect the live-updates event stream if you’ll be on the same page.
   - Handle 422.
 
 - Add the number of unread messages to the `<title>`.
@@ -59,6 +53,7 @@
     - Disconnect because client went offline & reconnect after a long time: should live-update regardless
     - Update in between initial request and event-stream establishment: should live-update as soon as connected
   - `/messages/new`: Example of a route which has live-updates and has a form that will `POST` and redirect you to another URL.
+  - Confirm that “will lose your changes” dialog happens before live-updates disconnection.
 
 - Document
   - Reasons to prefer `fetch` over `EventSource`:
@@ -458,6 +453,10 @@
   - Improve the refreshing mechanism
     - Only send refresh events to people who need it (those who have open a page that’s affected)
     - Spread refresh events over time, or you’re DoS the server
+  - Maybe don’t disconnect/reconnect when a live-navigation will just return you to the same page?
+    - It only saves the creation of connection information on the database on the server and the cost of establishing the connection.
+    - A `POST` will already cause an update to the information on the page.
+    - The implementation gets a bit awkward. The trick is to introduce the URL to the identity of the connection on top of the token which already identifies it. The token becomes the identity of the browser tab, and the URL becomes its state. If you put the two together, you can disconnect/reconnect only when necessary. But there are plenty of edge cases to deal with, for example, a live-update coming in right in the middle of a `POST` live-navigation.
 - Tooltip showing the views for a message:
   - The counter is sometimes lagging behind the actual count, because we don’t send refresh events on every GET everyone ever does (’cause **that** would be silly 😛)
     - Another consequence of not sending refresh events on every GET is that the number of unread messages on the sidebar becomes inconsistent when you have multiple tabs open and you read messages on one of them (the rest still show the unread indicator).
