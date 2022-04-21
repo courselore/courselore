@@ -46,7 +46,7 @@ const leafac = {
               content:
                 "You appear to be offline. Please check your internet connection and try reloading the page.",
             });
-            body.liveNavigationError.show();
+            body.liveNavigationErrorTooltip.show();
             window.onnavigateerror?.();
           }
         }
@@ -300,12 +300,28 @@ const leafac = {
           },
           { once: true }
         );
-        const responseBodyReader = (
-          await fetch(window.location.href, {
-            headers: { "Live-Updates": token },
-            signal: abortController.signal,
-          })
-        ).body.getReader();
+        const response = await fetch(window.location.href, {
+          headers: { "Live-Updates": token },
+          signal: abortController.signal,
+        });
+        if (!response.ok) {
+          console.error(response);
+          const body = document.querySelector("body");
+          (body.liveUpdatesValidationErrorTooltip ??= tippy(body)).setProps({
+            appendTo: body,
+            trigger: "manual",
+            hideOnClick: false,
+            theme: "error",
+            arrow: false,
+            interactive: true,
+            content:
+              "Failed to connect to server. Please try reloading the page.",
+          });
+          body.liveUpdatesValidationErrorTooltip.show();
+          return;
+        }
+        body.liveUpdatesNetworkErrorTooltip?.hide();
+        const responseBodyReader = response.body.getReader();
         const textDecoder = new TextDecoder();
         let buffer = "";
         while (true) {
@@ -324,7 +340,18 @@ const leafac = {
         }
       } catch (error) {
         if (error.name === "AbortError") return;
-        throw error;
+        console.error(error);
+        const body = document.querySelector("body");
+        (body.liveUpdatesNetworkErrorTooltip ??= tippy(body)).setProps({
+          appendTo: body,
+          trigger: "manual",
+          hideOnClick: false,
+          theme: "error",
+          arrow: false,
+          interactive: true,
+          content: "You appear to be offline.",
+        });
+        body.liveUpdatesNetworkErrorTooltip.show();
       }
       await new Promise((resolve) => setTimeout(resolve, 5 * 1000));
     }

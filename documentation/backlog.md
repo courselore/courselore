@@ -44,6 +44,8 @@
     - Update in between initial request and event-stream establishment: should live-update as soon as connected
   - `/messages/new`: Example of a route which has live-updates and has a form that will `POST` and redirect you to another URL.
   - Confirm that “will lose your changes” dialog happens before live-updates disconnection.
+  - A 422 from the server.
+  - Live-navigation when offline.
 
 - Document
   - Reasons to prefer `fetch` over `EventSource`:
