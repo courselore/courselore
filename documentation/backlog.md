@@ -24,6 +24,9 @@
 - Server
 
   - Don’t even enqueue events for the token that originated a POST action. In other words, check early—don’t check for that condition before actually dispatching the event.
+  - Double-check that the response to a `POST` goes out before we start processing live-updates
+    - Keep in mind that a `POST` will generate a redirect and a subsequent `GET`.
+    - Maybe introduce a timeout so that the client has a chance of getting their `GET` in front of the queue.
 
 - TODO
 
