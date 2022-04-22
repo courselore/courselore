@@ -197,7 +197,7 @@ export default (app: Courselore): void => {
         `
       );
       clearTimeout(timeout);
-      work();
+      timeout = setTimeout(work);
     };
     async function work() {
       for (const client of app.locals.liveUpdates.database.all<{
@@ -211,8 +211,7 @@ export default (app: Courselore): void => {
       )) {
         app.locals.liveUpdates.database.run(
           sql`
-            DELETE FROM "clients"
-            WHERE "token" = ${client.token}
+            DELETE FROM "clients" WHERE "token" = ${client.token}
           `
         );
         console.log(

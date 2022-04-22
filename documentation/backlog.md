@@ -2,10 +2,6 @@
 
 ### Performance
 
-- Review:
-
-  - `live-updates.ts`
-
 - Things to test:
 
   - Sliding session
