@@ -262,12 +262,21 @@ export default (app: Courselore): void => {
 
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
     const token = req.header("Live-Updates-Abort");
-    if (token !== undefined)
+    if (token !== undefined) {
+      const clientReqRes = app.locals.liveUpdates.clients.get(token);
+      app.locals.liveUpdates.clients.delete(token);
+      clientReqRes?.res.end();
       app.locals.liveUpdates.database.run(
         sql`
           DELETE FROM "clients" WHERE "token" = ${token}
         `
       );
+      console.log(
+        `${new Date().toISOString()}\tLIVE-UPDATES\t${token}\tCLIENT\tABORTED\t${
+          clientReqRes?.req.ip ?? ""
+        }\t\t\t${clientReqRes?.req.originalUrl ?? ""}`
+      );
+    }
     next();
   });
 };
