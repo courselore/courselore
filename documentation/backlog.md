@@ -2,8 +2,6 @@
 
 ### Performance
 
-- Smoke test
-
 - Server
 
   - Double-check that the response to a `POST` goes out before we start processing live-updates
