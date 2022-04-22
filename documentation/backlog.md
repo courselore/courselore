@@ -2,14 +2,6 @@
 
 ### Performance
 
-- Server
-
-  - Double-check that the response to a `POST` goes out before we start processing live-updates
-    - Keep in mind that a `POST` will generate a redirect and a subsequent `GET`.
-    - Maybe introduce a timeout so that the client has a chance of getting their `GET` in front of the queue.
-
-- Browser is sometimes hanging on refresh 🤷
-
 - TODO
 
 - Review:
