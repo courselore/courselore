@@ -120,6 +120,16 @@ export default (app: Courselore): void => {
         res.setHeader = (name, value) => res;
         res.send = (body) => {
           res.write(JSON.stringify(body) + "\n");
+          console.log(
+            `${new Date().toISOString()}\tLIVE-UPDATES\t${
+              res.locals.liveUpdatesToken
+            }\t${req.method}\t${res.statusCode}\t${req.ip}\t${
+              (process.hrtime.bigint() - res.locals.loggingStartTime) /
+              1_000_000n
+            }ms\t\t${Math.floor(Buffer.byteLength(body) / 1000)}kB\t\t${
+              req.originalUrl
+            }`
+          );
           return res;
         };
         res.once("close", () => {
@@ -234,7 +244,6 @@ export default (app: Courselore): void => {
         clientReqRes.res.locals = {
           liveUpdatesToken: clientReqRes.res.locals.liveUpdatesToken,
         } as LiveUpdatesMiddlewareLocals;
-        const startTime = process.hrtime.bigint();
         await app(clientReqRes.req, clientReqRes.res);
         app.locals.liveUpdates.database.run(
           sql`
@@ -242,17 +251,6 @@ export default (app: Courselore): void => {
             SET "shouldUpdateAt" = NULL
             WHERE "token" = ${client.token}
           `
-        );
-        console.log(
-          `${new Date().toISOString()}\tLIVE-UPDATES\t${
-            clientReqRes.res.locals.liveUpdatesToken
-          }\t${clientReqRes.req.method}\t${clientReqRes.res.statusCode}\t${
-            clientReqRes.req.ip
-          }\t${
-            (process.hrtime.bigint() - startTime) / 1_000_000n
-          }ms\t\t${Math.floor(
-            Number(clientReqRes.res.getHeader("Content-Length") ?? "0") / 1000
-          )}kB\t\t${clientReqRes.req.originalUrl}`
         );
       }
       timeout = setTimeout(work, 60 * 1000);

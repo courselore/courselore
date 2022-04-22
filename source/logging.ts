@@ -10,8 +10,8 @@ export default (app: Courselore): void => {
   });
   app.enable("trust proxy");
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
+    res.locals.loggingStartTime = process.hrtime.bigint();
     if (req.header("Live-Updates") !== undefined) return next();
-    const startTime = process.hrtime.bigint();
     for (const method of ["send", "redirect"]) {
       const resUntyped = res as any;
       const implementation = resUntyped[method].bind(resUntyped);
@@ -21,7 +21,7 @@ export default (app: Courselore): void => {
           `${new Date().toISOString()}\t${req.method}\t${res.statusCode}\t${
             req.ip
           }\t${
-            (process.hrtime.bigint() - startTime) / 1_000_000n
+            (process.hrtime.bigint() - res.locals.loggingStartTime) / 1_000_000n
           }ms\t\t${Math.floor(
             Number(res.getHeader("Content-Length") ?? "0") / 1000
           )}kB\t\t${req.originalUrl}${
