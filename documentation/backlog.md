@@ -2,8 +2,6 @@
 
 ### Performance
 
-- TODO
-
 - Review:
 
   - `leafac--javascript.js`
