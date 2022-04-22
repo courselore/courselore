@@ -12,6 +12,8 @@ const leafac = {
       state = "busy";
       const detail = { previousLocation };
       const isGet = ["GET", "HEAD"].includes(request.method);
+      if (leafac.liveUpdatesToken !== undefined)
+        request.headers.set("Live-Updates-Abort", leafac.liveUpdatesToken);
       if (
         window.dispatchEvent(
           new CustomEvent("beforenavigate", { cancelable: true, detail })
@@ -20,8 +22,6 @@ const leafac = {
       ) {
         try {
           abortController = new AbortController();
-          if (leafac.liveUpdatesToken !== undefined)
-            request.headers.set("Live-Updates-Abort", leafac.liveUpdatesToken);
           const response = await fetch(request, {
             signal: abortController.signal,
           });
