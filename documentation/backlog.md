@@ -4,10 +4,9 @@
 
 - Review:
 
-  - `layouts.ts` (Call to `liveUpdates()`)
-  - `live-updates.ts`
-  - `authentication.ts`
   - `logging.ts`
+  - `authentication.ts`
+  - `live-updates.ts`
 
 - Things to test:
 
