@@ -26,6 +26,9 @@
     "prepare": "tsc",
     "clean": "shx rm -rf ./distribution/"
   },
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "@leafac/caddy": "^1.0.4",
     "@leafac/css": "^0.3.12",
