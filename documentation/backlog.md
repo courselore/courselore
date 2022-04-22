@@ -4,11 +4,15 @@
 
 - Things to test:
 
-  - Sliding session
-    - Occurs on normal request
-    - Occurs on request establishing event-stream
-    - Doesn’t occur on event-stream itself
-  - Flashes on live-updates
+  - `/messages/new`: Example of a route which has live-updates and has a form that will `POST` and redirect you to another URL.
+  - Confirm that “will lose your changes” dialog happens before live-updates disconnection.
+  - A 422 from the server on live-updates connection.
+  - Live-navigation when offline.
+  - Event-stream
+    - Disconnect because server went down: should live-update as soon as connected
+    - Disconnect because client went offline & reconnect relatively quickly: should only live-update if something new came in
+    - Disconnect because client went offline & reconnect after a long time: should live-update regardless
+    - Update in between initial request and event-stream establishment: should live-update as soon as connected
   - Logs
     - Live-updates GETs are flagged as such
     - Event-streams
@@ -17,15 +21,11 @@
           - Closed
         - Failed
         - Expired
-  - Event-stream
-    - Disconnect because server went down: should live-update as soon as connected
-    - Disconnect because client went offline & reconnect relatively quickly: should only live-update if something new came in
-    - Disconnect because client went offline & reconnect after a long time: should live-update regardless
-    - Update in between initial request and event-stream establishment: should live-update as soon as connected
-  - `/messages/new`: Example of a route which has live-updates and has a form that will `POST` and redirect you to another URL.
-  - Confirm that “will lose your changes” dialog happens before live-updates disconnection.
-  - A 422 from the server on live-updates connection.
-  - Live-navigation when offline.
+  - Flashes on live-updates
+  - Sliding session
+    - Occurs on normal request
+    - Occurs on request establishing event-stream
+    - Doesn’t occur on event-stream itself
 
 - Document
   - Reasons to prefer `fetch` over `EventSource`:
