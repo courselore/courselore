@@ -309,6 +309,7 @@ const leafac = {
           headers: { "Live-Updates": token },
           signal: abortController.signal,
         });
+        body.liveUpdatesNetworkErrorTooltip?.hide();
         if (!response.ok) {
           console.error(response);
           (body.liveUpdatesValidationErrorTooltip ??= tippy(body)).setProps({
@@ -324,7 +325,6 @@ const leafac = {
           body.liveUpdatesValidationErrorTooltip.show();
           return;
         }
-        body.liveUpdatesNetworkErrorTooltip?.hide();
         const responseBodyReader = response.body.getReader();
         const textDecoder = new TextDecoder();
         let buffer = "";
