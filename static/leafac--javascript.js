@@ -20,6 +20,8 @@ const leafac = {
       ) {
         try {
           abortController = new AbortController();
+          if (leafac.liveUpdatesToken !== undefined)
+            request.headers.set("Live-Updates-Abort", leafac.liveUpdatesToken);
           const response = await fetch(request, {
             signal: abortController.signal,
           });
@@ -290,6 +292,7 @@ const leafac = {
   },
 
   async liveUpdates(token) {
+    leafac.liveUpdatesToken = token;
     const body = document.querySelector("body");
     while (true) {
       try {
@@ -297,6 +300,7 @@ const leafac = {
         window.addEventListener(
           "beforenavigate",
           () => {
+            delete leafac.liveUpdatesToken;
             abortController.abort();
           },
           { once: true }
@@ -335,6 +339,10 @@ const leafac = {
             .find((bufferPart) => bufferPart.trim() !== "");
           if (bufferPart === undefined) continue;
           const bufferPartJSON = JSON.parse(bufferPart);
+          if (leafac.liveUpdatesToken !== token) {
+            abortController.abort();
+            return;
+          }
           leafac.loadDocument(bufferPartJSON, {
             previousLocation: { ...window.location },
             liveUpdate: true,
@@ -357,6 +365,7 @@ const leafac = {
       await new Promise((resolve) => setTimeout(resolve, 5 * 1000));
     }
   },
+  liveUpdatesToken: undefined,
 
   customFormValidation() {
     document.addEventListener(

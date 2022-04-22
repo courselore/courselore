@@ -259,4 +259,15 @@ export default (app: Courselore): void => {
       timeout = setTimeout(work, 60 * 1000);
     }
   })();
+
+  app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
+    const token = req.header("Live-Updates-Abort");
+    if (token !== undefined)
+      app.locals.liveUpdates.database.run(
+        sql`
+          DELETE FROM "clients" WHERE "token" = ${token}
+        `
+      );
+    next();
+  });
 };
