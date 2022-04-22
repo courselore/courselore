@@ -5,7 +5,6 @@
 - Things to test:
 
   - Event-stream
-    - Logging of first live-update right as you’re connecting…
     - Disconnect because client went offline & reconnect relatively quickly: should only live-update if something new came in
     - Disconnect because client went offline & reconnect after a long time: should live-update regardless
     - Update in between initial request and event-stream establishment: should live-update as soon as connected

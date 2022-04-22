@@ -308,7 +308,7 @@ const leafac = {
           signal: abortController.signal,
         });
         body.liveUpdatesNetworkErrorTooltip?.hide();
-        if (!response.ok) {
+        if (response.status === 422) {
           console.error(response);
           (body.liveUpdatesValidationErrorTooltip ??= tippy(body)).setProps({
             appendTo: body,
@@ -323,6 +323,7 @@ const leafac = {
           body.liveUpdatesValidationErrorTooltip.show();
           return;
         }
+        if (!response.ok) throw new Error();
         const responseBodyReader = response.body.getReader();
         const textDecoder = new TextDecoder();
         let buffer = "";
