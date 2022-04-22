@@ -4,8 +4,6 @@
 
 - Review:
 
-  - `logging.ts`
-  - `authentication.ts`
   - `live-updates.ts`
 
 - Things to test:
