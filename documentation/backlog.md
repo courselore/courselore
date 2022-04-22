@@ -4,7 +4,6 @@
 
 - Review:
 
-  - `leafac--javascript.js`
   - `layouts.ts` (Call to `liveUpdates()`)
   - `live-updates.ts`
   - `authentication.ts`

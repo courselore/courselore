@@ -124,10 +124,9 @@ const leafac = {
     );
     document.querySelector("title").textContent =
       newDocument.querySelector("title").textContent;
-    for (const element of detail.liveUpdate
-      ? []
-      : document.querySelectorAll(`[key="local-css"]`))
-      element.remove();
+    if (!detail.liveUpdate)
+      for (const element of document.querySelectorAll(`[key="local-css"]`))
+        element.remove();
     for (const element of newDocument.querySelectorAll(`[key="local-css"]`))
       document
         .querySelector("head")
@@ -207,8 +206,7 @@ const leafac = {
         )
           continue;
         toRemove.push(node);
-        if (moveCandidates.get(key)?.push(node) === undefined)
-          moveCandidates.set(key, [node]);
+        moveCandidates.get(key)?.push(node) ?? moveCandidates.set(key, [node]);
       }
     }
     const toAdd = [];
