@@ -141,6 +141,11 @@ export default (app: Courselore): void => {
           return res;
         };
         res.once("close", () => {
+          if (
+            app.locals.liveUpdates.clients.get(res.locals.liveUpdatesToken!)
+              ?.res !== res
+          )
+            return;
           app.locals.liveUpdates.clients.delete(res.locals.liveUpdatesToken!);
           app.locals.liveUpdates.database.run(
             sql`
