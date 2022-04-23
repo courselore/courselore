@@ -5,10 +5,6 @@
 - Test:
 
   - Flashes on live-updates
-  - Sliding session
-    - Occurs on normal request
-    - Occurs on request establishing event-stream
-    - Doesn’t occur on event-stream itself
 
 - Review:
 
