@@ -112,7 +112,7 @@ export default (app: Courselore): void => {
         const clientReqRes = app.locals.liveUpdates.clients.get(
           res.locals.liveUpdatesToken
         );
-        if (clientReqRes !== undefined) clientReqRes.res.end();
+        clientReqRes?.res.end();
         app.locals.liveUpdates.clients.set(res.locals.liveUpdatesToken, {
           req,
           res,
@@ -143,9 +143,8 @@ export default (app: Courselore): void => {
         res.once("close", () => {
           if (
             app.locals.liveUpdates.clients.get(res.locals.liveUpdatesToken!)
-              ?.res !== res
-          )
-            return;
+              ?.res === res
+          ) {
           app.locals.liveUpdates.clients.delete(res.locals.liveUpdatesToken!);
           app.locals.liveUpdates.database.run(
             sql`
@@ -156,6 +155,7 @@ export default (app: Courselore): void => {
               WHERE "token" = ${res.locals.liveUpdatesToken}
             `
           );
+          }
           console.log(
             `${new Date().toISOString()}\tLIVE-UPDATES\t${
               res.locals.liveUpdatesToken
@@ -275,8 +275,8 @@ export default (app: Courselore): void => {
     const token = req.header("Live-Updates-Abort");
     if (token !== undefined) {
       const clientReqRes = app.locals.liveUpdates.clients.get(token);
-      app.locals.liveUpdates.clients.delete(token);
       clientReqRes?.res.end();
+      app.locals.liveUpdates.clients.delete(token);
       app.locals.liveUpdates.database.run(
         sql`
           DELETE FROM "clients" WHERE "token" = ${token}
