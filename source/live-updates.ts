@@ -101,10 +101,7 @@ export default (app: Courselore): void => {
             WHERE "token" = ${res.locals.liveUpdatesToken}
           `
         );
-        if (
-          app.locals.liveUpdates.clients.has(res.locals.liveUpdatesToken) ||
-          (client !== undefined && req.originalUrl !== client.url)
-        ) {
+        if (client !== undefined && req.originalUrl !== client.url) {
           console.log(
             `${new Date().toISOString()}\tLIVE-UPDATES\t${
               res.locals.liveUpdatesToken
@@ -112,6 +109,10 @@ export default (app: Courselore): void => {
           );
           return res.status(422).end();
         }
+        const clientReqRes = app.locals.liveUpdates.clients.get(
+          res.locals.liveUpdatesToken
+        );
+        if (clientReqRes !== undefined) clientReqRes.res.end();
         app.locals.liveUpdates.clients.set(res.locals.liveUpdatesToken, {
           req,
           res,
@@ -191,7 +192,8 @@ export default (app: Courselore): void => {
             }\tCLIENT\tRECREATED\t${req.ip}\t\t\t${req.originalUrl}`
           );
         }
-        if (client?.shouldUpdateAt === null) return;
+        if (clientReqRes === undefined && client?.shouldUpdateAt === null)
+          return;
       }
       next();
     },

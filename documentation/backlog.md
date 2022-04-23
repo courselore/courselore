@@ -2,20 +2,7 @@
 
 ### Performance
 
-- Heartbeat
-
-```javascript
-let heartbeatTimeout: NodeJS.Timeout;
-(function heartbeat() {
-  res.write("\n");
-  heartbeatTimeout = setTimeout(heartbeat, 1000);
-})();
-res.on("close", () => {
-  clearTimeout(heartbeatTimeout);
-});
-```
-
-- Things to test:
+- Test:
 
   - Event-stream
     - Disconnect because client went offline & reconnect relatively quickly: should only live-update if something new came in
@@ -35,6 +22,16 @@ res.on("close", () => {
     - Occurs on request establishing event-stream
     - Doesn’t occur on event-stream itself
   - Test on phone
+
+- Review:
+
+  - Files:
+    - `live-updates.ts`
+    - `leafac--javascript.js`
+    - `global-middlewares.ts`
+  - Features:
+    - Live-reload
+    - Live-updates
 
 - Document
   - Reasons to prefer `fetch` over `EventSource`:
