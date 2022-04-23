@@ -296,14 +296,17 @@ const leafac = {
       let heartbeatAborted = false;
       try {
         const abortController = new AbortController();
-        const abort = () => {
+        window.addEventListener(
+          "beforenavigate",
+          () => {
           delete leafac.liveUpdatesToken;
           abortController.abort();
-        };
-        window.addEventListener("beforenavigate", abort, { once: true });
+          },
+          { once: true }
+        );
         const heartbeatAbort = () => {
           heartbeatAborted = true;
-          abort();
+          abortController.abort();
         };
         let heartbeatTimeout = setTimeout(heartbeatAbort, 50 * 1000);
         const response = await fetch(window.location.href, {
