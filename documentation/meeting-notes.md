@@ -1,6 +1,13 @@
 # Meeting Notes
 
 <details>
+<summary>2021-04-23</summary>
+
+- Finished and deployed live-updates with new mechanism that’s resilient to disconnections of any kind, and that doesn’t require extra roundtrips to the server.
+
+</details>
+
+<details>
 <summary>2021-04-09</summary>
 
 - Finished and deployed details on morphing, live navigation, and live updates. This should address several glitches in the application, and give it a more app-like feel.
