@@ -101,7 +101,14 @@ export default (app: Courselore): void => {
     app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
       "/live-reload",
       (req, res) => {
-        res.write("\n");
+        let heartbeatTimeout: NodeJS.Timeout;
+        (function heartbeat() {
+          res.write("\n");
+          heartbeatTimeout = setTimeout(heartbeat, 15 * 1000);
+        })();
+        res.on("close", () => {
+          clearTimeout(heartbeatTimeout);
+        });
       }
     );
 };

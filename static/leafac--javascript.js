@@ -766,7 +766,22 @@ const leafac = {
   isAppleDevice: /Mac|iPod|iPhone|iPad/.test(navigator.platform),
 
   async liveReload(url) {
-    await (await fetch(url)).text();
+    try {
+      const abortController = new AbortController();
+      const abort = () => {
+        abortController.abort();
+      };
+      let heartbeatTimeout = setTimeout(abort, 50 * 1000);
+      const response = await fetch(url, { signal: abortController.signal });
+      if (!response.ok) throw new Error();
+      const responseBodyReader = response.body.getReader();
+      while (true) {
+        const chunk = (await responseBodyReader.read()).value;
+        if (chunk === undefined) break;
+        clearTimeout(heartbeatTimeout);
+        heartbeatTimeout = setTimeout(abort, 50 * 1000);
+      }
+    } catch {}
     while (true) {
       await new Promise((resolve) => setTimeout(resolve, 200));
       try {
