@@ -492,6 +492,8 @@ res.on("close", () => {
 
 ### Infrastructure
 
+- Have timeouts on all `fetch()`es, because there may be no feedback if the internet goes down in the middle of an operation, and the connection may be left hanging, and we’ll be `await`ing forever.
+  - But maybe this only applies to event-stream type of requests, and we have them covered already. Maybe for regular kinds of requests this would be overkill…
 - Autosize is leaking resources because of the global `Map` of bound textareas. It should be using `WeakMap` instead.
   - Look into using `fit-textarea@2.0.0` instead.
 - Event-streams (and keep-alive connections in general)
