@@ -145,16 +145,16 @@ export default (app: Courselore): void => {
             app.locals.liveUpdates.clients.get(res.locals.liveUpdatesToken!)
               ?.res === res
           ) {
-          app.locals.liveUpdates.clients.delete(res.locals.liveUpdatesToken!);
-          app.locals.liveUpdates.database.run(
-            sql`
+            app.locals.liveUpdates.clients.delete(res.locals.liveUpdatesToken!);
+            app.locals.liveUpdates.database.run(
+              sql`
               UPDATE "clients"
               SET "expiresAt" = ${new Date(
                 Date.now() + 5 * 60 * 1000
               ).toISOString()}
               WHERE "token" = ${res.locals.liveUpdatesToken}
             `
-          );
+            );
           }
           console.log(
             `${new Date().toISOString()}\tLIVE-UPDATES\t${

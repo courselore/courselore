@@ -299,8 +299,8 @@ const leafac = {
         window.addEventListener(
           "beforenavigate",
           () => {
-          delete leafac.liveUpdatesToken;
-          abortController.abort();
+            delete leafac.liveUpdatesToken;
+            abortController.abort();
           },
           { once: true }
         );
