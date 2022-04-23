@@ -227,6 +227,14 @@ export default (app: Courselore): void => {
     req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
   }) => {
+    app.locals.liveUpdates.database.run(
+      sql`
+        UPDATE "clients"
+        SET "shouldLiveUpdateOnOpenAt" = ${new Date().toISOString()}
+        WHERE "course" = ${res.locals.course.id} AND
+              "expiresAt" IS NULL
+      `
+    );
     for (const client of app.locals.liveUpdates.database.all<{
       nonce: string;
     }>(

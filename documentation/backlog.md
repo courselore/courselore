@@ -48,6 +48,10 @@
 
 ---
 
+- Read production logs.
+
+---
+
 - Check if textarea freezes when live-update is being processed.
 
 ---
