@@ -36,7 +36,7 @@ export type LiveUpdatesDispatchHelper = ({
 }: {
   req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
   res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
-}) => void;
+}) => Promise<void>;
 
 export default (app: Courselore): void => {
   app.locals.liveUpdates = {
@@ -55,11 +55,36 @@ export default (app: Courselore): void => {
         "course" INTEGER NOT NULL
       );
       CREATE INDEX "clientsExpiresAtIndex" ON "clients" ("expiresAt");
-      CREATE INDEX "clientsTokenIndex" ON "clients" ("token");
       CREATE INDEX "clientsShouldUpdateAtIndex" ON "clients" ("shouldUpdateAt");
+      CREATE INDEX "clientsTokenIndex" ON "clients" ("token");
       CREATE INDEX "clientsCourseIndex" ON "clients" ("course");
     `
   );
+  (async () => {
+    while (true) {
+      for (const client of app.locals.liveUpdates.database.all<{
+        token: string;
+      }>(
+        sql`
+          SELECT "token"
+          FROM "clients"
+          WHERE "expiresAt" < ${new Date().toISOString()}
+        `
+      )) {
+        app.locals.liveUpdates.database.run(
+          sql`
+            DELETE FROM "clients" WHERE "token" = ${client.token}
+          `
+        );
+        console.log(
+          `${new Date().toISOString()}\tLIVE-UPDATES\t${
+            client.token
+          }\tCLIENT\tEXPIRED`
+        );
+      }
+      await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
+    }
+  })();
 
   app.locals.middlewares.liveUpdates = [
     (req, res, next) => {
@@ -92,16 +117,21 @@ export default (app: Courselore): void => {
       if (res.locals.liveUpdatesToken === undefined) {
         res.locals.liveUpdatesToken = token;
         const client = app.locals.liveUpdates.database.get<{
+          expiresAt: string | null;
           shouldUpdateAt: string | null;
           url: string;
         }>(
           sql`
-            SELECT "shouldUpdateAt", "url"
+            SELECT "expiresAt", "shouldUpdateAt", "url"
             FROM "clients"
             WHERE "token" = ${res.locals.liveUpdatesToken}
           `
         );
-        if (client !== undefined && req.originalUrl !== client.url) {
+        if (
+          app.locals.liveUpdates.clients.has(res.locals.liveUpdatesToken) ||
+          (client !== undefined &&
+            (client.expiresAt === null || req.originalUrl !== client.url))
+        ) {
           console.log(
             `${new Date().toISOString()}\tLIVE-UPDATES\t${
               res.locals.liveUpdatesToken
@@ -109,10 +139,6 @@ export default (app: Courselore): void => {
           );
           return res.status(422).end();
         }
-        const clientReqRes = app.locals.liveUpdates.clients.get(
-          res.locals.liveUpdatesToken
-        );
-        clientReqRes?.res.end();
         app.locals.liveUpdates.clients.set(res.locals.liveUpdatesToken, {
           req,
           res,
@@ -141,21 +167,12 @@ export default (app: Courselore): void => {
           return res;
         };
         res.once("close", () => {
-          if (
-            app.locals.liveUpdates.clients.get(res.locals.liveUpdatesToken!)
-              ?.res === res
-          ) {
-            app.locals.liveUpdates.clients.delete(res.locals.liveUpdatesToken!);
-            app.locals.liveUpdates.database.run(
-              sql`
-              UPDATE "clients"
-              SET "expiresAt" = ${new Date(
-                Date.now() + 5 * 60 * 1000
-              ).toISOString()}
-              WHERE "token" = ${res.locals.liveUpdatesToken}
+          app.locals.liveUpdates.clients.delete(res.locals.liveUpdatesToken!);
+          app.locals.liveUpdates.database.run(
+            sql`
+              DELETE FROM "clients" WHERE "token" = ${res.locals.liveUpdatesToken}
             `
-            );
-          }
+          );
           console.log(
             `${new Date().toISOString()}\tLIVE-UPDATES\t${
               res.locals.liveUpdatesToken
@@ -194,100 +211,56 @@ export default (app: Courselore): void => {
           console.log(
             `${new Date().toISOString()}\tLIVE-UPDATES\t${
               res.locals.liveUpdatesToken
-            }\tCLIENT\tRECREATED\t${req.ip}\t\t\t${req.originalUrl}`
+            }\tCLIENT\tCREATED&OPENED\t${req.ip}\t\t\t${req.originalUrl}`
           );
         }
-        if (clientReqRes === undefined && client?.shouldUpdateAt === null)
-          return;
+        if (client?.shouldUpdateAt === null) return;
       }
       next();
     },
   ];
 
-  app.locals.helpers.liveUpdatesDispatch = (() => {
-    let timeout: NodeJS.Timeout;
-    return ({
-      req,
-      res,
-    }: {
-      req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
-      res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
-    }) => {
-      app.locals.liveUpdates.database.run(
-        sql`
-          UPDATE "clients"
-          SET "shouldUpdateAt" = ${new Date().toISOString()}
-          WHERE "course" = ${res.locals.course.id}
-        `
-      );
-      clearTimeout(timeout);
-      timeout = setTimeout(work);
-    };
-    async function work() {
-      for (const client of app.locals.liveUpdates.database.all<{
-        token: string;
-      }>(
-        sql`
-          SELECT "token"
-          FROM "clients"
-          WHERE "expiresAt" < ${new Date().toISOString()}
-        `
-      )) {
-        app.locals.liveUpdates.database.run(
-          sql`
-            DELETE FROM "clients" WHERE "token" = ${client.token}
-          `
-        );
-        console.log(
-          `${new Date().toISOString()}\tLIVE-UPDATES\t${
-            client.token
-          }\tCLIENT\tEXPIRED`
-        );
-      }
-      for (const client of app.locals.liveUpdates.database.all<{
-        token: string;
-      }>(
-        sql`
-          SELECT "token"
-          FROM "clients"
-          WHERE "shouldUpdateAt" IS NOT NULL
-        `
-      )) {
-        const clientReqRes = app.locals.liveUpdates.clients.get(client.token);
-        if (clientReqRes === undefined) continue;
-        clientReqRes.res.locals = {
-          liveUpdatesToken: clientReqRes.res.locals.liveUpdatesToken,
-        } as LiveUpdatesMiddlewareLocals;
-        await app(clientReqRes.req, clientReqRes.res);
-        app.locals.liveUpdates.database.run(
-          sql`
-            UPDATE "clients"
-            SET "shouldUpdateAt" = NULL
-            WHERE "token" = ${client.token}
-          `
-        );
-      }
-      timeout = setTimeout(work, 60 * 1000);
+  app.locals.helpers.liveUpdatesDispatch = async ({
+    req,
+    res,
+  }: {
+    req: express.Request<{}, any, {}, {}, IsEnrolledInCourseMiddlewareLocals>;
+    res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
+  }) => {
+    for (const client of app.locals.liveUpdates.database.all<{
+      token: string;
+    }>(
+      sql`
+        SELECT "token"
+        FROM "clients"
+        WHERE "course" = ${res.locals.course.id} AND
+              "expiresAt" IS NOT NULL
+      `
+    )) {
+      const clientReqRes = app.locals.liveUpdates.clients.get(client.token)!;
+      clientReqRes.res.locals = {
+        liveUpdatesToken: clientReqRes.res.locals.liveUpdatesToken,
+      } as LiveUpdatesMiddlewareLocals;
+      await app(clientReqRes.req, clientReqRes.res);
     }
-  })();
+  };
 
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
     const token = req.header("Live-Updates-Abort");
-    if (token !== undefined) {
-      const clientReqRes = app.locals.liveUpdates.clients.get(token);
-      clientReqRes?.res.end();
-      app.locals.liveUpdates.clients.delete(token);
-      app.locals.liveUpdates.database.run(
-        sql`
+    if (token === undefined) return next();
+    const clientReqRes = app.locals.liveUpdates.clients.get(token);
+    clientReqRes?.res.end();
+    app.locals.liveUpdates.clients.delete(token);
+    app.locals.liveUpdates.database.run(
+      sql`
           DELETE FROM "clients" WHERE "token" = ${token}
         `
-      );
-      console.log(
-        `${new Date().toISOString()}\tLIVE-UPDATES\t${token}\tCLIENT\tABORTED\t${
-          clientReqRes?.req.ip ?? ""
-        }\t\t\t${clientReqRes?.req.originalUrl ?? ""}`
-      );
-    }
+    );
+    console.log(
+      `${new Date().toISOString()}\tLIVE-UPDATES\t${token}\tCLIENT\tABORTED\t${
+        clientReqRes?.req.ip ?? ""
+      }\t\t\t${clientReqRes?.req.originalUrl ?? ""}`
+    );
     next();
   });
 };
