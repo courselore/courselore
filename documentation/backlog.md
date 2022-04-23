@@ -4,24 +4,11 @@
 
 - Test:
 
-  - Event-stream
-    - Disconnect because client went offline & reconnect relatively quickly: should only live-update if something new came in
-    - Disconnect because client went offline & reconnect after a long time: should live-update regardless
-    - Update in between initial request and event-stream establishment: should live-update as soon as connected
-  - Logs
-    - Live-updates GETs are flagged as such
-    - Event-streams
-      - Created
-        - Opened
-          - Closed
-        - Failed
-        - Expired
   - Flashes on live-updates
   - Sliding session
     - Occurs on normal request
     - Occurs on request establishing event-stream
     - Doesn’t occur on event-stream itself
-  - Test on phone
 
 - Review:
 
