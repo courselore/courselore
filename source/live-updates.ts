@@ -116,7 +116,14 @@ export default (app: Courselore): void => {
           req,
           res,
         });
-        res.write("\n");
+        let heartbeatTimeout: NodeJS.Timeout;
+        (function heartbeat() {
+          res.write("\n");
+          heartbeatTimeout = setTimeout(heartbeat, 15 * 1000);
+        })();
+        res.once("close", () => {
+          clearTimeout(heartbeatTimeout);
+        });
         res.setHeader = (name, value) => res;
         res.send = (body) => {
           res.write(JSON.stringify(body) + "\n");
