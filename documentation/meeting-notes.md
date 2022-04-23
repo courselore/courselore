@@ -1,7 +1,7 @@
 # Meeting Notes
 
 <details>
-<summary>2021-04-02</summary>
+<summary>2021-04-09</summary>
 
 - Finished and deployed details on morphing, live navigation, and live updates. This should address several glitches in the application, and give it a more app-like feel.
 - We’ll do videos for educators and students with a brief sales pitch, and a tutorial.
