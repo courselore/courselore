@@ -2,20 +2,6 @@
 
 ### Performance
 
-- Test:
-
-  - Flashes on live-updates
-
-- Review:
-
-  - Files:
-    - `live-updates.ts`
-    - `leafac--javascript.js`
-    - `global-middlewares.ts`
-  - Features:
-    - Live-reload
-    - Live-updates
-
 - Document
   - Reasons to prefer `fetch` over `EventSource`:
     - Features such as headers.
