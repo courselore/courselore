@@ -49,13 +49,13 @@ export default (app: Courselore): void => {
       CREATE TABLE "clients" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "expiresAt" TEXT NULL,
-        "shouldUpdateAt" TEXT NULL,
+        "shouldLiveUpdateOnConnectAt" TEXT NULL,
         "token" TEXT NOT NULL UNIQUE,
         "url" TEXT NOT NULL,
         "course" INTEGER NOT NULL
       );
       CREATE INDEX "clientsExpiresAtIndex" ON "clients" ("expiresAt");
-      CREATE INDEX "clientsShouldUpdateAtIndex" ON "clients" ("shouldUpdateAt");
+      CREATE INDEX "clientsShouldLiveUpdateOnConnectAtIndex" ON "clients" ("shouldLiveUpdateOnConnectAt");
       CREATE INDEX "clientsTokenIndex" ON "clients" ("token");
       CREATE INDEX "clientsCourseIndex" ON "clients" ("course");
     `
@@ -82,7 +82,7 @@ export default (app: Courselore): void => {
           }\tCLIENT\tEXPIRED`
         );
       }
-      await new Promise((resolve) => setTimeout(resolve, 24 * 60 * 60 * 1000));
+      await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
     }
   })();
 
@@ -118,11 +118,11 @@ export default (app: Courselore): void => {
         res.locals.liveUpdatesToken = token;
         const client = app.locals.liveUpdates.database.get<{
           expiresAt: string | null;
-          shouldUpdateAt: string | null;
+          shouldLiveUpdateOnConnectAt: string | null;
           url: string;
         }>(
           sql`
-            SELECT "expiresAt", "shouldUpdateAt", "url"
+            SELECT "expiresAt", "shouldLiveUpdateOnConnectAt", "url"
             FROM "clients"
             WHERE "token" = ${res.locals.liveUpdatesToken}
           `
@@ -184,7 +184,7 @@ export default (app: Courselore): void => {
             sql`
               UPDATE "clients"
               SET "expiresAt" = NULL,
-                  "shouldUpdateAt" = NULL
+                  "shouldLiveUpdateOnConnectAt" = NULL
               WHERE "token" = ${res.locals.liveUpdatesToken}
             `
           );
@@ -214,7 +214,7 @@ export default (app: Courselore): void => {
             }\tCLIENT\tCREATED&OPENED\t${req.ip}\t\t\t${req.originalUrl}`
           );
         }
-        if (client?.shouldUpdateAt === null) return;
+        if (client?.shouldLiveUpdateOnConnectAt === null) return;
       }
       next();
     },
