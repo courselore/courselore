@@ -261,8 +261,8 @@ export default (app: Courselore): void => {
     app.locals.liveUpdates.clients.delete(nonce);
     app.locals.liveUpdates.database.run(
       sql`
-          DELETE FROM "clients" WHERE "nonce" = ${nonce}
-        `
+        DELETE FROM "clients" WHERE "nonce" = ${nonce}
+      `
     );
     console.log(
       `${new Date().toISOString()}\tLIVE-UPDATES\t${nonce}\tCLIENT\tABORTED\t${
