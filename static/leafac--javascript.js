@@ -786,7 +786,7 @@ const leafac = {
       await new Promise((resolve) => setTimeout(resolve, 200));
       try {
         const response = await fetch(url);
-        if (response.status === 502) throw new Error();
+        if (!response.ok) throw new Error();
         window.location.reload();
       } catch {}
     }
