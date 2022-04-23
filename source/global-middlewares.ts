@@ -15,7 +15,7 @@ export interface BaseMiddlewareLocals {
   loggingStartTime: bigint;
   localCSS: ReturnType<typeof localCSS>;
   HTMLForJavaScript: ReturnType<typeof HTMLForJavaScript>;
-  liveUpdatesToken: string | undefined;
+  liveUpdatesNonce: string | undefined;
 }
 
 export type UserFileExtensionsWhichMayBeShownInBrowser =

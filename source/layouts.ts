@@ -251,11 +251,11 @@ export default async (app: Courselore): Promise<void> => {
             })()}
 
             ${
-              res.locals.liveUpdatesToken !== undefined
+              res.locals.liveUpdatesNonce !== undefined
                 ? javascript`
                     if (event?.detail?.liveUpdate !== true)
                       leafac.liveUpdates(${JSON.stringify(
-                        res.locals.liveUpdatesToken
+                        res.locals.liveUpdatesNonce
                       )});
                   `
                 : javascript``

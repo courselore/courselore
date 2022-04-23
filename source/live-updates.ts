@@ -50,35 +50,35 @@ export default (app: Courselore): void => {
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "expiresAt" TEXT NULL,
         "shouldLiveUpdateOnConnectAt" TEXT NULL,
-        "token" TEXT NOT NULL UNIQUE,
+        "nonce" TEXT NOT NULL UNIQUE,
         "url" TEXT NOT NULL,
         "course" INTEGER NOT NULL
       );
       CREATE INDEX "clientsExpiresAtIndex" ON "clients" ("expiresAt");
       CREATE INDEX "clientsShouldLiveUpdateOnConnectAtIndex" ON "clients" ("shouldLiveUpdateOnConnectAt");
-      CREATE INDEX "clientsTokenIndex" ON "clients" ("token");
+      CREATE INDEX "clientsNonceIndex" ON "clients" ("nonce");
       CREATE INDEX "clientsCourseIndex" ON "clients" ("course");
     `
   );
   (async () => {
     while (true) {
       for (const client of app.locals.liveUpdates.database.all<{
-        token: string;
+        nonce: string;
       }>(
         sql`
-          SELECT "token"
+          SELECT "nonce"
           FROM "clients"
           WHERE "expiresAt" < ${new Date().toISOString()}
         `
       )) {
         app.locals.liveUpdates.database.run(
           sql`
-            DELETE FROM "clients" WHERE "token" = ${client.token}
+            DELETE FROM "clients" WHERE "nonce" = ${client.nonce}
           `
         );
         console.log(
           `${new Date().toISOString()}\tLIVE-UPDATES\t${
-            client.token
+            client.nonce
           }\tCLIENT\tEXPIRED`
         );
       }
@@ -88,20 +88,20 @@ export default (app: Courselore): void => {
 
   app.locals.middlewares.liveUpdates = [
     (req, res, next) => {
-      const token = req.header("Live-Updates");
-      if (token === undefined) {
-        res.locals.liveUpdatesToken = Math.random().toString(36).slice(2);
+      const nonce = req.header("Live-Updates");
+      if (nonce === undefined) {
+        res.locals.liveUpdatesNonce = Math.random().toString(36).slice(2);
         app.locals.liveUpdates.database.run(
           sql`
             INSERT INTO "clients" (
               "expiresAt",
-              "token",
+              "nonce",
               "url",
               "course"
             )
             VALUES (
               ${new Date(Date.now() + 60 * 1000).toISOString()},
-              ${res.locals.liveUpdatesToken},
+              ${res.locals.liveUpdatesNonce},
               ${req.originalUrl},
               ${res.locals.course.id}
             )
@@ -109,13 +109,13 @@ export default (app: Courselore): void => {
         );
         console.log(
           `${new Date().toISOString()}\tLIVE-UPDATES\t${
-            res.locals.liveUpdatesToken
+            res.locals.liveUpdatesNonce
           }\tCLIENT\tCREATED\t${req.ip}\t\t\t${req.originalUrl}`
         );
         return next();
       }
-      if (res.locals.liveUpdatesToken === undefined) {
-        res.locals.liveUpdatesToken = token;
+      if (res.locals.liveUpdatesNonce === undefined) {
+        res.locals.liveUpdatesNonce = nonce;
         const client = app.locals.liveUpdates.database.get<{
           expiresAt: string | null;
           shouldLiveUpdateOnConnectAt: string | null;
@@ -124,22 +124,22 @@ export default (app: Courselore): void => {
           sql`
             SELECT "expiresAt", "shouldLiveUpdateOnConnectAt", "url"
             FROM "clients"
-            WHERE "token" = ${res.locals.liveUpdatesToken}
+            WHERE "nonce" = ${res.locals.liveUpdatesNonce}
           `
         );
         if (
-          app.locals.liveUpdates.clients.has(res.locals.liveUpdatesToken) ||
+          app.locals.liveUpdates.clients.has(res.locals.liveUpdatesNonce) ||
           (client !== undefined &&
             (client.expiresAt === null || req.originalUrl !== client.url))
         ) {
           console.log(
             `${new Date().toISOString()}\tLIVE-UPDATES\t${
-              res.locals.liveUpdatesToken
+              res.locals.liveUpdatesNonce
             }\tCLIENT\tFAILED\t${req.ip}\t\t\t${req.originalUrl}`
           );
           return res.status(422).end();
         }
-        app.locals.liveUpdates.clients.set(res.locals.liveUpdatesToken, {
+        app.locals.liveUpdates.clients.set(res.locals.liveUpdatesNonce, {
           req,
           res,
         });
@@ -156,7 +156,7 @@ export default (app: Courselore): void => {
           res.write(JSON.stringify(body) + "\n");
           console.log(
             `${new Date().toISOString()}\tLIVE-UPDATES\t${
-              res.locals.liveUpdatesToken
+              res.locals.liveUpdatesNonce
             }\t${req.method}\t${res.statusCode}\t${req.ip}\t${
               (process.hrtime.bigint() - res.locals.loggingStartTime) /
               1_000_000n
@@ -167,15 +167,15 @@ export default (app: Courselore): void => {
           return res;
         };
         res.once("close", () => {
-          app.locals.liveUpdates.clients.delete(res.locals.liveUpdatesToken!);
+          app.locals.liveUpdates.clients.delete(res.locals.liveUpdatesNonce!);
           app.locals.liveUpdates.database.run(
             sql`
-              DELETE FROM "clients" WHERE "token" = ${res.locals.liveUpdatesToken}
+              DELETE FROM "clients" WHERE "nonce" = ${res.locals.liveUpdatesNonce}
             `
           );
           console.log(
             `${new Date().toISOString()}\tLIVE-UPDATES\t${
-              res.locals.liveUpdatesToken
+              res.locals.liveUpdatesNonce
             }\tCLIENT\tCLOSED\t${req.ip}\t\t\t${req.originalUrl}`
           );
         });
@@ -185,24 +185,24 @@ export default (app: Courselore): void => {
               UPDATE "clients"
               SET "expiresAt" = NULL,
                   "shouldLiveUpdateOnConnectAt" = NULL
-              WHERE "token" = ${res.locals.liveUpdatesToken}
+              WHERE "nonce" = ${res.locals.liveUpdatesNonce}
             `
           );
           console.log(
             `${new Date().toISOString()}\tLIVE-UPDATES\t${
-              res.locals.liveUpdatesToken
+              res.locals.liveUpdatesNonce
             }\tCLIENT\tOPENED\t${req.ip}\t\t\t${req.originalUrl}`
           );
         } else {
           app.locals.liveUpdates.database.run(
             sql`
               INSERT INTO "clients" (
-                "token",
+                "nonce",
                 "url",
                 "course"
               )
               VALUES (
-                ${res.locals.liveUpdatesToken},
+                ${res.locals.liveUpdatesNonce},
                 ${req.originalUrl},
                 ${res.locals.course.id}
               )
@@ -210,7 +210,7 @@ export default (app: Courselore): void => {
           );
           console.log(
             `${new Date().toISOString()}\tLIVE-UPDATES\t${
-              res.locals.liveUpdatesToken
+              res.locals.liveUpdatesNonce
             }\tCLIENT\tCREATED&OPENED\t${req.ip}\t\t\t${req.originalUrl}`
           );
         }
@@ -228,36 +228,36 @@ export default (app: Courselore): void => {
     res: express.Response<any, IsEnrolledInCourseMiddlewareLocals>;
   }) => {
     for (const client of app.locals.liveUpdates.database.all<{
-      token: string;
+      nonce: string;
     }>(
       sql`
-        SELECT "token"
+        SELECT "nonce"
         FROM "clients"
         WHERE "course" = ${res.locals.course.id} AND
               "expiresAt" IS NOT NULL
       `
     )) {
-      const clientReqRes = app.locals.liveUpdates.clients.get(client.token)!;
+      const clientReqRes = app.locals.liveUpdates.clients.get(client.nonce)!;
       clientReqRes.res.locals = {
-        liveUpdatesToken: clientReqRes.res.locals.liveUpdatesToken,
+        liveUpdatesNonce: clientReqRes.res.locals.liveUpdatesNonce,
       } as LiveUpdatesMiddlewareLocals;
       await app(clientReqRes.req, clientReqRes.res);
     }
   };
 
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
-    const token = req.header("Live-Updates-Abort");
-    if (token === undefined) return next();
-    const clientReqRes = app.locals.liveUpdates.clients.get(token);
+    const nonce = req.header("Live-Updates-Abort");
+    if (nonce === undefined) return next();
+    const clientReqRes = app.locals.liveUpdates.clients.get(nonce);
     clientReqRes?.res.end();
-    app.locals.liveUpdates.clients.delete(token);
+    app.locals.liveUpdates.clients.delete(nonce);
     app.locals.liveUpdates.database.run(
       sql`
-          DELETE FROM "clients" WHERE "token" = ${token}
+          DELETE FROM "clients" WHERE "nonce" = ${nonce}
         `
     );
     console.log(
-      `${new Date().toISOString()}\tLIVE-UPDATES\t${token}\tCLIENT\tABORTED\t${
+      `${new Date().toISOString()}\tLIVE-UPDATES\t${nonce}\tCLIENT\tABORTED\t${
         clientReqRes?.req.ip ?? ""
       }\t\t\t${clientReqRes?.req.originalUrl ?? ""}`
     );

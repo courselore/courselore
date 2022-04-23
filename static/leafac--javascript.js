@@ -287,13 +287,13 @@ const leafac = {
     }
   },
 
-  async liveUpdates(token) {
+  async liveUpdates(nonce) {
     const body = document.querySelector("body");
     let inLiveNavigation = false;
     window.addEventListener(
       "beforenavigate",
       (event) => {
-        event.detail.request.headers.set("Live-Updates-Abort", token);
+        event.detail.request.headers.set("Live-Updates-Abort", nonce);
         inLiveNavigation = true;
       },
       { once: true }
@@ -315,7 +315,7 @@ const leafac = {
         };
         let heartbeatTimeout = setTimeout(heartbeatAbort, 50 * 1000);
         const response = await fetch(window.location.href, {
-          headers: { "Live-Updates": token },
+          headers: { "Live-Updates": nonce },
           signal: abortController.signal,
         });
         body.liveUpdatesNetworkErrorTooltip?.hide();
@@ -371,7 +371,7 @@ const leafac = {
         });
         body.liveUpdatesNetworkErrorTooltip.show();
       }
-      token = Math.random().toString(36).slice(2);
+      nonce = Math.random().toString(36).slice(2);
       await new Promise((resolve) => setTimeout(resolve, 5 * 1000));
     }
   },
