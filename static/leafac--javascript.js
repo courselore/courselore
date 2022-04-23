@@ -299,21 +299,13 @@ const leafac = {
       { once: true }
     );
     while (true) {
-      let heartbeatAborted = false;
       try {
         const abortController = new AbortController();
-        window.addEventListener(
-          "beforenavigate",
-          () => {
-            abortController.abort();
-          },
-          { once: true }
-        );
-        const heartbeatAbort = () => {
-          heartbeatAborted = true;
+        const abort = () => {
           abortController.abort();
         };
-        let heartbeatTimeout = setTimeout(heartbeatAbort, 50 * 1000);
+        window.addEventListener("beforenavigate", abort, { once: true });
+        let heartbeatTimeout = setTimeout(abort, 50 * 1000);
         const response = await fetch(window.location.href, {
           headers: { "Live-Updates": nonce },
           signal: abortController.signal,
@@ -342,7 +334,7 @@ const leafac = {
           const chunk = (await responseBodyReader.read()).value;
           if (chunk === undefined) break;
           clearTimeout(heartbeatTimeout);
-          heartbeatTimeout = setTimeout(heartbeatAbort, 50 * 1000);
+          heartbeatTimeout = setTimeout(abort, 50 * 1000);
           buffer += textDecoder.decode(chunk, { stream: true });
           const bufferParts = buffer.split("\n");
           buffer = bufferParts.pop();
@@ -358,7 +350,7 @@ const leafac = {
           });
         }
       } catch (error) {
-        if (error.name === "AbortError" && !heartbeatAborted) return;
+        if (inLiveNavigation) return;
         console.error(error);
         (body.liveUpdatesNetworkErrorTooltip ??= tippy(body)).setProps({
           appendTo: body,
