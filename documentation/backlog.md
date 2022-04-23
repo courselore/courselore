@@ -2,6 +2,19 @@
 
 ### Performance
 
+- Heartbeat
+
+```javascript
+let heartbeatTimeout: NodeJS.Timeout;
+(function heartbeat() {
+  res.write("\n");
+  heartbeatTimeout = setTimeout(heartbeat, 1000);
+})();
+res.on("close", () => {
+  clearTimeout(heartbeatTimeout);
+});
+```
+
 - Things to test:
 
   - Event-stream
