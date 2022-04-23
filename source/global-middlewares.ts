@@ -106,7 +106,7 @@ export default (app: Courselore): void => {
           res.write("\n");
           heartbeatTimeout = setTimeout(heartbeat, 15 * 1000);
         })();
-        res.on("close", () => {
+        res.once("close", () => {
           clearTimeout(heartbeatTimeout);
         });
       }
