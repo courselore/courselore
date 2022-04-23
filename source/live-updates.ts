@@ -49,13 +49,13 @@ export default (app: Courselore): void => {
       CREATE TABLE "clients" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "expiresAt" TEXT NULL,
-        "shouldLiveUpdateOnConnectAt" TEXT NULL,
+        "shouldLiveUpdateOnOpenAt" TEXT NULL,
         "nonce" TEXT NOT NULL UNIQUE,
         "url" TEXT NOT NULL,
         "course" INTEGER NOT NULL
       );
       CREATE INDEX "clientsExpiresAtIndex" ON "clients" ("expiresAt");
-      CREATE INDEX "clientsShouldLiveUpdateOnConnectAtIndex" ON "clients" ("shouldLiveUpdateOnConnectAt");
+      CREATE INDEX "clientsShouldLiveUpdateOnOpenAtIndex" ON "clients" ("shouldLiveUpdateOnOpenAt");
       CREATE INDEX "clientsNonceIndex" ON "clients" ("nonce");
       CREATE INDEX "clientsCourseIndex" ON "clients" ("course");
     `
@@ -118,11 +118,11 @@ export default (app: Courselore): void => {
         res.locals.liveUpdatesNonce = nonce;
         const client = app.locals.liveUpdates.database.get<{
           expiresAt: string | null;
-          shouldLiveUpdateOnConnectAt: string | null;
+          shouldLiveUpdateOnOpenAt: string | null;
           url: string;
         }>(
           sql`
-            SELECT "expiresAt", "shouldLiveUpdateOnConnectAt", "url"
+            SELECT "expiresAt", "shouldLiveUpdateOnOpenAt", "url"
             FROM "clients"
             WHERE "nonce" = ${res.locals.liveUpdatesNonce}
           `
@@ -184,7 +184,7 @@ export default (app: Courselore): void => {
             sql`
               UPDATE "clients"
               SET "expiresAt" = NULL,
-                  "shouldLiveUpdateOnConnectAt" = NULL
+                  "shouldLiveUpdateOnOpenAt" = NULL
               WHERE "nonce" = ${res.locals.liveUpdatesNonce}
             `
           );
@@ -214,7 +214,7 @@ export default (app: Courselore): void => {
             }\tCLIENT\tCREATED&OPENED\t${req.ip}\t\t\t${req.originalUrl}`
           );
         }
-        if (client?.shouldLiveUpdateOnConnectAt === null) return;
+        if (client?.shouldLiveUpdateOnOpenAt === null) return;
       }
       next();
     },
