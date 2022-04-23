@@ -10,10 +10,8 @@ const leafac = {
       if (event instanceof PopStateEvent) abortController?.abort();
       else if (state !== "available") return;
       state = "busy";
-      const detail = { previousLocation };
+      const detail = { request, previousLocation };
       const isGet = ["GET", "HEAD"].includes(request.method);
-      if (leafac.liveUpdatesToken !== undefined)
-        request.headers.set("Live-Updates-Abort", leafac.liveUpdatesToken);
       if (
         window.dispatchEvent(
           new CustomEvent("beforenavigate", { cancelable: true, detail })
@@ -290,8 +288,16 @@ const leafac = {
   },
 
   async liveUpdates(token) {
-    leafac.liveUpdatesToken = token;
     const body = document.querySelector("body");
+    let inLiveNavigation = false;
+    window.addEventListener(
+      "beforenavigate",
+      (event) => {
+        event.detail.request.headers.set("Live-Updates-Abort", token);
+        inLiveNavigation = true;
+      },
+      { once: true }
+    );
     while (true) {
       let heartbeatAborted = false;
       try {
@@ -299,7 +305,6 @@ const leafac = {
         window.addEventListener(
           "beforenavigate",
           () => {
-            delete leafac.liveUpdatesToken;
             abortController.abort();
           },
           { once: true }
@@ -346,10 +351,7 @@ const leafac = {
             .find((bufferPart) => bufferPart.trim() !== "");
           if (bufferPart === undefined) continue;
           const bufferPartJSON = JSON.parse(bufferPart);
-          if (leafac.liveUpdatesToken !== token) {
-            abortController.abort();
-            return;
-          }
+          if (inLiveNavigation) return;
           leafac.loadDocument(bufferPartJSON, {
             previousLocation: { ...window.location },
             liveUpdate: true,
@@ -369,10 +371,10 @@ const leafac = {
         });
         body.liveUpdatesNetworkErrorTooltip.show();
       }
+      token = Math.random().toString(36).slice(2);
       await new Promise((resolve) => setTimeout(resolve, 5 * 1000));
     }
   },
-  liveUpdatesToken: undefined,
 
   customFormValidation() {
     document.addEventListener(
