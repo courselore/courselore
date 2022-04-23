@@ -232,7 +232,7 @@ export default (app: Courselore): void => {
         UPDATE "clients"
         SET "shouldLiveUpdateOnOpenAt" = ${new Date().toISOString()}
         WHERE "course" = ${res.locals.course.id} AND
-              "expiresAt" IS NULL
+              "expiresAt" IS NOT NULL
       `
     );
     for (const client of app.locals.liveUpdates.database.all<{
@@ -242,7 +242,7 @@ export default (app: Courselore): void => {
         SELECT "nonce"
         FROM "clients"
         WHERE "course" = ${res.locals.course.id} AND
-              "expiresAt" IS NOT NULL
+              "expiresAt" IS NULL
       `
     )) {
       const clientReqRes = app.locals.liveUpdates.clients.get(client.nonce)!;
