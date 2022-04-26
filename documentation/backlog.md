@@ -2,6 +2,27 @@
 
 ### Performance
 
+- Improve experience on phone:
+  - Make the “Conversations” button push an entry into the history. (We can do that by turning it into a link that points at `/courses/<courseReference>`.)
+  - Have a hamburger menu that doesn’t cover the whole pane underneath, and in that case don’t push an entry into the history.
+  - When you click on the existing “Conversations” menu, it take a little while to respond. But not all the time, so keep an eye out for it. (Maybe it has to do with live-updates coming in and morphing happening on the background?)
+- Other ideas for improving the design:
+  - Conversations are sorted by most recent activity, but that means when you send a message, the conversation moves to the top, which can be disorienting.
+    - Wait for a little while, 10~30 minutes, before sorting.
+  - Separate the conversations in sections: One section for conversations with unread messages.
+  - Add filters for conversations with unread messages.
+  - Quick filters:
+    - Staff:
+      - Unresolved questions
+      - Conversations with unread messages
+    - Students:
+      - Questions
+      - Conversations with unread messages
+- Don’t deploy big design changes in the next two weeks, because we’re approaching the end of the semester and big design changes could confuse people.
+- Over the summer, start thinking more strategically.
+
+---
+
 - Document
   - Reasons to prefer `fetch` over `EventSource`:
     - Features such as headers.
@@ -18,6 +39,7 @@
 ---
 
 - Read production logs.
+- Downgrade server.
 
 ---
 
