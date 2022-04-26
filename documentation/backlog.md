@@ -2,6 +2,70 @@
 
 ### Performance
 
+- Desktop application:
+
+```javascript
+{
+  "scripts": {
+    "start": "electron ./index.js"
+  },
+  "devDependencies": {
+    "electron": "^18.1.0"
+  }
+}
+
+const { app, BrowserWindow } = require("electron");
+
+(async () => {
+  await app.whenReady();
+
+  let browserWindow;
+  const createBrowserWindow = () => {
+    browserWindow = new BrowserWindow({
+      width: 800,
+      height: 600,
+    });
+    browserWindow.loadURL("https://leafac.local");
+  };
+  createBrowserWindow();
+
+  app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") app.quit();
+  });
+
+  app.on("activate", () => {
+    if (BrowserWindow.getAllWindows().length === 0) createBrowserWindow();
+  });
+
+  app.setBadgeCount(3);
+})();
+```
+
+---
+
+- Use Notifications API:
+
+```javascript
+Notification.requestPermission();
+Notification.permission;
+new Notification('Example');
+
+<button
+  class="button button--transparent"
+  onload="${javascript`
+    this.onclick = async () => {
+      if (await Notification.requestPermission() === "denied") return;
+      new Notification("Example");
+    };
+  `}"
+>
+  <i class="bi bi-bell"></i>
+  Send Notification
+</button>
+```
+
+---
+
 - Improve experience on phone:
   - Make the “Conversations” button push an entry into the history. (We can do that by turning it into a link that points at `/courses/<courseReference>`.)
   - Have a hamburger menu that doesn’t cover the whole pane underneath, and in that case don’t push an entry into the history.
