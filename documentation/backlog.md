@@ -2,6 +2,14 @@
 
 ### Performance
 
+- Make `onload` an `AsyncFunction`?
+
+---
+
+- Force a refresh on new deployment.
+
+---
+
 - Desktop application:
 
 ```javascript
