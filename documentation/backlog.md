@@ -2,6 +2,16 @@
 
 ### Performance
 
+- On live-updates, we’re leaking CSS to some extent. Maybe instead of just appending `local-css`, do some form of diffing, which only inserts and doesn’t delete (because we may be preventing the deletion of some HTML, for example, the “NEW” separator).
+  - Note that modifying the `textContent` of a `<style>` tag has immediate effect—the browser applies the new styles.
+
+---
+
+- Currently `onload` may be adding a bunch of repeated JavaScript, adding to the size of the page. Perhaps we should do something similar to what we do in `local-css`?
+  - Note that modifying the `textContent` of `<script>` tag only has immediate effect the first time(!) Subsequent modifications aren’t picked up by the browser (but you can always `eval()`).
+
+---
+
 - Make `onload` an `AsyncFunction`?
 
 ---
@@ -107,6 +117,9 @@ new Notification('Example');
   - Reasons not to use the Visibility API:
     - First, the obvious pro: We could disconnect the live-updates event-stream when the tab isn’t showing, reducing the load on the server.
     - But we decided against it because we want to be able to have features such as changing a tab title to “2 unread messages,” even if the tab is on the background, and this requires the connection to the server to be kept alive.
+  - Assumptions on `onload`:
+    - It’s only safe to run `onload` once.
+    - The code will be run again on live-navigation & live-update, and there may be some continuity in the form of tooltips & event handlers.
 
 ---
 
