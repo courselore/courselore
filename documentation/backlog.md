@@ -559,22 +559,36 @@ const { app, BrowserWindow } = require("electron");
     - Messages in conversation.
   - Filters.
 
+---
+
+- Database:
+  - Look for more database indices that may be necessary.
+  - n+1 queries:
+    - Cases:
+      - `getConversation()`.
+      - `getMessage()`.
+      - Treatment of @mentions in Content processor.
+      - Finding which enrollments to notify (not exactly an n+1, but we’re filtering in JavaScript what could maybe filtered in SQL (if we’re willing to use the `IN` operator)).
+    - Potential solutions:
+      - Single follow-up query with `IN` operator (but then you end up with a bunch of prepared statements in the cache).
+      - Use a temporary table instead of `IN`.
+      - Nest first query as a subquery and bundle all the information together, then deduplicate the 1–N relationships in the code.
+  - We’re doing pagination of conversations in sidebar using `OFFSET`, because the order and presence of conversations changes, so we can’t anchor a `WHERE` clause on the first/last conversation shown. Try and find a better approach. Maybe use window functions anchored on the `row_number`.
+
+---
+
+- Try and optimize `html` tagged template literal, which sanitizes things over and over.
+
 ### Infrastructure
 
 - **2022-05-22:** Downgrade server.
 - Force a reload on new deployment.
-- Have timeouts on all `fetch()`es, because there may be no feedback if the internet goes down in the middle of an operation, and the connection may be left hanging, and we’ll be `await`ing forever.
-  - But maybe this only applies to event-stream type of requests, and we have them covered already. Maybe for regular kinds of requests this would be overkill…
+- Review all uses of `fetch()`:
+  - Treat the error cases
+  - Have timeouts, because there may be no feedback if the internet goes down in the middle of an operation, and the connection may be left hanging, and we’ll be `await`ing forever.
+    - But maybe this only applies to event-stream type of requests, and we have them covered already. Maybe for regular kinds of requests this would be overkill…
 - Autosize is leaking resources because of the global `Map` of bound textareas. It should be using `WeakMap` instead.
   - Look into using `fit-textarea@2.0.0` instead.
-- Event-streams (and keep-alive connections in general)
-  - Heartbeat every 15 seconds?
-  - Check for timeouts and limits:
-    - Caddy
-    - Express
-- Live-updates:
-  - Use smarter data structures for `liveUpdatesEventDestinations` so that we don’t have to traverse the whole set so often.
-  - Make the channels more granular so that they have to update every connection for the course.
 - Add missing `key`s:
   - `partials.user()` (this is trickier than it may seem, because it actually requires creating `reference`s for users).
   - `class=`
@@ -592,73 +606,36 @@ const { app, BrowserWindow } = require("electron");
     - https://github.com/clean-css/clean-css (most popular)
     - https://github.com/parcel-bundler/parcel-css (seems faster, using Rust)
     - https://github.com/css/csso
-- Check back on https://community.chocolatey.org/packages/nvm/1.1.9#discussion & https://community.chocolatey.org/packages/nvm.portable/1.1.9
-  - If 1.1.9 hasn’t been released, add `--version=1.1.9` to installation instructions
-- Use `` javascript(html`<script>...</script>`) `` instead of `` javascript`...` `` because it works with Prettier (and syntax highlighting, to some extent).
-- `<script async>`
-- “Demonstration Mode” didn’t work for me on Edge, on `try.courselore.org` (tried other browsers and on local machine an it worked (!)).
+- Use `` javascript(html`<script>...</script>`) `` instead of `` javascript`...` `` because it works with Prettier (and syntax highlighting, to some extent)?
+- `<script async>`?
 - Mark all conversations as read may be slow because it does a bunch of in `INSERT`s.
 - Move some of the non-application-specific server-side code into a library (for example, cookie settings, server-sent events, logging, and that sort of thing).
   - Maybe move @leafac/express-async-handler into that library as well.
+  - The runner in `binary.ts`
+  - Some common things from `configuration/*.mjs`.
 - Make Demonstration Data load faster by having a cache of pre-built data.
 - On deploy to production maybe backup the database like we do in staging.
-- Treat the error cases in every location where we do a `fetch`.
 - `app.on("close")` stop workers.
   - Or maybe unref them to begin with?
-- Graceful HTTP shutdown
-  - Do we need that, or is our currently solution enough, given that Node.js seems to end keep-alive connections gracefully and we have no interest in keeping the Node.js process running?
-    - I think we do need that, because we want to close the database, otherwise journal files are kept around, and we want to close the database strictly **after** the server closed, otherwise there could be requests in the middle that will throw because of a closed database connection.
-    - But there’s more: the handler for `exit` has to be synchronous. So we can’t `await` on graceful termination.
-    - One potential solution: Do the graceful termination on signals, but on `exit` just `server.close(); app.emit("close");`. This should be fine because in our case `exit` probably means an exception anyway.
-  - https://github.com/gajus/http-terminator
-    - https://www.npmtrends.com/@godaddy/terminus-vs-http-close-vs-http-shutdown-vs-http-terminator-vs-stoppable-vs-http-graceful-shutdown
 - Test signal handling of shutdown process on Windows
-- Handle errors on `fetch`. Right now we’ll just let the “loading” spinner run forever.
-- Let @leafac/html eat interpolated `null`s and `undefined`s and `[objects]`.
 - Using `getConversation()` to enforce permissions may not be a great idea. It limits the number of search results in a weird way, that even leaks a bit of data. Also, it isn’t the most performant thing, probably (see point about n+1 queries). Maybe a better idea would be to `WHERE` the permissions everywhere, or use a database view.
-- Performance:
-  - Look for more database indices that may be necessary.
-  - n+1 queries:
-    - Cases:
-      - `getConversation()`.
-      - `getMessage()`.
-      - Treatment of @mentions in Content processor.
-      - Finding which enrollments to notify (not exactly an n+1, but we’re filtering in JavaScript what could maybe filtered in SQL (if we’re willing to use the `IN` operator)).
-    - Potential solutions:
-      - Single follow-up query with `IN` operator (but then you end up with a bunch of prepared statements in the cache).
-      - Use a temporary table instead of `IN`.
-      - Nest first query as a subquery and bundle all the information together, then deduplicate the 1–N relationships in the code.
-  - We’re doing pagination of conversations in sidebar using `OFFSET`, because the order and presence of conversations changes, so we can’t anchor a `WHERE` clause on the first/last conversation shown. Try and find a better approach. Maybe use window functions anchored on the `row_number`.
-  - Try and optimize `html` tagged template literal, which sanitizes things over and over.
 - Rate limiting.
 - Database transactions:
-  - One transaction per request?
-  - Considerations:
-    - We shouldn’t keep the transaction open across ticks of the event loop, which entails that all request handlers would have to be synchronous.
-    - Moreover, as far as I can tell the only way to run a middleware **after** the router is to listen to the `res.once("finish", () => {...})` event. But I think that this goes across ticks of the event loop.
-    - Maybe I can just call `next()` and then look at the `res.statusCode`?
-    - For synchronous action handlers I think that transactions are only relevant if you’re running in cluster mode, because otherwise Node.js is single-threaded and queries are serialized, anyway.
-  - References:
-    - https://goenning.net/2017/06/20/session-per-request-pattern-go/
-    - https://stackoverflow.com/questions/24258782/node-express-4-middleware-after-routes
-    - https://www.lunchbadger.com/blog/tracking-the-performance-of-express-js-routes-and-middleware/
-    - https://stackoverflow.com/questions/27484361/is-it-possible-to-use-some-sort-of-middleware-after-sending-the-response-with
-    - https://stackoverflow.com/questions/44647617/middleware-after-all-route-in-nodejs
-    - https://github.com/jshttp/on-finished
-    - https://github.com/pillarjs/router/issues/18
-- Use `Cache-control: no-store`.
-- Helmet.
-- Extract the infrastructure for running the project into a package:
-  - The snippet in `index.ts`.
-  - Some common things from `configuration/*.js`.
-  - Auto-updater.
+  - Automatic: One transaction per request
+    - We shouldn’t keep the transaction open across ticks of the event loop, which entails that it would only work for request handlers that are synchronous.
+    - When to commit the transaction:
+      - Listen to the `res.once("finish", () => {...})` event. But I think that this goes across ticks of the event loop.
+      - Maybe just call `next()` and then look at the `res.statusCode`?
+      - Or maybe overwrite `res.send()` and `res.redirect()`, like we do for logging.
+  - Manual: Probably the only sensible approach, given the constraint above related to asynchronous handlers
+- Auto-updater.
 - Backups.
   - For us, as system administrators.
   - For users, who may want to migrate data from a hosted version to another.
     - Rewrite URLs in messages.
 - In some situations, we’re unnecessarily updating the boolean fields in the database that are represented as dates. For example, `"tags"."staffOnlyAt"` on `PUT /courses/:courseReference/settings/tags`.
 - Live updates with Server-Sent Events currently depend on the fact that we’re running in a single process. Use a message broker like ZeroMQ to support multiple processes.
-- Automated tests.
+- Automated tests:
 
 <details>
 
