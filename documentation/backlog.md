@@ -2,6 +2,10 @@
 
 ### User Interface Improvements
 
+- https://github.com/helmetjs/helmet
+
+---
+
 - Sidebar:
   - “Start a Conversation” → “Ask a Question”
   - Hide search bar when unneeded
@@ -403,6 +407,8 @@ const { app, BrowserWindow } = require("electron");
   app.setBadgeCount(3);
 })();
 ```
+
+- There’s also https://github.com/nativefier/nativefier, but it’s “minimally maintained,” and it may not have the features necessary to do things like badges.
 
 - Mobile:
   - https://capacitorjs.com/
