@@ -15,6 +15,7 @@
       - Questions
       - Conversations with unread messages
   - Make the “resolved/unresolved” filters more discoverable.
+  - Scroll the conversations list to the current conversation doesn’t work on mobile. (But maybe this won’t be relevant after we turn the “Conversations” menu on mobile into a link that points at `/courses/<courseReference>`)
 
 ---
 
@@ -27,9 +28,20 @@
 
 ---
 
-- Chat messages:
+- Chat:
   - More space between messages and less space between paragraphs
   - Move the avatar to the side, giving a clearer indication of where a message ends and another one starts
+  - “Truncate” long messages.
+
+---
+
+- Messages:
+  - Higher contrast between background and text?
+  - Blockquotes (replies) should have a faint background color to help differentiate them.
+  - Collapse long blockquotes
+  - Add more options to the hover menu (besides the ellipses), similar to Slack & Discord.
+  - Bigger font (15pt).
+  - Wider columns
 
 ---
 
@@ -49,6 +61,11 @@
     - Wait for a little while, 10~30 minutes, before sorting.
   - Separate the conversations in sections: One section for conversations with unread messages.
   - Group conversations by date & pinned (similar to Piazza & Campuswire).
+  - Make the distinction between the types more prominent. Separate questions from chats in the list of conversations, for example.
+    - Change the visualization of “types” a little more, for example, make announcements pop up.
+    - Improve display of endorsements & answers (on the sidebar, include number of answers).
+    - Manage answer badges more intelligently (answered at all, answered by staff).
+    - Let original question asker approve an answer.
 
 ---
 
@@ -88,6 +105,22 @@
 ---
 
 - Include a “set as answer and endorse” button.
+- Let staff endorse other staff answers.
+- Add the notion of “staff considers this a good question.” Similar to the notion of “endorsement,” but for questions.
+- Change the meaning of “views”: Instead of using “readings”, only count as “viewed” if the message has appeared on the person’s screen.
+  - Tracking pixel on email for people who will read the notification on their email and just “mark as read” on Courselore?
+
+---
+
+- Add a button to “Return to Bottom” in chat.
+
+---
+
+- Show a widget similar to the Views (with person & time) to likes & endorsements.
+
+---
+
+- We shouldn’t show endorsements for non-answers. (They show up at least for staff.)
 
 ---
 
@@ -192,50 +225,25 @@ new Notification('Example');
 
 ### Invitations
 
-- Limit invitation links to certain domains.
+- Limit invitation links to certain email domains, for example, “this link may only be used by people whose emails end with `@jhu.edu`.”
 - Have an option to require approval of enrollment.
 - Have a public listing of courses in the system and allow people to request to join.
 
 ### Conversations
 
-- Let staff endorse other staff answers.
-- Add the notion of “staff considers this a good question.” Similar to the notion of “endorsement,” but for questions.
-- Change the meaning of “views”: Instead of using “readings”, only count as “viewed” if the message has appeared on the person’s screen.
-  - Tracking pixel on email for people who will read the notification on their email and just “mark as read” on Courselore?
-- Add a button to “Return to Bottom” in chat.
-- Show a widget similar to the Views (with person & time) to likes & endorsements.
-- We shouldn’t show endorsements for non-answers. (They show up at least for staff.)
-- Scroll the conversations list to the current conversation doesn’t work on mobile.
-- Streamlining the creation of DMs.
+- Streamline the creation of DMs.
 - Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
 - Bookmarks / flags / saved items. These are personal, for example, for something you have to follow up on.
-- Make the distinction between the types more prominent. Separate questions from chats in the list of conversations, for example.
-  - Change the visualization of “types” a little more, for example, make announcements pop up.
-  - Improve display of endorsements & answers (on the sidebar, include number of answers).
-  - Manage answer badges more intelligently (answered at all, answered by staff).
-  - Let original question asker approve an answer.
 - More sophisticated tag system: dependencies between tags, actions triggered by tags, and so forth.
 - Modify the order of tags.
-- Different states: Open vs archived.
 - Assign questions to CAs.
 - Save drafts of conversations you’re creating.
 - `position: sticky` headers (showing author name) in messages?
-- Add list of who read each message and when they read it to chats as well. The first attempt wasn’t successful because the `userPartial`s blow up the HTML. Revisit this when we DRY `userPartial`s.
+- Different states: Open vs archived.
 
 ### Chat
 
-- Redesign:
-  - Clearer separation between messages
-    - More space
-    - Avatars on side
-    - Higher contrast between background and text.
-  - Blockquotes (replies) should have a faint background color to help differentiate them.
-    - Collapse long blockquotes
-  - Add more options to the hover menu (besides the ellipses), similar to Slack & Discord.
-  - Bigger font (15pt).
-  - Wider columns
 - Currently typing.
-- “Truncate” long messages.
 - Show accent colors for different people (for example, faint background colors), to help identify messages.
 - Nested replies (similar to Slack’s threads).
 
@@ -248,9 +256,7 @@ new Notification('Example');
 
 - Search should display multiple messages in the same conversation. (Right now it’s only showing the highest ranked message and grouping by conversation.)
 - Search in all courses you’re taking (for example, search for `deadline extension`) (see how GitHub does it).
-- Filters for unanswered questions, answered questions, and so forth.
 - Filter by date.
-- Show only conversations with unread messages.
 
 ### Content Editor
 
