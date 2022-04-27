@@ -1,11 +1,8 @@
 # Backlog
 
-- Moving forward:
-  - Redesign sidebar, chat messages, and things like announcements vs notes-that-generate-notifications.
-  - Notification digests.
-  - 1-on-1 conversations.
-
 ### User Interface Improvements
+
+- Redesign sidebar, chat messages, and things like announcements vs notes-that-generate-notifications.
 
 - Improve experience on phone:
 
@@ -87,6 +84,62 @@
 - Introduce the notion of locking a conversation.
 - Introduce the notion of promoting a message into its own conversation (one example use case is when someone asks a question as a follow-up to an announcement).
 
+### Notifications
+
+- Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
+- Make emails be replies, so that they’re grouped in conversations on email readers.
+- Decorate the content sent on notifications, to avoid showing things like `@john-doe--201231`.
+- Notifications for the same conversation should be “reply” to email on same thread.
+- Email notification subjects could include the fact that you were mentioned, to make it easier to set up filters.
+- Change the page title when there are new messages on that conversation, to make it stand out on the browser tabs.
+  - Or change the favicon.
+- Implement job for scheduling notifications
+  - Delay sending notifications for a little bit to give the person a chance to update or delete the message.
+  - Don’t send notifications when the person is online and/or has seen the message.
+  - Get notifications for replies to your posts. If a student asks a question they probably would like notifications on all replies. That might want to be on by default as well.
+- Add support for Dark Mode in emails.
+  - This should fix the duplication of code blocks.
+- Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
+- Add different notification badges for when you’re @mentioned.
+- A timeline-like list of unread messages and other things that require your attention.
+- More granular control over what to be notified about.
+  - Course-level configuration.
+  - Subscribe/unsubscribe to particular conversations of interest/disinterest.
+  - Receive notifications from conversations you’ve participated in.
+- Other channels: Use the browser Notifications API & Push API; Desktop & phone applications.
+- Snooze.
+- Don’t require user to be logged in to unsubscribe from notifications?
+- Add option to receive email notifications for your own messages.
+- Use Notifications API:
+
+```javascript
+Notification.requestPermission();
+Notification.permission;
+new Notification('Example');
+
+<button
+  class="button button--transparent"
+  onload="${javascript`
+    this.onclick = async () => {
+      if (await Notification.requestPermission() === "denied") return;
+      new Notification("Example");
+    };
+  `}"
+>
+  <i class="bi bi-bell"></i>
+  Send Notification
+</button>
+```
+
+### Advanced Access Control
+
+- 1-to-1 conversation: Use background color to distinguish between people, so you don’t have to show their names over and over.
+- Chats with only a few people.
+- Groups, for example, Graders, Project Advisors, Group members, different sections on courses.
+  - Some groups are available only to students, while others only to staff.
+  - People assign themselves to groups.
+- Add mentions like `@group-3`.
+
 ### More Performance
 
 - Live updates destinations:
@@ -142,15 +195,6 @@
     - Conversations in sidebar.
     - Messages in conversation.
   - Filters.
-
-### Advanced Access Control
-
-- Chats with only a few people.
-- 1-to-1 conversation: Use background color to distinguish between people, so you don’t have to show their names over and over.
-- Groups, for example, Graders, Project Advisors, Group members, different sections on courses.
-  - Some groups are available only to students, while others only to staff.
-  - People assign themselves to groups.
-- Add mentions like `@group-3`.
 
 ### Users
 
@@ -230,53 +274,6 @@
 
 - Allow people to create Personas.
 - Have a completely anonymous mode in which not even the staff has access to the identity.
-
-### Notifications
-
-- Make emails be replies, so that they’re grouped in conversations on email readers.
-- Decorate the content sent on notifications, to avoid showing things like `@john-doe--201231`.
-- Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
-- Notifications for the same conversation should be “reply” to email on same thread.
-- Email notification subjects could include the fact that you were mentioned, to make it easier to set up filters.
-- Change the page title when there are new messages on that conversation, to make it stand out on the browser tabs.
-  - Or change the favicon.
-- Implement job for scheduling notifications
-  - Delay sending notifications for a little bit to give the person a chance to update or delete the message.
-  - Don’t send notifications when the person is online and/or has seen the message.
-  - Get notifications for replies to your posts. If a student asks a question they probably would like notifications on all replies. That might want to be on by default as well.
-- Add support for Dark Mode in emails.
-  - This should fix the duplication of code blocks.
-- Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
-- Add different notification badges for when you’re @mentioned.
-- A timeline-like list of unread messages and other things that require your attention.
-- More granular control over what to be notified about.
-  - Course-level configuration.
-  - Subscribe/unsubscribe to particular conversations of interest/disinterest.
-  - Receive notifications from conversations you’ve participated in.
-- Other channels: Use the browser Notifications API & Push API; Desktop & phone applications.
-- Snooze.
-- Don’t require user to be logged in to unsubscribe from notifications?
-- Add option to receive email notifications for your own messages.
-- Use Notifications API:
-
-```javascript
-Notification.requestPermission();
-Notification.permission;
-new Notification('Example');
-
-<button
-  class="button button--transparent"
-  onload="${javascript`
-    this.onclick = async () => {
-      if (await Notification.requestPermission() === "denied") return;
-      new Notification("Example");
-    };
-  `}"
->
-  <i class="bi bi-bell"></i>
-  Send Notification
-</button>
-```
 
 ### Search
 
