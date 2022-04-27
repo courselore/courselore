@@ -261,40 +261,43 @@ new Notification('Example');
 ### Content Editor
 
 - On new conversation page, maybe adapt the `@mentions` widget according to the visibility that’s currently set.
-- On the contentProcessor, maybe don’t render `@mention` widget for people who aren’t in the conversation.
 - Have the `@mention` widget list people who aren’t in the conversation (suitably marked as so) (similar to Twitter DMs).
 - When you select multiple lines and click on the list options, turn each line into a list item.
 - Add more placeholders to things like tables to help explain how to use them.
-- Press ↑ to edit previously sent message.
-- Templates for questions (like GitHub Issues).
-- Reuse answers.
+- Answer templates.
 - Paste tables from Excel and have them formatted as Markdown tables.
 - Add https://github.com/fregante/indent-textarea or CodeMirror in programmer mode.
+  - Issue with indent-textarea is that it only supports tabs, not spaces https://github.com/fregante/indent-textarea/issues/21
+  - CodeMirror is heavy-handed
 - If you’re in the middle of editing, and someone else edits a message (or the conversation title), then you’re going to overwrite their changes. Warn about this.
 
 ### Content Processor
 
-- Potential issue: It’s possible to send a message such as `<!-- -->` which is visually empty.
-- Syntax highlighter isn’t kicking in on blockquote.
-- `#references` into the same conversation don’t need to load the whole `conversationPartial`, just the message part of it.
+- On the `partials.content()`, maybe don’t render `@mention` widget for people who aren’t in the conversation, given that we don’t give that person as option on the `@mentions` autocomplete widget in the content editor.
+- It’s possible to send messages that are visually empty, for example, `<!-- -->`
+- Syntax highlighter only works on top-level elements (https://github.com/leafac/rehype-shiki/issues/5)
+- `#references` into the same conversation don’t need to load the whole `partials.conversation()`, just the message part of it.
 - Add support for underline in Markdown.
-  - Add a job to re-preprocess content:
-    - Messages
-    - Biographies
 - The “quote” button on code blocks is showing up in the wrong place.
 - `.katex` is overflowing in the `y` axis unnecessarily. (See, for example, the example we give on the home page.)
-- Emoji with the `:smile:` form.
 - Proxy hotlinked images (particularly if served with HTTP because of insecure content): https://github.com/atmos/camo
 - Reference on more features ideas: <https://github.com/gjtorikian/html-pipeline>
 - Polls.
-- Lightbox modal for resized images.
-  - Animated GIFs should just play.
-  - Convert animaged GIFs into other data formats that would be lighter.
-- Lightbox for code blocks (“click for more”, full screen, and selective wrap or not long lines).
-- Lightbox for block quotes.
+- Lightbox modal:
+  - Resized images
+    - Animated GIFs should just play.
+  - Code blocks
+    - Just truncate and have a “click for more” kind of button
+    - Do a proper lightbox modal in full screen
+    - Give option to wrap or not long lines
+  - Block quotes (especially replies)
+- Convert animated GIFs into other data formats that would be lighter.
 - Add support for videos: Sanitization, dimensions, and so forth.
 - Install extensions for Shiki, for example, for OCaml.
 - Mermaid: https://github.blog/2022-02-14-include-diagrams-markdown-files-mermaid/
+- Add a job to re-preprocess content:
+  - Messages
+  - Biographies
 
 ### Pagination
 
@@ -312,10 +315,9 @@ new Notification('Example');
 - On sending message on non-chat, it’s scrolling back to the first page.
 - The “mark as read” button doesn’t work because it doesn’t visit all pages.
 - Edge case: Show next/previous page on “no more messages”.
-  - This is edge case because people should only be able to get there when they manipulate the URL (or because they’re loading the next page right when an item has been deleted)
+  - This is an edge case because people should only be able to get there when they manipulate the URL (or because they’re loading the next page right when an item has been deleted)
   - Difficult because we don’t have a “before” or “after” message to anchor to.
-- Course Settings · Enrollments.
-  - And other pages, for example, invitations.
+- Paginate other things, for example, Course Settings · Enrollments, and invitations.
 
 ### File Management
 
@@ -326,20 +328,12 @@ new Notification('Example');
     2. Only people who are logged in may see the attachment.
     3. Only people in the same course may see the attachment.
     4. Only people with access to the particular conversation may see the attachment.
-  - Right now we’re implementing 2, but we may want to go more strict if FERPA requires it or if someone asks for it.
-  - The advantage of 1 is that we can have a link directly to something like S3, so we don’t have to proxy the file ourselves.
+  - Right now we’re implementing 1, but we may want to go more strict if FERPA requires it or if someone asks for it.
+  - The advantage of 1 is that at some point we may want to link directly to something like S3, so we don’t have to proxy the file ourselves.
   - The disadvantage of something like 3 or 4 is that a person can’t copy and paste messages across courses (think of a PDF with course rules being sent at the beginning of a semester).
 - Let people configure other storage engines (for example, S3).
 - Create a garbage collection routine for attachments.
 - Clean geolocation & other metadata from images.
-
-### Forms
-
-- Use `maxlength`.
-- Keep the buttons disabled while the form isn’t in a valid state.
-- Use date pickers:
-  - https://github.com/jcgertig/date-input-polyfill
-  - https://github.com/Pikaday/Pikaday
 
 ### Administrative Interface
 
@@ -363,6 +357,12 @@ new Notification('Example');
 
 ### Interface Details
 
+- Forms:
+  - Use `maxlength`.
+  - Keep the buttons disabled while the form isn’t in a valid state.
+  - Use date pickers:
+    - https://github.com/jcgertig/date-input-polyfill
+    - https://github.com/Pikaday/Pikaday
 - Do something special on live updates & 404.
   - For example, when we have a tab open with a conversation and someone else deletes it.
   - Right now we just show the 404 to the person, without much context, which can be confusing.
