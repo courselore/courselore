@@ -5,14 +5,23 @@
 - Sidebar:
   - “Start a Conversation” → “Ask a Question”
   - Hide search bar when unneeded
-  - Quick filters
   - Make it fixed, scroll just the list of conversations
+  - Add filters for conversations with unread messages.
+  - Quick filters:
+    - Staff:
+      - Unresolved questions
+      - Conversations with unread messages
+    - Students:
+      - Questions
+      - Conversations with unread messages
+  - Make the “resolved/unresolved” filters more discoverable.
 
 ---
 
 - Top menus:
   - Use hamburger menu instead of couple separate menus
-  - Turn “Conversations” menu on mobile into a link
+    - It shouldn’t cover the whole page underneath (and shouldn’t push an entry into the history, naturally)
+  - Turn “Conversations” menu on mobile into a link that points at `/courses/<courseReference>`
     - This adds history entries to navigation
     - Also, live-updates were breaking this anyway (they were closing the navigation menu 😬)
 
@@ -29,26 +38,17 @@
   - Avatar image on avatar tooltip flickers
   - Scrolling goes up on mobile when the page is big and you’re scrolled all the way to the bottom, interacting with the content editor
 
-- Redesign sidebar, chat messages, and things like announcements vs notes-that-generate-notifications.
+---
 
-- Improve experience on phone:
+- Turn “announcements” into “notes,” and give an option for a note to generate notifications.
 
-  - Make the “Conversations” button push an entry into the history. (We can do that by turning it into a link that points at `/courses/<courseReference>`.)
-  - Have a hamburger menu that doesn’t cover the whole pane underneath, and in that case don’t push an entry into the history.
-  - When you click on the existing “Conversations” menu, it take a little while to respond. But not all the time, so keep an eye out for it. (Maybe it has to do with live-updates coming in and morphing happening on the background?)
+---
 
-- Other ideas for improving the design:
+- Conversations list:
   - Conversations are sorted by most recent activity, but that means when you send a message, the conversation moves to the top, which can be disorienting.
     - Wait for a little while, 10~30 minutes, before sorting.
   - Separate the conversations in sections: One section for conversations with unread messages.
-  - Add filters for conversations with unread messages.
-  - Quick filters:
-    - Staff:
-      - Unresolved questions
-      - Conversations with unread messages
-    - Students:
-      - Questions
-      - Conversations with unread messages
+  - Group conversations by date & pinned (similar to Piazza & Campuswire).
 
 ---
 
@@ -64,8 +64,6 @@
 
 ---
 
-- Tip sheet on how to get notifications
-- Upload roster and show differences.
 - When editing, and trying to send empty message, propose to delete (like Discord does).
 
 ---
@@ -79,32 +77,27 @@
 
 ---
 
-- Redesign the “Start a Conversation” button to include the wording of “Ask a Question”
-- Remove the type “announcement” in favor of the type “note,” and introduce the notion of making it “broadcastable.”
-- Redesign the “New Conversation” page. Keep all the material that is there, but present it differently to try and make the page cleaner.
+- “New Conversation” page:
+  - Keep all the material that is there, but present it differently to try and make the page cleaner.
   - Collapse tags (similar to what we do in the conversation page itself, and to what Reddit does).
     - Change the widget that’s a tag: Instead of `icon text`, make the text look like it’s inside a tag.
   - Use different background colors, similar to Piazza.
-- Redesign filters to bring out the “resolved/unresolved” filters.
-- Introduce the notion of “Quick Filters” for different conversation types.
-- Group conversations by date & pinned (similar to Piazza & Campuswire).
+
+---
+
 - Include a “set as answer and endorse” button.
 
 ---
 
-- Add a help screen under the “About Courselore” button:
-  - A more app-like experience (in iOS):
-    - Bookmark Courselore to home screen.
-    - Use VIPs as notifications mechanism.
-  - If things look weird, or if something doesn’t work, you may need to update your browser.
-- Make a public page listing known issues.
-- Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the Courselore community.
-- In Meta Courselore, make a pinned announcement of how to report bugs.
-  - Have a way to pre-fill the new conversation form, similar to what GitHub does with new issues.
-- Don’t leak `HTMLForJavaScript`, `<style>`, and `update()`.
-- Chats sometimes scroll by themselves(!)
-  - Maybe it’s been fixed by preventing the date separators from hiding on live-updates.
-  - Scroll to bottom on with MutationObserver?
+- Detect old or otherwise unsupported browsers and alert, asking the user to update.
+
+---
+
+- Community engagement:
+  - Make a public page listing known issues.
+  - Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the Courselore community.
+  - In Meta Courselore, make a pinned announcement of how to report bugs.
+    - Have a way to pre-fill the new conversation form, similar to what GitHub does with new issues.
 
 ---
 
@@ -247,6 +240,7 @@ new Notification('Example');
 - Remove course entirely.
 - Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
 - Control who’s able to create courses, which makes sense for people who self-host.
+- Upload roster and show differences.
 
 ### Invitations
 
