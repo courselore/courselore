@@ -394,7 +394,7 @@ new Notification('Example');
 
 ### Live-Navigation
 
-- Cache?
+- Client-side cache?
   - Advantages:
     - It’ll potentially be a bit faster.
   - Disadvantages:
@@ -434,7 +434,7 @@ new Notification('Example');
   - For example, when we have a tab open with a conversation and someone else deletes it.
   - Right now we just show the 404 to the person, without much context, which can be confusing.
   - One possible solution is to look at the `Live-Updates` header on the `GET` and set a flash.
-- Don’t send the whole page, only a diff to be applied on the client
+- Morphing on the server: Don’t send the whole page, only a diff to be applied on the client
 - Update tooltip content by morphing, instead of simply replacing, to preserve state:
   - Scrolling
   - In chats, the “Views” component in the “Actions” menu closes on live update.
@@ -444,17 +444,6 @@ new Notification('Example');
   - A `POST` will already cause an update to the information on the page.
   - The implementation gets a bit awkward. The trick is to introduce the URL to the identity of the connection on top of the token which already identifies it. The token becomes the identity of the browser tab, and the URL becomes its state. If you put the two together, you can disconnect/reconnect only when necessary. But there are plenty of edge cases to deal with, for example, a live-update coming in right in the middle of a `POST` live-navigation.
 - Currently, if a connection comes in with a token we don’t identify, we treat that as a browser tab that was offline for a while and just reconnected, which means it receives a live-update right away. This can be superfluous if no change actually took place. This may be a minor issue—or not an issue at all. And addressing it probably complicates the live-updates mechanisms quite a bit. But, in any case, one potential solution is, instead of keeping tokens on the server and scheduling events to them, keep a notion of when things were updated, this way upon reconnection the client can say when it was the last time it got a live-update, and the server can know if another live-update is necessary.
-
-### Videos
-
-- Educators:
-  - Short “sales pitch”
-  - Tutorial
-- Students:
-  - Tutorial
-- System administrators
-  - How to deploy, backup, and update
-  - Lower priority: We’ll do this in the future and rely solely on the text-based instructions for now.
 
 ### Performance
 
@@ -471,6 +460,7 @@ new Notification('Example');
 
 - View caching on the server.
   - https://guides.rubyonrails.org/caching_with_rails.html
+  - This would interact in some way with server-side diffing on live-updates
 
 ---
 
@@ -2149,9 +2139,16 @@ const { app, BrowserWindow } = require("electron");
 ### Documentation
 
 - Videos
-  - Application demonstration.
-  - How to self-host.
-  - How to setup for development.
+  - Educators:
+    - Short “sales pitch”
+    - Tutorial
+  - Students:
+    - Tutorial
+  - System administrators:
+    - How to deploy, backup, and update
+    - Lower priority: We’ll do this in the future and rely solely on the text-based instructions for now.
+  - Developers:
+    - How to setup for development.
 - “One-click deployment”
   - DigitalOcean.
   - Linode.
