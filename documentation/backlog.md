@@ -2,6 +2,33 @@
 
 ### User Interface Improvements
 
+- Sidebar:
+  - “Start a Conversation” → “Ask a Question”
+  - Hide search bar when unneeded
+  - Quick filters
+  - Make it fixed, scroll just the list of conversations
+
+---
+
+- Top menus:
+  - Use hamburger menu instead of couple separate menus
+  - Turn “Conversations” menu on mobile into a link
+    - This adds history entries to navigation
+    - Also, live-updates were breaking this anyway (they were closing the navigation menu 😬)
+
+---
+
+- Chat messages:
+  - More space between messages and less space between paragraphs
+  - Move the avatar to the side, giving a clearer indication of where a message ends and another one starts
+
+---
+
+- Live-updates side-effects:
+  - Uses of `classList` may pose problems when they deal with showing/hiding, or other kinds of state that we’d like to preserve
+  - Avatar image on avatar tooltip flickers
+  - Scrolling goes up on mobile when the page is big and you’re scrolled all the way to the bottom, interacting with the content editor
+
 - Redesign sidebar, chat messages, and things like announcements vs notes-that-generate-notifications.
 
 - Improve experience on phone:
@@ -458,6 +485,7 @@ new Notification('Example');
   - Make sure to clear cache on sign-out or the back button will reveal private information.
 - We’re leaking CSS. Maybe instead of just appending `local-css`, do some form of diffing, which only inserts and doesn’t delete (we want to keep the previous CSS because we may be preventing the deletion of some HTML, for example, the “NEW” separator).
   - Note that modifying the `textContent` of a `<style>` tag has immediate effect—the browser applies the new styles.
+  - I ran live-updates every second for an hour, on mobile, and held itself okay, despite the leak of CSS. So maybe isn’t the biggest issue.
 - Live-updates can freeze the user interface for a split second, as the morphing is happening.
   - Examples of issues:
     - Typing on an inbox lags.
