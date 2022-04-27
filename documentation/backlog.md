@@ -2,10 +2,6 @@
 
 ### Performance
 
-- Check if textarea freezes when live-update is being processed.
-
----
-
 - Pagination.
   - `TODO`
   - Smarter default page for when the page isn’t specified explicitly:
@@ -472,6 +468,15 @@ new Notification('Example');
   - Make sure to clear cache on sign-out or the back button will reveal private information.
 - We’re leaking CSS. Maybe instead of just appending `local-css`, do some form of diffing, which only inserts and doesn’t delete (we want to keep the previous CSS because we may be preventing the deletion of some HTML, for example, the “NEW” separator).
   - Note that modifying the `textContent` of a `<style>` tag has immediate effect—the browser applies the new styles.
+- Live-updates can freeze the user interface for a split second, as the morphing is happening.
+  - Examples of issues:
+    - Typing on an inbox lags.
+    - Pressing buttons such as the “Conversations” disclosure button on mobile.
+  - Potential solutions:
+    - Break the work up by introducing some `await`s, which hopefully would give the event loop an opportunity to process user interactions.
+    - Minimize the work on the client-side by making the pages small, so there’s less to diff.
+    - Minimize the work on the client-side by sending only the diffs.
+    - Throttle live-updates so that they can’t be super-frequent.
 
 ### Videos
 
