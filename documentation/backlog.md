@@ -164,54 +164,6 @@ new Notification('Example');
   - People assign themselves to groups.
   - Add mentions like `@group-3`.
 
-### Performance
-
-- Lazy loading & DRYing to reduce HTML payload
-  - `userPartial` tooltip
-  - `conversationPartial` tooltip on decorated content
-  - Edit message forms.
-    - Use `data-content-source` that’s already used by the quoting mechanism.
-    - Implement a more proper solution than the current use of `autosize.update()`
-  - Content processor should only attach position information that we’ll actually use.
-    - This also allows us to simplify the code that uses the position information, because we don’t have to discard positions from inner elements.
-
----
-
-- View caching on the server.
-  - https://guides.rubyonrails.org/caching_with_rails.html
-
----
-
-- Pre-fetching
-  - There are some links that have side-effects (marking messages as read).
-  - All links in viewport
-    - https://getquick.link/
-  - Link under cursor
-    - https://www.peterbe.com/plog/aggressively-prefetching-everything-you-might-click
-    - https://www.mskog.com/posts/instant-page-loads-with-turbolinks-and-prefetch
-    - http://instantclick.io
-  - References:
-    - https://web.dev/speculative-prerendering/
-
----
-
-- Write a function to determine if processing content is even necessary. Most content doesn’t use extra features and could skip JSDOM entirely.
-
----
-
-- Investigate other potential bottlenecks:
-  - Synchronous stuff that could be async.
-
----
-
-- Framing?
-  - Sidebar vs main content
-    - On mobile may not need to load the sidebar at all
-  - Pagination links.
-    - Conversations in sidebar.
-    - Messages in conversation.
-  - Filters.
-
 ### Users
 
 - Improvements to the workflow for when you change your email:
@@ -505,6 +457,54 @@ new Notification('Example');
 - System administrators
   - How to deploy, backup, and update
   - Lower priority: We’ll do this in the future and rely solely on the text-based instructions for now.
+
+### Performance
+
+- Lazy loading & DRYing to reduce HTML payload
+  - `userPartial` tooltip
+  - `conversationPartial` tooltip on decorated content
+  - Edit message forms.
+    - Use `data-content-source` that’s already used by the quoting mechanism.
+    - Implement a more proper solution than the current use of `autosize.update()`
+  - Content processor should only attach position information that we’ll actually use.
+    - This also allows us to simplify the code that uses the position information, because we don’t have to discard positions from inner elements.
+
+---
+
+- View caching on the server.
+  - https://guides.rubyonrails.org/caching_with_rails.html
+
+---
+
+- Pre-fetching
+  - There are some links that have side-effects (marking messages as read).
+  - All links in viewport
+    - https://getquick.link/
+  - Link under cursor
+    - https://www.peterbe.com/plog/aggressively-prefetching-everything-you-might-click
+    - https://www.mskog.com/posts/instant-page-loads-with-turbolinks-and-prefetch
+    - http://instantclick.io
+  - References:
+    - https://web.dev/speculative-prerendering/
+
+---
+
+- Write a function to determine if processing content is even necessary. Most content doesn’t use extra features and could skip JSDOM entirely.
+
+---
+
+- Investigate other potential bottlenecks:
+  - Synchronous stuff that could be async.
+
+---
+
+- Framing?
+  - Sidebar vs main content
+    - On mobile may not need to load the sidebar at all
+  - Pagination links.
+    - Conversations in sidebar.
+    - Messages in conversation.
+  - Filters.
 
 ### Infrastructure
 
