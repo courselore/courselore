@@ -2139,11 +2139,11 @@ $$
     - Tutorial
   - Students:
     - Tutorial
-  - System administrators:
-    - How to deploy, backup, and update
-    - Lower priority: We’ll do this in the future and rely solely on the text-based instructions for now.
-  - Developers:
-    - How to setup for development.
+  - Lower priority: We’ll do this in the future and rely solely on the text-based instructions for now:
+    - System administrators:
+      - How to deploy, backup, and update
+    - Developers:
+      - How to setup for development.
 - “One-click deployment”
   - DigitalOcean.
   - Linode.
@@ -2156,10 +2156,9 @@ $$
 
 - Homepage:
   - Better printscreens without `lorem ipsum`.
+  - Example of design that we like: https://capacitorjs.com
+  - At some point hire a designer to make it more shiny
 - User groups.
-- Landing page:
-  - https://capacitorjs.com
-  - Maybe hire a designer.
 - Newsletter.
 - Create Courselore Gravatar.
   - Use in npm.
@@ -2205,7 +2204,7 @@ $$
   - <https://wordpress.org>
   - <https://gitea.io/>
   - <https://gogs.io/>
-- Text editors
-  - https://typora.io
-  - https://www.notion.so
-  - https://marktext.app
+- Content editors
+  - <https://typora.io>
+  - <https://www.notion.so>
+  - <https://marktext.app>
