@@ -1,33 +1,5 @@
 # Backlog
 
-### Performance
-
-- Pagination.
-  - `TODO`
-  - Smarter default page for when the page isn’t specified explicitly:
-    - Messages
-      - Deep links should go to the page containing the referred message
-      - If there is no deep link but there are unread messages, go to page containing the first unread message
-    - Conversations
-      - Page containing the currently open conversation?
-  - Load pages on scroll instead of button
-  - Deal with delete messages/conversations at the edges (before and after)
-    - `CAST("reference" AS INTEGER) >= CAST(${req.query.beforeMessageReference} AS INTEGER)`
-      - Create indices for `CAST("reference" AS INTEGER)` or convert `"reference"` into number (and then create an index for that!).
-  - On sending message on non-chat, it’s scrolling back to the first page.
-  - Remove feature flag.
-  - The “mark as read” button won’t work because it doesn’t visit all pages.
-
----
-
-- Framing?
-  - Pagination links.
-    - Conversations in sidebar.
-    - Messages in conversation.
-  - Filters.
-
----
-
 - Moving forward:
   - Redesign sidebar, chat messages, and things like announcements vs notes-that-generate-notifications.
   - Notification digests.
@@ -162,6 +134,14 @@
 - Write a function to determine if processing the message is even necessary. Most messages don’t use extra features and could skip JSDOM entirely.
 - Investigate other potential bottlenecks:
   - Synchronous stuff that could be async.
+
+---
+
+- Framing?
+  - Pagination links.
+    - Conversations in sidebar.
+    - Messages in conversation.
+  - Filters.
 
 ### Advanced Access Control
 
@@ -346,6 +326,19 @@ new Notification('Example');
 
 ### Pagination
 
+- `TODO`
+- Smarter default page for when the page isn’t specified explicitly:
+  - Messages
+    - Deep links should go to the page containing the referred message
+    - If there is no deep link but there are unread messages, go to page containing the first unread message
+  - Conversations
+    - Page containing the currently open conversation
+- Load pages on scroll instead of button
+- Deal with delete messages/conversations at the edges (before and after)
+  - `CAST("reference" AS INTEGER) >= CAST(${req.query.beforeMessageReference} AS INTEGER)`
+    - Create indices for `CAST("reference" AS INTEGER)` or convert `"reference"` into number (and then create an index for that!).
+- On sending message on non-chat, it’s scrolling back to the first page.
+- The “mark as read” button doesn’t work because it doesn’t visit all pages.
 - Edge case: Show next/previous page on “no more messages”.
   - This is edge case because people should only be able to get there when they manipulate the URL (or because they’re loading the next page right when an item has been deleted)
   - Difficult because we don’t have a “before” or “after” message to anchor to.
