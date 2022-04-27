@@ -53,6 +53,7 @@
 ---
 
 - Add the number of unread messages to the `<title>`.
+  - Or change the favicon.
 
 ---
 
@@ -65,6 +66,7 @@
 ---
 
 - When editing, and trying to send empty message, propose to delete (like Discord does).
+- When pressing up on an empty chat box, start editing the most recent message (like Discord does).
 
 ---
 
@@ -104,33 +106,34 @@
 - Introduce the notion of locking a conversation.
 - Introduce the notion of promoting a message into its own conversation (one example use case is when someone asks a question as a follow-up to an announcement).
 
+---
+
+- The `userPartial` tooltip opens too quickly on mobile. It doesn’t seem to use the delay, so it’s too easy to open a `userPartial` tooltip instead of going to a conversation, for example.
+
 ### Notifications
 
 - Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
 - Make emails be replies, so that they’re grouped in conversations on email readers.
 - Decorate the content sent on notifications, to avoid showing things like `@john-doe--201231`.
-- Notifications for the same conversation should be “reply” to email on same thread.
 - Email notification subjects could include the fact that you were mentioned, to make it easier to set up filters.
-- Change the page title when there are new messages on that conversation, to make it stand out on the browser tabs.
-  - Or change the favicon.
-- Implement job for scheduling notifications
-  - Delay sending notifications for a little bit to give the person a chance to update or delete the message.
+- Delay sending notifications for a little bit to give the person a chance to update or delete the message.
   - Don’t send notifications when the person is online and/or has seen the message.
   - Get notifications for replies to your posts. If a student asks a question they probably would like notifications on all replies. That might want to be on by default as well.
 - Add support for Dark Mode in emails.
   - This should fix the duplication of code blocks.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
 - Add different notification badges for when you’re @mentioned.
+  - On badges on sidebar indicating that a conversation includes unread messages
+  - On badges on course list
 - A timeline-like list of unread messages and other things that require your attention.
 - More granular control over what to be notified about.
   - Course-level configuration.
   - Subscribe/unsubscribe to particular conversations of interest/disinterest.
   - Receive notifications from conversations you’ve participated in.
-- Other channels: Use the browser Notifications API & Push API; Desktop & phone applications.
 - Snooze.
 - Don’t require user to be logged in to unsubscribe from notifications?
 - Add option to receive email notifications for your own messages.
-- Use Notifications API:
+- Other channels: Use the browser Notifications API & Push API; Desktop & phone applications.
 
 ```javascript
 Notification.requestPermission();
@@ -153,41 +156,29 @@ new Notification('Example');
 
 ### Advanced Access Control
 
-- 1-to-1 conversation: Use background color to distinguish between people, so you don’t have to show their names over and over.
+- 1-to-1 conversation
+  - Use background color to distinguish between people, so you don’t have to show their names over and over.
 - Chats with only a few people.
 - Groups, for example, Graders, Project Advisors, Group members, different sections on courses.
   - Some groups are available only to students, while others only to staff.
   - People assign themselves to groups.
-- Add mentions like `@group-3`.
+  - Add mentions like `@group-3`.
 
-### More Performance
+### Performance
 
-- Live updates destinations:
-  - Check conversation id and only send notifications to relevant connections.
-    - It gets a bit tricky, because some conversation modifications affect the sidebar, which should be updated for every tab with the course open.
-  - When we have pagination, take it a step further and only live update tabs with the affected message open.
 - Lazy loading & DRYing to reduce HTML payload
   - `userPartial` tooltip
   - `conversationPartial` tooltip on decorated content
   - Edit message forms.
     - Use `data-content-source` that’s already used by the quoting mechanism.
     - Implement a more proper solution than the current use of `autosize.update()`
-    - Should also fix the bug in which you send a couple messages in a row, they coalesce, and then you try to edit.
-  - Conversation navigation shouldn’t refresh the whole page:
-    - List of conversations shouldn’t jump when you go to a particular conversation.
-  - On mobile, decouple the list of conversation (the sidebar on desktop) from the conversation itself, to push less data on the wire
-  - Use web sockets instead of HTTP to save on roundtrips, authentication, and so forth? (Probably not, because it adds a lot of complexity, from keeping the connection open, to re-authenticating anyway to make sure you haven’t lost access to the relevant information, and so forth. But still, investigate…)
-  - I was on the fence about whether to hoist client-side JavaScript the same way we hoist CSS. Arguments in favor:
-    - Reduce the payload, because multiple long `oninteractive` in a loop get DRYed up.
-    - Consistency with CSS.
   - Content processor should only attach position information that we’ll actually use.
     - This also allows us to simplify the code that uses the position information, because we don’t have to discard positions from inner elements.
-  - On live update `refresh` event, don’t include whole page, just a Turbo Stream of what changed
 
 ---
 
 - View caching on the server.
-- Page caching on the client (similar to Turbo Links).
+  - https://guides.rubyonrails.org/caching_with_rails.html
 
 ---
 
@@ -204,13 +195,18 @@ new Notification('Example');
 
 ---
 
-- Write a function to determine if processing the message is even necessary. Most messages don’t use extra features and could skip JSDOM entirely.
+- Write a function to determine if processing content is even necessary. Most content doesn’t use extra features and could skip JSDOM entirely.
+
+---
+
 - Investigate other potential bottlenecks:
   - Synchronous stuff that could be async.
 
 ---
 
 - Framing?
+  - Sidebar vs main content
+    - On mobile may not need to load the sidebar at all
   - Pagination links.
     - Conversations in sidebar.
     - Messages in conversation.
@@ -467,9 +463,8 @@ new Notification('Example');
 - Right click menus on stuff.
 - Places where we show `administratorEmail` to report bugs could be forms instead.
 
-### Live-Updates Improvements
+### Live-Navigation
 
-- Scroll to `#anchored` element.
 - Cache?
   - Advantages:
     - It’ll potentially be a bit faster.
@@ -477,6 +472,11 @@ new Notification('Example');
     - It complicates the implementation.
     - It uses more memory on the client side.
   - Make sure to clear cache on sign-out or the back button will reveal private information.
+- Scroll to `#anchored` element.
+
+### Live-Updates
+
+- Scroll to `#anchored` element.
 - We’re leaking CSS. Maybe instead of just appending `local-css`, do some form of diffing, which only inserts and doesn’t delete (we want to keep the previous CSS because we may be preventing the deletion of some HTML, for example, the “NEW” separator).
   - Note that modifying the `textContent` of a `<style>` tag has immediate effect—the browser applies the new styles.
   - I ran live-updates every second for an hour, on mobile, and held itself okay, despite the leak of CSS. So maybe isn’t the biggest issue.
@@ -489,6 +489,11 @@ new Notification('Example');
     - Minimize the work on the client-side by making the pages small, so there’s less to diff.
     - Minimize the work on the client-side by sending only the diffs.
     - Throttle live-updates so that they can’t be super-frequent.
+- Be more selective about who receives a live-update:
+  - Right now everyone on the course receives a live-update for every action on the course.
+  - Check conversation id and only send updates to relevant connections.
+    - It gets a bit tricky, because some conversation modifications affect the sidebar, which should be updated for every tab with the course open.
+  - When we have pagination, take it a step further and only live update tabs with the affected message open.
 
 ### Videos
 
