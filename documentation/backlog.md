@@ -32,6 +32,7 @@
   - More space between messages and less space between paragraphs
   - Move the avatar to the side, giving a clearer indication of where a message ends and another one starts
   - “Truncate” long messages.
+  - Scroll to the bottom when sending chat message regardless of your scroll position?
 
 ---
 
@@ -142,6 +143,14 @@
 ---
 
 - The `userPartial` tooltip opens too quickly on mobile. It doesn’t seem to use the delay, so it’s too easy to open a `userPartial` tooltip instead of going to a conversation, for example.
+
+---
+
+- Make breadcrumbs (for example, under “User Settings”) clickable (they should expose the navigation menu, just like what happens in Visual Studio Code).
+
+---
+
+- The anonymity button isn’t as clear as it should be.
 
 ### Notifications
 
@@ -295,6 +304,7 @@ new Notification('Example');
 - Add support for videos: Sanitization, dimensions, and so forth.
 - Install extensions for Shiki, for example, for OCaml.
 - Mermaid: https://github.blog/2022-02-14-include-diagrams-markdown-files-mermaid/
+- Once the chats have been redesigned with avatars on the margin to better establish a hierarchy and delimit messages, consider bringing back the full `partials.user()` widget to `@mentions`, with avatar and everything. (I think this will look good, but it’s a controversial point, given that people were very insistent on removing avatars from that context.)
 - Add a job to re-preprocess content:
   - Messages
   - Biographies
@@ -363,62 +373,23 @@ new Notification('Example');
   - Use date pickers:
     - https://github.com/jcgertig/date-input-polyfill
     - https://github.com/Pikaday/Pikaday
-- Do something special on live updates & 404.
-  - For example, when we have a tab open with a conversation and someone else deletes it.
-  - Right now we just show the 404 to the person, without much context, which can be confusing.
-  - One possible solution is to look at the `Live-Updates` header on the `GET` and set a flash.
-- The submission of a form resets the state of the rest of the page.
-  - For example, start editing the title of a conversation, then click on “Pin”. The editing form will go away.
-  - The first step would be keep the `hidden` state on form submission, but then other things break, for example, if you’re actually submitting a conversation title update, then the form should be hidden. As far as I can tell, there’s no way to detect what should be hidden and what should be shown automatically: We’d have to write special cases. For example, on the `onsubmit` of the conversation title update, we could add actions to reset the hidden state of the involved components.
-  - Then, on `morph()`, we must look at the `originalEvent` and avoid updating form fields that aren’t the submitted form. This part is actually relatively straightforward: `detail.originalEvent instanceof SubmitEvent && detail.originalEvent.target.contains(from)`
-  - (Another example: When performing any simple form submission, for example, “Like”, the “NEW” message separator goes away. But maybe that’s a good thing: Once you interacted with the page, you probably already read the new messages, so it maybe it’s better for that separator to go away.)
-- On local CSS, use a non-standard attribute instead of classes?
-  - Pros:
-    - It’s a cleaner solution, given that we’re sort of abusing classes.
-  - Cons:
-    - It’s less usual.
-- Selective fetching: the server doesn’t need to send the whole page all the time. It can send only what changed.
-- Update tooltip content by morphing, instead of simply replacing, to preserve state (particularly on live updates):
-  - Scrolling
-  - In chats, the “Views” component in the “Actions” menu closes on live update.
-- Re-fetch partials in the background after live updates? They may have gotten stale, for example, the “Views” component, if it’s open right as a live update is happening.
-- Scroll to the bottom when sending chat message?
-- Do something to prevent flash of unstyled content on scrolling. It’s mostly an issue when loading a deeply-linked conversation directly, because otherwise live-navigation takes care of the issue.
+
+---
+
+- Do something to prevent flash of unstyled content on scrolling. It’s mostly an issue when loading a deeply-linked conversation for the first time, because otherwise live-navigation takes care of the issue.
+
+---
+
 - Prevent the flash of unformatted datetime on fields using `validateLocalizedDateTime()`.
-- Redesign the presentation of submenus, for example, “Conversations”, on mobile. Try a hamburger menu.
-- Artificial progress bar on hijacked navigation, similar to Turbo Drive.
-- Live-updates:
-  - Improve the refreshing mechanism
-    - Only send refresh events to people who need it (those who have open a page that’s affected)
-    - Spread refresh events over time, or you’re DoS the server
-  - Maybe don’t disconnect/reconnect when a live-navigation will just return you to the same page?
-    - It only saves the creation of connection information on the database on the server and the cost of establishing the connection.
-    - A `POST` will already cause an update to the information on the page.
-    - The implementation gets a bit awkward. The trick is to introduce the URL to the identity of the connection on top of the token which already identifies it. The token becomes the identity of the browser tab, and the URL becomes its state. If you put the two together, you can disconnect/reconnect only when necessary. But there are plenty of edge cases to deal with, for example, a live-update coming in right in the middle of a `POST` live-navigation.
-    - Right now, you `POST` and live-navigate, interacting with the page, we keep disconnecting/reconnecting and creating new tokens, but the old ones are left behind, waiting to be garbage collected. This probably isn’t a big problem, because it boils down to just one row in the database, but maybe we should optimize this by sending the token on the `POST` and then removing the connection from the database right away.
-  - Currently, if a connection comes in with a token we don’t identify, we treat that as a browser tab that was offline for a while and just reconnected, which means it receives a live-update right away. This can be superfluous if no change actually took place. This may be a minor issue—or not an issue at all. And addressing it probably complicates the live-updates mechanisms quite a bit. But, in any case, one potential solution is, instead of keeping tokens on the server and scheduling events to them, keep a notion of when things were updated, this way upon reconnection the client can say when it was the last time it got a live-update, and the server can know if another live-update is necessary.
 - Tooltip showing the views for a message:
   - The counter is sometimes lagging behind the actual count, because we don’t send refresh events on every GET everyone ever does (’cause **that** would be silly 😛)
     - Another consequence of not sending refresh events on every GET is that the number of unread messages on the sidebar becomes inconsistent when you have multiple tabs open and you read messages on one of them (the rest still show the unread indicator).
   - It should live-update. (Or the cached content of the tooltip should be expired somehow.)
-- `updatedAt` relative times aren’t updating as they should, because they don’t look at `datetime` again (effectively, `datetime` is cached).
-- On chats (which need to scroll to the bottom), do something to prevent flash of unstyled content.
-- Potential issue: when we deploy a new version, Morphdom doesn’t update the global CSS & JavaScript. Solution: force a reload.
-- Right now we’re using a Turbo Drive approach. Upgrade to a Turbo Streams approach for critical flows. (In other words, don’t redirect as response to `POST`, but send the data right away.)
-- Do the morphdom on the server?
-- Add latency compensation to other parts of the system, for example, endorsements and changing the conversation type. (In general, look for `emitCourseRefresh`).
-  - Maybe add it everywhere, following the Turbo Drive approach?
-- In a chat, if you’re the only like, and you remove it, then the dropdown menu won’t update and you won’t be able to re-like it.
-- Do something about time stamps making the design jump around.
-  - I tried giving them fixed width, but it didn’t look right.
-- Change the design of chats so that it’s easier to tell messages apart. Right now @mentions and messages look too much alike. Maybe use the Slack/Discord/GitHub solution of moving the avatar into the margin.
-- Have some kind of guide for the first time you enter the system, or the first time you create a course, and that sort of thing.
-- Make breadcrumbs (for example, under “User Settings”) clickable (they should expose the navigation menu, just like what happens in Visual Studio Code).
-- The anonymity button isn’t as clear as it should be.
-- When adding tags with the “Manage Tags” button (from the “Create a New Conversation” form or from the “Tags” button on a conversation), have a way to load the new tags without losing progress.
-- Add a `max-height` to the course switcher (what if you have many courses?).
+- Have some kind of in-app guide for the first time you enter the system, or the first time you create a course, and that sort of thing. This should complement the videos.
 - Checkboxes that don’t have a visual indication may be confusing.
-- Right click menus on stuff.
+- Right click menus on stuff?
+  - For example, something like the “Actions” menu under the ellipses on messages.
+  - But they can frustrate people who just want to interact with the browser right-click context menu.
 - Places where we show `administratorEmail` to report bugs could be forms instead.
 
 ### Live-Navigation
@@ -431,6 +402,13 @@ new Notification('Example');
     - It uses more memory on the client side.
   - Make sure to clear cache on sign-out or the back button will reveal private information.
 - Scroll to `#anchored` element.
+- The submission of a form resets the state of the rest of the page.
+  - For example, start editing the title of a conversation, then click on “Pin”. The editing form will go away.
+    - Another example: When performing any simple form submission, for example, “Like”, the “NEW” message separator goes away. But maybe that’s a good thing: Once you interacted with the page, you probably already read the new messages, so it maybe it’s better for that separator to go away.
+  - The first step would be keep the `hidden` state on form submission, but then other things break, for example, if you’re actually submitting a conversation title update, then the form should be hidden. As far as I can tell, there’s no way to detect what should be hidden and what should be shown automatically: We’d have to write special cases. For example, on the `onsubmit` of the conversation title update, we could add actions to reset the hidden state of the involved components.
+  - Then, on `morph()`, we must look at the `originalEvent` and avoid updating form fields that aren’t the submitted form. This part is actually relatively straightforward: `detail.originalEvent instanceof SubmitEvent && detail.originalEvent.target.contains(from)`
+- In response to a `POST`, don’t redirect, but render the page right away, saving one round trip. This is similar to the Turbo Streams approach, in which a stream is sent as a response to the `POST`.
+- Do latency compensation for critical flows, for example, sending a message or liking. Instead of relying on the live-navigation, pre-render the modified content right away.
 
 ### Live-Updates
 
@@ -452,6 +430,20 @@ new Notification('Example');
   - Check conversation id and only send updates to relevant connections.
     - It gets a bit tricky, because some conversation modifications affect the sidebar, which should be updated for every tab with the course open.
   - When we have pagination, take it a step further and only live update tabs with the affected message open.
+- Do something special on 404.
+  - For example, when we have a tab open with a conversation and someone else deletes it.
+  - Right now we just show the 404 to the person, without much context, which can be confusing.
+  - One possible solution is to look at the `Live-Updates` header on the `GET` and set a flash.
+- Don’t send the whole page, only a diff to be applied on the client
+- Update tooltip content by morphing, instead of simply replacing, to preserve state:
+  - Scrolling
+  - In chats, the “Views” component in the “Actions” menu closes on live update.
+- Re-fetch partials in the background after a live update? They may have gotten stale, for example, the “Views” component, if it’s open right as a live update is happening.
+- Maybe don’t disconnect/reconnect the live-updates connection when a live-navigation will just return you to the same page?
+  - It only saves the creation of connection information on the database on the server and the cost of establishing the connection.
+  - A `POST` will already cause an update to the information on the page.
+  - The implementation gets a bit awkward. The trick is to introduce the URL to the identity of the connection on top of the token which already identifies it. The token becomes the identity of the browser tab, and the URL becomes its state. If you put the two together, you can disconnect/reconnect only when necessary. But there are plenty of edge cases to deal with, for example, a live-update coming in right in the middle of a `POST` live-navigation.
+- Currently, if a connection comes in with a token we don’t identify, we treat that as a browser tab that was offline for a while and just reconnected, which means it receives a live-update right away. This can be superfluous if no change actually took place. This may be a minor issue—or not an issue at all. And addressing it probably complicates the live-updates mechanisms quite a bit. But, in any case, one potential solution is, instead of keeping tokens on the server and scheduling events to them, keep a notion of when things were updated, this way upon reconnection the client can say when it was the last time it got a live-update, and the server can know if another live-update is necessary.
 
 ### Videos
 
@@ -515,7 +507,7 @@ new Notification('Example');
 ### Infrastructure
 
 - **2022-05-22:** Downgrade server.
-- Force a refresh on new deployment.
+- Force a reload on new deployment.
 - Have timeouts on all `fetch()`es, because there may be no feedback if the internet goes down in the middle of an operation, and the connection may be left hanging, and we’ll be `await`ing forever.
   - But maybe this only applies to event-stream type of requests, and we have them covered already. Maybe for regular kinds of requests this would be overkill…
 - Autosize is leaking resources because of the global `Map` of bound textareas. It should be using `WeakMap` instead.
