@@ -2,132 +2,6 @@
 
 ### Performance
 
-- On live-updates, we’re leaking CSS to some extent. Maybe instead of just appending `local-css`, do some form of diffing, which only inserts and doesn’t delete (because we may be preventing the deletion of some HTML, for example, the “NEW” separator).
-  - Note that modifying the `textContent` of a `<style>` tag has immediate effect—the browser applies the new styles.
-
----
-
-- Currently `onload` may be adding a bunch of repeated JavaScript, adding to the size of the page. Perhaps we should do something similar to what we do in `local-css`?
-  - Note that modifying the `textContent` of `<script>` tag only has immediate effect the first time(!) Subsequent modifications aren’t picked up by the browser (but you can always `eval()`).
-
----
-
-- Make `onload` an `AsyncFunction`?
-
----
-
-- Force a refresh on new deployment.
-
----
-
-- Desktop application:
-
-```javascript
-{
-  "scripts": {
-    "start": "electron ./index.js"
-  },
-  "devDependencies": {
-    "electron": "^18.1.0"
-  }
-}
-
-const { app, BrowserWindow } = require("electron");
-
-(async () => {
-  await app.whenReady();
-
-  let browserWindow;
-  const createBrowserWindow = () => {
-    browserWindow = new BrowserWindow({
-      width: 800,
-      height: 600,
-    });
-    browserWindow.loadURL("https://leafac.local");
-  };
-  createBrowserWindow();
-
-  app.on("window-all-closed", () => {
-    if (process.platform !== "darwin") app.quit();
-  });
-
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) createBrowserWindow();
-  });
-
-  app.setBadgeCount(3);
-})();
-```
-
----
-
-- Use Notifications API:
-
-```javascript
-Notification.requestPermission();
-Notification.permission;
-new Notification('Example');
-
-<button
-  class="button button--transparent"
-  onload="${javascript`
-    this.onclick = async () => {
-      if (await Notification.requestPermission() === "denied") return;
-      new Notification("Example");
-    };
-  `}"
->
-  <i class="bi bi-bell"></i>
-  Send Notification
-</button>
-```
-
----
-
-- Improve experience on phone:
-  - Make the “Conversations” button push an entry into the history. (We can do that by turning it into a link that points at `/courses/<courseReference>`.)
-  - Have a hamburger menu that doesn’t cover the whole pane underneath, and in that case don’t push an entry into the history.
-  - When you click on the existing “Conversations” menu, it take a little while to respond. But not all the time, so keep an eye out for it. (Maybe it has to do with live-updates coming in and morphing happening on the background?)
-- Other ideas for improving the design:
-  - Conversations are sorted by most recent activity, but that means when you send a message, the conversation moves to the top, which can be disorienting.
-    - Wait for a little while, 10~30 minutes, before sorting.
-  - Separate the conversations in sections: One section for conversations with unread messages.
-  - Add filters for conversations with unread messages.
-  - Quick filters:
-    - Staff:
-      - Unresolved questions
-      - Conversations with unread messages
-    - Students:
-      - Questions
-      - Conversations with unread messages
-- Don’t deploy big design changes in the next two weeks, because we’re approaching the end of the semester and big design changes could confuse people.
-- Over the summer, start thinking more strategically.
-
----
-
-- Document
-  - Reasons to prefer `fetch` over `EventSource`:
-    - Features such as headers.
-    - Implementors lost interest on `EventSource` (https://github.com/whatwg/html/issues/2177).
-    - Free to use a more sensible event-stream format, such as NDJSON
-  - Reasons to have one event-stream connection per route, and close and reopen as you navigate, as opposed to a single persistent event-stream connection:
-    - Session management would be awkward
-    - Extra work to not have event-stream open for routes that don’t support them (otherwise it increases the server load for no good reason) (but most of the time people are on routes that support live updates, so it’s no big deal).
-    - The live-updates middleware benefits from appearing after authentication and retrieval of things like course information. It’d be awkward to have it as a global middleware.
-  - Reasons not to use the Visibility API:
-    - First, the obvious pro: We could disconnect the live-updates event-stream when the tab isn’t showing, reducing the load on the server.
-    - But we decided against it because we want to be able to have features such as changing a tab title to “2 unread messages,” even if the tab is on the background, and this requires the connection to the server to be kept alive.
-  - Assumptions on `onload`:
-    - It’s only safe to run `onload` once.
-    - The code will be run again on live-navigation & live-update, and there may be some continuity in the form of tooltips & event handlers.
-
----
-
-- Read production logs.
-- Downgrade server.
-
----
-
 - Check if textarea freezes when live-update is being processed.
 
 ---
@@ -164,6 +38,27 @@ new Notification('Example');
   - 1-on-1 conversations.
 
 ### User Interface Improvements
+
+- Improve experience on phone:
+
+  - Make the “Conversations” button push an entry into the history. (We can do that by turning it into a link that points at `/courses/<courseReference>`.)
+  - Have a hamburger menu that doesn’t cover the whole pane underneath, and in that case don’t push an entry into the history.
+  - When you click on the existing “Conversations” menu, it take a little while to respond. But not all the time, so keep an eye out for it. (Maybe it has to do with live-updates coming in and morphing happening on the background?)
+
+- Other ideas for improving the design:
+  - Conversations are sorted by most recent activity, but that means when you send a message, the conversation moves to the top, which can be disorienting.
+    - Wait for a little while, 10~30 minutes, before sorting.
+  - Separate the conversations in sections: One section for conversations with unread messages.
+  - Add filters for conversations with unread messages.
+  - Quick filters:
+    - Staff:
+      - Unresolved questions
+      - Conversations with unread messages
+    - Students:
+      - Questions
+      - Conversations with unread messages
+
+---
 
 - Add the number of unread messages to the `<title>`.
 
@@ -386,6 +281,26 @@ new Notification('Example');
 - Snooze.
 - Don’t require user to be logged in to unsubscribe from notifications?
 - Add option to receive email notifications for your own messages.
+- Use Notifications API:
+
+```javascript
+Notification.requestPermission();
+Notification.permission;
+new Notification('Example');
+
+<button
+  class="button button--transparent"
+  onload="${javascript`
+    this.onclick = async () => {
+      if (await Notification.requestPermission() === "denied") return;
+      new Notification("Example");
+    };
+  `}"
+>
+  <i class="bi bi-bell"></i>
+  Send Notification
+</button>
+```
 
 ### Search
 
@@ -545,7 +460,7 @@ new Notification('Example');
 - Right click menus on stuff.
 - Places where we show `administratorEmail` to report bugs could be forms instead.
 
-### Live Updates Improvements
+### Live-Updates Improvements
 
 - Scroll to `#anchored` element.
 - Cache?
@@ -555,6 +470,8 @@ new Notification('Example');
     - It complicates the implementation.
     - It uses more memory on the client side.
   - Make sure to clear cache on sign-out or the back button will reveal private information.
+- We’re leaking CSS. Maybe instead of just appending `local-css`, do some form of diffing, which only inserts and doesn’t delete (we want to keep the previous CSS because we may be preventing the deletion of some HTML, for example, the “NEW” separator).
+  - Note that modifying the `textContent` of a `<style>` tag has immediate effect—the browser applies the new styles.
 
 ### Videos
 
@@ -569,6 +486,8 @@ new Notification('Example');
 
 ### Infrastructure
 
+- **2022-05-22:** Downgrade server.
+- Force a refresh on new deployment.
 - Have timeouts on all `fetch()`es, because there may be no feedback if the internet goes down in the middle of an operation, and the connection may be left hanging, and we’ll be `await`ing forever.
   - But maybe this only applies to event-stream type of requests, and we have them covered already. Maybe for regular kinds of requests this would be overkill…
 - Autosize is leaking resources because of the global `Map` of bound textareas. It should be using `WeakMap` instead.
@@ -2148,6 +2067,44 @@ $$
 - Can we get away with not having mobile & desktop applications? How much does it hinder our ability to do things like notifications?
   - PWA to begin with: https://checkvist.com/auth/mobile
 - Desktop: Electron.
+
+```javascript
+{
+  "scripts": {
+    "start": "electron ./index.js"
+  },
+  "devDependencies": {
+    "electron": "^18.1.0"
+  }
+}
+
+const { app, BrowserWindow } = require("electron");
+
+(async () => {
+  await app.whenReady();
+
+  let browserWindow;
+  const createBrowserWindow = () => {
+    browserWindow = new BrowserWindow({
+      width: 800,
+      height: 600,
+    });
+    browserWindow.loadURL("https://leafac.local");
+  };
+  createBrowserWindow();
+
+  app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") app.quit();
+  });
+
+  app.on("activate", () => {
+    if (BrowserWindow.getAllWindows().length === 0) createBrowserWindow();
+  });
+
+  app.setBadgeCount(3);
+})();
+```
+
 - Mobile:
   - https://capacitorjs.com/
     - Agnostic to front-end framework.
@@ -2196,6 +2153,8 @@ $$
   - Facebook.
   - Instagram.
   - Reddit.
+- Don’t deploy big design changes until around 2022-05-11, because we’re approaching the end of the semester and big design changes could confuse people.
+- Over the summer, start thinking more strategically.
 
 ### References
 
