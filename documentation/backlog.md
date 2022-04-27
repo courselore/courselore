@@ -361,9 +361,67 @@ new Notification('Example');
   - https://www.sli.do
   - https://pigeonholelive.com/features-qna/
 
-### Homepage
+### Native Mobile & Desktop Applications
 
-- Better printscreens without `lorem ipsum`.
+- PWA: https://checkvist.com/auth/mobile
+- Desktop: Electron.
+
+```javascript
+{
+  "scripts": {
+    "start": "electron ./index.js"
+  },
+  "devDependencies": {
+    "electron": "^18.1.0"
+  }
+}
+
+const { app, BrowserWindow } = require("electron");
+
+(async () => {
+  await app.whenReady();
+
+  let browserWindow;
+  const createBrowserWindow = () => {
+    browserWindow = new BrowserWindow({
+      width: 800,
+      height: 600,
+    });
+    browserWindow.loadURL("https://leafac.local");
+  };
+  createBrowserWindow();
+
+  app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") app.quit();
+  });
+
+  app.on("activate", () => {
+    if (BrowserWindow.getAllWindows().length === 0) createBrowserWindow();
+  });
+
+  app.setBadgeCount(3);
+})();
+```
+
+- Mobile:
+  - https://capacitorjs.com/
+    - Agnostic to front-end framework.
+    - Excellent onboarding experience.
+    - Isn’t super popular, but the smaller community is enthusiastic.
+  - https://reactnative.dev/
+    - https://expo.dev/
+    - Ties you to React.
+    - Much more popular than anything else.
+  - https://cordova.apache.org/
+    - The spiritual predecessor of Capacitor.
+    - Still more popular, but dreaded.
+- Have registry of Courselore instances. For example, in a phone application we could show a list of existing instances. (You could always not list yourself in the registry and enter the URL for your instance manually on the phone application.)
+
+### API
+
+- Integrate with other platforms, for example, LMSs.
+  - Learning Tools Interoperability (LTI).
+- To build extensions, for example, ask a question from within the text editor.
 
 ### User Interface
 
@@ -391,6 +449,13 @@ new Notification('Example');
   - For example, something like the “Actions” menu under the ellipses on messages.
   - But they can frustrate people who just want to interact with the browser right-click context menu.
 - Places where we show `administratorEmail` to report bugs could be forms instead.
+
+### Design & Accessibility
+
+- Translate to other languages.
+- Add a toggle to switch between light mode and dark mode, regardless of your operating system setting? I don’t like this idea, but lots of people do it. Investigate…
+- Test screen readers.
+- Test contrast.
 
 ### Live-Navigation
 
@@ -2066,76 +2131,6 @@ $$
 
 </details>
 
-### API
-
-- Integrate with other platforms, for example, LMSs.
-  - Learning Tools Interoperability (LTI).
-- To build extensions, for example, ask a question from within the text editor.
-
-### Mobile & Desktop Applications
-
-- Can we get away with not having mobile & desktop applications? How much does it hinder our ability to do things like notifications?
-  - PWA to begin with: https://checkvist.com/auth/mobile
-- Desktop: Electron.
-
-```javascript
-{
-  "scripts": {
-    "start": "electron ./index.js"
-  },
-  "devDependencies": {
-    "electron": "^18.1.0"
-  }
-}
-
-const { app, BrowserWindow } = require("electron");
-
-(async () => {
-  await app.whenReady();
-
-  let browserWindow;
-  const createBrowserWindow = () => {
-    browserWindow = new BrowserWindow({
-      width: 800,
-      height: 600,
-    });
-    browserWindow.loadURL("https://leafac.local");
-  };
-  createBrowserWindow();
-
-  app.on("window-all-closed", () => {
-    if (process.platform !== "darwin") app.quit();
-  });
-
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) createBrowserWindow();
-  });
-
-  app.setBadgeCount(3);
-})();
-```
-
-- Mobile:
-  - https://capacitorjs.com/
-    - Agnostic to front-end framework.
-    - Excellent onboarding experience.
-    - Isn’t super popular, but the smaller community is enthusiastic.
-  - https://reactnative.dev/
-    - https://expo.dev/
-    - Ties you to React.
-    - Much more popular than anything else.
-  - https://cordova.apache.org/
-    - The spiritual predecessor of Capacitor.
-    - Still more popular, but dreaded.
-- Have registry of Courselore instances. For example, in a phone application we could show a list of existing instances. (You could always not list yourself in the registry and enter the URL for your instance manually on the phone application.)
-
-### Design & Accessibility
-
-- Translate to other languages.
-- Add a toggle to switch between light mode and dark mode, regardless of your operating system setting? I don’t like this idea, but lots of people do it. Investigate…
-- Test screen readers.
-- Test contrast.
-
 ### Documentation
 
 - Videos
@@ -2159,6 +2154,8 @@ const { app, BrowserWindow } = require("electron");
 
 ### Marketing
 
+- Homepage:
+  - Better printscreens without `lorem ipsum`.
 - User groups.
 - Landing page:
   - https://capacitorjs.com
