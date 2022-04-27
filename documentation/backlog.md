@@ -365,7 +365,7 @@ new Notification('Example');
 
 - Better printscreens without `lorem ipsum`.
 
-### Interface Details
+### User Interface
 
 - Forms:
   - Use `maxlength`.
