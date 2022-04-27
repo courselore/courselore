@@ -220,9 +220,10 @@ new Notification('Example');
 - Authentication:
   - SSO with Hopkins ID (SAML) (https://glacial-plateau-47269.herokuapp.com/).
   - 2-Factor Authentication.
-- Pronoun.
-- A short audio with the name’s pronunciation.
 - Give visual indication on dragging-and-dropping avatar on `/settings/profile`.
+- Extra fields:
+  - Pronoun.
+  - A short audio with the name’s pronunciation.
 
 ### Courses
 
