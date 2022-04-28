@@ -2,6 +2,10 @@
 
 ### User Interface Improvements
 
+- The loading spinner keeps running forever in iOS because of streaming `fetch()`es.
+
+---
+
 - https://github.com/helmetjs/helmet
   - It may be better to set the headers on Caddy instead of using Helmet because it also applies to attachments and other things that don’t go through the server.
 - Permissions-Policy interest-cohort=()
@@ -291,6 +295,7 @@ new Notification('Example');
   - Issue with indent-textarea is that it only supports tabs, not spaces https://github.com/fregante/indent-textarea/issues/21
   - CodeMirror is heavy-handed
 - If you’re in the middle of editing, and someone else edits a message (or the conversation title), then you’re going to overwrite their changes. Warn about this.
+- Dragging an image from another website and dropping it in the content editor results in a 422.
 
 ### Content Processor
 
@@ -301,7 +306,7 @@ new Notification('Example');
 - Add support for underline in Markdown.
 - The “quote” button on code blocks is showing up in the wrong place.
 - `.katex` is overflowing in the `y` axis unnecessarily. (See, for example, the example we give on the home page.)
-- Proxy hotlinked images (particularly if served with HTTP because of insecure content): https://github.com/atmos/camo
+- Proxy hotlinked images (particularly if served with HTTP because of insecure content): https://github.com/atmos/camo (I tested and it really doesn’t work)
 - Reference on more features ideas: <https://github.com/gjtorikian/html-pipeline>
 - Polls.
 - Lightbox modal:
