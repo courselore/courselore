@@ -2,10 +2,6 @@
 
 ### User Interface Improvements
 
-- The loading spinner keeps running forever in iOS because of streaming `fetch()`es.
-
----
-
 - https://github.com/helmetjs/helmet
   - It may be better to set the headers on Caddy instead of using Helmet because it also applies to attachments and other things that don’t go through the server.
 - Permissions-Policy interest-cohort=()
@@ -469,6 +465,8 @@ const { app, BrowserWindow } = require("electron");
   - For example, something like the “Actions” menu under the ellipses on messages.
   - But they can frustrate people who just want to interact with the browser right-click context menu.
 - Places where we show `administratorEmail` to report bugs could be forms instead.
+- Maybe updating the accent color should send a live-update to tabs by the same user.
+- The loading spinner keeps running forever in iOS because of streaming `fetch()`es.
 
 ### Design & Accessibility
 
