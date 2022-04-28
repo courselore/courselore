@@ -3427,7 +3427,7 @@ export default (app: Courselore): void => {
                                                             theme: "rose",
                                                             trigger: "click",
                                                             interactive: true,
-                                                            appendTo: document.body,
+                                                            appendTo: document.querySelector("body"),
                                                             content: ${res.locals.HTMLForJavaScript(
                                                               html`
                                                                 <form

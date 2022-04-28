@@ -343,7 +343,7 @@ export default (app: Courselore): void => {
         onload="${javascript`
           (this.tooltip ??= tippy(this)).setProps({
             interactive: true,
-            appendTo: document.body,
+            appendTo: document.querySelector("body"),
             delay: [1000, null],
             content: ${res.locals.HTMLForJavaScript(
               html`

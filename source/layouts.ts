@@ -250,6 +250,13 @@ export default async (app: Courselore): Promise<void> => {
                   `;
             })()}
 
+            document.querySelector('[key="theme-color--light"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--color--${
+              res.locals.enrollment?.accentColor
+            }--500"));
+            document.querySelector('[key="theme-color--dark"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue("--color--${
+              res.locals.enrollment?.accentColor
+            }--600"));
+
             ${
               res.locals.liveUpdatesNonce !== undefined
                 ? javascript`
@@ -1047,6 +1054,20 @@ export default async (app: Courselore): Promise<void> => {
                 `
               : javascript``};
           </script>
+
+          <meta
+            key="theme-color--light"
+            name="theme-color"
+            content=""
+            media="(prefers-color-scheme: light)"
+          />
+          <meta
+            key="theme-color--dark"
+            name="theme-color"
+            content=""
+            media="(prefers-color-scheme: dark)"
+          />
+
           $${head}
         </head>
         $${baseLayoutBody}
