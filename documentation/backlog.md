@@ -3,6 +3,13 @@
 ### User Interface Improvements
 
 - https://github.com/helmetjs/helmet
+  - It may be better to set the headers on Caddy instead of using Helmet because it also applies to attachments and other things that don’t go through the server.
+- Permissions-Policy interest-cohort=()
+  - Document-Policy
+- Server
+  - Pay attention to error routes (502)
+  - Pay attention to redirects (HTTP → HTTPS)
+- x-powered-by
 
 ---
 
