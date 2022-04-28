@@ -12,8 +12,9 @@
   - Document-Policy
 - Server
   - Pay attention to error routes (502)
-  - Pay attention to redirects (HTTP → HTTPS)
-- x-powered-by
+  - Pay attention to redirects
+    - HTTP → HTTPS
+    - Other domains
 
 ---
 
