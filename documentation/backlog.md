@@ -29,6 +29,10 @@
 
 ---
 
+- Keep an eye out for glitches of the relative date tooltip not showing up or even disappearing. Happened in Safari desktop.
+
+---
+
 - Sidebar:
   - “Start a Conversation” → “Ask a Question”
   - Hide search bar when unneeded
