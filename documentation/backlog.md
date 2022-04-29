@@ -601,6 +601,15 @@ const { app, BrowserWindow } = require("electron");
 
 - **2022-05-22:** Downgrade server.
 - Force a reload on new deployment.
+- Cluster mode:
+  - Right now we’re running with a single process, which doesn’t take advantage of all CPU cores.
+  - Approaches:
+    - Spawn separate Node.js processes and use Caddy to reverse proxy between them:
+      - Caddy may do a better job at load balancing.
+      - In theory the processes wouldn’t even have to be on the same machine. In practice, we’re using SQLite, so we probably want to stick to a single machine, otherwise we run into issues with networked file systems.
+    - Use Node.js’s `cluster` module:
+      - There may be chance of sharing things like live-updates destinations, simplifying the messaging between an event changing the database and the listeners interested in those events.
+      - We’re probably painting ourselves in the corner even more in terms of scalability, given that all cluster processes are on a single machine.
 - Review all uses of `fetch()`:
   - Treat the error cases
   - Have timeouts, because there may be no feedback if the internet goes down in the middle of an operation, and the connection may be left hanging, and we’ll be `await`ing forever.
