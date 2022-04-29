@@ -28,8 +28,8 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
             local_certs
           }
           
-          ${baseURL} {
-            route {
+          ${new URL(baseURL).origin} {
+            route ${new URL(`${baseURL}/*`).pathname} {
               route {
                 root * ${url.fileURLToPath(
                   new URL("../static/", courseloreImportMetaURL)
@@ -50,7 +50,24 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
               }
               reverse_proxy 127.0.0.1:4001
             }
-            header Cache-Control no-cache
+            header {
+              Cache-Control no-cache
+              Content-Security-Policy "default-src ${baseURL} 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
+              Cross-Origin-Embedder-Policy require-corp
+              Cross-Origin-Opener-Policy same-origin
+              Cross-Origin-Resource-Policy same-origin
+              Referrer-Policy same-origin
+              Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+              X-Content-Type-Options nosniff
+              Origin-Agent-Cluster "?1"
+              X-DNS-Prefetch-Control off
+              X-Frame-Options DENY
+              X-Permitted-Cross-Domain-Policies none
+              -Server
+              -X-Powered-By
+              X-XSS-Protection 0
+              Permissions-Policy "interest-cohort=()"
+            }
             encode zstd gzip
           }
         `,

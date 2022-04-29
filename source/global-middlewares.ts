@@ -22,7 +22,6 @@ export type UserFileExtensionsWhichMayBeShownInBrowser =
   typeof userFileExtensionsWhichMayBeShownInBrowser[number];
 export const userFileExtensionsWhichMayBeShownInBrowser = [
   "png",
-  "svg",
   "jpg",
   "jpeg",
   "gif",

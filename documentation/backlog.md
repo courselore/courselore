@@ -2,14 +2,30 @@
 
 ### User Interface Improvements
 
-- https://github.com/helmetjs/helmet
-- Permissions-Policy interest-cohort=()
-  - Document-Policy
+- Test mounting application on a sub-path.
 - Server
-  - Pay attention to error routes (502)
-  - Pay attention to redirects
+  - Check error routes
+    - 404
+    - 422
+    - 500
+    - 502
+  - Check redirects
     - HTTP → HTTPS
     - Other domains
+- Clean `localStorage` on logout!
+  - Clear-Site-Data
+- `example.mjs` shouldn’t include `preload`
+- https://www.ssllabs.com/ssltest/
+- Content-Security-Policy
+  - https://csp-evaluator.withgoogle.com
+  - https://securityheaders.com
+- Content-Disposition
+  - https://leafac.local/files/39903997830927982272/favicon.png
+  - https://leafac.local/files/93617397874605209001/2.html
+- https://hstspreload.org
+- References:
+  - https://github.com/helmetjs/helmet
+  - https://owasp.org/www-project-secure-headers/
 
 ---
 
