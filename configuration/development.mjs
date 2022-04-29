@@ -3,8 +3,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
   const administratorEmail = "development@courselore.org";
   const path = await courseloreImport("node:path");
   const dataDirectory = path.join(process.cwd(), "data");
-  const { default: courselore, userFileExtensionsWhichMayBeShownInBrowser } =
-    await courseloreImport("./index.js");
+  const { default: courselore } = await courseloreImport("./index.js");
   if (process.argv[3] === undefined) {
     const url = await courseloreImport("node:url");
     const execa = (await courseloreImport("execa")).execa;
@@ -41,10 +40,8 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
                 root * ${dataDirectory}
                 @file_exists file
                 route @file_exists {
-                  @may_not_be_shown_in_browser not path ${userFileExtensionsWhichMayBeShownInBrowser
-                    .map((extension) => `*.${extension}`)
-                    .join(" ")}
-                  header @may_not_be_shown_in_browser Content-Disposition attachment 
+                  @must_be_downloaded not path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf *.txt
+                  header @must_be_downloaded Content-Disposition attachment 
                   file_server
                 }
               }

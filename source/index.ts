@@ -9,10 +9,7 @@ import logging from "./logging.js";
 import globalMiddlewares, {
   GlobalMiddlewaresOptions,
 } from "./global-middlewares.js";
-export {
-  BaseMiddlewareLocals,
-  userFileExtensionsWhichMayBeShownInBrowser,
-} from "./global-middlewares.js";
+export { BaseMiddlewareLocals } from "./global-middlewares.js";
 
 import liveUpdates, {
   LiveUpdatesLocals,

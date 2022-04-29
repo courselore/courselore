@@ -18,51 +18,12 @@ export interface BaseMiddlewareLocals {
   liveUpdatesNonce: string | undefined;
 }
 
-export type UserFileExtensionsWhichMayBeShownInBrowser =
-  typeof userFileExtensionsWhichMayBeShownInBrowser[number];
-export const userFileExtensionsWhichMayBeShownInBrowser = [
-  "png",
-  "jpg",
-  "jpeg",
-  "gif",
-  "mp3",
-  "mp4",
-  "m4v",
-  "ogg",
-  "mov",
-  "mpeg",
-  "avi",
-  "pdf",
-  "txt",
-] as const;
-
 export default (app: Courselore): void => {
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>((req, res, next) => {
     res.locals.localCSS = localCSS();
     res.locals.HTMLForJavaScript = HTMLForJavaScript();
     next();
   });
-
-  app.use<{}, any, {}, {}, BaseMiddlewareLocals>(
-    express.static(url.fileURLToPath(new URL("../static", import.meta.url)))
-  );
-  app.get<{}, any, {}, {}, BaseMiddlewareLocals>(
-    "/files/*",
-    express.static(app.locals.options.dataDirectory, {
-      index: false,
-      dotfiles: "allow",
-      immutable: true,
-      maxAge: 60 * 24 * 60 * 60 * 1000,
-      setHeaders: (res, path, stat) => {
-        if (
-          !userFileExtensionsWhichMayBeShownInBrowser.some((extension) =>
-            path.toLowerCase().endsWith(`.${extension}`)
-          )
-        )
-          res.attachment();
-      },
-    })
-  );
 
   app.use<{}, any, {}, {}, BaseMiddlewareLocals>(cookieParser());
 
