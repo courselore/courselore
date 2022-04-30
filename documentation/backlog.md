@@ -3,15 +3,6 @@
 ### User Interface Improvements
 
 - Tests
-  - Redirects
-    - HTTP → HTTPS
-    - Other domains
-```
-http:// {
-  header / Server "Pumpkin 0.11.5 (Atari 2600)"
-  redir / https://{host}{uri}
-}
-```
   - Mount application on a sub-path.
 - Clean `localStorage` on logout!
   - `localStorage.clear();`

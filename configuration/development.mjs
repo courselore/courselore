@@ -48,6 +48,11 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
             }
             encode zstd gzip
           }
+
+          http://${new URL(baseURL).host} {
+            import common
+            redir https://{host}{uri} 308
+          }
           
           ${new URL(baseURL).origin} {
             route ${new URL(`${baseURL}/*`).pathname} {
