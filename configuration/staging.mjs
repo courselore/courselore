@@ -36,7 +36,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
               Cross-Origin-Opener-Policy same-origin
               Cross-Origin-Resource-Policy same-origin
               Referrer-Policy same-origin
-              Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+              Strict-Transport-Security "max-age=31536000; includeSubDomains"
               X-Content-Type-Options nosniff
               Origin-Agent-Cluster "?1"
               X-DNS-Prefetch-Control off
