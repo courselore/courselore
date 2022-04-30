@@ -3,11 +3,7 @@
 ### User Interface Improvements
 
 - Tests
-  - Content-Disposition
-    - https://leafac.local/files/39903997830927982272/favicon.png
-    - https://leafac.local/files/93617397874605209001/2.html
   - Error routes
-    - 404
     - 422
     - 500
     - 502
