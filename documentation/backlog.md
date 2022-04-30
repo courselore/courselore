@@ -16,6 +16,7 @@
   - “Start a Conversation” → “Ask a Question”
   - Hide search bar when unneeded
   - Make it fixed, scroll just the list of conversations
+    - Remove `scrollToConversation`
   - Add filters for conversations with unread messages.
   - Quick filters:
     - Staff:
