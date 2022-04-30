@@ -10,6 +10,7 @@
 - Security:
   - Headers, cross-origin, and so forth.
   - Cleaning localStorage on sign-out.
+- When is the end of the term?
 
 </details>
 
