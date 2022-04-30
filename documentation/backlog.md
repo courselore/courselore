@@ -3,7 +3,6 @@
 ### User Interface Improvements
 
 - Tests
-  - gzip
   - Redirects
     - HTTP → HTTPS
     - Other domains
