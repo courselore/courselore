@@ -3,10 +3,12 @@
 ### User Interface Improvements
 
 - Turn “Conversations” menu on mobile into a link that points at `/courses/<courseReference>`
-  - layout--conversation--sidebar
-  - layout--conversation--main
   - hidden-on-small-screen
   - conversationLayoutSidebarOpenOnSmallScreen
+  - onlyConversationLayoutSidebarOnSmallScreen
+  - SmallScreen
+  - small-screen
+  - small--screen
 
 ---
 
