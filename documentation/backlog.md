@@ -3,11 +3,10 @@
 ### User Interface Improvements
 
 - Sidebar:
-  - “Start a Conversation” → “Ask a Question”
   - Hide search bar when unneeded
-  - Make it fixed, scroll just the list of conversations
-    - Remove `scrollToConversation`
+  - Make the “resolved/unresolved” filters more discoverable.
   - Add filters for conversations with unread messages.
+  - “Start a Conversation” → “Ask a Question”
   - Quick filters:
     - Staff:
       - Unresolved questions
@@ -15,7 +14,8 @@
     - Students:
       - Questions
       - Conversations with unread messages
-  - Make the “resolved/unresolved” filters more discoverable.
+  - Make it fixed, scroll just the list of conversations
+    - Remove `scrollToConversation`
   - Scroll the conversations list to the current conversation doesn’t work on mobile. (But maybe this won’t be relevant after we turn the “Conversations” menu on mobile into a link that points at `/courses/<courseReference>`)
 
 ---
