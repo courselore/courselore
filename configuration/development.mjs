@@ -29,9 +29,6 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
 
           (common) {
             header {
-              # https://owasp.org/www-project-secure-headers/
-              # https://github.com/helmetjs/helmet
-              # https://amifloced.org/
               Cache-Control no-cache
               Content-Security-Policy "default-src ${baseURL}/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
               Cross-Origin-Embedder-Policy require-corp

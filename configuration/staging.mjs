@@ -3,8 +3,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
   const administratorEmail = "administrator@courselore.org";
   const url = await courseloreImport("node:url");
   const dataDirectory = url.fileURLToPath(new URL("./data/", import.meta.url));
-  const { default: courselore, userFileExtensionsWhichMayBeShownInBrowser } =
-    await courseloreImport("./index.js");
+  const { default: courselore } = await courseloreImport("./index.js");
   if (process.argv[3] === undefined) {
     const url = await courseloreImport("node:url");
     const execa = (await courseloreImport("execa")).execa;
@@ -29,8 +28,39 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
             email ${administratorEmail}
           }
 
-          ${baseURL} {
-            route {
+          (common) {
+            header {
+              Cache-Control no-cache
+              Content-Security-Policy "default-src ${baseURL}/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
+              Cross-Origin-Embedder-Policy require-corp
+              Cross-Origin-Opener-Policy same-origin
+              Cross-Origin-Resource-Policy same-origin
+              Referrer-Policy same-origin
+              Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+              X-Content-Type-Options nosniff
+              Origin-Agent-Cluster "?1"
+              X-DNS-Prefetch-Control off
+              X-Frame-Options DENY
+              X-Permitted-Cross-Domain-Policies none
+              -Server
+              -X-Powered-By
+              X-XSS-Protection 0
+              Permissions-Policy "interest-cohort=()"
+            }
+            encode zstd gzip
+          }
+
+          http://${new URL(baseURL).host} {
+            import common
+            redir https://{host}{uri} 308
+            handle_errors {
+              import common
+            }
+          }
+          
+          ${new URL(baseURL).origin} {
+            route ${new URL(`${baseURL}/*`).pathname} {
+              import common
               route {
                 root * ${url.fileURLToPath(
                   new URL("../static/", courseloreImportMetaURL)
@@ -42,17 +72,16 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
                 root * ${dataDirectory}
                 @file_exists file
                 route @file_exists {
-                  @may_not_be_shown_in_browser not path ${userFileExtensionsWhichMayBeShownInBrowser
-                    .map((extension) => `*.${extension}`)
-                    .join(" ")}
-                  header @may_not_be_shown_in_browser Content-Disposition attachment 
+                  @must_be_downloaded not path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf *.txt
+                  header @must_be_downloaded Content-Disposition attachment 
                   file_server
                 }
               }
               reverse_proxy 127.0.0.1:4001
             }
-            header Cache-Control no-cache
-            encode zstd gzip
+            handle_errors {
+              import common
+            }
           }
         `,
       }),
