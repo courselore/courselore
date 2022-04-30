@@ -2,27 +2,28 @@
 
 ### User Interface Improvements
 
-- Test mounting application on a sub-path.
-- Server
-  - Check error routes
+- Tests
+  - Content-Disposition
+    - https://leafac.local/files/39903997830927982272/favicon.png
+    - https://leafac.local/files/93617397874605209001/2.html
+  - Error routes
     - 404
     - 422
     - 500
     - 502
-  - Check redirects
+  - Redirects
     - HTTP → HTTPS
     - Other domains
+  - Mounting application on a sub-path.
 - Clean `localStorage` on logout!
   - Clear-Site-Data
 - `example.mjs` shouldn’t include `preload`
-- https://www.ssllabs.com/ssltest/
-- Content-Security-Policy
-  - https://csp-evaluator.withgoogle.com
-  - https://securityheaders.com
-- Content-Disposition
-  - https://leafac.local/files/39903997830927982272/favicon.png
-  - https://leafac.local/files/93617397874605209001/2.html
-- https://hstspreload.org
+- Tests for deployment:
+  - https://www.ssllabs.com/ssltest/
+  - Content-Security-Policy
+    - https://csp-evaluator.withgoogle.com
+    - https://securityheaders.com
+  - https://hstspreload.org
 - References:
   - https://github.com/helmetjs/helmet
   - https://owasp.org/www-project-secure-headers/
