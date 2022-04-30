@@ -16,6 +16,7 @@
     - Other domains
   - Mounting application on a sub-path.
 - Clean `localStorage` on logout!
+  - `localStorage.clear();`
   - Clear-Site-Data
 - `example.mjs` shouldn’t include `preload`
 - Tests for deployment:
