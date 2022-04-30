@@ -1329,7 +1329,12 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
       app.locals.helpers.Session.close({ req, res });
-      res.redirect(303, `${app.locals.options.baseURL}/`);
+      res
+        .header(
+          "Clear-Site-Data",
+          `"*", "cache", "cookies", "storage", "executionContexts"`
+        )
+        .redirect(303, `${app.locals.options.baseURL}/`);
     }
   );
 };

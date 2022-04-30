@@ -2679,6 +2679,11 @@ export default async (app: Courselore): Promise<void> => {
                             />
                             <button
                               class="dropdown--menu--item button button--transparent"
+                              onload="${javascript`
+                                this.onclick = () => {
+                                  localStorage.clear();
+                                };
+                              `}"
                             >
                               <i class="bi bi-box-arrow-right"></i>
                               Sign Out
