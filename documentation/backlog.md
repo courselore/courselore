@@ -29,7 +29,7 @@
 
 ---
 
-- Keep an eye out for glitches of the relative date tooltip not showing up or even disappearing. Happened in Safari desktop.
+- Change target of relative time tooltip.
 
 ---
 
