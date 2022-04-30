@@ -3,7 +3,6 @@
 ### User Interface Improvements
 
 - Turn “Conversations” menu on mobile into a link that points at `/courses/<courseReference>`
-  - hidden-on-small-screen
   - conversationLayoutSidebarOpenOnSmallScreen
   - onlyConversationLayoutSidebarOnSmallScreen
   - SmallScreen
@@ -474,6 +473,7 @@ const { app, BrowserWindow } = require("electron");
 - The loading spinner keeps running forever in iOS because of streaming `fetch()`es.
   - Different MIME Content-Types didn’t help.
   - It appears that that icon only means “network activity is happening,” in which case, it’s true, and it’s actually the desired behavior.
+- In Safari iOS, the address bar never collapses because of the way we’re doing panes.
 
 ### Design & Accessibility
 

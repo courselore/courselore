@@ -544,19 +544,11 @@ export default (app: Courselore): void => {
             width: 100%;
             height: 100%;
             display: flex;
-            @media (max-width: 899px) {
-              & > .hidden-on-small-screen {
-                display: none;
-              }
-            }
           `)}"
         >
           <div
             key="layout--conversation--sidebar--/${res.locals.course.reference}"
-            class="${onlyConversationLayoutSidebarOnSmallScreen ||
-            req.query.conversationLayoutSidebarOpenOnSmallScreen === "true"
-              ? ""
-              : "hidden-on-small-screen"} ${res.locals.localCSS(css`
+            class="${res.locals.localCSS(css`
               background-color: var(--color--gray--medium--100);
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--800);
@@ -564,6 +556,11 @@ export default (app: Courselore): void => {
               overflow: auto;
               @media (max-width: 899px) {
                 flex: 1;
+                ${onlyConversationLayoutSidebarOnSmallScreen
+                  ? css``
+                  : css`
+                      display: none;
+                    `}
               }
               @media (min-width: 900px) {
                 width: var(--width--sm);
@@ -1398,12 +1395,16 @@ export default (app: Courselore): void => {
 
           <div
             key="layout--conversation--main--${req.path}"
-            class="${onlyConversationLayoutSidebarOnSmallScreen ||
-            req.query.conversationLayoutSidebarOpenOnSmallScreen === "true"
-              ? "hidden-on-small-screen"
-              : ""} ${res.locals.localCSS(css`
+            class="${res.locals.localCSS(css`
               overflow: auto;
               flex: 1;
+              ${onlyConversationLayoutSidebarOnSmallScreen
+                ? css`
+                    @media (max-width: 899px) {
+                      display: none;
+                    }
+                  `
+                : css``}
             `)}"
           >
             <div
