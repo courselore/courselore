@@ -526,11 +526,12 @@ const leafac = {
   },
 
   relativizeDateTimeElement(element, options = {}) {
+    const target = options.target ?? element;
     window.clearTimeout(element.relativizeDateTimeElementTimeout);
     (function update() {
       if (!leafac.isConnected(element)) return;
       const dateTime = element.getAttribute("datetime");
-      (element.relativizeDateTimeElementTooltip ??= tippy(element)).setProps({
+      (target.relativizeDateTimeElementTooltip ??= tippy(target)).setProps({
         touch: false,
         content: leafac.formatUTCDateTime(dateTime),
       });

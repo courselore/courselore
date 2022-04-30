@@ -2663,15 +2663,17 @@ export default (app: Courselore): void => {
                                               interactive: true,
                                               content: ${res.locals.HTMLForJavaScript(
                                                 html`
-                                                  Used
-                                                  <time
-                                                    datetime="${new Date(
-                                                      invitation.usedAt!
-                                                    ).toISOString()}"
-                                                    onload="${javascript`
-                                                      leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                  <div>
+                                                    Used
+                                                    <time
+                                                      datetime="${new Date(
+                                                        invitation.usedAt!
+                                                      ).toISOString()}"
+                                                      onload="${javascript`
+                                                      leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                                                     `}"
-                                                  ></time>
+                                                    ></time>
+                                                  </div>
                                                 `
                                               )},
                                             });
@@ -2717,7 +2719,7 @@ export default (app: Courselore): void => {
                                                             invitation.expiresAt!
                                                           ).toISOString()}"
                                                           onload="${javascript`
-                                                            leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                            leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                                                           `}"
                                                         ></time>
                                                       </span>
@@ -2819,7 +2821,7 @@ export default (app: Courselore): void => {
                                                             invitation.expiresAt
                                                           ).toISOString()}"
                                                           onload="${javascript`
-                                                            leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                            leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                                                           `}"
                                                         ></time>
                                                       </span>
@@ -3344,15 +3346,17 @@ export default (app: Courselore): void => {
                           font-size: var(--font-size--xs);
                         `)}"
                       >
-                        Last seen online
-                        <time
-                          datetime="${new Date(
-                            enrollment.user.lastSeenOnlineAt
-                          ).toISOString()}"
-                          onload="${javascript`
-                            leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                          `}"
-                        ></time>
+                        <span>
+                          Last seen online
+                          <time
+                            datetime="${new Date(
+                              enrollment.user.lastSeenOnlineAt
+                            ).toISOString()}"
+                            onload="${javascript`
+                              leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                            `}"
+                          ></time>
+                        </span>
                       </div>
                     </div>
 

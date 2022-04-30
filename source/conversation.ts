@@ -1595,7 +1595,7 @@ export default (app: Courselore): void => {
                 <time
                   datetime="${new Date(conversation.updatedAt).toISOString()}"
                   onload="${javascript`
-                    leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                    leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                   `}"
                 ></time>
               </div>
@@ -5263,7 +5263,7 @@ export default (app: Courselore): void => {
                                                             message.updatedAt
                                                           ).toISOString()}"
                                                           onload="${javascript`
-                                                            leafac.relativizeDateTimeElement(this, { preposition: "on" });
+                                                            leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                                                           `}"
                                                         ></time>
                                                       </div>

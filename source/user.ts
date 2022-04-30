@@ -406,15 +406,17 @@ export default (app: Courselore): void => {
                                   line-height: var(--line-height--xs);
                                 `)}"
                               >
-                                Last seen online
-                                <time
-                                  datetime="${new Date(
-                                    user!.lastSeenOnlineAt
-                                  ).toISOString()}"
-                                  onload="${javascript`
-                                    leafac.relativizeDateTimeElement(this, { preposition: "on" });
-                                  `}"
-                                ></time>
+                                <span>
+                                  Last seen online
+                                  <time
+                                    datetime="${new Date(
+                                      user!.lastSeenOnlineAt
+                                    ).toISOString()}"
+                                    onload="${javascript`
+                                      leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                                    `}"
+                                  ></time>
+                                </span>
                               </div>
                             `}
                         $${enrollment !== undefined &&

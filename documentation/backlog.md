@@ -2,12 +2,6 @@
 
 ### User Interface Improvements
 
-- Change target of relative time tooltip.
-  - `relativizeDateTimeElement`
-  - `relativizeDateElement`
-
----
-
 - Do a major release, because we’re no longer exporting extensions that are allowed to be opened by browser, so configuration changes are required.
 - Tests:
   - https://www.ssllabs.com/ssltest/
