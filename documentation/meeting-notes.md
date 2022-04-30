@@ -3,6 +3,19 @@
 <details>
 <summary>2021-04-23</summary>
 
+- Interface improvements:
+  - “Conversations” button on mobile now adds entry to history.
+  - `theme-color` in Safari.
+  - Tooltips on relative times now target whole phrase.
+- Security:
+  - Headers, cross-origin, and so forth.
+  - Cleaning localStorage on sign-out.
+
+</details>
+
+<details>
+<summary>2021-04-23</summary>
+
 - Finished and deployed live-updates with new mechanism that’s resilient to disconnections of any kind, and that doesn’t require extra round trips to the server.
 
 ---
