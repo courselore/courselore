@@ -10,8 +10,10 @@
 - Security:
   - Headers, cross-origin, and so forth.
   - Cleaning localStorage on sign-out.
-- When is the end of the term?
-- Do you know of <https://campus.org>?
+- Questions
+  - When is the end of the term?
+  - Do you know of <https://campus.org>?
+  - Vacation.
 
 </details>
 
