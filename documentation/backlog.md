@@ -2,8 +2,6 @@
 
 ### User Interface Improvements
 
-- Tests
-  - Mount application on a sub-path.
 - Clean `localStorage` on logout!
   - `localStorage.clear();`
   - Clear-Site-Data
@@ -615,6 +613,8 @@ const { app, BrowserWindow } = require("electron");
 
 - **2022-05-22:** Downgrade server.
 - Force a reload on new deployment.
+- Mounting the application on a subpath, for example, `https://leafac.local/a/b/c` doesn’t work.
+  - The Express server seems to not match the routes for things like `https://leafac.local/a/b/c/sign-in`.
 - Cluster mode:
   - Right now we’re running with a single process, which doesn’t take advantage of all CPU cores.
   - Approaches:
