@@ -487,6 +487,8 @@ const { app, BrowserWindow } = require("electron");
 - Places where we show `administratorEmail` to report bugs could be forms instead.
 - Maybe updating the accent color should send a live-update to tabs by the same user.
 - The loading spinner keeps running forever in iOS because of streaming `fetch()`es.
+  - Different MIME Content-Types didn’t help.
+  - It appears that that icon only means “network activity is happening,” in which case, it’s true, and it’s actually the desired behavior.
 
 ### Design & Accessibility
 
