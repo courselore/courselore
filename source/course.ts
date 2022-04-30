@@ -1564,8 +1564,6 @@ export default (app: Courselore): void => {
                                       .baseURL}/courses/${res.locals.course
                                       .reference}${qs.stringify(
                                       {
-                                        conversationLayoutSidebarOpenOnSmallScreen:
-                                          "true",
                                         filters: {
                                           tagsReferences: [tag.reference],
                                         },

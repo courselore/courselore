@@ -56,7 +56,6 @@ export type ConversationLayout = ({
     HTML,
     {},
     {
-      conversationLayoutSidebarOpenOnSmallScreen?: "true";
       search?: string;
       filters?: {
         types?: ConversationType[];
@@ -603,7 +602,6 @@ export default (app: Courselore): void => {
                     href="${app.locals.options.baseURL}/courses/${res.locals
                       .course.reference}/conversations/new${qs.stringify(
                       lodash.omit(req.query, [
-                        "conversationLayoutSidebarOpenOnSmallScreen",
                         "messageReference",
                         "beforeMessageReference",
                         "afterMessageReference",
@@ -632,11 +630,6 @@ export default (app: Courselore): void => {
                     this.isModified = false;
                   `}"
                 >
-                  <input
-                    type="hidden"
-                    name="conversationLayoutSidebarOpenOnSmallScreen"
-                    value="true"
-                  />
                   <input
                     type="hidden"
                     name="scrollToConversation"
@@ -673,8 +666,6 @@ export default (app: Courselore): void => {
                           <a
                             href="${qs.stringify(
                               {
-                                conversationLayoutSidebarOpenOnSmallScreen:
-                                  "true",
                                 scrollToConversation: "false",
                               },
                               { addQueryPrefix: true }
@@ -1118,8 +1109,6 @@ export default (app: Courselore): void => {
                             <a
                               href="${qs.stringify(
                                 {
-                                  conversationLayoutSidebarOpenOnSmallScreen:
-                                    "true",
                                   scrollToConversation: "false",
                                 },
                                 { addQueryPrefix: true }
@@ -1208,8 +1197,6 @@ export default (app: Courselore): void => {
                                 href="${qs.stringify(
                                   {
                                     ...req.query,
-                                    conversationLayoutSidebarOpenOnSmallScreen:
-                                      "true",
                                     conversationsPage: conversationsPage - 1,
                                   },
                                   {
@@ -1269,7 +1256,6 @@ export default (app: Courselore): void => {
                                           searchResult?.message?.reference,
                                       },
                                       [
-                                        "conversationLayoutSidebarOpenOnSmallScreen",
                                         "scrollToConversation",
                                         "beforeMessageReference",
                                         "afterMessageReference",
@@ -1372,8 +1358,6 @@ export default (app: Courselore): void => {
                                 href="${qs.stringify(
                                   {
                                     ...req.query,
-                                    conversationLayoutSidebarOpenOnSmallScreen:
-                                      "true",
                                     conversationsPage: conversationsPage + 1,
                                   },
                                   {
@@ -4066,10 +4050,7 @@ export default (app: Courselore): void => {
                                               beforeMessageReference:
                                                 messages[0].reference,
                                             },
-                                            [
-                                              "conversationLayoutSidebarOpenOnSmallScreen",
-                                              "afterMessageReference",
-                                            ]
+                                            ["afterMessageReference"]
                                           ),
                                           {
                                             addQueryPrefix: true,
@@ -5731,10 +5712,7 @@ export default (app: Courselore): void => {
                                                 messages[messages.length - 1]
                                                   .reference,
                                             },
-                                            [
-                                              "conversationLayoutSidebarOpenOnSmallScreen",
-                                              "beforeMessageReference",
-                                            ]
+                                            ["beforeMessageReference"]
                                           ),
                                           {
                                             addQueryPrefix: true,
