@@ -47,7 +47,7 @@ export type ConversationLayout = ({
   req,
   res,
   head,
-  onlyConversationLayoutSidebarOnSmallScreen,
+  conversationLayoutSidebarOnSmallScreen,
   mainIsAScrollingPane,
   body,
 }: {
@@ -76,7 +76,7 @@ export type ConversationLayout = ({
       Partial<IsConversationAccessibleMiddlewareLocals>
   >;
   head: HTML;
-  onlyConversationLayoutSidebarOnSmallScreen?: boolean;
+  conversationLayoutSidebarOnSmallScreen?: boolean;
   mainIsAScrollingPane?: boolean;
   body: HTML;
 }) => HTML;
@@ -218,7 +218,7 @@ export default (app: Courselore): void => {
     req,
     res,
     head,
-    onlyConversationLayoutSidebarOnSmallScreen = false,
+    conversationLayoutSidebarOnSmallScreen = false,
     mainIsAScrollingPane = false,
     body,
   }) => {
@@ -505,7 +505,7 @@ export default (app: Courselore): void => {
       res,
       head,
       extraHeaders: html`
-        $${onlyConversationLayoutSidebarOnSmallScreen
+        $${conversationLayoutSidebarOnSmallScreen
           ? html``
           : html`
               <div
@@ -555,7 +555,7 @@ export default (app: Courselore): void => {
               overflow: auto;
               @media (max-width: 899px) {
                 flex: 1;
-                ${onlyConversationLayoutSidebarOnSmallScreen
+                ${conversationLayoutSidebarOnSmallScreen
                   ? css``
                   : css`
                       display: none;
@@ -1382,7 +1382,7 @@ export default (app: Courselore): void => {
             class="${res.locals.localCSS(css`
               overflow: auto;
               flex: 1;
-              ${onlyConversationLayoutSidebarOnSmallScreen
+              ${conversationLayoutSidebarOnSmallScreen
                 ? css`
                     @media (max-width: 899px) {
                       display: none;

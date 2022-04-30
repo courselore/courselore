@@ -811,7 +811,7 @@ export default (app: Courselore): void => {
           req,
           res,
           head: html`<title>${res.locals.course.name} · Courselore</title>`,
-          onlyConversationLayoutSidebarOnSmallScreen: true,
+          conversationLayoutSidebarOnSmallScreen: true,
           body: html`<p class="secondary">No conversation selected.</p>`,
         })
       );
