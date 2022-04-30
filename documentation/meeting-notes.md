@@ -4,9 +4,9 @@
 <summary>2021-04-30</summary>
 
 - Interface improvements:
+  - Tooltips on relative times now target whole phrase.
   - “Conversations” button on mobile now adds entry to history.
   - `theme-color` in Safari.
-  - Tooltips on relative times now target whole phrase.
 - Security:
   - Headers, cross-origin, and so forth.
   - Cleaning localStorage on sign-out.

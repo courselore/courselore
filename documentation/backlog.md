@@ -2,13 +2,6 @@
 
 ### User Interface Improvements
 
-- Turn “Conversations” menu on mobile into a link that points at `/courses/<courseReference>`
-  - SmallScreen
-  - small-screen
-  - small--screen
-
----
-
 - Do a major release, because we’re no longer exporting extensions that are allowed to be opened by browser, so configuration changes are required.
 - Tests:
   - https://www.ssllabs.com/ssltest/
