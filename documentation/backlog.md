@@ -7,6 +7,7 @@
 - Clean `localStorage` on logout!
   - `localStorage.clear();`
   - Clear-Site-Data
+- Copy configuration to other files.
 - `example.mjs` shouldn’t include `preload`
 - Tests for deployment:
   - https://www.ssllabs.com/ssltest/
