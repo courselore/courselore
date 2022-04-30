@@ -512,27 +512,26 @@ export default (app: Courselore): void => {
               <div
                 key="header--menu--secondary"
                 class="${res.locals.localCSS(css`
-                  justify-content: center;
                   @media (min-width: 900px) {
                     display: none;
                   }
                 `)}"
               >
-                <button
-                  class="button button--transparent"
-                  onload="${javascript`
-                    this.onclick = () => {
-                      document.querySelector('[key^="layout--conversation--sidebar--/"]').classList.toggle("hidden-on-small-screen");
-                      document.querySelector('[key^="layout--conversation--main--/"]').classList.toggle("hidden-on-small-screen");
-                      this.lastElementChild.classList.toggle("bi-chevron-bar-expand");
-                      this.lastElementChild.classList.toggle("bi-chevron-bar-contract");
-                    };
-                  `}"
+                <div
+                  class="${res.locals.localCSS(css`
+                    padding: var(--space--1) var(--space--0);
+                  `)}"
                 >
-                  <i class="bi bi-chat-left-text"></i>
-                  Conversations
-                  <i class="bi bi-chevron-bar-expand"></i>
-                </button>
+                  <a
+                    href="${app.locals.options.baseURL}/courses/${res.locals
+                      .course.reference}"
+                    class="button button--tight button--tight--inline button--transparent"
+                  >
+                    <i class="bi bi-arrow-left"></i>
+                    <i class="bi bi-chat-left-text"></i>
+                    Conversations
+                  </a>
+                </div>
               </div>
             `}
       `,

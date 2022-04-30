@@ -2767,21 +2767,27 @@ export default async (app: Courselore): Promise<void> => {
                   }
                 `)}"
               >
-                <button
-                  class="button button--transparent"
-                  onload="${javascript`
-                    (this.tooltip ??= tippy(this)).setProps({
-                      trigger: "click",
-                      interactive: true,
-                      content: ${res.locals.HTMLForJavaScript(
-                        html`<div class="dropdown--menu">$${menu}</div>`
-                      )},
-                    });
-                  `}"
+                <div
+                  class="${res.locals.localCSS(css`
+                    padding: var(--space--1) var(--space--0);
+                  `)}"
                 >
-                  $${menuButton}
-                  <i class="bi bi-chevron-down"></i>
-                </button>
+                  <button
+                    class="button button--tight button--tight--inline button--transparent"
+                    onload="${javascript`
+                      (this.tooltip ??= tippy(this)).setProps({
+                        trigger: "click",
+                        interactive: true,
+                        content: ${res.locals.HTMLForJavaScript(
+                          html`<div class="dropdown--menu">$${menu}</div>`
+                        )},
+                      });
+                    `}"
+                  >
+                    $${menuButton}
+                    <i class="bi bi-chevron-down"></i>
+                  </button>
+                </div>
               </div>
             `,
       body: html`

@@ -3,8 +3,9 @@
 ### User Interface Improvements
 
 - Turn “Conversations” menu on mobile into a link that points at `/courses/<courseReference>`
-  - This adds history entries to navigation
-  - Also, live-updates were breaking this anyway (they were closing the navigation menu 😬)
+  - layout--conversation--sidebar
+  - layout--conversation--main
+  - hidden-on-small-screen
 
 ---
 
