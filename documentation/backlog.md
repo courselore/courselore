@@ -26,6 +26,7 @@
 - References:
   - https://github.com/helmetjs/helmet
   - https://owasp.org/www-project-secure-headers/
+  - https://amifloced.org/
 
 ---
 
