@@ -49,7 +49,7 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
             }
             header {
               Cache-Control no-cache
-              Content-Security-Policy "default-src ${baseURL} 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
+              Content-Security-Policy "default-src ${baseURL}/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
               Cross-Origin-Embedder-Policy require-corp
               Cross-Origin-Opener-Policy same-origin
               Cross-Origin-Resource-Policy same-origin
