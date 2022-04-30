@@ -2,15 +2,13 @@
 
 ### User Interface Improvements
 
-- Copy configuration to other files.
-- `example.mjs` shouldn’t include `preload`
-- Tests for deployment:
+- Do a major release, because we’re no longer exporting extensions that are allowed to be opened by browser, so configuration changes are required.
+- Tests:
   - https://www.ssllabs.com/ssltest/
   - Content-Security-Policy
     - https://csp-evaluator.withgoogle.com
     - https://securityheaders.com
   - https://hstspreload.org
-- Do a major release, because we’re no longer exporting extensions that are allowed to be opened by browser, so configuration changes are required.
 
 ---
 
