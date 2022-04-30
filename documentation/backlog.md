@@ -4,9 +4,20 @@
 
 - Tests
   - Error routes
-    - 422
-    - 500
     - 502
+```
+http:// {
+  header / Server "Pumpkin 0.11.5 (Atari 2600)"
+  redir / https://{host}{uri}
+}
+
+(snippet) {
+  respond "Yahaha! You found {args.0}!"
+}
+
+import snippet
+
+```
   - Redirects
     - HTTP → HTTPS
     - Other domains
