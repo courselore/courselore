@@ -1,7 +1,7 @@
 # Meeting Notes
 
 <details>
-<summary>2021-04-23</summary>
+<summary>2021-04-30</summary>
 
 - Interface improvements:
   - “Conversations” button on mobile now adds entry to history.
