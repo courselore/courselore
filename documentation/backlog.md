@@ -2,6 +2,12 @@
 
 ### User Interface Improvements
 
+- Turn “Conversations” menu on mobile into a link that points at `/courses/<courseReference>`
+  - This adds history entries to navigation
+  - Also, live-updates were breaking this anyway (they were closing the navigation menu 😬)
+
+---
+
 - Do a major release, because we’re no longer exporting extensions that are allowed to be opened by browser, so configuration changes are required.
 - Tests:
   - https://www.ssllabs.com/ssltest/
@@ -32,9 +38,6 @@
 - Top menus:
   - Use hamburger menu instead of couple separate menus
     - It shouldn’t cover the whole page underneath (and shouldn’t push an entry into the history, naturally)
-  - Turn “Conversations” menu on mobile into a link that points at `/courses/<courseReference>`
-    - This adds history entries to navigation
-    - Also, live-updates were breaking this anyway (they were closing the navigation menu 😬)
 
 ---
 
