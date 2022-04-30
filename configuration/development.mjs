@@ -26,27 +26,8 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
             admin off
             local_certs
           }
-          
-          ${new URL(baseURL).origin} {
-            route ${new URL(`${baseURL}/*`).pathname} {
-              route {
-                root * ${url.fileURLToPath(
-                  new URL("../static/", courseloreImportMetaURL)
-                )}
-                @file_exists file
-                file_server @file_exists
-              }
-              route /files/* {
-                root * ${dataDirectory}
-                @file_exists file
-                route @file_exists {
-                  @must_be_downloaded not path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf *.txt
-                  header @must_be_downloaded Content-Disposition attachment 
-                  file_server
-                }
-              }
-              reverse_proxy 127.0.0.1:4001
-            }
+
+          (common) {
             header {
               Cache-Control no-cache
               Content-Security-Policy "default-src ${baseURL}/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
@@ -66,6 +47,33 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
               Permissions-Policy "interest-cohort=()"
             }
             encode zstd gzip
+          }
+          
+          ${new URL(baseURL).origin} {
+            route ${new URL(`${baseURL}/*`).pathname} {
+              import common
+              route {
+                root * ${url.fileURLToPath(
+                  new URL("../static/", courseloreImportMetaURL)
+                )}
+                @file_exists file
+                file_server @file_exists
+              }
+              route /files/* {
+                root * ${dataDirectory}
+                @file_exists file
+                route @file_exists {
+                  @must_be_downloaded not path *.png *.jpg *.jpeg *.gif *.mp3 *.mp4 *.m4v *.ogg *.mov *.mpeg *.avi *.pdf *.txt
+                  header @must_be_downloaded Content-Disposition attachment 
+                  file_server
+                }
+              }
+              reverse_proxy 127.0.0.1:4001
+            }
+            
+            handle_errors {
+              import common
+            }
           }
         `,
       }),

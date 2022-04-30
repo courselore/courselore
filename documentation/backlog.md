@@ -3,25 +3,17 @@
 ### User Interface Improvements
 
 - Tests
-  - Error routes
-    - 502
+  - gzip
+  - Redirects
+    - HTTP → HTTPS
+    - Other domains
 ```
 http:// {
   header / Server "Pumpkin 0.11.5 (Atari 2600)"
   redir / https://{host}{uri}
 }
-
-(snippet) {
-  respond "Yahaha! You found {args.0}!"
-}
-
-import snippet
-
 ```
-  - Redirects
-    - HTTP → HTTPS
-    - Other domains
-  - Mounting application on a sub-path.
+  - Mount application on a sub-path.
 - Clean `localStorage` on logout!
   - `localStorage.clear();`
   - Clear-Site-Data
