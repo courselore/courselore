@@ -524,7 +524,9 @@ export default (app: Courselore): void => {
                 >
                   <a
                     href="${app.locals.options.baseURL}/courses/${res.locals
-                      .course.reference}"
+                      .course.reference}${qs.stringify(req.query, {
+                      addQueryPrefix: true,
+                    })}"
                     class="button button--tight button--tight--inline button--transparent"
                   >
                     <i class="bi bi-arrow-left"></i>

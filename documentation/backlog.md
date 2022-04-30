@@ -6,6 +6,7 @@
   - layout--conversation--sidebar
   - layout--conversation--main
   - hidden-on-small-screen
+  - conversationLayoutSidebarOpenOnSmallScreen
 
 ---
 
