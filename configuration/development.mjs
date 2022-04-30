@@ -52,6 +52,9 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
           http://${new URL(baseURL).host} {
             import common
             redir https://{host}{uri} 308
+            handle_errors {
+              import common
+            }
           }
           
           ${new URL(baseURL).origin} {
@@ -75,7 +78,6 @@ export default async ({ courseloreImport, courseloreImportMetaURL }) => {
               }
               reverse_proxy 127.0.0.1:4001
             }
-            
             handle_errors {
               import common
             }
