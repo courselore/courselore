@@ -2,13 +2,13 @@
 
 ### User Interface Improvements
 
-- Carve two or three possible tasks for new contributor.
-  - Administrator panel.
+- Don’t use `redirect("back")`, but include the redirect URL in the `POST` request itself (or something equivalent)
+  - Disable `Referer` header.
 
 ---
 
-- Don’t use `redirect("back")`, but include the redirect URL in the `POST` request itself (or something equivalent)
-  - Disable `Referer` header.
+- Carve two or three possible tasks for new contributor.
+  - Administrator panel.
 
 ---
 
