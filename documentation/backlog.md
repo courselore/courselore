@@ -614,7 +614,6 @@ const { app, BrowserWindow } = require("electron");
 
 - **End of term:**
   - Downgrade server.
-  - Check back on https://hstspreload.org/?domain=courselore.org
 - Force a reload on new deployment.
 - Mounting the application on a subpath, for example, `https://leafac.local/a/b/c` doesn’t work.
   - The Express server seems to not match the routes for things like `https://leafac.local/a/b/c/sign-in`.
