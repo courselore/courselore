@@ -44,7 +44,7 @@ Create an `A` Record pointing at your server’s IP address and `ALIAS` or `CNAM
    # nano configuration.mjs
    ```
 
-   > **Note for Advanced Users:** You may want to configure the headers differently. See <https://owasp.org/www-project-secure-headers/>, <https://github.com/helmetjs/helmet>, <https://hstspreload.org>, and <https://amifloced.org/>. In particular, we recommend adding `preload` to the `Strict-Transport-Security` header, [though we didn’t include it in the example configuration](https://hstspreload.org/#opt-in).
+   > **Note for Advanced Users:** You may want to configure the headers differently. See <https://owasp.org/www-project-secure-headers/>, <https://github.com/helmetjs/helmet>, <https://hstspreload.org>, and <https://amifloced.org/>. In particular, we recommend adding `preload` to the `Strict-Transport-Security` header, though we didn’t include it in the example configuration because [you must opt-into it](https://hstspreload.org/#opt-in).
 
    > **Note for Advanced Users:** The Courselore configuration is a JavaScript module whose default export is a function called by the `courselore` binary. The example configuration starts an [Express](https://expressjs.com) application server and a [Caddy](https://caddyserver.com) reverse-proxy & TLS certificate manager, both of which are embedded in the `courselore` binary using [`caxa`](https://github.com/leafac/caxa). But this is a pretty flexible configuration strategy that allows for endless customization, for example:
    >
