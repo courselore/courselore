@@ -6,6 +6,7 @@
   - Disable `Referer` header.
     - Test re-send email
     - Test mark all as read
+    - Double-check that browser isn’t sending `Referer` header
 
 ---
 
