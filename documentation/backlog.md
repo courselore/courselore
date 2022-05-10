@@ -2,9 +2,26 @@
 
 ### User Interface Improvements
 
+- Don’t use `redirect("back")`, but include the redirect URL in the `POST` request itself (or something equivalent)
+  - Disable `Referer` header.
+
+---
+
+- Quicker feedback that the action you requested (for example, sending a message) is in progress.
+  - Disable button.
+  - Latency compensation by pre-rendering on the client.
+    - Use the `/preview` route?
+  - Check how other applications do it.
+
+---
+
+- Draft posts.
+
+---
+
 - Sidebar:
-  - Hide search bar when unneeded
   - Make the “resolved/unresolved” filters more discoverable.
+  - Hide search bar when unneeded
   - Add filters for conversations with unread messages.
   - “Start a Conversation” → “Ask a Question”
   - Quick filters:
@@ -16,7 +33,9 @@
       - Conversations with unread messages
   - Make it fixed, scroll just the list of conversations
     - Remove `scrollToConversation`
-  - Scroll the conversations list to the current conversation doesn’t work on mobile. (But maybe this won’t be relevant after we turn the “Conversations” menu on mobile into a link that points at `/courses/<courseReference>`)
+  - Scroll the conversations list to the current conversation doesn’t work on mobile.
+    - Maybe this isn’t relevant now that we turned the “Conversations” menu on mobile into a link that points at `/courses/<courseReference>`?
+    - Remember that this only applies to deep links into conversations.
 
 ---
 
@@ -2171,6 +2190,7 @@ $$
 - Communication platforms for education
   - <https://piazza.com>
   - <https://campuswire.com>
+    - <https://campus.org>
   - <https://edstem.org>
   - <https://aula.education>
   - <https://yellowdig.com>

@@ -3,16 +3,18 @@
 <details>
 <summary>2021-04-30</summary>
 
+- Day off (holiday).
+- Backlog grooming.
 - Interface improvements:
   - Tooltips on relative times now target whole phrase.
   - “Conversations” button on mobile now adds entry to history.
   - `theme-color` in Safari.
 - Security:
   - Headers, cross-origin, and so forth.
-  - Cleaning localStorage on sign-out.
-- Questions
-  - When is the end of the term?
-  - Do you know of <https://campus.org>?
+  - Cleaning `localStorage` on sign-out.
+- Other:
+  - End of the term in two weeks.
+  - <https://campus.org>
   - Vacation.
 
 </details>
