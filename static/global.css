@@ -1184,6 +1184,67 @@
                   }
                 }
 
+        .tippy-box[data-theme~="amber"] {
+                color: var(--color--amber--700);
+                --background-color: var(--color--amber--100);
+                --border-color: var(--color--amber--200);
+              }
+
+        .tippy-box[data-theme~="amber"] .button.button--transparent:hover,
+                  .tippy-box[data-theme~="amber"] .button.button--transparent:focus-within {
+                    background-color: var(--color--amber--200);
+                  }
+
+        .tippy-box[data-theme~="amber"] .button.button--transparent:active {
+                    background-color: var(--color--amber--300);
+                  }
+
+        .tippy-box[data-theme~="amber"] .link {
+                  color: var(--color--amber--600);
+                }
+
+        .tippy-box[data-theme~="amber"] .link:hover,
+                  .tippy-box[data-theme~="amber"] .link:focus-within {
+                    color: var(--color--amber--500);
+                  }
+
+        .tippy-box[data-theme~="amber"] .link:active {
+                    color: var(--color--amber--700);
+                  }
+
+        .tippy-box[data-theme~="amber"] .keyboard-shortcut {
+                  color: var(--color--amber--500);
+                }
+
+        @media (prefers-color-scheme: dark) {
+
+        .tippy-box[data-theme~="amber"] {
+                  color: var(--color--amber--200);
+                  --background-color: var(--color--amber--900);
+                  --border-color: var(--color--amber--800)
+              }
+                    .tippy-box[data-theme~="amber"] .button.button--transparent:hover,
+                    .tippy-box[data-theme~="amber"] .button.button--transparent:focus-within {
+                      background-color: var(--color--amber--800);
+                    }
+                    .tippy-box[data-theme~="amber"] .button.button--transparent:active {
+                      background-color: var(--color--amber--700);
+                    }
+                  .tippy-box[data-theme~="amber"] .link {
+                    color: var(--color--amber--100);
+                  }
+                    .tippy-box[data-theme~="amber"] .link:hover,
+                    .tippy-box[data-theme~="amber"] .link:focus-within {
+                      color: var(--color--amber--50);
+                    }
+                    .tippy-box[data-theme~="amber"] .link:active {
+                      color: var(--color--amber--200);
+                    }
+                  .tippy-box[data-theme~="amber"] .keyboard-shortcut {
+                    color: var(--color--amber--400);
+                  }
+                }
+
         .tippy-box[data-theme~="rose"] {
                 color: var(--color--rose--700);
                 --background-color: var(--color--rose--100);

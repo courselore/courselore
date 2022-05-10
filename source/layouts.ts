@@ -205,12 +205,105 @@ export default async (app: Courselore): Promise<void> => {
               this.scroll(0, 0);
             };
 
+            const body = document.querySelector("body");
+
+            ${
+              res.locals.user !== undefined &&
+              res.locals.user.emailConfirmedAt === null
+                ? javascript`
+                  (body.emailConfirmationTooltip ??= tippy(body)).setProps({
+                    appendTo: body,
+                    trigger: "manual",
+                    hideOnClick: false,
+                    theme: "amber",
+                    arrow: false,
+                    interactive: true,
+                    content: ${res.locals.HTMLForJavaScript(
+                      html`
+                        <form
+                          method="POST"
+                          action="${app.locals.options
+                            .baseURL}/resend-confirmation-email${qs.stringify(
+                            {
+                              redirect: req.originalUrl,
+                            },
+                            { addQueryPrefix: true }
+                          )}"
+                        >
+                          <input
+                            type="hidden"
+                            name="_csrf"
+                            value="${req.csrfToken()}"
+                          />
+                          Please confirm your email by following the link sent
+                          to ${res.locals.user.email}.<br />
+                          Didn’t receive the email? Already checked your spam
+                          folder?
+                          <button class="link">Resend</button>.
+                        </form>
+                        $${app.locals.options.demonstration
+                          ? (() => {
+                              let emailConfirmation = app.locals.database.get<{
+                                nonce: string;
+                              }>(
+                                sql`
+                                  SELECT "nonce" FROM "emailConfirmations" WHERE "user" = ${res.locals.user.id}
+                                `
+                              );
+                              if (emailConfirmation === undefined) {
+                                app.locals.mailers.emailConfirmation({
+                                  req,
+                                  res,
+                                  userId: res.locals.user.id,
+                                  userEmail: res.locals.user.email,
+                                });
+                                emailConfirmation = app.locals.database.get<{
+                                  nonce: string;
+                                }>(
+                                  sql`
+                                    SELECT "nonce" FROM "emailConfirmations" WHERE "user" = ${res.locals.user.id}
+                                  `
+                                )!;
+                              }
+                              return html`
+                                <p
+                                  class="${res.locals.localCSS(
+                                    css`
+                                      font-weight: var(--font-weight--bold);
+                                    `
+                                  )}"
+                                >
+                                  This Courselore installation is running in
+                                  demonstration mode and doesn’t send emails.
+                                  Confirm your email by
+                                  <a
+                                    href="${app.locals.options
+                                      .baseURL}/email-confirmation/${emailConfirmation.nonce}${qs.stringify(
+                                      {
+                                        redirect: req.originalUrl,
+                                      },
+                                      { addQueryPrefix: true }
+                                    )}"
+                                    class="link"
+                                    >clicking here</a
+                                  >.
+                                </p>
+                              `;
+                            })()
+                          : html``}
+                      `
+                    )},
+                  });
+                  body.emailConfirmationTooltip.show();
+                `
+                : javascript``
+            }
+
             ${(() => {
               const flash = app.locals.helpers.Flash.get({ req, res });
               return flash === undefined
                 ? javascript``
                 : javascript`
-                    const body = document.querySelector("body");
                     (body.flash ??= tippy(body)).setProps({
                       appendTo: body,
                       trigger: "manual",
@@ -447,127 +540,6 @@ export default async (app: Courselore): Promise<void> => {
               : html``}
             $${extraHeaders}
           </div>
-
-          $${res.locals.user !== undefined &&
-          res.locals.user.emailConfirmedAt === null
-            ? html`
-                <div
-                  key="header--email-confirmation"
-                  class="${res.locals.localCSS(css`
-                    color: var(--color--amber--700);
-                    background-color: var(--color--amber--100);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--amber--200);
-                      background-color: var(--color--amber--900);
-                    }
-                    padding: var(--space--1) var(--space--10);
-                    display: flex;
-                    justify-content: center;
-
-                    .link {
-                      color: var(--color--amber--600);
-                      &:hover,
-                      &:focus-within {
-                        color: var(--color--amber--500);
-                      }
-                      &:active {
-                        color: var(--color--amber--700);
-                      }
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--amber--100);
-                        &:hover,
-                        &:focus-within {
-                          color: var(--color--amber--50);
-                        }
-                        &:active {
-                          color: var(--color--amber--200);
-                        }
-                      }
-                    }
-                  `)}"
-                >
-                  <div
-                    class="${res.locals.localCSS(css`
-                      flex: 1;
-                      max-width: var(--width--prose);
-                      text-align: center;
-                    `)}"
-                  >
-                    <form
-                      method="POST"
-                      action="${app.locals.options
-                        .baseURL}/resend-confirmation-email${qs.stringify(
-                        {
-                          redirect: req.originalUrl,
-                        },
-                        { addQueryPrefix: true }
-                      )}"
-                    >
-                      <input
-                        type="hidden"
-                        name="_csrf"
-                        value="${req.csrfToken()}"
-                      />
-                      Please confirm your email by following the link sent to
-                      ${res.locals.user.email}.<br />
-                      Didn’t receive the email? Already checked your spam
-                      folder?
-                      <button class="link">Resend</button>.
-                    </form>
-                    $${app.locals.options.demonstration
-                      ? (() => {
-                          let emailConfirmation = app.locals.database.get<{
-                            nonce: string;
-                          }>(
-                            sql`
-                              SELECT "nonce" FROM "emailConfirmations" WHERE "user" = ${res.locals.user.id}
-                            `
-                          );
-                          if (emailConfirmation === undefined) {
-                            app.locals.mailers.emailConfirmation({
-                              req,
-                              res,
-                              userId: res.locals.user.id,
-                              userEmail: res.locals.user.email,
-                            });
-                            emailConfirmation = app.locals.database.get<{
-                              nonce: string;
-                            }>(
-                              sql`
-                                SELECT "nonce" FROM "emailConfirmations" WHERE "user" = ${res.locals.user.id}
-                              `
-                            )!;
-                          }
-                          return html`
-                            <p
-                              class="${res.locals.localCSS(
-                                css`
-                                  font-weight: var(--font-weight--bold);
-                                `
-                              )}"
-                            >
-                              This Courselore installation is running in
-                              demonstration mode and doesn’t send emails.
-                              Confirm your email by
-                              <a
-                                href="${app.locals.options
-                                  .baseURL}/email-confirmation/${emailConfirmation.nonce}${qs.stringify(
-                                  {
-                                    redirect: req.originalUrl,
-                                  },
-                                  { addQueryPrefix: true }
-                                )}"
-                                class="link"
-                                >clicking here</a
-                              >.
-                            </p>
-                          `;
-                        })()
-                      : html``}
-                  </div>
-                </div>
-              `
-            : html``}
 
           <div
             key="main"
@@ -1682,7 +1654,12 @@ export default async (app: Courselore): Promise<void> => {
             margin: var(--space--0) var(--space--2);
           }
 
-          ${Object.entries({ green: "green", rose: "rose", error: "rose" }).map(
+          ${Object.entries({
+            green: "green",
+            amber: "amber",
+            rose: "rose",
+            error: "rose",
+          }).map(
             ([theme, color]) => css`
               &[data-theme~="${theme}"] {
                 color: var(--color--${color}--700);
