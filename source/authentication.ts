@@ -1237,7 +1237,7 @@ export default (app: Courselore): void => {
     })
   );
 
-  app.post<{}, HTML, {}, {}, IsSignedInMiddlewareLocals>(
+  app.post<{}, HTML, {}, { redirect?: string }, IsSignedInMiddlewareLocals>(
     "/resend-confirmation-email",
     ...app.locals.middlewares.isSignedIn,
     (req, res) => {
@@ -1248,7 +1248,10 @@ export default (app: Courselore): void => {
           theme: "rose",
           content: html`Email already confirmed.`,
         });
-        return res.redirect(303, "back");
+        return res.redirect(
+          303,
+          `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
+        );
       }
       app.locals.mailers.emailConfirmation({
         req,
@@ -1262,7 +1265,10 @@ export default (app: Courselore): void => {
         theme: "green",
         content: html`Confirmation email resent.`,
       });
-      res.redirect(303, "back");
+      res.redirect(
+        303,
+        `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
+      );
     }
   );
 

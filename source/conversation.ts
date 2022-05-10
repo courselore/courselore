@@ -1157,7 +1157,7 @@ export default (app: Courselore): void => {
                               action="${app.locals.options
                                 .baseURL}/courses/${res.locals.course
                                 .reference}/conversations/mark-all-conversations-as-read${qs.stringify(
-                                req.query,
+                                { ...req.query, redirect: req.originalUrl },
                                 {
                                   addQueryPrefix: true,
                                 }
@@ -2671,7 +2671,7 @@ export default (app: Courselore): void => {
     { courseReference: string },
     any,
     {},
-    {},
+    { redirect?: string },
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/mark-all-conversations-as-read",
@@ -2717,7 +2717,10 @@ export default (app: Courselore): void => {
             )
           `
         );
-      res.redirect(303, "back");
+      res.redirect(
+        303,
+        `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
+      );
     }
   );
 

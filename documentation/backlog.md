@@ -4,6 +4,8 @@
 
 - Don’t use `redirect("back")`, but include the redirect URL in the `POST` request itself (or something equivalent)
   - Disable `Referer` header.
+    - Test re-send email
+    - Test mark all as read
 
 ---
 
