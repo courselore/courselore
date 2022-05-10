@@ -2,24 +2,20 @@
 
 ### User Interface Improvements
 
-- Don’t use `redirect("back")`, but include the redirect URL in the `POST` request itself (or something equivalent)
-  - Disable `Referer` header.
-    - Test re-send email
-    - Test mark all as read
-    - Double-check that browser isn’t sending `Referer` header
-
----
-
-- Carve two or three possible tasks for new contributor.
-  - Administrator panel.
-
----
-
 - Quicker feedback that the action you requested (for example, sending a message) is in progress.
   - Disable button.
   - Latency compensation by pre-rendering on the client.
     - Use the `/preview` route?
   - Check how other applications do it.
+
+---
+
+- Release minor version because of `Referrer-Policy same-origin` → `Referrer-Policy no-referrer`
+
+---
+
+- Carve two or three possible tasks for new contributor.
+  - Administrator panel.
 
 ---
 
