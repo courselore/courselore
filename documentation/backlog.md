@@ -2,6 +2,11 @@
 
 ### User Interface Improvements
 
+- Carve two or three possible tasks for new contributor.
+  - Administrator panel.
+
+---
+
 - Don’t use `redirect("back")`, but include the redirect URL in the `POST` request itself (or something equivalent)
   - Disable `Referer` header.
 
@@ -442,6 +447,7 @@ const { app, BrowserWindow } = require("electron");
 
 - Integrate with other platforms, for example, LMSs.
   - Learning Tools Interoperability (LTI).
+    - Or perhaps not—do something more lightweight if LTI is too bureaucratic.
 - To build extensions, for example, ask a question from within the text editor.
 
 ### User Interface

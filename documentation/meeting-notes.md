@@ -16,6 +16,8 @@
   - End of the term in two weeks.
   - <https://campus.org>
   - Vacation.
+  - Some protocol to interoperate with other tools, including grading systems and live lecture systems.
+    - Perhaps don’t use LTI if it’s too heavy and bureaucratic.
 
 </details>
 
