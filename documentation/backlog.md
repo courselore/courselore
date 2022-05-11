@@ -2,7 +2,7 @@
 
 ### User Interface Improvements
 
-- Render a scaffold (for example, what YouTube shows when loading a page).
+- Render a placeholder (for example, what YouTube shows when loading a page).
 
 ---
 
@@ -502,12 +502,14 @@ const { app, BrowserWindow } = require("electron");
 - In response to a `POST`, don’t redirect, but render the page right away, saving one round trip. This is similar to the Turbo Streams approach, in which a stream is sent as a response to the `POST`.
 - More sophisticated latency compensation:
   - Only for critical flows, for example, sending a message or liking.
+  - Right now we’re doing a placeholder.
   - Approaches:
     - Pre-render on the client.
       - That’s what Discord appears to do.
       - But it’s limited because we don’t have enough information to do a full rendering, for example, resolving `@mention`s and `#reference`s. Those cases can be relatively rare, but still…
     - Use the `/preview` route?
       - This doesn’t seem like a good approach. On the one hand, it’d render the message more accurately. But it would incur a roundtrip to the server, so might as well do the action in the first place.
+      - But we could pre-fetch…
 
 ### Live-Updates
 
