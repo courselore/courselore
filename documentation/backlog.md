@@ -2,9 +2,7 @@
 
 ### User Interface Improvements
 
-- Quicker feedback that the action you requested (for example, sending a message) is in progress.
-  - Latency compensation by pre-rendering on the client.
-    - Use the `/preview` route?
+- Render a scaffold (for example, what YouTube shows when loading a page).
 
 ---
 
@@ -502,7 +500,14 @@ const { app, BrowserWindow } = require("electron");
   - The first step would be keep the `hidden` state on form submission, but then other things break, for example, if you’re actually submitting a conversation title update, then the form should be hidden. As far as I can tell, there’s no way to detect what should be hidden and what should be shown automatically: We’d have to write special cases. For example, on the `onsubmit` of the conversation title update, we could add actions to reset the hidden state of the involved components.
   - Then, on `morph()`, we must look at the `originalEvent` and avoid updating form fields that aren’t the submitted form. This part is actually relatively straightforward: `detail.originalEvent instanceof SubmitEvent && detail.originalEvent.target.contains(from)`
 - In response to a `POST`, don’t redirect, but render the page right away, saving one round trip. This is similar to the Turbo Streams approach, in which a stream is sent as a response to the `POST`.
-- Do latency compensation for critical flows, for example, sending a message or liking. Instead of relying on the live-navigation, pre-render the modified content right away.
+- More sophisticated latency compensation:
+  - Only for critical flows, for example, sending a message or liking.
+  - Approaches:
+    - Pre-render on the client.
+      - That’s what Discord appears to do.
+      - But it’s limited because we don’t have enough information to do a full rendering, for example, resolving `@mention`s and `#reference`s. Those cases can be relatively rare, but still…
+    - Use the `/preview` route?
+      - This doesn’t seem like a good approach. On the one hand, it’d render the message more accurately. But it would incur a roundtrip to the server, so might as well do the action in the first place.
 
 ### Live-Updates
 
