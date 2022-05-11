@@ -2,14 +2,14 @@
 
 const leafac = {
   liveNavigation(baseURL) {
-    let state = "available";
     let abortController;
     let previousLocation = { ...window.location };
 
     const navigate = async ({ request, event }) => {
+      const body = document.querySelector("body");
       if (event instanceof PopStateEvent) abortController?.abort();
-      else if (state !== "available") return;
-      state = "busy";
+      else if (body.getAttribute("live-navigating") !== null) return;
+      body.setAttribute("live-navigating", "true");
       const detail = { request, previousLocation };
       const isGet = ["GET", "HEAD"].includes(request.method);
       if (
@@ -35,7 +35,6 @@ const leafac = {
             console.error(error);
             if (isGet && !(event instanceof PopStateEvent))
               window.history.pushState(undefined, "", request.url);
-            const body = document.querySelector("body");
             (body.liveNavigationErrorTooltip ??= tippy(body)).setProps({
               appendTo: body,
               trigger: "manual",
@@ -52,7 +51,7 @@ const leafac = {
         }
         previousLocation = { ...window.location };
       }
-      state = "available";
+      body.removeAttribute("live-navigating");
     };
 
     window.addEventListener("DOMContentLoaded", (event) => {

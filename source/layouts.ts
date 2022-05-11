@@ -722,7 +722,6 @@ export default async (app: Courselore): Promise<void> => {
             top: 0;
             right: 0;
             left: 0;
-            cursor: wait;
           `)}"
           onload="${javascript`
             (this.tooltip ??= tippy(this)).setProps({
@@ -1051,6 +1050,10 @@ export default async (app: Courselore): Promise<void> => {
     await fs.writeFile(
       new URL("../static/global.css", import.meta.url),
       processCSS(css`
+        [live-navigating] * {
+          cursor: wait !important;
+        }
+
         .label {
           display: flex;
           flex-direction: column;

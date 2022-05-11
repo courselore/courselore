@@ -1,11 +1,15 @@
 
+        [live-navigating] * {
+          cursor: wait !important;
+        }
+
         .label {
           display: flex;
           flex-direction: column;
           gap: var(--space--1);
         }
 
-          .label .label--text {
+        .label .label--text {
             font-size: var(--font-size--xs);
             line-height: var(--line-height--xs);
             font-weight: var(--font-weight--bold);
