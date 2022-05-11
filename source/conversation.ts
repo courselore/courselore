@@ -5729,6 +5729,145 @@ export default (app: Courselore): void => {
                                     </div>
                                   `
                                 : html``}
+                              <div
+                                key="message--new-message--placeholder"
+                                hidden
+                                class="${res.locals.localCSS(css`
+                                  ${res.locals.conversation.type === "chat"
+                                    ? css``
+                                    : css`
+                                        border-bottom: var(--border-width--4)
+                                          solid var(--color--gray--medium--200);
+                                        @media (prefers-color-scheme: dark) {
+                                          border-color: var(
+                                            --color--gray--medium--700
+                                          );
+                                        }
+                                      `}
+                                `)}"
+                              >
+                                <div
+                                  class="${res.locals.localCSS(css`
+                                    padding: var(--space--2);
+                                    ${res.locals.conversation.type === "chat"
+                                      ? css``
+                                      : css`
+                                          padding-bottom: var(--space--4);
+                                        `}
+                                    border-radius: var(--border-radius--lg);
+                                    margin: var(--space--0) var(--space---2);
+                                    display: flex;
+                                    flex-direction: column;
+                                    ${res.locals.conversation.type === "chat"
+                                      ? css`
+                                          gap: var(--space--1);
+                                        `
+                                      : css`
+                                          gap: var(--space--2);
+                                        `}
+
+                                    ${res.locals.conversation.type === "chat"
+                                      ? css`
+                                          transition-property: var(
+                                            --transition-property--colors
+                                          );
+                                          transition-duration: var(
+                                            --transition-duration--150
+                                          );
+                                          transition-timing-function: var(
+                                            --transition-timing-function--in-out
+                                          );
+                                          &:hover,
+                                          &:focus-within {
+                                            background-color: var(
+                                              --color--gray--medium--100
+                                            );
+                                            @media (prefers-color-scheme: dark) {
+                                              background-color: var(
+                                                --color--gray--medium--800
+                                              );
+                                            }
+                                          }
+                                        `
+                                      : css``}
+                                  `)}"
+                                >
+                                  <div
+                                    class="${res.locals.localCSS(css`
+                                      display: flex;
+                                      gap: var(--space--2);
+                                    `)}"
+                                  >
+                                    <div
+                                      class="secondary ${res.locals
+                                        .localCSS(css`
+                                        font-size: var(--font-size--xs);
+                                        line-height: var(--line-height--xs);
+                                        flex: 1;
+                                        display: flex;
+                                        flex-wrap: wrap;
+                                        align-items: baseline;
+                                        column-gap: var(--space--4);
+                                        row-gap: var(--space--2);
+                                      `)}"
+                                    >
+                                      <div
+                                        key="message--new-message--placeholder--anonymous--false"
+                                        class="strong ${res.locals.localCSS(css`
+                                          font-size: var(--font-size--sm);
+                                          line-height: var(--line-height--sm);
+                                        `)}"
+                                      >
+                                        $${app.locals.partials.user({
+                                          req,
+                                          res,
+                                          enrollment: {
+                                            ...res.locals.enrollment,
+                                            user: res.locals.user,
+                                          },
+                                        })}
+                                      </div>
+                                      $${res.locals.enrollment.role === "staff"
+                                        ? html``
+                                        : html`
+                                            <div
+                                              key="message--new-message--placeholder--anonymous--true"
+                                              class="strong ${res.locals
+                                                .localCSS(css`
+                                                font-size: var(--font-size--sm);
+                                                line-height: var(
+                                                  --line-height--sm
+                                                );
+                                              `)}"
+                                            >
+                                              $${app.locals.partials.user({
+                                                req,
+                                                res,
+                                                enrollment: {
+                                                  ...res.locals.enrollment,
+                                                  user: res.locals.user,
+                                                },
+                                                anonymous: "reveal",
+                                              })}
+                                            </div>
+                                          `}
+                                      <span>Just now</span>
+                                      $${app.locals.partials.spinner({
+                                        req,
+                                        res,
+                                        size: 10,
+                                      })}
+                                    </div>
+                                  </div>
+                                  <div
+                                    key="message--new-message--placeholder--content"
+                                    class="${res.locals.localCSS(css`
+                                      white-space: pre-line;
+                                      filter: blur(var(--blur--sm));
+                                    `)}"
+                                  ></div>
+                                </div>
+                              </div>
                             </div>
                           `}
                     </div>

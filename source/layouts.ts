@@ -137,9 +137,11 @@ export type PartialLayout = ({
 export type SpinnerPartial = ({
   req,
   res,
+  size
 }: {
   req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
   res: express.Response<any, BaseMiddlewareLocals>;
+  size?: number
 }) => HTML;
 
 export type ReportIssueHrefPartial = string;
@@ -2874,10 +2876,11 @@ export default async (app: Courselore): Promise<void> => {
     </html>
   `;
 
-  app.locals.partials.spinner = ({ req, res }) => html`
+  app.locals.partials.spinner = ({ req, res, size = 20 }) => html`
     <svg
-      width="20"
-      height="20"
+      width="${size.toString()}"
+      height="${size.toString()}"
+      viewBox="0 0 20 20"
       fill="none"
       stroke="currentColor"
       stroke-width="4"
