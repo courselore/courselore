@@ -456,6 +456,15 @@ const leafac = {
     }
   },
 
+  disableButtonsOnSubmit() {
+    document.addEventListener("submit", (event) => {
+      for (const element of event.target.querySelectorAll(
+        `button:not([type="button"])`
+      ))
+        element.disabled = true;
+    });
+  },
+
   warnAboutLosingInputs() {
     let isSubmittingForm = false;
     window.addEventListener("DOMContentLoaded", () => {

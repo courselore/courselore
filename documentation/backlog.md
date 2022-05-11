@@ -3,7 +3,6 @@
 ### User Interface Improvements
 
 - Quicker feedback that the action you requested (for example, sending a message) is in progress.
-  - Disable button.
   - Latency compensation by pre-rendering on the client.
     - Use the `/preview` route?
 
