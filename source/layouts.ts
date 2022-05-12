@@ -137,11 +137,11 @@ export type PartialLayout = ({
 export type SpinnerPartial = ({
   req,
   res,
-  size
+  size,
 }: {
   req: express.Request<{}, any, {}, {}, BaseMiddlewareLocals>;
   res: express.Response<any, BaseMiddlewareLocals>;
-  size?: number
+  size?: number;
 }) => HTML;
 
 export type ReportIssueHrefPartial = string;
