@@ -5739,6 +5739,7 @@ export default (app: Courselore): void => {
                                   ${res.locals.conversation.type === "chat"
                                     ? css``
                                     : css`
+                                        opacity: var(--opacity--50);
                                         border-bottom: var(--border-width--4)
                                           solid var(--color--gray--medium--200);
                                         @media (prefers-color-scheme: dark) {
@@ -5855,18 +5856,26 @@ export default (app: Courselore): void => {
                                             </div>
                                           `}
                                       <span>Just now</span>
-                                      $${app.locals.partials.spinner({
-                                        req,
-                                        res,
-                                        size: 10,
-                                      })}
+                                      <span
+                                        onload="${javascript`
+                                          (this.tooltip ??= tippy(this)).setProps({
+                                            touch: false,
+                                            content: "Sending…",
+                                          });
+                                        `}"
+                                      >
+                                        $${app.locals.partials.spinner({
+                                          req,
+                                          res,
+                                          size: 10,
+                                        })}
+                                      </span>
                                     </div>
                                   </div>
                                   <div
                                     key="message--new-message--placeholder--content"
                                     class="${res.locals.localCSS(css`
                                       white-space: pre-line;
-                                      filter: blur(var(--blur--sm));
                                     `)}"
                                   ></div>
                                 </div>
@@ -5904,6 +5913,17 @@ export default (app: Courselore): void => {
                         padding-top: var(--space--4);
                       `}
                 `)}"
+                onload="${javascript`
+                  this.onsubmit = () => {
+                    window.setTimeout(() => {
+                      const placeholder = document.querySelector('[key="message--new-message--placeholder"]');
+                      const textarea = this.querySelector(".content-editor--write--textarea");
+                      placeholder.querySelector('[key="message--new-message--placeholder--content"]').textContent = textarea.value;
+                      placeholder.hidden = false;
+                      textFieldEdit.set(textarea, "");
+                    });
+                  };
+                `}"
               >
                 <div
                   class="${res.locals.localCSS(css`
