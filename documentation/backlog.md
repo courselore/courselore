@@ -3,9 +3,9 @@
 ### User Interface Improvements
 
 - Render a placeholder (for example, what YouTube shows when loading a page).
-  - Anonymous.
   - Scroll to bottom.
-  - Test on mobile.
+  - TODO
+  - Test on different browsers & mobile.
 
 ---
 

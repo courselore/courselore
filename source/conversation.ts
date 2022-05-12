@@ -5855,21 +5855,12 @@ export default (app: Courselore): void => {
                                               })}
                                             </div>
                                           `}
-                                      <span>Just now</span>
-                                      <span
-                                        onload="${javascript`
-                                          (this.tooltip ??= tippy(this)).setProps({
-                                            touch: false,
-                                            content: "Sending…",
-                                          });
-                                        `}"
-                                      >
-                                        $${app.locals.partials.spinner({
-                                          req,
-                                          res,
-                                          size: 10,
-                                        })}
-                                      </span>
+                                      <span>Sending…</span>
+                                      $${app.locals.partials.spinner({
+                                        req,
+                                        res,
+                                        size: 10,
+                                      })}
                                     </div>
                                   </div>
                                   <div
@@ -5914,13 +5905,24 @@ export default (app: Courselore): void => {
                       `}
                 `)}"
                 onload="${javascript`
-                  this.onsubmit = () => {
+                  // TODO: this.onsubmit = (event) => {
+                  this.onsubmit = (event) => {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
                     window.setTimeout(() => {
                       const placeholder = document.querySelector('[key="message--new-message--placeholder"]');
-                      const textarea = this.querySelector(".content-editor--write--textarea");
-                      placeholder.querySelector('[key="message--new-message--placeholder--content"]').textContent = textarea.value;
+                      const content = this.querySelector('[name="content"]');
+                      ${
+                        res.locals.enrollment.role === "staff"
+                          ? javascript``
+                          : javascript`
+                              const isAnonymous = this.querySelector('[name="isAnonymous"]');
+                              placeholder.querySelector('[key="message--new-message--placeholder--anonymous--' + (!isAnonymous.checked).toString() + '"]').hidden = true;
+                            `
+                      }
+                      placeholder.querySelector('[key="message--new-message--placeholder--content"]').textContent = content.value;
                       placeholder.hidden = false;
-                      textFieldEdit.set(textarea, "");
+                      textFieldEdit.set(content, "");
                     });
                   };
                 `}"
