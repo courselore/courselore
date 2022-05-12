@@ -2998,6 +2998,7 @@ export default (app: Courselore): void => {
                                             $${res.locals.conversationTypes.map(
                                               (conversationType) => html`
                                                 <form
+                                                  key="conversation-type--${conversationType}"
                                                   method="PATCH"
                                                   action="${app.locals.options
                                                     .baseURL}/courses/${res
@@ -3101,6 +3102,7 @@ export default (app: Courselore): void => {
                                       null
                                         ? html`
                                             <input
+                                              key="isResolved--true"
                                               type="hidden"
                                               name="isResolved"
                                               value="true"
@@ -3122,6 +3124,7 @@ export default (app: Courselore): void => {
                                           `
                                         : html`
                                             <input
+                                              key="isResolved--false"
                                               type="hidden"
                                               name="isResolved"
                                               value="false"
@@ -3194,6 +3197,7 @@ export default (app: Courselore): void => {
                                 $${res.locals.conversation.pinnedAt === null
                                   ? html`
                                       <input
+                                        key="isPinned--true"
                                         type="hidden"
                                         name="isPinned"
                                         value="true"
@@ -3213,6 +3217,7 @@ export default (app: Courselore): void => {
                                     `
                                   : html`
                                       <input
+                                        key="isPinned--false"
                                         type="hidden"
                                         name="isPinned"
                                         value="false"
@@ -3293,6 +3298,7 @@ export default (app: Courselore): void => {
                                             .staffOnlyAt === null
                                             ? html`
                                                 <input
+                                                  key="isStaffOnly--true"
                                                   type="hidden"
                                                   name="isStaffOnly"
                                                   value="true"
@@ -3328,6 +3334,7 @@ export default (app: Courselore): void => {
                                               `
                                             : html`
                                                 <input
+                                                  key="isStaffOnly--false"
                                                   type="hidden"
                                                   name="isStaffOnly"
                                                   value="false"
@@ -3701,6 +3708,8 @@ export default (app: Courselore): void => {
                                         $${res.locals.conversation.taggings.map(
                                           (tagging) => html`
                                             <form
+                                              key="tagging--${tagging.tag
+                                                .reference}"
                                               method="DELETE"
                                               action="${app.locals.options
                                                 .baseURL}/courses/${res.locals
@@ -4573,6 +4582,7 @@ export default (app: Courselore): void => {
                                                                   null
                                                                     ? html`
                                                                         <input
+                                                                          key="isAnonymous--true"
                                                                           type="hidden"
                                                                           name="isAnonymous"
                                                                           value="true"
@@ -4607,6 +4617,7 @@ export default (app: Courselore): void => {
                                                                       `
                                                                     : html`
                                                                         <input
+                                                                          key="isAnonymous--false"
                                                                           type="hidden"
                                                                           name="isAnonymous"
                                                                           value="false"
@@ -4822,6 +4833,7 @@ export default (app: Courselore): void => {
                                                 $${message.answerAt === null
                                                   ? html`
                                                       <input
+                                                        key="isAnswer--true"
                                                         type="hidden"
                                                         name="isAnswer"
                                                         value="true"
@@ -4843,6 +4855,7 @@ export default (app: Courselore): void => {
                                                     `
                                                   : html`
                                                       <input
+                                                        key="isAnswer--false"
                                                         type="hidden"
                                                         name="isAnswer"
                                                         value="false"
@@ -4921,11 +4934,6 @@ export default (app: Courselore): void => {
                                                 />
                                                 $${isEndorsed
                                                   ? html`
-                                                      <input
-                                                        type="hidden"
-                                                        name="isEndorsed"
-                                                        value="false"
-                                                      />
                                                       <button
                                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--blue"
                                                         onload="${javascript`
@@ -4994,11 +5002,6 @@ export default (app: Courselore): void => {
                                                       </button>
                                                     `
                                                   : html`
-                                                      <input
-                                                        type="hidden"
-                                                        name="isEndorsed"
-                                                        value="true"
-                                                      />
                                                       <button
                                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--lime"
                                                         $${message.endorsements.filter(

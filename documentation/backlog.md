@@ -641,6 +641,7 @@ const { app, BrowserWindow } = require("electron");
   - `partials.user()` (this is trickier than it may seem, because it actually requires creating `reference`s for users).
   - `class=`
   - `querySelector`
+  - `map(`
 - Asset fingerprinting?
   - Right now we’re relying on ETags, but they require a roundtrip to the server to get the 304. With asset fingerprinting, we could prevent the roundtrip by setting a long expiration time.
   - Two ways to do it:

@@ -2485,6 +2485,7 @@ export default (app: Courselore): void => {
                                               ? html``
                                               : html`
                                                   <form
+                                                    key="role--${role}"
                                                     method="PATCH"
                                                     action="${action}"
                                                   >
@@ -3394,6 +3395,7 @@ export default (app: Courselore): void => {
                                         ? html``
                                         : html`
                                             <form
+                                              key="role--${role}"
                                               method="PATCH"
                                               action="${action}"
                                             >
@@ -3433,6 +3435,7 @@ export default (app: Courselore): void => {
                                                             content: ${res.locals.HTMLForJavaScript(
                                                               html`
                                                                 <form
+                                                                  key="role--${role}"
                                                                   method="PATCH"
                                                                   action="${action}"
                                                                   class="${res
