@@ -3,7 +3,6 @@
 ### User Interface Improvements
 
 - Render a placeholder (for example, what YouTube shows when loading a page).
-  - Scroll to bottom.
   - TODO
   - Test
     - Different browsers & mobile.

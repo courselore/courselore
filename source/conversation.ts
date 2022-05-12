@@ -5922,6 +5922,8 @@ export default (app: Courselore): void => {
                       }
                       placeholder.querySelector('[key="message--new-message--placeholder--content"]').textContent = content.value;
                       placeholder.hidden = false;
+                      for (const element of leafac.ancestors(placeholder))
+                        element.scroll(0, element.scrollHeight);
                       textFieldEdit.set(content, "");
                     });
                   };
