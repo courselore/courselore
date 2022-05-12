@@ -453,6 +453,7 @@ const { app, BrowserWindow } = require("electron");
 ---
 
 - Prevent the flash of unformatted datetime on fields using `validateLocalizedDateTime()`.
+  - I tried to just reset all elements to the `valueInputByUser` at the end (which, incidentally, requires `window.setTimeout()` to not reset the value before the form data is actually sent to the server), but it doesn’t work. It seems like the only solution is to use an auxiliary `<input type="hidden">` that’s actually sent and an `<input type="text">` that drives it to show to the user.
 - Tooltip showing the views for a message:
   - The counter is sometimes lagging behind the actual count, because we don’t send refresh events on every GET everyone ever does (’cause **that** would be silly 😛)
     - Another consequence of not sending refresh events on every GET is that the number of unread messages on the sidebar becomes inconsistent when you have multiple tabs open and you read messages on one of them (the rest still show the unread indicator).
