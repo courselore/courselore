@@ -2,10 +2,6 @@
 
 ### User Interface Improvements
 
-- Document minor version: `Referrer-Policy same-origin` → `Referrer-Policy no-referrer`
-
----
-
 - Render a placeholder (for example, what YouTube shows when loading a page).
 
 ---
