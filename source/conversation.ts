@@ -5905,10 +5905,7 @@ export default (app: Courselore): void => {
                       `}
                 `)}"
                 onload="${javascript`
-                  // TODO: this.onsubmit = (event) => {
-                  this.onsubmit = (event) => {
-                    event.preventDefault();
-                    event.stopImmediatePropagation();
+                  this.onsubmit = () => {
                     window.setTimeout(() => {
                       const placeholder = document.querySelector('[key="message--new-message--placeholder"]');
                       const content = this.querySelector('[name="content"]');
