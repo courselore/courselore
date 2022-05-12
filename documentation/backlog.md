@@ -2,13 +2,6 @@
 
 ### User Interface Improvements
 
-- Render a placeholder (for example, what YouTube shows when loading a page).
-  - Test
-    - Different browsers & mobile.
-    - Regular conversations & chats.
-
----
-
 - Carve two or three possible tasks for new contributor.
   - Administrator panel.
 
