@@ -5,7 +5,9 @@
 - Render a placeholder (for example, what YouTube shows when loading a page).
   - Scroll to bottom.
   - TODO
-  - Test on different browsers & mobile.
+  - Test
+    - Different browsers & mobile.
+    - Regular conversations & chats.
 
 ---
 

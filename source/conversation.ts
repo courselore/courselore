@@ -5736,10 +5736,10 @@ export default (app: Courselore): void => {
                                 key="message--new-message--placeholder"
                                 hidden
                                 class="${res.locals.localCSS(css`
+                                  opacity: var(--opacity--50);
                                   ${res.locals.conversation.type === "chat"
                                     ? css``
                                     : css`
-                                        opacity: var(--opacity--50);
                                         border-bottom: var(--border-width--4)
                                           solid var(--color--gray--medium--200);
                                         @media (prefers-color-scheme: dark) {
