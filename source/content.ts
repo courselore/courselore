@@ -606,7 +606,8 @@ export default async (app: Courselore): Promise<void> => {
   }) => html`
     <div
       key="content-editor"
-      class="content-editor ${res.locals.localCSS(css`
+      class="content-editor"
+      css="${res.locals.localCSS(css`
         min-width: var(--space--0);
       `)}"
     >
@@ -1787,8 +1788,8 @@ export default async (app: Courselore): Promise<void> => {
             `)}"
           >
             <div
-              class="content-editor--write--textarea--dropdown-menu-target ${res
-                .locals.localCSS(css`
+              class="content-editor--write--textarea--dropdown-menu-target"
+              css="${res.locals.localCSS(css`
                 width: var(--space--0);
                 height: var(--line-height--sm);
                 position: absolute;
@@ -1797,8 +1798,8 @@ export default async (app: Courselore): Promise<void> => {
             <textarea
               name="${name}"
               $${required ? html`required` : html``}
-              class="content-editor--write--textarea input--text input--text--textarea ${res
-                .locals.localCSS(css`
+              class="content-editor--write--textarea input--text input--text--textarea"
+              css="${res.locals.localCSS(css`
                 ${compact
                   ? css`
                       height: var(--space--14);
@@ -2068,7 +2069,8 @@ ${contentSource}</textarea
           : html`
               <div
                 hidden
-                class="content-editor--loading strong ${res.locals.localCSS(css`
+                class="content-editor--loading strong"
+                css="${res.locals.localCSS(css`
                   padding: var(--space--4);
                   display: flex;
                   justify-content: center;
@@ -2081,7 +2083,8 @@ ${contentSource}</textarea
 
               <div
                 hidden
-                class="content-editor--preview ${res.locals.localCSS(css`
+                class="content-editor--preview"
+                css="${res.locals.localCSS(css`
                   padding: var(--space--4);
                 `)}"
               ></div>

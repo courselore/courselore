@@ -401,7 +401,8 @@ export default (app: Courselore): void => {
                             `
                           : html`
                               <div
-                                class="secondary ${res.locals.localCSS(css`
+                                class="secondary"
+                                css="${res.locals.localCSS(css`
                                   font-size: var(--font-size--xs);
                                   line-height: var(--line-height--xs);
                                 `)}"
@@ -424,7 +425,8 @@ export default (app: Courselore): void => {
                         enrollment.role === "staff"
                           ? html`
                               <div
-                                class="text--sky ${res.locals.localCSS(css`
+                                class="text--sky"
+                                css="${res.locals.localCSS(css`
                                   font-size: var(--font-size--xs);
                                   line-height: var(--line-height--xs);
                                   display: flex;
@@ -634,7 +636,8 @@ export default (app: Courselore): void => {
                 `)}"
               >
                 <div
-                  class="avatar-chooser ${res.locals.localCSS(css`
+                  class="avatar-chooser"
+                  css="${res.locals.localCSS(css`
                     display: flex;
                     justify-content: center;
                     align-items: center;
@@ -660,8 +663,8 @@ export default (app: Courselore): void => {
                   >
                     <button
                       type="button"
-                      class="button button--transparent ${res.locals
-                        .localCSS(css`
+                      class="button button--transparent"
+                      css="${res.locals.localCSS(css`
                         transform: scale(8)
                           translate(
                             calc(var(--space---px) + 50% + var(--space---px)),
@@ -694,7 +697,8 @@ export default (app: Courselore): void => {
                   </div>
                   <div
                     $${res.locals.user.avatar === null ? html`hidden` : html``}
-                    class="avatar-chooser--filled ${res.locals.localCSS(css`
+                    class="avatar-chooser--filled"
+                    css="${res.locals.localCSS(css`
                       display: grid;
                       & > * {
                         grid-area: 1 / 1;
@@ -704,8 +708,8 @@ export default (app: Courselore): void => {
                   >
                     <button
                       type="button"
-                      class="button button--transparent ${res.locals
-                        .localCSS(css`
+                      class="button button--transparent"
+                      css="${res.locals.localCSS(css`
                         padding: var(--space--2);
                         margin: var(--space---2);
                         border-radius: var(--border-radius--circle);
@@ -734,7 +738,8 @@ export default (app: Courselore): void => {
                     </button>
                     <button
                       type="button"
-                      class="button button--rose ${res.locals.localCSS(css`
+                      class="button button--rose"
+                      css="${res.locals.localCSS(css`
                         place-self: end;
                         width: var(--font-size--2xl);
                         height: var(--font-size--2xl);

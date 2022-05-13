@@ -51,8 +51,8 @@ export default (app: Courselore): void => {
             >
               <a
                 href="${app.locals.options.baseURL}/about"
-                class="heading--display button button--transparent ${res.locals
-                  .localCSS(css`
+                class="heading--display button button--transparent"
+                css="${res.locals.localCSS(css`
                   font-size: var(--font-size--5xl);
                   line-height: var(--line-height--5xl);
                   font-weight: var(--font-weight--black);
@@ -65,7 +65,8 @@ export default (app: Courselore): void => {
                 Courselore
               </a>
               <h3
-                class="secondary ${res.locals.localCSS(css`
+                class="secondary"
+                css="${res.locals.localCSS(css`
                   font-size: var(--font-size--lg);
                   line-height: var(--line-height--lg);
                   font-weight: var(--font-weight--bold);
@@ -135,11 +136,10 @@ export default (app: Courselore): void => {
                 <div>
                   <a
                     href="${app.locals.options.metaCourseloreInvitation}"
-                    class="button button--transparent ${res.locals.localCSS(
-                      css`
-                        align-items: center;
-                      `
-                    )}"
+                    class="button button--transparent"
+                    css="${res.locals.localCSS(css`
+                      align-items: center;
+                    `)}"
                     onload="${javascript`
                       (this.tooltip ??= tippy(this)).setProps({
                         touch: false,
@@ -195,7 +195,8 @@ export default (app: Courselore): void => {
                 alt="Courselore Main Screen"
                 width="960"
                 loading="lazy"
-                class="img light ${res.locals.localCSS(css`
+                class="img light"
+                css="${res.locals.localCSS(css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
                     var(--color--gray--medium--200);
@@ -209,7 +210,8 @@ export default (app: Courselore): void => {
                 alt="Courselore Main Screen"
                 width="960"
                 loading="lazy"
-                class="img dark ${res.locals.localCSS(css`
+                class="img dark"
+                css="${res.locals.localCSS(css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
                     var(--color--gray--medium--200);
@@ -361,7 +363,8 @@ export default (app: Courselore): void => {
               `)}"
             >
               <p
-                class="heading--display ${res.locals.localCSS(css`
+                class="heading--display"
+                css="${res.locals.localCSS(css`
                   font-size: var(--font-size--5xl);
                   line-height: var(--line-height--5xl);
                   font-weight: var(--font-weight--black);
@@ -371,7 +374,8 @@ export default (app: Courselore): void => {
                 Carefully Designed
               </p>
               <p
-                class="secondary ${res.locals.localCSS(css`
+                class="secondary"
+                css="${res.locals.localCSS(css`
                   font-size: var(--font-size--lg);
                   line-height: var(--line-height--lg);
                   font-weight: var(--font-weight--bold);
@@ -392,7 +396,8 @@ export default (app: Courselore): void => {
                 alt="Courselore Main Screen Featuring Light & Dark Modes"
                 width="960"
                 loading="lazy"
-                class="img ${res.locals.localCSS(css`
+                class="img"
+                css="${res.locals.localCSS(css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
                     var(--color--gray--medium--200);
@@ -433,7 +438,8 @@ export default (app: Courselore): void => {
               `)}"
             >
               <p
-                class="heading--display ${res.locals.localCSS(css`
+                class="heading--display"
+                css="${res.locals.localCSS(css`
                   font-size: var(--font-size--5xl);
                   line-height: var(--line-height--5xl);
                   font-weight: var(--font-weight--black);
@@ -444,7 +450,8 @@ export default (app: Courselore): void => {
                 Mobile Support
               </p>
               <p
-                class="secondary ${res.locals.localCSS(css`
+                class="secondary"
+                css="${res.locals.localCSS(css`
                   font-size: var(--font-size--lg);
                   line-height: var(--line-height--lg);
                   font-weight: var(--font-weight--bold);
@@ -465,7 +472,8 @@ export default (app: Courselore): void => {
                 alt="Courselore Main Screen on Phone"
                 width="300"
                 loading="lazy"
-                class="img light ${res.locals.localCSS(css`
+                class="img light"
+                css="${res.locals.localCSS(css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
                     var(--color--gray--medium--200);
@@ -479,7 +487,8 @@ export default (app: Courselore): void => {
                 alt="Courselore Main Screen on Phone"
                 width="300"
                 loading="lazy"
-                class="img dark ${res.locals.localCSS(css`
+                class="img dark"
+                css="${res.locals.localCSS(css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
                     var(--color--gray--medium--200);
@@ -516,7 +525,8 @@ export default (app: Courselore): void => {
               `)}"
             >
               <p
-                class="heading--display ${res.locals.localCSS(css`
+                class="heading--display"
+                css="${res.locals.localCSS(css`
                   font-size: var(--font-size--5xl);
                   line-height: var(--line-height--5xl);
                   font-weight: var(--font-weight--black);
@@ -526,7 +536,8 @@ export default (app: Courselore): void => {
                 Rich-Text Messages
               </p>
               <p
-                class="secondary ${res.locals.localCSS(css`
+                class="secondary"
+                css="${res.locals.localCSS(css`
                   font-size: var(--font-size--lg);
                   line-height: var(--line-height--lg);
                   font-weight: var(--font-weight--bold);
@@ -535,8 +546,8 @@ export default (app: Courselore): void => {
                 Markdown
                 <button
                   type="button"
-                  class="button button--tight button--tight--inline button--inline button--transparent ${res
-                    .locals.localCSS(css`
+                  class="button button--tight button--tight--inline button--inline button--transparent"
+                  css="${res.locals.localCSS(css`
                     font-size: var(--font-size--base);
                     line-height: var(--line-height--base);
                   `)}"
@@ -552,8 +563,8 @@ export default (app: Courselore): void => {
                   LaTeX
                 <button
                   type="button"
-                  class="button button--tight button--tight--inline button--inline button--transparent ${res
-                    .locals.localCSS(css`
+                  class="button button--tight button--tight--inline button--inline button--transparent"
+                  css="${res.locals.localCSS(css`
                     font-size: var(--font-size--base);
                     line-height: var(--line-height--base);
                   `)}"
@@ -569,8 +580,8 @@ export default (app: Courselore): void => {
                   Syntax highlighting
                 <button
                   type="button"
-                  class="button button--tight button--tight--inline button--inline button--transparent ${res
-                    .locals.localCSS(css`
+                  class="button button--tight button--tight--inline button--inline button--transparent"
+                  css="${res.locals.localCSS(css`
                     font-size: var(--font-size--base);
                     line-height: var(--line-height--base);
                   `)}"
@@ -654,7 +665,8 @@ export default (app: Courselore): void => {
               `)}"
             >
               <h2
-                class="heading--display ${res.locals.localCSS(css`
+                class="heading--display"
+                css="${res.locals.localCSS(css`
                   font-size: var(--font-size--5xl);
                   line-height: var(--line-height--5xl);
                   font-weight: var(--font-weight--black);
@@ -801,11 +813,10 @@ export default (app: Courselore): void => {
                 `}
             <a
               href="${app.locals.options.metaCourseloreInvitation}"
-              class="button button--transparent ${res.locals.localCSS(
-                css`
-                  align-items: center;
-                `
-              )}"
+              class="button button--transparent"
+              css="${res.locals.localCSS(css`
+                align-items: center;
+              `)}"
               onload="${javascript`
                 (this.tooltip ??= tippy(this)).setProps({
                   touch: false,

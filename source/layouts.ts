@@ -269,11 +269,9 @@ export default async (app: Courselore): Promise<void> => {
                               }
                               return html`
                                 <p
-                                  class="${res.locals.localCSS(
-                                    css`
-                                      font-weight: var(--font-weight--bold);
-                                    `
-                                  )}"
+                                  css="${res.locals.localCSS(css`
+                                    font-weight: var(--font-weight--bold);
+                                  `)}"
                                 >
                                   This Courselore installation is running in
                                   demonstration mode and doesn’t send emails.
@@ -375,7 +373,8 @@ export default async (app: Courselore): Promise<void> => {
                   `)}"
                 >
                   <button
-                    class="button ${res.locals.localCSS(css`
+                    class="button"
+                    css="${res.locals.localCSS(css`
                       background-color: var(
                         --color--${res.locals.enrollment.accentColor}--500
                       );
@@ -412,8 +411,8 @@ export default async (app: Courselore): Promise<void> => {
                                 differentiate between courses.
                               </p>
                               <a
-                                class="button button--blue ${res.locals
-                                  .localCSS(css`
+                                class="button button--blue"
+                                css="${res.locals.localCSS(css`
                                   width: 100%;
                                 `)}"
                                 href="${app.locals.options
@@ -500,8 +499,8 @@ export default async (app: Courselore): Promise<void> => {
                                       value="${req.csrfToken()}"
                                     />
                                     <button
-                                      class="button button--blue ${res.locals
-                                        .localCSS(css`
+                                      class="button button--blue"
+                                      css="${res.locals.localCSS(css`
                                         width: 100%;
                                       `)}"
                                     >
@@ -578,7 +577,8 @@ export default async (app: Courselore): Promise<void> => {
           >
             <div>
               <button
-                class="button button--transparent ${res.locals.localCSS(css`
+                class="button button--transparent"
+                css="${res.locals.localCSS(css`
                   align-items: center;
                 `)}"
                 onload="${javascript`
@@ -595,7 +595,8 @@ export default async (app: Courselore): Promise<void> => {
                             Courselore <br />
                             Communication Platform for Education <br />
                             <small
-                              class="secondary ${res.locals.localCSS(css`
+                              class="secondary"
+                              css="${res.locals.localCSS(css`
                                 font-size: var(--font-size--2xs);
                                 line-height: var(--line-height--2xs);
                               `)}"
@@ -649,11 +650,10 @@ export default async (app: Courselore): Promise<void> => {
                             href="${app.locals.options
                               .metaCourseloreInvitation}"
                             target="_blank"
-                            class="dropdown--menu--item button button--transparent ${res.locals.localCSS(
-                              css`
-                                align-items: center;
-                              `
-                            )}"
+                            class="dropdown--menu--item button button--transparent"
+                            css="${res.locals.localCSS(css`
+                              align-items: center;
+                            `)}"
                           >
                             $${app.locals.partials.logo({
                               size: 14 /* var(--space--3-5) */,
@@ -2135,8 +2135,8 @@ export default async (app: Courselore): Promise<void> => {
             >
               <a
                 href="${app.locals.options.baseURL}/"
-                class="heading--display button button--transparent ${res.locals
-                  .localCSS(css`
+                class="heading--display button button--transparent"
+                css="${res.locals.localCSS(css`
                   align-items: center;
                 `)}"
               >
@@ -2211,7 +2211,8 @@ export default async (app: Courselore): Promise<void> => {
                           value="${req.csrfToken()}"
                         />
                         <button
-                          class="button button--amber ${res.locals.localCSS(css`
+                          class="button button--amber"
+                          css="${res.locals.localCSS(css`
                             width: 100%;
                           `)}"
                         >
@@ -2273,7 +2274,8 @@ export default async (app: Courselore): Promise<void> => {
                           value="${req.csrfToken()}"
                         />
                         <button
-                          class="button button--amber ${res.locals.localCSS(css`
+                          class="button button--amber"
+                          css="${res.locals.localCSS(css`
                             width: 100%;
                           `)}"
                         >
@@ -2363,8 +2365,8 @@ export default async (app: Courselore): Promise<void> => {
               return res.locals.course !== undefined
                 ? html`
                     <button
-                      class="button button--tight button--tight--inline button--transparent strong ${res
-                        .locals.localCSS(css`
+                      class="button button--tight button--tight--inline button--transparent strong"
+                      css="${res.locals.localCSS(css`
                         max-width: 100%;
                       `)}"
                       onload="${javascript`
@@ -2449,8 +2451,8 @@ export default async (app: Courselore): Promise<void> => {
                 : showCourseSwitcher && res.locals.enrollments.length > 0
                 ? html`
                     <button
-                      class="button button--tight button--tight--inline button--transparent ${res
-                        .locals.localCSS(css`
+                      class="button button--tight button--tight--inline button--transparent"
+                      css="${res.locals.localCSS(css`
                         max-width: 100%;
                       `)}"
                       onload="${javascript`
@@ -2609,8 +2611,8 @@ export default async (app: Courselore): Promise<void> => {
 
           <div>
             <button
-              class="button button--tight button--tight--inline button--transparent ${res
-                .locals.localCSS(css`
+              class="button button--tight button--tight--inline button--transparent"
+              css="${res.locals.localCSS(css`
                 padding: var(--space--1);
                 border-radius: var(--border-radius--circle);
               `)}"

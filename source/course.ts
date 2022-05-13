@@ -201,9 +201,8 @@ export default (app: Courselore): void => {
     >
       <div>
         <div
-          class="button button--tight ${tight
-            ? "button--tight--inline"
-            : ""} ${res.locals.localCSS(css`
+          class="button button--tight ${tight ? "button--tight--inline" : ""}"
+          css="${res.locals.localCSS(css`
             cursor: default;
             ${enrollment === undefined
               ? css``
@@ -229,7 +228,8 @@ export default (app: Courselore): void => {
       <div>
         <div class="strong">${course.name}</div>
         <div
-          class="secondary ${res.locals.localCSS(css`
+          class="secondary"
+          css="${res.locals.localCSS(css`
             font-size: var(--font-size--xs);
             line-height: var(--line-height--xs);
           `)}"
@@ -1333,7 +1333,8 @@ export default (app: Courselore): void => {
                 `)}"
               >
                 <div
-                  class="tags ${res.locals.localCSS(css`
+                  class="tags"
+                  css="${res.locals.localCSS(css`
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--4);
@@ -1343,7 +1344,8 @@ export default (app: Courselore): void => {
                     (tag, index) => html`
                       <div
                         key="tag--${tag.reference}"
-                        class="tag ${res.locals.localCSS(css`
+                        class="tag"
+                        css="${res.locals.localCSS(css`
                           padding-bottom: var(--space--4);
                           border-bottom: var(--border-width--1) solid
                             var(--color--gray--medium--200);
@@ -1602,7 +1604,8 @@ export default (app: Courselore): void => {
                       const newTagPartial = ${res.locals.HTMLForJavaScript(
                         html`
                           <div
-                            class="tag ${res.locals.localCSS(css`
+                            class="tag"
+                            css="${res.locals.localCSS(css`
                               padding-bottom: var(--space--4);
                               border-bottom: var(--border-width--1) solid
                                 var(--color--gray--medium--200);
@@ -1999,8 +2002,8 @@ export default (app: Courselore): void => {
                   name="emails"
                   required
                   disabled
-                  class="input--text input--text--textarea ${res.locals
-                    .localCSS(css`
+                  class="input--text input--text--textarea"
+                  css="${res.locals.localCSS(css`
                     height: var(--space--32);
                   `)}"
                   onload="${javascript`
@@ -2250,8 +2253,7 @@ export default (app: Courselore): void => {
                                           return res.locals.HTMLForJavaScript(
                                             html`
                                               <div
-                                                class="${res.locals
-                                                  .localCSS(css`
+                                                css="${res.locals.localCSS(css`
                                                   display: flex;
                                                   flex-direction: column;
                                                   gap: var(--space--2);
@@ -2260,8 +2262,9 @@ export default (app: Courselore): void => {
                                                 $${isInvitationExpired
                                                   ? html`
                                                       <p
-                                                        class="text--rose ${res
-                                                          .locals.localCSS(css`
+                                                        class="text--rose"
+                                                        css="${res.locals
+                                                          .localCSS(css`
                                                           display: flex;
                                                           gap: var(--space--2);
                                                           justify-content: center;
@@ -2275,7 +2278,7 @@ export default (app: Courselore): void => {
                                                     `
                                                   : html``}
                                                 <div
-                                                  class="${res.locals
+                                                  css="${res.locals
                                                     .localCSS(css`
                                                     display: flex;
                                                     gap: var(--space--2);
@@ -2286,8 +2289,9 @@ export default (app: Courselore): void => {
                                                     type="text"
                                                     readonly
                                                     value="${link}"
-                                                    class="input--text ${res
-                                                      .locals.localCSS(css`
+                                                    class="input--text"
+                                                    css="${res.locals
+                                                      .localCSS(css`
                                                       flex: 1;
                                                     `)}"
                                                     onload="${javascript`
@@ -2363,8 +2367,8 @@ export default (app: Courselore): void => {
                             : html`
                                 <div>
                                   <button
-                                    class="button button--tight button--tight--inline button--transparent ${res
-                                      .locals.localCSS(css`
+                                    class="button button--tight button--tight--inline button--transparent"
+                                    css="${res.locals.localCSS(css`
                                       text-align: left;
                                       display: flex;
                                       flex-direction: column;
@@ -2429,7 +2433,8 @@ export default (app: Courselore): void => {
                                     `}"
                                   >
                                     <div
-                                      class="strong ${res.locals.localCSS(css`
+                                      class="strong"
+                                      css="${res.locals.localCSS(css`
                                         display: flex;
                                         align-items: baseline;
                                         gap: var(--space--2);
@@ -2561,8 +2566,8 @@ export default (app: Courselore): void => {
                                     method="PATCH"
                                     action="${action}"
                                     novalidate
-                                    class="dropdown--menu ${res.locals
-                                      .localCSS(css`
+                                    class="dropdown--menu"
+                                    css="${res.locals.localCSS(css`
                                       gap: var(--space--2);
                                     `)}"
                                   >
@@ -2653,8 +2658,8 @@ export default (app: Courselore): void => {
                                   ? html`
                                       <div>
                                         <div
-                                          class="button button--tight button--tight--inline text--green ${res
-                                            .locals.localCSS(css`
+                                          class="button button--tight button--tight--inline text--green"
+                                          css="${res.locals.localCSS(css`
                                             cursor: default;
                                           `)}"
                                           onload="${javascript`
@@ -2700,7 +2705,7 @@ export default (app: Courselore): void => {
                                               content: ${res.locals.HTMLForJavaScript(
                                                 html`
                                                   <div
-                                                    class="${res.locals
+                                                    css="${res.locals
                                                       .localCSS(css`
                                                       display: flex;
                                                       flex-direction: column;
@@ -2757,7 +2762,7 @@ export default (app: Courselore): void => {
                                               content: ${res.locals.HTMLForJavaScript(
                                                 html`
                                                   <div
-                                                    class="${res.locals
+                                                    css="${res.locals
                                                       .localCSS(css`
                                                       padding-top: var(
                                                         --space--2
@@ -2802,7 +2807,7 @@ export default (app: Courselore): void => {
                                               content: ${res.locals.HTMLForJavaScript(
                                                 html`
                                                   <div
-                                                    class="${res.locals
+                                                    css="${res.locals
                                                       .localCSS(css`
                                                       display: flex;
                                                       flex-direction: column;
@@ -3289,7 +3294,8 @@ export default (app: Courselore): void => {
               return html`
                 <div
                   key="enrollment--${enrollment.reference}"
-                  class="enrollment ${res.locals.localCSS(css`
+                  class="enrollment"
+                  css="${res.locals.localCSS(css`
                     padding-top: var(--space--2);
                     border-top: var(--border-width--1) solid
                       var(--color--gray--medium--200);
@@ -3341,7 +3347,8 @@ export default (app: Courselore): void => {
                         ${enrollment.user.email}
                       </div>
                       <div
-                        class="secondary ${res.locals.localCSS(css`
+                        class="secondary"
+                        css="${res.locals.localCSS(css`
                           font-size: var(--font-size--xs);
                         `)}"
                       >
@@ -3438,7 +3445,7 @@ export default (app: Courselore): void => {
                                                                   key="role--${role}"
                                                                   method="PATCH"
                                                                   action="${action}"
-                                                                  class="${res
+                                                                  css="${res
                                                                     .locals
                                                                     .localCSS(css`
                                                                     padding: var(
@@ -3470,7 +3477,7 @@ export default (app: Courselore): void => {
                                                                   </p>
                                                                   <p>
                                                                     <strong
-                                                                      class="${res
+                                                                      css="${res
                                                                         .locals
                                                                         .localCSS(css`
                                                                         font-weight: var(
@@ -3580,8 +3587,7 @@ export default (app: Courselore): void => {
                                             </p>
                                             <p>
                                               <strong
-                                                class="${res.locals
-                                                  .localCSS(css`
+                                                css="${res.locals.localCSS(css`
                                                   font-weight: var(
                                                     --font-weight--bold
                                                   );
@@ -3775,7 +3781,8 @@ export default (app: Courselore): void => {
                         $${accentColor === res.locals.enrollment.accentColor
                           ? html`checked`
                           : html``}
-                        class="input--radio ${res.locals.localCSS(css`
+                        class="input--radio"
+                        css="${res.locals.localCSS(css`
                           background-color: var(--color--${accentColor}--500);
                           &:hover,
                           &:focus-within {
@@ -3901,7 +3908,8 @@ export default (app: Courselore): void => {
                   type="text"
                   readonly
                   value="${link}"
-                  class="input--text ${res.locals.localCSS(css`
+                  class="input--text"
+                  css="${res.locals.localCSS(css`
                     flex: 1;
                   `)}"
                   onload="${javascript`
@@ -4005,7 +4013,8 @@ export default (app: Courselore): void => {
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <button
-                class="button button--blue ${res.locals.localCSS(css`
+                class="button button--blue"
+                css="${res.locals.localCSS(css`
                   width: 100%;
                 `)}"
               >

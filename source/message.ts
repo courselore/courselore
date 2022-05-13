@@ -527,7 +527,8 @@ export default (app: Courselore): void => {
           res,
           body: html`
             <div
-              class="dropdown--menu ${res.locals.localCSS(css`
+              class="dropdown--menu"
+              css="${res.locals.localCSS(css`
                 max-height: var(--space--56);
                 padding: var(--space--1) var(--space--0);
                 overflow: auto;
@@ -545,7 +546,8 @@ export default (app: Courselore): void => {
                     })}
                      
                     <span
-                      class="secondary ${res.locals.localCSS(css`
+                      class="secondary"
+                      css="${res.locals.localCSS(css`
                         font-size: var(--font-size--xs);
                         line-height: var(--line-height--xs);
                       `)}"
