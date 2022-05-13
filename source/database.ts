@@ -408,6 +408,22 @@ export default async (app: Courselore): Promise<void> => {
     sql`
       DROP INDEX "flashesCreatedAtIndex";
       CREATE INDEX "flashesCreatedAtIndex" ON "flashes" ("createdAt");
+    `,
+    sql`
+      CREATE TABLE "conversationDrafts" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL,
+        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+        "reference" TEXT NOT NULL,
+        "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+        "type" TEXT NULL,
+        "isPinned" TEXT NULL,
+        "isStaffOnly" TEXT NULL,
+        "title" TEXT NULL,
+        "content" TEXT NULL,
+        "tagsReferences" TEXT NULL,
+        UNIQUE ("course", "reference")
+      );
     `
   );
   app.once("close", () => {
