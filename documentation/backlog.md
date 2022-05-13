@@ -2,11 +2,6 @@
 
 ### User Interface Improvements
 
-- Carve two or three possible tasks for new contributor.
-  - Administrator panel.
-
----
-
 - Draft posts.
 
 ---
@@ -358,7 +353,12 @@ new Notification('Example');
 
 ### Administrative Interface
 
-- For department-wide deployments, have some sort of administrative interface with a hierarchy, for example, administrators may be able to see all courses, and so forth.
+- Perhaps don’t do this now: prioritize other features that are more pertinent to staff & students, given that we’ll follow a “bottom-up” approach to increasing the Courselore user base.
+- For department-wide installations.
+- Add a role of “administrator” that’s installation-wide, not course-wide.
+- Administrators may have access to all courses on the installation, or perhaps a subset of them.
+- The access that administrators have to the courses will be different than staff & students. For example, we may let them create invitations for courses, but not see particular conversations.
+- Control who’s able to create courses on the installation.
 
 ### Statistics
 
