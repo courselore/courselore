@@ -65,6 +65,7 @@ export type ConversationLayout = ({
         tagsReferences?: string[];
       };
       conversationsPage?: string;
+      [key: string]: unknown;
     },
     IsEnrolledInCourseMiddlewareLocals &
       Partial<IsConversationAccessibleMiddlewareLocals>
@@ -1988,7 +1989,14 @@ export default (app: Courselore): void => {
     { courseReference: string },
     HTML,
     {},
-    {},
+    {
+      type?: string;
+      isPinned?: "true";
+      isStaffOnly?: "true";
+      title?: string;
+      content?: string;
+      tagsReferences?: string[];
+    },
     IsEnrolledInCourseMiddlewareLocals & LiveUpdatesMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/new",
@@ -2051,6 +2059,9 @@ export default (app: Courselore): void => {
                           name="type"
                           value="${conversationType}"
                           required
+                          $${req.query.type === conversationType
+                            ? html`checked`
+                            : html``}
                           class="visually-hidden input--radio-or-checkbox--multilabel"
                           onload="${javascript`
                             this.onchange = () => {
@@ -2126,6 +2137,9 @@ export default (app: Courselore): void => {
                             <input
                               type="checkbox"
                               name="isPinned"
+                              $${req.query.isPinned === "true"
+                                ? html`checked`
+                                : html``}
                               class="visually-hidden input--radio-or-checkbox--multilabel"
                             />
                             <span
@@ -2175,6 +2189,9 @@ export default (app: Courselore): void => {
                       <input
                         type="checkbox"
                         name="isStaffOnly"
+                        $${req.query.isStaffOnly === "true"
+                          ? html`checked`
+                          : html``}
                         class="visually-hidden input--radio-or-checkbox--multilabel"
                         onload="${javascript`
                           this.onchange = () => {
@@ -2220,13 +2237,25 @@ export default (app: Courselore): void => {
                   type="text"
                   name="title"
                   required
+                  $${typeof req.query.title === "string" &&
+                  req.query.title.trim() !== ""
+                    ? html`value="${req.query.title}"`
+                    : html``}
                   autocomplete="off"
                   autofocus
                   class="input--text"
                 />
               </div>
 
-              $${app.locals.partials.contentEditor({ req, res })}
+              $${app.locals.partials.contentEditor({
+                req,
+                res,
+                contentSource:
+                  typeof req.query.content === "string" &&
+                  req.query.content.trim() !== ""
+                    ? req.query.content
+                    : undefined,
+              })}
               $${res.locals.tags.length === 0 &&
               res.locals.enrollment.role !== "staff"
                 ? html``
@@ -2308,6 +2337,14 @@ export default (app: Courselore): void => {
                                       type="checkbox"
                                       name="tagsReferences[]"
                                       value="${tag.reference}"
+                                      $${Array.isArray(
+                                        req.query.tagsReferences
+                                      ) &&
+                                      req.query.tagsReferences.includes(
+                                        tag.reference
+                                      )
+                                        ? html`checked`
+                                        : html``}
                                       required
                                       class="visually-hidden input--radio-or-checkbox--multilabel"
                                     />
