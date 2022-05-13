@@ -3,7 +3,6 @@
 ### User Interface Improvements
 
 - Draft posts.
-  - Introduce a way to pre-fill a new post, then just store URLs.
 
 ---
 
@@ -251,7 +250,6 @@ new Notification('Example');
 - More sophisticated tag system: dependencies between tags, actions triggered by tags, and so forth.
 - Modify the order of tags.
 - Assign questions to CAs.
-- Save drafts of conversations you’re creating.
 - `position: sticky` headers (showing author name) in messages?
 - Different states: Open vs archived.
 
