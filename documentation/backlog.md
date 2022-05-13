@@ -3,6 +3,7 @@
 ### User Interface Improvements
 
 - Draft posts.
+  - Introduce a way to pre-fill a new post, then just store URLs.
 
 ---
 
@@ -19,7 +20,6 @@
       - Questions
       - Conversations with unread messages
   - Make it fixed, scroll just the list of conversations
-    - Remove `scrollToConversation`
   - Scroll the conversations list to the current conversation doesn’t work on mobile.
     - Maybe this isn’t relevant now that we turned the “Conversations” menu on mobile into a link that points at `/courses/<courseReference>`?
     - Remember that this only applies to deep links into conversations.
@@ -334,6 +334,7 @@ new Notification('Example');
   - This is an edge case because people should only be able to get there when they manipulate the URL (or because they’re loading the next page right when an item has been deleted)
   - Difficult because we don’t have a “before” or “after” message to anchor to.
 - Paginate other things, for example, Course Settings · Enrollments, and invitations.
+- Things like clearing search and filters may affect query parameters.
 
 ### File Management
 

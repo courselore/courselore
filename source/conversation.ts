@@ -64,7 +64,6 @@ export type ConversationLayout = ({
         isStaffOnly?: "true" | "false";
         tagsReferences?: string[];
       };
-      scrollToConversation?: "false";
       conversationsPage?: string;
     },
     IsEnrolledInCourseMiddlewareLocals &
@@ -618,6 +617,8 @@ export default (app: Courselore): void => {
                 <hr class="separator" />
 
                 <form
+                  method="GET"
+                  action="${app.locals.options.baseURL}${req.path}"
                   novalidate
                   class="${res.locals.localCSS(css`
                     font-size: var(--font-size--xs);
@@ -630,11 +631,6 @@ export default (app: Courselore): void => {
                     this.isModified = false;
                   `}"
                 >
-                  <input
-                    type="hidden"
-                    name="scrollToConversation"
-                    value="false"
-                  />
                   <div
                     class="${res.locals.localCSS(css`
                       display: flex;
@@ -664,12 +660,7 @@ export default (app: Courselore): void => {
                     req.query.filters !== undefined
                       ? html`
                           <a
-                            href="${qs.stringify(
-                              {
-                                scrollToConversation: "false",
-                              },
-                              { addQueryPrefix: true }
-                            )}"
+                            href="${app.locals.options.baseURL}${req.path}"
                             class="button button--tight button--tight--inline button--transparent"
                             onload="${javascript`
                               (this.tooltip ??= tippy(this)).setProps({
@@ -1107,12 +1098,7 @@ export default (app: Courselore): void => {
                       req.query.filters !== undefined
                         ? html`
                             <a
-                              href="${qs.stringify(
-                                {
-                                  scrollToConversation: "false",
-                                },
-                                { addQueryPrefix: true }
-                              )}"
+                              href="${app.locals.options.baseURL}${req.path}"
                               class="button button--tight button--tight--inline button--transparent"
                             >
                               <i class="bi bi-x-lg"></i>
@@ -1216,7 +1202,6 @@ export default (app: Courselore): void => {
                         key="conversations"
                         onload="${javascript`
                         ${
-                          req.query.scrollToConversation !== "false" &&
                           res.locals.conversation !== undefined
                             ? javascript`
                                 window.setTimeout(() => {
@@ -1256,7 +1241,6 @@ export default (app: Courselore): void => {
                                           searchResult?.message?.reference,
                                       },
                                       [
-                                        "scrollToConversation",
                                         "beforeMessageReference",
                                         "afterMessageReference",
                                       ]
