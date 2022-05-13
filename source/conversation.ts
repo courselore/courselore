@@ -2458,7 +2458,15 @@ export default (app: Courselore): void => {
                     </div>
                   `}
 
-              <div>
+              <div
+                css="${res.locals.localCSS(css`
+                  display: flex;
+                  gap: var(--space--4);
+                  @media (max-width: 400px) {
+                    flex-direction: column;
+                  }
+                `)}"
+              >
                 <button
                   class="button button--full-width-on-small-screen button--blue"
                   onload="${javascript`
@@ -2492,6 +2500,39 @@ export default (app: Courselore): void => {
                 >
                   <i class="bi bi-chat-left-text"></i>
                   Start Conversation
+                </button>
+                <button
+                  class="button button--full-width-on-small-screen button--transparent"
+                  onload="${javascript`
+                    (this.tooltip ??= tippy(this)).setProps({
+                      touch: false,
+                      content: ${res.locals.HTMLForJavaScript(
+                        html`
+                          <span class="keyboard-shortcut">
+                            <span
+                              onload="${javascript`
+                                this.hidden = leafac.isAppleDevice;
+                              `}"
+                              >Ctrl+S</span
+                            ><span
+                              class="keyboard-shortcut--cluster"
+                              onload="${javascript`
+                                this.hidden = !leafac.isAppleDevice;
+                              `}"
+                              ><i class="bi bi-command"></i>S</span
+                            >
+                          </span>
+                        `
+                      )},
+                    });
+
+                    const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
+
+                    (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+s", () => { this.click(); return false; });
+                  `}"
+                >
+                  <i class="bi bi-file-earmark-text"></i>
+                  Save Draft
                 </button>
               </div>
             </form>
