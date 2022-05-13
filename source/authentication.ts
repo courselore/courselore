@@ -408,7 +408,7 @@ export default (app: Courselore): void => {
               }
             )}"
             novalidate
-            class="${res.locals.localCSS(css`
+            css="${res.locals.localCSS(css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
@@ -448,7 +448,7 @@ export default (app: Courselore): void => {
             </button>
           </form>
           <div
-            class="${res.locals.localCSS(css`
+            css="${res.locals.localCSS(css`
               display: flex;
               flex-direction: column;
               gap: var(--space--2);
@@ -626,7 +626,7 @@ export default (app: Courselore): void => {
                 addQueryPrefix: true,
               })}"
               novalidate
-              class="${res.locals.localCSS(css`
+              css="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -654,7 +654,7 @@ export default (app: Courselore): void => {
               </button>
             </form>
             <div
-              class="${res.locals.localCSS(css`
+              css="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--2);
@@ -845,7 +845,7 @@ export default (app: Courselore): void => {
                 userId
               )}${qs.stringify(req.query, { addQueryPrefix: true })}"
               novalidate
-              class="${res.locals.localCSS(css`
+              css="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -975,7 +975,7 @@ export default (app: Courselore): void => {
               }
             )}"
             novalidate
-            class="${res.locals.localCSS(css`
+            css="${res.locals.localCSS(css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
@@ -1034,7 +1034,7 @@ export default (app: Courselore): void => {
             </button>
           </form>
           <div
-            class="${res.locals.localCSS(css`
+            css="${res.locals.localCSS(css`
               display: flex;
               flex-direction: column;
               gap: var(--space--2);

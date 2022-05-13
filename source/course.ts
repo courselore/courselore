@@ -193,7 +193,7 @@ export default (app: Courselore): void => {
   }) => html`
     <div
       key="partial--course--${course.reference}"
-      class="${res.locals.localCSS(css`
+      css="${res.locals.localCSS(css`
         display: flex;
         gap: var(--space--2);
         align-items: baseline;
@@ -286,7 +286,7 @@ export default (app: Courselore): void => {
               head: html`<title>Courselore</title>`,
               body: html`
                 <div
-                  class="${res.locals.localCSS(css`
+                  css="${res.locals.localCSS(css`
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--4);
@@ -351,7 +351,7 @@ export default (app: Courselore): void => {
               showCourseSwitcher: false,
               body: html`
                 <div
-                  class="${res.locals.localCSS(css`
+                  css="${res.locals.localCSS(css`
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--4);
@@ -412,7 +412,7 @@ export default (app: Courselore): void => {
             app.locals.options.canonicalBaseURL
               ? html`
                   <div
-                    class="${res.locals.localCSS(css`
+                    css="${res.locals.localCSS(css`
                       color: var(--color--amber--700);
                       background-color: var(--color--amber--100);
                       @media (prefers-color-scheme: dark) {
@@ -447,7 +447,7 @@ export default (app: Courselore): void => {
                     `)}"
                   >
                     <div
-                      class="${res.locals.localCSS(css`
+                      css="${res.locals.localCSS(css`
                         font-size: var(--font-size--4xl);
                         line-height: var(--line-height--4xl);
                       `)}"
@@ -476,7 +476,7 @@ export default (app: Courselore): void => {
               method="POST"
               action="${app.locals.options.baseURL}/courses"
               novalidate
-              class="${res.locals.localCSS(css`
+              css="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -495,7 +495,7 @@ export default (app: Courselore): void => {
                 />
               </label>
               <div
-                class="${res.locals.localCSS(css`
+                css="${res.locals.localCSS(css`
                   display: flex;
                   gap: var(--space--2);
                   & > * {
@@ -761,7 +761,7 @@ export default (app: Courselore): void => {
             head: html`<title>${res.locals.course.name} · Courselore</title>`,
             body: html`
               <div
-                class="${res.locals.localCSS(css`
+                css="${res.locals.localCSS(css`
                   display: flex;
                   flex-direction: column;
                   gap: var(--space--4);
@@ -1112,7 +1112,7 @@ export default (app: Courselore): void => {
               action="${app.locals.options.baseURL}/courses/${res.locals.course
                 .reference}/settings/course-information"
               novalidate
-              class="${res.locals.localCSS(css`
+              css="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -1131,7 +1131,7 @@ export default (app: Courselore): void => {
                 />
               </label>
               <div
-                class="${res.locals.localCSS(css`
+                css="${res.locals.localCSS(css`
                   display: flex;
                   gap: var(--space--2);
                   & > * {
@@ -1298,7 +1298,7 @@ export default (app: Courselore): void => {
             $${res.locals.tags.length === 0
               ? html`
                   <div
-                    class="${res.locals.localCSS(css`
+                    css="${res.locals.localCSS(css`
                       display: flex;
                       flex-direction: column;
                       gap: var(--space--2);
@@ -1318,7 +1318,7 @@ export default (app: Courselore): void => {
               action="${app.locals.options.baseURL}/courses/${res.locals.course
                 .reference}/settings/tags"
               novalidate
-              class="${res.locals.localCSS(css`
+              css="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -1326,7 +1326,7 @@ export default (app: Courselore): void => {
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
               <div
-                class="${res.locals.localCSS(css`
+                css="${res.locals.localCSS(css`
                   display: flex;
                   flex-direction: column;
                   gap: var(--space--2);
@@ -1373,7 +1373,7 @@ export default (app: Courselore): void => {
                           <i class="bi bi-tag-fill"></i>
                         </div>
                         <div
-                          class="${res.locals.localCSS(css`
+                          css="${res.locals.localCSS(css`
                             flex: 1;
                             display: flex;
                             flex-direction: column;
@@ -1389,7 +1389,7 @@ export default (app: Courselore): void => {
                             autocomplete="off"
                           />
                           <div
-                            class="${res.locals.localCSS(css`
+                            css="${res.locals.localCSS(css`
                               display: flex;
                               flex-wrap: wrap;
                               column-gap: var(--space--4);
@@ -1397,7 +1397,7 @@ export default (app: Courselore): void => {
                             `)}"
                           >
                             <div
-                              class="${res.locals.localCSS(css`
+                              css="${res.locals.localCSS(css`
                                 width: var(--space--40);
                               `)}"
                             >
@@ -1438,7 +1438,7 @@ export default (app: Courselore): void => {
                               </label>
                             </div>
                             <div
-                              class="${res.locals.localCSS(css`
+                              css="${res.locals.localCSS(css`
                                 .tag.deleted & {
                                   display: none;
                                 }
@@ -1461,7 +1461,7 @@ export default (app: Courselore): void => {
                                     content: ${res.locals.HTMLForJavaScript(
                                       html`
                                         <div
-                                          class="${res.locals.localCSS(css`
+                                          css="${res.locals.localCSS(css`
                                             padding: var(--space--2)
                                               var(--space--0);
                                             display: flex;
@@ -1475,7 +1475,7 @@ export default (app: Courselore): void => {
                                           </p>
                                           <p>
                                             <strong
-                                              class="${res.locals.localCSS(css`
+                                              css="${res.locals.localCSS(css`
                                                 font-weight: var(
                                                   --font-weight--bold
                                                 );
@@ -1521,7 +1521,7 @@ export default (app: Courselore): void => {
                               </button>
                             </div>
                             <div
-                              class="${res.locals.localCSS(css`
+                              css="${res.locals.localCSS(css`
                                 .tag:not(.deleted) & {
                                   display: none;
                                 }
@@ -1590,7 +1590,7 @@ export default (app: Courselore): void => {
                   )}
                 </div>
                 <div
-                  class="${res.locals.localCSS(css`
+                  css="${res.locals.localCSS(css`
                     display: flex;
                     justify-content: center;
                   `)}"
@@ -1618,7 +1618,7 @@ export default (app: Courselore): void => {
                               <i class="bi bi-tag-fill"></i>
                             </div>
                             <div
-                              class="${res.locals.localCSS(css`
+                              css="${res.locals.localCSS(css`
                                 flex: 1;
                                 display: flex;
                                 flex-direction: column;
@@ -1639,7 +1639,7 @@ export default (app: Courselore): void => {
                                 `}"
                               />
                               <div
-                                class="${res.locals.localCSS(css`
+                                css="${res.locals.localCSS(css`
                                   display: flex;
                                   flex-wrap: wrap;
                                   column-gap: var(--space--4);
@@ -1647,7 +1647,7 @@ export default (app: Courselore): void => {
                                 `)}"
                               >
                                 <div
-                                  class="${res.locals.localCSS(css`
+                                  css="${res.locals.localCSS(css`
                                     width: var(--space--40);
                                   `)}"
                                 >
@@ -1879,7 +1879,7 @@ export default (app: Courselore): void => {
               action="${app.locals.options.baseURL}/courses/${res.locals.course
                 .reference}/settings/invitations"
               novalidate
-              class="${res.locals.localCSS(css`
+              css="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -1889,7 +1889,7 @@ export default (app: Courselore): void => {
               <div class="label">
                 <p class="label--text">Type</p>
                 <div
-                  class="${res.locals.localCSS(css`
+                  css="${res.locals.localCSS(css`
                     display: flex;
                     gap: var(--space--8);
                   `)}"
@@ -1969,7 +1969,7 @@ export default (app: Courselore): void => {
                         content: ${res.locals.HTMLForJavaScript(
                           html`
                             <div
-                              class="${res.locals.localCSS(css`
+                              css="${res.locals.localCSS(css`
                                 padding: var(--space--2);
                                 display: flex;
                                 flex-direction: column;
@@ -2035,7 +2035,7 @@ export default (app: Courselore): void => {
               <div class="label">
                 <p class="label--text">Role</p>
                 <div
-                  class="${res.locals.localCSS(css`
+                  css="${res.locals.localCSS(css`
                     display: flex;
                     gap: var(--space--8);
                   `)}"
@@ -2072,7 +2072,7 @@ export default (app: Courselore): void => {
               <div class="label">
                 <p class="label--text">Expiration</p>
                 <div
-                  class="${res.locals.localCSS(css`
+                  css="${res.locals.localCSS(css`
                     display: flex;
                   `)}"
                 >
@@ -2184,7 +2184,7 @@ export default (app: Courselore): void => {
                     return html`
                       <div
                         key="invitation--${invitation.reference}"
-                        class="${res.locals.localCSS(css`
+                        css="${res.locals.localCSS(css`
                           padding-top: var(--space--4);
                           border-top: var(--border-width--1) solid
                             var(--color--gray--medium--200);
@@ -2223,7 +2223,7 @@ export default (app: Courselore): void => {
                               `}
                         </div>
                         <div
-                          class="${res.locals.localCSS(css`
+                          css="${res.locals.localCSS(css`
                             flex: 1;
                             display: flex;
                             flex-direction: column;
@@ -2450,14 +2450,14 @@ export default (app: Courselore): void => {
                               `}
 
                           <div
-                            class="${res.locals.localCSS(css`
+                            css="${res.locals.localCSS(css`
                               display: flex;
                               flex-wrap: wrap;
                               gap: var(--space--2);
                             `)}"
                           >
                             <div
-                              class="${res.locals.localCSS(css`
+                              css="${res.locals.localCSS(css`
                                 width: var(--space--28);
                                 display: flex;
                                 justify-content: flex-start;
@@ -2549,7 +2549,7 @@ export default (app: Courselore): void => {
                             </div>
 
                             <div
-                              class="${res.locals.localCSS(css`
+                              css="${res.locals.localCSS(css`
                                 width: var(--space--40);
                                 display: flex;
                                 justify-content: flex-start;
@@ -3237,7 +3237,7 @@ export default (app: Courselore): void => {
             </h2>
 
             <label
-              class="${res.locals.localCSS(css`
+              css="${res.locals.localCSS(css`
                 display: flex;
                 gap: var(--space--2);
                 align-items: baseline;
@@ -3310,7 +3310,7 @@ export default (app: Courselore): void => {
                   </div>
 
                   <div
-                    class="${res.locals.localCSS(css`
+                    css="${res.locals.localCSS(css`
                       flex: 1;
                       margin-top: var(--space--0-5);
                       display: flex;
@@ -3360,14 +3360,14 @@ export default (app: Courselore): void => {
                     </div>
 
                     <div
-                      class="${res.locals.localCSS(css`
+                      css="${res.locals.localCSS(css`
                         display: flex;
                         flex-wrap: wrap;
                         gap: var(--space--2);
                       `)}"
                     >
                       <div
-                        class="${res.locals.localCSS(css`
+                        css="${res.locals.localCSS(css`
                           width: var(--space--28);
                           display: flex;
                           justify-content: flex-start;
@@ -3525,7 +3525,7 @@ export default (app: Courselore): void => {
                       </div>
 
                       <div
-                        class="${res.locals.localCSS(css`
+                        css="${res.locals.localCSS(css`
                           width: var(--space--8);
                           display: flex;
                           justify-content: flex-start;
@@ -3559,7 +3559,7 @@ export default (app: Courselore): void => {
                                           <form
                                             method="DELETE"
                                             action="${action}"
-                                            class="${res.locals.localCSS(css`
+                                            css="${res.locals.localCSS(css`
                                               padding: var(--space--2);
                                               display: flex;
                                               flex-direction: column;
@@ -3735,7 +3735,7 @@ export default (app: Courselore): void => {
               action="${app.locals.options.baseURL}/courses/${res.locals.course
                 .reference}/settings/your-enrollment"
               novalidate
-              class="${res.locals.localCSS(css`
+              css="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -3759,7 +3759,7 @@ export default (app: Courselore): void => {
                   </button>
                 </div>
                 <div
-                  class="${res.locals.localCSS(css`
+                  css="${res.locals.localCSS(css`
                     margin-top: var(--space--1);
                     display: flex;
                     gap: var(--space--2);
@@ -3891,7 +3891,7 @@ export default (app: Courselore): void => {
 
             <div>
               <div
-                class="${res.locals.localCSS(css`
+                css="${res.locals.localCSS(css`
                   display: flex;
                   gap: var(--space--2);
                   align-items: baseline;
@@ -4090,7 +4090,7 @@ export default (app: Courselore): void => {
               course: res.locals.invitation.course,
             })}
             <div
-              class="${res.locals.localCSS(css`
+              css="${res.locals.localCSS(css`
                 display: flex;
                 gap: var(--space--4);
                 & > * {

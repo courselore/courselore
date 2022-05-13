@@ -29,7 +29,7 @@ export default (app: Courselore): void => {
         `,
         body: html`
           <div
-            class="${res.locals.localCSS(css`
+            css="${res.locals.localCSS(css`
               display: flex;
               gap: var(--space--14);
               justify-content: center;
@@ -41,7 +41,7 @@ export default (app: Courselore): void => {
             `)}"
           >
             <div
-              class="${res.locals.localCSS(css`
+              css="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -75,7 +75,7 @@ export default (app: Courselore): void => {
               </h3>
 
               <div
-                class="${res.locals.localCSS(css`
+                css="${res.locals.localCSS(css`
                   display: flex;
                   flex-direction: column;
                   gap: var(--space--4);
@@ -186,7 +186,7 @@ export default (app: Courselore): void => {
             </div>
 
             <div
-              class="${res.locals.localCSS(css`
+              css="${res.locals.localCSS(css`
                 max-width: var(--width--3xl);
               `)}"
             >
@@ -222,7 +222,7 @@ export default (app: Courselore): void => {
           </div>
 
           <div
-            class="${res.locals.localCSS(css`
+            css="${res.locals.localCSS(css`
               background-color: var(--color--gray--medium--100);
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--800);
@@ -273,7 +273,7 @@ export default (app: Courselore): void => {
             <div>
               <div>
                 <div
-                  class="${res.locals.localCSS(css`
+                  css="${res.locals.localCSS(css`
                     color: var(--color--violet--700);
                     background-color: var(--color--violet--200);
                     @media (prefers-color-scheme: dark) {
@@ -295,7 +295,7 @@ export default (app: Courselore): void => {
             <div>
               <div>
                 <div
-                  class="${res.locals.localCSS(css`
+                  css="${res.locals.localCSS(css`
                     color: var(--color--sky--700);
                     background-color: var(--color--sky--200);
                     @media (prefers-color-scheme: dark) {
@@ -316,7 +316,7 @@ export default (app: Courselore): void => {
             <div>
               <div>
                 <div
-                  class="${res.locals.localCSS(css`
+                  css="${res.locals.localCSS(css`
                     color: var(--color--green--700);
                     background-color: var(--color--green--200);
                     @media (prefers-color-scheme: dark) {
@@ -337,7 +337,7 @@ export default (app: Courselore): void => {
           </div>
 
           <div
-            class="${res.locals.localCSS(css`
+            css="${res.locals.localCSS(css`
               display: flex;
               gap: var(--space--14);
               justify-content: center;
@@ -352,7 +352,7 @@ export default (app: Courselore): void => {
             `)}"
           >
             <div
-              class="${res.locals.localCSS(css`
+              css="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -383,7 +383,7 @@ export default (app: Courselore): void => {
             </div>
 
             <div
-              class="${res.locals.localCSS(css`
+              css="${res.locals.localCSS(css`
                 max-width: var(--width--3xl);
               `)}"
             >
@@ -405,7 +405,7 @@ export default (app: Courselore): void => {
           </div>
 
           <div
-            class="${res.locals.localCSS(css`
+            css="${res.locals.localCSS(css`
               background-color: var(--color--gray--medium--100);
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--800);
@@ -424,7 +424,7 @@ export default (app: Courselore): void => {
             `)}"
           >
             <div
-              class="${res.locals.localCSS(css`
+              css="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -456,7 +456,7 @@ export default (app: Courselore): void => {
             </div>
 
             <div
-              class="${res.locals.localCSS(css`
+              css="${res.locals.localCSS(css`
                 max-width: var(--width--3xl);
               `)}"
             >
@@ -492,7 +492,7 @@ export default (app: Courselore): void => {
           </div>
 
           <div
-            class="${res.locals.localCSS(css`
+            css="${res.locals.localCSS(css`
               display: flex;
               gap: var(--space--14);
               justify-content: center;
@@ -507,7 +507,7 @@ export default (app: Courselore): void => {
             `)}"
           >
             <div
-              class="${res.locals.localCSS(css`
+              css="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -589,7 +589,7 @@ export default (app: Courselore): void => {
             </div>
 
             <div
-              class="${res.locals.localCSS(css`
+              css="${res.locals.localCSS(css`
                 flex: 1;
                 max-width: calc(min(var(--width--xl), 100%));
               `)}"
@@ -632,7 +632,7 @@ export default (app: Courselore): void => {
           </div>
 
           <div
-            class="${res.locals.localCSS(css`
+            css="${res.locals.localCSS(css`
               background-color: var(--color--gray--medium--100);
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--800);
@@ -645,7 +645,7 @@ export default (app: Courselore): void => {
             `)}"
           >
             <div
-              class="${res.locals.localCSS(css`
+              css="${res.locals.localCSS(css`
                 display: flex;
                 flex-direction: column;
                 gap: var(--space--4);
@@ -666,7 +666,7 @@ export default (app: Courselore): void => {
             </div>
 
             <div
-              class="${res.locals.localCSS(css`
+              css="${res.locals.localCSS(css`
                 display: flex;
                 gap: var(--space--14);
                 @media (max-width: 1299px) {
@@ -747,7 +747,7 @@ export default (app: Courselore): void => {
           </div>
 
           <div
-            class="${res.locals.localCSS(css`
+            css="${res.locals.localCSS(css`
               font-size: var(--font-size--xl);
               line-height: var(--line-height--xl);
               font-weight: var(--font-weight--bold);
