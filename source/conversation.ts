@@ -501,32 +501,98 @@ export default (app: Courselore): void => {
       conversationsWithSearchResults.length === conversationsPageSize + 1;
     if (moreConversationsExist) conversationsWithSearchResults.pop();
 
-    const conversationDrafts = app.locals.database.all<{
-      createdAt: string;
-      updatedAt: string | null;
-      reference: string;
-      type: string | null;
-      isPinned: "true" | null;
-      isStaffOnly: "true" | null;
-      title: string | null;
-      content: string | null;
-      tagsReferences: string | null;
-    }>(
-      sql`
-        SELECT "createdAt",
-               "updatedAt",
-               "reference",
-               "type",
-               "isPinned",
-               "isStaffOnly",
-               "title",
-               "content",
-               "tagsReferences"
-        FROM "conversationDrafts"
-        WHERE "course" = ${res.locals.course.id} AND
-              "authorEnrollment" = ${res.locals.enrollment.id}
-      `
-    );
+    // conversationsWithSearchResults.unshift(
+    //   ...app.locals.database
+    //     .all<{
+    //       id: number;
+    //       createdAt: string;
+    //       updatedAt: string | null;
+    //       reference: string;
+    //       type: string | null;
+    //       isPinned: "true" | null;
+    //       isStaffOnly: "true" | null;
+    //       title: string | null;
+    //       content: string | null;
+    //       tagsReferences: string | null;
+    //     }>(
+    //       sql`
+    //         SELECT "id",
+    //               "createdAt",
+    //               "updatedAt",
+    //               "reference",
+    //               "type",
+    //               "isPinned",
+    //               "isStaffOnly",
+    //               "title",
+    //               "content",
+    //               "tagsReferences"
+    //         FROM "conversationDrafts"
+    //         WHERE "course" = ${res.locals.course.id} AND
+    //               "authorEnrollment" = ${res.locals.enrollment.id}
+    //         ORDER BY coalesce("updatedAt", "createdAt") DESC
+    //       `
+    //     )
+    //     .map((conversationDraft) => {
+    //       const taggings = app.locals.database
+    //         .all<{
+    //           id: number;
+    //           reference: string;
+    //           name: string;
+    //           staffOnlyAt: string | null;
+    //         }>(
+    //           sql`
+    //             SELECT "id",
+    //                   "reference",
+    //                   "name",
+    //                   "staffOnlyAt"
+    //             FROM "tags"
+    //             WHERE "course" = ${res.locals.course.id}
+    //                   $${
+    //                     res.locals.enrollment.role === "student"
+    //                       ? sql`AND "tags"."staffOnlyAt" IS NULL`
+    //                       : sql``
+    //                   }
+    //             ORDER BY "tags"."id" ASC
+    //           `
+    //         )
+    //         .map((tag) => ({
+    //           id: null as unknown as number,
+    //           tag: {
+    //             id: tag.id,
+    //             reference: tag.reference,
+    //             name: tag.name,
+    //             staffOnlyAt: tag.staffOnlyAt,
+    //           },
+    //         }));
+
+    //       return {
+    //         conversation: {
+    //           id: conversationDraft.id,
+    //           createdAt: conversationDraft.createdAt,
+    //           updatedAt: conversationDraft.updatedAt,
+    //           reference: conversationDraft.reference,
+    //           authorEnrollment: res.locals.enrollment,
+    //           anonymousAt: null,
+    //           type: conversationDraft.type,
+    //           resolvedAt: null,
+    //           pinnedAt: conversationDraft.isPinned
+    //             ? new Date().toISOString()
+    //             : null,
+    //           staffOnlyAt: conversationDraft.isStaffOnly
+    //             ? new Date().toISOString()
+    //             : null,
+    //           title: conversationDraft.title,
+    //           titleSearch: html`${conversationDraft.title ?? ""}`,
+    //           nextMessageReference: null as unknown as number,
+    //           taggings,
+    //           messagesCount: 0,
+    //           readingsCount: 0,
+    //           endorsements: [],
+    //         },
+    //         searchResult: undefined,
+    //       } as any /* TODO */;
+    //     })
+    // );
 
     return app.locals.layouts.application({
       req,
