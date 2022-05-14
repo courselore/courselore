@@ -2110,45 +2110,6 @@ export default (app: Courselore): void => {
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
 
-              $${conversationDraft !== undefined
-                ? html`
-                    <div
-                      class="secondary"
-                      css="${res.locals.localCSS(css`
-                        font-size: var(--font-size--xs);
-                        line-height: var(--line-height--xs);
-                      `)}"
-                    >
-                      <span>
-                        Draft created
-                        <time
-                          datetime="${new Date(
-                            new Date(conversationDraft.createdAt).getTime() -
-                              100 * 24 * 60 * 60 * 1000
-                          ).toISOString()}"
-                          onload="${javascript`
-                          leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                        `}"
-                        ></time>
-                      </span>
-                      $${conversationDraft.updatedAt !== null
-                        ? html` ·
-                            <span>
-                              Updated
-                              <time
-                                datetime="${new Date(
-                                  conversationDraft.updatedAt
-                                ).toISOString()}"
-                                onload="${javascript`
-                        leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                      `}"
-                              ></time
-                            ></span>`
-                        : html``}
-                    </div>
-                  `
-                : html``}
-
               <div class="label">
                 <p class="label--text">Type</p>
                 <div
@@ -2568,131 +2529,148 @@ export default (app: Courselore): void => {
                     </div>
                   `}
 
+              <div>
+                <button
+                  class="button button--full-width-on-small-screen button--blue"
+                  onload="${javascript`
+                    (this.tooltip ??= tippy(this)).setProps({
+                      touch: false,
+                      content: ${res.locals.HTMLForJavaScript(
+                        html`
+                          <span class="keyboard-shortcut">
+                            <span
+                              onload="${javascript`
+                                this.hidden = leafac.isAppleDevice;
+                              `}"
+                              >Ctrl+Enter</span
+                            ><span
+                              class="keyboard-shortcut--cluster"
+                              onload="${javascript`
+                                this.hidden = !leafac.isAppleDevice;
+                              `}"
+                              ><i class="bi bi-command"></i
+                              ><i class="bi bi-arrow-return-left"></i
+                            ></span>
+                          </span>
+                        `
+                      )},
+                    });
+
+                    const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
+
+                    (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });
+                  `}"
+                >
+                  <i class="bi bi-chat-left-text"></i>
+                  Start Conversation
+                </button>
+              </div>
+
               <div
                 css="${res.locals.localCSS(css`
+                  font-size: var(--font-size--xs);
+                  line-height: var(--line-height--xs);
                   display: flex;
-                  @media (max-width: 499px) {
-                    gap: var(--space--4);
-                    flex-direction: column;
-                  }
-                  @media (min-width: 500px) {
-                    gap: var(--space--8);
-                  }
+                  column-gap: var(--space--8);
+                  row-gap: var(--space--2);
+                  flex-wrap: wrap;
                 `)}"
               >
-                <div>
-                  <button
-                    class="button button--full-width-on-small-screen button--blue"
-                    onload="${javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
-                        touch: false,
-                        content: ${res.locals.HTMLForJavaScript(
-                          html`
-                            <span class="keyboard-shortcut">
-                              <span
-                                onload="${javascript`
-                                  this.hidden = leafac.isAppleDevice;
-                                `}"
-                                >Ctrl+Enter</span
-                              ><span
-                                class="keyboard-shortcut--cluster"
-                                onload="${javascript`
-                                  this.hidden = !leafac.isAppleDevice;
-                                `}"
-                                ><i class="bi bi-command"></i
-                                ><i class="bi bi-arrow-return-left"></i
-                              ></span>
-                            </span>
-                          `
-                        )},
-                      });
+                <button
+                  class="link"
+                  name="isDraft"
+                  value="true"
+                  onload="${javascript`
+                    (this.tooltip ??= tippy(this)).setProps({
+                      touch: false,
+                      content: ${res.locals.HTMLForJavaScript(
+                        html`
+                          <span class="keyboard-shortcut">
+                            <span
+                              onload="${javascript`
+                                this.hidden = leafac.isAppleDevice;
+                              `}"
+                              >Ctrl+S</span
+                            ><span
+                              class="keyboard-shortcut--cluster"
+                              onload="${javascript`
+                                this.hidden = !leafac.isAppleDevice;
+                              `}"
+                              ><i class="bi bi-command"></i>S</span
+                            >
+                          </span>
+                        `
+                      )},
+                    });
 
-                      const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
+                    const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
 
-                      (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });
-                    `}"
-                  >
-                    <i class="bi bi-chat-left-text"></i>
-                    Start Conversation
-                  </button>
-                </div>
-                <div
-                  css="${res.locals.localCSS(css`
-                    font-size: var(--font-size--xs);
-                    line-height: var(--line-height--xs);
-                    display: flex;
-                    gap: var(--space--8);
-                  `)}"
+                    (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+s", () => { this.click(); return false; });
+
+                    this.onclick = () => {
+                      this.closest("form").isValid = true;
+                    };
+                  `}"
                 >
-                  <button
-                    class="link"
-                    name="isDraft"
-                    value="true"
-                    onload="${javascript`
-                      (this.tooltip ??= tippy(this)).setProps({
-                        touch: false,
-                        content: ${res.locals.HTMLForJavaScript(
-                          html`
-                            <span class="keyboard-shortcut">
-                              <span
-                                onload="${javascript`
-                                  this.hidden = leafac.isAppleDevice;
-                                `}"
-                                >Ctrl+S</span
-                              ><span
-                                class="keyboard-shortcut--cluster"
-                                onload="${javascript`
-                                  this.hidden = !leafac.isAppleDevice;
-                                `}"
-                                ><i class="bi bi-command"></i>S</span
-                              >
-                            </span>
-                          `
-                        )},
-                      });
-
-                      const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
-
-                      (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+s", () => { this.click(); return false; });
-
-                      this.onclick = () => {
-                        this.closest("form").isValid = true;
-                      };
-                    `}"
-                  >
-                    <i class="bi bi-file-earmark-text"></i>
-                    Save Draft
-                  </button>
-                  $${conversationDraft !== undefined
-                    ? html`
-                        <input
-                          type="hidden"
-                          name="conversationDraftReference"
-                          value="${conversationDraft.reference}"
-                        />
-                        <button
-                          class="link text--rose"
-                          formmethod="DELETE"
-                          formaction="${app.locals.options
-                            .baseURL}/courses/${res.locals.course
-                            .reference}/conversations/new/${conversationDraft.reference}${qs.stringify(
-                            req.query,
-                            {
-                              addQueryPrefix: true,
-                            }
-                          )}"
+                  <i class="bi bi-file-earmark-text"></i>
+                  Save Draft
+                </button>
+                $${conversationDraft !== undefined
+                  ? html`
+                      <input
+                        type="hidden"
+                        name="conversationDraftReference"
+                        value="${conversationDraft.reference}"
+                      />
+                      <button
+                        class="link text--rose"
+                        formmethod="DELETE"
+                        formaction="${app.locals.options.baseURL}/courses/${res
+                          .locals.course
+                          .reference}/conversations/new/${conversationDraft.reference}${qs.stringify(
+                          req.query,
+                          {
+                            addQueryPrefix: true,
+                          }
+                        )}"
+                        onload="${javascript`
+                          this.onclick = () => {
+                            this.closest("form").isValid = true;
+                          };
+                        `}"
+                      >
+                        <i class="bi bi-trash"></i>
+                        Remove Draft
+                      </button>
+                      <div class="secondary">
+                        Draft created
+                        <time
+                          datetime="${new Date(
+                            new Date(conversationDraft.createdAt).getTime() -
+                              100 * 24 * 60 * 60 * 1000
+                          ).toISOString()}"
                           onload="${javascript`
-                            this.onclick = () => {
-                              this.closest("form").isValid = true;
-                            };
+                            leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                           `}"
-                        >
-                          <i class="bi bi-trash"></i>
-                          Remove Draft
-                        </button>
-                      `
-                    : html``}
-                </div>
+                        ></time>
+                      </div>
+                      $${conversationDraft.updatedAt !== null
+                        ? html`
+                            <div class="secondary">
+                              Updated
+                              <time
+                                datetime="${new Date(
+                                  conversationDraft.updatedAt
+                                ).toISOString()}"
+                                onload="${javascript`
+                                  leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                                `}"
+                              ></time>
+                            </div>
+                          `
+                        : html``}
+                    `
+                  : html``}
               </div>
             </form>
           `,
@@ -2831,12 +2809,6 @@ export default (app: Courselore): void => {
               WHERE "reference" = ${conversationDraft.reference}
             `
           );
-        app.locals.helpers.Flash.set({
-          req,
-          res,
-          theme: "green",
-          content: html`Draft saved successfully.`,
-        });
         return res.redirect(
           303,
           `${app.locals.options.baseURL}/courses/${
