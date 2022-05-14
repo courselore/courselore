@@ -2119,25 +2119,31 @@ export default (app: Courselore): void => {
                         line-height: var(--line-height--xs);
                       `)}"
                     >
-                      Draft created
-                      <time
-                        datetime="${new Date(
-                          conversationDraft.createdAt
-                        ).toISOString()}"
-                        onload="${javascript`
-                          leafac.relativizeDateTimeElement(this);
+                      <span>
+                        Draft created
+                        <time
+                          datetime="${new Date(
+                            new Date(conversationDraft.createdAt).getTime() -
+                              100 * 24 * 60 * 60 * 1000
+                          ).toISOString()}"
+                          onload="${javascript`
+                          leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                         `}"
-                      ></time>
+                        ></time>
+                      </span>
                       $${conversationDraft.updatedAt !== null
-                        ? html` · Updated
-                            <time
-                              datetime="${new Date(
-                                conversationDraft.updatedAt
-                              ).toISOString()}"
-                              onload="${javascript`
-                        leafac.relativizeDateTimeElement(this);
+                        ? html` ·
+                            <span>
+                              Updated
+                              <time
+                                datetime="${new Date(
+                                  conversationDraft.updatedAt
+                                ).toISOString()}"
+                                onload="${javascript`
+                        leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                       `}"
-                            ></time>`
+                              ></time
+                            ></span>`
                         : html``}
                     </div>
                   `
