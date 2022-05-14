@@ -151,6 +151,11 @@
 
 - The anonymity button isn’t as clear as it should be.
 
+---
+
+- Usability issue: When there are multiple forms on the page, and you partially fill both of them, submitting one will lose inputs on the other.
+  - For example, when you’re filling in the “Start a New Conversation” form, and you do a search on the sidebar.
+
 ### Notifications
 
 - Digests that accumulate notifications over a period: every 30 minutes / 1 hour / day.
