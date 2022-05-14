@@ -2,6 +2,14 @@
 
 ### User Interface Improvements
 
+- Drafts:
+  - On `qs.` do allowlist instead of blocklist.
+  - `TODO`
+  - Search
+  - Adapt `partials.conversation` to support drafts (many fields become optional).
+
+---
+
 - Sidebar:
   - Make the “resolved/unresolved” filters more discoverable.
   - Hide search bar when unneeded
