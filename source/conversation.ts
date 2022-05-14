@@ -2013,6 +2013,63 @@ export default (app: Courselore): void => {
     };
   };
 
+  app.post<
+    { courseReference: string },
+    any,
+    {},
+    { redirect?: string },
+    IsEnrolledInCourseMiddlewareLocals
+  >(
+    "/courses/:courseReference/conversations/mark-all-conversations-as-read",
+    ...app.locals.middlewares.isEnrolledInCourse,
+    (req, res) => {
+      const messages = app.locals.database.all<{ id: number }>(
+        sql`
+          SELECT "messages"."id"
+          FROM "messages"
+          JOIN "conversations" ON "messages"."conversation" = "conversations"."id" AND
+                                  "conversations"."course" = ${
+                                    res.locals.course.id
+                                  }
+          LEFT JOIN "readings" ON "messages"."id" = "readings"."message" AND
+                                  "readings"."enrollment" = ${
+                                    res.locals.enrollment.id
+                                  }
+          WHERE "readings"."id" IS NULL
+                $${
+                  res.locals.enrollment.role === "staff"
+                    ? sql``
+                    : sql`
+                        AND "conversations"."staffOnlyAt" IS NULL OR
+                        EXISTS(
+                          SELECT TRUE
+                          FROM "messages"
+                          WHERE "messages"."authorEnrollment" = ${res.locals.enrollment.id} AND
+                                "messages"."conversation" = "conversations"."id"
+                        )
+                      `
+                }
+          ORDER BY "messages"."id" ASC
+        `
+      );
+      for (const message of messages)
+        app.locals.database.run(
+          sql`
+            INSERT INTO "readings" ("createdAt", "message", "enrollment")
+            VALUES (
+              ${new Date().toISOString()},
+              ${message.id},
+              ${res.locals.enrollment.id}
+            )
+          `
+        );
+      res.redirect(
+        303,
+        `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
+      );
+    }
+  );
+
   app.get<
     { courseReference: string },
     HTML,
@@ -2099,9 +2156,12 @@ export default (app: Courselore): void => {
             <form
               method="POST"
               action="${app.locals.options.baseURL}/courses/${res.locals.course
-                .reference}/conversations${qs.stringify(req.query, {
-                addQueryPrefix: true,
-              })}"
+                .reference}/conversations${qs.stringify(
+                lodash.omit(req.query, ["conversationDraftReference"]),
+                {
+                  addQueryPrefix: true,
+                }
+              )}"
               novalidate
               css="${res.locals.localCSS(css`
                 display: flex;
@@ -2634,7 +2694,9 @@ export default (app: Courselore): void => {
                         formaction="${app.locals.options.baseURL}/courses/${res
                           .locals.course
                           .reference}/conversations/new${qs.stringify(
-                          req.query,
+                          lodash.omit(req.query, [
+                            "conversationDraftReference",
+                          ]),
                           {
                             addQueryPrefix: true,
                           }
@@ -3012,7 +3074,10 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }/conversations/${conversationRow.reference}${qs.stringify(
-          lodash.omit(req.query, ["messageReference"]),
+          lodash.omit(req.query, [
+            "messageReference",
+            "conversationDraftReference",
+          ]),
           {
             addQueryPrefix: true,
           }
@@ -3068,63 +3133,6 @@ export default (app: Courselore): void => {
             addQueryPrefix: true,
           }
         )}`
-      );
-    }
-  );
-
-  app.post<
-    { courseReference: string },
-    any,
-    {},
-    { redirect?: string },
-    IsEnrolledInCourseMiddlewareLocals
-  >(
-    "/courses/:courseReference/conversations/mark-all-conversations-as-read",
-    ...app.locals.middlewares.isEnrolledInCourse,
-    (req, res) => {
-      const messages = app.locals.database.all<{ id: number }>(
-        sql`
-          SELECT "messages"."id"
-          FROM "messages"
-          JOIN "conversations" ON "messages"."conversation" = "conversations"."id" AND
-                                  "conversations"."course" = ${
-                                    res.locals.course.id
-                                  }
-          LEFT JOIN "readings" ON "messages"."id" = "readings"."message" AND
-                                  "readings"."enrollment" = ${
-                                    res.locals.enrollment.id
-                                  }
-          WHERE "readings"."id" IS NULL
-                $${
-                  res.locals.enrollment.role === "staff"
-                    ? sql``
-                    : sql`
-                        AND "conversations"."staffOnlyAt" IS NULL OR
-                        EXISTS(
-                          SELECT TRUE
-                          FROM "messages"
-                          WHERE "messages"."authorEnrollment" = ${res.locals.enrollment.id} AND
-                                "messages"."conversation" = "conversations"."id"
-                        )
-                      `
-                }
-          ORDER BY "messages"."id" ASC
-        `
-      );
-      for (const message of messages)
-        app.locals.database.run(
-          sql`
-            INSERT INTO "readings" ("createdAt", "message", "enrollment")
-            VALUES (
-              ${new Date().toISOString()},
-              ${message.id},
-              ${res.locals.enrollment.id}
-            )
-          `
-        );
-      res.redirect(
-        303,
-        `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
       );
     }
   );
