@@ -2008,7 +2008,17 @@ export default (app: Courselore): void => {
       const conversationDraft =
         typeof req.query.conversationDraftReference === "string" &&
         req.query.conversationDraftReference.match(/^[0-9]+$/)
-          ? app.locals.database.get<{}>(
+          ? app.locals.database.get<{
+              createdAt: string;
+              updatedAt: string | null;
+              reference: string;
+              type: string | null;
+              isPinned: "true" | null;
+              isStaffOnly: "true" | null;
+              title: string | null;
+              content: string | null;
+              tagsReferences: string | null;
+            }>(
               sql`
                 SELECT "createdAt",
                        "updatedAt",
@@ -2020,12 +2030,24 @@ export default (app: Courselore): void => {
                        "content",
                        "tagsReferences"
                 FROM "conversationDrafts"
-                WHERE "course" = ${res.locals.course.id},
-                      "reference" = ${req.query.conversationDraftReference},
+                WHERE "course" = ${res.locals.course.id} AND
+                      "reference" = ${req.query.conversationDraftReference} AND
                       "authorEnrollment" = ${res.locals.enrollment.id}
               `
             )
           : undefined;
+      if (conversationDraft !== undefined) {
+        req.query.type = conversationDraft.type ?? undefined;
+        req.query.isPinned = conversationDraft.isPinned ?? undefined;
+        req.query.isStaffOnly = conversationDraft.isStaffOnly ?? undefined;
+        req.query.title = conversationDraft.title ?? undefined;
+        req.query.content = conversationDraft.content ?? undefined;
+        req.query.tagsReferences =
+          typeof conversationDraft.tagsReferences === "string"
+            ? JSON.parse(conversationDraft.tagsReferences)
+            : undefined;
+      }
+
       res.send(
         (res.locals.conversationsCount === 0
           ? app.locals.layouts.main
@@ -2646,6 +2668,12 @@ export default (app: Courselore): void => {
             RETURNING *
           `
         )!;
+        app.locals.helpers.Flash.set({
+          req,
+          res,
+          theme: "green",
+          content: html`Draft saved successfully.`,
+        });
         return res.redirect(
           303,
           `${app.locals.options.baseURL}/courses/${
