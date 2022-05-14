@@ -1397,6 +1397,19 @@ export default async (app: Courselore): Promise<void> => {
           &:active {
             color: var(--color--blue--700);
           }
+          ${["rose"].map(
+            (color) => css`
+              &.text--${color} {
+                &:hover,
+                &:focus-within {
+                  color: var(--color--${color}--500);
+                }
+                &:active {
+                  color: var(--color--${color}--700);
+                }
+              }
+            `
+          )}
           @media (prefers-color-scheme: dark) {
             color: var(--color--blue--500);
             &:hover,
@@ -1406,11 +1419,28 @@ export default async (app: Courselore): Promise<void> => {
             &:active {
               color: var(--color--blue--600);
             }
+            ${["rose"].map(
+              (color) => css`
+                &.text--${color} {
+                  &:hover,
+                  &:focus-within {
+                    color: var(--color--${color}--400);
+                  }
+                  &:active {
+                    color: var(--color--${color}--600);
+                  }
+                }
+              `
+            )}
           }
           transition-property: var(--transition-property--colors);
           transition-duration: var(--transition-duration--150);
           transition-timing-function: var(--transition-timing-function--in-out);
           cursor: pointer;
+
+          .bi {
+            text-decoration: none;
+          }
         }
 
         :disabled,

@@ -2546,7 +2546,7 @@ export default (app: Courselore): void => {
                   Start Conversation
                 </button>
                 <button
-                  class="button button--full-width-on-small-screen button--transparent"
+                  class="link"
                   name="isDraft"
                   value="true"
                   onload="${javascript`
@@ -2587,6 +2587,20 @@ export default (app: Courselore): void => {
                 </button>
                 $${conversationDraft !== undefined
                   ? html`
+                      <button
+                        class="link text--rose"
+                        name="isDraft"
+                        value="true"
+                        onload="${javascript`
+                          this.onclick = () => {
+                            for (const element of this.closest("form").querySelectorAll("[required]"))
+                              element.required = false;
+                          };
+                        `}"
+                      >
+                        <i class="bi bi-trash"></i>
+                        Remove Draft
+                      </button>
                       <input
                         type="hidden"
                         name="conversationDraftReference"
