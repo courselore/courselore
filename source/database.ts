@@ -413,6 +413,7 @@ export default async (app: Courselore): Promise<void> => {
       CREATE TABLE "conversationDrafts" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
+        "updatedAt" TEXT NULL,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
         "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,

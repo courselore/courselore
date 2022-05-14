@@ -1991,6 +1991,7 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {
+      conversationDraftReference?: string;
       type?: string;
       isPinned?: "true";
       isStaffOnly?: "true";
@@ -2004,6 +2005,27 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isEnrolledInCourse,
     ...app.locals.middlewares.liveUpdates,
     (req, res) => {
+      const conversationDraft =
+        typeof req.query.conversationDraftReference === "string" &&
+        req.query.conversationDraftReference.match(/^[0-9]+$/)
+          ? app.locals.database.get<{}>(
+              sql`
+                SELECT "createdAt",
+                       "updatedAt",
+                       "reference",
+                       "type",
+                       "isPinned",
+                       "isStaffOnly",
+                       "title",
+                       "content",
+                       "tagsReferences"
+                FROM "conversationDrafts"
+                WHERE "course" = ${res.locals.course.id},
+                      "reference" = ${req.query.conversationDraftReference},
+                      "authorEnrollment" = ${res.locals.enrollment.id}
+              `
+            )
+          : undefined;
       res.send(
         (res.locals.conversationsCount === 0
           ? app.locals.layouts.main
