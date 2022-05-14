@@ -2552,6 +2552,8 @@ export default (app: Courselore): void => {
                 </div>
                 <div
                   css="${res.locals.localCSS(css`
+                    font-size: var(--font-size--xs);
+                    line-height: var(--line-height--xs);
                     display: flex;
                     gap: var(--space--8);
                   `)}"
@@ -2588,8 +2590,7 @@ export default (app: Courselore): void => {
                       (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+s", () => { this.click(); return false; });
 
                       this.onclick = () => {
-                        for (const element of this.closest("form").querySelectorAll("[required]"))
-                          element.required = false;
+                        this.closest("form").isValid = true;
                       };
                     `}"
                   >
@@ -2604,8 +2605,7 @@ export default (app: Courselore): void => {
                           value="true"
                           onload="${javascript`
                             this.onclick = () => {
-                              for (const element of this.closest("form").querySelectorAll("[required]"))
-                                element.required = false;
+                              this.closest("form").isValid = true;
                             };
                           `}"
                         >

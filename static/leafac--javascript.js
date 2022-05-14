@@ -390,7 +390,11 @@ const leafac = {
     const elementsToReset = new Map();
 
     for (const element of elementsToValidate) {
-      if (element.closest("[disabled]") !== null) continue;
+      if (
+        element.closest("[disabled]") !== null ||
+        leafac.ancestors(element).some((element) => element.isValid === true)
+      )
+        continue;
       const valueInputByUser = element.value;
       const error = validateElement(element);
       if (element.value !== valueInputByUser)
