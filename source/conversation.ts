@@ -501,6 +501,33 @@ export default (app: Courselore): void => {
       conversationsWithSearchResults.length === conversationsPageSize + 1;
     if (moreConversationsExist) conversationsWithSearchResults.pop();
 
+    const conversationDrafts = app.locals.database.all<{
+      createdAt: string;
+      updatedAt: string | null;
+      reference: string;
+      type: string | null;
+      isPinned: "true" | null;
+      isStaffOnly: "true" | null;
+      title: string | null;
+      content: string | null;
+      tagsReferences: string | null;
+    }>(
+      sql`
+        SELECT "createdAt",
+               "updatedAt",
+               "reference",
+               "type",
+               "isPinned",
+               "isStaffOnly",
+               "title",
+               "content",
+               "tagsReferences"
+        FROM "conversationDrafts"
+        WHERE "course" = ${res.locals.course.id} AND
+              "authorEnrollment" = ${res.locals.enrollment.id}
+      `
+    );
+
     return app.locals.layouts.application({
       req,
       res,
@@ -2082,6 +2109,39 @@ export default (app: Courselore): void => {
               `)}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+
+              $${conversationDraft !== undefined
+                ? html`
+                    <div
+                      class="secondary"
+                      css="${res.locals.localCSS(css`
+                        font-size: var(--font-size--xs);
+                        line-height: var(--line-height--xs);
+                      `)}"
+                    >
+                      Draft created
+                      <time
+                        datetime="${new Date(
+                          conversationDraft.createdAt
+                        ).toISOString()}"
+                        onload="${javascript`
+                          leafac.relativizeDateTimeElement(this);
+                        `}"
+                      ></time>
+                      $${conversationDraft.updatedAt !== null
+                        ? html` · Updated
+                            <time
+                              datetime="${new Date(
+                                conversationDraft.updatedAt
+                              ).toISOString()}"
+                              onload="${javascript`
+                        leafac.relativizeDateTimeElement(this);
+                      `}"
+                            ></time>`
+                        : html``}
+                    </div>
+                  `
+                : html``}
 
               <div class="label">
                 <p class="label--text">Type</p>
