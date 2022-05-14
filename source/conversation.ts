@@ -2599,10 +2599,22 @@ export default (app: Courselore): void => {
                   </button>
                   $${conversationDraft !== undefined
                     ? html`
+                        <input
+                          type="hidden"
+                          name="conversationDraftReference"
+                          value="${conversationDraft.reference}"
+                        />
                         <button
                           class="link text--rose"
-                          name="isDraft"
-                          value="true"
+                          formmethod="DELETE"
+                          formaction="${app.locals.options
+                            .baseURL}/courses/${res.locals.course
+                            .reference}/conversations/new/${conversationDraft.reference}${qs.stringify(
+                            req.query,
+                            {
+                              addQueryPrefix: true,
+                            }
+                          )}"
                           onload="${javascript`
                             this.onclick = () => {
                               this.closest("form").isValid = true;
@@ -2612,11 +2624,6 @@ export default (app: Courselore): void => {
                           <i class="bi bi-trash"></i>
                           Remove Draft
                         </button>
-                        <input
-                          type="hidden"
-                          name="conversationDraftReference"
-                          value="${conversationDraft.reference}"
-                        />
                       `
                     : html``}
                 </div>
@@ -2941,14 +2948,56 @@ export default (app: Courselore): void => {
         303,
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
-        }/conversations/${
-          res.locals.course.nextConversationReference
-        }${qs.stringify(lodash.omit(req.query, ["messageReference"]), {
-          addQueryPrefix: true,
-        })}`
+        }/conversations/${conversationRow.reference}${qs.stringify(
+          lodash.omit(req.query, ["messageReference"]),
+          {
+            addQueryPrefix: true,
+          }
+        )}`
       );
 
       app.locals.helpers.liveUpdatesDispatch({ req, res });
+    }
+  );
+
+  app.delete<
+    { courseReference: string; conversationDraftReference?: string },
+    HTML,
+    {},
+    {},
+    IsEnrolledInCourseMiddlewareLocals
+  >(
+    "/courses/:courseReference/conversations/new/:conversationDraftReference",
+    ...app.locals.middlewares.isEnrolledInCourse,
+    (req, res, next) => {
+      const conversationDraft = app.locals.database.get<{
+        id: number;
+      }>(
+        sql`
+          SELECT "id"
+          FROM "conversationDrafts"
+          WHERE "course" = ${res.locals.course.id} AND
+                "reference" = ${req.params.conversationDraftReference} AND
+                "authorEnrollment" = ${res.locals.enrollment.id}
+        `
+      );
+      if (conversationDraft === undefined) return next("validation");
+      app.locals.database.run(
+        sql`
+          DELETE FROM "conversationDrafts" WHERE "id" = ${conversationDraft.id}
+        `
+      );
+      res.redirect(
+        303,
+        `${app.locals.options.baseURL}/courses/${
+          res.locals.course.reference
+        }/conversations/new${qs.stringify(
+          lodash.omit(req.query, ["messageReference"]),
+          {
+            addQueryPrefix: true,
+          }
+        )}`
+      );
     }
   );
 
