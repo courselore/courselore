@@ -98,10 +98,7 @@ const leafac = {
           : new URLSearchParams(new FormData(event.target));
       const submitterName = event.submitter?.getAttribute("name");
       if (typeof submitterName === "string")
-        body.append(
-          submitterName,
-          event.submitter?.getAttribute("value") ?? ""
-        );
+        body.set(submitterName, event.submitter?.getAttribute("value") ?? "");
       if (!action.startsWith(baseURL)) return;
       event.preventDefault();
       if (event.submitter !== undefined) event.submitter.disabled = true;
