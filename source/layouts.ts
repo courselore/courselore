@@ -1014,7 +1014,6 @@ export default async (app: Courselore): Promise<void> => {
               .baseURL}/leafac--javascript.js"></script>
           <script>
             leafac.customFormValidation();
-            leafac.disableButtonsOnSubmit();
             leafac.warnAboutLosingInputs();
             leafac.tippySetDefaultProps();
             leafac.liveNavigation(

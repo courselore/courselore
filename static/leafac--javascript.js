@@ -104,6 +104,7 @@ const leafac = {
         );
       if (!action.startsWith(baseURL)) return;
       event.preventDefault();
+      if (event.submitter !== undefined) event.submitter.disabled = true;
       navigate({
         request: ["GET", "HEAD"].includes(method)
           ? new Request(new URL(`?${body}`, action), { method })
@@ -464,15 +465,6 @@ const leafac = {
       const error = element.onvalidate?.();
       if (typeof error === "string") return error;
     }
-  },
-
-  disableButtonsOnSubmit() {
-    document.addEventListener("submit", (event) => {
-      for (const element of event.target.querySelectorAll(
-        `button:not([type="button"])`
-      ))
-        element.disabled = true;
-    });
   },
 
   warnAboutLosingInputs() {

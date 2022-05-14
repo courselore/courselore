@@ -2559,6 +2559,10 @@ export default (app: Courselore): void => {
                     const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
 
                     (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });
+
+                    this.onclick = () => {
+                      delete this.closest("form").isValid;
+                    };
                   `}"
                 >
                   <i class="bi bi-chat-left-text"></i>
