@@ -2567,6 +2567,7 @@ export default (app: Courselore): void => {
               </div>
 
               <div
+                class="secondary"
                 css="${res.locals.localCSS(css`
                   font-size: var(--font-size--xs);
                   line-height: var(--line-height--xs);
@@ -2642,7 +2643,7 @@ export default (app: Courselore): void => {
                         <i class="bi bi-trash"></i>
                         Remove Draft
                       </button>
-                      <div class="secondary">
+                      <div>
                         Draft created
                         <time
                           datetime="${new Date(
@@ -2656,7 +2657,7 @@ export default (app: Courselore): void => {
                       </div>
                       $${conversationDraft.updatedAt !== null
                         ? html`
-                            <div class="secondary">
+                            <div>
                               Updated
                               <time
                                 datetime="${new Date(
