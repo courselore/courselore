@@ -1987,11 +1987,10 @@ export default (app: Courselore): void => {
   };
 
   app.get<
-    { courseReference: string },
+    { courseReference: string; conversationDraftReference?: string },
     HTML,
     {},
     {
-      conversationDraftReference?: string;
       type?: string;
       isPinned?: "true";
       isStaffOnly?: "true";
@@ -2001,13 +2000,13 @@ export default (app: Courselore): void => {
     },
     IsEnrolledInCourseMiddlewareLocals & LiveUpdatesMiddlewareLocals
   >(
-    "/courses/:courseReference/conversations/new",
+    "/courses/:courseReference/conversations/new/:conversationDraftReference?",
     ...app.locals.middlewares.isEnrolledInCourse,
     ...app.locals.middlewares.liveUpdates,
     (req, res) => {
       const conversationDraft =
-        typeof req.query.conversationDraftReference === "string" &&
-        req.query.conversationDraftReference.match(/^[0-9]+$/)
+        typeof req.params.conversationDraftReference === "string" &&
+        req.params.conversationDraftReference.match(/^[0-9]+$/)
           ? app.locals.database.get<{
               createdAt: string;
               updatedAt: string | null;
@@ -2031,7 +2030,7 @@ export default (app: Courselore): void => {
                        "tagsReferences"
                 FROM "conversationDrafts"
                 WHERE "course" = ${res.locals.course.id} AND
-                      "reference" = ${req.query.conversationDraftReference} AND
+                      "reference" = ${req.params.conversationDraftReference} AND
                       "authorEnrollment" = ${res.locals.enrollment.id}
               `
             )
@@ -2586,6 +2585,15 @@ export default (app: Courselore): void => {
                   <i class="bi bi-file-earmark-text"></i>
                   Save Draft
                 </button>
+                $${conversationDraft !== undefined
+                  ? html`
+                      <input
+                        type="hidden"
+                        name="conversationDraftReference"
+                        value="${conversationDraft.reference}"
+                      />
+                    `
+                  : html``}
               </div>
             </form>
           `,
@@ -2606,6 +2614,7 @@ export default (app: Courselore): void => {
       tagsReferences?: string[];
       isAnonymous?: boolean;
       isDraft?: "true";
+      conversationDraftReference?: string;
     },
     {},
     IsEnrolledInCourseMiddlewareLocals
@@ -2614,60 +2623,115 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
       if (req.body.isDraft === "true") {
-        const conversationDraft = app.locals.database.get<{
-          reference: string;
-        }>(
-          sql`
-            INSERT INTO "conversationDrafts" (
-              "createdAt",
-              "course",
-              "reference",
-              "authorEnrollment",
-              "type",
-              "isPinned",
-              "isStaffOnly",
-              "title",
-              "content",
-              "tagsReferences"
-            )
-            VALUES (
-              ${new Date().toISOString()},
-              ${res.locals.course.id},
-              ${cryptoRandomString({ length: 10, type: "numeric" })},
-              ${res.locals.enrollment.id},
-              ${
-                typeof req.body.type === "string" && req.body.type.trim() !== ""
-                  ? req.body.type
-                  : null
-              },
-              ${req.body.isPinned ? "true" : null},
-              ${req.body.isStaffOnly ? "true" : null},
-              ${
-                typeof req.body.title === "string" &&
-                req.body.title.trim() !== ""
-                  ? req.body.title
-                  : null
-              },
-              ${
-                typeof req.body.content === "string" &&
-                req.body.content.trim() !== ""
-                  ? req.body.content
-                  : null
-              },
-              ${
-                Array.isArray(req.body.tagsReferences) &&
-                req.body.tagsReferences.every(
-                  (tagReference) =>
-                    typeof tagReference === "string" &&
-                    tagReference.trim() !== ""
-                )
-                  ? JSON.stringify(req.body.tagsReferences)
-                  : null
-              }
-            )
-            RETURNING *
-          `
-        )!;
+        let conversationDraft =
+          typeof req.body.conversationDraftReference === "string" &&
+          req.body.conversationDraftReference.match(/^[0-9]+$/)
+            ? app.locals.database.get<{
+                reference: string;
+              }>(
+                sql`
+                  SELECT "reference"
+                  FROM "conversationDrafts"
+                  WHERE "course" = ${res.locals.course.id} AND
+                        "reference" = ${req.body.conversationDraftReference} AND
+                        "authorEnrollment" = ${res.locals.enrollment.id}
+                `
+              )
+            : undefined;
+        if (conversationDraft === undefined)
+          conversationDraft = app.locals.database.get<{
+            reference: string;
+          }>(
+            sql`
+              INSERT INTO "conversationDrafts" (
+                "createdAt",
+                "course",
+                "reference",
+                "authorEnrollment",
+                "type",
+                "isPinned",
+                "isStaffOnly",
+                "title",
+                "content",
+                "tagsReferences"
+              )
+              VALUES (
+                ${new Date().toISOString()},
+                ${res.locals.course.id},
+                ${cryptoRandomString({ length: 10, type: "numeric" })},
+                ${res.locals.enrollment.id},
+                ${
+                  typeof req.body.type === "string" &&
+                  req.body.type.trim() !== ""
+                    ? req.body.type
+                    : null
+                },
+                ${req.body.isPinned ? "true" : null},
+                ${req.body.isStaffOnly ? "true" : null},
+                ${
+                  typeof req.body.title === "string" &&
+                  req.body.title.trim() !== ""
+                    ? req.body.title
+                    : null
+                },
+                ${
+                  typeof req.body.content === "string" &&
+                  req.body.content.trim() !== ""
+                    ? req.body.content
+                    : null
+                },
+                ${
+                  Array.isArray(req.body.tagsReferences) &&
+                  req.body.tagsReferences.every(
+                    (tagReference) =>
+                      typeof tagReference === "string" &&
+                      tagReference.trim() !== ""
+                  )
+                    ? JSON.stringify(req.body.tagsReferences)
+                    : null
+                }
+              )
+              RETURNING *
+            `
+          )!;
+        else
+          app.locals.database.run(
+            sql`
+              UPDATE "conversationDrafts"
+              SET "updatedAt" = ${new Date().toISOString()},
+                  "type" = ${
+                    typeof req.body.type === "string" &&
+                    req.body.type.trim() !== ""
+                      ? req.body.type
+                      : null
+                  },
+                  "isPinned" = ${req.body.isPinned ? "true" : null},
+                  "isStaffOnly" = ${req.body.isStaffOnly ? "true" : null},
+                  "title" = ${
+                    typeof req.body.title === "string" &&
+                    req.body.title.trim() !== ""
+                      ? req.body.title
+                      : null
+                  },
+                  "content" = ${
+                    typeof req.body.content === "string" &&
+                    req.body.content.trim() !== ""
+                      ? req.body.content
+                      : null
+                  },
+                  "tagsReferences" = ${
+                    Array.isArray(req.body.tagsReferences) &&
+                    req.body.tagsReferences.every(
+                      (tagReference) =>
+                        typeof tagReference === "string" &&
+                        tagReference.trim() !== ""
+                    )
+                      ? JSON.stringify(req.body.tagsReferences)
+                      : null
+                  }
+              WHERE "reference" = ${conversationDraft.reference}
+            `
+          );
         app.locals.helpers.Flash.set({
           req,
           res,
@@ -2678,14 +2742,8 @@ export default (app: Courselore): void => {
           303,
           `${app.locals.options.baseURL}/courses/${
             res.locals.course.reference
-          }/conversations/new${qs.stringify(
-            lodash.omit(
-              {
-                ...req.query,
-                conversationDraftReference: conversationDraft.reference,
-              },
-              ["messageReference"]
-            ),
+          }/conversations/new/${conversationDraft.reference}${qs.stringify(
+            lodash.omit(req.query, ["messageReference"]),
             {
               addQueryPrefix: true,
             }
