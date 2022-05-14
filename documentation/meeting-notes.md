@@ -1,6 +1,25 @@
 # Meeting Notes
 
 <details>
+<summary>2021-05-14</summary>
+
+- Quicker feedback to actions, for example, sending a message.
+  - Investigated how Discord does latency compensation.
+  - Disabled submit buttons.
+  - Added a “wait” cursor.
+  - Latency compensation for sending a message with a placeholder.
+- On `/conversations/new`, added support for pre-filling the `<input>`s with query parameters, which is useful for templates & drafts.
+- Started implementing conversations drafts.
+  - Do we want to show them on the sidebar?
+  - Do we want to make them searchable?
+- Fixes:
+  - Fixed validation error in which a live-update would preserve the `value` of `input` even when it shouldn’t, for example, to set a question as “resolved.”
+  - Fixed uses of `.findLast()`, which isn’t supported on all browsers yet.
+  - Investigated performance issue, which seemed to be have been a temporary issue that solved itself…
+
+</details>
+
+<details>
 <summary>2021-04-30</summary>
 
 - Day off (holiday).
