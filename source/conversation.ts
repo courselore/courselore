@@ -2502,7 +2502,10 @@ export default (app: Courselore): void => {
                   Start Conversation
                 </button>
                 <button
+                  hidden
                   class="button button--full-width-on-small-screen button--transparent"
+                  name="isDraft"
+                  value="true"
                   onload="${javascript`
                     (this.tooltip ??= tippy(this)).setProps({
                       touch: false,
@@ -2529,6 +2532,11 @@ export default (app: Courselore): void => {
                     const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
 
                     (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+s", () => { this.click(); return false; });
+
+                    this.onclick = () => {
+                      for (const element of this.closest("form").querySelectorAll("[required]"))
+                        element.required = false;
+                    };
                   `}"
                 >
                   <i class="bi bi-file-earmark-text"></i>
@@ -5383,8 +5391,8 @@ export default (app: Courselore): void => {
                                                             this.onclick = () => {
                                                               tippy.hideAll();
                                                               const selection = window.getSelection();
-                                                              const anchorElement = leafac.ancestors(selection.anchorNode).findLast(element => element?.dataset?.position !== undefined);
-                                                              const focusElement = leafac.ancestors(selection.focusNode).findLast(element => element?.dataset?.position !== undefined);
+                                                              const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => element?.dataset?.position !== undefined);
+                                                              const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => element?.dataset?.position !== undefined);
                                                               const contentElement = this.closest(".message--show--content-area").querySelector(".message--show--content-area--content");
                                                               if (
                                                                 selection.isCollapsed ||
@@ -5450,8 +5458,8 @@ export default (app: Courselore): void => {
                                                 this.onmouseup = (event) => {
                                                   window.setTimeout(() => {
                                                     const selection = window.getSelection();
-                                                    const anchorElement = leafac.ancestors(selection.anchorNode).findLast(element => element?.dataset?.position !== undefined);
-                                                    const focusElement = leafac.ancestors(selection.focusNode).findLast(element => element?.dataset?.position !== undefined);
+                                                    const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => element?.dataset?.position !== undefined);
+                                                    const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => element?.dataset?.position !== undefined);
                                                     if (
                                                       selection.isCollapsed ||
                                                       anchorElement === undefined ||
