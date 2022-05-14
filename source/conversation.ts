@@ -2502,7 +2502,6 @@ export default (app: Courselore): void => {
                   Start Conversation
                 </button>
                 <button
-                  hidden
                   class="button button--full-width-on-small-screen button--transparent"
                   name="isDraft"
                   value="true"

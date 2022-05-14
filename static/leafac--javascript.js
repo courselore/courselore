@@ -96,12 +96,12 @@ const leafac = {
         enctype === "multipart/form-data"
           ? new FormData(event.target)
           : new URLSearchParams(new FormData(event.target));
-      // TODO:
-      // if (event.submitter?.getAttribute("name") !== null)
-      //   body.append(
-      //     event.submitter?.getAttribute("name"),
-      //     event.submitter?.getAttribute("value")
-      //   );
+      const submitterName = event.submitter?.getAttribute("name");
+      if (typeof submitterName === "string")
+        body.append(
+          submitterName,
+          event.submitter?.getAttribute("value") ?? ""
+        );
       if (!action.startsWith(baseURL)) return;
       event.preventDefault();
       navigate({
