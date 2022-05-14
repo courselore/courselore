@@ -2014,10 +2014,11 @@ export default (app: Courselore): void => {
   };
 
   app.get<
-    { courseReference: string; conversationDraftReference?: string },
+    { courseReference: string },
     HTML,
     {},
     {
+      conversationDraftReference?: string;
       type?: string;
       isPinned?: "true";
       isStaffOnly?: "true";
@@ -2027,13 +2028,13 @@ export default (app: Courselore): void => {
     },
     IsEnrolledInCourseMiddlewareLocals & LiveUpdatesMiddlewareLocals
   >(
-    "/courses/:courseReference/conversations/new/:conversationDraftReference?",
+    "/courses/:courseReference/conversations/new",
     ...app.locals.middlewares.isEnrolledInCourse,
     ...app.locals.middlewares.liveUpdates,
     (req, res) => {
       const conversationDraft =
-        typeof req.params.conversationDraftReference === "string" &&
-        req.params.conversationDraftReference.match(/^[0-9]+$/)
+        typeof req.query.conversationDraftReference === "string" &&
+        req.query.conversationDraftReference.match(/^[0-9]+$/)
           ? app.locals.database.get<{
               createdAt: string;
               updatedAt: string | null;
@@ -2057,7 +2058,7 @@ export default (app: Courselore): void => {
                        "tagsReferences"
                 FROM "conversationDrafts"
                 WHERE "course" = ${res.locals.course.id} AND
-                      "reference" = ${req.params.conversationDraftReference} AND
+                      "reference" = ${req.query.conversationDraftReference} AND
                       "authorEnrollment" = ${res.locals.enrollment.id}
               `
             )
@@ -2632,7 +2633,7 @@ export default (app: Courselore): void => {
                         formmethod="DELETE"
                         formaction="${app.locals.options.baseURL}/courses/${res
                           .locals.course
-                          .reference}/conversations/new/${conversationDraft.reference}${qs.stringify(
+                          .reference}/conversations/new${qs.stringify(
                           req.query,
                           {
                             addQueryPrefix: true,
@@ -2818,8 +2819,14 @@ export default (app: Courselore): void => {
           303,
           `${app.locals.options.baseURL}/courses/${
             res.locals.course.reference
-          }/conversations/new/${conversationDraft.reference}${qs.stringify(
-            lodash.omit(req.query, ["messageReference"]),
+          }/conversations/new${qs.stringify(
+            lodash.omit(
+              {
+                ...req.query,
+                conversationDraftReference: conversationDraft.reference,
+              },
+              ["messageReference"]
+            ),
             {
               addQueryPrefix: true,
             }
@@ -3017,15 +3024,20 @@ export default (app: Courselore): void => {
   );
 
   app.delete<
-    { courseReference: string; conversationDraftReference?: string },
+    { courseReference: string },
     HTML,
-    {},
+    { conversationDraftReference?: string },
     {},
     IsEnrolledInCourseMiddlewareLocals
   >(
-    "/courses/:courseReference/conversations/new/:conversationDraftReference",
+    "/courses/:courseReference/conversations/new",
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
+      if (
+        typeof req.body.conversationDraftReference !== "string" ||
+        !req.body.conversationDraftReference.match(/^[0-9]+$/)
+      )
+        return next("validation");
       const conversationDraft = app.locals.database.get<{
         id: number;
       }>(
@@ -3033,7 +3045,7 @@ export default (app: Courselore): void => {
           SELECT "id"
           FROM "conversationDrafts"
           WHERE "course" = ${res.locals.course.id} AND
-                "reference" = ${req.params.conversationDraftReference} AND
+                "reference" = ${req.body.conversationDraftReference} AND
                 "authorEnrollment" = ${res.locals.enrollment.id}
         `
       );
@@ -3048,7 +3060,10 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/courses/${
           res.locals.course.reference
         }/conversations/new${qs.stringify(
-          lodash.omit(req.query, ["messageReference"]),
+          lodash.omit(req.query, [
+            "messageReference",
+            "conversationDraftReference",
+          ]),
           {
             addQueryPrefix: true,
           }
