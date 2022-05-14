@@ -2944,6 +2944,19 @@ export default (app: Courselore): void => {
         });
       }
 
+      if (
+        typeof req.body.conversationDraftReference === "string" &&
+        req.body.conversationDraftReference.match(/^[0-9]+$/)
+      )
+        app.locals.database.run(
+          sql`
+            DELETE FROM "conversationDrafts"
+            WHERE "course" = ${res.locals.course.id} AND
+                  "reference" = ${req.body.conversationDraftReference} AND
+                  "authorEnrollment" = ${res.locals.enrollment.id}
+          `
+        );
+
       res.redirect(
         303,
         `${app.locals.options.baseURL}/courses/${
