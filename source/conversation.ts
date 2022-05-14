@@ -2505,109 +2505,121 @@ export default (app: Courselore): void => {
               <div
                 css="${res.locals.localCSS(css`
                   display: flex;
-                  gap: var(--space--4);
-                  @media (max-width: 400px) {
+                  @media (max-width: 499px) {
+                    gap: var(--space--4);
                     flex-direction: column;
+                  }
+                  @media (min-width: 500px) {
+                    gap: var(--space--8);
                   }
                 `)}"
               >
-                <button
-                  class="button button--full-width-on-small-screen button--blue"
-                  onload="${javascript`
-                    (this.tooltip ??= tippy(this)).setProps({
-                      touch: false,
-                      content: ${res.locals.HTMLForJavaScript(
-                        html`
-                          <span class="keyboard-shortcut">
-                            <span
-                              onload="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+Enter</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              onload="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-command"></i
-                              ><i class="bi bi-arrow-return-left"></i
-                            ></span>
-                          </span>
-                        `
-                      )},
-                    });
+                <div>
+                  <button
+                    class="button button--full-width-on-small-screen button--blue"
+                    onload="${javascript`
+                      (this.tooltip ??= tippy(this)).setProps({
+                        touch: false,
+                        content: ${res.locals.HTMLForJavaScript(
+                          html`
+                            <span class="keyboard-shortcut">
+                              <span
+                                onload="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+Enter</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                onload="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-command"></i
+                                ><i class="bi bi-arrow-return-left"></i
+                              ></span>
+                            </span>
+                          `
+                        )},
+                      });
 
-                    const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
+                      const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
 
-                    (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });
-                  `}"
+                      (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });
+                    `}"
+                  >
+                    <i class="bi bi-chat-left-text"></i>
+                    Start Conversation
+                  </button>
+                </div>
+                <div
+                  css="${res.locals.localCSS(css`
+                    display: flex;
+                    gap: var(--space--8);
+                  `)}"
                 >
-                  <i class="bi bi-chat-left-text"></i>
-                  Start Conversation
-                </button>
-                <button
-                  class="link"
-                  name="isDraft"
-                  value="true"
-                  onload="${javascript`
-                    (this.tooltip ??= tippy(this)).setProps({
-                      touch: false,
-                      content: ${res.locals.HTMLForJavaScript(
-                        html`
-                          <span class="keyboard-shortcut">
-                            <span
-                              onload="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+S</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              onload="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-command"></i>S</span
-                            >
-                          </span>
-                        `
-                      )},
-                    });
+                  <button
+                    class="link"
+                    name="isDraft"
+                    value="true"
+                    onload="${javascript`
+                      (this.tooltip ??= tippy(this)).setProps({
+                        touch: false,
+                        content: ${res.locals.HTMLForJavaScript(
+                          html`
+                            <span class="keyboard-shortcut">
+                              <span
+                                onload="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+S</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                onload="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-command"></i>S</span
+                              >
+                            </span>
+                          `
+                        )},
+                      });
 
-                    const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
+                      const textarea = this.closest("form").querySelector(".content-editor--write--textarea");
 
-                    (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+s", () => { this.click(); return false; });
+                      (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+s", () => { this.click(); return false; });
 
-                    this.onclick = () => {
-                      for (const element of this.closest("form").querySelectorAll("[required]"))
-                        element.required = false;
-                    };
-                  `}"
-                >
-                  <i class="bi bi-file-earmark-text"></i>
-                  Save Draft
-                </button>
-                $${conversationDraft !== undefined
-                  ? html`
-                      <button
-                        class="link text--rose"
-                        name="isDraft"
-                        value="true"
-                        onload="${javascript`
-                          this.onclick = () => {
-                            for (const element of this.closest("form").querySelectorAll("[required]"))
-                              element.required = false;
-                          };
-                        `}"
-                      >
-                        <i class="bi bi-trash"></i>
-                        Remove Draft
-                      </button>
-                      <input
-                        type="hidden"
-                        name="conversationDraftReference"
-                        value="${conversationDraft.reference}"
-                      />
-                    `
-                  : html``}
+                      this.onclick = () => {
+                        for (const element of this.closest("form").querySelectorAll("[required]"))
+                          element.required = false;
+                      };
+                    `}"
+                  >
+                    <i class="bi bi-file-earmark-text"></i>
+                    Save Draft
+                  </button>
+                  $${conversationDraft !== undefined
+                    ? html`
+                        <button
+                          class="link text--rose"
+                          name="isDraft"
+                          value="true"
+                          onload="${javascript`
+                            this.onclick = () => {
+                              for (const element of this.closest("form").querySelectorAll("[required]"))
+                                element.required = false;
+                            };
+                          `}"
+                        >
+                          <i class="bi bi-trash"></i>
+                          Remove Draft
+                        </button>
+                        <input
+                          type="hidden"
+                          name="conversationDraftReference"
+                          value="${conversationDraft.reference}"
+                        />
+                      `
+                    : html``}
+                </div>
               </div>
             </form>
           `,
