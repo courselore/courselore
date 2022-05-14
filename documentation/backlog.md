@@ -2,10 +2,6 @@
 
 ### User Interface Improvements
 
-- Draft posts.
-
----
-
 - Sidebar:
   - Make the “resolved/unresolved” filters more discoverable.
   - Hide search bar when unneeded

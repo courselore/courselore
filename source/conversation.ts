@@ -7,6 +7,7 @@ import { css } from "@leafac/css";
 import { javascript } from "@leafac/javascript";
 import lodash from "lodash";
 import slugify from "@sindresorhus/slugify";
+import cryptoRandomString from "crypto-random-string";
 import {
   Courselore,
   LiveUpdatesMiddlewareLocals,
@@ -2560,6 +2561,7 @@ export default (app: Courselore): void => {
       content?: string;
       tagsReferences?: string[];
       isAnonymous?: boolean;
+      isDraft?: "true";
     },
     {},
     IsEnrolledInCourseMiddlewareLocals
@@ -2567,6 +2569,80 @@ export default (app: Courselore): void => {
     "/courses/:courseReference/conversations",
     ...app.locals.middlewares.isEnrolledInCourse,
     (req, res, next) => {
+      if (req.body.isDraft === "true") {
+        const conversationDraft = app.locals.database.get<{
+          reference: string;
+        }>(
+          sql`
+            INSERT INTO "conversationDrafts" (
+              "createdAt",
+              "course",
+              "reference",
+              "authorEnrollment",
+              "type",
+              "isPinned",
+              "isStaffOnly",
+              "title",
+              "content",
+              "tagsReferences"
+            )
+            VALUES (
+              ${new Date().toISOString()},
+              ${res.locals.course.id},
+              ${cryptoRandomString({ length: 10, type: "numeric" })},
+              ${res.locals.enrollment.id},
+              ${
+                typeof req.body.type === "string" && req.body.type.trim() !== ""
+                  ? req.body.type
+                  : null
+              },
+              ${req.body.isPinned ? "true" : null},
+              ${req.body.isStaffOnly ? "true" : null},
+              ${
+                typeof req.body.title === "string" &&
+                req.body.title.trim() !== ""
+                  ? req.body.title
+                  : null
+              },
+              ${
+                typeof req.body.content === "string" &&
+                req.body.content.trim() !== ""
+                  ? req.body.content
+                  : null
+              },
+              ${
+                Array.isArray(req.body.tagsReferences) &&
+                req.body.tagsReferences.every(
+                  (tagReference) =>
+                    typeof tagReference === "string" &&
+                    tagReference.trim() !== ""
+                )
+                  ? JSON.stringify(req.body.tagsReferences)
+                  : null
+              }
+            )
+            RETURNING *
+          `
+        )!;
+        return res.redirect(
+          303,
+          `${app.locals.options.baseURL}/courses/${
+            res.locals.course.reference
+          }/conversations/new${qs.stringify(
+            lodash.omit(
+              {
+                ...req.query,
+                conversationDraftReference: conversationDraft.reference,
+              },
+              ["messageReference"]
+            ),
+            {
+              addQueryPrefix: true,
+            }
+          )}`
+        );
+      }
+
       req.body.tagsReferences ??= [];
       if (
         typeof req.body.type !== "string" ||
