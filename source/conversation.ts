@@ -2313,7 +2313,7 @@ export default (app: Courselore): void => {
                     ? html`value="${req.query.title}"`
                     : html``}
                   autocomplete="off"
-                  autofocus
+                  $${conversationDraft === undefined ? html`autofocus` : html``}
                   class="input--text"
                 />
               </div>
