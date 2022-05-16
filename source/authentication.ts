@@ -121,7 +121,7 @@ export type SignInHandler = express.RequestHandler<
   {},
   HTML,
   {},
-  { email?: string },
+  { redirect?: string; name?: string; email?: string },
   IsSignedOutMiddlewareLocals
 >;
 
@@ -402,7 +402,23 @@ export default (app: Courselore): void => {
           <form
             method="POST"
             action="${app.locals.options.baseURL}/sign-in${qs.stringify(
-              req.query,
+              {
+                redirect:
+                  typeof req.query.redirect === "string" &&
+                  req.query.redirect.trim() !== ""
+                    ? req.query.redirect
+                    : undefined,
+                name:
+                  typeof req.query.name === "string" &&
+                  req.query.name.trim() !== ""
+                    ? req.query.name
+                    : undefined,
+                email:
+                  typeof req.query.email === "string" &&
+                  req.query.email.trim() !== ""
+                    ? req.query.email
+                    : undefined,
+              },
               {
                 addQueryPrefix: true,
               }
@@ -421,7 +437,10 @@ export default (app: Courselore): void => {
                 type="email"
                 name="email"
                 placeholder="you@educational-institution.edu"
-                value="${req.query.email ?? ""}"
+                value="${typeof req.query.email === "string" &&
+                req.query.email.trim() !== ""
+                  ? req.query.email
+                  : ""}"
                 required
                 autofocus
                 class="input--text"
@@ -458,7 +477,23 @@ export default (app: Courselore): void => {
               Don’t have an account?
               <a
                 href="${app.locals.options.baseURL}/sign-up${qs.stringify(
-                  req.query,
+                  {
+                    redirect:
+                      typeof req.query.redirect === "string" &&
+                      req.query.redirect.trim() !== ""
+                        ? req.query.redirect
+                        : undefined,
+                    name:
+                      typeof req.query.name === "string" &&
+                      req.query.name.trim() !== ""
+                        ? req.query.name
+                        : undefined,
+                    email:
+                      typeof req.query.email === "string" &&
+                      req.query.email.trim() !== ""
+                        ? req.query.email
+                        : undefined,
+                  },
                   {
                     addQueryPrefix: true,
                   }
@@ -471,9 +506,28 @@ export default (app: Courselore): void => {
               Forgot your password?
               <a
                 href="${app.locals.options
-                  .baseURL}/reset-password${qs.stringify(req.query, {
-                  addQueryPrefix: true,
-                })}"
+                  .baseURL}/reset-password${qs.stringify(
+                  {
+                    redirect:
+                      typeof req.query.redirect === "string" &&
+                      req.query.redirect.trim() !== ""
+                        ? req.query.redirect
+                        : undefined,
+                    name:
+                      typeof req.query.name === "string" &&
+                      req.query.name.trim() !== ""
+                        ? req.query.name
+                        : undefined,
+                    email:
+                      typeof req.query.email === "string" &&
+                      req.query.email.trim() !== ""
+                        ? req.query.email
+                        : undefined,
+                  },
+                  {
+                    addQueryPrefix: true,
+                  }
+                )}"
                 class="link"
                 >Reset password</a
               >.
@@ -501,7 +555,12 @@ export default (app: Courselore): void => {
     (req, res) => {
       res.redirect(
         303,
-        `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
+        `${app.locals.options.baseURL}${
+          typeof req.query.redirect === "string" &&
+          req.query.redirect.trim() !== ""
+            ? req.query.redirect
+            : "/"
+        }`
       );
     }
   );
@@ -510,7 +569,7 @@ export default (app: Courselore): void => {
     {},
     HTML,
     { email?: string; password?: string },
-    { redirect?: string },
+    { redirect?: string; name?: string; email?: string },
     IsSignedOutMiddlewareLocals
   >(
     "/sign-in",
@@ -538,15 +597,39 @@ export default (app: Courselore): void => {
         });
         return res.redirect(
           303,
-          `${app.locals.options.baseURL}/sign-in${qs.stringify(req.query, {
-            addQueryPrefix: true,
-          })}`
+          `${app.locals.options.baseURL}/sign-in${qs.stringify(
+            {
+              redirect:
+                typeof req.query.redirect === "string" &&
+                req.query.redirect.trim() !== ""
+                  ? req.query.redirect
+                  : undefined,
+              name:
+                typeof req.query.name === "string" &&
+                req.query.name.trim() !== ""
+                  ? req.query.name
+                  : undefined,
+              email:
+                typeof req.query.email === "string" &&
+                req.query.email.trim() !== ""
+                  ? req.query.email
+                  : undefined,
+            },
+            {
+              addQueryPrefix: true,
+            }
+          )}`
         );
       }
       app.locals.helpers.Session.open({ req, res, userId: user.id });
       res.redirect(
         303,
-        `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
+        `${app.locals.options.baseURL}${
+          typeof req.query.redirect === "string" &&
+          req.query.redirect.trim() !== ""
+            ? req.query.redirect
+            : "/"
+        }`
       );
     })
   );
@@ -606,98 +689,154 @@ export default (app: Courselore): void => {
     }
   })();
 
-  app.get<{}, HTML, {}, { email?: string }, BaseMiddlewareLocals>(
-    "/reset-password",
-    (req, res) => {
-      res.send(
-        app.locals.layouts.box({
-          req,
-          res,
-          head: html`
-            <title>
-              Reset Password · Courselore · Communication Platform for Education
-            </title>
-          `,
-          body: html`
-            <form
-              method="POST"
-              action="${app.locals.options
-                .baseURL}/reset-password${qs.stringify(req.query, {
+  app.get<
+    {},
+    HTML,
+    {},
+    { redirect?: string; name?: string; email?: string },
+    BaseMiddlewareLocals
+  >("/reset-password", (req, res) => {
+    res.send(
+      app.locals.layouts.box({
+        req,
+        res,
+        head: html`
+          <title>
+            Reset Password · Courselore · Communication Platform for Education
+          </title>
+        `,
+        body: html`
+          <form
+            method="POST"
+            action="${app.locals.options.baseURL}/reset-password${qs.stringify(
+              {
+                redirect:
+                  typeof req.query.redirect === "string" &&
+                  req.query.redirect.trim() !== ""
+                    ? req.query.redirect
+                    : undefined,
+                name:
+                  typeof req.query.name === "string" &&
+                  req.query.name.trim() !== ""
+                    ? req.query.name
+                    : undefined,
+                email:
+                  typeof req.query.email === "string" &&
+                  req.query.email.trim() !== ""
+                    ? req.query.email
+                    : undefined,
+              },
+              {
                 addQueryPrefix: true,
-              })}"
-              novalidate
-              css="${res.locals.localCSS(css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-              `)}"
-            >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-              <label class="label">
-                <p class="label--text">Email</p>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="you@educational-institution.edu"
-                  value="${req.query.email ?? ""}"
-                  required
-                  autofocus
-                  class="input--text"
-                  onload="${javascript`
+              }
+            )}"
+            novalidate
+            css="${res.locals.localCSS(css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--4);
+            `)}"
+          >
+            <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+            <label class="label">
+              <p class="label--text">Email</p>
+              <input
+                type="email"
+                name="email"
+                placeholder="you@educational-institution.edu"
+                value="${typeof req.query.email === "string" &&
+                req.query.email.trim() !== ""
+                  ? req.query.email
+                  : ""}"
+                required
+                autofocus
+                class="input--text"
+                onload="${javascript`
                     this.isModified = false;
                   `}"
-                />
-              </label>
-              <button class="button button--blue">
-                <i class="bi bi-key"></i>
-                Reset Password
-              </button>
-            </form>
-            <div
-              css="${res.locals.localCSS(css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--2);
-              `)}"
-            >
-              <p>
-                Don’t have an account?
-                <a
-                  href="${app.locals.options.baseURL}/sign-up${qs.stringify(
-                    req.query,
-                    {
-                      addQueryPrefix: true,
-                    }
-                  )}"
-                  class="link"
-                  >Sign up</a
-                >.
-              </p>
-              <p>
-                Remember your password?
-                <a
-                  href="${app.locals.options.baseURL}/sign-in${qs.stringify(
-                    req.query,
-                    {
-                      addQueryPrefix: true,
-                    }
-                  )}"
-                  class="link"
-                  >Sign in</a
-                >.
-              </p>
-            </div>
-          `,
-        })
-      );
-    }
-  );
+              />
+            </label>
+            <button class="button button--blue">
+              <i class="bi bi-key"></i>
+              Reset Password
+            </button>
+          </form>
+          <div
+            css="${res.locals.localCSS(css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--2);
+            `)}"
+          >
+            <p>
+              Don’t have an account?
+              <a
+                href="${app.locals.options.baseURL}/sign-up${qs.stringify(
+                  {
+                    redirect:
+                      typeof req.query.redirect === "string" &&
+                      req.query.redirect.trim() !== ""
+                        ? req.query.redirect
+                        : undefined,
+                    name:
+                      typeof req.query.name === "string" &&
+                      req.query.name.trim() !== ""
+                        ? req.query.name
+                        : undefined,
+                    email:
+                      typeof req.query.email === "string" &&
+                      req.query.email.trim() !== ""
+                        ? req.query.email
+                        : undefined,
+                  },
+                  {
+                    addQueryPrefix: true,
+                  }
+                )}"
+                class="link"
+                >Sign up</a
+              >.
+            </p>
+            <p>
+              Remember your password?
+              <a
+                href="${app.locals.options.baseURL}/sign-in${qs.stringify(
+                  {
+                    redirect:
+                      typeof req.query.redirect === "string" &&
+                      req.query.redirect.trim() !== ""
+                        ? req.query.redirect
+                        : undefined,
+                    name:
+                      typeof req.query.name === "string" &&
+                      req.query.name.trim() !== ""
+                        ? req.query.name
+                        : undefined,
+                    email:
+                      typeof req.query.email === "string" &&
+                      req.query.email.trim() !== ""
+                        ? req.query.email
+                        : undefined,
+                  },
+                  {
+                    addQueryPrefix: true,
+                  }
+                )}"
+                class="link"
+                >Sign in</a
+              >.
+            </p>
+          </div>
+        `,
+      })
+    );
+  });
 
   app.post<
     {},
     HTML,
     { email?: string; resend?: "true" },
-    {},
+    { redirect?: string; name?: string; email?: string },
     BaseMiddlewareLocals
   >("/reset-password", (req, res, next) => {
     if (
@@ -718,9 +857,27 @@ export default (app: Courselore): void => {
       });
       return res.redirect(
         303,
-        `${app.locals.options.baseURL}/reset-password${qs.stringify(req.query, {
-          addQueryPrefix: true,
-        })}`
+        `${app.locals.options.baseURL}/reset-password${qs.stringify(
+          {
+            redirect:
+              typeof req.query.redirect === "string" &&
+              req.query.redirect.trim() !== ""
+                ? req.query.redirect
+                : undefined,
+            name:
+              typeof req.query.name === "string" && req.query.name.trim() !== ""
+                ? req.query.name
+                : undefined,
+            email:
+              typeof req.query.email === "string" &&
+              req.query.email.trim() !== ""
+                ? req.query.email
+                : undefined,
+          },
+          {
+            addQueryPrefix: true,
+          }
+        )}`
       );
     }
 
@@ -728,9 +885,26 @@ export default (app: Courselore): void => {
       app.locals.options.baseURL
     }/reset-password/${app.locals.helpers.PasswordReset.create(
       user.id
-    )}${qs.stringify(req.query, {
-      addQueryPrefix: true,
-    })}`;
+    )}${qs.stringify(
+      {
+        redirect:
+          typeof req.query.redirect === "string" &&
+          req.query.redirect.trim() !== ""
+            ? req.query.redirect
+            : undefined,
+        name:
+          typeof req.query.name === "string" && req.query.name.trim() !== ""
+            ? req.query.name
+            : undefined,
+        email:
+          typeof req.query.email === "string" && req.query.email.trim() !== ""
+            ? req.query.email
+            : undefined,
+      },
+      {
+        addQueryPrefix: true,
+      }
+    )}`;
     app.locals.database.run(
       sql`
         INSERT INTO "sendEmailJobs" (
@@ -786,7 +960,23 @@ export default (app: Courselore): void => {
           <form
             method="POST"
             action="${app.locals.options.baseURL}/reset-password${qs.stringify(
-              req.query,
+              {
+                redirect:
+                  typeof req.query.redirect === "string" &&
+                  req.query.redirect.trim() !== ""
+                    ? req.query.redirect
+                    : undefined,
+                name:
+                  typeof req.query.name === "string" &&
+                  req.query.name.trim() !== ""
+                    ? req.query.name
+                    : undefined,
+                email:
+                  typeof req.query.email === "string" &&
+                  req.query.email.trim() !== ""
+                    ? req.query.email
+                    : undefined,
+              },
               {
                 addQueryPrefix: true,
               }
@@ -805,93 +995,130 @@ export default (app: Courselore): void => {
     );
   });
 
-  app.get<{ passwordResetNonce: string }, HTML, {}, {}, BaseMiddlewareLocals>(
-    "/reset-password/:passwordResetNonce",
-    (req, res) => {
-      const userId = app.locals.helpers.PasswordReset.get(
-        req.params.passwordResetNonce
+  app.get<
+    { passwordResetNonce: string },
+    HTML,
+    {},
+    { redirect?: string; name?: string; email?: string },
+    BaseMiddlewareLocals
+  >("/reset-password/:passwordResetNonce", (req, res) => {
+    const userId = app.locals.helpers.PasswordReset.get(
+      req.params.passwordResetNonce
+    );
+    if (userId === undefined) {
+      app.locals.helpers.Flash.set({
+        req,
+        res,
+        theme: "rose",
+        content: html`This password reset link is invalid or expired.`,
+      });
+      return res.redirect(
+        303,
+        `${app.locals.options.baseURL}/reset-password${qs.stringify(
+          {
+            redirect:
+              typeof req.query.redirect === "string" &&
+              req.query.redirect.trim() !== ""
+                ? req.query.redirect
+                : undefined,
+            name:
+              typeof req.query.name === "string" && req.query.name.trim() !== ""
+                ? req.query.name
+                : undefined,
+            email:
+              typeof req.query.email === "string" &&
+              req.query.email.trim() !== ""
+                ? req.query.email
+                : undefined,
+          },
+          {
+            addQueryPrefix: true,
+          }
+        )}`
       );
-      if (userId === undefined) {
-        app.locals.helpers.Flash.set({
-          req,
-          res,
-          theme: "rose",
-          content: html`This password reset link is invalid or expired.`,
-        });
-        return res.redirect(
-          303,
-          `${app.locals.options.baseURL}/reset-password${qs.stringify(
-            req.query,
-            {
-              addQueryPrefix: true,
-            }
-          )}`
-        );
-      }
-      res.send(
-        app.locals.layouts.box({
-          req,
-          res,
-          head: html`
-            <title>
-              Reset Password · Courselore · Communication Platform for Education
-            </title>
-          `,
-          body: html`
-            <form
-              method="POST"
-              action="${app.locals.options
-                .baseURL}/reset-password/${app.locals.helpers.PasswordReset.create(
-                userId
-              )}${qs.stringify(req.query, { addQueryPrefix: true })}"
-              novalidate
-              css="${res.locals.localCSS(css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--4);
-              `)}"
-            >
-              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
-              <label class="label">
-                <p class="label--text">Password</p>
-                <input
-                  type="password"
-                  name="password"
-                  required
-                  minlength="8"
-                  class="input--text"
-                />
-              </label>
-              <label class="label">
-                <p class="label--text">Password Confirmation</p>
-                <input
-                  type="password"
-                  required
-                  class="input--text"
-                  onload="${javascript`
+    }
+    res.send(
+      app.locals.layouts.box({
+        req,
+        res,
+        head: html`
+          <title>
+            Reset Password · Courselore · Communication Platform for Education
+          </title>
+        `,
+        body: html`
+          <form
+            method="POST"
+            action="${app.locals.options
+              .baseURL}/reset-password/${app.locals.helpers.PasswordReset.create(
+              userId
+            )}${qs.stringify(
+              {
+                redirect:
+                  typeof req.query.redirect === "string" &&
+                  req.query.redirect.trim() !== ""
+                    ? req.query.redirect
+                    : undefined,
+                name:
+                  typeof req.query.name === "string" &&
+                  req.query.name.trim() !== ""
+                    ? req.query.name
+                    : undefined,
+                email:
+                  typeof req.query.email === "string" &&
+                  req.query.email.trim() !== ""
+                    ? req.query.email
+                    : undefined,
+              },
+              { addQueryPrefix: true }
+            )}"
+            novalidate
+            css="${res.locals.localCSS(css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--4);
+            `)}"
+          >
+            <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+            <label class="label">
+              <p class="label--text">Password</p>
+              <input
+                type="password"
+                name="password"
+                required
+                minlength="8"
+                class="input--text"
+              />
+            </label>
+            <label class="label">
+              <p class="label--text">Password Confirmation</p>
+              <input
+                type="password"
+                required
+                class="input--text"
+                onload="${javascript`
                     this.onvalidate = (event) => {
                       if (this.value !== this.closest("form").querySelector('[name="password"]').value)
                         return "Password & Password Confirmation don’t match.";
                     };
                   `}"
-                />
-              </label>
-              <button class="button button--blue">
-                <i class="bi bi-key"></i>
-                Reset Password
-              </button>
-            </form>
-          `,
-        })
-      );
-    }
-  );
+              />
+            </label>
+            <button class="button button--blue">
+              <i class="bi bi-key"></i>
+              Reset Password
+            </button>
+          </form>
+        `,
+      })
+    );
+  });
 
   app.post<
     { passwordResetNonce: string },
     HTML,
     { password?: string },
-    { redirect?: string },
+    { redirect?: string; name?: string; email?: string },
     BaseMiddlewareLocals
   >(
     "/reset-password/:passwordResetNonce",
@@ -917,7 +1144,23 @@ export default (app: Courselore): void => {
         return res.redirect(
           303,
           `${app.locals.options.baseURL}/reset-password${qs.stringify(
-            req.query,
+            {
+              redirect:
+                typeof req.query.redirect === "string" &&
+                req.query.redirect.trim() !== ""
+                  ? req.query.redirect
+                  : undefined,
+              name:
+                typeof req.query.name === "string" &&
+                req.query.name.trim() !== ""
+                  ? req.query.name
+                  : undefined,
+              email:
+                typeof req.query.email === "string" &&
+                req.query.email.trim() !== ""
+                  ? req.query.email
+                  : undefined,
+            },
             {
               addQueryPrefix: true,
             }
@@ -944,7 +1187,12 @@ export default (app: Courselore): void => {
       });
       res.redirect(
         303,
-        `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
+        `${app.locals.options.baseURL}${
+          typeof req.query.redirect === "string" &&
+          req.query.redirect.trim() !== ""
+            ? req.query.redirect
+            : "/"
+        }`
       );
     })
   );
@@ -953,7 +1201,7 @@ export default (app: Courselore): void => {
     {},
     HTML,
     {},
-    { name?: string; email?: string },
+    { redirect?: string; name?: string; email?: string },
     IsSignedOutMiddlewareLocals
   >("/sign-up", ...app.locals.middlewares.isSignedOut, (req, res) => {
     res.send(
@@ -969,7 +1217,23 @@ export default (app: Courselore): void => {
           <form
             method="POST"
             action="${app.locals.options.baseURL}/sign-up${qs.stringify(
-              req.query,
+              {
+                redirect:
+                  typeof req.query.redirect === "string" &&
+                  req.query.redirect.trim() !== ""
+                    ? req.query.redirect
+                    : undefined,
+                name:
+                  typeof req.query.name === "string" &&
+                  req.query.name.trim() !== ""
+                    ? req.query.name
+                    : undefined,
+                email:
+                  typeof req.query.email === "string" &&
+                  req.query.email.trim() !== ""
+                    ? req.query.email
+                    : undefined,
+              },
               {
                 addQueryPrefix: true,
               }
@@ -987,7 +1251,10 @@ export default (app: Courselore): void => {
               <input
                 type="text"
                 name="name"
-                value="${req.query.name ?? ""}"
+                value="${typeof req.query.name === "string" &&
+                req.query.name.trim() !== ""
+                  ? req.query.name
+                  : ""}"
                 required
                 autofocus
                 class="input--text"
@@ -999,7 +1266,10 @@ export default (app: Courselore): void => {
                 type="email"
                 name="email"
                 placeholder="you@educational-institution.edu"
-                value="${req.query.email ?? ""}"
+                value="${typeof req.query.email === "string" &&
+                req.query.email.trim() !== ""
+                  ? req.query.email
+                  : ""}"
                 required
                 class="input--text"
               />
@@ -1044,7 +1314,23 @@ export default (app: Courselore): void => {
               Already have an account account?
               <a
                 href="${app.locals.options.baseURL}/sign-in${qs.stringify(
-                  req.query,
+                  {
+                    redirect:
+                      typeof req.query.redirect === "string" &&
+                      req.query.redirect.trim() !== ""
+                        ? req.query.redirect
+                        : undefined,
+                    name:
+                      typeof req.query.name === "string" &&
+                      req.query.name.trim() !== ""
+                        ? req.query.name
+                        : undefined,
+                    email:
+                      typeof req.query.email === "string" &&
+                      req.query.email.trim() !== ""
+                        ? req.query.email
+                        : undefined,
+                  },
                   {
                     addQueryPrefix: true,
                   }
@@ -1057,9 +1343,28 @@ export default (app: Courselore): void => {
               Forgot your password?
               <a
                 href="${app.locals.options
-                  .baseURL}/reset-password${qs.stringify(req.query, {
-                  addQueryPrefix: true,
-                })}"
+                  .baseURL}/reset-password${qs.stringify(
+                  {
+                    redirect:
+                      typeof req.query.redirect === "string" &&
+                      req.query.redirect.trim() !== ""
+                        ? req.query.redirect
+                        : undefined,
+                    name:
+                      typeof req.query.name === "string" &&
+                      req.query.name.trim() !== ""
+                        ? req.query.name
+                        : undefined,
+                    email:
+                      typeof req.query.email === "string" &&
+                      req.query.email.trim() !== ""
+                        ? req.query.email
+                        : undefined,
+                  },
+                  {
+                    addQueryPrefix: true,
+                  }
+                )}"
                 class="link"
                 >Reset password</a
               >.
@@ -1075,7 +1380,12 @@ export default (app: Courselore): void => {
     (req, res) => {
       res.redirect(
         303,
-        `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
+        `${app.locals.options.baseURL}${
+          typeof req.query.redirect === "string" &&
+          req.query.redirect.trim() !== ""
+            ? req.query.redirect
+            : "/"
+        }`
       );
     }
   );
@@ -1157,7 +1467,7 @@ export default (app: Courselore): void => {
     {},
     HTML,
     { name?: string; email?: string; password?: string },
-    { redirect?: string },
+    { redirect?: string; name?: string; email?: string },
     IsSignedOutMiddlewareLocals
   >(
     "/sign-up",
@@ -1189,9 +1499,28 @@ export default (app: Courselore): void => {
         });
         return res.redirect(
           303,
-          `${app.locals.options.baseURL}/sign-in${qs.stringify(req.query, {
-            addQueryPrefix: true,
-          })}`
+          `${app.locals.options.baseURL}/sign-in${qs.stringify(
+            {
+              redirect:
+                typeof req.query.redirect === "string" &&
+                req.query.redirect.trim() !== ""
+                  ? req.query.redirect
+                  : undefined,
+              name:
+                typeof req.query.name === "string" &&
+                req.query.name.trim() !== ""
+                  ? req.query.name
+                  : undefined,
+              email:
+                typeof req.query.email === "string" &&
+                req.query.email.trim() !== ""
+                  ? req.query.email
+                  : undefined,
+            },
+            {
+              addQueryPrefix: true,
+            }
+          )}`
         );
       }
 
@@ -1232,7 +1561,12 @@ export default (app: Courselore): void => {
       app.locals.helpers.Session.open({ req, res, userId: user.id });
       res.redirect(
         303,
-        `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
+        `${app.locals.options.baseURL}${
+          typeof req.query.redirect === "string" &&
+          req.query.redirect.trim() !== ""
+            ? req.query.redirect
+            : "/"
+        }`
       );
     })
   );
@@ -1250,7 +1584,12 @@ export default (app: Courselore): void => {
         });
         return res.redirect(
           303,
-          `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
+          `${app.locals.options.baseURL}${
+            typeof req.query.redirect === "string" &&
+            req.query.redirect.trim() !== ""
+              ? req.query.redirect
+              : "/"
+          }`
         );
       }
       app.locals.mailers.emailConfirmation({
@@ -1267,7 +1606,12 @@ export default (app: Courselore): void => {
       });
       res.redirect(
         303,
-        `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
+        `${app.locals.options.baseURL}${
+          typeof req.query.redirect === "string" &&
+          req.query.redirect.trim() !== ""
+            ? req.query.redirect
+            : "/"
+        }`
       );
     }
   );
@@ -1307,7 +1651,12 @@ export default (app: Courselore): void => {
         });
         return res.redirect(
           303,
-          `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
+          `${app.locals.options.baseURL}${
+            typeof req.query.redirect === "string" &&
+            req.query.redirect.trim() !== ""
+              ? req.query.redirect
+              : "/"
+          }`
         );
       }
       app.locals.database.run(
@@ -1325,7 +1674,12 @@ export default (app: Courselore): void => {
       });
       res.redirect(
         303,
-        `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
+        `${app.locals.options.baseURL}${
+          typeof req.query.redirect === "string" &&
+          req.query.redirect.trim() !== ""
+            ? req.query.redirect
+            : "/"
+        }`
       );
     }
   );

@@ -28,6 +28,8 @@
           - `tagsReferences`
     - Places to check
       - `qs.`
+      - `unknown` may no longer be necessary
+      - Double-check uses of `req.query`, which must check if the value is a string, and so forth
   - `TODO`
   - Mix drafts with other conversations on sidebar.
     - Group them together?

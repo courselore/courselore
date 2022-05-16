@@ -2247,7 +2247,12 @@ export default (app: Courselore): void => {
         );
       res.redirect(
         303,
-        `${app.locals.options.baseURL}${req.query.redirect ?? "/"}`
+        `${app.locals.options.baseURL}${
+          typeof req.query.redirect === "string" &&
+          req.query.redirect.trim() !== ""
+            ? req.query.redirect
+            : "/"
+        }`
       );
     }
   );
