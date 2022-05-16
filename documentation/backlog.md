@@ -5,11 +5,11 @@
 - Drafts:
   - Query parameters allowlist instead of blocklist.
     - Query parameters
-      - `authentication.ts`
+      - `authentication.ts` / `course.ts` / `error.ts` / `layouts.ts`
         - `redirect`
         - `name`
         - `email`
-      - `conversation.ts`
+      - `conversation.ts` / `content.ts` / `course.ts` / `message.ts`
         - `redirect` (`mark-all-conversations-as-read`)
         - `messageReference` (permanent links)
         - Pagination
