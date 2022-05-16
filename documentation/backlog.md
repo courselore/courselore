@@ -4,6 +4,30 @@
 
 - Drafts:
   - On `qs.` do allowlist instead of blocklist.
+    - `authentication.ts`
+      - `redirect`
+      - `name`
+      - `email`
+    - `conversation.ts`
+      - `redirect` (`mark-all-conversations-as-read`)
+      - `messageReference` (permanent links)
+      - `beforeMessageReference`
+      - `afterMessageReference`
+      - `conversationsPage`
+      - `/new`
+        - `conversationDraftReference`
+        - Templates, for example, `title`
+      - `search`
+      - `filters`
+        - `types`
+        - `isResolved`
+        - `isPinned`
+        - `isStaffOnly`
+        - `tagsReferences`
+    - `redirect`
+    - `<a`
+    - `<form`
+    - `formaction`
   - `TODO`
   - Mix drafts with other conversations on sidebar.
     - Group them together?
