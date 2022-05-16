@@ -28,7 +28,6 @@
           - `tagsReferences`
     - Places to check
       - `qs.`
-      - `"GET"`
   - `TODO`
   - Mix drafts with other conversations on sidebar.
     - Group them together?

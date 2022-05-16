@@ -726,6 +726,110 @@ export default (app: Courselore): void => {
                     this.isModified = false;
                   `}"
                 >
+                  $${typeof req.query.messageReference === "string" &&
+                  req.query.messageReference.trim() !== ""
+                    ? html`
+                        <input
+                          type="hidden"
+                          name="messageReference"
+                          value="${req.query.messageReference}"
+                        />
+                      `
+                    : html``}
+                  $${typeof req.query.beforeMessageReference === "string" &&
+                  req.query.beforeMessageReference.trim() !== ""
+                    ? html`
+                        <input
+                          type="hidden"
+                          name="beforeMessageReference"
+                          value="${req.query.beforeMessageReference}"
+                        />
+                      `
+                    : html``}
+                  $${typeof req.query.afterMessageReference === "string" &&
+                  req.query.afterMessageReference.trim() !== ""
+                    ? html`
+                        <input
+                          type="hidden"
+                          name="afterMessageReference"
+                          value="${req.query.afterMessageReference}"
+                        />
+                      `
+                    : html``}
+                  $${typeof req.query.conversationDraftReference === "string" &&
+                  req.query.conversationDraftReference.trim() !== ""
+                    ? html`
+                        <input
+                          type="hidden"
+                          name="conversationDraftReference"
+                          value="${req.query.conversationDraftReference}"
+                        />
+                      `
+                    : html``}
+                  $${typeof req.query.type === "string" &&
+                  req.query.type.trim() !== ""
+                    ? html`
+                        <input
+                          type="hidden"
+                          name="type"
+                          value="${req.query.type}"
+                        />
+                      `
+                    : html``}
+                  $${req.query.isPinned === "true"
+                    ? html`
+                        <input
+                          type="hidden"
+                          name="isPinned"
+                          value="${req.query.isPinned}"
+                        />
+                      `
+                    : html``}
+                  $${req.query.isStaffOnly === "true"
+                    ? html`
+                        <input
+                          type="hidden"
+                          name="isStaffOnly"
+                          value="${req.query.isStaffOnly}"
+                        />
+                      `
+                    : html``}
+                  $${typeof req.query.title === "string" &&
+                  req.query.title.trim() !== ""
+                    ? html`
+                        <input
+                          type="hidden"
+                          name="title"
+                          value="${req.query.title}"
+                        />
+                      `
+                    : html``}
+                  $${typeof req.query.content === "string" &&
+                  req.query.content.trim() !== ""
+                    ? html`
+                        <input
+                          type="hidden"
+                          name="content"
+                          value="${req.query.content}"
+                        />
+                      `
+                    : html``}
+                  $${Array.isArray(req.query.tagsReferences) &&
+                  req.query.tagsReferences.every(
+                    (tagReference) =>
+                      typeof tagReference === "string" &&
+                      tagReference.trim() !== ""
+                  )
+                    ? req.query.tagsReferences.map(
+                        (tagReference) => html`
+                          <input
+                            type="hidden"
+                            name="tagsReferences[]"
+                            value="${tagReference}"
+                          />
+                        `
+                      )
+                    : html``}
                   <div
                     css="${res.locals.localCSS(css`
                       display: flex;
