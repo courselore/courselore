@@ -27,6 +27,7 @@
           - `isStaffOnly`
           - `tagsReferences`
     - Double-check that, on a `<form method="GET">` the `action`’s query parameters merge with the `<input>`s
+      - Browsers don’t do that by default, but it seems like a useful addition.
   - `TODO`
   - Mix drafts with other conversations on sidebar.
     - Group them together?
