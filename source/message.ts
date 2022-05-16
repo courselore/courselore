@@ -1234,7 +1234,12 @@ export default (app: Courselore): void => {
                     <a
                       href="${app.locals.options.baseURL}/courses/${res.locals
                         .course
-                        .reference}/conversations/${conversation.reference}?messageReference=${message.reference}"
+                        .reference}/conversations/${conversation.reference}${qs.stringify(
+                        { messageReference: message.reference },
+                        {
+                          addQueryPrefix: true,
+                        }
+                      )}"
                       >${message.authorEnrollment === "no-longer-enrolled"
                         ? "Someone who is no longer enrolled"
                         : message.anonymousAt !== null

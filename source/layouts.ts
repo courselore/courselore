@@ -411,13 +411,13 @@ export default async (app: Courselore): Promise<void> => {
                                 differentiate between courses.
                               </p>
                               <a
+                                href="${app.locals.options
+                                  .baseURL}/courses/${res.locals.course!
+                                  .reference}/settings/your-enrollment"
                                 class="button button--blue"
                                 css="${res.locals.localCSS(css`
                                   width: 100%;
                                 `)}"
-                                href="${app.locals.options
-                                  .baseURL}/courses/${res.locals.course!
-                                  .reference}/settings/your-enrollment"
                               >
                                 <i class="bi bi-palette"></i>
                                 Update Accent Color

@@ -1,5 +1,6 @@
 import path from "node:path";
 import express from "express";
+import qs from "qs";
 import { asyncHandler } from "@leafac/express-async-handler";
 import { sql } from "@leafac/sqlite";
 import { HTML, html } from "@leafac/html";
@@ -436,7 +437,12 @@ export default async (app: Courselore): Promise<void> => {
                           class="reference"
                           href="${app.locals.options.baseURL}/courses/${res
                             .locals.course!
-                            .reference}/conversations/${conversation.reference}"
+                            .reference}/conversations/${conversation.reference}${qs.stringify(
+                            {},
+                            {
+                              addQueryPrefix: true,
+                            }
+                          )}"
                           >${match}</a
                         >`;
                       const message = app.locals.helpers.getMessage({
@@ -450,7 +456,14 @@ export default async (app: Courselore): Promise<void> => {
                         class="reference"
                         href="${app.locals.options.baseURL}/courses/${res.locals
                           .course!
-                          .reference}/conversations/${conversation.reference}?messageReference=${message.reference}"
+                          .reference}/conversations/${conversation.reference}${qs.stringify(
+                          {
+                            messageReference: message.reference,
+                          },
+                          {
+                            addQueryPrefix: true,
+                          }
+                        )}"
                         >${match}</a
                       >`;
                     }

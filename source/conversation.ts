@@ -755,7 +755,13 @@ export default (app: Courselore): void => {
                     req.query.filters !== undefined
                       ? html`
                           <a
-                            href="${app.locals.options.baseURL}${req.path}"
+                            href="${app.locals.options
+                              .baseURL}${req.path}${qs.stringify(
+                              {},
+                              {
+                                addQueryPrefix: true,
+                              }
+                            )}"
                             class="button button--tight button--tight--inline button--transparent"
                             onload="${javascript`
                               (this.tooltip ??= tippy(this)).setProps({
@@ -1194,7 +1200,13 @@ export default (app: Courselore): void => {
                       req.query.filters !== undefined
                         ? html`
                             <a
-                              href="${app.locals.options.baseURL}${req.path}"
+                              href="${app.locals.options
+                                .baseURL}${req.path}${qs.stringify(
+                                {},
+                                {
+                                  addQueryPrefix: true,
+                                }
+                              )}"
                               class="button button--tight button--tight--inline button--transparent"
                             >
                               <i class="bi bi-x-lg"></i>
@@ -5010,7 +5022,27 @@ export default (app: Courselore): void => {
                                                               });
 
                                                               this.onclick = async () => {
-                                                                await navigator.clipboard.writeText("${app.locals.options.baseURL}/courses/${res.locals.course.reference}/conversations/${res.locals.conversation.reference}?messageReference=${message.reference}");
+                                                                await navigator.clipboard.writeText("${
+                                                                  app.locals
+                                                                    .options
+                                                                    .baseURL
+                                                                }/courses/${
+                                                              res.locals.course
+                                                                .reference
+                                                            }/conversations/${
+                                                              res.locals
+                                                                .conversation
+                                                                .reference
+                                                            }${qs.stringify(
+                                                              {
+                                                                messageReference:
+                                                                  message.reference,
+                                                              },
+                                                              {
+                                                                addQueryPrefix:
+                                                                  true,
+                                                              }
+                                                            )}");
                                                                 this.copied.show();
                                                                 await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                                                                 this.copied.hide();

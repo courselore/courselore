@@ -26,10 +26,7 @@
           - `isPinned`
           - `isStaffOnly`
           - `tagsReferences`
-    - Double-check that `qs.` is being used:
-      - `<a`
-      - `<form`
-      - `formaction`
+    - Double-check that, on a `<form method="GET">` the `action`’s query parameters merge with the `<input>`s
   - `TODO`
   - Mix drafts with other conversations on sidebar.
     - Group them together?
