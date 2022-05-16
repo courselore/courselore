@@ -2,14 +2,6 @@
 
 ### User Interface Improvements
 
-- Clarify that “Programmer Mode” is for your input only. Unlike other buttons on the toolbar, it doesn’t affect the rendered text.
-
----
-
-- Have `@mentions` and `#references` widget go away when you type a space right after the trigger (`# `).
-
----
-
 - Drafts:
   - On `qs.` do allowlist instead of blocklist.
   - `TODO`
@@ -23,9 +15,14 @@
 
 ---
 
+- Have `@mentions` and `#references` widget go away when you type a space right after the trigger (`# `).
+
+---
+
 - Do `localStorage` on the server:
   - It’ll work across devices, which is a “pleasant surprise.”
   - It allows for features such as “currently typing.”
+  - Clarify that “Programmer Mode” is for your input only. Unlike other buttons on the toolbar, it doesn’t affect the rendered text.
 
 ---
 
