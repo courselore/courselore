@@ -2,11 +2,30 @@
 
 ### User Interface Improvements
 
+- Clarify that “Programmer Mode” is for your input only. Unlike other buttons on the toolbar, it doesn’t affect the rendered text.
+
+---
+
+- Have `@mentions` and `#references` widget go away when you type a space right after the trigger (`# `).
+
+---
+
 - Drafts:
   - On `qs.` do allowlist instead of blocklist.
   - `TODO`
-  - Search
+  - Mix drafts with other conversations on sidebar.
+    - Group them together?
+    - Visually distinct (grayed out).
+  - Search.
+  - Filters.
   - Adapt `partials.conversation` to support drafts (many fields become optional).
+  - Add a button to delete a draft directly from the sidebar.
+
+---
+
+- Do `localStorage` on the server:
+  - It’ll work across devices, which is a “pleasant surprise.”
+  - It allows for features such as “currently typing.”
 
 ---
 
