@@ -3,7 +3,7 @@
 ### User Interface Improvements
 
 - Drafts:
-  - On `qs.` do allowlist instead of blocklist.
+  - Query parameters allowlist instead of blocklist.
     - Query parameters
       - `authentication.ts`
         - `redirect`
@@ -26,8 +26,9 @@
           - `isPinned`
           - `isStaffOnly`
           - `tagsReferences`
-    - Double-check that, on a `<form method="GET">` the `action`’s query parameters merge with the `<input>`s
-      - Browsers don’t do that by default, but it seems like a useful addition.
+    - Places to check
+      - `qs.`
+      - `"GET"`
   - `TODO`
   - Mix drafts with other conversations on sidebar.
     - Group them together?
