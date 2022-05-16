@@ -5,7 +5,8 @@
 - Drafts:
   - Query parameters allowlist instead of blocklist.
     - Query parameters
-      - `authentication.ts` / `error.ts` / `layouts.ts` / `course.ts`
+      - TEST: `authentication.ts`
+      - `error.ts` / `layouts.ts` / `course.ts`
         - `redirect`
         - `name`
         - `email`
