@@ -3,7 +3,6 @@
 ### User Interface Improvements
 
 ```
-content.ts
 conversation.ts
 message.ts
 
