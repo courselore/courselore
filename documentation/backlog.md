@@ -59,6 +59,8 @@ afterMessageReference -> after
     - Test:
       - Invitation pre-fill on authentication.
       - “See conversations with this tag”
+      - `#references` in messages
+      - Sidebar filters & search & links to conversations & new conversation & drafts & so forth
   - `TODO`
   - Mix drafts with other conversations on sidebar.
     - Group them together?
