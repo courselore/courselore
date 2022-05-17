@@ -14,35 +14,28 @@ invitation {
 
 // Keep sidebar state
 
-{ conversationsPage?: string; search?: string; filters?: string }
-
-{
-  conversations: {
-    conversationsPage: req.query.conversationsPage,
-    search: req.query.search,
-    filters: req.query.filters,
-  }
+conversations: {
+  conversationsPage,
+  search,
+  filters,
 }
 
-// Keep conversation state
-
-{
-  messages: {
-    messageReference: req.query.messageReference,
-    messagesPage: {
-      beforeMessageReference: req.query.beforeMessageReference,
-      afterMessageReference: req.query.afterMessageReference,
-    },
+messages: {
+  messageReference,
+  messagesPage: {
+    beforeMessageReference,
+    afterMessageReference,
   },
-  newConversation: {
-    conversationDraftReference: req.query.conversationDraftReference,
-    type: req.query.type,
-    isPinned: req.query.isPinned,
-    isStaffOnly: req.query.isStaffOnly,
-    title: req.query.title,
-    content: req.query.content,
-    tagsReferences: req.query.tagsReferences,
-  }
+}
+
+newConversation: {
+  conversationDraftReference,
+  type,
+  isPinned,
+  isStaffOnly,
+  title,
+  content,
+  tagsReferences,
 }
 ```
 
