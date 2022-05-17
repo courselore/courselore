@@ -51,7 +51,7 @@ export type ContentPartial = ({
     {},
     any,
     {},
-    {},
+    { conversationsPage?: string; search?: string; filters?: object },
     BaseMiddlewareLocals & Partial<IsEnrolledInCourseMiddlewareLocals>
   >;
   res: express.Response<
@@ -438,7 +438,11 @@ export default async (app: Courselore): Promise<void> => {
                           href="${app.locals.options.baseURL}/courses/${res
                             .locals.course!
                             .reference}/conversations/${conversation.reference}${qs.stringify(
-                            {},
+                            {
+                              conversationsPage: req.query.conversationsPage,
+                              search: req.query.search,
+                              filters: req.query.filters,
+                            },
                             {
                               addQueryPrefix: true,
                             }
@@ -459,6 +463,9 @@ export default async (app: Courselore): Promise<void> => {
                           .reference}/conversations/${conversation.reference}${qs.stringify(
                           {
                             messageReference: message.reference,
+                            conversationsPage: req.query.conversationsPage,
+                            search: req.query.search,
+                            filters: req.query.filters,
                           },
                           {
                             addQueryPrefix: true,

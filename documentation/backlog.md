@@ -5,7 +5,7 @@
 - Drafts:
   - Query parameters allowlist instead of blocklist.
     - Query parameters
-      - `content.ts` / `conversation.ts` / `message.ts`
+      - `conversation.ts` / `message.ts`
         - `redirect` (`mark-all-conversations-as-read`)
         - `messageReference` (permanent links)
         - Pagination
