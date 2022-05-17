@@ -3,7 +3,6 @@
 ### User Interface Improvements
 
 ```
-authentication
 error
 layouts
 course
@@ -79,6 +78,7 @@ name
       - `qs.`
       - `unknown` may no longer be necessary
       - Double-check uses of `req.query`, which must check if the value is a string, and so forth
+    - Test invitation pre-fill on authentication.
   - `TODO`
   - Mix drafts with other conversations on sidebar.
     - Group them together?
