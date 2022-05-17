@@ -121,7 +121,7 @@ export type SignInHandler = express.RequestHandler<
   {},
   HTML,
   {},
-  { redirect?: string; email?: string; name?: string },
+  { redirect?: string; invitation?: { email?: string; name?: string } },
   IsSignedOutMiddlewareLocals
 >;
 
@@ -404,8 +404,7 @@ export default (app: Courselore): void => {
             action="${app.locals.options.baseURL}/sign-in${qs.stringify(
               {
                 redirect: req.query.redirect,
-                email: req.query.email,
-                name: req.query.name,
+                invitation: req.query.invitation,
               },
               {
                 addQueryPrefix: true,
@@ -425,9 +424,9 @@ export default (app: Courselore): void => {
                 type="email"
                 name="email"
                 placeholder="you@educational-institution.edu"
-                value="${typeof req.query.email === "string" &&
-                req.query.email.trim() !== ""
-                  ? req.query.email
+                value="${typeof req.query.invitation?.email === "string" &&
+                req.query.invitation.email.trim() !== ""
+                  ? req.query.invitation.email
                   : ""}"
                 required
                 autofocus
@@ -467,8 +466,7 @@ export default (app: Courselore): void => {
                 href="${app.locals.options.baseURL}/sign-up${qs.stringify(
                   {
                     redirect: req.query.redirect,
-                    email: req.query.email,
-                    name: req.query.name,
+                    invitation: req.query.invitation,
                   },
                   {
                     addQueryPrefix: true,
@@ -485,8 +483,7 @@ export default (app: Courselore): void => {
                   .baseURL}/reset-password${qs.stringify(
                   {
                     redirect: req.query.redirect,
-                    email: req.query.email,
-                    name: req.query.name,
+                    invitation: req.query.invitation,
                   },
                   {
                     addQueryPrefix: true,
@@ -533,7 +530,7 @@ export default (app: Courselore): void => {
     {},
     HTML,
     { email?: string; password?: string },
-    { redirect?: string; email?: string; name?: string },
+    { redirect?: string; invitation?: object },
     IsSignedOutMiddlewareLocals
   >(
     "/sign-in",
@@ -564,8 +561,7 @@ export default (app: Courselore): void => {
           `${app.locals.options.baseURL}/sign-in${qs.stringify(
             {
               redirect: req.query.redirect,
-              email: req.query.email,
-              name: req.query.name,
+              invitation: req.query.invitation,
             },
             {
               addQueryPrefix: true,
@@ -645,7 +641,7 @@ export default (app: Courselore): void => {
     {},
     HTML,
     {},
-    { redirect?: string; email?: string; name?: string },
+    { redirect?: string; invitation?: { email?: string; name?: string } },
     BaseMiddlewareLocals
   >("/reset-password", (req, res) => {
     res.send(
@@ -663,8 +659,7 @@ export default (app: Courselore): void => {
             action="${app.locals.options.baseURL}/reset-password${qs.stringify(
               {
                 redirect: req.query.redirect,
-                email: req.query.email,
-                name: req.query.name,
+                invitation: req.query.invitation,
               },
               {
                 addQueryPrefix: true,
@@ -684,9 +679,9 @@ export default (app: Courselore): void => {
                 type="email"
                 name="email"
                 placeholder="you@educational-institution.edu"
-                value="${typeof req.query.email === "string" &&
-                req.query.email.trim() !== ""
-                  ? req.query.email
+                value="${typeof req.query.invitation?.email === "string" &&
+                req.query.invitation.email.trim() !== ""
+                  ? req.query.invitation.email
                   : ""}"
                 required
                 autofocus
@@ -714,8 +709,7 @@ export default (app: Courselore): void => {
                 href="${app.locals.options.baseURL}/sign-up${qs.stringify(
                   {
                     redirect: req.query.redirect,
-                    email: req.query.email,
-                    name: req.query.name,
+                    invitation: req.query.invitation,
                   },
                   {
                     addQueryPrefix: true,
@@ -731,8 +725,7 @@ export default (app: Courselore): void => {
                 href="${app.locals.options.baseURL}/sign-in${qs.stringify(
                   {
                     redirect: req.query.redirect,
-                    email: req.query.email,
-                    name: req.query.name,
+                    invitation: req.query.invitation,
                   },
                   {
                     addQueryPrefix: true,
@@ -752,7 +745,7 @@ export default (app: Courselore): void => {
     {},
     HTML,
     { email?: string; resend?: "true" },
-    { redirect?: string; email?: string; name?: string },
+    { redirect?: string; invitation?: object },
     BaseMiddlewareLocals
   >("/reset-password", (req, res, next) => {
     if (
@@ -776,8 +769,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/reset-password${qs.stringify(
           {
             redirect: req.query.redirect,
-            email: req.query.email,
-            name: req.query.name,
+            invitation: req.query.invitation,
           },
           {
             addQueryPrefix: true,
@@ -793,8 +785,7 @@ export default (app: Courselore): void => {
     )}${qs.stringify(
       {
         redirect: req.query.redirect,
-        email: req.query.email,
-        name: req.query.name,
+        invitation: req.query.invitation,
       },
       {
         addQueryPrefix: true,
@@ -857,8 +848,7 @@ export default (app: Courselore): void => {
             action="${app.locals.options.baseURL}/reset-password${qs.stringify(
               {
                 redirect: req.query.redirect,
-                email: req.query.email,
-                name: req.query.name,
+                invitation: req.query.invitation,
               },
               {
                 addQueryPrefix: true,
@@ -882,7 +872,7 @@ export default (app: Courselore): void => {
     { passwordResetNonce: string },
     HTML,
     {},
-    { redirect?: string; email?: string; name?: string },
+    { redirect?: string; invitation?: object },
     BaseMiddlewareLocals
   >("/reset-password/:passwordResetNonce", (req, res) => {
     const userId = app.locals.helpers.PasswordReset.get(
@@ -900,8 +890,7 @@ export default (app: Courselore): void => {
         `${app.locals.options.baseURL}/reset-password${qs.stringify(
           {
             redirect: req.query.redirect,
-            email: req.query.email,
-            name: req.query.name,
+            invitation: req.query.invitation,
           },
           {
             addQueryPrefix: true,
@@ -927,8 +916,7 @@ export default (app: Courselore): void => {
             )}${qs.stringify(
               {
                 redirect: req.query.redirect,
-                email: req.query.email,
-                name: req.query.name,
+                invitation: req.query.invitation,
               },
               { addQueryPrefix: true }
             )}"
@@ -978,7 +966,7 @@ export default (app: Courselore): void => {
     { passwordResetNonce: string },
     HTML,
     { password?: string },
-    { redirect?: string; email?: string; name?: string },
+    { redirect?: string; invitation?: object },
     BaseMiddlewareLocals
   >(
     "/reset-password/:passwordResetNonce",
@@ -1006,8 +994,7 @@ export default (app: Courselore): void => {
           `${app.locals.options.baseURL}/reset-password${qs.stringify(
             {
               redirect: req.query.redirect,
-              email: req.query.email,
-              name: req.query.name,
+              invitation: req.query.invitation,
             },
             {
               addQueryPrefix: true,
@@ -1049,7 +1036,7 @@ export default (app: Courselore): void => {
     {},
     HTML,
     {},
-    { redirect?: string; email?: string; name?: string },
+    { redirect?: string; invitation?: { email?: string; name?: string } },
     IsSignedOutMiddlewareLocals
   >("/sign-up", ...app.locals.middlewares.isSignedOut, (req, res) => {
     res.send(
@@ -1067,8 +1054,7 @@ export default (app: Courselore): void => {
             action="${app.locals.options.baseURL}/sign-up${qs.stringify(
               {
                 redirect: req.query.redirect,
-                email: req.query.email,
-                name: req.query.name,
+                invitation: req.query.invitation,
               },
               {
                 addQueryPrefix: true,
@@ -1087,9 +1073,9 @@ export default (app: Courselore): void => {
               <input
                 type="text"
                 name="name"
-                value="${typeof req.query.name === "string" &&
-                req.query.name.trim() !== ""
-                  ? req.query.name
+                value="${typeof req.query.invitation?.name === "string" &&
+                req.query.invitation.name.trim() !== ""
+                  ? req.query.invitation.name
                   : ""}"
                 required
                 autofocus
@@ -1102,9 +1088,9 @@ export default (app: Courselore): void => {
                 type="email"
                 name="email"
                 placeholder="you@educational-institution.edu"
-                value="${typeof req.query.email === "string" &&
-                req.query.email.trim() !== ""
-                  ? req.query.email
+                value="${typeof req.query.invitation?.email === "string" &&
+                req.query.invitation.email.trim() !== ""
+                  ? req.query.invitation.email
                   : ""}"
                 required
                 class="input--text"
@@ -1152,8 +1138,7 @@ export default (app: Courselore): void => {
                 href="${app.locals.options.baseURL}/sign-in${qs.stringify(
                   {
                     redirect: req.query.redirect,
-                    email: req.query.email,
-                    name: req.query.name,
+                    invitation: req.query.invitation,
                   },
                   {
                     addQueryPrefix: true,
@@ -1170,8 +1155,7 @@ export default (app: Courselore): void => {
                   .baseURL}/reset-password${qs.stringify(
                   {
                     redirect: req.query.redirect,
-                    email: req.query.email,
-                    name: req.query.name,
+                    invitation: req.query.invitation,
                   },
                   {
                     addQueryPrefix: true,
@@ -1279,7 +1263,7 @@ export default (app: Courselore): void => {
     {},
     HTML,
     { name?: string; email?: string; password?: string },
-    { redirect?: string; email?: string; name?: string },
+    { redirect?: string; invitation?: object },
     IsSignedOutMiddlewareLocals
   >(
     "/sign-up",
@@ -1314,8 +1298,7 @@ export default (app: Courselore): void => {
           `${app.locals.options.baseURL}/sign-in${qs.stringify(
             {
               redirect: req.query.redirect,
-              email: req.query.email,
-              name: req.query.name,
+              invitation: req.query.invitation,
             },
             {
               addQueryPrefix: true,
