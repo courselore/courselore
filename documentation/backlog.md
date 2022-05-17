@@ -5,7 +5,6 @@
 - Drafts:
   - Query parameters allowlist instead of blocklist.
     - Query parameters
-      - TEST: `authentication.ts`
       - `error.ts` / `layouts.ts` / `course.ts`
         - `redirect`
         - `name`
@@ -31,6 +30,8 @@
       - `qs.`
       - `unknown` may no longer be necessary
       - Double-check uses of `req.query`, which must check if the value is a string, and so forth
+    - Test:
+      - `authentication.ts`
   - `TODO`
   - Mix drafts with other conversations on sidebar.
     - Group them together?
