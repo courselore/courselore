@@ -4,28 +4,10 @@
 
 - Drafts:
   - Query parameters allowlist instead of blocklist.
-    - Query parameters
-      - `conversation.ts` / `message.ts`
-        - `redirect` (`mark-all-conversations-as-read`)
-        - `messageReference` (permanent links)
-        - Pagination
-          - `beforeMessageReference`
-          - `afterMessageReference`
-          - `conversationsPage`
-        - `/new`
-          - `conversationDraftReference`
-          - Templates, for example, `title`
-        - `search`
-        - `filters`
-          - `types`
-          - `isResolved`
-          - `isPinned`
-          - `isStaffOnly`
-          - `tagsReferences`
-      - Authentication stuff
-        - `redirect`
-        - `name`
-        - `email`
+    - Cluster query parameters together.
+      - Pre-fill new conversation.
+      - Search & filters.
+      - More stuff…
     - Places to check
       - `qs.`
       - `unknown` may no longer be necessary
