@@ -121,7 +121,7 @@ export type SignInHandler = express.RequestHandler<
   {},
   HTML,
   {},
-  { redirect?: string; name?: string; email?: string },
+  { redirect?: string; email?: string; name?: string },
   IsSignedOutMiddlewareLocals
 >;
 
@@ -408,15 +408,15 @@ export default (app: Courselore): void => {
                   req.query.redirect.trim() !== ""
                     ? req.query.redirect
                     : undefined,
-                name:
-                  typeof req.query.name === "string" &&
-                  req.query.name.trim() !== ""
-                    ? req.query.name
-                    : undefined,
                 email:
                   typeof req.query.email === "string" &&
                   req.query.email.trim() !== ""
                     ? req.query.email
+                    : undefined,
+                name:
+                  typeof req.query.name === "string" &&
+                  req.query.name.trim() !== ""
+                    ? req.query.name
                     : undefined,
               },
               {
@@ -483,15 +483,15 @@ export default (app: Courselore): void => {
                       req.query.redirect.trim() !== ""
                         ? req.query.redirect
                         : undefined,
-                    name:
-                      typeof req.query.name === "string" &&
-                      req.query.name.trim() !== ""
-                        ? req.query.name
-                        : undefined,
                     email:
                       typeof req.query.email === "string" &&
                       req.query.email.trim() !== ""
                         ? req.query.email
+                        : undefined,
+                    name:
+                      typeof req.query.name === "string" &&
+                      req.query.name.trim() !== ""
+                        ? req.query.name
                         : undefined,
                   },
                   {
@@ -513,15 +513,15 @@ export default (app: Courselore): void => {
                       req.query.redirect.trim() !== ""
                         ? req.query.redirect
                         : undefined,
-                    name:
-                      typeof req.query.name === "string" &&
-                      req.query.name.trim() !== ""
-                        ? req.query.name
-                        : undefined,
                     email:
                       typeof req.query.email === "string" &&
                       req.query.email.trim() !== ""
                         ? req.query.email
+                        : undefined,
+                    name:
+                      typeof req.query.name === "string" &&
+                      req.query.name.trim() !== ""
+                        ? req.query.name
                         : undefined,
                   },
                   {
@@ -569,7 +569,7 @@ export default (app: Courselore): void => {
     {},
     HTML,
     { email?: string; password?: string },
-    { redirect?: string; name?: string; email?: string },
+    { redirect?: string; email?: string; name?: string },
     IsSignedOutMiddlewareLocals
   >(
     "/sign-in",
@@ -604,15 +604,15 @@ export default (app: Courselore): void => {
                 req.query.redirect.trim() !== ""
                   ? req.query.redirect
                   : undefined,
-              name:
-                typeof req.query.name === "string" &&
-                req.query.name.trim() !== ""
-                  ? req.query.name
-                  : undefined,
               email:
                 typeof req.query.email === "string" &&
                 req.query.email.trim() !== ""
                   ? req.query.email
+                  : undefined,
+              name:
+                typeof req.query.name === "string" &&
+                req.query.name.trim() !== ""
+                  ? req.query.name
                   : undefined,
             },
             {
@@ -693,7 +693,7 @@ export default (app: Courselore): void => {
     {},
     HTML,
     {},
-    { redirect?: string; name?: string; email?: string },
+    { redirect?: string; email?: string; name?: string },
     BaseMiddlewareLocals
   >("/reset-password", (req, res) => {
     res.send(
@@ -715,15 +715,15 @@ export default (app: Courselore): void => {
                   req.query.redirect.trim() !== ""
                     ? req.query.redirect
                     : undefined,
-                name:
-                  typeof req.query.name === "string" &&
-                  req.query.name.trim() !== ""
-                    ? req.query.name
-                    : undefined,
                 email:
                   typeof req.query.email === "string" &&
                   req.query.email.trim() !== ""
                     ? req.query.email
+                    : undefined,
+                name:
+                  typeof req.query.name === "string" &&
+                  req.query.name.trim() !== ""
+                    ? req.query.name
                     : undefined,
               },
               {
@@ -778,15 +778,15 @@ export default (app: Courselore): void => {
                       req.query.redirect.trim() !== ""
                         ? req.query.redirect
                         : undefined,
-                    name:
-                      typeof req.query.name === "string" &&
-                      req.query.name.trim() !== ""
-                        ? req.query.name
-                        : undefined,
                     email:
                       typeof req.query.email === "string" &&
                       req.query.email.trim() !== ""
                         ? req.query.email
+                        : undefined,
+                    name:
+                      typeof req.query.name === "string" &&
+                      req.query.name.trim() !== ""
+                        ? req.query.name
                         : undefined,
                   },
                   {
@@ -807,15 +807,15 @@ export default (app: Courselore): void => {
                       req.query.redirect.trim() !== ""
                         ? req.query.redirect
                         : undefined,
-                    name:
-                      typeof req.query.name === "string" &&
-                      req.query.name.trim() !== ""
-                        ? req.query.name
-                        : undefined,
                     email:
                       typeof req.query.email === "string" &&
                       req.query.email.trim() !== ""
                         ? req.query.email
+                        : undefined,
+                    name:
+                      typeof req.query.name === "string" &&
+                      req.query.name.trim() !== ""
+                        ? req.query.name
                         : undefined,
                   },
                   {
@@ -836,7 +836,7 @@ export default (app: Courselore): void => {
     {},
     HTML,
     { email?: string; resend?: "true" },
-    { redirect?: string; name?: string; email?: string },
+    { redirect?: string; email?: string; name?: string },
     BaseMiddlewareLocals
   >("/reset-password", (req, res, next) => {
     if (
@@ -864,14 +864,14 @@ export default (app: Courselore): void => {
               req.query.redirect.trim() !== ""
                 ? req.query.redirect
                 : undefined,
-            name:
-              typeof req.query.name === "string" && req.query.name.trim() !== ""
-                ? req.query.name
-                : undefined,
             email:
               typeof req.query.email === "string" &&
               req.query.email.trim() !== ""
                 ? req.query.email
+                : undefined,
+            name:
+              typeof req.query.name === "string" && req.query.name.trim() !== ""
+                ? req.query.name
                 : undefined,
           },
           {
@@ -892,13 +892,13 @@ export default (app: Courselore): void => {
           req.query.redirect.trim() !== ""
             ? req.query.redirect
             : undefined,
-        name:
-          typeof req.query.name === "string" && req.query.name.trim() !== ""
-            ? req.query.name
-            : undefined,
         email:
           typeof req.query.email === "string" && req.query.email.trim() !== ""
             ? req.query.email
+            : undefined,
+        name:
+          typeof req.query.name === "string" && req.query.name.trim() !== ""
+            ? req.query.name
             : undefined,
       },
       {
@@ -966,15 +966,15 @@ export default (app: Courselore): void => {
                   req.query.redirect.trim() !== ""
                     ? req.query.redirect
                     : undefined,
-                name:
-                  typeof req.query.name === "string" &&
-                  req.query.name.trim() !== ""
-                    ? req.query.name
-                    : undefined,
                 email:
                   typeof req.query.email === "string" &&
                   req.query.email.trim() !== ""
                     ? req.query.email
+                    : undefined,
+                name:
+                  typeof req.query.name === "string" &&
+                  req.query.name.trim() !== ""
+                    ? req.query.name
                     : undefined,
               },
               {
@@ -999,7 +999,7 @@ export default (app: Courselore): void => {
     { passwordResetNonce: string },
     HTML,
     {},
-    { redirect?: string; name?: string; email?: string },
+    { redirect?: string; email?: string; name?: string },
     BaseMiddlewareLocals
   >("/reset-password/:passwordResetNonce", (req, res) => {
     const userId = app.locals.helpers.PasswordReset.get(
@@ -1021,14 +1021,14 @@ export default (app: Courselore): void => {
               req.query.redirect.trim() !== ""
                 ? req.query.redirect
                 : undefined,
-            name:
-              typeof req.query.name === "string" && req.query.name.trim() !== ""
-                ? req.query.name
-                : undefined,
             email:
               typeof req.query.email === "string" &&
               req.query.email.trim() !== ""
                 ? req.query.email
+                : undefined,
+            name:
+              typeof req.query.name === "string" && req.query.name.trim() !== ""
+                ? req.query.name
                 : undefined,
           },
           {
@@ -1059,15 +1059,15 @@ export default (app: Courselore): void => {
                   req.query.redirect.trim() !== ""
                     ? req.query.redirect
                     : undefined,
-                name:
-                  typeof req.query.name === "string" &&
-                  req.query.name.trim() !== ""
-                    ? req.query.name
-                    : undefined,
                 email:
                   typeof req.query.email === "string" &&
                   req.query.email.trim() !== ""
                     ? req.query.email
+                    : undefined,
+                name:
+                  typeof req.query.name === "string" &&
+                  req.query.name.trim() !== ""
+                    ? req.query.name
                     : undefined,
               },
               { addQueryPrefix: true }
@@ -1118,7 +1118,7 @@ export default (app: Courselore): void => {
     { passwordResetNonce: string },
     HTML,
     { password?: string },
-    { redirect?: string; name?: string; email?: string },
+    { redirect?: string; email?: string; name?: string },
     BaseMiddlewareLocals
   >(
     "/reset-password/:passwordResetNonce",
@@ -1150,15 +1150,15 @@ export default (app: Courselore): void => {
                 req.query.redirect.trim() !== ""
                   ? req.query.redirect
                   : undefined,
-              name:
-                typeof req.query.name === "string" &&
-                req.query.name.trim() !== ""
-                  ? req.query.name
-                  : undefined,
               email:
                 typeof req.query.email === "string" &&
                 req.query.email.trim() !== ""
                   ? req.query.email
+                  : undefined,
+              name:
+                typeof req.query.name === "string" &&
+                req.query.name.trim() !== ""
+                  ? req.query.name
                   : undefined,
             },
             {
@@ -1201,7 +1201,7 @@ export default (app: Courselore): void => {
     {},
     HTML,
     {},
-    { redirect?: string; name?: string; email?: string },
+    { redirect?: string; email?: string; name?: string },
     IsSignedOutMiddlewareLocals
   >("/sign-up", ...app.locals.middlewares.isSignedOut, (req, res) => {
     res.send(
@@ -1223,15 +1223,15 @@ export default (app: Courselore): void => {
                   req.query.redirect.trim() !== ""
                     ? req.query.redirect
                     : undefined,
-                name:
-                  typeof req.query.name === "string" &&
-                  req.query.name.trim() !== ""
-                    ? req.query.name
-                    : undefined,
                 email:
                   typeof req.query.email === "string" &&
                   req.query.email.trim() !== ""
                     ? req.query.email
+                    : undefined,
+                name:
+                  typeof req.query.name === "string" &&
+                  req.query.name.trim() !== ""
+                    ? req.query.name
                     : undefined,
               },
               {
@@ -1320,15 +1320,15 @@ export default (app: Courselore): void => {
                       req.query.redirect.trim() !== ""
                         ? req.query.redirect
                         : undefined,
-                    name:
-                      typeof req.query.name === "string" &&
-                      req.query.name.trim() !== ""
-                        ? req.query.name
-                        : undefined,
                     email:
                       typeof req.query.email === "string" &&
                       req.query.email.trim() !== ""
                         ? req.query.email
+                        : undefined,
+                    name:
+                      typeof req.query.name === "string" &&
+                      req.query.name.trim() !== ""
+                        ? req.query.name
                         : undefined,
                   },
                   {
@@ -1350,15 +1350,15 @@ export default (app: Courselore): void => {
                       req.query.redirect.trim() !== ""
                         ? req.query.redirect
                         : undefined,
-                    name:
-                      typeof req.query.name === "string" &&
-                      req.query.name.trim() !== ""
-                        ? req.query.name
-                        : undefined,
                     email:
                       typeof req.query.email === "string" &&
                       req.query.email.trim() !== ""
                         ? req.query.email
+                        : undefined,
+                    name:
+                      typeof req.query.name === "string" &&
+                      req.query.name.trim() !== ""
+                        ? req.query.name
                         : undefined,
                   },
                   {
@@ -1467,7 +1467,7 @@ export default (app: Courselore): void => {
     {},
     HTML,
     { name?: string; email?: string; password?: string },
-    { redirect?: string; name?: string; email?: string },
+    { redirect?: string; email?: string; name?: string },
     IsSignedOutMiddlewareLocals
   >(
     "/sign-up",
@@ -1506,15 +1506,15 @@ export default (app: Courselore): void => {
                 req.query.redirect.trim() !== ""
                   ? req.query.redirect
                   : undefined,
-              name:
-                typeof req.query.name === "string" &&
-                req.query.name.trim() !== ""
-                  ? req.query.name
-                  : undefined,
               email:
                 typeof req.query.email === "string" &&
                 req.query.email.trim() !== ""
                   ? req.query.email
+                  : undefined,
+              name:
+                typeof req.query.name === "string" &&
+                req.query.name.trim() !== ""
+                  ? req.query.name
                   : undefined,
             },
             {
