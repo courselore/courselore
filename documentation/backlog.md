@@ -3,6 +3,18 @@
 ### User Interface Improvements
 
 ```
+authentication
+error
+layouts
+course
+content
+conversation
+message
+
+redirect
+email
+name
+
 // Keep sidebar state
 
 { conversationsPage?: string; search?: string; filters?: string }
@@ -67,7 +79,6 @@
       - `qs.`
       - `unknown` may no longer be necessary
       - Double-check uses of `req.query`, which must check if the value is a string, and so forth
-    - Test:
   - `TODO`
   - Mix drafts with other conversations on sidebar.
     - Group them together?
