@@ -3,66 +3,46 @@
 ### User Interface Improvements
 
 ```
-error
-layouts
-course
 content
 conversation
 message
 
-redirect
-email
-name
+invitation {
+  email
+  name
+}
 
 // Keep sidebar state
 
 { conversationsPage?: string; search?: string; filters?: string }
 
 {
-  conversationsPage: req.query.conversationsPage,
-  search: req.query.search,
-  filters: req.query.filters,
+  conversations: {
+    conversationsPage: req.query.conversationsPage,
+    search: req.query.search,
+    filters: req.query.filters,
+  }
 }
 
 // Keep conversation state
 
 {
-  messageReference: req.query.messageReference,
-  beforeMessageReference: req.query.beforeMessageReference,
-  afterMessageReference: req.query.afterMessageReference,
-  conversationDraftReference: req.query.conversationDraftReference,
-  type: req.query.type,
-  isPinned: req.query.isPinned,
-  isStaffOnly: req.query.isStaffOnly,
-  title: req.query.title,
-  content: req.query.content,
-  tagsReferences: req.query.tagsReferences,
-}
-
-
-
-
-{
-  conversationsPage?: string;
-  search?: string;
-  filters?: object;
-  messageReference?: string;
-  beforeMessageReference?: string;
-  afterMessageReference?: string;
-}
-
-
-{
-  conversationsPage:
-    req.query.conversationsPage,
-  search: req.query.search,
-  filters: req.query.filters,
-  messageReference:
-    req.query.messageReference,
-  beforeMessageReference:
-    req.query.beforeMessageReference,
-  afterMessageReference:
-    req.query.afterMessageReference,
+  messages: {
+    messageReference: req.query.messageReference,
+    messagesPage: {
+      beforeMessageReference: req.query.beforeMessageReference,
+      afterMessageReference: req.query.afterMessageReference,
+    },
+  },
+  newConversation: {
+    conversationDraftReference: req.query.conversationDraftReference,
+    type: req.query.type,
+    isPinned: req.query.isPinned,
+    isStaffOnly: req.query.isStaffOnly,
+    title: req.query.title,
+    content: req.query.content,
+    tagsReferences: req.query.tagsReferences,
+  }
 }
 ```
 
@@ -78,7 +58,11 @@ name
       - `qs.`
       - `unknown` may no longer be necessary
       - Double-check uses of `req.query`, which must check if the value is a string, and so forth
-    - Test invitation pre-fill on authentication.
+      - Remove the terminology of “sidebar”, because it doesn’t even apply on things like phones.
+      - Change `messageReference` on database (permanent links)
+    - Test:
+      - Invitation pre-fill on authentication.
+      - “See conversations with this tag”
   - `TODO`
   - Mix drafts with other conversations on sidebar.
     - Group them together?
