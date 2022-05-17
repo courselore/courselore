@@ -2,6 +2,61 @@
 
 ### User Interface Improvements
 
+```
+// Keep sidebar state
+
+{ conversationsPage?: string; search?: string; filters?: string }
+
+{
+  conversationsPage: req.query.conversationsPage,
+  search: req.query.search,
+  filters: req.query.filters,
+}
+
+// Keep conversation state
+
+{
+  messageReference: req.query.messageReference,
+  beforeMessageReference: req.query.beforeMessageReference,
+  afterMessageReference: req.query.afterMessageReference,
+  conversationDraftReference: req.query.conversationDraftReference,
+  type: req.query.type,
+  isPinned: req.query.isPinned,
+  isStaffOnly: req.query.isStaffOnly,
+  title: req.query.title,
+  content: req.query.content,
+  tagsReferences: req.query.tagsReferences,
+}
+
+
+
+
+{
+  conversationsPage?: string;
+  search?: string;
+  filters?: object;
+  messageReference?: string;
+  beforeMessageReference?: string;
+  afterMessageReference?: string;
+}
+
+
+{
+  conversationsPage:
+    req.query.conversationsPage,
+  search: req.query.search,
+  filters: req.query.filters,
+  messageReference:
+    req.query.messageReference,
+  beforeMessageReference:
+    req.query.beforeMessageReference,
+  afterMessageReference:
+    req.query.afterMessageReference,
+}
+```
+
+---
+
 - Drafts:
   - Query parameters allowlist instead of blocklist.
     - Cluster query parameters together.
