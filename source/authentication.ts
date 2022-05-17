@@ -403,21 +403,9 @@ export default (app: Courselore): void => {
             method="POST"
             action="${app.locals.options.baseURL}/sign-in${qs.stringify(
               {
-                redirect:
-                  typeof req.query.redirect === "string" &&
-                  req.query.redirect.trim() !== ""
-                    ? req.query.redirect
-                    : undefined,
-                email:
-                  typeof req.query.email === "string" &&
-                  req.query.email.trim() !== ""
-                    ? req.query.email
-                    : undefined,
-                name:
-                  typeof req.query.name === "string" &&
-                  req.query.name.trim() !== ""
-                    ? req.query.name
-                    : undefined,
+                redirect: req.query.redirect,
+                email: req.query.email,
+                name: req.query.name,
               },
               {
                 addQueryPrefix: true,
@@ -478,21 +466,9 @@ export default (app: Courselore): void => {
               <a
                 href="${app.locals.options.baseURL}/sign-up${qs.stringify(
                   {
-                    redirect:
-                      typeof req.query.redirect === "string" &&
-                      req.query.redirect.trim() !== ""
-                        ? req.query.redirect
-                        : undefined,
-                    email:
-                      typeof req.query.email === "string" &&
-                      req.query.email.trim() !== ""
-                        ? req.query.email
-                        : undefined,
-                    name:
-                      typeof req.query.name === "string" &&
-                      req.query.name.trim() !== ""
-                        ? req.query.name
-                        : undefined,
+                    redirect: req.query.redirect,
+                    email: req.query.email,
+                    name: req.query.name,
                   },
                   {
                     addQueryPrefix: true,
@@ -508,21 +484,9 @@ export default (app: Courselore): void => {
                 href="${app.locals.options
                   .baseURL}/reset-password${qs.stringify(
                   {
-                    redirect:
-                      typeof req.query.redirect === "string" &&
-                      req.query.redirect.trim() !== ""
-                        ? req.query.redirect
-                        : undefined,
-                    email:
-                      typeof req.query.email === "string" &&
-                      req.query.email.trim() !== ""
-                        ? req.query.email
-                        : undefined,
-                    name:
-                      typeof req.query.name === "string" &&
-                      req.query.name.trim() !== ""
-                        ? req.query.name
-                        : undefined,
+                    redirect: req.query.redirect,
+                    email: req.query.email,
+                    name: req.query.name,
                   },
                   {
                     addQueryPrefix: true,
@@ -599,21 +563,9 @@ export default (app: Courselore): void => {
           303,
           `${app.locals.options.baseURL}/sign-in${qs.stringify(
             {
-              redirect:
-                typeof req.query.redirect === "string" &&
-                req.query.redirect.trim() !== ""
-                  ? req.query.redirect
-                  : undefined,
-              email:
-                typeof req.query.email === "string" &&
-                req.query.email.trim() !== ""
-                  ? req.query.email
-                  : undefined,
-              name:
-                typeof req.query.name === "string" &&
-                req.query.name.trim() !== ""
-                  ? req.query.name
-                  : undefined,
+              redirect: req.query.redirect,
+              email: req.query.email,
+              name: req.query.name,
             },
             {
               addQueryPrefix: true,
@@ -710,21 +662,9 @@ export default (app: Courselore): void => {
             method="POST"
             action="${app.locals.options.baseURL}/reset-password${qs.stringify(
               {
-                redirect:
-                  typeof req.query.redirect === "string" &&
-                  req.query.redirect.trim() !== ""
-                    ? req.query.redirect
-                    : undefined,
-                email:
-                  typeof req.query.email === "string" &&
-                  req.query.email.trim() !== ""
-                    ? req.query.email
-                    : undefined,
-                name:
-                  typeof req.query.name === "string" &&
-                  req.query.name.trim() !== ""
-                    ? req.query.name
-                    : undefined,
+                redirect: req.query.redirect,
+                email: req.query.email,
+                name: req.query.name,
               },
               {
                 addQueryPrefix: true,
@@ -773,21 +713,9 @@ export default (app: Courselore): void => {
               <a
                 href="${app.locals.options.baseURL}/sign-up${qs.stringify(
                   {
-                    redirect:
-                      typeof req.query.redirect === "string" &&
-                      req.query.redirect.trim() !== ""
-                        ? req.query.redirect
-                        : undefined,
-                    email:
-                      typeof req.query.email === "string" &&
-                      req.query.email.trim() !== ""
-                        ? req.query.email
-                        : undefined,
-                    name:
-                      typeof req.query.name === "string" &&
-                      req.query.name.trim() !== ""
-                        ? req.query.name
-                        : undefined,
+                    redirect: req.query.redirect,
+                    email: req.query.email,
+                    name: req.query.name,
                   },
                   {
                     addQueryPrefix: true,
@@ -802,21 +730,9 @@ export default (app: Courselore): void => {
               <a
                 href="${app.locals.options.baseURL}/sign-in${qs.stringify(
                   {
-                    redirect:
-                      typeof req.query.redirect === "string" &&
-                      req.query.redirect.trim() !== ""
-                        ? req.query.redirect
-                        : undefined,
-                    email:
-                      typeof req.query.email === "string" &&
-                      req.query.email.trim() !== ""
-                        ? req.query.email
-                        : undefined,
-                    name:
-                      typeof req.query.name === "string" &&
-                      req.query.name.trim() !== ""
-                        ? req.query.name
-                        : undefined,
+                    redirect: req.query.redirect,
+                    email: req.query.email,
+                    name: req.query.name,
                   },
                   {
                     addQueryPrefix: true,
@@ -859,20 +775,9 @@ export default (app: Courselore): void => {
         303,
         `${app.locals.options.baseURL}/reset-password${qs.stringify(
           {
-            redirect:
-              typeof req.query.redirect === "string" &&
-              req.query.redirect.trim() !== ""
-                ? req.query.redirect
-                : undefined,
-            email:
-              typeof req.query.email === "string" &&
-              req.query.email.trim() !== ""
-                ? req.query.email
-                : undefined,
-            name:
-              typeof req.query.name === "string" && req.query.name.trim() !== ""
-                ? req.query.name
-                : undefined,
+            redirect: req.query.redirect,
+            email: req.query.email,
+            name: req.query.name,
           },
           {
             addQueryPrefix: true,
@@ -887,19 +792,9 @@ export default (app: Courselore): void => {
       user.id
     )}${qs.stringify(
       {
-        redirect:
-          typeof req.query.redirect === "string" &&
-          req.query.redirect.trim() !== ""
-            ? req.query.redirect
-            : undefined,
-        email:
-          typeof req.query.email === "string" && req.query.email.trim() !== ""
-            ? req.query.email
-            : undefined,
-        name:
-          typeof req.query.name === "string" && req.query.name.trim() !== ""
-            ? req.query.name
-            : undefined,
+        redirect: req.query.redirect,
+        email: req.query.email,
+        name: req.query.name,
       },
       {
         addQueryPrefix: true,
@@ -961,21 +856,9 @@ export default (app: Courselore): void => {
             method="POST"
             action="${app.locals.options.baseURL}/reset-password${qs.stringify(
               {
-                redirect:
-                  typeof req.query.redirect === "string" &&
-                  req.query.redirect.trim() !== ""
-                    ? req.query.redirect
-                    : undefined,
-                email:
-                  typeof req.query.email === "string" &&
-                  req.query.email.trim() !== ""
-                    ? req.query.email
-                    : undefined,
-                name:
-                  typeof req.query.name === "string" &&
-                  req.query.name.trim() !== ""
-                    ? req.query.name
-                    : undefined,
+                redirect: req.query.redirect,
+                email: req.query.email,
+                name: req.query.name,
               },
               {
                 addQueryPrefix: true,
@@ -1016,20 +899,9 @@ export default (app: Courselore): void => {
         303,
         `${app.locals.options.baseURL}/reset-password${qs.stringify(
           {
-            redirect:
-              typeof req.query.redirect === "string" &&
-              req.query.redirect.trim() !== ""
-                ? req.query.redirect
-                : undefined,
-            email:
-              typeof req.query.email === "string" &&
-              req.query.email.trim() !== ""
-                ? req.query.email
-                : undefined,
-            name:
-              typeof req.query.name === "string" && req.query.name.trim() !== ""
-                ? req.query.name
-                : undefined,
+            redirect: req.query.redirect,
+            email: req.query.email,
+            name: req.query.name,
           },
           {
             addQueryPrefix: true,
@@ -1054,21 +926,9 @@ export default (app: Courselore): void => {
               userId
             )}${qs.stringify(
               {
-                redirect:
-                  typeof req.query.redirect === "string" &&
-                  req.query.redirect.trim() !== ""
-                    ? req.query.redirect
-                    : undefined,
-                email:
-                  typeof req.query.email === "string" &&
-                  req.query.email.trim() !== ""
-                    ? req.query.email
-                    : undefined,
-                name:
-                  typeof req.query.name === "string" &&
-                  req.query.name.trim() !== ""
-                    ? req.query.name
-                    : undefined,
+                redirect: req.query.redirect,
+                email: req.query.email,
+                name: req.query.name,
               },
               { addQueryPrefix: true }
             )}"
@@ -1145,21 +1005,9 @@ export default (app: Courselore): void => {
           303,
           `${app.locals.options.baseURL}/reset-password${qs.stringify(
             {
-              redirect:
-                typeof req.query.redirect === "string" &&
-                req.query.redirect.trim() !== ""
-                  ? req.query.redirect
-                  : undefined,
-              email:
-                typeof req.query.email === "string" &&
-                req.query.email.trim() !== ""
-                  ? req.query.email
-                  : undefined,
-              name:
-                typeof req.query.name === "string" &&
-                req.query.name.trim() !== ""
-                  ? req.query.name
-                  : undefined,
+              redirect: req.query.redirect,
+              email: req.query.email,
+              name: req.query.name,
             },
             {
               addQueryPrefix: true,
@@ -1218,21 +1066,9 @@ export default (app: Courselore): void => {
             method="POST"
             action="${app.locals.options.baseURL}/sign-up${qs.stringify(
               {
-                redirect:
-                  typeof req.query.redirect === "string" &&
-                  req.query.redirect.trim() !== ""
-                    ? req.query.redirect
-                    : undefined,
-                email:
-                  typeof req.query.email === "string" &&
-                  req.query.email.trim() !== ""
-                    ? req.query.email
-                    : undefined,
-                name:
-                  typeof req.query.name === "string" &&
-                  req.query.name.trim() !== ""
-                    ? req.query.name
-                    : undefined,
+                redirect: req.query.redirect,
+                email: req.query.email,
+                name: req.query.name,
               },
               {
                 addQueryPrefix: true,
@@ -1315,21 +1151,9 @@ export default (app: Courselore): void => {
               <a
                 href="${app.locals.options.baseURL}/sign-in${qs.stringify(
                   {
-                    redirect:
-                      typeof req.query.redirect === "string" &&
-                      req.query.redirect.trim() !== ""
-                        ? req.query.redirect
-                        : undefined,
-                    email:
-                      typeof req.query.email === "string" &&
-                      req.query.email.trim() !== ""
-                        ? req.query.email
-                        : undefined,
-                    name:
-                      typeof req.query.name === "string" &&
-                      req.query.name.trim() !== ""
-                        ? req.query.name
-                        : undefined,
+                    redirect: req.query.redirect,
+                    email: req.query.email,
+                    name: req.query.name,
                   },
                   {
                     addQueryPrefix: true,
@@ -1345,21 +1169,9 @@ export default (app: Courselore): void => {
                 href="${app.locals.options
                   .baseURL}/reset-password${qs.stringify(
                   {
-                    redirect:
-                      typeof req.query.redirect === "string" &&
-                      req.query.redirect.trim() !== ""
-                        ? req.query.redirect
-                        : undefined,
-                    email:
-                      typeof req.query.email === "string" &&
-                      req.query.email.trim() !== ""
-                        ? req.query.email
-                        : undefined,
-                    name:
-                      typeof req.query.name === "string" &&
-                      req.query.name.trim() !== ""
-                        ? req.query.name
-                        : undefined,
+                    redirect: req.query.redirect,
+                    email: req.query.email,
+                    name: req.query.name,
                   },
                   {
                     addQueryPrefix: true,
@@ -1501,21 +1313,9 @@ export default (app: Courselore): void => {
           303,
           `${app.locals.options.baseURL}/sign-in${qs.stringify(
             {
-              redirect:
-                typeof req.query.redirect === "string" &&
-                req.query.redirect.trim() !== ""
-                  ? req.query.redirect
-                  : undefined,
-              email:
-                typeof req.query.email === "string" &&
-                req.query.email.trim() !== ""
-                  ? req.query.email
-                  : undefined,
-              name:
-                typeof req.query.name === "string" &&
-                req.query.name.trim() !== ""
-                  ? req.query.name
-                  : undefined,
+              redirect: req.query.redirect,
+              email: req.query.email,
+              name: req.query.name,
             },
             {
               addQueryPrefix: true,
