@@ -4111,14 +4111,8 @@ export default (app: Courselore): void => {
                 href="${app.locals.options.baseURL}/sign-up${qs.stringify(
                   {
                     redirect: req.originalUrl,
-                    email:
-                      typeof res.locals.invitation.email === "string"
-                        ? res.locals.invitation.email
-                        : undefined,
-                    name:
-                      typeof res.locals.invitation.name === "string"
-                        ? res.locals.invitation.name
-                        : undefined,
+                    email: res.locals.invitation.email ?? undefined,
+                    name: res.locals.invitation.name ?? undefined,
                   },
                   { addQueryPrefix: true }
                 )}"
@@ -4131,14 +4125,8 @@ export default (app: Courselore): void => {
                 href="${app.locals.options.baseURL}/sign-in${qs.stringify(
                   {
                     redirect: req.originalUrl,
-                    email:
-                      typeof res.locals.invitation.email === "string"
-                        ? res.locals.invitation.email
-                        : undefined,
-                    name:
-                      typeof res.locals.invitation.name === "string"
-                        ? res.locals.invitation.name
-                        : undefined,
+                    email: res.locals.invitation.email ?? undefined,
+                    name: res.locals.invitation.name ?? undefined,
                   },
                   { addQueryPrefix: true }
                 )}"
