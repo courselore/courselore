@@ -7,7 +7,7 @@ content.ts
 conversation.ts
 message.ts
 
-invitation {
+invitation: {
   email,
   name,
 }
