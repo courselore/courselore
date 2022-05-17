@@ -3,16 +3,14 @@
 ### User Interface Improvements
 
 ```
-content
-conversation
-message
+content.ts
+conversation.ts
+message.ts
 
 invitation {
-  email
-  name
+  email,
+  name,
 }
-
-// Keep sidebar state
 
 conversations: {
   conversationsPage,
