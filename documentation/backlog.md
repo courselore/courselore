@@ -3,9 +3,6 @@
 ### User Interface Improvements
 
 ```
-conversation.ts
-message.ts
-
 invitation: {
   email,
   name,
