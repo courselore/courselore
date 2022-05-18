@@ -4651,9 +4651,7 @@ export default (app: Courselore): void => {
                                             conversations:
                                               req.query.conversations,
                                             messages: {
-                                              messageReference:
-                                                req.query.messages
-                                                  ?.messageReference,
+                                              ...req.query.messages,
                                               messagesPage: {
                                                 beforeMessageReference:
                                                   messages[0].reference,
@@ -6396,9 +6394,7 @@ export default (app: Courselore): void => {
                                             conversations:
                                               req.query.conversations,
                                             messages: {
-                                              messageReference:
-                                                req.query.messages
-                                                  ?.messageReference,
+                                              ...req.query.messages,
                                               messagesPage: {
                                                 afterMessageReference:
                                                   messages[messages.length - 1]
