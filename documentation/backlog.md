@@ -46,6 +46,9 @@ afterMessageReference -> after
     - Places to check
       - `qs.`
       - Double-check uses of `req.query`, which must check if the value is a string, and so forth
+      - Check query parameter types on request handlers
+        - They must all use `?:` for all fields
+        - No legacy fields (which we renamed)
       - Remove the terminology of “sidebar”, because it doesn’t even apply on things like phones.
       - Change `messageReference` on database (permanent links)
     - Test:
