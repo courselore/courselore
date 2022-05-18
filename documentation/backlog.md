@@ -39,6 +39,11 @@ newConversation: {
   - Query parameters allowlist instead of blocklist.
     - Places to check
       - Check query parameter types on request handlers
+        - `.get`
+        - `.post`
+        - `.patch`
+        - `.put`
+        - `.delete`
         - They must all use `?:` for all fields
         - No legacy fields (which we renamed)
       - Remove the terminology of “sidebar”, because it doesn’t even apply on things like phones.
