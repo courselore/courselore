@@ -2,6 +2,30 @@
 
 ### User Interface Improvements
 
+- Drafts:
+  - Query parameters allowlist instead of blocklist.
+    - Places to check
+      - Remove the terminology of “sidebar”, because it doesn’t even apply on things like phones.
+    - Test:
+      - Invitation pre-fill on authentication.
+      - “See conversations with this tag”
+      - `#references` in messages
+      - Sidebar filters
+      - Search
+      - Links to conversations
+      - New conversation
+      - Drafts
+  - `TODO`
+  - Mix drafts with other conversations on sidebar.
+    - Group them together?
+    - Visually distinct (grayed out).
+  - Search.
+  - Filters.
+  - Adapt `partials.conversation` to support drafts (many fields become optional).
+  - Add a button to delete a draft directly from the sidebar.
+
+---
+
 ```
 invitation: {
   email,
@@ -32,30 +56,6 @@ newConversation: {
   tagsReferences,
 }
 ```
-
----
-
-- Drafts:
-  - Query parameters allowlist instead of blocklist.
-    - Places to check
-      - Remove the terminology of “sidebar”, because it doesn’t even apply on things like phones.
-    - Test:
-      - Invitation pre-fill on authentication.
-      - “See conversations with this tag”
-      - `#references` in messages
-      - Sidebar filters
-      - Search
-      - Links to conversations
-      - New conversation
-      - Drafts
-  - `TODO`
-  - Mix drafts with other conversations on sidebar.
-    - Group them together?
-    - Visually distinct (grayed out).
-  - Search.
-  - Filters.
-  - Adapt `partials.conversation` to support drafts (many fields become optional).
-  - Add a button to delete a draft directly from the sidebar.
 
 ---
 
