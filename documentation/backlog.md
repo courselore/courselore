@@ -44,9 +44,6 @@ afterMessageReference -> after
 - Drafts:
   - Query parameters allowlist instead of blocklist.
     - Cluster query parameters together.
-      - Pre-fill new conversation.
-      - Search & filters.
-      - More stuff…
     - Places to check
       - `qs.`
       - Double-check uses of `req.query`, which must check if the value is a string, and so forth
@@ -56,7 +53,11 @@ afterMessageReference -> after
       - Invitation pre-fill on authentication.
       - “See conversations with this tag”
       - `#references` in messages
-      - Sidebar filters & search & links to conversations & new conversation & drafts & so forth
+      - Sidebar filters
+      - Search
+      - Links to conversations
+      - New conversation
+      - Drafts
   - `TODO`
   - Mix drafts with other conversations on sidebar.
     - Group them together?
