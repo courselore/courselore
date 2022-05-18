@@ -43,7 +43,6 @@ afterMessageReference -> after
 
 - Drafts:
   - Query parameters allowlist instead of blocklist.
-    - Cluster query parameters together.
     - Places to check
       - `qs.`
       - Double-check uses of `req.query`, which must check if the value is a string, and so forth
