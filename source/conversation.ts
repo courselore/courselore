@@ -2237,18 +2237,6 @@ export default (app: Courselore): void => {
               `
             )
           : undefined;
-      if (conversationDraft !== undefined)
-        req.query.newConversation = {
-          type: conversationDraft.type ?? undefined,
-          isPinned: conversationDraft.isPinned ?? undefined,
-          isStaffOnly: conversationDraft.isStaffOnly ?? undefined,
-          title: conversationDraft.title ?? undefined,
-          content: conversationDraft.content ?? undefined,
-          tagsReferences:
-            typeof conversationDraft.tagsReferences === "string"
-              ? JSON.parse(conversationDraft.tagsReferences)
-              : undefined,
-        };
 
       res.send(
         (res.locals.conversationsCount === 0
@@ -2311,8 +2299,10 @@ export default (app: Courselore): void => {
                           name="type"
                           value="${conversationType}"
                           required
-                          $${req.query.newConversation?.type ===
-                          conversationType
+                          $${conversationDraft?.type === conversationType ||
+                          (conversationDraft === undefined &&
+                            req.query.newConversation?.type ===
+                              conversationType)
                             ? html`checked`
                             : html``}
                           class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -2390,7 +2380,9 @@ export default (app: Courselore): void => {
                             <input
                               type="checkbox"
                               name="isPinned"
-                              $${req.query.newConversation?.isPinned === "true"
+                              $${conversationDraft?.isPinned === "true" ||
+                              (conversationDraft === undefined &&
+                                req.query.newConversation?.isPinned === "true")
                                 ? html`checked`
                                 : html``}
                               class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -2442,7 +2434,9 @@ export default (app: Courselore): void => {
                       <input
                         type="checkbox"
                         name="isStaffOnly"
-                        $${req.query.newConversation?.isStaffOnly === "true"
+                        $${conversationDraft?.isStaffOnly === "true" ||
+                        (conversationDraft === undefined &&
+                          req.query.newConversation?.isStaffOnly === "true")
                           ? html`checked`
                           : html``}
                         class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -2490,8 +2484,12 @@ export default (app: Courselore): void => {
                   type="text"
                   name="title"
                   required
-                  $${typeof req.query.newConversation?.title === "string" &&
-                  req.query.newConversation.title.trim() !== ""
+                  $${typeof conversationDraft?.title === "string" &&
+                  conversationDraft.title.trim() !== ""
+                    ? html`value="${conversationDraft.title}"`
+                    : conversationDraft === undefined &&
+                      typeof req.query.newConversation?.title === "string" &&
+                      req.query.newConversation.title.trim() !== ""
                     ? html`value="${req.query.newConversation.title}"`
                     : html``}
                   autocomplete="off"
@@ -2504,8 +2502,12 @@ export default (app: Courselore): void => {
                 req,
                 res,
                 contentSource:
-                  typeof req.query.newConversation?.content === "string" &&
-                  req.query.newConversation.content.trim() !== ""
+                  typeof conversationDraft?.content === "string" &&
+                  conversationDraft.content.trim() !== ""
+                    ? conversationDraft.content
+                    : conversationDraft === undefined &&
+                      typeof req.query.newConversation?.content === "string" &&
+                      req.query.newConversation.content.trim() !== ""
                     ? req.query.newConversation.content
                     : undefined,
               })}
@@ -2590,13 +2592,19 @@ export default (app: Courselore): void => {
                                       type="checkbox"
                                       name="tagsReferences[]"
                                       value="${tag.reference}"
-                                      $${Array.isArray(
-                                        req.query.newConversation
-                                          ?.tagsReferences
-                                      ) &&
-                                      req.query.newConversation!.tagsReferences.includes(
-                                        tag.reference
-                                      )
+                                      $${(typeof conversationDraft?.tagsReferences ===
+                                        "string" &&
+                                        JSON.parse(
+                                          conversationDraft.tagsReferences
+                                        ).includes(tag.reference)) ||
+                                      (conversationDraft === undefined &&
+                                        Array.isArray(
+                                          req.query.newConversation
+                                            ?.tagsReferences
+                                        ) &&
+                                        req.query.newConversation!.tagsReferences.includes(
+                                          tag.reference
+                                        ))
                                         ? html`checked`
                                         : html``}
                                       required
