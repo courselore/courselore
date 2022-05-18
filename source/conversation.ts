@@ -68,13 +68,7 @@ export type ConversationLayout = ({
           tagsReferences?: string[];
         };
       };
-      messages?: {
-        messageReference?: string;
-        messagesPage?: {
-          beforeMessageReference?: string;
-          afterMessageReference?: string;
-        };
-      };
+      messages?: object;
       newConversation?: object;
     },
     IsEnrolledInCourseMiddlewareLocals &
