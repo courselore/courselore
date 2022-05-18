@@ -38,7 +38,6 @@ newConversation: {
 - Drafts:
   - Query parameters allowlist instead of blocklist.
     - Places to check
-      - Change `messageReference` on database (permanent links)
       - Remove the terminology of “sidebar”, because it doesn’t even apply on things like phones.
     - Test:
       - Invitation pre-fill on authentication.

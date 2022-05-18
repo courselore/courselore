@@ -442,7 +442,75 @@ export default async (app: Courselore): Promise<void> => {
         "tagsReferences" TEXT NULL,
         UNIQUE ("course", "reference")
       );
-    `
+    `,
+    () => {
+      const changeMessageReferencePermanentLinkQueryParameter = (
+        text: string
+      ): string =>
+        text.replace(
+          new RegExp(
+            `(?<=${escapeStringRegexp(
+              app.locals.options.baseURL
+            )}/courses/\\d+/conversations/\\d+)\\?messageReference=(?=\\d+)`,
+            "gi"
+          ),
+          "?messages%5BmessageReference%5D="
+        );
+      for (const user of app.locals.database.all<{
+        id: number;
+        biographySource: string | null;
+        biographyPreprocessed: string | null;
+      }>(
+        sql`
+          SELECT "id", "biographySource", "biographyPreprocessed"
+          FROM "users"
+          ORDER BY "id"
+        `
+      ))
+        if (
+          user.biographySource !== null &&
+          user.biographyPreprocessed !== null
+        )
+          app.locals.database.run(
+            sql`
+              UPDATE "users"
+              SET "biographySource" = ${changeMessageReferencePermanentLinkQueryParameter(
+                user.biographySource
+              )},
+                  "biographyPreprocessed" = ${changeMessageReferencePermanentLinkQueryParameter(
+                    user.biographyPreprocessed
+                  )}
+              WHERE "id" = ${user.id}
+            `
+          );
+      for (const message of app.locals.database.all<{
+        id: number;
+        contentSource: string;
+        contentPreprocessed: string;
+        contentSearch: string;
+      }>(
+        sql`
+          SELECT "id", "contentSource", "contentPreprocessed", "contentSearch"
+          FROM "messages"
+          ORDER BY "id"
+        `
+      ))
+        app.locals.database.run(
+          sql`
+            UPDATE "messages"
+            SET "contentSource" = ${changeMessageReferencePermanentLinkQueryParameter(
+              message.contentSource
+            )},
+                "contentPreprocessed" = ${changeMessageReferencePermanentLinkQueryParameter(
+                  message.contentPreprocessed
+                )},
+                "contentSearch" = ${changeMessageReferencePermanentLinkQueryParameter(
+                  message.contentSearch
+                )}
+            WHERE "id" = ${message.id}
+          `
+        );
+    }
   );
   app.once("close", () => {
     app.locals.database.close();

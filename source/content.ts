@@ -277,7 +277,7 @@ export default async (app: Courselore): Promise<void> => {
               new RegExp(
                 `^${escapeStringRegexp(
                   app.locals.options.baseURL
-                )}/courses/(\\d+)/conversations/(\\d+)(?:\\?messageReference=(\\d+))?$`
+                )}/courses/(\\d+)/conversations/(\\d+)(?:\\?messages%5BmessageReference%5D=(\\d+))?$`
               )
             );
             if (match === null) continue;
@@ -487,7 +487,7 @@ export default async (app: Courselore): Promise<void> => {
               new RegExp(
                 `^${escapeStringRegexp(
                   app.locals.options.baseURL
-                )}/courses/(\\d+)/conversations/(\\d+)(?:\\?messageReference=(\\d+))?$`
+                )}/courses/(\\d+)/conversations/(\\d+)(?:\\?messages%5BmessageReference%5D=(\\d+))?$`
               )
             );
             if (hrefMatch === null) continue;
