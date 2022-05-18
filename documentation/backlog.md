@@ -31,12 +31,6 @@ newConversation: {
   content,
   tagsReferences,
 }
-
-conversationsPage -> page
-messageReference -> reference
-messagesPage -> page
-beforeMessageReference -> before
-afterMessageReference -> after
 ```
 
 ---
