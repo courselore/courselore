@@ -48,7 +48,7 @@ export type ConversationLayout = ({
   req,
   res,
   head,
-  conversationLayoutSidebarOnSmallScreen,
+  conversationsOnSmallScreen,
   mainIsAScrollingPane,
   body,
 }: {
@@ -80,7 +80,7 @@ export type ConversationLayout = ({
       Partial<IsConversationAccessibleMiddlewareLocals>
   >;
   head: HTML;
-  conversationLayoutSidebarOnSmallScreen?: boolean;
+  conversationsOnSmallScreen?: boolean;
   mainIsAScrollingPane?: boolean;
   body: HTML;
 }) => HTML;
@@ -222,7 +222,7 @@ export default (app: Courselore): void => {
     req,
     res,
     head,
-    conversationLayoutSidebarOnSmallScreen = false,
+    conversationsOnSmallScreen = false,
     mainIsAScrollingPane = false,
     body,
   }) => {
@@ -603,7 +603,7 @@ export default (app: Courselore): void => {
       res,
       head,
       extraHeaders: html`
-        $${conversationLayoutSidebarOnSmallScreen
+        $${conversationsOnSmallScreen
           ? html``
           : html`
               <div
@@ -642,7 +642,8 @@ export default (app: Courselore): void => {
           `)}"
         >
           <div
-            key="layout--conversation--sidebar--/${res.locals.course.reference}"
+            key="layout--conversation--conversations--/${res.locals.course
+              .reference}"
             css="${res.locals.localCSS(css`
               background-color: var(--color--gray--medium--100);
               @media (prefers-color-scheme: dark) {
@@ -651,7 +652,7 @@ export default (app: Courselore): void => {
               overflow: auto;
               @media (max-width: 899px) {
                 flex: 1;
-                ${conversationLayoutSidebarOnSmallScreen
+                ${conversationsOnSmallScreen
                   ? css``
                   : css`
                       display: none;
@@ -1505,7 +1506,7 @@ export default (app: Courselore): void => {
             css="${res.locals.localCSS(css`
               overflow: auto;
               flex: 1;
-              ${conversationLayoutSidebarOnSmallScreen
+              ${conversationsOnSmallScreen
                 ? css`
                     @media (max-width: 899px) {
                       display: none;

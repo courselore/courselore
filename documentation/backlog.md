@@ -4,8 +4,6 @@
 
 - Drafts:
   - Query parameters allowlist instead of blocklist.
-    - Places to check
-      - Remove the terminology of “sidebar”, because it doesn’t even apply on things like phones.
     - Test:
       - Invitation pre-fill on authentication.
       - “See conversations with this tag”
