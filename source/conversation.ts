@@ -1281,12 +1281,8 @@ export default (app: Courselore): void => {
                               action="${app.locals.options
                                 .baseURL}/courses/${res.locals.course
                                 .reference}/conversations/mark-all-conversations-as-read${qs.stringify(
-                                {
-                                  redirect: req.originalUrl,
-                                },
-                                {
-                                  addQueryPrefix: true,
-                                }
+                                { redirect: req.originalUrl },
+                                { addQueryPrefix: true }
                               )}"
                               css="${res.locals.localCSS(css`
                                 display: flex;
@@ -1329,9 +1325,7 @@ export default (app: Courselore): void => {
                                     messages: req.query.messages,
                                     newConversation: req.query.newConversation,
                                   },
-                                  {
-                                    addQueryPrefix: true,
-                                  }
+                                  { addQueryPrefix: true }
                                 )}"
                                 class="button button--transparent"
                               >
