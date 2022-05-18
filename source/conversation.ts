@@ -714,7 +714,7 @@ export default (app: Courselore): void => {
                   action="${app.locals.options
                     .baseURL}${req.path}${qs.stringify(
                     {
-                      conversations: req.query.conversations,
+                      messages: req.query.messages,
                       newConversation: req.query.newConversation,
                     },
                     {
@@ -804,8 +804,8 @@ export default (app: Courselore): void => {
                         type="checkbox"
                         class="visually-hidden input--radio-or-checkbox--multilabel"
                         $${typeof req.query.conversations?.filters === "object"
-                          ? html``
-                          : html`checked`}
+                          ? html`checked`
+                          : html``}
                         onload="${javascript`
                           this.onchange = () => {
                             const filters = this.closest("form").querySelector(".filters");
@@ -828,8 +828,8 @@ export default (app: Courselore): void => {
 
                   <div
                     $${typeof req.query.conversations?.filters === "object"
-                      ? html`hidden`
-                      : html``}
+                      ? html``
+                      : html`hidden`}
                     class="filters"
                     css="${res.locals.localCSS(css`
                       display: flex;

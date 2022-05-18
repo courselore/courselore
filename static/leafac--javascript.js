@@ -102,12 +102,15 @@ const leafac = {
       if (!action.startsWith(baseURL)) return;
       event.preventDefault();
       if (event.submitter !== undefined) event.submitter.disabled = true;
-      navigate({
-        request: ["GET", "HEAD"].includes(method)
-          ? new Request(new URL(`?${body}`, action), { method })
-          : new Request(action, { method, body }),
-        event,
-      });
+      const request = ["GET", "HEAD"].includes(method)
+        ? (() => {
+            const actionURL = new URL(action);
+            for (const [name, value] of body)
+              actionURL.searchParams.append(name, value);
+            return new Request(actionURL.href, { method });
+          })()
+        : new Request(action, { method, body });
+      navigate({ request, event });
     };
 
     window.onpopstate = async (event) => {
