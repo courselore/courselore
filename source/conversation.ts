@@ -57,7 +57,7 @@ export type ConversationLayout = ({
     HTML,
     {},
     {
-      conversations: {
+      conversations?: {
         conversationsPage?: string;
         search?: string;
         filters?: {
@@ -68,8 +68,14 @@ export type ConversationLayout = ({
           tagsReferences?: string[];
         };
       };
-      messages: object;
-      newConversation: object;
+      messages?: {
+        messageReference?: string;
+        messagesPage?: {
+          beforeMessageReference?: string;
+          afterMessageReference?: string;
+        };
+      };
+      newConversation?: object;
     },
     IsEnrolledInCourseMiddlewareLocals &
       Partial<IsConversationAccessibleMiddlewareLocals>
@@ -227,8 +233,9 @@ export default (app: Courselore): void => {
     body,
   }) => {
     const search =
-      typeof req.query.search === "string" && req.query.search.trim() !== ""
-        ? app.locals.helpers.sanitizeSearch(req.query.search)
+      typeof req.query.conversations?.search === "string" &&
+      req.query.conversations.search.trim() !== ""
+        ? app.locals.helpers.sanitizeSearch(req.query.conversations.search)
         : undefined;
 
     const filters: {
@@ -238,11 +245,11 @@ export default (app: Courselore): void => {
       isStaffOnly?: "true" | "false";
       tagsReferences?: string[];
     } = {};
-    if (typeof req.query.filters === "object") {
-      if (Array.isArray(req.query.filters.types)) {
+    if (typeof req.query.conversations?.filters === "object") {
+      if (Array.isArray(req.query.conversations.filters.types)) {
         const types = [
           ...new Set(
-            req.query.filters.types.filter((type) =>
+            req.query.conversations.filters.types.filter((type) =>
               conversationTypes.includes(type)
             )
           ),
@@ -251,24 +258,24 @@ export default (app: Courselore): void => {
       }
       if (
         filters.types?.includes("question") &&
-        typeof req.query.filters.isResolved === "string" &&
-        ["true", "false"].includes(req.query.filters.isResolved)
+        typeof req.query.conversations.filters.isResolved === "string" &&
+        ["true", "false"].includes(req.query.conversations.filters.isResolved)
       )
-        filters.isResolved = req.query.filters.isResolved;
+        filters.isResolved = req.query.conversations.filters.isResolved;
       if (
-        typeof req.query.filters.isPinned === "string" &&
-        ["true", "false"].includes(req.query.filters.isPinned)
+        typeof req.query.conversations.filters.isPinned === "string" &&
+        ["true", "false"].includes(req.query.conversations.filters.isPinned)
       )
-        filters.isPinned = req.query.filters.isPinned;
+        filters.isPinned = req.query.conversations.filters.isPinned;
       if (
-        typeof req.query.filters.isStaffOnly === "string" &&
-        ["true", "false"].includes(req.query.filters.isStaffOnly)
+        typeof req.query.conversations.filters.isStaffOnly === "string" &&
+        ["true", "false"].includes(req.query.conversations.filters.isStaffOnly)
       )
-        filters.isStaffOnly = req.query.filters.isStaffOnly;
-      if (Array.isArray(req.query.filters.tagsReferences)) {
+        filters.isStaffOnly = req.query.conversations.filters.isStaffOnly;
+      if (Array.isArray(req.query.conversations.filters.tagsReferences)) {
         const tagsReferences = [
           ...new Set(
-            req.query.filters.tagsReferences.filter(
+            req.query.conversations.filters.tagsReferences.filter(
               (tagReference) =>
                 res.locals.tags.find(
                   (tag) => tagReference === tag.reference
@@ -282,9 +289,9 @@ export default (app: Courselore): void => {
 
     const conversationsPageSize = 999999; // TODO: 15
     const conversationsPage =
-      typeof req.query.conversationsPage === "string" &&
-      req.query.conversationsPage.match(/^[1-9][0-9]*$/)
-        ? Number(req.query.conversationsPage)
+      typeof req.query.conversations?.conversationsPage === "string" &&
+      req.query.conversations.conversationsPage.match(/^[1-9][0-9]*$/)
+        ? Number(req.query.conversations.conversationsPage)
         : 1;
 
     const conversationsWithSearchResults = app.locals.database
@@ -710,7 +717,16 @@ export default (app: Courselore): void => {
 
                 <form
                   method="GET"
-                  action="${app.locals.options.baseURL}${req.path}"
+                  action="${app.locals.options
+                    .baseURL}${req.path}${qs.stringify(
+                    {
+                      conversations: req.query.conversations,
+                      newConversation: req.query.newConversation,
+                    },
+                    {
+                      addQueryPrefix: true,
+                    }
+                  )}"
                   novalidate
                   css="${res.locals.localCSS(css`
                     font-size: var(--font-size--xs);
@@ -723,110 +739,6 @@ export default (app: Courselore): void => {
                     this.isModified = false;
                   `}"
                 >
-                  $${typeof req.query.messageReference === "string" &&
-                  req.query.messageReference.trim() !== ""
-                    ? html`
-                        <input
-                          type="hidden"
-                          name="messageReference"
-                          value="${req.query.messageReference}"
-                        />
-                      `
-                    : html``}
-                  $${typeof req.query.beforeMessageReference === "string" &&
-                  req.query.beforeMessageReference.trim() !== ""
-                    ? html`
-                        <input
-                          type="hidden"
-                          name="beforeMessageReference"
-                          value="${req.query.beforeMessageReference}"
-                        />
-                      `
-                    : html``}
-                  $${typeof req.query.afterMessageReference === "string" &&
-                  req.query.afterMessageReference.trim() !== ""
-                    ? html`
-                        <input
-                          type="hidden"
-                          name="afterMessageReference"
-                          value="${req.query.afterMessageReference}"
-                        />
-                      `
-                    : html``}
-                  $${typeof req.query.conversationDraftReference === "string" &&
-                  req.query.conversationDraftReference.trim() !== ""
-                    ? html`
-                        <input
-                          type="hidden"
-                          name="conversationDraftReference"
-                          value="${req.query.conversationDraftReference}"
-                        />
-                      `
-                    : html``}
-                  $${typeof req.query.type === "string" &&
-                  req.query.type.trim() !== ""
-                    ? html`
-                        <input
-                          type="hidden"
-                          name="type"
-                          value="${req.query.type}"
-                        />
-                      `
-                    : html``}
-                  $${req.query.isPinned === "true"
-                    ? html`
-                        <input
-                          type="hidden"
-                          name="isPinned"
-                          value="${req.query.isPinned}"
-                        />
-                      `
-                    : html``}
-                  $${req.query.isStaffOnly === "true"
-                    ? html`
-                        <input
-                          type="hidden"
-                          name="isStaffOnly"
-                          value="${req.query.isStaffOnly}"
-                        />
-                      `
-                    : html``}
-                  $${typeof req.query.title === "string" &&
-                  req.query.title.trim() !== ""
-                    ? html`
-                        <input
-                          type="hidden"
-                          name="title"
-                          value="${req.query.title}"
-                        />
-                      `
-                    : html``}
-                  $${typeof req.query.content === "string" &&
-                  req.query.content.trim() !== ""
-                    ? html`
-                        <input
-                          type="hidden"
-                          name="content"
-                          value="${req.query.content}"
-                        />
-                      `
-                    : html``}
-                  $${Array.isArray(req.query.tagsReferences) &&
-                  req.query.tagsReferences.every(
-                    (tagReference) =>
-                      typeof tagReference === "string" &&
-                      tagReference.trim() !== ""
-                  )
-                    ? req.query.tagsReferences.map(
-                        (tagReference) => html`
-                          <input
-                            type="hidden"
-                            name="tagsReferences[]"
-                            value="${tagReference}"
-                          />
-                        `
-                      )
-                    : html``}
                   <div
                     css="${res.locals.localCSS(css`
                       display: flex;
@@ -837,7 +749,7 @@ export default (app: Courselore): void => {
                     <input
                       type="text"
                       name="search"
-                      value="${req.query.search ?? ""}"
+                      value="${req.query.conversations.search ?? ""}"
                       placeholder="Search…"
                       class="input--text"
                     />
@@ -852,14 +764,14 @@ export default (app: Courselore): void => {
                     >
                       <i class="bi bi-search"></i>
                     </button>
-                    $${req.query.search !== undefined
+                    $${req.query.conversations.search !== undefined
                       ? html`
                           <a
                             href="${app.locals.options
                               .baseURL}${req.path}${qs.stringify(
                               {
                                 conversations: {
-                                  filters: req.query.filters,
+                                  filters: req.query.conversations.filters,
                                 },
                                 messages: req.query.messages,
                                 newConversation: req.query.newConversation,
@@ -893,7 +805,7 @@ export default (app: Courselore): void => {
                       <input
                         type="checkbox"
                         class="visually-hidden input--radio-or-checkbox--multilabel"
-                        $${req.query.filters === undefined
+                        $${req.query.conversations.filters === undefined
                           ? html``
                           : html`checked`}
                         onload="${javascript`
@@ -917,7 +829,9 @@ export default (app: Courselore): void => {
                   </div>
 
                   <div
-                    $${req.query.filters === undefined ? html`hidden` : html``}
+                    $${req.query.conversations.filters === undefined
+                      ? html`hidden`
+                      : html``}
                     class="filters"
                     css="${res.locals.localCSS(css`
                       display: flex;
@@ -944,7 +858,7 @@ export default (app: Courselore): void => {
                                 type="checkbox"
                                 name="filters[types][]"
                                 value="${conversationType}"
-                                $${req.query.filters?.types?.includes(
+                                $${req.query.conversations.filters?.types?.includes(
                                   conversationType
                                 )
                                   ? html`checked`
@@ -986,7 +900,9 @@ export default (app: Courselore): void => {
 
                     <div
                       class="filters--resolved label"
-                      $${req.query.filters?.types?.includes("question")
+                      $${req.query.conversations.filters?.types?.includes(
+                        "question"
+                      )
                         ? html``
                         : html`hidden`}
                     >
@@ -1006,7 +922,8 @@ export default (app: Courselore): void => {
                             type="checkbox"
                             name="filters[isResolved]"
                             value="false"
-                            $${req.query.filters?.isResolved === "false"
+                            $${req.query.conversations.filters?.isResolved ===
+                            "false"
                               ? html`checked`
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1035,7 +952,8 @@ export default (app: Courselore): void => {
                             type="checkbox"
                             name="filters[isResolved]"
                             value="true"
-                            $${req.query.filters?.isResolved === "true"
+                            $${req.query.conversations.filters?.isResolved ===
+                            "true"
                               ? html`checked`
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1091,7 +1009,8 @@ export default (app: Courselore): void => {
                             type="checkbox"
                             name="filters[isPinned]"
                             value="true"
-                            $${req.query.filters?.isPinned === "true"
+                            $${req.query.conversations.filters?.isPinned ===
+                            "true"
                               ? html`checked`
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1117,7 +1036,8 @@ export default (app: Courselore): void => {
                             type="checkbox"
                             name="filters[isPinned]"
                             value="false"
-                            $${req.query.filters?.isPinned === "false"
+                            $${req.query.conversations.filters?.isPinned ===
+                            "false"
                               ? html`checked`
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1156,7 +1076,8 @@ export default (app: Courselore): void => {
                             type="checkbox"
                             name="filters[isStaffOnly]"
                             value="false"
-                            $${req.query.filters?.isStaffOnly === "false"
+                            $${req.query.conversations.filters?.isStaffOnly ===
+                            "false"
                               ? html`checked`
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1182,7 +1103,8 @@ export default (app: Courselore): void => {
                             type="checkbox"
                             name="filters[isStaffOnly]"
                             value="true"
-                            $${req.query.filters?.isStaffOnly === "true"
+                            $${req.query.conversations.filters?.isStaffOnly ===
+                            "true"
                               ? html`checked`
                               : html``}
                             class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -1247,7 +1169,7 @@ export default (app: Courselore): void => {
                                         type="checkbox"
                                         name="filters[tagsReferences][]"
                                         value="${tag.reference}"
-                                        $${req.query.filters?.tagsReferences?.includes(
+                                        $${req.query.conversations.filters?.tagsReferences?.includes(
                                           tag.reference
                                         )
                                           ? html`checked`
@@ -1302,14 +1224,14 @@ export default (app: Courselore): void => {
                         <i class="bi bi-funnel"></i>
                         Apply Filters
                       </button>
-                      $${req.query.filters !== undefined
+                      $${req.query.conversations.filters !== undefined
                         ? html`
                             <a
                               href="${app.locals.options
                                 .baseURL}${req.path}${qs.stringify(
                                 {
                                   conversations: {
-                                    search: req.query.search,
+                                    search: req.query.conversations.search,
                                   },
                                   messages: req.query.messages,
                                   newConversation: req.query.newConversation,
@@ -1347,8 +1269,8 @@ export default (app: Courselore): void => {
                       </div>
                     `
                   : html`
-                      $${req.query.search === undefined &&
-                      req.query.filters === undefined &&
+                      $${req.query.conversations.search === undefined &&
+                      req.query.conversations.filters === undefined &&
                       conversationsWithSearchResults.some(
                         ({ conversation }) =>
                           conversation.readingsCount <
@@ -2293,8 +2215,9 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.liveUpdates,
     (req, res) => {
       const conversationDraft =
-        typeof req.query.conversationDraftReference === "string" &&
-        req.query.conversationDraftReference.match(/^[0-9]+$/)
+        typeof req.query.newConversation.conversationDraftReference ===
+          "string" &&
+        req.query.newConversation.conversationDraftReference.match(/^[0-9]+$/)
           ? app.locals.database.get<{
               createdAt: string;
               updatedAt: string | null;
@@ -2318,7 +2241,7 @@ export default (app: Courselore): void => {
                        "tagsReferences"
                 FROM "conversationDrafts"
                 WHERE "course" = ${res.locals.course.id} AND
-                      "reference" = ${req.query.conversationDraftReference} AND
+                      "reference" = ${req.query.newConversation.conversationDraftReference} AND
                       "authorEnrollment" = ${res.locals.enrollment.id}
               `
             )
@@ -3381,26 +3304,28 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.liveUpdates,
     (req, res) => {
       const beforeMessage =
-        typeof req.query.beforeMessageReference === "string"
+        typeof req.query.messages.messagesPage.beforeMessageReference ===
+        "string"
           ? app.locals.database.get<{ id: number }>(
               sql`
                 SELECT "id"
                 FROM "messages"
                 WHERE "conversation" = ${res.locals.conversation.id} AND
-                      "reference" = ${req.query.beforeMessageReference}
+                      "reference" = ${req.query.messages.messagesPage.beforeMessageReference}
                 LIMIT 1
               `
             )
           : undefined;
       const afterMessage =
         beforeMessage === undefined &&
-        typeof req.query.afterMessageReference === "string"
+        typeof req.query.messages.messagesPage.afterMessageReference ===
+          "string"
           ? app.locals.database.get<{ id: number }>(
               sql`
                 SELECT "id"
                 FROM "messages"
                 WHERE "conversation" = ${res.locals.conversation.id} AND
-                      "reference" = ${req.query.afterMessageReference}
+                      "reference" = ${req.query.messages.messagesPage.afterMessageReference}
                 LIMIT 1
               `
             )
@@ -3545,7 +3470,7 @@ export default (app: Courselore): void => {
                           >
                             $${app.locals.helpers.highlightSearchResult(
                               html`${res.locals.conversation.title}`,
-                              req.query.search
+                              req.query.conversations.search
                             )}
                           </span>
                           <i class="bi bi-chevron-bar-expand"></i>
@@ -4194,7 +4119,7 @@ export default (app: Courselore): void => {
                     >
                       $${app.locals.helpers.highlightSearchResult(
                         html`${res.locals.conversation.title}`,
-                        req.query.search
+                        req.query.conversations.search
                       )}
                     </h2>
 
@@ -4610,9 +4535,10 @@ export default (app: Courselore): void => {
                       window.setTimeout(() => {
                         if (event?.detail?.previousLocation?.pathname !== window.location.pathname) {
                           ${
-                            typeof req.query.messageReference === "string"
+                            typeof req.query.messages.messageReference ===
+                            "string"
                               ? javascript`
-                                  const element = this.querySelector('[key="message--${req.query.messageReference}"]');
+                                  const element = this.querySelector('[key="message--${req.query.messages.messageReference}"]');
                                   if (element === null) return;
                                   element.scrollIntoView();
                                   element.querySelector(".message--highlight").style.animation = "message--highlight 2s var(--transition-timing-function--in-out)";
@@ -5948,7 +5874,9 @@ export default (app: Courselore): void => {
                                                             html`${message
                                                               .authorEnrollment
                                                               .user.name}`,
-                                                            req.query.search
+                                                            req.query
+                                                              .conversations
+                                                              .search
                                                           ),
                                                   })}
                                                 </div>
@@ -6116,7 +6044,9 @@ export default (app: Courselore): void => {
                                                 content:
                                                   message.contentPreprocessed,
                                                 decorate: true,
-                                                search: req.query.search,
+                                                search:
+                                                  req.query.conversations
+                                                    .search,
                                               }).processed}
                                             </div>
                                           </div>
