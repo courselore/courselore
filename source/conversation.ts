@@ -748,7 +748,7 @@ export default (app: Courselore): void => {
                   >
                     <input
                       type="text"
-                      name="search"
+                      name="conversations[search]"
                       value="${typeof req.query.conversations?.search ===
                         "string" && req.query.conversations.search.trim() !== ""
                         ? req.query.conversations.search
@@ -860,7 +860,7 @@ export default (app: Courselore): void => {
                             >
                               <input
                                 type="checkbox"
-                                name="filters[types][]"
+                                name="conversations[filters][types][]"
                                 value="${conversationType}"
                                 $${req.query.conversations?.filters?.types?.includes(
                                   conversationType
@@ -924,7 +924,7 @@ export default (app: Courselore): void => {
                         >
                           <input
                             type="checkbox"
-                            name="filters[isResolved]"
+                            name="conversations[filters][isResolved]"
                             value="false"
                             $${req.query.conversations?.filters?.isResolved ===
                             "false"
@@ -954,7 +954,7 @@ export default (app: Courselore): void => {
                         >
                           <input
                             type="checkbox"
-                            name="filters[isResolved]"
+                            name="conversations[filters][isResolved]"
                             value="true"
                             $${req.query.conversations?.filters?.isResolved ===
                             "true"
@@ -1011,7 +1011,7 @@ export default (app: Courselore): void => {
                         >
                           <input
                             type="checkbox"
-                            name="filters[isPinned]"
+                            name="conversations[filters][isPinned]"
                             value="true"
                             $${req.query.conversations?.filters?.isPinned ===
                             "true"
@@ -1020,7 +1020,7 @@ export default (app: Courselore): void => {
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onload="${javascript`
                               this.onchange = () => {
-                                if (this.checked) this.closest("form").querySelector('[name="filters[isPinned]"][value="false"]').checked = false;
+                                if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isPinned]"][value="false"]').checked = false;
                               };
                             `}"
                           />
@@ -1038,7 +1038,7 @@ export default (app: Courselore): void => {
                         >
                           <input
                             type="checkbox"
-                            name="filters[isPinned]"
+                            name="conversations[filters][isPinned]"
                             value="false"
                             $${req.query.conversations?.filters?.isPinned ===
                             "false"
@@ -1047,7 +1047,7 @@ export default (app: Courselore): void => {
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onload="${javascript`
                               this.onchange = () => {
-                                if (this.checked) this.closest("form").querySelector('[name="filters[isPinned]"][value="true"]').checked = false;
+                                if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isPinned]"][value="true"]').checked = false;
                               };
                             `}"
                           />
@@ -1078,7 +1078,7 @@ export default (app: Courselore): void => {
                         >
                           <input
                             type="checkbox"
-                            name="filters[isStaffOnly]"
+                            name="conversations[filters][isStaffOnly]"
                             value="false"
                             $${req.query.conversations?.filters?.isStaffOnly ===
                             "false"
@@ -1087,7 +1087,7 @@ export default (app: Courselore): void => {
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onload="${javascript`
                               this.onchange = () => {
-                                if (this.checked) this.closest("form").querySelector('[name="filters[isStaffOnly]"][value="true"]').checked = false;
+                                if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isStaffOnly]"][value="true"]').checked = false;
                               };
                             `}"
                           />
@@ -1105,7 +1105,7 @@ export default (app: Courselore): void => {
                         >
                           <input
                             type="checkbox"
-                            name="filters[isStaffOnly]"
+                            name="conversations[filters][isStaffOnly]"
                             value="true"
                             $${req.query.conversations?.filters?.isStaffOnly ===
                             "true"
@@ -1114,7 +1114,7 @@ export default (app: Courselore): void => {
                             class="visually-hidden input--radio-or-checkbox--multilabel"
                             onload="${javascript`
                               this.onchange = () => {
-                                if (this.checked) this.closest("form").querySelector('[name="filters[isStaffOnly]"][value="false"]').checked = false;
+                                if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isStaffOnly]"][value="false"]').checked = false;
                               };
                             `}"
                           />
@@ -1171,7 +1171,7 @@ export default (app: Courselore): void => {
                                     >
                                       <input
                                         type="checkbox"
-                                        name="filters[tagsReferences][]"
+                                        name="conversations[filters][tagsReferences][]"
                                         value="${tag.reference}"
                                         $${req.query.conversations?.filters?.tagsReferences?.includes(
                                           tag.reference
