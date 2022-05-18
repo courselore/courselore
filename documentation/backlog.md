@@ -59,6 +59,12 @@ newConversation: {
 
 ---
 
+- Deployment checklist:
+  - Backup
+  - Check message permanent link migration.
+
+---
+
 - Have `@mentions` and `#references` widget go away when you type a space right after the trigger (`# `).
 
 ---
