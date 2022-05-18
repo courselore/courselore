@@ -38,7 +38,6 @@ newConversation: {
 - Drafts:
   - Query parameters allowlist instead of blocklist.
     - Places to check
-      - Double-check uses of `req.query`, which must check if the value is a string, and so forth
       - Check query parameter types on request handlers
         - They must all use `?:` for all fields
         - No legacy fields (which we renamed)
