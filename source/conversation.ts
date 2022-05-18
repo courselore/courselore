@@ -57,15 +57,19 @@ export type ConversationLayout = ({
     HTML,
     {},
     {
-      search?: string;
-      filters?: {
-        types?: ConversationType[];
-        isResolved?: "true" | "false";
-        isPinned?: "true" | "false";
-        isStaffOnly?: "true" | "false";
-        tagsReferences?: string[];
+      conversations: {
+        conversationsPage?: string;
+        search?: string;
+        filters?: {
+          types?: ConversationType[];
+          isResolved?: "true" | "false";
+          isPinned?: "true" | "false";
+          isStaffOnly?: "true" | "false";
+          tagsReferences?: string[];
+        };
       };
-      conversationsPage?: string;
+      messages: object;
+      newConversation: object;
       [key: string]: unknown;
     },
     IsEnrolledInCourseMiddlewareLocals &
@@ -617,12 +621,7 @@ export default (app: Courselore): void => {
                 >
                   <a
                     href="${app.locals.options.baseURL}/courses/${res.locals
-                      .course.reference}${qs.stringify(
-                      { conversations: req.query.conversations },
-                      {
-                        addQueryPrefix: true,
-                      }
-                    )}"
+                      .course.reference}"
                     class="button button--tight button--tight--inline button--transparent"
                   >
                     <i class="bi bi-arrow-left"></i>
@@ -1366,9 +1365,6 @@ export default (app: Courselore): void => {
                                 .reference}/conversations/mark-all-conversations-as-read${qs.stringify(
                                 {
                                   redirect: req.originalUrl,
-                                  conversations: req.query.conversations,
-                                  messages: req.query.messages,
-                                  newConversation: req.query.newConversation,
                                 },
                                 {
                                   addQueryPrefix: true,
@@ -1568,23 +1564,12 @@ export default (app: Courselore): void => {
                               <a
                                 href="${qs.stringify(
                                   {
-                                    conversationsPage: conversationsPage + 1,
-                                    search: req.query.search,
-                                    filters: req.query.filters,
-                                    messageReference:
-                                      req.query.messageReference,
-                                    beforeMessageReference:
-                                      req.query.beforeMessageReference,
-                                    afterMessageReference:
-                                      req.query.afterMessageReference,
-                                    conversationDraftReference:
-                                      req.query.conversationDraftReference,
-                                    type: req.query.type,
-                                    isPinned: req.query.isPinned,
-                                    isStaffOnly: req.query.isStaffOnly,
-                                    title: req.query.title,
-                                    content: req.query.content,
-                                    tagsReferences: req.query.tagsReferences,
+                                    conversations: {
+                                      ...req.query.conversations,
+                                      conversationsPage: conversationsPage + 1,
+                                    },
+                                    messages: req.query.messages,
+                                    newConversation: req.query.newConversation,
                                   },
                                   {
                                     addQueryPrefix: true,
@@ -2291,16 +2276,16 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {
-      conversationsPage?: string;
-      search?: string;
-      filters?: object;
-      conversationDraftReference?: string;
-      type?: string;
-      isPinned?: "true";
-      isStaffOnly?: "true";
-      title?: string;
-      content?: string;
-      tagsReferences?: string[];
+      conversations?: object;
+      newConversation: {
+        conversationDraftReference?: string;
+        type?: string;
+        isPinned?: "true";
+        isStaffOnly?: "true";
+        title?: string;
+        content?: string;
+        tagsReferences?: string[];
+      };
     },
     IsEnrolledInCourseMiddlewareLocals & LiveUpdatesMiddlewareLocals
   >(
@@ -2377,9 +2362,7 @@ export default (app: Courselore): void => {
               action="${app.locals.options.baseURL}/courses/${res.locals.course
                 .reference}/conversations${qs.stringify(
                 {
-                  conversationsPage: req.query.conversationsPage,
-                  search: req.query.search,
-                  filters: req.query.filters,
+                  conversations: req.query.conversations,
                 },
                 {
                   addQueryPrefix: true,
@@ -2918,9 +2901,7 @@ export default (app: Courselore): void => {
                           .locals.course
                           .reference}/conversations/new${qs.stringify(
                           {
-                            conversationsPage: req.query.conversationsPage,
-                            search: req.query.search,
-                            filters: req.query.filters,
+                            conversations: req.query.conversations,
                           },
                           {
                             addQueryPrefix: true,
@@ -2986,7 +2967,7 @@ export default (app: Courselore): void => {
       isDraft?: "true";
       conversationDraftReference?: string;
     },
-    { conversationsPage?: string; search?: string; filters?: object },
+    { conversations?: object },
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/conversations",
@@ -3108,10 +3089,10 @@ export default (app: Courselore): void => {
             res.locals.course.reference
           }/conversations/new${qs.stringify(
             {
-              conversationsPage: req.query.conversationsPage,
-              search: req.query.search,
-              filters: req.query.filters,
-              conversationDraftReference: conversationDraft.reference,
+              conversations: req.query.conversations,
+              newConversation: {
+                conversationDraftReference: conversationDraft.reference,
+              },
             },
             {
               addQueryPrefix: true,
@@ -3299,9 +3280,7 @@ export default (app: Courselore): void => {
           res.locals.course.reference
         }/conversations/${conversationRow.reference}${qs.stringify(
           {
-            conversationsPage: req.query.conversationsPage,
-            search: req.query.search,
-            filters: req.query.filters,
+            conversations: req.query.conversations,
           },
           {
             addQueryPrefix: true,
@@ -3317,7 +3296,7 @@ export default (app: Courselore): void => {
     { courseReference: string },
     HTML,
     { conversationDraftReference?: string },
-    { conversationsPage?: string; search?: string; filters?: object },
+    { conversations?: object },
     IsEnrolledInCourseMiddlewareLocals
   >(
     "/courses/:courseReference/conversations/new",
@@ -3351,9 +3330,7 @@ export default (app: Courselore): void => {
           res.locals.course.reference
         }/conversations/new${qs.stringify(
           {
-            conversationsPage: req.query.conversationsPage,
-            search: req.query.search,
-            filters: req.query.filters,
+            conversations: req.query.conversations,
           },
           {
             addQueryPrefix: true,
@@ -3395,12 +3372,8 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {
-      conversationsPage?: string;
-      search?: string;
-      filters?: object;
-      messageReference?: string;
-      beforeMessageReference?: string;
-      afterMessageReference?: string;
+      conversations?: object;
+      messages?: object;
     },
     IsConversationAccessibleMiddlewareLocals & LiveUpdatesMiddlewareLocals
   >(
@@ -3650,21 +3623,10 @@ export default (app: Courselore): void => {
                                                     .locals.conversation
                                                     .reference}${qs.stringify(
                                                     {
-                                                      conversationsPage:
-                                                        req.query
-                                                          .conversationsPage,
-                                                      search: req.query.search,
-                                                      filters:
-                                                        req.query.filters,
-                                                      messageReference:
-                                                        req.query
-                                                          .messageReference,
-                                                      beforeMessageReference:
-                                                        req.query
-                                                          .beforeMessageReference,
-                                                      afterMessageReference:
-                                                        req.query
-                                                          .afterMessageReference,
+                                                      conversations:
+                                                        req.query.conversations,
+                                                      messages:
+                                                        req.query.messages,
                                                     },
                                                     {
                                                       addQueryPrefix: true,
@@ -3747,16 +3709,9 @@ export default (app: Courselore): void => {
                                         .reference}/conversations/${res.locals
                                         .conversation.reference}${qs.stringify(
                                         {
-                                          conversationsPage:
-                                            req.query.conversationsPage,
-                                          search: req.query.search,
-                                          filters: req.query.filters,
-                                          messageReference:
-                                            req.query.messageReference,
-                                          beforeMessageReference:
-                                            req.query.beforeMessageReference,
-                                          afterMessageReference:
-                                            req.query.afterMessageReference,
+                                          conversations:
+                                            req.query.conversations,
+                                          messages: req.query.messages,
                                         },
                                         {
                                           addQueryPrefix: true,
@@ -3854,16 +3809,8 @@ export default (app: Courselore): void => {
                                   .reference}/conversations/${res.locals
                                   .conversation.reference}${qs.stringify(
                                   {
-                                    conversationsPage:
-                                      req.query.conversationsPage,
-                                    search: req.query.search,
-                                    filters: req.query.filters,
-                                    messageReference:
-                                      req.query.messageReference,
-                                    beforeMessageReference:
-                                      req.query.beforeMessageReference,
-                                    afterMessageReference:
-                                      req.query.afterMessageReference,
+                                    conversations: req.query.conversations,
+                                    messages: req.query.messages,
                                   },
                                   {
                                     addQueryPrefix: true,
@@ -3959,17 +3906,9 @@ export default (app: Courselore): void => {
                                             .locals.conversation
                                             .reference}${qs.stringify(
                                             {
-                                              conversationsPage:
-                                                req.query.conversationsPage,
-                                              search: req.query.search,
-                                              filters: req.query.filters,
-                                              messageReference:
-                                                req.query.messageReference,
-                                              beforeMessageReference:
-                                                req.query
-                                                  .beforeMessageReference,
-                                              afterMessageReference:
-                                                req.query.afterMessageReference,
+                                              conversations:
+                                                req.query.conversations,
+                                              messages: req.query.messages,
                                             },
                                             {
                                               addQueryPrefix: true,
@@ -4174,13 +4113,9 @@ export default (app: Courselore): void => {
                                                           .locals.conversation
                                                           .reference}${qs.stringify(
                                                           {
-                                                            conversationsPage:
+                                                            conversations:
                                                               req.query
-                                                                .conversationsPage,
-                                                            search:
-                                                              req.query.search,
-                                                            filters:
-                                                              req.query.filters,
+                                                                .conversations,
                                                           },
                                                           {
                                                             addQueryPrefix:
@@ -4272,14 +4207,8 @@ export default (app: Courselore): void => {
                               .locals.course.reference}/conversations/${res
                               .locals.conversation.reference}${qs.stringify(
                               {
-                                conversationsPage: req.query.conversationsPage,
-                                search: req.query.search,
-                                filters: req.query.filters,
-                                messageReference: req.query.messageReference,
-                                beforeMessageReference:
-                                  req.query.beforeMessageReference,
-                                afterMessageReference:
-                                  req.query.afterMessageReference,
+                                conversations: req.query.conversations,
+                                messages: req.query.messages,
                               },
                               {
                                 addQueryPrefix: true,
@@ -4431,18 +4360,9 @@ export default (app: Courselore): void => {
                                                 .locals.conversation
                                                 .reference}/taggings${qs.stringify(
                                                 {
-                                                  conversationsPage:
-                                                    req.query.conversationsPage,
-                                                  search: req.query.search,
-                                                  filters: req.query.filters,
-                                                  messageReference:
-                                                    req.query.messageReference,
-                                                  beforeMessageReference:
-                                                    req.query
-                                                      .beforeMessageReference,
-                                                  afterMessageReference:
-                                                    req.query
-                                                      .afterMessageReference,
+                                                  conversations:
+                                                    req.query.conversations,
+                                                  messages: req.query.messages,
                                                 },
                                                 {
                                                   addQueryPrefix: true,
@@ -4550,24 +4470,12 @@ export default (app: Courselore): void => {
                                                                 .conversation
                                                                 .reference}/taggings${qs.stringify(
                                                                 {
-                                                                  conversationsPage:
+                                                                  conversations:
                                                                     req.query
-                                                                      .conversationsPage,
-                                                                  search:
+                                                                      .conversations,
+                                                                  messages:
                                                                     req.query
-                                                                      .search,
-                                                                  filters:
-                                                                    req.query
-                                                                      .filters,
-                                                                  messageReference:
-                                                                    req.query
-                                                                      .messageReference,
-                                                                  beforeMessageReference:
-                                                                    req.query
-                                                                      .beforeMessageReference,
-                                                                  afterMessageReference:
-                                                                    req.query
-                                                                      .afterMessageReference,
+                                                                      .messages,
                                                                 },
                                                                 {
                                                                   addQueryPrefix:
@@ -4803,14 +4711,17 @@ export default (app: Courselore): void => {
                                           .conversation
                                           .reference}${qs.stringify(
                                           {
-                                            conversationsPage:
-                                              req.query.conversationsPage,
-                                            search: req.query.search,
-                                            filters: req.query.filters,
-                                            messageReference:
-                                              req.query.messageReference,
-                                            beforeMessageReference:
-                                              messages[0].reference,
+                                            conversations:
+                                              req.query.conversations,
+                                            messages: {
+                                              messageReference:
+                                                req.query.messages
+                                                  ?.messageReference,
+                                              messagesPage: {
+                                                beforeMessageReference:
+                                                  messages[0].reference,
+                                              },
+                                            },
                                           },
                                           {
                                             addQueryPrefix: true,
@@ -5115,30 +5026,14 @@ export default (app: Courselore): void => {
                                                                     .conversation
                                                                     .reference}/messages/${message.reference}/likes${qs.stringify(
                                                                     {
-                                                                      conversationsPage:
+                                                                      conversations:
                                                                         req
                                                                           .query
-                                                                          .conversationsPage,
-                                                                      search:
+                                                                          .conversations,
+                                                                      messages:
                                                                         req
                                                                           .query
-                                                                          .search,
-                                                                      filters:
-                                                                        req
-                                                                          .query
-                                                                          .filters,
-                                                                      messageReference:
-                                                                        req
-                                                                          .query
-                                                                          .messageReference,
-                                                                      beforeMessageReference:
-                                                                        req
-                                                                          .query
-                                                                          .beforeMessageReference,
-                                                                      afterMessageReference:
-                                                                        req
-                                                                          .query
-                                                                          .afterMessageReference,
+                                                                          .messages,
                                                                     },
                                                                     {
                                                                       addQueryPrefix:
@@ -5311,8 +5206,10 @@ export default (app: Courselore): void => {
                                                                 .reference
                                                             }${qs.stringify(
                                                               {
-                                                                messageReference:
-                                                                  message.reference,
+                                                                messages: {
+                                                                  messageReference:
+                                                                    message.reference,
+                                                                },
                                                               },
                                                               {
                                                                 addQueryPrefix:
@@ -5360,30 +5257,14 @@ export default (app: Courselore): void => {
                                                                     .conversation
                                                                     .reference}/messages/${message.reference}${qs.stringify(
                                                                     {
-                                                                      conversationsPage:
+                                                                      conversations:
                                                                         req
                                                                           .query
-                                                                          .conversationsPage,
-                                                                      search:
+                                                                          .conversations,
+                                                                      messages:
                                                                         req
                                                                           .query
-                                                                          .search,
-                                                                      filters:
-                                                                        req
-                                                                          .query
-                                                                          .filters,
-                                                                      messageReference:
-                                                                        req
-                                                                          .query
-                                                                          .messageReference,
-                                                                      beforeMessageReference:
-                                                                        req
-                                                                          .query
-                                                                          .beforeMessageReference,
-                                                                      afterMessageReference:
-                                                                        req
-                                                                          .query
-                                                                          .afterMessageReference,
+                                                                          .messages,
                                                                     },
                                                                     {
                                                                       addQueryPrefix:
@@ -5528,30 +5409,14 @@ export default (app: Courselore): void => {
                                                                                 .conversation
                                                                                 .reference}/messages/${message.reference}${qs.stringify(
                                                                                 {
-                                                                                  conversationsPage:
+                                                                                  conversations:
                                                                                     req
                                                                                       .query
-                                                                                      .conversationsPage,
-                                                                                  search:
+                                                                                      .conversations,
+                                                                                  messages:
                                                                                     req
                                                                                       .query
-                                                                                      .search,
-                                                                                  filters:
-                                                                                    req
-                                                                                      .query
-                                                                                      .filters,
-                                                                                  messageReference:
-                                                                                    req
-                                                                                      .query
-                                                                                      .messageReference,
-                                                                                  beforeMessageReference:
-                                                                                    req
-                                                                                      .query
-                                                                                      .beforeMessageReference,
-                                                                                  afterMessageReference:
-                                                                                    req
-                                                                                      .query
-                                                                                      .afterMessageReference,
+                                                                                      .messages,
                                                                                 },
                                                                                 {
                                                                                   addQueryPrefix:
@@ -5664,20 +5529,10 @@ export default (app: Courselore): void => {
                                                   .locals.conversation
                                                   .reference}/messages/${message.reference}${qs.stringify(
                                                   {
-                                                    conversationsPage:
-                                                      req.query
-                                                        .conversationsPage,
-                                                    search: req.query.search,
-                                                    filters: req.query.filters,
-                                                    messageReference:
-                                                      req.query
-                                                        .messageReference,
-                                                    beforeMessageReference:
-                                                      req.query
-                                                        .beforeMessageReference,
-                                                    afterMessageReference:
-                                                      req.query
-                                                        .afterMessageReference,
+                                                    conversations:
+                                                      req.query.conversations,
+                                                    messages:
+                                                      req.query.messages,
                                                   },
                                                   {
                                                     addQueryPrefix: true,
@@ -5781,20 +5636,10 @@ export default (app: Courselore): void => {
                                                   .locals.conversation
                                                   .reference}/messages/${message.reference}/endorsements${qs.stringify(
                                                   {
-                                                    conversationsPage:
-                                                      req.query
-                                                        .conversationsPage,
-                                                    search: req.query.search,
-                                                    filters: req.query.filters,
-                                                    messageReference:
-                                                      req.query
-                                                        .messageReference,
-                                                    beforeMessageReference:
-                                                      req.query
-                                                        .beforeMessageReference,
-                                                    afterMessageReference:
-                                                      req.query
-                                                        .afterMessageReference,
+                                                    conversations:
+                                                      req.query.conversations,
+                                                    messages:
+                                                      req.query.messages,
                                                   },
                                                   {
                                                     addQueryPrefix: true,
@@ -6307,22 +6152,11 @@ export default (app: Courselore): void => {
                                                       .locals.conversation
                                                       .reference}/messages/${message.reference}/likes${qs.stringify(
                                                       {
-                                                        conversationsPage:
+                                                        conversations:
                                                           req.query
-                                                            .conversationsPage,
-                                                        search:
-                                                          req.query.search,
-                                                        filters:
-                                                          req.query.filters,
-                                                        messageReference:
-                                                          req.query
-                                                            .messageReference,
-                                                        beforeMessageReference:
-                                                          req.query
-                                                            .beforeMessageReference,
-                                                        afterMessageReference:
-                                                          req.query
-                                                            .afterMessageReference,
+                                                            .conversations,
+                                                        messages:
+                                                          req.query.messages,
                                                       },
                                                       {
                                                         addQueryPrefix: true,
@@ -6480,20 +6314,10 @@ export default (app: Courselore): void => {
                                                   .locals.conversation
                                                   .reference}/messages/${message.reference}${qs.stringify(
                                                   {
-                                                    conversationsPage:
-                                                      req.query
-                                                        .conversationsPage,
-                                                    search: req.query.search,
-                                                    filters: req.query.filters,
-                                                    messageReference:
-                                                      req.query
-                                                        .messageReference,
-                                                    beforeMessageReference:
-                                                      req.query
-                                                        .beforeMessageReference,
-                                                    afterMessageReference:
-                                                      req.query
-                                                        .afterMessageReference,
+                                                    conversations:
+                                                      req.query.conversations,
+                                                    messages:
+                                                      req.query.messages,
                                                   },
                                                   {
                                                     addQueryPrefix: true,
@@ -6616,15 +6440,18 @@ export default (app: Courselore): void => {
                                           .conversation
                                           .reference}${qs.stringify(
                                           {
-                                            conversationsPage:
-                                              req.query.conversationsPage,
-                                            search: req.query.search,
-                                            filters: req.query.filters,
-                                            messageReference:
-                                              req.query.messageReference,
-                                            afterMessageReference:
-                                              messages[messages.length - 1]
-                                                .reference,
+                                            conversations:
+                                              req.query.conversations,
+                                            messages: {
+                                              messageReference:
+                                                req.query.messages
+                                                  ?.messageReference,
+                                              messagesPage: {
+                                                afterMessageReference:
+                                                  messages[messages.length - 1]
+                                                    .reference,
+                                              },
+                                            },
                                           },
                                           {
                                             addQueryPrefix: true,
@@ -6791,12 +6618,8 @@ export default (app: Courselore): void => {
                   .course.reference}/conversations/${res.locals.conversation
                   .reference}/messages${qs.stringify(
                   {
-                    conversationsPage: req.query.conversationsPage,
-                    search: req.query.search,
-                    filters: req.query.filters,
-                    messageReference: req.query.messageReference,
-                    beforeMessageReference: req.query.beforeMessageReference,
-                    afterMessageReference: req.query.afterMessageReference,
+                    conversations: req.query.conversations,
+                    messages: req.query.messages,
                   },
                   {
                     addQueryPrefix: true,
@@ -7138,12 +6961,8 @@ export default (app: Courselore): void => {
       title?: string;
     },
     {
-      conversationsPage?: string;
-      search?: string;
-      filters?: object;
-      messageReference?: string;
-      beforeMessageReference?: string;
-      afterMessageReference?: string;
+      conversations?: object;
+      messages?: object;
     },
     MayEditConversationMiddlewareLocals
   >(
@@ -7247,12 +7066,8 @@ export default (app: Courselore): void => {
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
-            conversationsPage: req.query.conversationsPage,
-            search: req.query.search,
-            filters: req.query.filters,
-            messageReference: req.query.messageReference,
-            beforeMessageReference: req.query.beforeMessageReference,
-            afterMessageReference: req.query.afterMessageReference,
+            conversations: req.query.conversations,
+            messages: req.query.messages,
           },
           {
             addQueryPrefix: true,
@@ -7269,11 +7084,8 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {
-      conversationsPage?: string;
-      search?: string;
-      filters?: object;
-      beforeMessageReference?: string;
-      afterMessageReference?: string;
+      conversations?: object;
+      messages?: object;
     },
     IsCourseStaffMiddlewareLocals & IsConversationAccessibleMiddlewareLocals
   >(
@@ -7296,11 +7108,8 @@ export default (app: Courselore): void => {
           res.locals.course.reference
         }${qs.stringify(
           {
-            conversationsPage: req.query.conversationsPage,
-            search: req.query.search,
-            filters: req.query.filters,
-            beforeMessageReference: req.query.beforeMessageReference,
-            afterMessageReference: req.query.afterMessageReference,
+            conversations: req.query.conversations,
+            messages: req.query.messages,
           },
           {
             addQueryPrefix: true,
@@ -7319,12 +7128,8 @@ export default (app: Courselore): void => {
     any,
     { reference?: string },
     {
-      conversationsPage?: string;
-      search?: string;
-      filters?: object;
-      messageReference?: string;
-      beforeMessageReference?: string;
-      afterMessageReference?: string;
+      conversations?: object;
+      messages?: object;
     },
     MayEditConversationMiddlewareLocals
   >(
@@ -7361,12 +7166,8 @@ export default (app: Courselore): void => {
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
-            conversationsPage: req.query.conversationsPage,
-            search: req.query.search,
-            filters: req.query.filters,
-            messageReference: req.query.messageReference,
-            beforeMessageReference: req.query.beforeMessageReference,
-            afterMessageReference: req.query.afterMessageReference,
+            conversations: req.query.conversations,
+            messages: req.query.messages,
           },
           {
             addQueryPrefix: true,
@@ -7384,12 +7185,8 @@ export default (app: Courselore): void => {
     any,
     { reference?: string },
     {
-      conversationsPage?: string;
-      search?: string;
-      filters?: object;
-      messageReference?: string;
-      beforeMessageReference?: string;
-      afterMessageReference?: string;
+      conversations?: object;
+      messages?: object;
     },
     MayEditConversationMiddlewareLocals
   >(
@@ -7423,12 +7220,8 @@ export default (app: Courselore): void => {
           res.locals.course.reference
         }/conversations/${res.locals.conversation.reference}${qs.stringify(
           {
-            conversationsPage: req.query.conversationsPage,
-            search: req.query.search,
-            filters: req.query.filters,
-            messageReference: req.query.messageReference,
-            beforeMessageReference: req.query.beforeMessageReference,
-            afterMessageReference: req.query.afterMessageReference,
+            conversations: req.query.conversations,
+            messages: req.query.messages,
           },
           {
             addQueryPrefix: true,
