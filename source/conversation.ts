@@ -749,7 +749,10 @@ export default (app: Courselore): void => {
                     <input
                       type="text"
                       name="search"
-                      value="${req.query.conversations.search ?? ""}"
+                      value="${typeof req.query.conversations?.search ===
+                        "string" && req.query.conversations.search.trim() !== ""
+                        ? req.query.conversations.search
+                        : ""}"
                       placeholder="Search…"
                       class="input--text"
                     />
@@ -764,7 +767,8 @@ export default (app: Courselore): void => {
                     >
                       <i class="bi bi-search"></i>
                     </button>
-                    $${req.query.conversations.search !== undefined
+                    $${typeof req.query.conversations?.search === "string" &&
+                    req.query.conversations.search.trim() !== ""
                       ? html`
                           <a
                             href="${app.locals.options
@@ -805,7 +809,7 @@ export default (app: Courselore): void => {
                       <input
                         type="checkbox"
                         class="visually-hidden input--radio-or-checkbox--multilabel"
-                        $${req.query.conversations.filters === undefined
+                        $${typeof req.query.conversations?.filters === "object"
                           ? html``
                           : html`checked`}
                         onload="${javascript`
@@ -829,7 +833,7 @@ export default (app: Courselore): void => {
                   </div>
 
                   <div
-                    $${req.query.conversations.filters === undefined
+                    $${typeof req.query.conversations?.filters === "object"
                       ? html`hidden`
                       : html``}
                     class="filters"
@@ -858,7 +862,7 @@ export default (app: Courselore): void => {
                                 type="checkbox"
                                 name="filters[types][]"
                                 value="${conversationType}"
-                                $${req.query.conversations.filters?.types?.includes(
+                                $${req.query.conversations?.filters?.types?.includes(
                                   conversationType
                                 )
                                   ? html`checked`
@@ -900,7 +904,7 @@ export default (app: Courselore): void => {
 
                     <div
                       class="filters--resolved label"
-                      $${req.query.conversations.filters?.types?.includes(
+                      $${req.query.conversations?.filters?.types?.includes(
                         "question"
                       )
                         ? html``
@@ -922,7 +926,7 @@ export default (app: Courselore): void => {
                             type="checkbox"
                             name="filters[isResolved]"
                             value="false"
-                            $${req.query.conversations.filters?.isResolved ===
+                            $${req.query.conversations?.filters?.isResolved ===
                             "false"
                               ? html`checked`
                               : html``}
@@ -952,7 +956,7 @@ export default (app: Courselore): void => {
                             type="checkbox"
                             name="filters[isResolved]"
                             value="true"
-                            $${req.query.conversations.filters?.isResolved ===
+                            $${req.query.conversations?.filters?.isResolved ===
                             "true"
                               ? html`checked`
                               : html``}
@@ -1009,7 +1013,7 @@ export default (app: Courselore): void => {
                             type="checkbox"
                             name="filters[isPinned]"
                             value="true"
-                            $${req.query.conversations.filters?.isPinned ===
+                            $${req.query.conversations?.filters?.isPinned ===
                             "true"
                               ? html`checked`
                               : html``}
@@ -1036,7 +1040,7 @@ export default (app: Courselore): void => {
                             type="checkbox"
                             name="filters[isPinned]"
                             value="false"
-                            $${req.query.conversations.filters?.isPinned ===
+                            $${req.query.conversations?.filters?.isPinned ===
                             "false"
                               ? html`checked`
                               : html``}
@@ -1076,7 +1080,7 @@ export default (app: Courselore): void => {
                             type="checkbox"
                             name="filters[isStaffOnly]"
                             value="false"
-                            $${req.query.conversations.filters?.isStaffOnly ===
+                            $${req.query.conversations?.filters?.isStaffOnly ===
                             "false"
                               ? html`checked`
                               : html``}
@@ -1103,7 +1107,7 @@ export default (app: Courselore): void => {
                             type="checkbox"
                             name="filters[isStaffOnly]"
                             value="true"
-                            $${req.query.conversations.filters?.isStaffOnly ===
+                            $${req.query.conversations?.filters?.isStaffOnly ===
                             "true"
                               ? html`checked`
                               : html``}
@@ -1169,7 +1173,7 @@ export default (app: Courselore): void => {
                                         type="checkbox"
                                         name="filters[tagsReferences][]"
                                         value="${tag.reference}"
-                                        $${req.query.conversations.filters?.tagsReferences?.includes(
+                                        $${req.query.conversations?.filters?.tagsReferences?.includes(
                                           tag.reference
                                         )
                                           ? html`checked`
@@ -1224,7 +1228,7 @@ export default (app: Courselore): void => {
                         <i class="bi bi-funnel"></i>
                         Apply Filters
                       </button>
-                      $${req.query.conversations.filters !== undefined
+                      $${typeof req.query.conversations?.filters === "object"
                         ? html`
                             <a
                               href="${app.locals.options
@@ -1269,8 +1273,7 @@ export default (app: Courselore): void => {
                       </div>
                     `
                   : html`
-                      $${req.query.conversations.search === undefined &&
-                      req.query.conversations.filters === undefined &&
+                      $${req.query.conversations === undefined &&
                       conversationsWithSearchResults.some(
                         ({ conversation }) =>
                           conversation.readingsCount <
@@ -2198,7 +2201,7 @@ export default (app: Courselore): void => {
     {},
     {
       conversations?: object;
-      newConversation: {
+      newConversation?: {
         conversationDraftReference?: string;
         type?: string;
         isPinned?: "true";
@@ -2215,7 +2218,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.liveUpdates,
     (req, res) => {
       const conversationDraft =
-        typeof req.query.newConversation.conversationDraftReference ===
+        typeof req.query.newConversation?.conversationDraftReference ===
           "string" &&
         req.query.newConversation.conversationDraftReference.match(/^[0-9]+$/)
           ? app.locals.database.get<{
@@ -2246,17 +2249,18 @@ export default (app: Courselore): void => {
               `
             )
           : undefined;
-      if (conversationDraft !== undefined) {
-        req.query.type = conversationDraft.type ?? undefined;
-        req.query.isPinned = conversationDraft.isPinned ?? undefined;
-        req.query.isStaffOnly = conversationDraft.isStaffOnly ?? undefined;
-        req.query.title = conversationDraft.title ?? undefined;
-        req.query.content = conversationDraft.content ?? undefined;
-        req.query.tagsReferences =
-          typeof conversationDraft.tagsReferences === "string"
-            ? JSON.parse(conversationDraft.tagsReferences)
-            : undefined;
-      }
+      if (conversationDraft !== undefined)
+        req.query.newConversation = {
+          type: conversationDraft.type ?? undefined,
+          isPinned: conversationDraft.isPinned ?? undefined,
+          isStaffOnly: conversationDraft.isStaffOnly ?? undefined,
+          title: conversationDraft.title ?? undefined,
+          content: conversationDraft.content ?? undefined,
+          tagsReferences:
+            typeof conversationDraft.tagsReferences === "string"
+              ? JSON.parse(conversationDraft.tagsReferences)
+              : undefined,
+        };
 
       res.send(
         (res.locals.conversationsCount === 0
@@ -2319,7 +2323,8 @@ export default (app: Courselore): void => {
                           name="type"
                           value="${conversationType}"
                           required
-                          $${req.query.type === conversationType
+                          $${req.query.newConversation?.type ===
+                          conversationType
                             ? html`checked`
                             : html``}
                           class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -2397,7 +2402,7 @@ export default (app: Courselore): void => {
                             <input
                               type="checkbox"
                               name="isPinned"
-                              $${req.query.isPinned === "true"
+                              $${req.query.newConversation?.isPinned === "true"
                                 ? html`checked`
                                 : html``}
                               class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -2449,7 +2454,7 @@ export default (app: Courselore): void => {
                       <input
                         type="checkbox"
                         name="isStaffOnly"
-                        $${req.query.isStaffOnly === "true"
+                        $${req.query.newConversation?.isStaffOnly === "true"
                           ? html`checked`
                           : html``}
                         class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -2497,9 +2502,9 @@ export default (app: Courselore): void => {
                   type="text"
                   name="title"
                   required
-                  $${typeof req.query.title === "string" &&
-                  req.query.title.trim() !== ""
-                    ? html`value="${req.query.title}"`
+                  $${typeof req.query.newConversation?.title === "string" &&
+                  req.query.newConversation.title.trim() !== ""
+                    ? html`value="${req.query.newConversation.title}"`
                     : html``}
                   autocomplete="off"
                   $${conversationDraft === undefined ? html`autofocus` : html``}
@@ -2511,9 +2516,9 @@ export default (app: Courselore): void => {
                 req,
                 res,
                 contentSource:
-                  typeof req.query.content === "string" &&
-                  req.query.content.trim() !== ""
-                    ? req.query.content
+                  typeof req.query.newConversation?.content === "string" &&
+                  req.query.newConversation.content.trim() !== ""
+                    ? req.query.newConversation.content
                     : undefined,
               })}
               $${res.locals.tags.length === 0 &&
@@ -2598,9 +2603,10 @@ export default (app: Courselore): void => {
                                       name="tagsReferences[]"
                                       value="${tag.reference}"
                                       $${Array.isArray(
-                                        req.query.tagsReferences
+                                        req.query.newConversation
+                                          ?.tagsReferences
                                       ) &&
-                                      req.query.tagsReferences.includes(
+                                      req.query.newConversation!.tagsReferences.includes(
                                         tag.reference
                                       )
                                         ? html`checked`
@@ -3294,8 +3300,16 @@ export default (app: Courselore): void => {
     HTML,
     {},
     {
-      conversations?: object;
-      messages?: object;
+      conversations?: {
+        search?: string;
+      };
+      messages?: {
+        messageReference?: string;
+        messagesPage?: {
+          beforeMessageReference?: string;
+          afterMessageReference?: string;
+        };
+      };
     },
     IsConversationAccessibleMiddlewareLocals & LiveUpdatesMiddlewareLocals
   >(
@@ -3304,7 +3318,7 @@ export default (app: Courselore): void => {
     ...app.locals.middlewares.liveUpdates,
     (req, res) => {
       const beforeMessage =
-        typeof req.query.messages.messagesPage.beforeMessageReference ===
+        typeof req.query.messages?.messagesPage?.beforeMessageReference ===
         "string"
           ? app.locals.database.get<{ id: number }>(
               sql`
@@ -3318,7 +3332,7 @@ export default (app: Courselore): void => {
           : undefined;
       const afterMessage =
         beforeMessage === undefined &&
-        typeof req.query.messages.messagesPage.afterMessageReference ===
+        typeof req.query.messages?.messagesPage?.afterMessageReference ===
           "string"
           ? app.locals.database.get<{ id: number }>(
               sql`
@@ -3470,7 +3484,7 @@ export default (app: Courselore): void => {
                           >
                             $${app.locals.helpers.highlightSearchResult(
                               html`${res.locals.conversation.title}`,
-                              req.query.conversations.search
+                              req.query.conversations?.search
                             )}
                           </span>
                           <i class="bi bi-chevron-bar-expand"></i>
@@ -4119,7 +4133,7 @@ export default (app: Courselore): void => {
                     >
                       $${app.locals.helpers.highlightSearchResult(
                         html`${res.locals.conversation.title}`,
-                        req.query.conversations.search
+                        req.query.conversations?.search
                       )}
                     </h2>
 
@@ -4535,7 +4549,7 @@ export default (app: Courselore): void => {
                       window.setTimeout(() => {
                         if (event?.detail?.previousLocation?.pathname !== window.location.pathname) {
                           ${
-                            typeof req.query.messages.messageReference ===
+                            typeof req.query.messages?.messageReference ===
                             "string"
                               ? javascript`
                                   const element = this.querySelector('[key="message--${req.query.messages.messageReference}"]');
@@ -5876,7 +5890,7 @@ export default (app: Courselore): void => {
                                                               .user.name}`,
                                                             req.query
                                                               .conversations
-                                                              .search
+                                                              ?.search
                                                           ),
                                                   })}
                                                 </div>
@@ -6046,7 +6060,7 @@ export default (app: Courselore): void => {
                                                 decorate: true,
                                                 search:
                                                   req.query.conversations
-                                                    .search,
+                                                    ?.search,
                                               }).processed}
                                             </div>
                                           </div>
