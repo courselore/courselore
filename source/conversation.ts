@@ -3307,7 +3307,8 @@ export default (app: Courselore): void => {
     (req, res) => {
       const beforeMessage =
         typeof req.query.messages?.messagesPage?.beforeMessageReference ===
-        "string"
+          "string" &&
+        req.query.messages.messagesPage.beforeMessageReference.trim() !== ""
           ? app.locals.database.get<{ id: number }>(
               sql`
                 SELECT "id"
@@ -3321,7 +3322,8 @@ export default (app: Courselore): void => {
       const afterMessage =
         beforeMessage === undefined &&
         typeof req.query.messages?.messagesPage?.afterMessageReference ===
-          "string"
+          "string" &&
+        req.query.messages.messagesPage.afterMessageReference.trim() !== ""
           ? app.locals.database.get<{ id: number }>(
               sql`
                 SELECT "id"
@@ -3472,7 +3474,11 @@ export default (app: Courselore): void => {
                           >
                             $${app.locals.helpers.highlightSearchResult(
                               html`${res.locals.conversation.title}`,
-                              req.query.conversations?.search
+                              typeof req.query.conversations?.search ===
+                                "string" &&
+                                req.query.conversations.search.trim() !== ""
+                                ? req.query.conversations.search
+                                : undefined
                             )}
                           </span>
                           <i class="bi bi-chevron-bar-expand"></i>
@@ -4121,7 +4127,10 @@ export default (app: Courselore): void => {
                     >
                       $${app.locals.helpers.highlightSearchResult(
                         html`${res.locals.conversation.title}`,
-                        req.query.conversations?.search
+                        typeof req.query.conversations?.search === "string" &&
+                          req.query.conversations.search.trim() !== ""
+                          ? req.query.conversations.search
+                          : undefined
                       )}
                     </h2>
 
@@ -4538,7 +4547,8 @@ export default (app: Courselore): void => {
                         if (event?.detail?.previousLocation?.pathname !== window.location.pathname) {
                           ${
                             typeof req.query.messages?.messageReference ===
-                            "string"
+                              "string" &&
+                            req.query.messages.messageReference.trim() !== ""
                               ? javascript`
                                   const element = this.querySelector('[key="message--${req.query.messages.messageReference}"]');
                                   if (element === null) return;
@@ -5876,9 +5886,16 @@ export default (app: Courselore): void => {
                                                             html`${message
                                                               .authorEnrollment
                                                               .user.name}`,
-                                                            req.query
+                                                            typeof req.query
                                                               .conversations
-                                                              ?.search
+                                                              ?.search ===
+                                                              "string" &&
+                                                              req.query.conversations.search.trim() !==
+                                                                ""
+                                                              ? req.query
+                                                                  .conversations
+                                                                  .search
+                                                              : undefined
                                                           ),
                                                   })}
                                                 </div>
@@ -6047,8 +6064,13 @@ export default (app: Courselore): void => {
                                                   message.contentPreprocessed,
                                                 decorate: true,
                                                 search:
-                                                  req.query.conversations
-                                                    ?.search,
+                                                  typeof req.query.conversations
+                                                    ?.search === "string" &&
+                                                  req.query.conversations.search.trim() !==
+                                                    ""
+                                                    ? req.query.conversations
+                                                        .search
+                                                    : undefined,
                                               }).processed}
                                             </div>
                                           </div>
