@@ -70,7 +70,6 @@ export type ConversationLayout = ({
       };
       messages: object;
       newConversation: object;
-      [key: string]: unknown;
     },
     IsEnrolledInCourseMiddlewareLocals &
       Partial<IsConversationAccessibleMiddlewareLocals>
