@@ -48,7 +48,7 @@ export type ConversationLayout = ({
   req,
   res,
   head,
-  conversationsOnSmallScreen,
+  sidebarOnSmallScreen,
   mainIsAScrollingPane,
   body,
 }: {
@@ -80,7 +80,7 @@ export type ConversationLayout = ({
       Partial<IsConversationAccessibleMiddlewareLocals>
   >;
   head: HTML;
-  conversationsOnSmallScreen?: boolean;
+  sidebarOnSmallScreen?: boolean;
   mainIsAScrollingPane?: boolean;
   body: HTML;
 }) => HTML;
@@ -222,7 +222,7 @@ export default (app: Courselore): void => {
     req,
     res,
     head,
-    conversationsOnSmallScreen = false,
+    sidebarOnSmallScreen = false,
     mainIsAScrollingPane = false,
     body,
   }) => {
@@ -603,7 +603,7 @@ export default (app: Courselore): void => {
       res,
       head,
       extraHeaders: html`
-        $${conversationsOnSmallScreen
+        $${sidebarOnSmallScreen
           ? html``
           : html`
               <div
@@ -642,8 +642,7 @@ export default (app: Courselore): void => {
           `)}"
         >
           <div
-            key="layout--conversation--conversations--/${res.locals.course
-              .reference}"
+            key="layout--conversation--sidebar--/${res.locals.course.reference}"
             css="${res.locals.localCSS(css`
               background-color: var(--color--gray--medium--100);
               @media (prefers-color-scheme: dark) {
@@ -652,7 +651,7 @@ export default (app: Courselore): void => {
               overflow: auto;
               @media (max-width: 899px) {
                 flex: 1;
-                ${conversationsOnSmallScreen
+                ${sidebarOnSmallScreen
                   ? css``
                   : css`
                       display: none;
@@ -1552,7 +1551,7 @@ export default (app: Courselore): void => {
             css="${res.locals.localCSS(css`
               overflow: auto;
               flex: 1;
-              ${conversationsOnSmallScreen
+              ${sidebarOnSmallScreen
                 ? css`
                     @media (max-width: 899px) {
                       display: none;
