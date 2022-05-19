@@ -5,10 +5,10 @@
 - Drafts:
   - Mix drafts with other conversations on sidebar.
     - `TODO`
-    - Group them together?
+    - Group them together
     - Visually distinct (grayed out).
-  - Search.
-  - Filters.
+    - Search.
+    - Filters.
   - Adapt `partials.conversation` to support drafts (many fields become optional).
   - Add a button to delete a draft directly from the sidebar.
 
