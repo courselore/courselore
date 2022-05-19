@@ -3935,7 +3935,7 @@ export default (app: Courselore): void => {
                                                 <button
                                                   class="button button--rose"
                                                 >
-                                                  <i class="bi bi-eye"></i>
+                                                  <i class="bi bi-eye-fill"></i>
                                                   Set as Visible by Everyone
                                                 </button>
                                               `}
@@ -4100,7 +4100,7 @@ export default (app: Courselore): void => {
                                                           class="button button--rose"
                                                         >
                                                           <i
-                                                            class="bi bi-trash"
+                                                            class="bi bi-trash-fill"
                                                           ></i>
                                                           Remove Conversation
                                                         </button>
@@ -5418,7 +5418,7 @@ export default (app: Courselore): void => {
                                                                                 class="button button--rose"
                                                                               >
                                                                                 <i
-                                                                                  class="bi bi-trash"
+                                                                                  class="bi bi-trash-fill"
                                                                                 ></i>
                                                                                 Remove
                                                                                 Message
@@ -6356,7 +6356,9 @@ export default (app: Courselore): void => {
                                                       (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });                                  
                                                     `}"
                                                   >
-                                                    <i class="bi bi-pencil-fill"></i>
+                                                    <i
+                                                      class="bi bi-pencil-fill"
+                                                    ></i>
                                                     Update Message
                                                   </button>
                                                   <button

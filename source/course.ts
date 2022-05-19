@@ -1013,11 +1013,11 @@ export default (app: Courselore): void => {
                   ? "button--blue"
                   : "button--transparent"}"
               >
-                <i class="bi ${req.path.endsWith(
-                  "/settings/tags"
-                )
-                  ? "bi-tags-fill"
-                  : "bi-tags"}"></i>
+                <i
+                  class="bi ${req.path.endsWith("/settings/tags")
+                    ? "bi-tags-fill"
+                    : "bi-tags"}"
+                ></i>
                 Tags
               </a>
               <a
@@ -1029,11 +1029,11 @@ export default (app: Courselore): void => {
                   ? "button--blue"
                   : "button--transparent"}"
               >
-                <i class="bi ${req.path.endsWith(
-                  "/settings/invitations"
-                )
-                  ? "bi-person-plus-fill"
-                  : "bi-person-plus"}"></i>
+                <i
+                  class="bi ${req.path.endsWith("/settings/invitations")
+                    ? "bi-person-plus-fill"
+                    : "bi-person-plus"}"
+                ></i>
                 Invitations
               </a>
               <a
@@ -1045,11 +1045,11 @@ export default (app: Courselore): void => {
                   ? "button--blue"
                   : "button--transparent"}"
               >
-                <i class="bi ${req.path.endsWith(
-                  "/settings/enrollments"
-                )
-                  ? "bi-people-fill"
-                  : "bi-people"}"></i>
+                <i
+                  class="bi ${req.path.endsWith("/settings/enrollments")
+                    ? "bi-people-fill"
+                    : "bi-people"}"
+                ></i>
                 Enrollments
               </a>
               <a
@@ -1061,11 +1061,11 @@ export default (app: Courselore): void => {
                   ? "button--blue"
                   : "button--transparent"}"
               >
-                <i class="bi ${req.path.endsWith(
-                  "/settings/your-enrollment"
-                )
-                  ? "bi-person-fill"
-                  : "bi-person"}"></i>
+                <i
+                  class="bi ${req.path.endsWith("/settings/your-enrollment")
+                    ? "bi-person-fill"
+                    : "bi-person"}"
+                ></i>
                 Your Enrollment
               </a>
             `
@@ -1526,7 +1526,7 @@ export default (app: Courselore): void => {
                                               };
                                             `}"
                                           >
-                                            <i class="bi bi-trash"></i>
+                                            <i class="bi bi-trash-fill"></i>
                                             Remove Tag
                                           </button>
                                         </div>
@@ -3512,6 +3512,9 @@ export default (app: Courselore): void => {
                                                                   <button
                                                                     class="button button--rose"
                                                                   >
+                                                                    <i
+                                                                      class="bi bi-pencil-fill"
+                                                                    ></i>
                                                                     Update My
                                                                     Own Role to
                                                                     ${lodash.capitalize(
@@ -3615,8 +3618,11 @@ export default (app: Courselore): void => {
                                               </strong>
                                             </p>
                                             <button class="button button--rose">
-                                              <i class="bi bi-person-dash"></i>
-                                              Remove from the Course
+                                              <i
+                                                class="bi bi-person-dash-fill"
+                                              ></i>
+                                              Remove ${isSelf ? "Myself" : ""}
+                                              from the Course
                                             </button>
                                           </form>
                                         `

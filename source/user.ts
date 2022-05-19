@@ -748,6 +748,8 @@ export default (app: Courselore): void => {
                       type="button"
                       class="button button--rose"
                       css="${res.locals.localCSS(css`
+                        font-size: var(--font-size--xs);
+                        line-height: var(--line-height--xs);
                         place-self: end;
                         width: var(--font-size--2xl);
                         height: var(--font-size--2xl);
@@ -772,7 +774,7 @@ export default (app: Courselore): void => {
                         };
                       `}"
                     >
-                      <i class="bi bi-trash"></i>
+                      <i class="bi bi-trash-fill"></i>
                     </button>
                   </div>
                   <input

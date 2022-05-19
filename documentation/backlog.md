@@ -2,8 +2,6 @@
 
 ### User Interface Improvements
 
-- `button--green`
-- `button--rose`
 - `button--amber`
 
 ---
