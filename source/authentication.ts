@@ -692,7 +692,7 @@ export default (app: Courselore): void => {
               />
             </label>
             <button class="button button--blue">
-              <i class="bi bi-key"></i>
+              <i class="bi bi-key-fill"></i>
               Reset Password
             </button>
           </form>

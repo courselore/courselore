@@ -2,6 +2,13 @@
 
 ### User Interface Improvements
 
+- `button--blue`
+- `button--green`
+- `button--rose`
+- `button--amber`
+
+---
+
 - Sidebar:
   - Hide search bar when unneeded
   - Make the “resolved/unresolved” filters more discoverable.

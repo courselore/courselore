@@ -105,7 +105,7 @@ export default (app: Courselore): void => {
                             });
                           `}"
                         >
-                          <i class="bi bi-person-plus"></i>
+                          <i class="bi bi-person-plus-fill"></i>
                           Sign up
                         </a>
                         <a
@@ -785,7 +785,7 @@ export default (app: Courselore): void => {
                       });
                     `}"
                   >
-                    <i class="bi bi-person-plus"></i>
+                    <i class="bi bi-person-plus-fill"></i>
                     Sign up
                   </a>
                   <a
