@@ -1,5 +1,5 @@
 export default async ({ courseloreImport, courseloreImportMetaURL }) => {
-  const baseURL = process.env.BASE_URL ?? `https://localhost:4000`;
+  const baseURL = process.env.BASE_URL ?? `https://localhost`;
   const administratorEmail = "development@courselore.org";
   const path = await courseloreImport("node:path");
   const dataDirectory = path.join(process.cwd(), "data");
