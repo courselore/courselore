@@ -2,6 +2,25 @@
 
 ### User Interface Improvements
 
+- Sidebar:
+  - Make the “resolved/unresolved” filters more discoverable.
+  - Hide search bar when unneeded
+  - Add filters for conversations with unread messages.
+  - “Start a Conversation” → “Ask a Question”
+  - Quick filters:
+    - Staff:
+      - Unresolved questions
+      - Conversations with unread messages
+    - Students:
+      - Questions
+      - Conversations with unread messages
+  - Make it fixed, scroll just the list of conversations
+  - Scroll the conversations list to the current conversation doesn’t work on mobile.
+    - Maybe this isn’t relevant now that we turned the “Conversations” menu on mobile into a link that points at `/courses/<courseReference>`?
+    - Remember that this only applies to deep links into conversations.
+
+---
+
 - Drafts:
   - Mix drafts with other conversations on sidebar.
     - `TODO`
@@ -11,39 +30,6 @@
     - Filters.
   - Adapt `partials.conversation` to support drafts (many fields become optional).
   - Add a button to delete a draft directly from the sidebar.
-
----
-
-```
-invitation: {
-  email,
-  name,
-}
-
-conversations: {
-  conversationsPage,
-  search,
-  filters,
-}
-
-messages: {
-  messageReference,
-  messagesPage: {
-    beforeMessageReference,
-    afterMessageReference,
-  },
-}
-
-newConversation: {
-  conversationDraftReference,
-  type,
-  isPinned,
-  isStaffOnly,
-  title,
-  content,
-  tagsReferences,
-}
-```
 
 ---
 
@@ -61,25 +47,6 @@ newConversation: {
   - It’ll work across devices, which is a “pleasant surprise.”
   - It allows for features such as “currently typing.”
   - Clarify that “Programmer Mode” is for your input only. Unlike other buttons on the toolbar, it doesn’t affect the rendered text.
-
----
-
-- Sidebar:
-  - Make the “resolved/unresolved” filters more discoverable.
-  - Hide search bar when unneeded
-  - Add filters for conversations with unread messages.
-  - “Start a Conversation” → “Ask a Question”
-  - Quick filters:
-    - Staff:
-      - Unresolved questions
-      - Conversations with unread messages
-    - Students:
-      - Questions
-      - Conversations with unread messages
-  - Make it fixed, scroll just the list of conversations
-  - Scroll the conversations list to the current conversation doesn’t work on mobile.
-    - Maybe this isn’t relevant now that we turned the “Conversations” menu on mobile into a link that points at `/courses/<courseReference>`?
-    - Remember that this only applies to deep links into conversations.
 
 ---
 
