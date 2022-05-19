@@ -571,7 +571,11 @@ export default (app: Courselore): void => {
             ? "button--blue"
             : "button--transparent"}"
         >
-          <i class="bi bi-key"></i>
+          <i
+            class="bi ${req.path.endsWith("/settings/update-email-and-password")
+              ? "bi-key-fill"
+              : "bi-key"}"
+          ></i>
           Update Email & Password
         </a>
         <a
@@ -583,7 +587,11 @@ export default (app: Courselore): void => {
             ? "button--blue"
             : "button--transparent"}"
         >
-          <i class="bi bi-bell"></i>
+          <i
+            class="bi ${req.path.endsWith("/settings/notifications-preferences")
+              ? "bi-bell-fill"
+              : "bi-bell"}"
+          ></i>
           Notifications Preferences
         </a>
       `,
@@ -880,7 +888,7 @@ export default (app: Courselore): void => {
                 <button
                   class="button button--full-width-on-small-screen button--blue"
                 >
-                  <i class="bi bi-pencil"></i>
+                  <i class="bi bi-pencil-fill"></i>
                   Update Profile
                 </button>
               </div>
@@ -1055,7 +1063,7 @@ export default (app: Courselore): void => {
                 <button
                   class="button button--full-width-on-small-screen button--blue"
                 >
-                  <i class="bi bi-key"></i>
+                  <i class="bi bi-pencil-fill"></i>
                   Update Email
                 </button>
               </div>
@@ -1113,7 +1121,7 @@ export default (app: Courselore): void => {
                 <button
                   class="button button--full-width-on-small-screen button--blue"
                 >
-                  <i class="bi bi-key"></i>
+                  <i class="bi bi-pencil-fill"></i>
                   Update Password
                 </button>
               </div>
@@ -1336,7 +1344,7 @@ export default (app: Courselore): void => {
                 <button
                   class="button button--full-width-on-small-screen button--blue"
                 >
-                  <i class="bi bi-pencil"></i>
+                  <i class="bi bi-pencil-fill"></i>
                   Update Notifications Preferences
                 </button>
               </div>

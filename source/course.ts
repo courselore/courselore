@@ -797,7 +797,7 @@ export default (app: Courselore): void => {
                       ? "button--transparent"
                       : "button--blue"}"
                   >
-                    <i class="bi bi-chat-left-text"></i>
+                    <i class="bi bi-chat-left-text-fill"></i>
                     Start the First Conversation
                   </a>
                 </div>
@@ -1013,7 +1013,11 @@ export default (app: Courselore): void => {
                   ? "button--blue"
                   : "button--transparent"}"
               >
-                <i class="bi bi-tags"></i>
+                <i class="bi ${req.path.endsWith(
+                  "/settings/tags"
+                )
+                  ? "bi-tags-fill"
+                  : "bi-tags"}"></i>
                 Tags
               </a>
               <a
@@ -1025,7 +1029,11 @@ export default (app: Courselore): void => {
                   ? "button--blue"
                   : "button--transparent"}"
               >
-                <i class="bi bi-person-plus"></i>
+                <i class="bi ${req.path.endsWith(
+                  "/settings/invitations"
+                )
+                  ? "bi-person-plus-fill"
+                  : "bi-person-plus"}"></i>
                 Invitations
               </a>
               <a
@@ -1037,7 +1045,11 @@ export default (app: Courselore): void => {
                   ? "button--blue"
                   : "button--transparent"}"
               >
-                <i class="bi bi-people"></i>
+                <i class="bi ${req.path.endsWith(
+                  "/settings/enrollments"
+                )
+                  ? "bi-people-fill"
+                  : "bi-people"}"></i>
                 Enrollments
               </a>
               <a
@@ -1049,7 +1061,11 @@ export default (app: Courselore): void => {
                   ? "button--blue"
                   : "button--transparent"}"
               >
-                <i class="bi bi-person"></i>
+                <i class="bi ${req.path.endsWith(
+                  "/settings/your-enrollment"
+                )
+                  ? "bi-person-fill"
+                  : "bi-person"}"></i>
                 Your Enrollment
               </a>
             `
@@ -1186,7 +1202,7 @@ export default (app: Courselore): void => {
                 <button
                   class="button button--full-width-on-small-screen button--blue"
                 >
-                  <i class="bi bi-pencil"></i>
+                  <i class="bi bi-pencil-fill"></i>
                   Update Course Information
                 </button>
               </div>
@@ -1741,7 +1757,7 @@ export default (app: Courselore): void => {
                 <button
                   class="button button--full-width-on-small-screen button--blue"
                 >
-                  <i class="bi bi-pencil"></i>
+                  <i class="bi bi-pencil-fill"></i>
                   Update Tags
                 </button>
               </div>
@@ -2163,14 +2179,14 @@ export default (app: Courselore): void => {
                 <button
                   class="button--create-invitation button button--full-width-on-small-screen button--blue"
                 >
-                  <i class="bi bi-person-plus"></i>
+                  <i class="bi bi-person-plus-fill"></i>
                   Create Invitation
                 </button>
                 <button
                   class="button--send-invitation-emails button button--full-width-on-small-screen button--blue"
                   hidden
                 >
-                  <i class="bi bi-envelope"></i>
+                  <i class="bi bi-envelope-fill"></i>
                   Send Invitation Emails
                 </button>
               </div>
@@ -3817,7 +3833,7 @@ export default (app: Courselore): void => {
                 <button
                   class="button button--full-width-on-small-screen button--blue"
                 >
-                  <i class="bi bi-pencil"></i>
+                  <i class="bi bi-pencil-fill"></i>
                   Update Your Enrollment
                 </button>
               </div>
@@ -4122,7 +4138,7 @@ export default (app: Courselore): void => {
                 )}"
                 class="button button--blue"
               >
-                <i class="bi bi-person-plus"></i>
+                <i class="bi bi-person-plus-fill"></i>
                 Sign up
               </a>
               <a

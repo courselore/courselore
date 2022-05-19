@@ -419,7 +419,7 @@ export default async (app: Courselore): Promise<void> => {
                                   width: 100%;
                                 `)}"
                               >
-                                <i class="bi bi-palette"></i>
+                                <i class="bi bi-palette-fill"></i>
                                 Update Accent Color
                               </a>
                             </div>
@@ -504,7 +504,7 @@ export default async (app: Courselore): Promise<void> => {
                                         width: 100%;
                                       `)}"
                                     >
-                                      <i class="bi bi-easel"></i>
+                                      <i class="bi bi-easel-fill"></i>
                                       Create Demonstration Data
                                     </button>
                                   </form>
@@ -2429,7 +2429,11 @@ export default async (app: Courselore): Promise<void> => {
                                         ? "button--transparent"
                                         : "button--blue"}"
                                     >
-                                      <i class="bi bi-chat-left-text"></i>
+                                      <i class="bi ${req.path.includes(
+                                        "/settings/"
+                                      )
+                                        ? "bi-chat-left-text"
+                                        : "bi-chat-left-text-fill"}"></i>
                                       Conversations
                                     </a>
                                     <a

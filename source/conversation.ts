@@ -2757,7 +2757,7 @@ export default (app: Courselore): void => {
                     };
                   `}"
                 >
-                  <i class="bi bi-chat-left-text"></i>
+                  <i class="bi bi-chat-left-text-fill"></i>
                   Start Conversation
                 </button>
               </div>
@@ -6356,7 +6356,7 @@ export default (app: Courselore): void => {
                                                       (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });                                  
                                                     `}"
                                                   >
-                                                    <i class="bi bi-pencil"></i>
+                                                    <i class="bi bi-pencil-fill"></i>
                                                     Update Message
                                                   </button>
                                                   <button
@@ -6764,7 +6764,7 @@ export default (app: Courselore): void => {
                             `}"
                           >
                             <i
-                              class="bi bi-send"
+                              class="bi bi-send-fill"
                               css="${res.locals.localCSS(css`
                                 position: relative;
                                 top: var(--space--px);
@@ -6895,7 +6895,7 @@ export default (app: Courselore): void => {
                         (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });    
                       `}"
                     >
-                      <i class="bi bi-send"></i>
+                      <i class="bi bi-send-fill"></i>
                       Send Message
                     </button>
                   </div>

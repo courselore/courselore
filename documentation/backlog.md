@@ -2,10 +2,13 @@
 
 ### User Interface Improvements
 
-- `button--blue`
 - `button--green`
 - `button--rose`
 - `button--amber`
+
+---
+
+- https://github.com/twbs/icons/issues/1322
 
 ---
 

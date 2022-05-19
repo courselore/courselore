@@ -953,7 +953,7 @@ export default (app: Courselore): void => {
               />
             </label>
             <button class="button button--blue">
-              <i class="bi bi-key"></i>
+              <i class="bi bi-key-fill"></i>
               Reset Password
             </button>
           </form>
@@ -1121,7 +1121,7 @@ export default (app: Courselore): void => {
               />
             </label>
             <button class="button button--blue">
-              <i class="bi bi-person-plus"></i>
+              <i class="bi bi-person-plus-fill"></i>
               Sign up
             </button>
           </form>
