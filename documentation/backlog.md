@@ -18,6 +18,51 @@
 
 ---
 
+```
+<div
+                  css="${res.locals.localCSS(css`
+                    font-size: var(--font-size--xs);
+                    line-height: var(--line-height--xs);
+                    display: flex;
+                    gap: var(--space--4);
+                  `)}"
+                >
+                  $${res.locals.enrollment.role === "student"
+                    ? html`
+                        <a
+                          href="${app.locals.options.baseURL}/courses/${res
+                            .locals.course
+                            .reference}/conversations/new${qs.stringify(
+                            {
+                              conversations: req.query.conversations,
+                              newConversation: { type: "question" },
+                            },
+                            { addQueryPrefix: true }
+                          )}"
+                          class="button button--blue"
+                        >
+                          $${app.locals.partials.conversationTypeIcon.question
+                            .fill}
+                          Ask a Question
+                        </a>
+                      `
+                    : html``}
+                  <a
+                    href="${app.locals.options.baseURL}/courses/${res.locals
+                      .course.reference}/conversations/new${qs.stringify(
+                      { conversations: req.query.conversations },
+                      { addQueryPrefix: true }
+                    )}"
+                    class="button button--transparent"
+                  >
+                    <i class="bi bi-chat-left-text"></i>
+                    Start a Conversation
+                  </a>
+                </div>
+```
+
+---
+
 - Drafts:
   - Mix drafts with other conversations on sidebar.
     - `TODO`
