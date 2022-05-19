@@ -290,6 +290,15 @@ export default async (app: Courselore): Promise<void> => {
               conversationReference,
             });
             if (conversation === undefined) continue;
+            const url = new URL(href);
+            url.search = qs.stringify(
+              {
+                ...Object.fromEntries(url.searchParams),
+                conversations: req.query.conversations,
+              },
+              { addQueryPrefix: true }
+            );
+            element.setAttribute("href", url.href);
             if (messageReference === undefined) {
               element.textContent = `#${conversation.reference}`;
               continue;

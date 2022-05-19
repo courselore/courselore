@@ -5,9 +5,6 @@
 - Drafts:
   - Query parameters allowlist instead of blocklist.
     - Test:
-      - Invitation pre-fill on authentication.
-      - “See conversations with this tag”
-      - `#references` in messages
       - Sidebar filters
       - Search
       - Links to conversations
