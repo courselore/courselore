@@ -6,7 +6,6 @@
   - Hide search bar when unneeded
   - Make the “resolved/unresolved” filters more discoverable.
   - Add filters for conversations with unread messages.
-  - “Start a Conversation” → “Ask a Question”
   - Quick filters:
     - Staff:
       - Unresolved questions
