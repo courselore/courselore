@@ -2,10 +2,6 @@
 
 ### User Interface Improvements
 
-- https://github.com/twbs/icons/issues/1322
-
----
-
 - Sidebar:
   - Hide search bar when unneeded
   - Make the “resolved/unresolved” filters more discoverable.
@@ -545,6 +541,7 @@ const { app, BrowserWindow } = require("electron");
   - Different MIME Content-Types didn’t help.
   - It appears that that icon only means “network activity is happening,” in which case, it’s true, and it’s actually the desired behavior.
 - In Safari iOS, the address bar never collapses because of the way we’re doing panes.
+- Add `-fill` to journal icons: https://github.com/twbs/icons/issues/1322
 
 ### Design & Accessibility
 
