@@ -1332,7 +1332,7 @@ export default async (app: Courselore): Promise<void> => {
             }
           }
 
-          ${["blue", "green", "rose", "amber"].map(
+          ${["blue", "rose", "amber"].map(
             (color) => css`
               &.button--${color} {
                 color: var(--color--${color}--50);
@@ -2429,11 +2429,13 @@ export default async (app: Courselore): Promise<void> => {
                                         ? "button--transparent"
                                         : "button--blue"}"
                                     >
-                                      <i class="bi ${req.path.includes(
-                                        "/settings/"
-                                      )
-                                        ? "bi-chat-left-text"
-                                        : "bi-chat-left-text-fill"}"></i>
+                                      <i
+                                        class="bi ${req.path.includes(
+                                          "/settings/"
+                                        )
+                                          ? "bi-chat-left-text"
+                                          : "bi-chat-left-text-fill"}"
+                                      ></i>
                                       Conversations
                                     </a>
                                     <a
