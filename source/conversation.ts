@@ -720,6 +720,7 @@ export default (app: Courselore): void => {
                           line-height: var(--line-height--xs);
                           display: flex;
                           justify-content: space-between;
+                          gap: var(--space--2);
                         `)}"
                       >
                         <a
