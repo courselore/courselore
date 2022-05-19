@@ -2,10 +2,6 @@
 
 ### User Interface Improvements
 
-- `button--amber`
-
----
-
 - https://github.com/twbs/icons/issues/1322
 
 ---

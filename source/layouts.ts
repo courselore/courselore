@@ -2245,7 +2245,7 @@ export default async (app: Courselore): Promise<void> => {
                             width: 100%;
                           `)}"
                         >
-                          <i class="bi bi-easel"></i>
+                          <i class="bi bi-easel-fill"></i>
                           Create Demonstration Data
                         </button>
                       </form>
@@ -2308,7 +2308,7 @@ export default async (app: Courselore): Promise<void> => {
                             width: 100%;
                           `)}"
                         >
-                          <i class="bi bi-easel"></i>
+                          <i class="bi bi-easel-fill"></i>
                           Create Demonstration Data
                         </button>
                       </form>
