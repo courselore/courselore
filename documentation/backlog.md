@@ -3,15 +3,8 @@
 ### User Interface Improvements
 
 - Drafts:
-  - Query parameters allowlist instead of blocklist.
-    - Test:
-      - Sidebar filters
-      - Search
-      - Links to conversations
-      - New conversation
-      - Drafts
-  - `TODO`
   - Mix drafts with other conversations on sidebar.
+    - `TODO`
     - Group them together?
     - Visually distinct (grayed out).
   - Search.
