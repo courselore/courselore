@@ -15,9 +15,6 @@
       - Questions
       - Conversations with unread messages
   - Make it fixed, scroll just the list of conversations
-  - Scroll the conversations list to the current conversation doesn’t work on mobile.
-    - Maybe this isn’t relevant now that we turned the “Conversations” menu on mobile into a link that points at `/courses/<courseReference>`?
-    - Remember that this only applies to deep links into conversations.
 
 ---
 
