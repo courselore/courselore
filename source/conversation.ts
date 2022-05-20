@@ -730,7 +730,12 @@ export default (app: Courselore): void => {
                         <div
                           css="${res.locals.localCSS(css`
                             display: flex;
-                            gap: var(--space--4);
+                            @media (max-width: 379px) {
+                              gap: var(--space--2);
+                            }
+                            @media (min-width: 380px) {
+                              gap: var(--space--4);
+                            }
                           `)}"
                         >
                           <a
