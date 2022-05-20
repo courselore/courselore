@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import util from "node:util";
 import express from "express";
 import qs from "qs";
 import { sql } from "@leafac/sqlite";
@@ -61,6 +62,7 @@ export type ConversationLayout = ({
         conversationsPage?: string;
         search?: string;
         filters?: {
+          quick?: "true";
           types?: ConversationType[];
           isResolved?: "true" | "false";
           isPinned?: "true" | "false";
@@ -785,13 +787,59 @@ export default (app: Courselore): void => {
                   >
                     $${res.locals.enrollment.role === "staff"
                       ? html`
-                          <a
-                            href="TODO"
-                            class="button button--tight button--tight--inline button--transparent"
-                          >
-                            <i class="bi bi-patch-exclamation"></i>
-                            Unresolved Questions
-                          </a>
+                          $${!util.isDeepStrictEqual(
+                            req.query.conversations?.filters,
+                            {
+                              quick: "true",
+                              types: ["question"],
+                              isResolved: "false",
+                            }
+                          )
+                            ? html`
+                                <a
+                                  href="${app.locals.options
+                                    .baseURL}${req.path}${qs.stringify(
+                                    {
+                                      conversations: {
+                                        filters: {
+                                          quick: "true",
+                                          types: ["question"],
+                                          isResolved: "false",
+                                        },
+                                      },
+                                      messages: req.query.messages,
+                                      newConversation:
+                                        req.query.newConversation,
+                                    },
+                                    {
+                                      addQueryPrefix: true,
+                                    }
+                                  )}"
+                                  class="button button--tight button--tight--inline button--transparent"
+                                >
+                                  <i class="bi bi-patch-exclamation"></i>
+                                  Unresolved Questions
+                                </a>
+                              `
+                            : html`
+                                <a
+                                  href="${app.locals.options
+                                    .baseURL}${req.path}${qs.stringify(
+                                    {
+                                      messages: req.query.messages,
+                                      newConversation:
+                                        req.query.newConversation,
+                                    },
+                                    {
+                                      addQueryPrefix: true,
+                                    }
+                                  )}"
+                                  class="button button--tight button--tight--inline button--transparent text--rose"
+                                >
+                                  <i class="bi bi-patch-exclamation-fill"></i>
+                                  Unresolved Questions
+                                </a>
+                              `}
                         `
                       : html`
                           <a
