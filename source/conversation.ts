@@ -648,7 +648,6 @@ export default (app: Courselore): void => {
               @media (prefers-color-scheme: dark) {
                 background-color: var(--color--gray--medium--800);
               }
-              overflow: auto;
               @media (max-width: 899px) {
                 flex: 1;
                 ${sidebarOnSmallScreen
@@ -665,159 +664,161 @@ export default (app: Courselore): void => {
                   border-color: var(--color--gray--medium--700);
                 }
               }
+              display: flex;
+              flex-direction: column;
             `)}"
           >
             <div
-              css="${res.locals.localCSS(css`
-                margin: var(--space--4);
-                @media (max-width: 899px) {
-                  display: flex;
-                  justify-content: center;
-                }
-              `)}"
+              css="${res.locals.localCSS(
+                css`
+                  font-size: var(--font-size--xs);
+                  line-height: var(--line-height--xs);
+                  max-height: var(--space--40);
+                  overflow: auto;
+                  border-bottom: var(--border-width--1) solid
+                    var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    border-color: var(--color--gray--medium--700);
+                  }
+                `
+              )}"
             >
               <div
                 css="${res.locals.localCSS(css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--2);
+                  margin: var(--space--4);
                   @media (max-width: 899px) {
-                    flex: 1;
-                    min-width: var(--width--0);
-                    max-width: var(--width--prose);
+                    display: flex;
+                    justify-content: center;
                   }
                 `)}"
               >
-                $${res.locals.enrollment.role === "staff"
-                  ? html`
-                      <div
-                        css="${res.locals.localCSS(css`
-                          font-size: var(--font-size--xs);
-                          line-height: var(--line-height--xs);
-                          display: flex;
-                          justify-content: center;
-                        `)}"
-                      >
-                        <a
-                          href="${app.locals.options.baseURL}/courses/${res
-                            .locals.course
-                            .reference}/conversations/new${qs.stringify(
-                            { conversations: req.query.conversations },
-                            { addQueryPrefix: true }
-                          )}"
-                          class="button button--blue"
-                        >
-                          <i class="bi bi-chat-left-text-fill"></i>
-                          Start a New Conversation
-                        </a>
-                      </div>
-                    `
-                  : html`
-                      <div
-                        css="${res.locals.localCSS(css`
-                          font-size: var(--font-size--xs);
-                          line-height: var(--line-height--xs);
-                          display: flex;
-                          gap: var(--space--2);
-                          justify-content: space-between;
-                        `)}"
-                      >
-                        <a
-                          href="${app.locals.options.baseURL}/courses/${res
-                            .locals.course
-                            .reference}/conversations/new${qs.stringify(
-                            {
-                              conversations: req.query.conversations,
-                              newConversation: { type: "question" },
-                            },
-                            { addQueryPrefix: true }
-                          )}"
-                          class="button button--blue"
-                        >
-                          $${app.locals.partials.conversationTypeIcon.question
-                            .fill}
-                          Ask a Question
-                        </a>
-                        <a
-                          href="${app.locals.options.baseURL}/courses/${res
-                            .locals.course
-                            .reference}/conversations/new${qs.stringify(
-                            { conversations: req.query.conversations },
-                            { addQueryPrefix: true }
-                          )}"
-                          class="button button--transparent"
-                        >
-                          <i class="bi bi-chat-left-text"></i>
-                          Start a New Conversation
-                        </a>
-                      </div>
-                    `}
-
-                <hr class="separator" />
-
                 <div
                   css="${res.locals.localCSS(css`
-                    font-size: var(--font-size--xs);
-                    line-height: var(--line-height--xs);
                     display: flex;
-                    column-gap: var(--space--4);
-                    row-gap: var(--space--2);
-                    flex-wrap: wrap;
+                    flex-direction: column;
+                    gap: var(--space--2);
+                    @media (max-width: 899px) {
+                      flex: 1;
+                      min-width: var(--width--0);
+                      max-width: var(--width--prose);
+                    }
                   `)}"
                 >
                   $${res.locals.enrollment.role === "staff"
                     ? html`
-                        <a
-                          href="TODO"
-                          class="button button--tight button--tight--inline button--transparent"
+                        <div
+                          css="${res.locals.localCSS(css`
+                            display: flex;
+                            justify-content: center;
+                          `)}"
                         >
-                          <i class="bi bi-patch-exclamation"></i>
-                          Unresolved Questions
-                        </a>
+                          <a
+                            href="${app.locals.options.baseURL}/courses/${res
+                              .locals.course
+                              .reference}/conversations/new${qs.stringify(
+                              { conversations: req.query.conversations },
+                              { addQueryPrefix: true }
+                            )}"
+                            class="button button--blue"
+                          >
+                            <i class="bi bi-chat-left-text-fill"></i>
+                            Start a New Conversation
+                          </a>
+                        </div>
                       `
                     : html`
-                        <a
-                          href="TODO"
-                          class="button button--tight button--tight--inline button--transparent"
+                        <div
+                          css="${res.locals.localCSS(css`
+                            display: flex;
+                            gap: var(--space--2);
+                            justify-content: space-between;
+                          `)}"
                         >
-                          <i class="bi bi-patch-question"></i>
-                          Questions
-                        </a>
+                          <a
+                            href="${app.locals.options.baseURL}/courses/${res
+                              .locals.course
+                              .reference}/conversations/new${qs.stringify(
+                              {
+                                conversations: req.query.conversations,
+                                newConversation: { type: "question" },
+                              },
+                              { addQueryPrefix: true }
+                            )}"
+                            class="button button--blue"
+                          >
+                            $${app.locals.partials.conversationTypeIcon.question
+                              .fill}
+                            Ask a Question
+                          </a>
+                          <a
+                            href="${app.locals.options.baseURL}/courses/${res
+                              .locals.course
+                              .reference}/conversations/new${qs.stringify(
+                              { conversations: req.query.conversations },
+                              { addQueryPrefix: true }
+                            )}"
+                            class="button button--transparent"
+                          >
+                            <i class="bi bi-chat-left-text"></i>
+                            Start a New Conversation
+                          </a>
+                        </div>
                       `}
-                  <a
-                    href="TODO"
-                    class="button button--tight button--tight--inline button--transparent"
-                  >
-                    <i class="bi bi-sticky"></i>
-                    Notes
-                  </a>
-                  <a
-                    href="TODO"
-                    class="button button--tight button--tight--inline button--transparent"
-                  >
-                    <i class="bi bi-cup"></i>
-                    Chats
-                  </a>
-                  <a
-                    href="TODO"
-                    class="button button--tight button--tight--inline button--transparent"
-                  >
-                    <i class="bi bi-eyeglasses"></i>
-                    Unread
-                  </a>
-                </div>
 
-                <hr class="separator" />
+                  <hr class="separator" />
 
-                <div
-                  css="${res.locals.localCSS(css`
-                    font-size: var(--font-size--xs);
-                    line-height: var(--line-height--xs);
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--2);
-                  `)}"
-                >
+                  <div
+                    css="${res.locals.localCSS(css`
+                      display: flex;
+                      column-gap: var(--space--4);
+                      row-gap: var(--space--2);
+                      flex-wrap: wrap;
+                    `)}"
+                  >
+                    $${res.locals.enrollment.role === "staff"
+                      ? html`
+                          <a
+                            href="TODO"
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <i class="bi bi-patch-exclamation"></i>
+                            Unresolved Questions
+                          </a>
+                        `
+                      : html`
+                          <a
+                            href="TODO"
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <i class="bi bi-patch-question"></i>
+                            Questions
+                          </a>
+                        `}
+                    <a
+                      href="TODO"
+                      class="button button--tight button--tight--inline button--transparent"
+                    >
+                      <i class="bi bi-sticky"></i>
+                      Notes
+                    </a>
+                    <a
+                      href="TODO"
+                      class="button button--tight button--tight--inline button--transparent"
+                    >
+                      <i class="bi bi-cup"></i>
+                      Chats
+                    </a>
+                    <a
+                      href="TODO"
+                      class="button button--tight button--tight--inline button--transparent"
+                    >
+                      <i class="bi bi-eyeglasses"></i>
+                      Unread
+                    </a>
+                  </div>
+
+                  <hr class="separator" />
+
                   <div
                     css="${res.locals.localCSS(css`
                       display: flex;
@@ -1419,216 +1420,252 @@ export default (app: Courselore): void => {
                     </div>
                   </form>
                 </div>
+              </div>
+            </div>
 
-                $${conversationsWithSearchResults.length === 0
-                  ? html`
-                      <hr class="separator" />
+            <div
+              css="${res.locals.localCSS(
+                css`
+                  flex: 1;
+                  overflow: auto;
+                `
+              )}"
+            >
+              <div
+                css="${res.locals.localCSS(css`
+                  margin: var(--space--4);
+                  @media (max-width: 899px) {
+                    display: flex;
+                    justify-content: center;
+                  }
+                `)}"
+              >
+                <div
+                  css="${res.locals.localCSS(css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--2);
+                    @media (max-width: 899px) {
+                      flex: 1;
+                      min-width: var(--width--0);
+                      max-width: var(--width--prose);
+                    }
+                  `)}"
+                >
+                  $${conversationsWithSearchResults.length === 0
+                    ? html`
+                        <hr class="separator" />
 
-                      <div
-                        css="${res.locals.localCSS(css`
-                          display: flex;
-                          flex-direction: column;
-                          align-items: center;
-                        `)}"
-                      >
-                        <div class="decorative-icon">
-                          <i class="bi bi-chat-left-text"></i>
+                        <div
+                          css="${res.locals.localCSS(css`
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                          `)}"
+                        >
+                          <div class="decorative-icon">
+                            <i class="bi bi-chat-left-text"></i>
+                          </div>
+                          <p class="secondary">No conversation found.</p>
                         </div>
-                        <p class="secondary">No conversation found.</p>
-                      </div>
-                    `
-                  : html`
-                      $${conversationsPage > 1
-                        ? html`
-                            <hr class="separator" />
+                      `
+                    : html`
+                        $${conversationsPage > 1
+                          ? html`
+                              <hr class="separator" />
 
-                            <div
-                              css="${res.locals.localCSS(css`
-                                display: flex;
-                                justify-content: center;
-                              `)}"
-                            >
-                              <a
-                                href="${qs.stringify(
-                                  {
-                                    conversations: {
-                                      ...req.query.conversations,
-                                      conversationsPage: conversationsPage - 1,
-                                    },
-                                    messages: req.query.messages,
-                                    newConversation: req.query.newConversation,
-                                  },
-                                  { addQueryPrefix: true }
-                                )}"
-                                class="button button--transparent"
-                              >
-                                <i class="bi bi-arrow-up"></i>
-                                Load Previous Conversations
-                              </a>
-                            </div>
-                          `
-                        : html``}
-
-                      <div
-                        key="conversations"
-                        onload="${javascript`
-                        ${
-                          res.locals.conversation !== undefined
-                            ? javascript`
-                                window.setTimeout(() => {
-                                  if (event?.detail?.previousLocation?.href?.startsWith(${JSON.stringify(
-                                    `${app.locals.options.baseURL}/courses/${res.locals.course.reference}`
-                                  )})) return;
-                                  this.querySelector('[key="conversation--${
-                                    res.locals.conversation.reference
-                                  }"]')?.scrollIntoView({ block: "center" });
-                                });
-                              `
-                            : javascript``
-                        }
-                      `}"
-                      >
-                        $${conversationsWithSearchResults.map(
-                          ({ conversation, searchResult }) => {
-                            const isSelected =
-                              conversation.id === res.locals.conversation?.id;
-                            return html`
                               <div
-                                key="conversation--${conversation.reference}"
+                                css="${res.locals.localCSS(css`
+                                  display: flex;
+                                  justify-content: center;
+                                `)}"
                               >
-                                <hr
-                                  class="separator"
-                                  css="${res.locals.localCSS(css`
-                                    margin: var(--space---px) var(--space--0);
-                                  `)}"
-                                />
                                 <a
-                                  href="${app.locals.options
-                                    .baseURL}/courses/${res.locals.course
-                                    .reference}/conversations/${conversation.reference}${qs.stringify(
+                                  href="${qs.stringify(
                                     {
-                                      conversations: req.query.conversations,
-                                      messages: {
-                                        messageReference:
-                                          searchResult?.message?.reference,
+                                      conversations: {
+                                        ...req.query.conversations,
+                                        conversationsPage:
+                                          conversationsPage - 1,
                                       },
+                                      messages: req.query.messages,
+                                      newConversation:
+                                        req.query.newConversation,
                                     },
                                     { addQueryPrefix: true }
                                   )}"
-                                  class="button ${isSelected
-                                    ? "button--blue"
-                                    : "button--transparent"}"
-                                  css="${res.locals.localCSS(css`
-                                    width: calc(
-                                      var(--space--2) + 100% + var(--space--2)
-                                    );
-                                    padding: var(--space--3) var(--space--2);
-                                    margin-left: var(--space---2);
-                                    position: relative;
-                                    align-items: center;
-                                    ${isSelected
-                                      ? css`
-                                          & + * {
-                                            margin-bottom: var(--space--0);
-                                          }
-                                        `
-                                      : css``}
-                                  `)}"
+                                  class="button button--transparent"
                                 >
-                                  <div
-                                    css="${res.locals.localCSS(css`
-                                      flex: 1;
-                                    `)}"
-                                  >
-                                    $${app.locals.partials.conversation({
-                                      req,
-                                      res,
-                                      conversation,
-                                      searchResult,
-                                    })}
-                                  </div>
-                                  <div
-                                    css="${res.locals.localCSS(css`
-                                      width: var(--space--4);
-                                      display: flex;
-                                      justify-content: flex-end;
-                                    `)}"
-                                  >
-                                    $${(() => {
-                                      const unreadCount =
-                                        conversation.messagesCount -
-                                        conversation.readingsCount;
-                                      return unreadCount === 0 ||
-                                        conversation.id ===
-                                          res.locals.conversation?.id
-                                        ? html``
-                                        : html`
-                                            <button
-                                              class="button button--tight button--blue"
-                                              css="${res.locals.localCSS(css`
-                                                font-size: var(
-                                                  --font-size--2xs
-                                                );
-                                                line-height: var(
-                                                  --line-height--2xs
-                                                );
-                                              `)}"
-                                              onload="${javascript`
-                                                (this.tooltip ??= tippy(this)).setProps({
-                                                  touch: false,
-                                                  content: "Mark as Read",
-                                                });
-                                                       
-                                                this.onclick = async (event) => {
-                                                  event.preventDefault();
-                                                  event.stopImmediatePropagation();
-                                                  await fetch(this.closest("a").getAttribute("href"));
-                                                  this.remove();
-                                                };
-                                              `}"
-                                            >
-                                              ${unreadCount.toString()}
-                                            </button>
-                                          `;
-                                    })()}
-                                  </div>
+                                  <i class="bi bi-arrow-up"></i>
+                                  Load Previous Conversations
                                 </a>
                               </div>
-                            `;
+                            `
+                          : html``}
+
+                        <div
+                          key="conversations"
+                          onload="${javascript`
+                          ${
+                            res.locals.conversation !== undefined
+                              ? javascript`
+                                  window.setTimeout(() => {
+                                    if (event?.detail?.previousLocation?.href?.startsWith(${JSON.stringify(
+                                      `${app.locals.options.baseURL}/courses/${res.locals.course.reference}`
+                                    )})) return;
+                                    this.querySelector('[key="conversation--${
+                                      res.locals.conversation.reference
+                                    }"]')?.scrollIntoView({ block: "center" });
+                                  });
+                                `
+                              : javascript``
                           }
-                        )}
-                      </div>
-                      $${moreConversationsExist
-                        ? html`
-                            <div
-                              css="${res.locals.localCSS(css`
-                                display: flex;
-                                justify-content: center;
-                              `)}"
-                            >
-                              <a
-                                href="${qs.stringify(
-                                  {
-                                    conversations: {
-                                      ...req.query.conversations,
-                                      conversationsPage: conversationsPage + 1,
-                                    },
-                                    messages: req.query.messages,
-                                    newConversation: req.query.newConversation,
-                                  },
-                                  {
-                                    addQueryPrefix: true,
-                                  }
-                                )}"
-                                class="button button--transparent"
+                        `}"
+                        >
+                          $${conversationsWithSearchResults.map(
+                            ({ conversation, searchResult }) => {
+                              const isSelected =
+                                conversation.id === res.locals.conversation?.id;
+                              return html`
+                                <div
+                                  key="conversation--${conversation.reference}"
+                                >
+                                  <hr
+                                    class="separator"
+                                    css="${res.locals.localCSS(css`
+                                      margin: var(--space---px) var(--space--0);
+                                    `)}"
+                                  />
+                                  <a
+                                    href="${app.locals.options
+                                      .baseURL}/courses/${res.locals.course
+                                      .reference}/conversations/${conversation.reference}${qs.stringify(
+                                      {
+                                        conversations: req.query.conversations,
+                                        messages: {
+                                          messageReference:
+                                            searchResult?.message?.reference,
+                                        },
+                                      },
+                                      { addQueryPrefix: true }
+                                    )}"
+                                    class="button ${isSelected
+                                      ? "button--blue"
+                                      : "button--transparent"}"
+                                    css="${res.locals.localCSS(css`
+                                      width: calc(
+                                        var(--space--2) + 100% + var(--space--2)
+                                      );
+                                      padding: var(--space--3) var(--space--2);
+                                      margin-left: var(--space---2);
+                                      position: relative;
+                                      align-items: center;
+                                      ${isSelected
+                                        ? css`
+                                            & + * {
+                                              margin-bottom: var(--space--0);
+                                            }
+                                          `
+                                        : css``}
+                                    `)}"
+                                  >
+                                    <div
+                                      css="${res.locals.localCSS(css`
+                                        flex: 1;
+                                      `)}"
+                                    >
+                                      $${app.locals.partials.conversation({
+                                        req,
+                                        res,
+                                        conversation,
+                                        searchResult,
+                                      })}
+                                    </div>
+                                    <div
+                                      css="${res.locals.localCSS(css`
+                                        width: var(--space--4);
+                                        display: flex;
+                                        justify-content: flex-end;
+                                      `)}"
+                                    >
+                                      $${(() => {
+                                        const unreadCount =
+                                          conversation.messagesCount -
+                                          conversation.readingsCount;
+                                        return unreadCount === 0 ||
+                                          conversation.id ===
+                                            res.locals.conversation?.id
+                                          ? html``
+                                          : html`
+                                              <button
+                                                class="button button--tight button--blue"
+                                                css="${res.locals.localCSS(css`
+                                                  font-size: var(
+                                                    --font-size--2xs
+                                                  );
+                                                  line-height: var(
+                                                    --line-height--2xs
+                                                  );
+                                                `)}"
+                                                onload="${javascript`
+                                                  (this.tooltip ??= tippy(this)).setProps({
+                                                    touch: false,
+                                                    content: "Mark as Read",
+                                                  });
+                                                          
+                                                  this.onclick = async (event) => {
+                                                    event.preventDefault();
+                                                    event.stopImmediatePropagation();
+                                                    await fetch(this.closest("a").getAttribute("href"));
+                                                    this.remove();
+                                                  };
+                                                `}"
+                                              >
+                                                ${unreadCount.toString()}
+                                              </button>
+                                            `;
+                                      })()}
+                                    </div>
+                                  </a>
+                                </div>
+                              `;
+                            }
+                          )}
+                        </div>
+                        $${moreConversationsExist
+                          ? html`
+                              <div
+                                css="${res.locals.localCSS(css`
+                                  display: flex;
+                                  justify-content: center;
+                                `)}"
                               >
-                                <i class="bi bi-arrow-down"></i>
-                                Load Next Conversations
-                              </a>
-                            </div>
-                          `
-                        : html``}
-                    `}
+                                <a
+                                  href="${qs.stringify(
+                                    {
+                                      conversations: {
+                                        ...req.query.conversations,
+                                        conversationsPage:
+                                          conversationsPage + 1,
+                                      },
+                                      messages: req.query.messages,
+                                      newConversation:
+                                        req.query.newConversation,
+                                    },
+                                    {
+                                      addQueryPrefix: true,
+                                    }
+                                  )}"
+                                  class="button button--transparent"
+                                >
+                                  <i class="bi bi-arrow-down"></i>
+                                  Load Next Conversations
+                                </a>
+                              </div>
+                            `
+                          : html``}
+                      `}
+                </div>
               </div>
             </div>
           </div>
