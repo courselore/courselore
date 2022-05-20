@@ -768,6 +768,55 @@ export default (app: Courselore): void => {
                   <div
                     css="${res.locals.localCSS(css`
                       display: flex;
+                      column-gap: var(--space--4);
+                      row-gap: var(--space--2);
+                      flex-wrap: wrap;
+                    `)}"
+                  >
+                    $${res.locals.enrollment.role === "staff"
+                      ? html`
+                          <a
+                            href="TODO"
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <i class="bi bi-patch-exclamation"></i>
+                            Unresolved Questions
+                          </a>
+                        `
+                      : html`
+                          <a
+                            href="TODO"
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <i class="bi bi-patch-question"></i>
+                            Questions
+                          </a>
+                        `}
+                    <a
+                      href="TODO"
+                      class="button button--tight button--tight--inline button--transparent"
+                    >
+                      <i class="bi bi-sticky"></i>
+                      Notes
+                    </a>
+                    <a
+                      href="TODO"
+                      class="button button--tight button--tight--inline button--transparent"
+                    >
+                      <i class="bi bi-cup"></i>
+                      Chats
+                    </a>
+                    <a
+                      href="TODO"
+                      class="button button--tight button--tight--inline button--transparent"
+                    >
+                      <i class="bi bi-eyeglasses"></i>
+                      Unread
+                    </a>
+                  </div>
+                  <div
+                    css="${res.locals.localCSS(css`
+                      display: flex;
                       gap: var(--space--4);
                       align-items: center;
                       justify-content: space-between;
@@ -783,7 +832,7 @@ export default (app: Courselore): void => {
                       class="button button--tight button--tight--inline button--transparent"
                     >
                       <i class="bi bi-funnel"></i>
-                      Filter
+                      Filters
                     </button>
                     $${req.query.conversations === undefined &&
                     conversationsWithSearchResults.length > 0 &&

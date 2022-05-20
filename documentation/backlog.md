@@ -3,11 +3,6 @@
 ### User Interface Improvements
 
 - Sidebar:
-  - Quick filters
-    - Unresolved questions (All questions for students)
-    - Notes
-    - Chats
-    - Unread
   - Filters
     - Make the “resolved/unresolved” filters more discoverable.
     - Conversations with unread messages.
