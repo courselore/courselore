@@ -3,16 +3,16 @@
 ### User Interface Improvements
 
 - Sidebar:
-  - Hide search bar when unneeded
-  - Make the “resolved/unresolved” filters more discoverable.
-  - Add filters for conversations with unread messages.
-  - Quick filters:
+  - Quick filters
     - Staff:
       - Unresolved questions
       - Conversations with unread messages
     - Students:
       - Questions
       - Conversations with unread messages
+  - Filters
+    - Make the “resolved/unresolved” filters more discoverable.
+    - Add filters for conversations with unread messages.
   - Make it fixed, scroll just the list of conversations
 
 ---
