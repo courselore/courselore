@@ -822,7 +822,7 @@ export default (app: Courselore): void => {
                     css="${res.locals.localCSS(css`
                       display: flex;
                       column-gap: var(--space--4);
-                      row-gap: var(--space--0-5);
+                      row-gap: var(--space--2);
                       flex-wrap: wrap;
                     `)}"
                   >
@@ -1491,6 +1491,8 @@ export default (app: Courselore): void => {
                                   Load Previous Conversations
                                 </a>
                               </div>
+
+                              <hr class="separator" />
                             `
                           : html``}
 
@@ -1636,6 +1638,8 @@ export default (app: Courselore): void => {
                         </div>
                         $${moreConversationsExist
                           ? html`
+                              <hr class="separator" />
+
                               <div
                                 css="${res.locals.localCSS(css`
                                   display: flex;
