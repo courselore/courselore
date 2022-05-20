@@ -671,8 +671,6 @@ export default (app: Courselore): void => {
             <div
               css="${res.locals.localCSS(
                 css`
-                  font-size: var(--font-size--xs);
-                  line-height: var(--line-height--xs);
                   max-height: var(--space--40);
                   overflow: auto;
                   border-bottom: var(--border-width--1) solid
@@ -708,6 +706,8 @@ export default (app: Courselore): void => {
                     ? html`
                         <div
                           css="${res.locals.localCSS(css`
+                            font-size: var(--font-size--xs);
+                            line-height: var(--line-height--xs);
                             display: flex;
                             justify-content: center;
                           `)}"
@@ -729,6 +729,8 @@ export default (app: Courselore): void => {
                     : html`
                         <div
                           css="${res.locals.localCSS(css`
+                            font-size: var(--font-size--xs);
+                            line-height: var(--line-height--xs);
                             display: flex;
                             @media (max-width: 379px) {
                               gap: var(--space--2);
@@ -773,6 +775,8 @@ export default (app: Courselore): void => {
 
                   <div
                     css="${res.locals.localCSS(css`
+                      font-size: var(--font-size--xs);
+                      line-height: var(--line-height--xs);
                       display: flex;
                       column-gap: var(--space--4);
                       row-gap: var(--space--2);
@@ -825,6 +829,8 @@ export default (app: Courselore): void => {
 
                   <div
                     css="${res.locals.localCSS(css`
+                      font-size: var(--font-size--xs);
+                      line-height: var(--line-height--xs);
                       display: flex;
                       column-gap: var(--space--4);
                       row-gap: var(--space--2);
@@ -894,6 +900,8 @@ export default (app: Courselore): void => {
                     )}"
                     novalidate
                     css="${res.locals.localCSS(css`
+                      font-size: var(--font-size--xs);
+                      line-height: var(--line-height--xs);
                       display: flex;
                       flex-direction: column;
                       gap: var(--space--1);
