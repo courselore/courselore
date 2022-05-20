@@ -866,10 +866,6 @@ export default (app: Courselore): void => {
                             />
                             <button
                               class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                              css="${res.locals.localCSS(css`
-                                font-size: var(--font-size--xs);
-                                line-height: var(--line-height--xs);
-                              `)}"
                             >
                               <i class="bi bi-check-all"></i>
                               Mark All Conversations as Read

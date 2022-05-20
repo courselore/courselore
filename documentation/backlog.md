@@ -6,7 +6,6 @@
   - Filters
     - Make the “resolved/unresolved” filters more discoverable.
     - Conversations with unread messages.
-  - Make it fixed, scroll just the list of conversations
 
 ---
 
