@@ -730,8 +730,7 @@ export default (app: Courselore): void => {
                         <div
                           css="${res.locals.localCSS(css`
                             display: flex;
-                            gap: var(--space--2);
-                            justify-content: space-between;
+                            gap: var(--space--4);
                           `)}"
                         >
                           <a
@@ -1450,8 +1449,6 @@ export default (app: Courselore): void => {
                 >
                   $${conversationsWithSearchResults.length === 0
                     ? html`
-                        <hr class="separator" />
-
                         <div
                           css="${res.locals.localCSS(css`
                             display: flex;
@@ -1468,8 +1465,6 @@ export default (app: Courselore): void => {
                     : html`
                         $${conversationsPage > 1
                           ? html`
-                              <hr class="separator" />
-
                               <div
                                 css="${res.locals.localCSS(css`
                                   display: flex;
@@ -1501,37 +1496,48 @@ export default (app: Courselore): void => {
 
                         <div
                           key="conversations"
+                          css="${res.locals.localCSS(css`
+                            margin-top: var(--space---2);
+                          `)}"
                           onload="${javascript`
-                          ${
-                            res.locals.conversation !== undefined
-                              ? javascript`
-                                  window.setTimeout(() => {
-                                    if (event?.detail?.previousLocation?.href?.startsWith(${JSON.stringify(
-                                      `${app.locals.options.baseURL}/courses/${res.locals.course.reference}`
-                                    )})) return;
-                                    this.querySelector('[key="conversation--${
-                                      res.locals.conversation.reference
-                                    }"]')?.scrollIntoView({ block: "center" });
-                                  });
-                                `
-                              : javascript``
-                          }
-                        `}"
+                            ${
+                              res.locals.conversation !== undefined
+                                ? javascript`
+                                    window.setTimeout(() => {
+                                      if (event?.detail?.previousLocation?.href?.startsWith(${JSON.stringify(
+                                        `${app.locals.options.baseURL}/courses/${res.locals.course.reference}`
+                                      )})) return;
+                                      this.querySelector('[key="conversation--${
+                                        res.locals.conversation.reference
+                                      }"]')?.scrollIntoView({ block: "center" });
+                                    });
+                                  `
+                                : javascript``
+                            }
+                          `}"
                         >
                           $${conversationsWithSearchResults.map(
-                            ({ conversation, searchResult }) => {
+                            (
+                              { conversation, searchResult },
+                              conversationIndex
+                            ) => {
                               const isSelected =
                                 conversation.id === res.locals.conversation?.id;
                               return html`
                                 <div
                                   key="conversation--${conversation.reference}"
                                 >
-                                  <hr
-                                    class="separator"
-                                    css="${res.locals.localCSS(css`
-                                      margin: var(--space---px) var(--space--0);
-                                    `)}"
-                                  />
+                                  $${conversationIndex === 0
+                                    ? html``
+                                    : html`
+                                        <hr
+                                          class="separator"
+                                          css="${res.locals.localCSS(css`
+                                            margin: var(--space---px)
+                                              var(--space--0);
+                                          `)}"
+                                        />
+                                      `}
                                   <a
                                     href="${app.locals.options
                                       .baseURL}/courses/${res.locals.course
