@@ -6,13 +6,17 @@
   - Quick filters
     - Staff:
       - Unresolved questions
-      - Conversations with unread messages
+      - Notes
+      - Chats
+      - Unread
     - Students:
       - Questions
-      - Conversations with unread messages
+      - Notes
+      - Chats
+      - Unread
   - Filters
     - Make the “resolved/unresolved” filters more discoverable.
-    - Add filters for conversations with unread messages.
+    - Conversations with unread messages.
   - Make it fixed, scroll just the list of conversations
 
 ---
