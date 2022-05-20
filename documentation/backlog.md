@@ -281,6 +281,7 @@ new Notification('Example');
 - `position: sticky` headers (showing author name) in messages?
 - Different states: Open vs archived.
 - “Mark all conversations as read” could work with search & filters, marking as read only the conversations that matched the search & filters.
+- Conversation templates, for example, for bug reports on Meta Courselore.
 
 ### Chat
 
