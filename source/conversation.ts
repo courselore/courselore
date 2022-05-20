@@ -1519,122 +1519,112 @@ export default (app: Courselore): void => {
                           `}"
                         >
                           $${conversationsWithSearchResults.map(
-                            (
-                              { conversation, searchResult },
-                              conversationIndex
-                            ) => {
+                            ({ conversation, searchResult }) => {
                               const isSelected =
                                 conversation.id === res.locals.conversation?.id;
                               return html`
-                                <div
+                                <a
                                   key="conversation--${conversation.reference}"
-                                >
-                                  $${conversationIndex === 0
-                                    ? html``
-                                    : html`
-                                        <hr
-                                          class="separator"
-                                          css="${res.locals.localCSS(css`
-                                            margin: var(--space---px)
-                                              var(--space--0);
-                                          `)}"
-                                        />
-                                      `}
-                                  <a
-                                    href="${app.locals.options
-                                      .baseURL}/courses/${res.locals.course
-                                      .reference}/conversations/${conversation.reference}${qs.stringify(
-                                      {
-                                        conversations: req.query.conversations,
-                                        messages: {
-                                          messageReference:
-                                            searchResult?.message?.reference,
-                                        },
+                                  href="${app.locals.options
+                                    .baseURL}/courses/${res.locals.course
+                                    .reference}/conversations/${conversation.reference}${qs.stringify(
+                                    {
+                                      conversations: req.query.conversations,
+                                      messages: {
+                                        messageReference:
+                                          searchResult?.message?.reference,
                                       },
-                                      { addQueryPrefix: true }
-                                    )}"
-                                    class="button ${isSelected
-                                      ? "button--blue"
-                                      : "button--transparent"}"
+                                    },
+                                    { addQueryPrefix: true }
+                                  )}"
+                                  class="button ${isSelected
+                                    ? "button--blue"
+                                    : "button--transparent"}"
+                                  css="${res.locals.localCSS(css`
+                                    width: calc(
+                                      var(--space--2) + 100% + var(--space--2)
+                                    );
+                                    padding: var(--space--3) var(--space--2);
+                                    margin-left: var(--space---2);
+                                    position: relative;
+                                    align-items: center;
+                                    ${isSelected
+                                      ? css`
+                                          & + * {
+                                            margin-bottom: var(--space--0);
+                                          }
+                                        `
+                                      : css``}
+                                  `)}"
+                                >
+                                  <div
                                     css="${res.locals.localCSS(css`
-                                      width: calc(
-                                        var(--space--2) + 100% + var(--space--2)
-                                      );
-                                      padding: var(--space--3) var(--space--2);
-                                      margin-left: var(--space---2);
-                                      position: relative;
-                                      align-items: center;
-                                      ${isSelected
-                                        ? css`
-                                            & + * {
-                                              margin-bottom: var(--space--0);
-                                            }
-                                          `
-                                        : css``}
+                                      flex: 1;
                                     `)}"
                                   >
-                                    <div
-                                      css="${res.locals.localCSS(css`
-                                        flex: 1;
-                                      `)}"
-                                    >
-                                      $${app.locals.partials.conversation({
-                                        req,
-                                        res,
-                                        conversation,
-                                        searchResult,
-                                      })}
-                                    </div>
-                                    <div
-                                      css="${res.locals.localCSS(css`
-                                        width: var(--space--4);
-                                        display: flex;
-                                        justify-content: flex-end;
-                                      `)}"
-                                    >
-                                      $${(() => {
-                                        const unreadCount =
-                                          conversation.messagesCount -
-                                          conversation.readingsCount;
-                                        return unreadCount === 0 ||
-                                          conversation.id ===
-                                            res.locals.conversation?.id
-                                          ? html``
-                                          : html`
-                                              <button
-                                                class="button button--tight button--blue"
-                                                css="${res.locals.localCSS(css`
-                                                  font-size: var(
-                                                    --font-size--2xs
-                                                  );
-                                                  line-height: var(
-                                                    --line-height--2xs
-                                                  );
-                                                `)}"
-                                                onload="${javascript`
-                                                  (this.tooltip ??= tippy(this)).setProps({
-                                                    touch: false,
-                                                    content: "Mark as Read",
-                                                  });
-                                                          
-                                                  this.onclick = async (event) => {
-                                                    event.preventDefault();
-                                                    event.stopImmediatePropagation();
-                                                    await fetch(this.closest("a").getAttribute("href"));
-                                                    this.remove();
-                                                  };
-                                                `}"
-                                              >
-                                                ${unreadCount.toString()}
-                                              </button>
-                                            `;
-                                      })()}
-                                    </div>
-                                  </a>
-                                </div>
+                                    $${app.locals.partials.conversation({
+                                      req,
+                                      res,
+                                      conversation,
+                                      searchResult,
+                                    })}
+                                  </div>
+                                  <div
+                                    css="${res.locals.localCSS(css`
+                                      width: var(--space--4);
+                                      display: flex;
+                                      justify-content: flex-end;
+                                    `)}"
+                                  >
+                                    $${(() => {
+                                      const unreadCount =
+                                        conversation.messagesCount -
+                                        conversation.readingsCount;
+                                      return unreadCount === 0 ||
+                                        conversation.id ===
+                                          res.locals.conversation?.id
+                                        ? html``
+                                        : html`
+                                            <button
+                                              class="button button--tight button--blue"
+                                              css="${res.locals.localCSS(css`
+                                                font-size: var(
+                                                  --font-size--2xs
+                                                );
+                                                line-height: var(
+                                                  --line-height--2xs
+                                                );
+                                              `)}"
+                                              onload="${javascript`
+                                                (this.tooltip ??= tippy(this)).setProps({
+                                                  touch: false,
+                                                  content: "Mark as Read",
+                                                });
+                                                        
+                                                this.onclick = async (event) => {
+                                                  event.preventDefault();
+                                                  event.stopImmediatePropagation();
+                                                  await fetch(this.closest("a").getAttribute("href"));
+                                                  this.remove();
+                                                };
+                                              `}"
+                                            >
+                                              ${unreadCount.toString()}
+                                            </button>
+                                          `;
+                                    })()}
+                                  </div>
+                                </a>
                               `;
                             }
-                          )}
+                          ).join(html`
+                            <hr
+                              class="separator"
+                              css="${res.locals.localCSS(css`
+                                margin: var(--space---px) var(--space--0);
+                              `)}"
+                            />
+                          `)}
                         </div>
                         $${moreConversationsExist
                           ? html`
