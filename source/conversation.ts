@@ -1285,7 +1285,7 @@ export default (app: Courselore): void => {
                                         conversationType === "question"
                                           ? javascript`
                                               this.onchange = () => {
-                                                this.closest(".filters").querySelector(".filters--resolved").hidden = !this.checked;
+                                                this.closest('[key="filters"]').querySelector('[key="filters--resolved"]').hidden = !this.checked;
                                               };
                                             `
                                           : javascript``
@@ -1316,12 +1316,13 @@ export default (app: Courselore): void => {
                         </div>
 
                         <div
-                          class="filters--resolved label"
+                          key="filters--resolved"
                           $${req.query.conversations?.filters?.types?.includes(
                             "question"
                           )
                             ? html``
                             : html`hidden`}
+                          class="label"
                         >
                           <p class="label--text">Resolved</p>
                           <div
@@ -1347,7 +1348,7 @@ export default (app: Courselore): void => {
                                 onload="${javascript`
                                   this.onchange = () => {
                                     if (this.checked)
-                                      for (const element of this.closest(".filters--resolved").querySelectorAll("input"))
+                                      for (const element of this.closest('[key="filters--resolved"]').querySelectorAll("input"))
                                         if (element !== this)
                                           element.checked = false;
                                   };
@@ -1377,7 +1378,7 @@ export default (app: Courselore): void => {
                                 onload="${javascript`
                                   this.onchange = () => {
                                     if (this.checked)
-                                      for (const element of this.closest(".filters--resolved").querySelectorAll("input"))
+                                      for (const element of this.closest('[key="filters--resolved"]').querySelectorAll("input"))
                                         if (element !== this)
                                           element.checked = false;
                                   };
