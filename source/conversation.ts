@@ -1067,6 +1067,7 @@ export default (app: Courselore): void => {
                         class="button button--tight button--tight--inline button--transparent"
                       >
                         <input
+                          key="search-and-filters--show-hide--search"
                           type="checkbox"
                           class="visually-hidden input--radio-or-checkbox--multilabel"
                           $${typeof req.query.conversations?.search === "string"
@@ -1076,9 +1077,13 @@ export default (app: Courselore): void => {
                             this.isModified = false;
 
                             this.onchange = () => {
-                              const search = this.closest('[key="search-and-filters"]').querySelector('[key="search"]');
-                              search.hidden = !this.checked;
-                              for (const element of search.querySelectorAll("*"))
+                              const searchAndFilters = this.closest('[key="search-and-filters"]');
+                              const searchAndFiltersForm = searchAndFilters.querySelector('[key="search-and-filters--form"]');
+                              const searchAndFiltersFormSection = searchAndFiltersForm.querySelector('[key="search"]');
+                              searchAndFiltersForm.hidden = [...searchAndFilters.querySelectorAll('[key="search-and-filters--show-hide--search"], [key="search-and-filters--show-hide--filters"]')]
+                                .every((element) => !element.checked);
+                              searchAndFiltersFormSection.hidden = !this.checked;
+                              for (const element of searchAndFiltersFormSection.querySelectorAll("*"))
                                 if (element.disabled !== null) element.disabled = !this.checked;
                             };
                           `}"
@@ -1096,6 +1101,7 @@ export default (app: Courselore): void => {
                         class="button button--tight button--tight--inline button--transparent"
                       >
                         <input
+                          key="search-and-filters--show-hide--filters"
                           type="checkbox"
                           class="visually-hidden input--radio-or-checkbox--multilabel"
                           $${typeof req.query.conversations?.filters ===
@@ -1106,9 +1112,13 @@ export default (app: Courselore): void => {
                             this.isModified = false;
                             
                             this.onchange = () => {
-                              const filters = this.closest('[key="search-and-filters"]').querySelector('[key="filters"]');
-                              filters.hidden = !this.checked;
-                              for (const element of filters.querySelectorAll("*"))
+                              const searchAndFilters = this.closest('[key="search-and-filters"]');
+                              const searchAndFiltersForm = searchAndFilters.querySelector('[key="search-and-filters--form"]');
+                              const searchAndFiltersFormSection = searchAndFiltersForm.querySelector('[key="filters"]');
+                              searchAndFiltersForm.hidden = [...searchAndFilters.querySelectorAll('[key="search-and-filters--show-hide--search"], [key="search-and-filters--show-hide--filters"]')]
+                                .every((element) => !element.checked);
+                              searchAndFiltersFormSection.hidden = !this.checked;
+                              for (const element of searchAndFiltersFormSection.querySelectorAll("*"))
                                 if (element.disabled !== null) element.disabled = !this.checked;
                             };
                           `}"
@@ -1160,6 +1170,7 @@ export default (app: Courselore): void => {
                     </div>
 
                     <form
+                      key="search-and-filters--form"
                       method="GET"
                       action="${app.locals.options
                         .baseURL}${req.path}${qs.stringify(
@@ -1172,6 +1183,11 @@ export default (app: Courselore): void => {
                         }
                       )}"
                       novalidate
+                      $${typeof req.query.conversations?.search === "string" ||
+                      (typeof req.query.conversations?.filters === "object" &&
+                        req.query.conversations.filters.quick !== "true")
+                        ? html``
+                        : html`hidden`}
                       css="${res.locals.localCSS(css`
                         display: flex;
                         flex-direction: column;
