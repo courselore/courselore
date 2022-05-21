@@ -646,10 +646,6 @@ export default (app: Courselore): void => {
           <div
             key="layout--conversation--sidebar--/${res.locals.course.reference}"
             css="${res.locals.localCSS(css`
-              background-color: var(--color--gray--medium--100);
-              @media (prefers-color-scheme: dark) {
-                background-color: var(--color--gray--medium--800);
-              }
               @media (max-width: 899px) {
                 flex: 1;
                 ${sidebarOnSmallScreen
@@ -673,6 +669,10 @@ export default (app: Courselore): void => {
             <div
               css="${res.locals.localCSS(
                 css`
+                  background-color: var(--color--gray--medium--100);
+                  @media (prefers-color-scheme: dark) {
+                    background-color: var(--color--gray--medium--800);
+                  }
                   max-height: var(--space--40);
                   overflow: auto;
                   border-bottom: var(--border-width--1) solid
