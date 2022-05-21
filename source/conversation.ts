@@ -673,7 +673,7 @@ export default (app: Courselore): void => {
                   @media (prefers-color-scheme: dark) {
                     background-color: var(--color--gray--medium--800);
                   }
-                  max-height: var(--space--40);
+                  max-height: 50%;
                   overflow: auto;
                   border-bottom: var(--border-width--1) solid
                     var(--color--gray--medium--200);
@@ -1052,7 +1052,7 @@ export default (app: Courselore): void => {
                       line-height: var(--line-height--xs);
                       display: flex;
                       flex-direction: column;
-                      gap: var(--space--1);
+                      gap: var(--space--2);
                     `)}"
                   >
                     <div
@@ -1073,6 +1073,8 @@ export default (app: Courselore): void => {
                             ? html`checked`
                             : html``}
                           onload="${javascript`
+                            this.isModified = false;
+
                             this.onchange = () => {
                               const search = this.closest('[key="search-and-filters"]').querySelector('[key="search"]');
                               search.hidden = !this.checked;
@@ -1101,6 +1103,8 @@ export default (app: Courselore): void => {
                             ? html`checked`
                             : html``}
                           onload="${javascript`
+                            this.isModified = false;
+                            
                             this.onchange = () => {
                               const filters = this.closest('[key="search-and-filters"]').querySelector('[key="filters"]');
                               filters.hidden = !this.checked;
