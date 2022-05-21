@@ -1046,77 +1046,7 @@ export default (app: Courselore): void => {
                   <hr class="separator" />
 
                   <div
-                    css="${res.locals.localCSS(css`
-                      font-size: var(--font-size--xs);
-                      line-height: var(--line-height--xs);
-                      display: flex;
-                      column-gap: var(--space--4);
-                      row-gap: var(--space--2);
-                      flex-wrap: wrap;
-                    `)}"
-                  >
-                    <button
-                      class="button button--tight button--tight--inline button--transparent"
-                    >
-                      <i class="bi bi-search"></i>
-                      Search
-                    </button>
-                    <button
-                      class="button button--tight button--tight--inline button--transparent"
-                    >
-                      <i class="bi bi-funnel"></i>
-                      Filters
-                    </button>
-                    $${req.query.conversations === undefined &&
-                    conversationsWithSearchResults.length > 0 &&
-                    conversationsWithSearchResults.some(
-                      ({ conversation }) =>
-                        conversation.readingsCount < conversation.messagesCount
-                    )
-                      ? html`
-                          <form
-                            method="POST"
-                            action="${app.locals.options.baseURL}/courses/${res
-                              .locals.course
-                              .reference}/conversations/mark-all-conversations-as-read${qs.stringify(
-                              { redirect: req.originalUrl },
-                              { addQueryPrefix: true }
-                            )}"
-                            css="${res.locals.localCSS(css`
-                              display: flex;
-                              justify-content: flex-end;
-                            `)}"
-                          >
-                            <input
-                              type="hidden"
-                              name="_csrf"
-                              value="${req.csrfToken()}"
-                            />
-                            <button
-                              class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                            >
-                              <i class="bi bi-check-all"></i>
-                              Mark All Conversations as Read
-                            </button>
-                          </form>
-                        `
-                      : html``}
-                  </div>
-
-                  <form
-                    hidden
-                    method="GET"
-                    action="${app.locals.options
-                      .baseURL}${req.path}${qs.stringify(
-                      {
-                        messages: req.query.messages,
-                        newConversation: req.query.newConversation,
-                      },
-                      {
-                        addQueryPrefix: true,
-                      }
-                    )}"
-                    novalidate
+                    key="search-and-filters"
                     css="${res.locals.localCSS(css`
                       font-size: var(--font-size--xs);
                       line-height: var(--line-height--xs);
@@ -1124,75 +1054,42 @@ export default (app: Courselore): void => {
                       flex-direction: column;
                       gap: var(--space--1);
                     `)}"
-                    onload="${javascript`
-                      this.isModified = false;
-                    `}"
                   >
                     <div
                       css="${res.locals.localCSS(css`
                         display: flex;
-                        gap: var(--space--2);
-                        align-items: center;
+                        column-gap: var(--space--4);
+                        row-gap: var(--space--2);
+                        flex-wrap: wrap;
                       `)}"
                     >
-                      <input
-                        type="text"
-                        name="conversations[search]"
-                        value="${typeof req.query.conversations?.search ===
-                          "string" &&
-                        req.query.conversations.search.trim() !== ""
-                          ? req.query.conversations.search
-                          : ""}"
-                        placeholder="Search…"
-                        class="input--text"
-                      />
-                      <button
+                      <label
                         class="button button--tight button--tight--inline button--transparent"
-                        onload="${javascript`
-                          (this.tooltip ??= tippy(this)).setProps({
-                            touch: false,
-                            content: "Search",
-                          });
-                        `}"
                       >
-                        <i class="bi bi-search"></i>
-                      </button>
-                      $${typeof req.query.conversations?.search === "string" &&
-                      req.query.conversations.search.trim() !== ""
-                        ? html`
-                            <a
-                              href="${app.locals.options
-                                .baseURL}${req.path}${qs.stringify(
-                                {
-                                  conversations: {
-                                    filters: req.query.conversations.filters,
-                                  },
-                                  messages: req.query.messages,
-                                  newConversation: req.query.newConversation,
-                                },
-                                {
-                                  addQueryPrefix: true,
-                                }
-                              )}"
-                              class="button button--tight button--tight--inline button--transparent"
-                              onload="${javascript`
-                                (this.tooltip ??= tippy(this)).setProps({
-                                  touch: false,
-                                  content: "Clear Search",
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-x-lg"></i>
-                            </a>
-                          `
-                        : html``}
-                    </div>
-
-                    <div
-                      css="${res.locals.localCSS(css`
-                        display: flex;
-                      `)}"
-                    >
+                        <input
+                          type="checkbox"
+                          class="visually-hidden input--radio-or-checkbox--multilabel"
+                          $${typeof req.query.conversations?.search === "string"
+                            ? html`checked`
+                            : html``}
+                          onload="${javascript`
+                            this.onchange = () => {
+                              const search = this.closest('[key="search-and-filters"]').querySelector('[key="search"]');
+                              search.hidden = !this.checked;
+                              for (const element of search.querySelectorAll("*"))
+                                if (element.disabled !== null) element.disabled = !this.checked;
+                            };
+                          `}"
+                        />
+                        <span>
+                          <i class="bi bi-search"></i>
+                          Search
+                        </span>
+                        <span class="text--blue">
+                          <i class="bi bi-search"></i>
+                          Search
+                        </span>
+                      </label>
                       <label
                         class="button button--tight button--tight--inline button--transparent"
                       >
@@ -1205,7 +1102,7 @@ export default (app: Courselore): void => {
                             : html``}
                           onload="${javascript`
                             this.onchange = () => {
-                              const filters = this.closest("form").querySelector(".filters");
+                              const filters = this.closest('[key="search-and-filters"]').querySelector('[key="filters"]');
                               filters.hidden = !this.checked;
                               for (const element of filters.querySelectorAll("*"))
                                 if (element.disabled !== null) element.disabled = !this.checked;
@@ -1221,412 +1118,108 @@ export default (app: Courselore): void => {
                           Filters
                         </span>
                       </label>
+                      $${req.query.conversations === undefined &&
+                      conversationsWithSearchResults.length > 0 &&
+                      conversationsWithSearchResults.some(
+                        ({ conversation }) =>
+                          conversation.readingsCount <
+                          conversation.messagesCount
+                      )
+                        ? html`
+                            <form
+                              method="POST"
+                              action="${app.locals.options
+                                .baseURL}/courses/${res.locals.course
+                                .reference}/conversations/mark-all-conversations-as-read${qs.stringify(
+                                { redirect: req.originalUrl },
+                                { addQueryPrefix: true }
+                              )}"
+                              css="${res.locals.localCSS(css`
+                                display: flex;
+                                justify-content: flex-end;
+                              `)}"
+                            >
+                              <input
+                                type="hidden"
+                                name="_csrf"
+                                value="${req.csrfToken()}"
+                              />
+                              <button
+                                class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                              >
+                                <i class="bi bi-check-all"></i>
+                                Mark All Conversations as Read
+                              </button>
+                            </form>
+                          `
+                        : html``}
                     </div>
 
-                    <div
-                      $${typeof req.query.conversations?.filters === "object"
-                        ? html``
-                        : html`hidden`}
-                      class="filters"
+                    <form
+                      method="GET"
+                      action="${app.locals.options
+                        .baseURL}${req.path}${qs.stringify(
+                        {
+                          messages: req.query.messages,
+                          newConversation: req.query.newConversation,
+                        },
+                        {
+                          addQueryPrefix: true,
+                        }
+                      )}"
+                      novalidate
                       css="${res.locals.localCSS(css`
                         display: flex;
                         flex-direction: column;
-                        gap: var(--space--2);
+                        gap: var(--space--1);
                       `)}"
+                      onload="${javascript`
+                        this.isModified = false;
+                      `}"
                     >
-                      <div class="label">
-                        <p class="label--text">Type</p>
-                        <div
-                          css="${res.locals.localCSS(css`
-                            display: flex;
-                            flex-wrap: wrap;
-                            column-gap: var(--space--6);
-                            row-gap: var(--space--2);
-                          `)}"
-                        >
-                          $${conversationTypes.map(
-                            (conversationType) => html`
-                              <label
-                                class="button button--tight button--tight--inline button--transparent"
-                              >
-                                <input
-                                  type="checkbox"
-                                  name="conversations[filters][types][]"
-                                  value="${conversationType}"
-                                  $${req.query.conversations?.filters?.types?.includes(
-                                    conversationType
-                                  )
-                                    ? html`checked`
-                                    : html``}
-                                  class="visually-hidden input--radio-or-checkbox--multilabel"
-                                  onload="${javascript`
-                                    ${
-                                      conversationType === "question"
-                                        ? javascript`
-                                            this.onchange = () => {
-                                              this.closest(".filters").querySelector(".filters--resolved").hidden = !this.checked;
-                                            };
-                                          `
-                                        : javascript``
-                                    }
-                                  `}"
-                                />
-                                <span>
-                                  $${app.locals.partials.conversationTypeIcon[
-                                    conversationType
-                                  ].regular}
-                                  $${lodash.capitalize(conversationType)}
-                                </span>
-                                <span
-                                  class="${app.locals.partials
-                                    .conversationTypeTextColor[conversationType]
-                                    .select}"
-                                >
-                                  $${app.locals.partials.conversationTypeIcon[
-                                    conversationType
-                                  ].fill}
-                                  $${lodash.capitalize(conversationType)}
-                                </span>
-                              </label>
-                            `
-                          )}
-                        </div>
-                      </div>
-
                       <div
-                        class="filters--resolved label"
-                        $${req.query.conversations?.filters?.types?.includes(
-                          "question"
-                        )
+                        key="search"
+                        $${typeof req.query.conversations?.search === "string"
                           ? html``
                           : html`hidden`}
-                      >
-                        <p class="label--text">Resolved</p>
-                        <div
-                          css="${res.locals.localCSS(css`
-                            display: flex;
-                            flex-wrap: wrap;
-                            column-gap: var(--space--6);
-                            row-gap: var(--space--2);
-                          `)}"
-                        >
-                          <label
-                            class="button button--tight button--tight--inline button--transparent"
-                          >
-                            <input
-                              type="checkbox"
-                              name="conversations[filters][isResolved]"
-                              value="false"
-                              $${req.query.conversations?.filters
-                                ?.isResolved === "false"
-                                ? html`checked`
-                                : html``}
-                              class="visually-hidden input--radio-or-checkbox--multilabel"
-                              onload="${javascript`
-                                this.onchange = () => {
-                                  if (this.checked)
-                                    for (const element of this.closest(".filters--resolved").querySelectorAll("input"))
-                                      if (element !== this)
-                                        element.checked = false;
-                                };
-                              `}"
-                            />
-                            <span>
-                              <i class="bi bi-patch-exclamation"></i>
-                              Unresolved
-                            </span>
-                            <span class="text--rose">
-                              <i class="bi bi-patch-exclamation-fill"></i>
-                              Unresolved
-                            </span>
-                          </label>
-                          <label
-                            class="button button--tight button--tight--inline button--transparent"
-                          >
-                            <input
-                              type="checkbox"
-                              name="conversations[filters][isResolved]"
-                              value="true"
-                              $${req.query.conversations?.filters
-                                ?.isResolved === "true"
-                                ? html`checked`
-                                : html``}
-                              class="visually-hidden input--radio-or-checkbox--multilabel"
-                              onload="${javascript`
-                                this.onchange = () => {
-                                  if (this.checked)
-                                    for (const element of this.closest(".filters--resolved").querySelectorAll("input"))
-                                      if (element !== this)
-                                        element.checked = false;
-                                };
-                              `}"
-                            />
-                            <span>
-                              <i class="bi bi-patch-check"></i>
-                              Resolved
-                            </span>
-                            <span class="text--emerald">
-                              <i class="bi bi-patch-check-fill"></i>
-                              Resolved
-                            </span>
-                          </label>
-                        </div>
-                      </div>
-
-                      <div class="label">
-                        <div class="label--text">
-                          Pin
-                          <button
-                            type="button"
-                            class="button button--tight button--tight--inline button--transparent"
-                            onload="${javascript`
-                              (this.tooltip ??= tippy(this)).setProps({
-                                trigger: "click",
-                                content: "Pinned conversations are listed first.",
-                              });
-                            `}"
-                          >
-                            <i class="bi bi-info-circle"></i>
-                          </button>
-                        </div>
-                        <div
-                          css="${res.locals.localCSS(css`
-                            display: flex;
-                            flex-wrap: wrap;
-                            column-gap: var(--space--6);
-                            row-gap: var(--space--2);
-                          `)}"
-                        >
-                          <label
-                            class="button button--tight button--tight--inline button--transparent"
-                          >
-                            <input
-                              type="checkbox"
-                              name="conversations[filters][isPinned]"
-                              value="true"
-                              $${req.query.conversations?.filters?.isPinned ===
-                              "true"
-                                ? html`checked`
-                                : html``}
-                              class="visually-hidden input--radio-or-checkbox--multilabel"
-                              onload="${javascript`
-                                this.onchange = () => {
-                                  if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isPinned]"][value="false"]').checked = false;
-                                };
-                              `}"
-                            />
-                            <span>
-                              <i class="bi bi-pin"></i>
-                              Pinned
-                            </span>
-                            <span class="text--amber">
-                              <i class="bi bi-pin-fill"></i>
-                              Pinned
-                            </span>
-                          </label>
-                          <label
-                            class="button button--tight button--tight--inline button--transparent"
-                          >
-                            <input
-                              type="checkbox"
-                              name="conversations[filters][isPinned]"
-                              value="false"
-                              $${req.query.conversations?.filters?.isPinned ===
-                              "false"
-                                ? html`checked`
-                                : html``}
-                              class="visually-hidden input--radio-or-checkbox--multilabel"
-                              onload="${javascript`
-                                this.onchange = () => {
-                                  if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isPinned]"][value="true"]').checked = false;
-                                };
-                              `}"
-                            />
-                            <span>
-                              <i class="bi bi-pin-angle"></i>
-                              Unpinned
-                            </span>
-                            <span class="text--amber">
-                              <i class="bi bi-pin-angle-fill"></i>
-                              Unpinned
-                            </span>
-                          </label>
-                        </div>
-                      </div>
-
-                      <div class="label">
-                        <p class="label--text">Visibility</p>
-                        <div
-                          css="${res.locals.localCSS(css`
-                            display: flex;
-                            flex-wrap: wrap;
-                            column-gap: var(--space--6);
-                            row-gap: var(--space--2);
-                          `)}"
-                        >
-                          <label
-                            class="button button--tight button--tight--inline button--transparent"
-                          >
-                            <input
-                              type="checkbox"
-                              name="conversations[filters][isStaffOnly]"
-                              value="false"
-                              $${req.query.conversations?.filters
-                                ?.isStaffOnly === "false"
-                                ? html`checked`
-                                : html``}
-                              class="visually-hidden input--radio-or-checkbox--multilabel"
-                              onload="${javascript`
-                                this.onchange = () => {
-                                  if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isStaffOnly]"][value="true"]').checked = false;
-                                };
-                              `}"
-                            />
-                            <span>
-                              <i class="bi bi-eye"></i>
-                              Visible by Everyone
-                            </span>
-                            <span class="text--sky">
-                              <i class="bi bi-eye-fill"></i>
-                              Visible by Everyone
-                            </span>
-                          </label>
-                          <label
-                            class="button button--tight button--tight--inline button--transparent"
-                          >
-                            <input
-                              type="checkbox"
-                              name="conversations[filters][isStaffOnly]"
-                              value="true"
-                              $${req.query.conversations?.filters
-                                ?.isStaffOnly === "true"
-                                ? html`checked`
-                                : html``}
-                              class="visually-hidden input--radio-or-checkbox--multilabel"
-                              onload="${javascript`
-                                this.onchange = () => {
-                                  if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isStaffOnly]"][value="false"]').checked = false;
-                                };
-                              `}"
-                            />
-                            <span>
-                              <i class="bi bi-mortarboard"></i>
-                              Visible by Staff Only
-                            </span>
-                            <span class="text--sky">
-                              <i class="bi bi-mortarboard-fill"></i>
-                              Visible by Staff Only
-                            </span>
-                          </label>
-                        </div>
-                      </div>
-
-                      $${res.locals.tags.length === 0
-                        ? html``
-                        : html`
-                            <div class="label">
-                              <div class="label--text">
-                                Tags
-                                <button
-                                  type="button"
-                                  class="button button--tight button--tight--inline button--transparent"
-                                  onload="${javascript`
-                                    (this.tooltip ??= tippy(this)).setProps({
-                                      trigger: "click",
-                                      content: "Tags help to organize conversations.",
-                                    });
-                                  `}"
-                                >
-                                  <i class="bi bi-info-circle"></i>
-                                </button>
-                              </div>
-                              <div
-                                css="${res.locals.localCSS(css`
-                                  display: flex;
-                                  flex-wrap: wrap;
-                                  column-gap: var(--space--6);
-                                  row-gap: var(--space--2);
-                                `)}"
-                              >
-                                $${res.locals.tags.map(
-                                  (tag) => html`
-                                    <div
-                                      key="tag--${tag.reference}"
-                                      css="${res.locals.localCSS(css`
-                                        display: flex;
-                                        gap: var(--space--2);
-                                      `)}"
-                                    >
-                                      <label
-                                        class="button button--tight button--tight--inline button--transparent"
-                                      >
-                                        <input
-                                          type="checkbox"
-                                          name="conversations[filters][tagsReferences][]"
-                                          value="${tag.reference}"
-                                          $${req.query.conversations?.filters?.tagsReferences?.includes(
-                                            tag.reference
-                                          )
-                                            ? html`checked`
-                                            : html``}
-                                          class="visually-hidden input--radio-or-checkbox--multilabel"
-                                        />
-                                        <span>
-                                          <i class="bi bi-tag"></i>
-                                          ${tag.name}
-                                        </span>
-                                        <span class="text--teal">
-                                          <i class="bi bi-tag-fill"></i>
-                                          ${tag.name}
-                                        </span>
-                                      </label>
-                                      $${tag.staffOnlyAt !== null
-                                        ? html`
-                                            <span
-                                              class="text--sky"
-                                              onload="${javascript`
-                                                (this.tooltip ??= tippy(this)).setProps({
-                                                  touch: false,
-                                                  content: "This tag is visible by staff only.",
-                                                });
-                                              `}"
-                                            >
-                                              <i
-                                                class="bi bi-mortarboard-fill"
-                                              ></i>
-                                            </span>
-                                          `
-                                        : html``}
-                                    </div>
-                                  `
-                                )}
-                              </div>
-                            </div>
-                          `}
-                      <div
                         css="${res.locals.localCSS(css`
-                          margin-top: var(--space--2);
                           display: flex;
                           gap: var(--space--2);
-                          & > * {
-                            flex: 1;
-                          }
+                          align-items: center;
                         `)}"
                       >
+                        <input
+                          type="text"
+                          name="conversations[search]"
+                          value="${typeof req.query.conversations?.search ===
+                            "string" &&
+                          req.query.conversations.search.trim() !== ""
+                            ? req.query.conversations.search
+                            : ""}"
+                          placeholder="Search…"
+                          class="input--text"
+                        />
                         <button
                           class="button button--tight button--tight--inline button--transparent"
+                          onload="${javascript`
+                            (this.tooltip ??= tippy(this)).setProps({
+                              touch: false,
+                              content: "Search",
+                            });
+                          `}"
                         >
-                          <i class="bi bi-funnel"></i>
-                          Apply Filters
+                          <i class="bi bi-search"></i>
                         </button>
-                        $${typeof req.query.conversations?.filters === "object"
+                        $${typeof req.query.conversations?.search ===
+                          "string" &&
+                        req.query.conversations.search.trim() !== ""
                           ? html`
                               <a
                                 href="${app.locals.options
                                   .baseURL}${req.path}${qs.stringify(
                                   {
                                     conversations: {
-                                      search: req.query.conversations.search,
+                                      filters: req.query.conversations.filters,
                                     },
                                     messages: req.query.messages,
                                     newConversation: req.query.newConversation,
@@ -1636,15 +1229,447 @@ export default (app: Courselore): void => {
                                   }
                                 )}"
                                 class="button button--tight button--tight--inline button--transparent"
+                                onload="${javascript`
+                                  (this.tooltip ??= tippy(this)).setProps({
+                                    touch: false,
+                                    content: "Clear Search",
+                                  });
+                                `}"
                               >
                                 <i class="bi bi-x-lg"></i>
-                                Clear Filters
                               </a>
                             `
                           : html``}
                       </div>
-                    </div>
-                  </form>
+
+                      <div
+                        key="filters"
+                        $${typeof req.query.conversations?.filters ===
+                          "object" &&
+                        req.query.conversations.filters.quick !== "true"
+                          ? html``
+                          : html`hidden`}
+                        css="${res.locals.localCSS(css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--2);
+                        `)}"
+                      >
+                        <div class="label">
+                          <p class="label--text">Type</p>
+                          <div
+                            css="${res.locals.localCSS(css`
+                              display: flex;
+                              flex-wrap: wrap;
+                              column-gap: var(--space--6);
+                              row-gap: var(--space--2);
+                            `)}"
+                          >
+                            $${conversationTypes.map(
+                              (conversationType) => html`
+                                <label
+                                  class="button button--tight button--tight--inline button--transparent"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    name="conversations[filters][types][]"
+                                    value="${conversationType}"
+                                    $${req.query.conversations?.filters?.types?.includes(
+                                      conversationType
+                                    )
+                                      ? html`checked`
+                                      : html``}
+                                    class="visually-hidden input--radio-or-checkbox--multilabel"
+                                    onload="${javascript`
+                                      ${
+                                        conversationType === "question"
+                                          ? javascript`
+                                              this.onchange = () => {
+                                                this.closest(".filters").querySelector(".filters--resolved").hidden = !this.checked;
+                                              };
+                                            `
+                                          : javascript``
+                                      }
+                                    `}"
+                                  />
+                                  <span>
+                                    $${app.locals.partials.conversationTypeIcon[
+                                      conversationType
+                                    ].regular}
+                                    $${lodash.capitalize(conversationType)}
+                                  </span>
+                                  <span
+                                    class="${app.locals.partials
+                                      .conversationTypeTextColor[
+                                      conversationType
+                                    ].select}"
+                                  >
+                                    $${app.locals.partials.conversationTypeIcon[
+                                      conversationType
+                                    ].fill}
+                                    $${lodash.capitalize(conversationType)}
+                                  </span>
+                                </label>
+                              `
+                            )}
+                          </div>
+                        </div>
+
+                        <div
+                          class="filters--resolved label"
+                          $${req.query.conversations?.filters?.types?.includes(
+                            "question"
+                          )
+                            ? html``
+                            : html`hidden`}
+                        >
+                          <p class="label--text">Resolved</p>
+                          <div
+                            css="${res.locals.localCSS(css`
+                              display: flex;
+                              flex-wrap: wrap;
+                              column-gap: var(--space--6);
+                              row-gap: var(--space--2);
+                            `)}"
+                          >
+                            <label
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="conversations[filters][isResolved]"
+                                value="false"
+                                $${req.query.conversations?.filters
+                                  ?.isResolved === "false"
+                                  ? html`checked`
+                                  : html``}
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
+                                onload="${javascript`
+                                  this.onchange = () => {
+                                    if (this.checked)
+                                      for (const element of this.closest(".filters--resolved").querySelectorAll("input"))
+                                        if (element !== this)
+                                          element.checked = false;
+                                  };
+                                `}"
+                              />
+                              <span>
+                                <i class="bi bi-patch-exclamation"></i>
+                                Unresolved
+                              </span>
+                              <span class="text--rose">
+                                <i class="bi bi-patch-exclamation-fill"></i>
+                                Unresolved
+                              </span>
+                            </label>
+                            <label
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="conversations[filters][isResolved]"
+                                value="true"
+                                $${req.query.conversations?.filters
+                                  ?.isResolved === "true"
+                                  ? html`checked`
+                                  : html``}
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
+                                onload="${javascript`
+                                  this.onchange = () => {
+                                    if (this.checked)
+                                      for (const element of this.closest(".filters--resolved").querySelectorAll("input"))
+                                        if (element !== this)
+                                          element.checked = false;
+                                  };
+                                `}"
+                              />
+                              <span>
+                                <i class="bi bi-patch-check"></i>
+                                Resolved
+                              </span>
+                              <span class="text--emerald">
+                                <i class="bi bi-patch-check-fill"></i>
+                                Resolved
+                              </span>
+                            </label>
+                          </div>
+                        </div>
+
+                        <div class="label">
+                          <div class="label--text">
+                            Pin
+                            <button
+                              type="button"
+                              class="button button--tight button--tight--inline button--transparent"
+                              onload="${javascript`
+                                (this.tooltip ??= tippy(this)).setProps({
+                                  trigger: "click",
+                                  content: "Pinned conversations are listed first.",
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-info-circle"></i>
+                            </button>
+                          </div>
+                          <div
+                            css="${res.locals.localCSS(css`
+                              display: flex;
+                              flex-wrap: wrap;
+                              column-gap: var(--space--6);
+                              row-gap: var(--space--2);
+                            `)}"
+                          >
+                            <label
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="conversations[filters][isPinned]"
+                                value="true"
+                                $${req.query.conversations?.filters
+                                  ?.isPinned === "true"
+                                  ? html`checked`
+                                  : html``}
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
+                                onload="${javascript`
+                                  this.onchange = () => {
+                                    if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isPinned]"][value="false"]').checked = false;
+                                  };
+                                `}"
+                              />
+                              <span>
+                                <i class="bi bi-pin"></i>
+                                Pinned
+                              </span>
+                              <span class="text--amber">
+                                <i class="bi bi-pin-fill"></i>
+                                Pinned
+                              </span>
+                            </label>
+                            <label
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="conversations[filters][isPinned]"
+                                value="false"
+                                $${req.query.conversations?.filters
+                                  ?.isPinned === "false"
+                                  ? html`checked`
+                                  : html``}
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
+                                onload="${javascript`
+                                  this.onchange = () => {
+                                    if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isPinned]"][value="true"]').checked = false;
+                                  };
+                                `}"
+                              />
+                              <span>
+                                <i class="bi bi-pin-angle"></i>
+                                Unpinned
+                              </span>
+                              <span class="text--amber">
+                                <i class="bi bi-pin-angle-fill"></i>
+                                Unpinned
+                              </span>
+                            </label>
+                          </div>
+                        </div>
+
+                        <div class="label">
+                          <p class="label--text">Visibility</p>
+                          <div
+                            css="${res.locals.localCSS(css`
+                              display: flex;
+                              flex-wrap: wrap;
+                              column-gap: var(--space--6);
+                              row-gap: var(--space--2);
+                            `)}"
+                          >
+                            <label
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="conversations[filters][isStaffOnly]"
+                                value="false"
+                                $${req.query.conversations?.filters
+                                  ?.isStaffOnly === "false"
+                                  ? html`checked`
+                                  : html``}
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
+                                onload="${javascript`
+                                  this.onchange = () => {
+                                    if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isStaffOnly]"][value="true"]').checked = false;
+                                  };
+                                `}"
+                              />
+                              <span>
+                                <i class="bi bi-eye"></i>
+                                Visible by Everyone
+                              </span>
+                              <span class="text--sky">
+                                <i class="bi bi-eye-fill"></i>
+                                Visible by Everyone
+                              </span>
+                            </label>
+                            <label
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="conversations[filters][isStaffOnly]"
+                                value="true"
+                                $${req.query.conversations?.filters
+                                  ?.isStaffOnly === "true"
+                                  ? html`checked`
+                                  : html``}
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
+                                onload="${javascript`
+                                  this.onchange = () => {
+                                    if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isStaffOnly]"][value="false"]').checked = false;
+                                  };
+                                `}"
+                              />
+                              <span>
+                                <i class="bi bi-mortarboard"></i>
+                                Visible by Staff Only
+                              </span>
+                              <span class="text--sky">
+                                <i class="bi bi-mortarboard-fill"></i>
+                                Visible by Staff Only
+                              </span>
+                            </label>
+                          </div>
+                        </div>
+
+                        $${res.locals.tags.length === 0
+                          ? html``
+                          : html`
+                              <div class="label">
+                                <div class="label--text">
+                                  Tags
+                                  <button
+                                    type="button"
+                                    class="button button--tight button--tight--inline button--transparent"
+                                    onload="${javascript`
+                                      (this.tooltip ??= tippy(this)).setProps({
+                                        trigger: "click",
+                                        content: "Tags help to organize conversations.",
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-info-circle"></i>
+                                  </button>
+                                </div>
+                                <div
+                                  css="${res.locals.localCSS(css`
+                                    display: flex;
+                                    flex-wrap: wrap;
+                                    column-gap: var(--space--6);
+                                    row-gap: var(--space--2);
+                                  `)}"
+                                >
+                                  $${res.locals.tags.map(
+                                    (tag) => html`
+                                      <div
+                                        key="tag--${tag.reference}"
+                                        css="${res.locals.localCSS(css`
+                                          display: flex;
+                                          gap: var(--space--2);
+                                        `)}"
+                                      >
+                                        <label
+                                          class="button button--tight button--tight--inline button--transparent"
+                                        >
+                                          <input
+                                            type="checkbox"
+                                            name="conversations[filters][tagsReferences][]"
+                                            value="${tag.reference}"
+                                            $${req.query.conversations?.filters?.tagsReferences?.includes(
+                                              tag.reference
+                                            )
+                                              ? html`checked`
+                                              : html``}
+                                            class="visually-hidden input--radio-or-checkbox--multilabel"
+                                          />
+                                          <span>
+                                            <i class="bi bi-tag"></i>
+                                            ${tag.name}
+                                          </span>
+                                          <span class="text--teal">
+                                            <i class="bi bi-tag-fill"></i>
+                                            ${tag.name}
+                                          </span>
+                                        </label>
+                                        $${tag.staffOnlyAt !== null
+                                          ? html`
+                                              <span
+                                                class="text--sky"
+                                                onload="${javascript`
+                                                  (this.tooltip ??= tippy(this)).setProps({
+                                                    touch: false,
+                                                    content: "This tag is visible by staff only.",
+                                                  });
+                                                `}"
+                                              >
+                                                <i
+                                                  class="bi bi-mortarboard-fill"
+                                                ></i>
+                                              </span>
+                                            `
+                                          : html``}
+                                      </div>
+                                    `
+                                  )}
+                                </div>
+                              </div>
+                            `}
+                        <div
+                          css="${res.locals.localCSS(css`
+                            margin-top: var(--space--2);
+                            display: flex;
+                            gap: var(--space--2);
+                            & > * {
+                              flex: 1;
+                            }
+                          `)}"
+                        >
+                          <button
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <i class="bi bi-funnel"></i>
+                            Apply Filters
+                          </button>
+                          $${typeof req.query.conversations?.filters ===
+                          "object"
+                            ? html`
+                                <a
+                                  href="${app.locals.options
+                                    .baseURL}${req.path}${qs.stringify(
+                                    {
+                                      conversations: {
+                                        search: req.query.conversations.search,
+                                      },
+                                      messages: req.query.messages,
+                                      newConversation:
+                                        req.query.newConversation,
+                                    },
+                                    {
+                                      addQueryPrefix: true,
+                                    }
+                                  )}"
+                                  class="button button--tight button--tight--inline button--transparent"
+                                >
+                                  <i class="bi bi-x-lg"></i>
+                                  Clear Filters
+                                </a>
+                              `
+                            : html``}
+                        </div>
+                      </div>
+                    </form>
+                  </div>
                 </div>
               </div>
             </div>
