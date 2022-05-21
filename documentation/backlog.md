@@ -497,6 +497,7 @@ const { app, BrowserWindow } = require("electron");
   - It appears that that icon only means “network activity is happening,” in which case, it’s true, and it’s actually the desired behavior.
 - In Safari iOS, the address bar never collapses because of the way we’re doing panes.
 - Add `-fill` to journal icons: https://github.com/twbs/icons/issues/1322
+- On `/settings/enrollments`, in iOS, if you filter, then manually backspace to remove the filter, then the little icon on the left jumps out of place(!)
 
 ### Design & Accessibility
 

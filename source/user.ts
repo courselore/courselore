@@ -391,7 +391,51 @@ export default (app: Courselore): void => {
                         $${user !== "no-longer-enrolled" &&
                         (res.locals.enrollment?.role === "staff" ||
                           res.locals.user?.id === user!.id)
-                          ? html` <div class="secondary">${user!.email}</div> `
+                          ? html`
+                              <div class="secondary">
+                                <span
+                                  css="${res.locals.localCSS(
+                                    css`
+                                      margin-right: var(--space--2);
+                                    `
+                                  )}"
+                                >
+                                  ${user!.email}
+                                </span>
+                                <button
+                                  class="button button--tight button--tight--inline button--transparent"
+                                  css="${res.locals.localCSS(
+                                    css`
+                                      font-size: var(--font-size--xs);
+                                      line-height: var(--line-height--xs);
+                                      display: inline-flex;
+                                    `
+                                  )}"
+                                  onload="${javascript`
+                                    (this.tooltip ??= tippy(this)).setProps({
+                                      touch: false,
+                                      content: "Copy Email",
+                                    });
+                                    (this.copied ??= tippy(this)).setProps({
+                                      theme: "green",
+                                      trigger: "manual",
+                                      content: "Copied",
+                                    });
+
+                                    this.onclick = async () => {
+                                      await navigator.clipboard.writeText(${JSON.stringify(
+                                        user!.email
+                                      )});
+                                      this.copied.show();
+                                      await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                                      this.copied.hide();
+                                    };
+                                  `}"
+                                >
+                                  <i class="bi bi-stickies"></i>
+                                </button>
+                              </div>
+                            `
                           : html``}
                         $${user === "no-longer-enrolled"
                           ? html`
