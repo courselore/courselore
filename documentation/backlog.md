@@ -4,7 +4,6 @@
 
 - Sidebar:
   - Filters
-    - Make the “resolved/unresolved” filters more discoverable.
     - Review new sidebar code.
     - Add backend support for filter of conversations with unread messages.
 
