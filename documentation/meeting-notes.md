@@ -1,6 +1,13 @@
 # Meeting Notes
 
 <details>
+<summary>2021-05-21</summary>
+
+- Is the semester over? May I downsize the machine?
+
+</details>
+
+<details>
 <summary>2021-05-14</summary>
 
 - Quicker feedback to actions, for example, sending a message.
