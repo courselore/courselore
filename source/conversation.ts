@@ -1105,7 +1105,8 @@ export default (app: Courselore): void => {
                           type="checkbox"
                           class="visually-hidden input--radio-or-checkbox--multilabel"
                           $${typeof req.query.conversations?.filters ===
-                          "object"
+                            "object" &&
+                          req.query.conversations.filters.quick !== "true"
                             ? html`checked`
                             : html``}
                           onload="${javascript`

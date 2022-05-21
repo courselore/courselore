@@ -4,8 +4,6 @@
 
 - Sidebar:
   - Filters
-    - Quick filters don’t toggle checkboxes that show/hide search & filters
-    - Live updates may close search & filters form sections?
     - Review new sidebar code.
     - Add backend support for filter of conversations with unread messages.
 
