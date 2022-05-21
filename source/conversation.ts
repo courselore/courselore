@@ -842,35 +842,205 @@ export default (app: Courselore): void => {
                               `}
                         `
                       : html`
+                          $${!util.isDeepStrictEqual(
+                            req.query.conversations?.filters,
+                            {
+                              quick: "true",
+                              types: ["question"],
+                            }
+                          )
+                            ? html`
+                                <a
+                                  href="${app.locals.options
+                                    .baseURL}${req.path}${qs.stringify(
+                                    {
+                                      conversations: {
+                                        filters: {
+                                          quick: "true",
+                                          types: ["question"],
+                                        },
+                                      },
+                                      messages: req.query.messages,
+                                      newConversation:
+                                        req.query.newConversation,
+                                    },
+                                    {
+                                      addQueryPrefix: true,
+                                    }
+                                  )}"
+                                  class="button button--tight button--tight--inline button--transparent"
+                                >
+                                  <i class="bi bi-patch-question"></i>
+                                  Questions
+                                </a>
+                              `
+                            : html`
+                                <a
+                                  href="${app.locals.options
+                                    .baseURL}${req.path}${qs.stringify(
+                                    {
+                                      messages: req.query.messages,
+                                      newConversation:
+                                        req.query.newConversation,
+                                    },
+                                    {
+                                      addQueryPrefix: true,
+                                    }
+                                  )}"
+                                  class="button button--tight button--tight--inline button--transparent text--rose"
+                                >
+                                  <i class="bi bi-patch-question-fill"></i>
+                                  Questions
+                                </a>
+                              `}
+                        `}
+                    $${!util.isDeepStrictEqual(
+                      req.query.conversations?.filters,
+                      {
+                        quick: "true",
+                        types: ["note"],
+                      }
+                    )
+                      ? html`
                           <a
-                            href="TODO"
+                            href="${app.locals.options
+                              .baseURL}${req.path}${qs.stringify(
+                              {
+                                conversations: {
+                                  filters: {
+                                    quick: "true",
+                                    types: ["note"],
+                                  },
+                                },
+                                messages: req.query.messages,
+                                newConversation: req.query.newConversation,
+                              },
+                              {
+                                addQueryPrefix: true,
+                              }
+                            )}"
                             class="button button--tight button--tight--inline button--transparent"
                           >
-                            <i class="bi bi-patch-question"></i>
-                            Questions
+                            <i class="bi bi-sticky"></i>
+                            Notes
+                          </a>
+                        `
+                      : html`
+                          <a
+                            href="${app.locals.options
+                              .baseURL}${req.path}${qs.stringify(
+                              {
+                                messages: req.query.messages,
+                                newConversation: req.query.newConversation,
+                              },
+                              {
+                                addQueryPrefix: true,
+                              }
+                            )}"
+                            class="button button--tight button--tight--inline button--transparent text--fuchsia"
+                          >
+                            <i class="bi bi-sticky-fill"></i>
+                            Notes
                           </a>
                         `}
-                    <a
-                      href="TODO"
-                      class="button button--tight button--tight--inline button--transparent"
-                    >
-                      <i class="bi bi-sticky"></i>
-                      Notes
-                    </a>
-                    <a
-                      href="TODO"
-                      class="button button--tight button--tight--inline button--transparent"
-                    >
-                      <i class="bi bi-cup"></i>
-                      Chats
-                    </a>
-                    <a
-                      href="TODO"
-                      class="button button--tight button--tight--inline button--transparent"
-                    >
-                      <i class="bi bi-eyeglasses"></i>
-                      Unread
-                    </a>
+                    $${!util.isDeepStrictEqual(
+                      req.query.conversations?.filters,
+                      {
+                        quick: "true",
+                        types: ["chat"],
+                      }
+                    )
+                      ? html`
+                          <a
+                            href="${app.locals.options
+                              .baseURL}${req.path}${qs.stringify(
+                              {
+                                conversations: {
+                                  filters: {
+                                    quick: "true",
+                                    types: ["chat"],
+                                  },
+                                },
+                                messages: req.query.messages,
+                                newConversation: req.query.newConversation,
+                              },
+                              {
+                                addQueryPrefix: true,
+                              }
+                            )}"
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <i class="bi bi-cup"></i>
+                            Chats
+                          </a>
+                        `
+                      : html`
+                          <a
+                            href="${app.locals.options
+                              .baseURL}${req.path}${qs.stringify(
+                              {
+                                messages: req.query.messages,
+                                newConversation: req.query.newConversation,
+                              },
+                              {
+                                addQueryPrefix: true,
+                              }
+                            )}"
+                            class="button button--tight button--tight--inline button--transparent text--cyan"
+                          >
+                            <i class="bi bi-cup-fill"></i>
+                            Chats
+                          </a>
+                        `}
+                    $${!util.isDeepStrictEqual(
+                      req.query.conversations?.filters,
+                      {
+                        quick: "true",
+                        unread: "true",
+                      }
+                    )
+                      ? html`
+                          <a
+                            href="${app.locals.options
+                              .baseURL}${req.path}${qs.stringify(
+                              {
+                                conversations: {
+                                  filters: {
+                                    quick: "true",
+                                    unread: "true",
+                                  },
+                                },
+                                messages: req.query.messages,
+                                newConversation: req.query.newConversation,
+                              },
+                              {
+                                addQueryPrefix: true,
+                              }
+                            )}"
+                            class="button button--tight button--tight--inline button--transparent"
+                          >
+                            <i class="bi bi-eyeglasses"></i>
+                            Unread
+                          </a>
+                        `
+                      : html`
+                          <a
+                            href="${app.locals.options
+                              .baseURL}${req.path}${qs.stringify(
+                              {
+                                messages: req.query.messages,
+                                newConversation: req.query.newConversation,
+                              },
+                              {
+                                addQueryPrefix: true,
+                              }
+                            )}"
+                            class="button button--tight button--tight--inline button--transparent text--blue"
+                          >
+                            <i class="bi bi-eyeglasses"></i>
+                            Unread
+                          </a>
+                        `}
                   </div>
 
                   <hr class="separator" />
