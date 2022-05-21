@@ -1300,17 +1300,6 @@ export default (app: Courselore): void => {
                                       ? html`checked`
                                       : html``}
                                     class="visually-hidden input--radio-or-checkbox--multilabel"
-                                    onload="${javascript`
-                                      ${
-                                        conversationType === "question"
-                                          ? javascript`
-                                              this.onchange = () => {
-                                                this.closest('[key="filters"]').querySelector('[key="filters--resolved"]').hidden = !this.checked;
-                                              };
-                                            `
-                                          : javascript``
-                                      }
-                                    `}"
                                   />
                                   <span>
                                     $${app.locals.partials.conversationTypeIcon[
@@ -1335,16 +1324,8 @@ export default (app: Courselore): void => {
                           </div>
                         </div>
 
-                        <div
-                          key="filters--resolved"
-                          $${req.query.conversations?.filters?.types?.includes(
-                            "question"
-                          )
-                            ? html``
-                            : html`hidden`}
-                          class="label"
-                        >
-                          <p class="label--text">Resolved</p>
+                        <div class="label">
+                          <p class="label--text">Question Resolved</p>
                           <div
                             css="${res.locals.localCSS(css`
                               display: flex;
@@ -1367,10 +1348,10 @@ export default (app: Courselore): void => {
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 onload="${javascript`
                                   this.onchange = () => {
-                                    if (this.checked)
-                                      for (const element of this.closest('[key="filters--resolved"]').querySelectorAll("input"))
-                                        if (element !== this)
-                                          element.checked = false;
+                                    if (!this.checked) return;
+                                    const form = this.closest("form");
+                                    form.querySelector('[name="conversations[filters][types][]"][value="question"]').checked = true;
+                                    form.querySelector('[name="conversations[filters][isResolved]"][value="true"]').checked = false;
                                   };
                                 `}"
                               />
@@ -1397,10 +1378,10 @@ export default (app: Courselore): void => {
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 onload="${javascript`
                                   this.onchange = () => {
-                                    if (this.checked)
-                                      for (const element of this.closest('[key="filters--resolved"]').querySelectorAll("input"))
-                                        if (element !== this)
-                                          element.checked = false;
+                                    if (!this.checked) return;
+                                    const form = this.closest("form");
+                                    form.querySelector('[name="conversations[filters][types][]"][value="question"]').checked = true;
+                                    form.querySelector('[name="conversations[filters][isResolved]"][value="false"]').checked = false;
                                   };
                                 `}"
                               />
