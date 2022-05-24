@@ -2,6 +2,25 @@
 
 ### User Interface Improvements
 
+- Do end-of-semester tasks.
+- Things I noticed we need to fix while I was showing the application:
+  - On filters on sidebar, when you unselect “Question” it should unselect “Resolved”/“Unresolved” as well.
+  - Have a simple way to share “conversation templates,” which use the query parameters to pre-fill the “New Conversation” form.
+- Course archival.
+- Review again other applications like Piazza so that we’re aware of features that people will probably ask us about.
+- Our API should enable us to connect with other applications, for example, assignment management, and course material.
+  - Though we won’t necessarily be going to those areas right away.
+  - It’s part of our short-term strategy.
+- Roadmap: 20 users by fall, 200 by spring, paid by 2024, profit by 2026
+- SAML is a must-have feature for next semester (along with API)
+- Administrative interface is for system administrators, not for department administrators(!)
+  - It’s like a root user on Linux.
+  - Allowlist people who can create a course.
+  - Have complete access to course information.
+  - Have one single layer of abstraction: Institution (it encapsulates departments, universities, and so forth).
+
+---
+
 - Sidebar:
   - Filters
     - Review new sidebar code.

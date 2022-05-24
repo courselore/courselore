@@ -3,7 +3,30 @@
 <details>
 <summary>2021-05-21</summary>
 
-- Is the semester over? May I downsize the machine?
+- Sidebar redesign.
+  - Ask a question.
+  - Quick filters. (Unread isn’t working yet.)
+  - Search takes less space.
+  - Filtering by unresolved questions becomes more obvious.
+  - The search & filters part of the sidebar stays fixed.
+- Made emails copyable.
+- Query parameters management, from blocklist to allowlist.
+- Questions:
+  - Is the semester over? May I downsize the machine? May I deploy new versions with design changes?
+    - Yes, the semester is over.
+  - Course archival.
+    - Prioritize it.
+- Review again other applications like Piazza so that we’re aware of features that people will probably ask us about.
+- Our API should enable us to connect with other applications, for example, assignment management, and course material.
+  - Though we won’t necessarily be going to those areas right away.
+  - It’s part of our short-term strategy.
+- Roadmap: 20 users by fall, 200 by spring, paid by 2024, profit by 2026
+- SAML is a must-have feature for next semester (along with API)
+- Administrative interface is for system administrators, not for department administrators(!)
+  - It’s like a root user on Linux.
+  - Allowlist people who can create a course.
+  - Have complete access to course information.
+  - Have one single layer of abstraction: Institution (it encapsulates departments, universities, and so forth).
 
 </details>
 
