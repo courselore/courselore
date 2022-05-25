@@ -2,7 +2,6 @@
 
 ### User Interface Improvements
 
-- Do end-of-semester tasks.
 - Things I noticed we need to fix while I was showing the application:
   - On filters on sidebar, when you unselect “Question” it should unselect “Resolved”/“Unresolved” as well.
   - Have a simple way to share “conversation templates,” which use the query parameters to pre-fill the “New Conversation” form.
@@ -661,9 +660,7 @@ const { app, BrowserWindow } = require("electron");
 
 ### Infrastructure
 
-- **End of term:**
-  - Downgrade server.
-- Force a reload on new deployment.
+- When a new version is deployed, force browsers to reload, which may be necessary for new assets (CSS, JavaScript, and so forth) to be picked up.
 - Mounting the application on a subpath, for example, `https://leafac.local/a/b/c` doesn’t work.
   - The Express server seems to not match the routes for things like `https://leafac.local/a/b/c/sign-in`.
 - Cluster mode:
