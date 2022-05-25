@@ -21,6 +21,7 @@
   - Allowlist people who can create a course.
   - Have complete access to course information.
   - Have one single layer of abstraction: Institution (it encapsulates departments, universities, and so forth).
+- Caddy could silence logs **after** a successful startup.
 
 ---
 
@@ -604,6 +605,7 @@ const { app, BrowserWindow } = require("electron");
 - View caching on the server.
   - https://guides.rubyonrails.org/caching_with_rails.html
   - This would interact in some way with server-side diffing on live-updates
+  - Elm seems to do something similar
 
 ---
 

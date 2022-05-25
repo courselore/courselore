@@ -1,6 +1,23 @@
 # Meeting Notes
 
 <details>
+<summary>2021-05-24 (Zach)</summary>
+
+- Liked Courselore this first semester and plan on using again next semester (starting things off in August), with a co-instructor who used to use <https://edstem.org>.
+- Ran into some bugs that have already been fixed on the latest version.
+- Caddy could silence logs **after** a successful startup.
+- Most wanted features for next semester:
+  - 1-to-1 conversations.
+  - SAML (only for authentication; authorization and the invitation process should remain the same).
+- Desktop version would be more useful than mobile.
+- On the technical side of things:
+  - Our live-navigation & live-updates are related to functional reactive programming.
+  - Elm gives some of the same benefits, but at the cost of making the programmer work to maintain some of the invariants necessary to make the system work.
+  - `key=""` implies uniqueness & perhaps it would be nicer to have more structure in the key besides just a string.
+
+</details>
+
+<details>
 <summary>2021-05-21</summary>
 
 - Sidebar redesign.
