@@ -732,12 +732,7 @@ export default (app: Courselore): void => {
                             font-size: var(--font-size--xs);
                             line-height: var(--line-height--xs);
                             display: flex;
-                            @media (max-width: 379px) {
-                              gap: var(--space--2);
-                            }
-                            @media (min-width: 380px) {
-                              gap: var(--space--4);
-                            }
+                            gap: var(--space--1-5);
                           `)}"
                         >
                           <a
@@ -990,55 +985,57 @@ export default (app: Courselore): void => {
                             Chats
                           </a>
                         `}
-                    $${!util.isDeepStrictEqual(
-                      req.query.conversations?.filters,
-                      {
-                        quick: "true",
-                        unread: "true",
-                      }
-                    )
-                      ? html`
-                          <a
-                            href="${app.locals.options
-                              .baseURL}${req.path}${qs.stringify(
-                              {
-                                conversations: {
-                                  filters: {
-                                    quick: "true",
-                                    unread: "true",
+                    <div hidden>
+                      $${!util.isDeepStrictEqual(
+                        req.query.conversations?.filters,
+                        {
+                          quick: "true",
+                          unread: "true",
+                        }
+                      )
+                        ? html`
+                            <a
+                              href="${app.locals.options
+                                .baseURL}${req.path}${qs.stringify(
+                                {
+                                  conversations: {
+                                    filters: {
+                                      quick: "true",
+                                      unread: "true",
+                                    },
                                   },
+                                  messages: req.query.messages,
+                                  newConversation: req.query.newConversation,
                                 },
-                                messages: req.query.messages,
-                                newConversation: req.query.newConversation,
-                              },
-                              {
-                                addQueryPrefix: true,
-                              }
-                            )}"
-                            class="button button--tight button--tight--inline button--transparent"
-                          >
-                            <i class="bi bi-eyeglasses"></i>
-                            Unread
-                          </a>
-                        `
-                      : html`
-                          <a
-                            href="${app.locals.options
-                              .baseURL}${req.path}${qs.stringify(
-                              {
-                                messages: req.query.messages,
-                                newConversation: req.query.newConversation,
-                              },
-                              {
-                                addQueryPrefix: true,
-                              }
-                            )}"
-                            class="button button--tight button--tight--inline button--transparent text--blue"
-                          >
-                            <i class="bi bi-eyeglasses"></i>
-                            Unread
-                          </a>
-                        `}
+                                {
+                                  addQueryPrefix: true,
+                                }
+                              )}"
+                              class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <i class="bi bi-eyeglasses"></i>
+                              Unread
+                            </a>
+                          `
+                        : html`
+                            <a
+                              href="${app.locals.options
+                                .baseURL}${req.path}${qs.stringify(
+                                {
+                                  messages: req.query.messages,
+                                  newConversation: req.query.newConversation,
+                                },
+                                {
+                                  addQueryPrefix: true,
+                                }
+                              )}"
+                              class="button button--tight button--tight--inline button--transparent text--blue"
+                            >
+                              <i class="bi bi-eyeglasses"></i>
+                              Unread
+                            </a>
+                          `}
+                    </div>
                   </div>
 
                   <hr class="separator" />
