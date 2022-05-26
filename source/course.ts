@@ -108,6 +108,7 @@ export interface InvitationExistsMiddlewareLocals extends BaseMiddlewareLocals {
     course: {
       id: number;
       reference: string;
+      archivedAt: string | null;
       name: string;
       year: string | null;
       term: string | null;
@@ -826,6 +827,7 @@ export default (app: Courselore): void => {
         usedAt: string | null;
         courseId: number;
         courseReference: string;
+        courseArchivedAt: string | null;
         courseName: string;
         courseYear: string | null;
         courseTerm: string | null;
@@ -843,6 +845,7 @@ export default (app: Courselore): void => {
                  "invitations"."usedAt",
                  "courses"."id" AS "courseId",
                  "courses"."reference" AS "courseReference",
+                 "courses"."archivedAt" AS "courseArchivedAt",
                  "courses"."name" AS "courseName",
                  "courses"."year" AS "courseYear",
                  "courses"."term" AS "courseTerm",
@@ -867,6 +870,7 @@ export default (app: Courselore): void => {
         course: {
           id: invitation.courseId,
           reference: invitation.courseReference,
+          archivedAt: invitation.courseArchivedAt,
           name: invitation.courseName,
           year: invitation.courseYear,
           term: invitation.courseTerm,
@@ -1206,6 +1210,131 @@ export default (app: Courselore): void => {
                   Update Course Information
                 </button>
               </div>
+            </form>
+
+            <hr class="separator" />
+
+            <form
+              method="PATCH"
+              action="${app.locals.options.baseURL}/courses/${res.locals.course
+                .reference}/settings/course-information"
+            >
+              <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
+
+              $${res.locals.course.archivedAt === null
+                ? html`
+                    <div
+                      css="${res.locals.css(
+                        css`
+                          display: flex;
+                          gap: var(--space--2);
+                          align-items: baseline;
+                        `
+                      )}"
+                    >
+                      <input type="hidden" name="isArchived" value="true" />
+                      <button
+                        class="button button--tight button--tight--inline button--transparent text--rose"
+                      >
+                        <i class="bi bi-archive"></i>
+                        Archive Course
+                      </button>
+                      <button
+                        type="button"
+                        class="button button--tight button--tight--inline button--transparent"
+                        css="${res.locals.css(
+                          css`
+                            font-size: var(--font-size--xs);
+                            line-height: var(--line-height--xs);
+                          `
+                        )}"
+                        onload="${javascript`
+                          (this.tooltip ??= tippy(this)).setProps({
+                            trigger: "click",
+                            interactive: true,
+                            content: ${res.locals.html(html`
+                              <div
+                                css="${res.locals.css(
+                                  css`
+                                    padding: var(--space--2);
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--space--4);
+                                  `
+                                )}"
+                              >
+                                <p>
+                                  An archived course becomes read-only.
+                                  People, including students, who are enrolled
+                                  in the course may read existing conversations,
+                                  but may no longer ask questions, send
+                                  messages, and so forth.
+                                </p>
+                                <p>You may unarchive a course at any time.</p>
+                              </div>
+                            `)},
+                          });
+                        `}"
+                      >
+                        <i class="bi bi-info-circle"></i>
+                      </button>
+                    </div>
+                  `
+                : html`
+                    <div
+                      css="${res.locals.css(
+                        css`
+                          display: flex;
+                          gap: var(--space--2);
+                          align-items: baseline;
+                        `
+                      )}"
+                    >
+                      <input type="hidden" name="isArchived" value="false" />
+                      <button
+                        class="button button--tight button--tight--inline button--transparent text--rose"
+                      >
+                        <i class="bi bi-archive"></i>
+                        Unarchive Course
+                      </button>
+                      <button
+                        type="button"
+                        class="button button--tight button--tight--inline button--transparent"
+                        css="${res.locals.css(
+                          css`
+                            font-size: var(--font-size--xs);
+                            line-height: var(--line-height--xs);
+                          `
+                        )}"
+                        onload="${javascript`
+                          (this.tooltip ??= tippy(this)).setProps({
+                            trigger: "click",
+                            content: "A bar with the accent color appears at the top of pages related to this course to help you differentiate between courses.",
+                          });
+                        `}"
+                      >
+                        <i class="bi bi-info-circle"></i>
+                      </button>
+                    </div>
+                    <div
+                      class="secondary"
+                      css="${res.locals.css(
+                        css`
+                          font-size: var(--font-size--xs);
+                          line-height: var(--line-height--xs);
+                        `
+                      )}"
+                    >
+                      This course has been archived
+                      <time
+                        datetime="${new Date(Date.now()).toISOString()}"
+                        onload="${javascript`
+                          leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                        `}"
+                      ></time
+                      >.
+                    </div>
+                  `}
             </form>
           `,
         })

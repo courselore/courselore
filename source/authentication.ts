@@ -89,6 +89,7 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
     course: {
       id: number;
       reference: string;
+      archivedAt: string | null;
       name: string;
       year: string | null;
       term: string | null;
@@ -104,6 +105,7 @@ export interface IsSignedInMiddlewareLocals extends BaseMiddlewareLocals {
     course: {
       id: number;
       reference: string;
+      archivedAt: string | null;
       name: string;
       year: string | null;
       term: string | null;
@@ -284,6 +286,7 @@ export default (app: Courselore): void => {
           id: number;
           courseId: number;
           courseReference: string;
+          courseArchivedAt: string | null;
           courseName: string;
           courseYear: string | null;
           courseTerm: string | null;
@@ -297,6 +300,7 @@ export default (app: Courselore): void => {
             SELECT "invitations"."id",
                    "courses"."id" AS "courseId",
                    "courses"."reference" AS "courseReference",
+                   "courses"."archivedAt" AS "courseArchivedAt",
                    "courses"."name" AS "courseName",
                    "courses"."year" AS "courseYear",
                    "courses"."term" AS "courseTerm",
@@ -320,6 +324,7 @@ export default (app: Courselore): void => {
           course: {
             id: invitation.courseId,
             reference: invitation.courseReference,
+            archivedAt: invitation.courseArchivedAt,
             name: invitation.courseName,
             year: invitation.courseYear,
             term: invitation.courseTerm,
@@ -337,6 +342,7 @@ export default (app: Courselore): void => {
           id: number;
           courseId: number;
           courseReference: string;
+          courseArchivedAt: string | null;
           courseName: string;
           courseYear: string | null;
           courseTerm: string | null;
@@ -351,6 +357,7 @@ export default (app: Courselore): void => {
             SELECT "enrollments"."id",
                    "courses"."id" AS "courseId",
                    "courses"."reference" AS "courseReference",
+                   "courses"."archivedAt" AS "courseArchivedAt",
                    "courses"."name" AS "courseName",
                    "courses"."year" AS "courseYear",
                    "courses"."term" AS "courseTerm",
@@ -371,6 +378,7 @@ export default (app: Courselore): void => {
           course: {
             id: enrollment.courseId,
             reference: enrollment.courseReference,
+            archivedAt: enrollment.courseArchivedAt,
             name: enrollment.courseName,
             year: enrollment.courseYear,
             term: enrollment.courseTerm,
