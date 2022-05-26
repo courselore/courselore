@@ -303,88 +303,92 @@ export default (app: Courselore): void => {
       res.locals.enrollments,
       (enrollment) => enrollment.course.archivedAt === null
     );
-    return html`
-      $${unarchived.map(
-        (enrollment) =>
-          html`
-            <a
-              key="enrollment--${enrollment.reference}"
-              href="${app.locals.options.baseURL}/courses/${enrollment.course
-                .reference}"
-              class="dropdown--menu--item menu-box--item button ${tight
-                ? ""
-                : "button--tight"} ${enrollment.id === res.locals.enrollment?.id
-                ? "button--blue"
-                : "button--transparent"}"
-            >
-              $${app.locals.partials.course({
-                req,
-                res,
-                course: enrollment.course,
-                enrollment,
-                tight,
-              })}
-            </a>
-          `
-      )}
-      $${archived.length > 0
-        ? html`
-            <hr class="separator" />
+    const content: HTML[] = [];
 
-            <button
-              key="enrollment--archived"
-              class="dropdown--menu--item menu-box--item button ${tight
-                ? ""
-                : "button--tight"} button--transparent secondary"
-              css="${res.locals.css(css`
-                font-size: var(--font-size--xs);
-                line-height: var(--line-height--xs);
-                justify-content: center;
-              `)}"
-              onload="${javascript`
-                (this.tooltip ??= tippy(this)).setProps({
-                  touch: "false",
-                  content: "Archived courses are read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
-                });
+    if (unarchived.length > 0)
+      content.push(html`
+        $${unarchived.map(
+          (enrollment) =>
+            html`
+              <a
+                key="enrollment--${enrollment.reference}"
+                href="${app.locals.options.baseURL}/courses/${enrollment.course
+                  .reference}"
+                class="dropdown--menu--item menu-box--item button ${tight
+                  ? ""
+                  : "button--tight"} ${enrollment.id ===
+                res.locals.enrollment?.id
+                  ? "button--blue"
+                  : "button--transparent"}"
+              >
+                $${app.locals.partials.course({
+                  req,
+                  res,
+                  course: enrollment.course,
+                  enrollment,
+                  tight,
+                })}
+              </a>
+            `
+        )}
+      `);
 
-                this.onclick = () => {
-                  for (const element of leafac.nextSiblings(this).slice(1))
-                    element.hidden = !element.hidden;
-                };
-              `}"
-            >
-              <i class="bi bi-archive"></i>
-              Archived Courses
-            </button>
+    if (archived.length > 0)
+      content.push(html`
+        <button
+          key="enrollment--archived"
+          class="dropdown--menu--item menu-box--item button ${tight
+            ? ""
+            : "button--tight"} button--transparent secondary"
+          css="${res.locals.css(css`
+            font-size: var(--font-size--xs);
+            line-height: var(--line-height--xs);
+            justify-content: center;
+          `)}"
+          onload="${javascript`
+            (this.tooltip ??= tippy(this)).setProps({
+              touch: "false",
+              content: "Archived courses are read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
+            });
 
-            $${archived.map(
-              (enrollment) =>
-                html`
-                  <a
-                    key="enrollment--${enrollment.reference}"
-                    href="${app.locals.options.baseURL}/courses/${enrollment
-                      .course.reference}"
-                    hidden
-                    class="dropdown--menu--item menu-box--item button ${tight
-                      ? ""
-                      : "button--tight"} ${enrollment.id ===
-                    res.locals.enrollment?.id
-                      ? "button--blue"
-                      : "button--transparent"}"
-                  >
-                    $${app.locals.partials.course({
-                      req,
-                      res,
-                      course: enrollment.course,
-                      enrollment,
-                      tight,
-                    })}
-                  </a>
-                `
-            )}
-          `
-        : html``}
-    `;
+            this.onclick = () => {
+              for (const element of leafac.nextSiblings(this).slice(1))
+                element.hidden = !element.hidden;
+            };
+          `}"
+        >
+          <i class="bi bi-archive"></i>
+          Archived Courses
+        </button>
+
+        $${archived.map(
+          (enrollment) =>
+            html`
+              <a
+                key="enrollment--${enrollment.reference}"
+                href="${app.locals.options.baseURL}/courses/${enrollment.course
+                  .reference}"
+                hidden
+                class="dropdown--menu--item menu-box--item button ${tight
+                  ? ""
+                  : "button--tight"} ${enrollment.id ===
+                res.locals.enrollment?.id
+                  ? "button--blue"
+                  : "button--transparent"}"
+              >
+                $${app.locals.partials.course({
+                  req,
+                  res,
+                  course: enrollment.course,
+                  enrollment,
+                  tight,
+                })}
+              </a>
+            `
+        )}
+      `);
+
+    return content.join(html`<hr class="separator" />`);
   };
 
   app.locals.partials.enrollmentRoleIcon = {
