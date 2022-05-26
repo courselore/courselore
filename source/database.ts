@@ -510,7 +510,10 @@ export default async (app: Courselore): Promise<void> => {
             WHERE "id" = ${message.id}
           `
         );
-    }
+    },
+    sql`
+      ALTER TABLE "courses" ADD COLUMN "archivedAt" TEXT NULL;
+    `
   );
   app.once("close", () => {
     app.locals.database.close();

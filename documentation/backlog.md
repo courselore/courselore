@@ -3,7 +3,6 @@
 ### User Interface Improvements
 
 - Course archival.
-  - Add database field.
   - Add form at `/settings/course-information`.
   - Add backend action.
   - Show [an icon](https://icons.getbootstrap.com/icons/archive/) and “Archived” in light gray next to the course name anywhere where we show the course name, for example, the top bar.
