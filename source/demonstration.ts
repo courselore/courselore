@@ -147,7 +147,14 @@ export default (app: Courselore): void => {
         const month = new Date().getMonth() + 1;
         const term = month < 4 || month > 9 ? "Spring" : "Fall";
         const institution = "Johns Hopkins University";
-        for (const { name, code, role, accentColor, enrollmentsUsers } of [
+        for (const {
+          name,
+          code,
+          role,
+          accentColor,
+          enrollmentsUsers,
+          isArchived,
+        } of [
           {
             name: "Principles of Programming Languages",
             code: "CS 601.426",
@@ -160,7 +167,15 @@ export default (app: Courselore): void => {
             code: "MD 401.324",
             role: enrollmentRoles[0],
             accentColor: enrollmentAccentColors[1],
+            enrollmentsUsers: users.slice(25, 125),
+          },
+          {
+            name: "Object-Oriented Software Engineering",
+            code: "EN 601.421",
+            role: enrollmentRoles[1],
+            accentColor: enrollmentAccentColors[2],
             enrollmentsUsers: users.slice(50, 150),
+            isArchived: true,
           },
         ].reverse()) {
           const course = app.locals.database.get<{
@@ -171,6 +186,7 @@ export default (app: Courselore): void => {
               INSERT INTO "courses" (
                 "createdAt",
                 "reference",
+                "archivedAt",
                 "name",
                 "year",
                 "term",
@@ -181,6 +197,7 @@ export default (app: Courselore): void => {
               VALUES (
                 ${new Date().toISOString()},
                 ${cryptoRandomString({ length: 10, type: "numeric" })},
+                ${isArchived ? new Date().toISOString() : null},
                 ${name},
                 ${year},
                 ${term},
