@@ -2,7 +2,6 @@
 
 ### User Interface Improvements
 
-- Newline before `` css` ``
 - Course archival.
   - Show [an icon](https://icons.getbootstrap.com/icons/archive/) and “Archived” in light gray next to the course name anywhere where we show the course name, for example, the top bar.
   - Disable all actions on the course, including sending messages, liking, editing conversation titles, and so forth. I was thinking of still showing the action buttons, but disable them and have a tooltip saying something to the effect of “This course is archived.”
