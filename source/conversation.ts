@@ -667,21 +667,19 @@ export default (app: Courselore): void => {
             `)}"
           >
             <div
-              css="${res.locals.css(
-                css`
-                  background-color: var(--color--gray--medium--100);
-                  @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--800);
-                  }
-                  max-height: 50%;
-                  overflow: auto;
-                  border-bottom: var(--border-width--1) solid
-                    var(--color--gray--medium--200);
-                  @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--700);
-                  }
-                `
-              )}"
+              css="${res.locals.css(css`
+                background-color: var(--color--gray--medium--100);
+                @media (prefers-color-scheme: dark) {
+                  background-color: var(--color--gray--medium--800);
+                }
+                max-height: 50%;
+                overflow: auto;
+                border-bottom: var(--border-width--1) solid
+                  var(--color--gray--medium--200);
+                @media (prefers-color-scheme: dark) {
+                  border-color: var(--color--gray--medium--700);
+                }
+              `)}"
             >
               <div
                 css="${res.locals.css(css`
@@ -1302,13 +1300,17 @@ export default (app: Courselore): void => {
                                       : html``}
                                     class="visually-hidden input--radio-or-checkbox--multilabel"
                                     onload="${javascript`
-                                      ${conversationType === "question" ? javascript`
-                                        this.onchange = () => {
-                                          if (this.checked) return;
-                                          for (const element of this.closest("form").querySelectorAll('[name="conversations[filters][isResolved]"]'))
-                                            element.checked = false;
-                                        };
-                                      ` : javascript``}
+                                      ${
+                                        conversationType === "question"
+                                          ? javascript`
+                                              this.onchange = () => {
+                                                if (this.checked) return;
+                                                for (const element of this.closest("form").querySelectorAll('[name="conversations[filters][isResolved]"]'))
+                                                  element.checked = false;
+                                              };
+                                            `
+                                          : javascript``
+                                      }
                                     `}"
                                   />
                                   <span>
@@ -1687,12 +1689,10 @@ export default (app: Courselore): void => {
             </div>
 
             <div
-              css="${res.locals.css(
-                css`
-                  flex: 1;
-                  overflow: auto;
-                `
-              )}"
+              css="${res.locals.css(css`
+                flex: 1;
+                overflow: auto;
+              `)}"
             >
               <div
                 css="${res.locals.css(css`
@@ -4316,8 +4316,7 @@ export default (app: Courselore): void => {
                                                 </p>
                                                 <p>
                                                   <strong
-                                                    css="${res.locals
-                                                      .css(css`
+                                                    css="${res.locals.css(css`
                                                       font-weight: var(
                                                         --font-weight--bold
                                                       );
@@ -4352,8 +4351,7 @@ export default (app: Courselore): void => {
                                                 </p>
                                                 <p>
                                                   <strong
-                                                    css="${res.locals
-                                                      .css(css`
+                                                    css="${res.locals.css(css`
                                                       font-weight: var(
                                                         --font-weight--bold
                                                       );
@@ -4816,8 +4814,7 @@ export default (app: Courselore): void => {
                                                   html`
                                                     <div
                                                       class="dropdown--menu"
-                                                      css="${res.locals
-                                                        .css(css`
+                                                      css="${res.locals.css(css`
                                                         max-height: var(
                                                           --space--40
                                                         );
@@ -6227,8 +6224,7 @@ export default (app: Courselore): void => {
                                               ? html``
                                               : html`
                                                   <div
-                                                    css="${res.locals
-                                                      .css(css`
+                                                    css="${res.locals.css(css`
                                                       font-size: var(
                                                         --font-size--xs
                                                       );
@@ -6240,8 +6236,7 @@ export default (app: Courselore): void => {
                                                     `)}"
                                                   >
                                                     <div
-                                                      css="${res.locals
-                                                        .css(css`
+                                                      css="${res.locals.css(css`
                                                         flex: 1;
                                                         display: flex;
                                                         flex-wrap: wrap;
@@ -6288,8 +6283,7 @@ export default (app: Courselore): void => {
                                               >
                                                 <div
                                                   class="strong"
-                                                  css="${res.locals
-                                                    .css(css`
+                                                  css="${res.locals.css(css`
                                                     font-size: var(
                                                       --font-size--sm
                                                     );
@@ -6670,8 +6664,7 @@ export default (app: Courselore): void => {
                                               ? html``
                                               : html`
                                                   <div
-                                                    css="${res.locals
-                                                      .css(css`
+                                                    css="${res.locals.css(css`
                                                       font-size: var(
                                                         --font-size--xs
                                                       );
@@ -6743,8 +6736,7 @@ export default (app: Courselore): void => {
                                                 )}
 
                                                 <div
-                                                  css="${res.locals
-                                                    .css(css`
+                                                  css="${res.locals.css(css`
                                                     display: flex;
                                                     gap: var(--space--2);
                                                     @media (max-width: 400px) {

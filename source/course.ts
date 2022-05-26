@@ -2296,8 +2296,7 @@ export default (app: Courselore): void => {
                                                     `
                                                   : html``}
                                                 <div
-                                                  css="${res.locals
-                                                    .css(css`
+                                                  css="${res.locals.css(css`
                                                     display: flex;
                                                     gap: var(--space--2);
                                                     align-items: center;
@@ -2308,8 +2307,7 @@ export default (app: Courselore): void => {
                                                     readonly
                                                     value="${link}"
                                                     class="input--text"
-                                                    css="${res.locals
-                                                      .css(css`
+                                                    css="${res.locals.css(css`
                                                       flex: 1;
                                                     `)}"
                                                     onload="${javascript`
@@ -2723,8 +2721,7 @@ export default (app: Courselore): void => {
                                               content: ${res.locals.html(
                                                 html`
                                                   <div
-                                                    css="${res.locals
-                                                      .css(css`
+                                                    css="${res.locals.css(css`
                                                       display: flex;
                                                       flex-direction: column;
                                                       gap: var(--space--2);
@@ -2780,8 +2777,7 @@ export default (app: Courselore): void => {
                                               content: ${res.locals.html(
                                                 html`
                                                   <div
-                                                    css="${res.locals
-                                                      .css(css`
+                                                    css="${res.locals.css(css`
                                                       padding-top: var(
                                                         --space--2
                                                       );
@@ -2825,8 +2821,7 @@ export default (app: Courselore): void => {
                                               content: ${res.locals.html(
                                                 html`
                                                   <div
-                                                    css="${res.locals
-                                                      .css(css`
+                                                    css="${res.locals.css(css`
                                                       display: flex;
                                                       flex-direction: column;
                                                       gap: var(--space--2);
@@ -3361,23 +3356,19 @@ export default (app: Courselore): void => {
                               enrollment.user.email
                             )
                           )}"
-                          css="${res.locals.css(
-                            css`
-                              margin-right: var(--space--2);
-                            `
-                          )}"
+                          css="${res.locals.css(css`
+                            margin-right: var(--space--2);
+                          `)}"
                         >
                           ${enrollment.user.email}
                         </span>
                         <button
                           class="button button--tight button--tight--inline button--transparent"
-                          css="${res.locals.css(
-                            css`
-                              font-size: var(--font-size--xs);
-                              line-height: var(--line-height--xs);
-                              display: inline-flex;
-                            `
-                          )}"
+                          css="${res.locals.css(css`
+                            font-size: var(--font-size--xs);
+                            line-height: var(--line-height--xs);
+                            display: inline-flex;
+                          `)}"
                           onload="${javascript`
                             (this.tooltip ??= tippy(this)).setProps({
                               touch: false,

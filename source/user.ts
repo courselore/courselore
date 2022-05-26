@@ -394,23 +394,19 @@ export default (app: Courselore): void => {
                           ? html`
                               <div class="secondary">
                                 <span
-                                  css="${res.locals.css(
-                                    css`
-                                      margin-right: var(--space--2);
-                                    `
-                                  )}"
+                                  css="${res.locals.css(css`
+                                    margin-right: var(--space--2);
+                                  `)}"
                                 >
                                   ${user!.email}
                                 </span>
                                 <button
                                   class="button button--tight button--tight--inline button--transparent"
-                                  css="${res.locals.css(
-                                    css`
-                                      font-size: var(--font-size--xs);
-                                      line-height: var(--line-height--xs);
-                                      display: inline-flex;
-                                    `
-                                  )}"
+                                  css="${res.locals.css(css`
+                                    font-size: var(--font-size--xs);
+                                    line-height: var(--line-height--xs);
+                                    display: inline-flex;
+                                  `)}"
                                   onload="${javascript`
                                     (this.tooltip ??= tippy(this)).setProps({
                                       touch: false,
