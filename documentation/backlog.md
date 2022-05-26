@@ -3,9 +3,15 @@
 ### User Interface Improvements
 
 - Course archival.
+  - Add database field.
+  - Add form at `/settings/course-information`.
+  - Add backend action.
   - Show [an icon](https://icons.getbootstrap.com/icons/archive/) and “Archived” in light gray next to the course name anywhere where we show the course name, for example, the top bar.
-  - Disable all actions on the course, including sending messages, liking, editing conversation titles, and so forth. I was thinking of still showing the action buttons, but disable them and have a tooltip saying something to the effect of “This course is archived.”
   - If you’re enrolled in multiple courses, the course switcher lists archived courses last under a disclosure element.
+  - Disable all actions on the course, including sending messages, liking, editing conversation titles, and so forth. I was thinking of still showing the action buttons, but disable them and have a tooltip saying something to the effect of “This course is archived.”
+
+---
+
 - Review again other applications like Piazza so that we’re aware of features that people will probably ask us about.
 - Our API should enable us to connect with other applications, for example, assignment management, and course material.
   - Though we won’t necessarily be going to those areas right away.
