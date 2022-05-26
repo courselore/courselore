@@ -353,7 +353,7 @@ export default (app: Courselore): void => {
                 };
               `}"
             >
-              <i class="bi bi-archive-fill"></i>
+              <i class="bi bi-archive"></i>
               Archived Courses
             </button>
 
