@@ -382,24 +382,81 @@ export default (app: Courselore): void => {
                   <p class="secondary">Go to one of your courses.</p>
 
                   <div class="menu-box">
-                    $${res.locals.enrollments.map(
-                      (enrollment) =>
-                        html`
-                          <a
-                            key="enrollment--${enrollment.reference}"
-                            href="${app.locals.options
-                              .baseURL}/courses/${enrollment.course.reference}"
-                            class="menu-box--item button button--tight button--transparent"
-                          >
-                            $${app.locals.partials.course({
-                              req,
-                              res,
-                              course: enrollment.course,
-                              enrollment,
-                            })}
-                          </a>
-                        `
-                    )}
+                    $${res.locals.enrollments
+                      .filter(
+                        (enrollment) => enrollment.course.archivedAt === null
+                      )
+                      .map(
+                        (enrollment) =>
+                          html`
+                            <a
+                              key="enrollment--${enrollment.reference}"
+                              href="${app.locals.options
+                                .baseURL}/courses/${enrollment.course
+                                .reference}"
+                              class="menu-box--item button button--tight button--transparent"
+                            >
+                              $${app.locals.partials.course({
+                                req,
+                                res,
+                                course: enrollment.course,
+                                enrollment,
+                              })}
+                            </a>
+                          `
+                      )}
+                    $${(() => {
+                      const archivedEnrollments = res.locals.enrollments.filter(
+                        (enrollment) => enrollment.course.archivedAt !== null
+                      );
+                      return archivedEnrollments.length > 0
+                        ? html`
+                            <button
+                              key="enrollment--archived"
+                              class="menu-box--item button button--tight button--transparent secondary"
+                              css="${res.locals.css(css`
+                                font-size: var(--font-size--xs);
+                                line-height: var(--line-height--xs);
+                                justify-content: center;
+                              `)}"
+                              onload="${javascript`
+                                (this.tooltip ??= tippy(this)).setProps({
+                                  touch: "false",
+                                  content: "Archived courses are read-only. You may continue to read existing conversations, but may no longer ask questions, send messages, and so forth.",
+                                });
+
+                                this.onclick = () => {
+                                  for (const element of leafac.nextSiblings(this).slice(1))
+                                    element.hidden = !element.hidden;
+                                };
+                              `}"
+                            >
+                              <i class="bi bi-archive-fill"></i>
+                              Archived Courses
+                            </button>
+                            $${archivedEnrollments.map(
+                              (enrollment) =>
+                                html`
+                                  <a
+                                    key="enrollment--${enrollment.reference}"
+                                    href="${app.locals.options
+                                      .baseURL}/courses/${enrollment.course
+                                      .reference}"
+                                    hidden
+                                    class="menu-box--item button button--tight button--transparent"
+                                  >
+                                    $${app.locals.partials.course({
+                                      req,
+                                      res,
+                                      course: enrollment.course,
+                                      enrollment,
+                                    })}
+                                  </a>
+                                `
+                            )}
+                          `
+                        : html``;
+                    })()}
                   </div>
                 </div>
               `,

@@ -765,6 +765,24 @@ const leafac = {
     return element === null ? [] : [element, ...element.querySelectorAll("*")];
   },
 
+  nextSiblings(element) {
+    const siblings = [];
+    while (element !== null) {
+      siblings.push(element);
+      element = element.nextElementSibling;
+    }
+    return siblings;
+  },
+
+  previousSiblings(element) {
+    const siblings = [];
+    while (element !== null) {
+      siblings.push(element);
+      element = element.previousElementSibling;
+    }
+    return siblings;
+  },
+
   isConnected(element) {
     for (const ancestor of leafac.ancestors(element)) {
       if (ancestor.forceIsConnected === true || ancestor.matches("html"))
