@@ -1336,50 +1336,47 @@ export default (app: Courselore): void => {
               method="PATCH"
               action="${app.locals.options.baseURL}/courses/${res.locals.course
                 .reference}/settings/course-information"
+              css="${res.locals.css(css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--1);
+              `)}"
             >
               <input type="hidden" name="_csrf" value="${req.csrfToken()}" />
 
               $${res.locals.course.archivedAt === null
                 ? html`
                     <div
-                      css="${res.locals.css(
-                        css`
-                          display: flex;
-                          gap: var(--space--2);
-                          align-items: baseline;
-                        `
-                      )}"
+                      css="${res.locals.css(css`
+                        display: flex;
+                        gap: var(--space--2);
+                        align-items: baseline;
+                      `)}"
                     >
                       <input type="hidden" name="isArchived" value="true" />
-                      <button
-                        class="button button--tight button--tight--inline button--transparent text--rose"
-                      >
+                      <button class="button button--rose">
                         <i class="bi bi-archive-fill"></i>
                         Archive Course
                       </button>
                       <button
                         type="button"
                         class="button button--tight button--tight--inline button--transparent"
-                        css="${res.locals.css(
-                          css`
-                            font-size: var(--font-size--xs);
-                            line-height: var(--line-height--xs);
-                          `
-                        )}"
+                        css="${res.locals.css(css`
+                          font-size: var(--font-size--xs);
+                          line-height: var(--line-height--xs);
+                        `)}"
                         onload="${javascript`
                           (this.tooltip ??= tippy(this)).setProps({
                             trigger: "click",
                             interactive: true,
                             content: ${res.locals.html(html`
                               <div
-                                css="${res.locals.css(
-                                  css`
-                                    padding: var(--space--2);
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--space--4);
-                                  `
-                                )}"
+                                css="${res.locals.css(css`
+                                  padding: var(--space--2);
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--4);
+                                `)}"
                               >
                                 <p>
                                   An archived course becomes read-only. People,
@@ -1400,41 +1397,33 @@ export default (app: Courselore): void => {
                   `
                 : html`
                     <div
-                      css="${res.locals.css(
-                        css`
-                          display: flex;
-                          gap: var(--space--2);
-                          align-items: baseline;
-                        `
-                      )}"
+                      css="${res.locals.css(css`
+                        display: flex;
+                        gap: var(--space--2);
+                        align-items: baseline;
+                      `)}"
                     >
                       <input type="hidden" name="isArchived" value="false" />
-                      <button
-                        class="button button--tight button--tight--inline button--transparent text--rose"
-                      >
+                      <button class="button button--rose">
                         <i class="bi bi-archive-fill"></i>
                         Unarchive Course
                       </button>
                       <button
                         type="button"
                         class="button button--tight button--tight--inline button--transparent"
-                        css="${res.locals.css(
-                          css`
-                            font-size: var(--font-size--xs);
-                            line-height: var(--line-height--xs);
-                          `
-                        )}"
+                        css="${res.locals.css(css`
+                          font-size: var(--font-size--xs);
+                          line-height: var(--line-height--xs);
+                        `)}"
                         onload="${javascript`
                           (this.tooltip ??= tippy(this)).setProps({
                             trigger: "click",
                             interactive: true,
                             content: ${res.locals.html(html`
                               <div
-                                css="${res.locals.css(
-                                  css`
-                                    padding: var(--space--2);
-                                  `
-                                )}"
+                                css="${res.locals.css(css`
+                                  padding: var(--space--2);
+                                `)}"
                               >
                                 This course is archived, which means it’s
                                 read-only. People, including students, who are
@@ -1451,12 +1440,10 @@ export default (app: Courselore): void => {
                     </div>
                     <div
                       class="secondary"
-                      css="${res.locals.css(
-                        css`
-                          font-size: var(--font-size--xs);
-                          line-height: var(--line-height--xs);
-                        `
-                      )}"
+                      css="${res.locals.css(css`
+                        font-size: var(--font-size--xs);
+                        line-height: var(--line-height--xs);
+                      `)}"
                     >
                       <span>
                         Archived
