@@ -2,8 +2,6 @@
 
 ### User Interface Improvements
 
-- Things I noticed we need to fix while I was showing the application:
-  - Have a simple way to share “conversation templates,” which use the query parameters to pre-fill the “New Conversation” form.
 - `css=""`
 - Course archival.
   - Show [an icon](https://icons.getbootstrap.com/icons/archive/) and “Archived” in light gray next to the course name anywhere where we show the course name, for example, the top bar.
@@ -21,6 +19,10 @@
   - Have complete access to course information.
   - Have one single layer of abstraction: Institution (it encapsulates departments, universities, and so forth).
 - Caddy could silence logs **after** a successful startup.
+
+---
+
+- Have a simple way to share “conversation templates,” which use the query parameters to pre-fill the “New Conversation” form.
 
 ---
 
