@@ -411,6 +411,8 @@ export default (app: Courselore): void => {
                       );
                       return archivedEnrollments.length > 0
                         ? html`
+                            <hr class="separator" />
+
                             <button
                               key="enrollment--archived"
                               class="menu-box--item button button--tight button--transparent secondary"
@@ -434,6 +436,7 @@ export default (app: Courselore): void => {
                               <i class="bi bi-archive-fill"></i>
                               Archived Courses
                             </button>
+
                             $${archivedEnrollments.map(
                               (enrollment) =>
                                 html`
